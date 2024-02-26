@@ -1,0 +1,1 @@
+<footer class="footer text-center">All Rights Reserved by Frontier Tech Services. Designed and Developed by <a href="https://gaffis.com/" target="blank">Gaffis Technologies Private Limited</a>.</footer>
