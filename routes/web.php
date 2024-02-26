@@ -126,6 +126,7 @@ use App\Http\Controllers\ChatSupportController;
 
 use App\Http\Controllers\PaymentController;
 
+use App\Http\Controllers\TimezoneController;
 
 /*
 
@@ -920,6 +921,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/payment-list', [PaymentController::class, 'index'])->name('payment-list');
 
     Route::get('/invoice-detail/{id}', [PaymentController::class, 'invoice_detail']);
+
+    // timezone 
+
+    Route::post('/change_timezone', [TimezoneController::class, 'store']);
 
 
 
