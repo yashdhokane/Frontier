@@ -43,4 +43,8 @@ class JobAssign extends Model
     }
 
 
+    public function TimeZone()
+    {
+        return $this->belongsTo(TimeZone::class, 'timezone_id'); // Assuming 'assigned_timezone_id' is the foreign key
+    }
 }

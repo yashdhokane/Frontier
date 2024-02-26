@@ -85,13 +85,12 @@
                         </div>
                     </div>
                 </div>
-               {{--  <a href="{{ route('tickets.create') }}" class="btn btn-primary mb-3">Create New Ticket</a> --}}
+                {{--  <a href="{{ route('tickets.create') }}" class="btn btn-primary mb-3">Create New Ticket</a> --}}
                 <div class="card">
                     <div class="card-body">
-                        <div class="table-responsive" >
-                            <table id="zero_config"
-                                class="table table-bordered text-nowrap" data-paging="true"
-                                data-paging-size="7" style="width:auto">
+                        <div class="table-responsive">
+                            <table id="zero_config" class="table table-bordered text-nowrap" data-paging="true"
+                                data-paging-size="7">
                                 <thead>
                                     <!-- start row -->
                                     <tr>
@@ -101,6 +100,7 @@
                                         <th>Ticket ID</th>
                                         <th>Customer</th>
                                         <th>Date</th>
+                                        <th>Time Slot</th>
                                         <th>Technician</th>
                                         <th>Action</th>
                                     </tr>
@@ -130,7 +130,16 @@
                                                     Unassigned
                                                 @endif
                                             </td>
-                                        <td>{{ $ticket->created_at ? $ticket->created_at->format('d-m-y') : '-' }}</td>
+                                            <td>{{ $ticket->created_at ? $ticket->created_at->format('d-m-y') : '-' }}</td>
+                                            <td>
+                                                <?php
+                                                $start_time = new DateTime($ticket->JobAssign->start_date_time, new DateTimeZone($ticket->JobAssign->TimeZone->timezone_name));
+                                                $end_time = new DateTime($ticket->JobAssign->end_date_time, new DateTimeZone($ticket->JobAssign->TimeZone->timezone_name));
+                                                
+                                                echo $start_time->format('h:ia') . ' to ' . $end_time->format('h:ia');
+                                                ?>
+                                                    
+                                            </td>
 
                                             <td>
                                                 @if ($ticket->technician)
@@ -143,7 +152,7 @@
                                             <td>
                                                 <span><a class="btn btn-success"
                                                         href="{{ route('tickets.show', $ticket->id) }}">View</a></span>
-                                                <span  style="display:none;"><a class="btn btn-primary"
+                                                <span style="display:none;"><a class="btn btn-primary"
                                                         href="{{ route('tickets.edit', $ticket->id) }}">Edit</a></span>
                                                 <span style="display:none;">
                                                     <form method="POST"
@@ -167,10 +176,10 @@
         </div>
     </div>
 @section('script')
-  {{--   <script src="{{ asset('public/admin/dist/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>--}}
- 
+    {{--   <script src="{{ asset('public/admin/dist/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script> --}}
+
     <script>
-      $('#zero_config').DataTable();
+        $('#zero_config').DataTable();
     </script>
 @endsection
 @endsection
