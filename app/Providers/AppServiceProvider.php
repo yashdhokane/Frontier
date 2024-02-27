@@ -21,27 +21,22 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Define the function in the View Composer
+        // Define the functions in the View Composer
         View::composer('*', function ($view) {
-            // Get the authenticated user's ID
-            $id = auth()->id();
+            // Function to convert date to the user's preferred timezone
+            $view->with('convertDateToTimezone', function ($date, $format = 'Y-m-d') {
+                // Retrieve user's timezone preference directly from the authenticated user
+                $userTimezone = auth()->user()->TimeZone->timezone_name ?? 'Asia/Kolkata';
+                // Convert the date to the user's preferred timezone
+                return $date ? \Carbon\Carbon::parse($date)->timezone($userTimezone)->format($format) : null;
+            });
 
-            // Retrieve user's timezone
-            $user = $id ? \App\Models\User::with('TimeZone')->find($id) : null;
-            $defaultTimezone = $user ? $user->TimeZone->timezone_name : session('selected_timezone');
-
-            $view->with('convertDateToTimezone', function ($date, $customTimezone = null, $format = 'Y-m-d H:i:s') use ($defaultTimezone) {
-                if ($date) {
-                    $selectedTimezone = $customTimezone ?: session('selected_timezone');
-                    $carbonDate = \Carbon\Carbon::parse($date);
-
-                    if ($carbonDate->isValid()) {
-                        // Convert to the selected timezone and format it
-                        return $carbonDate->timezone($selectedTimezone)->format($format);
-                    }
-                }
-
-                return null;
+            // Function to convert time to the user's preferred timezone
+            $view->with('convertTimeToTimezone', function ($time, $format = 'H:i:s') {
+                // Retrieve user's timezone preference directly from the authenticated user
+                $userTimezone = auth()->user()->TimeZone->timezone_name ?? 'Asia/Kolkata';
+                // Convert the time to the user's preferred timezone
+                return $time ? \Carbon\Carbon::parse($time)->timezone($userTimezone)->format($format) : null;
             });
         });
     }

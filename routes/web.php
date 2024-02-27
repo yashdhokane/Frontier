@@ -922,6 +922,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/invoice-detail/{id}', [PaymentController::class, 'invoice_detail']);
 
+    Route::get('/update/payment/{id}', [PaymentController::class, 'update']);
+
     // timezone 
 
     Route::post('/change_timezone', [TimezoneController::class, 'store']);

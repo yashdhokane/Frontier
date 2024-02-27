@@ -130,12 +130,14 @@
                                                     Unassigned
                                                 @endif
                                             </td>
-                                            <td>{{ $ticket->created_at ? $ticket->created_at->format('d-m-y') : '-' }}</td>
                                             <td>
-                                                {{ $convertDateToTimezone($ticket->JobAssign->start_date_time, null, 'h:ia') ?? '' }} to 
-                                                {{ $convertDateToTimezone($ticket->JobAssign->end_date_time, null, 'h:ia') ?? '' }}
+                                                {{ $convertDateToTimezone($ticket->created_at) }} </td>
+                                            <td>
+                                                {{ $convertTimeToTimezone($ticket->JobAssign->start_date_time, 'H:i:a') }}
+                                                to {{ $convertTimeToTimezone($ticket->JobAssign->end_date_time, 'H:i:a') }}
+                                                
                                             </td>
-                                            
+
                                             <td>
                                                 @if ($ticket->technician)
                                                     {{ $ticket->technician->name }}

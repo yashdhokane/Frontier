@@ -56,8 +56,8 @@
                 <div class="row">
                     <div class="col-12">
                         <!-- ---------------------
-                                                                                            start Payments
-                                                                                        ---------------- -->
+                                                                                                    start Payments
+                                                                                                ---------------- -->
                         <div class="card">
                             <div class="card-body">
                                 <h6 class="card-subtitle">
@@ -90,10 +90,10 @@
                                             <label class="text-nowrap">Payment Status:</label>
                                             <select id="payment-status-filter" class="form-control mx-2">
                                                 <option value="">All</option>
-                                                <option value="Paid">Paid</option>
-                                                <option value="Unpaid">Unpaid</option>
-                                                <option value="Refund">Refund</option>
-                                                <option value="Cancel">Cancel</option>
+                                                <option value="paid">Paid</option>
+                                                <option value="unpaid">Unpaid</option>
+                                                <option value="refund">Refund</option>
+                                                <option value="cancel">Cancel</option>
                                             </select>
                                         </div>
                                     </div>
@@ -102,20 +102,13 @@
                                         <thead>
                                             <!-- start row -->
                                             <tr>
-                                                <th>
-                                                    <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input"
-                                                            id="customControlValidation1" required />
-                                                        <label class="form-check-label"
-                                                            for="customControlValidation1"></label>
-                                                    </div>
-                                                </th>
                                                 <th>Invoice Id</th>
                                                 <th>Job Code</th>
                                                 <th>Job Title</th>
                                                 <th>Customer Name</th>
                                                 <th>Invoice Date</th>
                                                 <th>Gross Amount</th>
+                                                <th>Status</th>
                                                 <th>Action</th>
                                             </tr>
                                             <!-- end row -->
@@ -124,14 +117,6 @@
                                             <!-- start row -->
                                             @foreach ($payment as $item)
                                                 <tr>
-                                                    <td>
-                                                        <div class="form-check">
-                                                            <input type="checkbox" class="form-check-input"
-                                                                id="customControlValidation2" required />
-                                                            <label class="form-check-label"
-                                                                for="customControlValidation2"></label>
-                                                        </div>
-                                                    </td>
                                                     <td><a
                                                             href="{{ url('invoice-detail/' . $item->id) }}">{{ $item->invoice_number }}</a>
                                                     </td>
@@ -139,7 +124,8 @@
                                                     <td>{{ $item->JobModel->job_title }}</td>
                                                     <td>{{ $item->user->name }}</td>
                                                     <td>{{ $item->issue_date }}</td>
-                                                    <td>{{ $item->total }}</td>
+                                                    <td>$ {{ $item->total }}</td>
+                                                    <td>{{ $item->status }}</td>
                                                     <td>
                                                         <div class="btn-group">
                                                             <button type="button"
@@ -156,9 +142,12 @@
                                                                         data-feather="message-circle"
                                                                         class="feather-sm me-2"></i>
                                                                     Comments</a>
-                                                                <a class="dropdown-item" href="javascript:void(0)"><i
-                                                                        data-feather="edit-2" class="feather-sm me-2"></i>
-                                                                    Mark Complete</a>
+                                                                @if ($item->status != 'paid')
+                                                                    <a class="dropdown-item" href="{{url('update/payment/'. $item->id)}}"><i
+                                                                            data-feather="edit-2"
+                                                                            class="feather-sm me-2"></i>
+                                                                        Mark Complete</a>
+                                                                @endif
                                                             </div>
                                                         </div>
                                                     </td>
@@ -170,20 +159,13 @@
                                         <tfoot>
                                             <!-- start row -->
                                             <tr>
-                                                <th>
-                                                    <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input"
-                                                            id="customControlValidation35" required />
-                                                        <label class="form-check-label"
-                                                            for="customControlValidation35"></label>
-                                                    </div>
-                                                </th>
                                                 <th>Invoice Id</th>
                                                 <th>Job Code</th>
                                                 <th>Job Title</th>
                                                 <th>Customer Name</th>
                                                 <th>Invoice Date</th>
                                                 <th>Gross Amount</th>
+                                                <th>Status</th>
                                                 <th>Action</th>
                                             </tr>
                                             <!-- end row -->
@@ -193,8 +175,8 @@
                             </div>
                         </div>
                         <!-- ---------------------
-                                                                                            end Payments
-                                                                                        ---------------- -->
+                                                                                                    end Payments
+                                                                                                ---------------- -->
                     </div>
                 </div>
                 <!-- -------------------------------------------------------------- -->
@@ -249,10 +231,10 @@
                     var startDate = selectedMonth + '-01'; // First day of the selected month
                     var endDate = moment(selectedMonth).endOf('month').format(
                         'YYYY-MM-DD'); // Last day of the selected month
-                    table.column(5).search('^' + selectedMonth, true, false).draw();
+                    table.column(4).search('^' + selectedMonth, true, false).draw();
                 } else {
                     // If no month is selected, clear the filter
-                    table.column(5).search('').draw();
+                    table.column(4).search('').draw();
                 }
             });
 
@@ -260,13 +242,18 @@
             // Manufacturer filtering
             $('#manufacturer-filter').on('change', function() {
                 var manufacturer = $(this).val();
-                table.column(2).search(manufacturer).draw();
+                table.column(1).search(manufacturer).draw();
             });
 
-            // Payment Status filtering
+            // Payment status filtering
             $('#payment-status-filter').on('change', function() {
-                var paymentStatus = $(this).val();
-                table.column(0).search(paymentStatus).draw();
+                var selectedStatus = $(this).val();
+                if (selectedStatus) {
+                    table.column(6).search('^' + selectedStatus + '$', true, false).draw();
+                } else {
+                    // If no status is selected, clear the filter
+                    table.column(6).search('').draw();
+                }
             });
 
         });

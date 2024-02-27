@@ -31,5 +31,17 @@ class PaymentController extends Controller
        return view('payment.invoice_detail',compact('payment','job'));
     }
 
+    public function update(Request $request , $id)
+    {
+        $payment = Payment::find($id);
+        
+        $payment->status = 'paid';
+
+        $payment->update();
+
+        return redirect()->back();
+
+    }
+
 
 }
