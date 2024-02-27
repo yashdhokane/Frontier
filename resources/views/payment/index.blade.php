@@ -56,8 +56,8 @@
                 <div class="row">
                     <div class="col-12">
                         <!-- ---------------------
-                                                                                                    start Payments
-                                                                                                ---------------- -->
+                                                                                                                                            start Payments
+                                                                                                                                        ---------------- -->
                         <div class="card">
                             <div class="card-body">
                                 <h6 class="card-subtitle">
@@ -70,7 +70,25 @@
                                         <div class="d-flex align-items-baseline">
                                             <!-- Date filtering input -->
                                             <label>Month:</label>
-                                            <input type="month" id="month-filter" class="form-control mx-2">
+                                            <select id="month-filter" class="form-control mx-2">
+                                                <option value="">All</option>
+                                                @php
+                                                    // Get the current month and year
+                                                    $currentMonth = new DateTime();
+                                                    // Format the current month and year
+                                                    $currentMonthFormatted = $currentMonth->format('F Y');
+                                                    // Output the option tag for the current month
+                                                    echo "<option value=\"" . strtolower($currentMonthFormatted) . "\">" . $currentMonthFormatted . '</option>';
+
+                                                    // Generate options for the previous 11 months
+                                                    for ($i = 0; $i < 12; $i++) {
+                                                        // Modify date to get previous months
+                                                        $monthYear = $currentMonth->modify('-1 month')->format('F Y');
+                                                        // Output the option tag for the previous months
+                                                        echo "<option value=\"" . strtolower($monthYear) . "\">" . $monthYear . '</option>';
+                                                    }
+                                                @endphp
+                                            </select>
                                         </div>
 
                                         <div class="d-flex align-items-baseline">
@@ -143,7 +161,8 @@
                                                                         class="feather-sm me-2"></i>
                                                                     Comments</a>
                                                                 @if ($item->status != 'paid')
-                                                                    <a class="dropdown-item" href="{{url('update/payment/'. $item->id)}}"><i
+                                                                    <a class="dropdown-item"
+                                                                        href="{{ url('update/payment/' . $item->id) }}"><i
                                                                             data-feather="edit-2"
                                                                             class="feather-sm me-2"></i>
                                                                         Mark Complete</a>
@@ -175,8 +194,8 @@
                             </div>
                         </div>
                         <!-- ---------------------
-                                                                                                    end Payments
-                                                                                                ---------------- -->
+                                                                                                                                            end Payments
+                                                                                                                                        ---------------- -->
                     </div>
                 </div>
                 <!-- -------------------------------------------------------------- -->
@@ -228,15 +247,17 @@
             $('#month-filter').on('change', function() {
                 var selectedMonth = $(this).val();
                 if (selectedMonth) {
-                    var startDate = selectedMonth + '-01'; // First day of the selected month
-                    var endDate = moment(selectedMonth).endOf('month').format(
-                        'YYYY-MM-DD'); // Last day of the selected month
-                    table.column(4).search('^' + selectedMonth, true, false).draw();
+                    var startDate = moment(selectedMonth, 'MMMM YYYY').startOf('month').format(
+                        'YYYY-MM'); // First day of the selected month
+
+                    // Perform filtering on the table to include all dates within the range between start date and end date
+                    table.column(4).search('^' + startDate, true, false).draw();
                 } else {
                     // If no month is selected, clear the filter
                     table.column(4).search('').draw();
                 }
             });
+
 
 
             // Manufacturer filtering
