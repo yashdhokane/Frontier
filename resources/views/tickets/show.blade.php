@@ -250,6 +250,7 @@
                                         <div class="col-md-2">
                                             <div class="mt-2">&nbsp;</div>
                                         </div>
+                                        {{-- comment --}}
                                         <div class="col-md-2">
                                             <div class="mt-2">
                                                 <h5>${{
@@ -416,7 +417,7 @@
                         <h5 class="pt-3">Ticket created on </h5>
                         <span>02-20-2024</span>
                         <h5 class="pt-3">Ticket Last Modified on </h5>
-                       <span>02-20-2024</span>
+                        <span>02-20-2024</span>
                     </div>
                 </div>
 
