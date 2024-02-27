@@ -250,7 +250,7 @@
                                         <div class="col-md-2">
                                             <div class="mt-2">&nbsp;</div>
                                         </div>
-                                        {{-- commentlatest --}}
+                                        {{-- comment --}}
                                         <div class="col-md-2">
                                             <div class="mt-2">
                                                 <h5>${{
@@ -354,8 +354,8 @@
                         </div>
                         <div class="row mt-3 mb-3">
                             <h4 class="card-title mb-0"><i class="fa fa-calendar" aria-hidden="true"></i>&nbsp; {{
-                                $technicians->created_at ? $technicians->created_at->format('F d,
-                                Y H:i') : '-' ?? null }}</h4>
+                                isset($technicians->created_at) ?
+                                $convertDateToTimezone($technicians->created_at->format('F d, Y H:i')) : '-' }}</h4>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
@@ -396,11 +396,15 @@
                                 <li class="list-group-item border-0 mb-0 py-2 pe-3 ps-0">
                                     <h5 class="todo-desc mb-0 fs-3 font-weight-medium">New Job created and assigned to
                                         technician</h5>
-                                    <div class="todo-desc text-muted fw-normal fs-2"></div>
+                                    <div class="todo-desc text-muted fw-normal fs-2">{{ isset($technicians->created_at)
+                                        ?
+                                        $convertDateToTimezone($technicians->created_at->format('m-d-y')) : '-' }}</div>
                                 </li>
                                 <li class="list-group-item border-0 mb-0 py-2 pe-3 ps-0">
                                     <h5 class="todo-desc mb-0 fs-3 font-weight-medium">Technician accepted the job</h5>
-                                    <div class="todo-desc text-muted fw-normal fs-2"></div>
+                                    <div class="todo-desc text-muted fw-normal fs-2">{{ isset($technicians->updated_at)
+                                        ?
+                                        $convertDateToTimezone($technicians->updated_at->format('m-d-y')) : '-' }}</div>
                                 </li>
 
                             </ul>
@@ -415,9 +419,15 @@
                         <h5 class="pt-3">Ticket Creator</h5>
                         <span>{{ $technicians->userdispatcher->name ?? null }} @Frontier Support Staff</span>
                         <h5 class="pt-3">Ticket created on </h5>
-                        <span>02-20-2024</span>
+                        <span>
+                            {{ isset($technicians->jobassignname->created_at) ?
+                            $convertDateToTimezone($technicians->jobassignname->created_at->format('m-d-y')) : '-' }}
+                        </span>
                         <h5 class="pt-3">Ticket Last Modified on </h5>
-                        <span>02-20-2024</span>
+                        <span>
+                            {{ isset($technicians->jobassignname->updated_at) ?
+                            $convertDateToTimezone($technicians->jobassignname->updated_at->format('m-d-y')) : '-' }}
+                        </span>
                     </div>
                 </div>
 
