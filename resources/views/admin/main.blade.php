@@ -79,9 +79,9 @@
 
                 <!-- ---------------------
 
-                                                start Sales Summary
+                                                    start Sales Summary
 
-                                            ---------------- -->
+                                                ---------------- -->
 
                 <div class="card">
 
@@ -306,9 +306,9 @@
 
                 <!-- ---------------------
 
-                                                end Sales Summary
+                                                    end Sales Summary
 
-                                            ---------------- -->
+                                                ---------------- -->
 
             </div>
 
@@ -386,9 +386,9 @@
 
                 <!-- ---------------------
 
-                                                start Tickets
+                                                    start Tickets
 
-                                            ---------------- -->
+                                                ---------------- -->
 
                 <div class="card">
 
@@ -406,7 +406,7 @@
 
                                     <div class="p-2 rounded bg-light-primary text-center">
 
-                                        <h1 class="fw-light text-primary">{{$totalCalls}}</h1>
+                                        <h1 class="fw-light text-primary">{{ $totalCalls }}</h1>
 
                                         <h6 class="text-primary">Total Tickets</h6>
 
@@ -424,7 +424,7 @@
 
                                     <div class="p-2 rounded bg-light-warning text-center">
 
-                                        <h1 class="fw-light text-warning">{{$inProgress}}</h1>
+                                        <h1 class="fw-light text-warning">{{ $inProgress }}</h1>
 
                                         <h6 class="text-warning">In Progress</h6>
 
@@ -442,7 +442,7 @@
 
                                     <div class="p-2 rounded bg-light-success text-center">
 
-                                        <h1 class="fw-light text-success">{{$opened}}</h1>
+                                        <h1 class="fw-light text-success">{{ $opened }}</h1>
 
                                         <h6 class="text-success">Opened</h6>
 
@@ -460,7 +460,7 @@
 
                                     <div class="p-2 rounded bg-light-danger text-center">
 
-                                        <h1 class="fw-light text-danger">{{$complete}}</h1>
+                                        <h1 class="fw-light text-danger">{{ $complete }}</h1>
 
                                         <h6 class="text-danger">Closed</h6>
 
@@ -496,9 +496,9 @@
 
                 <!-- ---------------------
 
-                                                start Projects of the Month
+                                                    start Projects of the Month
 
-                                            ---------------- -->
+                                                ---------------- -->
 
                 <div class="card">
 
@@ -580,7 +580,6 @@
                                             <td>
 
                                                 <a href="{{ url('tickets/' . $item->id) }}"
-
                                                     class="font-medium link">{{ $item->job_title }}</a><br />
                                                 @if ($item->jobDetails)
                                                     <span style="font-size:12px;">
@@ -606,7 +605,12 @@
 
                                             <td>{{ $item->user->name }}</td>
 
-                                            <td>{{ \Carbon\Carbon::parse($item->created_at)->format('m-d-Y') }} </td>
+                                            <td>
+                                                {{ $convertDateToTimezone($item->created_at, null, 'm-d-Y') ?? '' }}
+
+                                            </td>
+                                            
+
 
                                             <td>{{ $item->technician->name }}</td>
 
@@ -633,9 +637,9 @@
 
                 <!-- ---------------------
 
-                                                end Projects of the Month
+                                                    end Projects of the Month
 
-                                            ---------------- -->
+                                                ---------------- -->
 
             </div>
 
@@ -669,9 +673,9 @@
 
                 <!-- ---------------------
 
-                                                start Revenue Statistics
+                                                    start Revenue Statistics
 
-                                            ---------------- -->
+                                                ---------------- -->
 
                 <div class="card bg-info text-white card-hover w-100">
 
@@ -699,9 +703,9 @@
 
                 <!-- ---------------------
 
-                                                end Revenue Statistics
+                                                    end Revenue Statistics
 
-                                            ---------------- -->
+                                                ---------------- -->
 
             </div>
 
@@ -711,9 +715,9 @@
 
                 <!-- ---------------------
 
-                                                start Page Views
+                                                    start Page Views
 
-                                            ---------------- -->
+                                                ---------------- -->
 
                 <div class="card bg-cyan text-white card-hover w-100">
 
@@ -741,9 +745,9 @@
 
                 <!-- ---------------------
 
-                                                end Page Views
+                                                    end Page Views
 
-                                            ---------------- -->
+                                                ---------------- -->
 
             </div>
 
@@ -753,9 +757,9 @@
 
                 <!-- ---------------------
 
-                                                start Bounce Rate
+                                                    start Bounce Rate
 
-                                            ---------------- -->
+                                                ---------------- -->
 
                 <div class="card card-hover w-100">
 
@@ -791,9 +795,9 @@
 
                 <!-- ---------------------
 
-                                                end Bounce Rate
+                                                    end Bounce Rate
 
-                                            ---------------- -->
+                                                ---------------- -->
 
             </div>
 
@@ -817,9 +821,9 @@
 
                 <!-- ---------------------
 
-                                                start Projects of the Month
+                                                    start Projects of the Month
 
-                                            ---------------- -->
+                                                ---------------- -->
 
                 <div class="card">
 
@@ -958,9 +962,9 @@
 
                 <!-- ---------------------
 
-                                                end Projects of the Month
+                                                    end Projects of the Month
 
-                                            ---------------- -->
+                                                ---------------- -->
 
             </div>
 
