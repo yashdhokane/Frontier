@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\JobModel;
+use App\Models\Manufacturer;
 use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -16,7 +17,9 @@ class PaymentController extends Controller
     {
         $payment = Payment::with('user','JobModel')->latest()->get();
 
-       return view('payment.index',compact('payment'));
+        $manufacturer = Manufacturer::all();
+
+       return view('payment.index',compact('payment','manufacturer'));
     }
 
     public function invoice_detail(Request $request , $id)

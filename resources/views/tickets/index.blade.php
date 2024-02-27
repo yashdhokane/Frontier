@@ -132,15 +132,10 @@
                                             </td>
                                             <td>{{ $ticket->created_at ? $ticket->created_at->format('d-m-y') : '-' }}</td>
                                             <td>
-                                                <?php
-                                                $start_time = new DateTime($ticket->JobAssign->start_date_time, new DateTimeZone($ticket->JobAssign->TimeZone->timezone_name));
-                                                $end_time = new DateTime($ticket->JobAssign->end_date_time, new DateTimeZone($ticket->JobAssign->TimeZone->timezone_name));
-                                                
-                                                echo $start_time->format('h:ia') . ' to ' . $end_time->format('h:ia');
-                                                ?>
-                                                    
+                                                {{ $convertDateToTimezone($ticket->JobAssign->start_date_time, null, 'h:ia') ?? '' }} to 
+                                                {{ $convertDateToTimezone($ticket->JobAssign->end_date_time, null, 'h:ia') ?? '' }}
                                             </td>
-
+                                            
                                             <td>
                                                 @if ($ticket->technician)
                                                     {{ $ticket->technician->name }}

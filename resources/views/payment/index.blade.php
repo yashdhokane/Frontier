@@ -56,8 +56,8 @@
                 <div class="row">
                     <div class="col-12">
                         <!-- ---------------------
-                                                        start Payments
-                                                    ---------------- -->
+                                                                                            start Payments
+                                                                                        ---------------- -->
                         <div class="card">
                             <div class="card-body">
                                 <h6 class="card-subtitle">
@@ -65,6 +65,39 @@
                                     save this content ad per requirments.
                                 </h6>
                                 <div class="table-responsive">
+
+                                    <div class="d-flex">
+                                        <div class="d-flex align-items-baseline">
+                                            <!-- Date filtering input -->
+                                            <label>Month:</label>
+                                            <input type="month" id="month-filter" class="form-control mx-2">
+                                        </div>
+
+                                        <div class="d-flex align-items-baseline">
+                                            <!-- Filter by other column (example: Manufacturer) -->
+                                            <label class="text-nowrap">Manufacturer:</label>
+                                            <select id="manufacturer-filter" class="form-control mx-2">
+                                                <option value="">All</option>
+                                                @foreach ($manufacturer as $item)
+                                                    <option value="{{ $item->manufacturer_name }}">
+                                                        {{ $item->manufacturer_name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div class="d-flex align-items-baseline">
+                                            <!-- Filter by other column (example: Payment Status) -->
+                                            <label class="text-nowrap">Payment Status:</label>
+                                            <select id="payment-status-filter" class="form-control mx-2">
+                                                <option value="">All</option>
+                                                <option value="Paid">Paid</option>
+                                                <option value="Unpaid">Unpaid</option>
+                                                <option value="Refund">Refund</option>
+                                                <option value="Cancel">Cancel</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
                                     <table id="file_export" class="table table-bordered">
                                         <thead>
                                             <!-- start row -->
@@ -77,13 +110,13 @@
                                                             for="customControlValidation1"></label>
                                                     </div>
                                                 </th>
-                                                <th>Action</th>
                                                 <th>Invoice Id</th>
                                                 <th>Job Code</th>
                                                 <th>Job Title</th>
                                                 <th>Customer Name</th>
                                                 <th>Invoice Date</th>
                                                 <th>Gross Amount</th>
+                                                <th>Action</th>
                                             </tr>
                                             <!-- end row -->
                                         </thead>
@@ -99,6 +132,14 @@
                                                                 for="customControlValidation2"></label>
                                                         </div>
                                                     </td>
+                                                    <td><a
+                                                            href="{{ url('invoice-detail/' . $item->id) }}">{{ $item->invoice_number }}</a>
+                                                    </td>
+                                                    <td>{{ $item->JobModel->job_code }}</td>
+                                                    <td>{{ $item->JobModel->job_title }}</td>
+                                                    <td>{{ $item->user->name }}</td>
+                                                    <td>{{ $item->issue_date }}</td>
+                                                    <td>{{ $item->total }}</td>
                                                     <td>
                                                         <div class="btn-group">
                                                             <button type="button"
@@ -121,14 +162,7 @@
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td><a
-                                                            href="{{ url('invoice-detail/' . $item->id) }}">{{ $item->invoice_number }}</a>
-                                                    </td>
-                                                    <td>{{ $item->JobModel->job_code }}</td>
-                                                    <td>{{ $item->JobModel->job_title }}</td>
-                                                    <td>{{ $item->user->name }}</td>
-                                                    <td>{{ $item->issue_date }}</td>
-                                                    <td>{{ $item->total }}</td>
+
                                                 </tr>
                                             @endforeach
 
@@ -144,13 +178,13 @@
                                                             for="customControlValidation35"></label>
                                                     </div>
                                                 </th>
-                                                <th>Action</th>
                                                 <th>Invoice Id</th>
                                                 <th>Job Code</th>
                                                 <th>Job Title</th>
                                                 <th>Customer Name</th>
                                                 <th>Invoice Date</th>
                                                 <th>Gross Amount</th>
+                                                <th>Action</th>
                                             </tr>
                                             <!-- end row -->
                                         </tfoot>
@@ -159,8 +193,8 @@
                             </div>
                         </div>
                         <!-- ---------------------
-                                                        end Payments
-                                                    ---------------- -->
+                                                                                            end Payments
+                                                                                        ---------------- -->
                     </div>
                 </div>
                 <!-- -------------------------------------------------------------- -->
@@ -195,6 +229,7 @@
         //    File export                              //
         //=============================================//
         $(document).ready(function() {
+
             $('#file_export').DataTable({
                 dom: 'Bfrtip',
                 buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
@@ -203,6 +238,37 @@
             $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass(
                 'btn btn-cyan text-white me-1'
             );
+
+            // Initialize DataTable
+            var table = $('#file_export').DataTable();
+
+            // Month filtering
+            $('#month-filter').on('change', function() {
+                var selectedMonth = $(this).val();
+                if (selectedMonth) {
+                    var startDate = selectedMonth + '-01'; // First day of the selected month
+                    var endDate = moment(selectedMonth).endOf('month').format(
+                        'YYYY-MM-DD'); // Last day of the selected month
+                    table.column(5).search('^' + selectedMonth, true, false).draw();
+                } else {
+                    // If no month is selected, clear the filter
+                    table.column(5).search('').draw();
+                }
+            });
+
+
+            // Manufacturer filtering
+            $('#manufacturer-filter').on('change', function() {
+                var manufacturer = $(this).val();
+                table.column(2).search(manufacturer).draw();
+            });
+
+            // Payment Status filtering
+            $('#payment-status-filter').on('change', function() {
+                var paymentStatus = $(this).val();
+                table.column(0).search(paymentStatus).draw();
+            });
+
         });
     </script>
 @endsection
