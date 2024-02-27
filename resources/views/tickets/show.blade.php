@@ -250,7 +250,7 @@
                                         <div class="col-md-2">
                                             <div class="mt-2">&nbsp;</div>
                                         </div>
-                                        {{-- comment --}}
+                                        {{-- commentlatest --}}
                                         <div class="col-md-2">
                                             <div class="mt-2">
                                                 <h5>${{
