@@ -15,33 +15,33 @@ class PaymentController extends Controller
 {
     public function index()
     {
-        $payment = Payment::with('user','JobModel')->latest()->get();
+        $payment = Payment::with('user', 'JobModel')->latest()->get();
 
         $manufacturer = Manufacturer::all();
 
-       return view('payment.index',compact('payment','manufacturer'));
+        return view('payment.index', compact('payment', 'manufacturer'));
     }
 
-    public function invoice_detail(Request $request , $id)
+    public function invoice_detail(Request $request, $id)
     {
         $payment = Payment::find($id);
-        
-        $job = JobModel::with('jobserviceinfo','jobproductinfo')->where('id',$payment->job_id)->first();
+        if ($payment) {
+            $job = JobModel::with('jobserviceinfo', 'jobproductinfo')->where('id', $payment->job_id)->first();
 
-       return view('payment.invoice_detail',compact('payment','job'));
+            return view('payment.invoice_detail', compact('payment', 'job'));
+        } else {
+            return view('404');
+        }
     }
 
-    public function update(Request $request , $id)
+    public function update(Request $request, $id)
     {
         $payment = Payment::find($id);
-        
+
         $payment->status = 'paid';
 
         $payment->update();
 
         return redirect()->back();
-
     }
-
-
 }

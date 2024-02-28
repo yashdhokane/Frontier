@@ -167,7 +167,8 @@
 
                                             <h3><b class="text-success">{{ $payment->user->name }}</b></h3>
 
-                                            <p class="text-muted m-l-30"> {{ $payment->UserAddress->address_line1 ?? null }}</p>
+                                            <p class="text-muted m-l-30"> {{ $payment->UserAddress->address_line1 ?? null }} <br>
+                                                {{ $payment->UserAddress->city ?? null }} , {{ $payment->UserAddress->locationStateName->state_name ?? null }} ,{{ $payment->UserAddress->zipcode ?? null }}</p>
 
                                         </address>
 
@@ -182,10 +183,10 @@
                                         <address>
 
                                             <p class="m-t-30"><b>Invoice Date:</b> <i class="fas fa-calendar-alt"></i>
-                                                {{ $payment->issue_date }}</p>
+                                                {{ $convertDateToTimezone($payment->issue_date) }}</p>
 
                                             <p><b>Due Date: </b> <i class="fas fa-calendar-alt"></i>
-                                                {{ $payment->due_date }}</p>
+                                                {{ $convertDateToTimezone($payment->due_date) }}</p>
 
                                             <p><b>Invoice Amount: </b> <i
                                                     class="fas fa-dollar-sign"></i>{{ $payment->total }} <br><span

@@ -165,7 +165,10 @@ use App\Http\Controllers\TimezoneController;
 
 
 */
-
+// Catch all routes
+Route::fallback(function () {
+    return response()->view('404', [], 404);
+});
 
 
 Route::middleware('guest')->group(function () {
