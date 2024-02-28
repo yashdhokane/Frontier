@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
         // Define the functions in the View Composer
         View::composer('*', function ($view) {
             // Function to convert date to the user's preferred timezone
-            $view->with('convertDateToTimezone', function ($date, $format = 'Y-m-d') {
+            $view->with('convertDateToTimezone', function ($date, $format = 'm-d-Y') {
                 // Retrieve user's timezone preference directly from the authenticated user
                 $userTimezone = auth()->user()->TimeZone->timezone_name ?? 'Asia/Kolkata';
                 // Convert the date to the user's preferred timezone

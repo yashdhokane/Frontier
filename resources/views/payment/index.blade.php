@@ -56,8 +56,8 @@
                 <div class="row">
                     <div class="col-12">
                         <!-- ---------------------
-                                                                                                                                            start Payments
-                                                                                                                                        ---------------- -->
+                                                                                                                                                start Payments
+                                                                                                                                            ---------------- -->
                         <div class="card">
                             <div class="card-body">
                                 <h6 class="card-subtitle">
@@ -141,7 +141,7 @@
                                                     <td>{{ $item->JobModel->job_code }}</td>
                                                     <td>{{ $item->JobModel->job_title }}</td>
                                                     <td>{{ $item->user->name }}</td>
-                                                    <td>{{ $item->issue_date }}</td>
+                                                    <td>{{ $convertDateToTimezone($item->issue_date) }}</td>
                                                     <td>$ {{ $item->total }}</td>
                                                     <td>{{ $item->status }}</td>
                                                     <td>
@@ -194,8 +194,8 @@
                             </div>
                         </div>
                         <!-- ---------------------
-                                                                                                                                            end Payments
-                                                                                                                                        ---------------- -->
+                                                                                                                                                end Payments
+                                                                                                                                            ---------------- -->
                     </div>
                 </div>
                 <!-- -------------------------------------------------------------- -->
@@ -247,11 +247,14 @@
             $('#month-filter').on('change', function() {
                 var selectedMonth = $(this).val();
                 if (selectedMonth) {
-                    var startDate = moment(selectedMonth, 'MMMM YYYY').startOf('month').format(
-                        'YYYY-MM'); // First day of the selected month
+                    var Month = moment(selectedMonth, 'MMMM YYYY').startOf('month').format(
+                        'MM'); // First day of the selected month
+                    var Year = moment(selectedMonth, 'MMMM YYYY').startOf('month').format(
+                        'YYYY'); //  selected year
 
                     // Perform filtering on the table to include all dates within the range between start date and end date
-                    table.column(4).search('^' + startDate, true, false).draw();
+                    table.column(4).search('^' + Month + '-' + '\\d{2}-' + Year + '$', true,
+                        false).draw();
                 } else {
                     // If no month is selected, clear the filter
                     table.column(4).search('').draw();
