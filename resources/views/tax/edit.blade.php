@@ -9,7 +9,7 @@
     </div>
     <div class="mb-3">
         <label for="state_tax" class="control-label">Tax Rate:</label>
-        <input type="number" class="form-control" id="state_tax" name="state_tax" value="{{ $state->state_tax }}"
+        <input type="text" class="form-control" id="state_tax" name="state_tax" value="{{ $state->state_tax }}"
             required />
     </div>
 

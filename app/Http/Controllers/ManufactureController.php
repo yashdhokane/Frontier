@@ -108,7 +108,7 @@ class ManufactureController extends Controller
     }
 
 
-    public function destroy($id)
+    public function enable($id)
     {
         $manufacture = Manufacturer::find($id);
 
@@ -116,15 +116,38 @@ class ManufactureController extends Controller
             return redirect()->route('manufacturer.index')->with('error', 'Manufacturer not found!');
         }
 
+        $manufacture->is_active = 'yes';
+
         // Delete the associated image (if it exists)
-        if ($manufacture->manufacturer_image) {
-            unlink(public_path('images/' . $manufacture->manufacturer_image));
-        }
+        // if ($manufacture->manufacturer_image) {
+        //     unlink(public_path('images/' . $manufacture->manufacturer_image));
+        // }
 
         // Delete the manufacturer record from the database
-        $manufacture->delete();
+        $manufacture->update();
 
-        return redirect()->route('manufacturer.index')->with('success', 'Manufacturer deleted successfully!');
+        return redirect()->back()->with('success', 'Manufacturer enable successfully!');
+    }
+
+    public function disable($id)
+    {
+        $manufacture = Manufacturer::find($id);
+
+        if (!$manufacture) {
+            return redirect()->route('manufacturer.index')->with('error', 'Manufacturer not found!');
+        }
+
+        $manufacture->is_active = 'not';
+
+        // Delete the associated image (if it exists)
+        // if ($manufacture->manufacturer_image) {
+        //     unlink(public_path('images/' . $manufacture->manufacturer_image));
+        // }
+
+        // Delete the manufacturer record from the database
+        $manufacture->update();
+
+        return redirect()->back()->with('success', 'Manufacturer disable successfully!');
     }
 
 

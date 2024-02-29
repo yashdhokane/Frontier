@@ -28,38 +28,37 @@ class LeadsourceController extends Controller
     }
 
 
-    public function saveLeadSource(Request $request)
+    public function store(Request $request)
     {
         // dd($request);
-        $user = auth()->user();
+        $user = auth()->user()->id;
     
         $leadSource = new UserLeadSourceCustomer();
-        $leadSource->user_id = $user->id;
-        $leadSource->source_name = $request->lead_source;
-        $leadSource->added_by = $user->id;
-        $leadSource->last_updated_by = $user->id; 
+        $leadSource->source_name = $request->source_name;
+        $leadSource->added_by = $user;
+        $leadSource->updated_by = $user; 
         $leadSource->save();
     
-        return response()->json(['message' => 'Lead source saved successfully']);
+        return redirect()->back()->with('success' , 'Lead source saved successfully');
     }
 
-    public function updateLeadSource(Request $request, $id)
+    public function updateLeadSource(Request $request)
     {
-        // dd($id);
-        $leadSource = UserLeadSourceCustomer::findOrFail($id);
+        // dd($request);
+        $leadSource = UserLeadSourceCustomer::findOrFail($request->source_id);
 
-        $leadSource->source_name = $request->input('lead_source');
-        $leadSource->save();
+        $leadSource->source_name = $request->input('source_name');
+        $leadSource->update();
 
-        return response()->json(['message' => 'Lead source updated successfully']);
+        return redirect()->back()->with('success' , 'Lead source updated successfully');
     }
 
-    public function deleteLeadSource($leadSourceId)
+    public function deleteLeadSource(Request $request, $leadSourceId)
     {
         $leadSource = UserLeadSourceCustomer::findOrFail($leadSourceId);
         $leadSource->delete();
 
-        return response()->json(['message' => 'Lead source deleted successfully']);
+        return redirect()->back()->with('success' , 'Lead source deleted successfully');
     }
 
     

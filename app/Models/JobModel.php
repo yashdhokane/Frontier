@@ -87,4 +87,16 @@ class JobModel extends Model
     {
         return $this->belongsTo(JobAssign::class, 'id','job_id'); // Assuming 'assigned_timezone_id' is the foreign key
     }
+
+    
+    public function jobdetailsinfo()
+    {
+        return $this->hasOne(JobDetails::class, 'job_id', 'id');
+    }
+
+    public function locationStateName()
+    {
+        return $this->hasMany(LocationState::class, 'state', 'state_code');
+    }
+
 }

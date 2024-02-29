@@ -8,12 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class UserLeadSourceCustomer extends Model
 {
     use HasFactory;
-    protected $table = 'user_lead_source';
+    protected $table = 'site_lead_source';
+    protected $primaryKey = 'source_id';
 
     protected $fillable = [
         'source_name',
         'added_by',
-        'last_updated_by',
+        'updated_by',
+        'count',
     ];
 
     public function addedByUser()
@@ -23,6 +25,6 @@ class UserLeadSourceCustomer extends Model
 
     public function lastUpdatedByUser()
     {
-        return $this->belongsTo(User::class, 'last_updated_by', 'id');
+        return $this->belongsTo(User::class, 'updated_by', 'id');
     }
 }

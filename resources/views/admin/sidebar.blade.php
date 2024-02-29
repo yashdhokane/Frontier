@@ -216,7 +216,7 @@
 
                             <li class="sidebar-item"><a href="{{route('lead.lead-source')}}" class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu"> Lead Source </span></a></li>
                             <li class="sidebar-item"><a href="{{route('tags.tags-list')}}" class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu"> Tags </span></a></li>
-                            <li class="sidebar-item"><a href="{{route('jobfields.job-fields-list')}}" class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu"> Job Fields </span></a></li>
+                            <li class="sidebar-item"><a href="{{route('site_job_fields')}}" class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu"> Job Fields </span></a></li>
 						</ul>
                     </li>
  

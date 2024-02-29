@@ -42,6 +42,11 @@
                     </div>
                 </div>
             </div>
+            @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
             <!-- -------------------------------------------------------------- -->
             <!-- End Bread crumb and right sidebar toggle -->
             <!-- -------------------------------------------------------------- -->
@@ -54,78 +59,90 @@
                 <!-- -------------------------------------------------------------- -->
                 <!-- basic table -->
                 <div class="row">
+
                     <div class="col-12">
-                        <!-- ---------------------
-                                                                                                                                                start Payments
-                                                                                                                                            ---------------- -->
                         <div class="card">
                             <div class="card-body">
-                                <h6 class="card-subtitle">
-                                    In these invoice, with these below buttons(CSV,Copy,Excel,PDF,Print) you can
-                                    save this content ad per requirments.
-                                </h6>
-                                <div class="table-responsive">
 
-                                    <div class="d-flex">
-                                        <div class="d-flex align-items-baseline">
-                                            <!-- Date filtering input -->
-                                            <label>Month:</label>
-                                            <select id="month-filter" class="form-control mx-2">
-                                                <option value="">All</option>
-                                                @php
-                                                    // Get the current month and year
-                                                    $currentMonth = new DateTime();
-                                                    // Format the current month and year
-                                                    $currentMonthFormatted = $currentMonth->format('F Y');
-                                                    // Output the option tag for the current month
-                                                    echo "<option value=\"" . strtolower($currentMonthFormatted) . "\">" . $currentMonthFormatted . '</option>';
 
-                                                    // Generate options for the previous 11 months
-                                                    for ($i = 0; $i < 12; $i++) {
-                                                        // Modify date to get previous months
-                                                        $monthYear = $currentMonth->modify('-1 month')->format('F Y');
-                                                        // Output the option tag for the previous months
-                                                        echo "<option value=\"" . strtolower($monthYear) . "\">" . $monthYear . '</option>';
-                                                    }
-                                                @endphp
-                                            </select>
-                                        </div>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <!-- Date filtering input -->
+                                        <label><strong>Month & Year</strong></label>
+                                        <select id="month-filter" class="form-control">
+                                            <option value="">All</option>
+                                            @php
+                                                // Get the current month and year
+                                                $currentMonth = new DateTime();
+                                                // Format the current month and year
+                                                $currentMonthFormatted = $currentMonth->format('F Y');
+                                                // Output the option tag for the current month
+                                                echo "<option value=\"" . strtolower($currentMonthFormatted) . "\">" . $currentMonthFormatted . '</option>';
 
-                                        <div class="d-flex align-items-baseline">
-                                            <!-- Filter by other column (example: Manufacturer) -->
-                                            <label class="text-nowrap">Manufacturer:</label>
-                                            <select id="manufacturer-filter" class="form-control mx-2">
-                                                <option value="">All</option>
-                                                @foreach ($manufacturer as $item)
-                                                    <option value="{{ $item->manufacturer_name }}">
-                                                        {{ $item->manufacturer_name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-
-                                        <div class="d-flex align-items-baseline">
-                                            <!-- Filter by other column (example: Payment Status) -->
-                                            <label class="text-nowrap">Payment Status:</label>
-                                            <select id="payment-status-filter" class="form-control mx-2">
-                                                <option value="">All</option>
-                                                <option value="paid">Paid</option>
-                                                <option value="unpaid">Unpaid</option>
-                                                <option value="refund">Refund</option>
-                                                <option value="cancel">Cancel</option>
-                                            </select>
-                                        </div>
+                                                // Generate options for the previous 11 months
+                                                for ($i = 0; $i < 12; $i++) {
+                                                    // Modify date to get previous months
+                                                    $monthYear = $currentMonth->modify('-1 month')->format('F Y');
+                                                    // Output the option tag for the previous months
+                                                    echo "<option value=\"" . strtolower($monthYear) . "\">" . $monthYear . '</option>';
+                                                }
+                                            @endphp
+                                        </select>
                                     </div>
+
+                                    <div class="col-sm-3">
+                                        <!-- Filter by other column (example: Manufacturer) -->
+                                        <label class="text-nowrap"><strong>Manufacturers</strong></label>
+                                        <select id="manufacturer-filter" class="form-control">
+                                            <option value="">All</option>
+                                            @foreach ($manufacturer as $item)
+                                                <option value="{{ $item->id }}">
+                                                    {{ $item->id }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="col-sm-3 mb-2">
+                                        <!-- Filter by other column (example: Technicians) -->
+                                        <label class="text-nowrap"><strong>Technicians</strong></label>
+                                        <select id="technician-filter" class="form-control">
+                                            <option value="">All</option>
+                                            @foreach ($tech as $item)
+                                                <option value="{{ $item->name }}">
+                                                    {{ $item->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="col-sm-3 mb-2">
+                                        <!-- Filter by other column (example: Payment Status) -->
+                                        <label class="text-nowrap"><strong>Status</strong></label>
+                                        <select id="payment-status-filter" class="form-control">
+                                            <option value="">All</option>
+                                            <option value="paid">Paid</option>
+                                            <option value="unpaid">Unpaid</option>
+                                            <option value="refund">Refund</option>
+                                            <option value="cancel">Cancel</option>
+                                        </select>
+                                    </div>
+
+
+
+                                </div>
+
+                                <div class="table-responsive">
 
                                     <table id="file_export" class="table table-bordered">
                                         <thead>
                                             <!-- start row -->
                                             <tr>
                                                 <th>Invoice Id</th>
-                                                <th>Job Code</th>
-                                                <th>Job Title</th>
-                                                <th>Customer Name</th>
+                                                <th>MAnufaturee Id</th>
+                                                <th>Job Details</th>
+                                                <th>Customer</th>
+                                                <th>Technician</th>
                                                 <th>Invoice Date</th>
-                                                <th>Gross Amount</th>
+                                                <th>Amount</th>
                                                 <th>Status</th>
                                                 <th>Action</th>
                                             </tr>
@@ -133,17 +150,18 @@
                                         </thead>
                                         <tbody>
                                             <!-- start row -->
-                                            @foreach ($payment as $item)
+                                            @foreach ($payment as $index => $item)
                                                 <tr>
                                                     <td><a
                                                             href="{{ url('invoice-detail/' . $item->id) }}">{{ $item->invoice_number }}</a>
                                                     </td>
-                                                    <td>{{ $item->JobModel->job_code }}</td>
-                                                    <td>{{ $item->JobModel->job_title }}</td>
+                                                    <td>{{ $item->jobDetails->manufacturer_id }}</td>
+                                                    <td>{{ $item->JobModel->job_code }}<br>{{ $item->JobModel->job_title }}</td>
                                                     <td>{{ $item->user->name }}</td>
+                                                    <td>{{ $item->JobModel->technician->name }}</td>
                                                     <td>{{ $convertDateToTimezone($item->issue_date) }}</td>
-                                                    <td>$ {{ $item->total }}</td>
-                                                    <td>{{ $item->status }}</td>
+                                                    <td>${{ $item->total }}</td>
+                                                    <td style="text-transform: capitalize;">{{ $item->status }}</td>
                                                     <td>
                                                         <div class="btn-group">
                                                             <button type="button"
@@ -153,13 +171,18 @@
                                                                 <i class="ri-settings-3-fill align-middle fs-5"></i>
                                                             </button>
                                                             <div class="dropdown-menu">
-                                                                <a class="dropdown-item" href="javascript:void(0)"><i
+                                                                <a class="dropdown-item"
+                                                                    href="{{ url('invoice-detail/' . $item->id) }}"><i
                                                                         data-feather="eye" class="feather-sm me-2"></i>
                                                                     View</a>
-                                                                <a class="dropdown-item" href="javascript:void(0)"><i
-                                                                        data-feather="message-circle"
-                                                                        class="feather-sm me-2"></i>
-                                                                    Comments</a>
+
+                                                                <!-- Comments option -->
+                                                                <a class="dropdown-item add-comment"
+                                                                    href="javascript:void(0)" data-bs-toggle="modal"
+                                                                    data-bs-target="#commentModal{{ $index }}">
+                                                                    <i data-feather="message-circle"
+                                                                        class="feather-sm me-2"></i> Comments
+                                                                </a>
                                                                 @if ($item->status != 'paid')
                                                                     <a class="dropdown-item"
                                                                         href="{{ url('update/payment/' . $item->id) }}"><i
@@ -172,6 +195,40 @@
                                                     </td>
 
                                                 </tr>
+                                                <!-- Modal for adding comment -->
+                                                <div class="modal fade" id="commentModal{{ $index }}" tabindex="-1"
+                                                    aria-labelledby="commentModalLabel{{ $index }}"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title"
+                                                                    id="commentModalLabel{{ $index }}">Add Comment
+                                                                </h5>
+                                                                {{-- <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal" aria-label="Close"></button> --}}
+                                                            </div>
+                                                            <!-- Comment form -->
+                                                            <form action="{{ url('store/comment/' . $item->id) }}"
+                                                                method="POST">
+                                                                @csrf
+                                                                <div class="modal-body">
+                                                                    <div class="mb-3">
+                                                                        <label for="comment">Comment:</label>
+                                                                        <textarea class="form-control" id="comment" name="payment_note" rows="3">
+                                                                            
+                                                                        </textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+
+                                                                    <button type="submit"
+                                                                        class="btn btn-primary">Submit</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             @endforeach
 
                                         </tbody>
@@ -179,11 +236,12 @@
                                             <!-- start row -->
                                             <tr>
                                                 <th>Invoice Id</th>
-                                                <th>Job Code</th>
-                                                <th>Job Title</th>
-                                                <th>Customer Name</th>
+                                                <th>MAnufaturee Id</th>
+                                                <th>Job Details</th>
+                                                <th>Customer</th>
+                                                <th>Technician</th>
                                                 <th>Invoice Date</th>
-                                                <th>Gross Amount</th>
+                                                <th>Amount</th>
                                                 <th>Status</th>
                                                 <th>Action</th>
                                             </tr>
@@ -193,9 +251,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- ---------------------
-                                                                                                                                                end Payments
-                                                                                                                                            ---------------- -->
                     </div>
                 </div>
                 <!-- -------------------------------------------------------------- -->
@@ -269,6 +324,17 @@
                 table.column(1).search(manufacturer).draw();
             });
 
+            // technician status filtering
+            $('#technician-filter').on('change', function() {
+                var selectedStatus = $(this).val();
+                if (selectedStatus) {
+                    table.column(3).search('^' + selectedStatus + '$', true, false).draw();
+                } else {
+                    // If no status is selected, clear the filter
+                    table.column(3).search('').draw();
+                }
+            });
+
             // Payment status filtering
             $('#payment-status-filter').on('change', function() {
                 var selectedStatus = $(this).val();
@@ -280,6 +346,18 @@
                 }
             });
 
+        });
+    </script>
+    <script>
+        // Add click event listener to the "Comments" dropdown item
+        document.querySelectorAll('.add-comment').forEach(item => {
+            item.addEventListener('click', event => {
+                // Show the corresponding modal for adding comments
+                // The modal ID is extracted from the href attribute of the dropdown item
+                const modalId = item.getAttribute('data-bs-target');
+                const modal = new bootstrap.Modal(document.querySelector(modalId));
+                modal.show();
+            });
         });
     </script>
 @endsection

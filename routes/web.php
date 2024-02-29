@@ -508,9 +508,11 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/setting/save-lead-source', [LeadsourceController::class, 'saveLeadSource'])->name('lead-source-add');
 
-    Route::post('/setting/update-lead-source/{id}', [LeadsourceController::class, 'updateLeadSource'])->name('update-lead-source');
+    Route::post('/store/leadsource', [LeadsourceController::class, 'store']);
 
-    Route::delete('/setting/delete-lead-source/{leadSourceId}', [LeadsourceController::class, 'deleteLeadSource'])->name('delete-lead-source');
+    Route::post('edit/leadsource', [LeadsourceController::class, 'updateLeadSource']);
+
+    Route::get('delete/leadsource/{id}', [LeadsourceController::class, 'deleteLeadSource']);
 
 
 
@@ -520,11 +522,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/setting/tags/tags-list', [TagsController::class, 'create'])->name('tags.tags-list');
 
-    Route::post('/setting/tags-add', [TagsController::class, 'saveTags'])->name('tags-add');
+    Route::post('/store/tags', [TagsController::class, 'saveTags']);
 
-    Route::post('/setting/update-tag/{id}', [TagsController::class, 'updateTag'])->name('update-tag');
+    Route::post('/edit/tags', [TagsController::class, 'updateTag']);
 
-    Route::delete('/setting/delete-tag/{tagId}', [TagsController::class, 'deleteTag'])->name('delete-tag');
+    Route::get('/delete/tags/{tagId}', [TagsController::class, 'deleteTag']);
 
 
 
@@ -532,13 +534,13 @@ Route::middleware('auth')->group(function () {
 
 
 
-    Route::get('/setting/jobfields/job-fields-list', [JobfieldsController::class, 'create'])->name('jobfields.job-fields-list');
+    Route::get('/setting/jobfields/job-fields-list', [JobfieldsController::class, 'create'])->name('site_job_fields');
 
-    Route::post('/setting/job-fields-add', [JobfieldsController::class, 'saveJobfields'])->name('job-fields-add');
+    Route::post('/store/jobfield', [JobfieldsController::class, 'saveJobfields']);
 
-    Route::post('/setting/update-field/{field_id}', [App\Http\Controllers\JobfieldsController::class, 'updateField'])->name('update-field');
+    Route::post('/edit/jobfield', [App\Http\Controllers\JobfieldsController::class, 'updateField']);
 
-    Route::delete('/setting/delete-job-fields/{jobFieldsId}', [JobfieldsController::class, 'deleteJobFields'])->name('delete-job-fields');
+    Route::get('/delete/jobfield/{jobFieldsId}', [JobfieldsController::class, 'deleteJobFields']);
 
 
 
@@ -798,7 +800,9 @@ Route::middleware('auth')->group(function () {
 
     Route::put('/setting/manufacturer-update/{id}/update', [ManufactureController::class, 'update'])->name('manufacture.update');
 
-    Route::delete('/setting/manufacturer-delete/{id}', [ManufactureController::class, 'destroy'])->name('manufacture.destroy');
+    Route::get('/setting/manufacturer-enable/{id}', [ManufactureController::class, 'enable']);
+
+    Route::get('/setting/manufacturer-disable/{id}', [ManufactureController::class, 'disable']);
 
 
 
@@ -926,6 +930,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/invoice-detail/{id}', [PaymentController::class, 'invoice_detail']);
 
     Route::get('/update/payment/{id}', [PaymentController::class, 'update']);
+
+    Route::post('/store/comment/{id}', [PaymentController::class, 'comment']);
 
     // timezone 
 

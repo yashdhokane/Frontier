@@ -17,5 +17,6 @@ class Manufacturer extends Model
         'manufacturer_image',
         'added_by',
         'last_updated_by',
+        'is_active',
     ];
 }
