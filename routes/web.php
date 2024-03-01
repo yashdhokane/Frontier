@@ -647,14 +647,14 @@ Route::middleware('auth')->group(function () {
     Route::put('book-list/services/{id}', [ServicesController::class, 'updateServices'])->name('services.update');
 
 
-
+  
     // Schedule
 
     Route::get('schedule', [ScheduleController::class, 'index'])->name('schedule');
 
     Route::get('schedule/create', [ScheduleController::class, 'create'])->name('schedule.create');
 
-    Route::get('autocomplete-search', [ScheduleController::class, 'autocompleteSearch'])->name('autocomplete.search');
+    Route::get('autocomplete-customer', [ScheduleController::class, 'autocompleteCustomer'])->name('autocomplete.customer');
 
     Route::get('autocomplete-technician', [ScheduleController::class, 'autocompleteTechnician'])->name('autocomplete.technician');
 
@@ -665,6 +665,8 @@ Route::middleware('auth')->group(function () {
     Route::get('autocomplete-serchOldJob', [ScheduleController::class, 'autocompletesearchOldJob'])->name('autocomplete.serchOldJob');
 
     Route::get('get/customer-details', [ScheduleController::class, 'getCustomerDetails'])->name('customer.details');
+
+    Route::get('get/services-products-details', [ScheduleController::class, 'getServicesAndProductDetails'])->name('services.parts.details');
 
     Route::get('get/product-details', [ScheduleController::class, 'getProductDetails'])->name('product.details');
 
@@ -693,6 +695,10 @@ Route::middleware('auth')->group(function () {
     Route::post('book-list/partscategory-update', [ProductCategoryController::class, 'updateproductcategory'])->name('productcategory.update');
 
     Route::delete('book-list/partscategory-delete/{id}', [ProductCategoryController::class, 'deleteproductcategory'])->name('productcategory.delete');
+    
+    Route::get('assign_product', [ProductCategoryController::class, 'assign_product'])->name('assign_product');
+    
+    Route::post('store/assign-product', [ProductCategoryController::class, 'store_assign_product']);
 
 
 

@@ -308,11 +308,11 @@
                         'YYYY'); //  selected year
 
                     // Perform filtering on the table to include all dates within the range between start date and end date
-                    table.column(4).search('^' + Month + '-' + '\\d{2}-' + Year + '$', true,
+                    table.column(5).search('^' + Month + '-' + '\\d{2}-' + Year + '$', true,
                         false).draw();
                 } else {
                     // If no month is selected, clear the filter
-                    table.column(4).search('').draw();
+                    table.column(5).search('').draw();
                 }
             });
 

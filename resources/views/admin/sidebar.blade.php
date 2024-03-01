@@ -181,6 +181,7 @@
                         <ul aria-expanded="false" class="collapse first-level">
                             <li class="sidebar-item"><a href="https://gaffis.in/frontier/website/book-list/services" class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu"> Services </span></a></li>
                             <li class="sidebar-item"><a href="https://gaffis.in/frontier/website/book-list/partscategory" class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu"> Parts </span></a></li>
+                            <li class="sidebar-item"><a href="{{route('assign_product')}}" class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu">Assign Parts </span></a></li>
                             <li class="sidebar-item"><a href="https://gaffis.in/frontier/website/book-list/estimate" class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu"> Estimate Templates  </span></a></li>
                          </ul>
                     </li>
