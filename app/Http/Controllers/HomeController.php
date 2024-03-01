@@ -45,7 +45,10 @@ class HomeController extends Controller
                 return view('admin.main',compact('job','users','totalCalls','inProgress','opened','complete'));
             } else if ($role == 'admin') {
                 return view('admin.main',compact('job','users','totalCalls','inProgress','opened','complete'));
+            }else if ($role == 'superadmin') {
+                return view('admin.main',compact('job','users','totalCalls','inProgress','opened','complete'));
             }
+
 
         } else {
             return redirect()->route('login');

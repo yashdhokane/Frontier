@@ -108,7 +108,7 @@
 							<div class="modal-body">
 								<form id="updateFieldForm">
 									<div class="mb-3">
-										<label for="field-name" class="control-label">Field Name:</label>
+										<label for="field-name" class="control-label bold mb5">Field Name:</label>
 										<input type="text" class="form-control" id="jobfields1" name="jobfields1">
 									</div>
 									<!-- <input type="hidden" id="field-id" name="field-id" value="{{ $Jobfields->field_id }}> -->
@@ -139,7 +139,7 @@
 								<div class="modal-body">
 									<form>
 										<div class="mb-3">
-										<label for="jobfields" class="control-label">Job Field:</label>
+										<label for="jobfields" class="control-label bold mb5">Job Field:</label>
 										<input type="text" class="form-control" id="jobfields" name="jobfields" />
 										</div>
 									</form>

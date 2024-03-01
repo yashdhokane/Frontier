@@ -1,8 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
+use App\Models\Manufacturer;
+use App\Models\SiteTags;
+
+
+use App\Models\LocationServiceArea;
+
 use App\Models\JobNoteModel;
 use App\Models\JobModel;
 use App\Models\Ticket;
@@ -14,16 +21,28 @@ class TicketController extends Controller
     // Display a listing of the tickets
     public function index()
     {
-
+        $servicearea = LocationServiceArea::all();
+         $manufacturer = Manufacturer::all();
+          $technicianrole = User::where('role','technician')->get();
         $totalCalls = JobModel::count();
         $inProgress = JobModel::where('status', 'in_progress')->count();
         $opened = JobModel::where('status', 'open')->count();
         $complete = JobModel::where('status', 'closed')->count();
-        $tickets = JobModel::with('user','technician','JobAssign')->orderBy('created_at', 'desc')->get();
+        $tickets = JobModel::orderBy('created_at', 'desc')->get();
+        $technicians = JobModel::with('jobdetailsinfo','jobassignname')->orderBy('created_at', 'desc')->get();
+        //dd($technicians->jobdetailsinfo->manufacturername[15]);
 
-        
-
-        return view('tickets.index', ['tickets' => $tickets, 'totalCalls' => $totalCalls, 'inProgress' => $inProgress, 'opened' => $opened, 'complete' => $complete]);
+        return view('tickets.index', [
+            'tickets' => $tickets,
+            'manufacturer' => $manufacturer,
+            'technicianrole' => $technicianrole,
+            'technicians' => $technicians,
+            'servicearea' => $servicearea,
+            'totalCalls' => $totalCalls,
+            'inProgress' => $inProgress,
+            'opened' => $opened,
+            'complete' => $complete
+        ]);
     }
 
     // Show the form for creating a new ticket
@@ -70,17 +89,25 @@ class TicketController extends Controller
     public function show($id)
     {
         $technicians = JobModel::find($id);
-        $ticket = JobModel::with('user')->findOrFail($id);
+        $ticket = JobModel::with('user','jobactivity')->findOrFail($id);
         $techniciansnotes = JobNoteModel::where('job_id', '=', $id)
-            ->Leftjoin('users', 'users.id', '=', 'job_notes.user_id')
+            ->Leftjoin('users', 'users.id', '=', 'job_notes.added_by')
             ->select('job_notes.*', 'users.name', 'users.user_image')
             ->get();
-
-
-        //dd($techniciansnotes);
-        return view('tickets.show', ['ticket' => $ticket, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes,]);
-    }
-    // Show the form for editing the specified ticket
+          //  $sitetags='';
+           $name=$technicians->tag_ids;
+            // dd($name);
+                 $names=explode(',',$name);
+                // dd($names);
+               //  foreach($names as $items)
+                // {
+               $Sitetagnames=SiteTags::where('tag_id' ,  $names)->get();
+                 // dd($Sitetagnames);
+                // }
+              //dd($techniciansnotes);
+              return view('tickets.show', ['ticket' => $ticket,'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes,]);
+       }
+    // Show the form for editing the specified ticket 
     public function edit($id)
     {
         $technicians = Technician::all(); // Fetch all users
@@ -169,5 +196,31 @@ class TicketController extends Controller
 
         // Redirect or show success message
         return redirect()->route('tickets.show', $ticket->id)->with('success', 'Ticket assigned successfully');
+    }
+
+    public function techniciannotestore(Request $request)
+    {
+       // dd($request->all());
+        // Validate the incoming request data
+        $request->validate([
+         
+            
+        ]);
+
+       
+        $jobNote = new JobNoteModel([
+            'user_id' => $request->technician_id,
+            'job_id' => $request->id,
+            'note' => $request->note,
+            'added_by' => Auth::id(), 
+            'updated_by' => Auth::id(), 
+            
+        ]);
+
+       
+        $jobNote->save();
+
+        
+        return redirect()->back()->with('success', 'Job note created successfully');
     }
 }

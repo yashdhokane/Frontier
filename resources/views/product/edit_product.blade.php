@@ -15,13 +15,13 @@
     <div class="page-breadcrumb">
         <div class="row">
             <div class="col-5 align-self-center">
-                <h4 class="page-title">EDIT Parts </h4>
+                <h4 class="page-title">{{ $product->product_name }}</h4>
                 <div class="d-flex align-items-center">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="#">Price Book</a></li>
                             <li class="breadcrumb-item"><a href="#">Parts </a></li>
-                            <li class="breadcrumb-item active" aria-current="page">EDIT Parts </li>
+                            <li class="breadcrumb-item active" aria-current="page">{{ $product->product_name }}</li>
                         </ol>
                     </nav>
                 </div>
@@ -50,11 +50,11 @@
         <!-- -------------------------------------------------------------- -->
         <div class="row">
             <!-- Column -->
-            <div class="col-lg-12">
+            <div class="col-lg-9 d-flex align-items-stretch">
                 <!-- ---------------------
                             start About Product
                         ---------------- -->
-                <div class="card">
+                <div class="card w-100">
                     <div class="card-body">
                         <form action="{{ route('product.update', $product->product_id) }}" method="post"
                             enctype="multipart/form-data">
@@ -64,34 +64,38 @@
 
                             <div class="form-body">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-9">
                                         <div class="mb-3">
-                                            <label class="control-label required-field">Parts Name</label>
+                                            <label class="control-label required-field bold mb5">Parts Name</label>
                                             <input type="text" name="product_name" class="form-control"
                                                 value="{{ $product->product_name }}" required />
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-3">
                                         <div class="mb-3">
-                                            <label class="control-label required-field">Part Code</label>
+                                            <label class="control-label required-field bold mb5">Part Code</label>
                                             <input type="text" name="product_code" class="form-control"
                                                 value="{{ $product->product_code }}" required />
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="mb-3">
-                                            <label class="control-label required-field">Short Description</label>
+                                            <label class="control-label required-field bold mb5">Short Description</label>
                                             <input type="text" name="product_short" class="form-control"
                                                 value="{{ $product->product_short }}" required />
                                         </div>
                                     </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-4">
+									<div class="col-md-12">
+										<div class="mb-3">
+											<label class="control-label required-field bold mb5">Long Description</label>
+											<textarea name="product_description" class="form-control" rows="4"
+												required>{{ $product->product_description }}</textarea>
+										</div>
+									</div>
+									<div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="product_category_id"
-                                                class="control-label col-form-label required-field">Parts Category</label>
+                                                class="control-label col-form-label required-field bold mb5">Parts Category</label>
                                             <select class="form-select me-sm-2" id="product_category_id"
                                                 name="product_category_id" required>
                                                 <option selected disabled value="">Select Parts Category...
@@ -106,24 +110,22 @@
                                             </select>
                                         </div>
                                     </div>
-                                   <div class="col-md-4" style="margin-top: 13px;">
-                                        <div class="mb-3">
-    <label class="control-label required-field">Manufacturer</label>
-    <select class="form-select" name="product_manu_id" data-placeholder="Choose a Manufacturer" tabindex="1">
-        @foreach($manufacture as $manufacturer)
-            <option value="{{ $manufacturer->id }}" @if($product->product_manu_id == $manufacturer->id) selected @endif>
-                {{ $manufacturer->manufacturer_name }}
-            </option>
-        @endforeach
-    </select>
-</div>
+                                   <div class="col-md-4">
+										<div class="mb-3">
+											<label class="control-label required-field bold mb5">Manufacturer</label>
+											<select class="form-select" name="product_manu_id" data-placeholder="Choose a Manufacturer" tabindex="1">
+											@foreach($manufacture as $manufacturer)
+											<option value="{{ $manufacturer->id }}" @if($product->product_manu_id == $manufacturer->id) selected @endif>
+											{{ $manufacturer->manufacturer_name }}
+											</option>
+											@endforeach
+											</select>
+										</div>
                                     </div>
-                                    
-                                    <div class="col-md-4">
+									<div class="col-md-4">
                                         <div class="mb-3">
-                                            <label class="required-field">Status</label>
-                                            <br />
-                                            <div class="form-check">
+                                            <label class="required-field bold mb5">Status</label>
+											<div class="form-check">
                                                 <input type="radio" id="customRadioInline1" name="status"
                                                     value="Publish" class="form-check-input" {{ $product->status ==
                                                 'Publish' ? 'checked' : '' }} required />
@@ -143,9 +145,9 @@
                             </div>
 
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="mb-3">
-                                        <label class="required-field">Price</label>
+                                        <label class="required-field bold mb5">Unit Price</label>
                                         <div class="input-group mb-3">
                                             <span class="input-group-text" id="basic-addon1"><i
                                                     data-feather="dollar-sign" class="feather-sm"></i></span>
@@ -155,9 +157,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="mb-3">
-                                        <label class="required-field">Discount</label>
+                                        <label class="required-field bold mb5">Discount</label>
                                         <div class="input-group mb-3">
                                             <span class="input-group-text" id="basic-addon2"><i
                                                     class="ri-scissors-2-line"></i></span>
@@ -167,40 +169,32 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="mb-3">
-                                        <label class="control-label required-field">Quantity</label>
+                                        <label class="control-label required-field bold mb5">Quantity</label>
                                         <input type="number" name="stock" class="form-control"
                                             value="{{ $product->stock }}" required />
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="mb-3">
-                                        <label class="control-label required-field">tax</label>
+                                        <label class="control-label required-field bold mb5">Tax</label>
                                         <input type="number" name="tax" class="form-control" value="{{ $product->tax }}"
                                             required />
                                     </div>
                                 </div>
                             </div>
-
-
-
-
-
-                            <h5 class="card-title mt-5 required-field">Parts Description</h5>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="mb-3">
-                                        <textarea name="product_description" class="form-control" rows="4"
-                                            required>{{ $product->product_description }}</textarea>
+							
+							<div class="row">
+								<div class="col-md-8">
+									 <div class="mb-3">
+ 										<label class="control-label required-field bold mb5">Upload Image</label>
+                                        <input id="file" value="{{$product->product_image}}" type="file"
+                                            onchange="showImagePreview()" name="product_image" class="upload form-control" />
                                     </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <h5 class="card-title mt-3 required-field">Upload Image</h5>
-                                    <div class="el-element-overlay">
+								</div>
+								<div class="col-md-4">
+                                     <div class="el-element-overlay">
                                         <div class="el-card-item">
                                             <div class="el-card-avatar el-overlay-1">
                                                 @if($product->product_image)
@@ -210,20 +204,16 @@
                                                 @else
                                                 <img id="imagePreview" src="public/images/1.png" alt="default_image" />
                                                 @endif
-                                                <div class="el-overlay">
-                                                    <!-- Add any overlay elements as needed -->
-                                                </div>
-                                            </div>
+                                             </div>
                                         </div>
                                     </div>
-                                    <div class="btn btn-info waves-effect waves-light">
-                                        <span>Upload Another Image</span>
-                                        <input id="file" value="{{$product->product_image}}" type="file"
-                                            onchange="showImagePreview()" name="product_image" class="upload" />
-                                    </div>
-                                </div>
+                                 </div>
+							</div>
 
-                                <div class="col-md-4" style="margin-top: 13px;">
+ 
+
+                            <div class="row">
+                                 <div class="col-md-4" style="margin-top: 13px;">
                                     <div class="mb-3">
                                         <label class="control-label required-field">Part Assignment</label>
                                         <select id="productAssignmentSelect" name="assigned_to" class="form-select"
@@ -319,6 +309,38 @@
                     </form>
                 </div>
             </div>
+			
+			<div class="col-lg-3 d-flex align-items-stretch">
+                <div class="card w-100">
+                    <div class="card-body border-top">
+                        <h5 class="card-title mb-3">Part Assigned to Technician</h5>
+                        <div class="row">
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" name="test1" value="1">
+								<label class="form-check-label">Technician 1</label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" name="test1" value="1">
+								<label class="form-check-label">Technician 2</label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" name="test1" value="1">
+								<label class="form-check-label">Technician 3</label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" name="test1" value="1">
+								<label class="form-check-label">Technician 4</label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" name="test1" value="1">
+								<label class="form-check-label">Technician 5</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+						
+						
             <!-- ---------------------
                             end About Product
                         ---------------- -->

@@ -34,6 +34,10 @@ class Payment extends Model
     {
         return $this->belongsTo(JobServices::class, 'job_id','job_id'); // Assuming 'assigned_job_id' is the foreign key
     }
+public function jobDetails()
+    {
+        return $this->belongsTo(JobDetails::class, 'job_id','job_id'); // Assuming 'assigned_job_id' is the foreign key
+    }
 
     
 

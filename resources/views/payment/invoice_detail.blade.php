@@ -33,7 +33,7 @@
 
                                 <ol class="breadcrumb">
 
-                                    <li class="breadcrumb-item"><a href="{{route('home')}}">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
 
                                     <li class="breadcrumb-item"><a href="#.">Payments</a></li>
 
@@ -100,9 +100,9 @@
 
                         <!-- ---------------------
 
-                                                start INVOICE
+                                                        start INVOICE
 
-                                            ---------------- -->
+                                                    ---------------- -->
 
 
 
@@ -130,8 +130,7 @@
 
                                                     <h2 class="mb-0">Frontier Inc.</h2>
 
-                                                    <span class="text-white">400 N Saint Paul St. Suite 870, Dallas, TX
-                                                        75201</span>
+                                                    <span class="text-white">{{ $site->address }}</span>
 
                                                 </div>
 
@@ -167,8 +166,12 @@
 
                                             <h3><b class="text-success">{{ $payment->user->name }}</b></h3>
 
-                                            <p class="text-muted m-l-30"> {{ $payment->UserAddress->address_line1 ?? null }} <br>
-                                                {{ $payment->UserAddress->city ?? null }} , {{ $payment->UserAddress->locationStateName->state_name ?? null }} ,{{ $payment->UserAddress->zipcode ?? null }}</p>
+                                            <p class="text-muted m-l-30"> {{ $payment->JobModel->address ?? null }}
+                                                <br>
+                                                {{ $payment->JobModel->city ?? null }} ,
+                                                {{ $payment->JobModel->state ?? null }} ,
+                                                {{ $payment->JobModel->zipcode ?? null }}
+                                            </p>
 
                                         </address>
 
@@ -228,55 +231,62 @@
                                             </thead>
 
                                             <tbody>
-                                                    <tr>
+                                                <tr>
 
-                                                        <td class="text-center">1</td>
+                                                    <td class="text-center">1</td>
 
-                                                        <td>
-                                                            <h6 class="font-weight-medium mb-0">
-                                                                {{ $job->job_code ?? null }} <small
-                                                                    class="text-muted">{{ $job->jobserviceinfo->service_name  ?? null}}</small>
-                                                            </h6>
-                                                        </td>
+                                                    <td>
+                                                        <h6 class="font-weight-medium mb-0">
+                                                            {{ $job->job_code ?? null }} <small
+                                                                class="text-muted">{{ $job->jobserviceinfo->service_name ?? null }}</small>
+                                                        </h6>
+                                                    </td>
 
-                                                        <td class="text-end">
-                                                            ${{ $job->jobserviceinfo->base_price  ?? null}}
-                                                        </td>
+                                                    <td class="text-end">
+                                                        ${{ $job->jobserviceinfo->base_price ?? null }}
+                                                    </td>
 
-                                                        <td class="text-end">
-                                                            {{ $job->jobserviceinfo->quantity  ?? null}}
-                                                        </td>
+                                                    <td class="text-end">
+                                                        {{ $job->jobserviceinfo->quantity ?? null }}
+                                                    </td>
 
-                                                        <td class="text-end">
-                                                            ${{ $job->jobserviceinfo->discount ?? null }}
-                                                        </td>
+                                                    <td class="text-end">
+                                                        ${{ $job->jobserviceinfo->discount ?? null }}
+                                                    </td>
 
-                                                        <td class="text-end">
-                                                            ${{ $job->jobserviceinfo->tax  ?? null }}
-                                                        </td>
+                                                    <td class="text-end">
+                                                        ${{ $job->jobserviceinfo->tax ?? null }}
+                                                    </td>
 
-                                                        <td class="text-end">
-                                                            ${{ $job->jobserviceinfo->sub_total ?? null  }}
-                                                        </td>
+                                                    <td class="text-end">
+                                                        ${{ $job->jobserviceinfo->sub_total ?? null }}
+                                                    </td>
 
-                                                    </tr>
+                                                </tr>
 
                                                 <tr>
 
                                                     <td class="text-center">2</td>
-            
-                                                    <td><h6 class="font-weight-medium mb-0">{{ $job->job_code ?? null }} <small class="text-muted">{{ $job->jobproductinfo->product_name  ?? null}}</small></h6></td>
-            
-                                                    <td class="text-end">${{ $job->jobproductinfo->base_price  ?? null}}</td>
-            
-                                                    <td class="text-end">{{ $job->jobproductinfo->quantity  ?? null}}</td>
-            
+
+                                                    <td>
+                                                        <h6 class="font-weight-medium mb-0">{{ $job->job_code ?? null }}
+                                                            <small
+                                                                class="text-muted">{{ $job->jobproductinfo->product_name ?? null }}</small>
+                                                        </h6>
+                                                    </td>
+
+                                                    <td class="text-end">${{ $job->jobproductinfo->base_price ?? null }}
+                                                    </td>
+
+                                                    <td class="text-end">{{ $job->jobproductinfo->quantity ?? null }}</td>
+
                                                     <td class="text-end">${{ $job->jobproductinfo->discount ?? null }}</td>
-            
-                                                    <td class="text-end">${{ $job->jobproductinfo->tax  ?? null }}</td>
-            
-                                                    <td class="text-end">${{ $job->jobproductinfo->sub_total ?? null  }}</td>
-            
+
+                                                    <td class="text-end">${{ $job->jobproductinfo->tax ?? null }}</td>
+
+                                                    <td class="text-end">${{ $job->jobproductinfo->sub_total ?? null }}
+                                                    </td>
+
                                                 </tr>
 
                                             </tbody>
@@ -287,9 +297,43 @@
 
                                 </div>
 
+                                <div class="col-md-8">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="card-title">{{ $payment->JobModel->job_title ?? null }} &nbsp<span
+                                                    class="mb-1 badge bg-primary"
+                                                    style="font-size: 15px;">{{ $payment->JobModel->job_code ?? null }}</span>
+                                            </h4>
+                                            <p>{{ $payment->JobModel->description ?? null }}</p>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-2"><strong>Appliances:</strong>
+                                                        {{ $payment->JobModel->jobdetailsinfo->apliencename->appliance_name ?? null }}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-2"><strong>Manufacturer:</strong>
 
+                                                        {{ $payment->JobModel->jobdetailsinfo->manufacturername->manufacturer_name ?? null }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-2"><strong>Model Number
+                                                            :</strong>{{ $payment->JobModel->jobDetails->model_number ?? null }}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="mb-2"><strong>Serial Number :</strong>
+                                                        {{ $payment->JobModel->jobDetails->serial_number ?? null }}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                                <div class="col-md-12">
+                                <div class="col-md-4">
 
                                     <div class="pull-right m-t-30 text-end">
 
@@ -327,9 +371,9 @@
 
                         <!-- ---------------------
 
-                                                end INVOICE
+                                                        end INVOICE
 
-                                            ---------------- -->
+                                                    ---------------- -->
 
                     </div>
 
@@ -357,7 +401,7 @@
 
             </div>
 
-           
+
         </div>
 
         <!-- -------------------------------------------------------------- -->

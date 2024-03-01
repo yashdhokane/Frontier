@@ -7,7 +7,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 
-use App\Models\Jobfields;
+use App\Models\SiteJobFields;
 
 use Illuminate\Http\Request;
 
@@ -22,7 +22,7 @@ class JobfieldsController extends Controller
 
     public function create()
     {
-        $JobfieldsList = Jobfields::all();
+        $JobfieldsList = SiteJobFields::all();
 
         return view('jobfields.job-fields-list', ['JobfieldsList' => $JobfieldsList]);
     }
@@ -32,30 +32,34 @@ class JobfieldsController extends Controller
     {
         $user = auth()->user();
 
-        $tags = new Jobfields();
-        $tags->field_name = $request->jobfields;
-        $tags->user_id = $user->id;
+        $tags = new SiteJobFields();
+
+        $tags->field_name = $request->field_name;
         $tags->created_by = $user->id;
+        $tags->updated_by = $user->id;
+
         $tags->save();
 
-        return response()->json(['message' => 'Job Fields saved successfully']);
+        return redirect()->back()->with('success' , 'Job Fields saved successfully');
     }
 
-    public function updateField(Request $request, $field_id)
+    public function updateField(Request $request)
     {
-        $field = Jobfields::findOrFail($field_id);
-        $field->field_name = $request->input('field-name');
-        $field->save();
+        $field = SiteJobFields::findOrFail($request->field_id);
+        $field->field_name = $request->input('field_name');
+        
+        $field->update();
 
-        return response()->json(['message' => 'Field updated successfully']);
+        return redirect()->back()->with('success' , 'Job Fields updated successfully');
     }
 
-    public function deleteJobFields($jobFieldsId)
+    public function deleteJobFields(Request $request, $jobFieldsId)
     {
-        $jobFields = Jobfields::findOrFail($jobFieldsId);
+        $jobFields = SiteJobFields::findOrFail($jobFieldsId);
+
         $jobFields->delete();
 
-        return response()->json(['message' => 'Job field deleted successfully']);
+        return redirect()->back()->with('success' , 'Job Fields deleted successfully');
     }
 }
 

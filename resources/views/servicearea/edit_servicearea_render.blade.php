@@ -19,16 +19,19 @@
 
 
                 <div class="form-group  mb-3">
+					<label for="area_name" class="control-label bold mb5">Name of the Service Area</label>
                     <input type="text" class="form-control" id="nametext" aria-describedby="name" name="area_name"
                         placeholder="Name" value="{{ $servicearea->area_name }}">
 
                 </div>
                 <div class="form-group  mb-3">
+					<label for="area_description" class="control-label bold mb5">Description</label>
                     <input type="text" class="form-control" id="name1" aria-describedby="name" name="area_description"
                         placeholder="Description" value="{{ $servicearea->area_description }}">
 
                 </div>
                <div class="form-group mb-3">
+			   <label for="area_radius" class="control-label bold mb5">Radius</label>
     <select class="form-control" id="name2" aria-describedby="name" name="area_radius">
         <option value="1" {{ $servicearea->area_radius == 1 ? 'selected' : '' }}>1KM</option>
         <option value="2" {{ $servicearea->area_radius == 2 ? 'selected' : '' }}>2KM</option>
@@ -43,11 +46,13 @@
 </div>
 
                 <div class="form-group  mb-3">
+					<label for="area_latitude" class="control-label bold mb5">Latitude</label>
                     <input type="text" class="form-control" id="name3" aria-describedby="name"
                         value="{{ $servicearea->area_latitude }}" name="area_latitude" placeholder="Latitude">
 
                 </div>
                 <div class="form-group  mb-3">
+					<label for="area_longitude" class="control-label bold mb5">Latitude</label>
                     <input type="text" class="form-control" id="name4" aria-describedby="name"
                         value="{{ $servicearea->area_longitude }}" name="area_longitude" placeholder="Longitude">
 

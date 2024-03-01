@@ -7,7 +7,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 
-use App\Models\UserTagIdCategory;
+use App\Models\SiteTags;
 
 use Illuminate\Http\Request;
 
@@ -22,7 +22,7 @@ class TagsController extends Controller
 
     public function create()
     {
-        $tagsList = UserTagIdCategory::all();
+        $tagsList = SiteTags::all();
     
         return view('tags.tags-list', ['tagsList' => $tagsList]);
     }
@@ -31,30 +31,34 @@ class TagsController extends Controller
     {
         $user = auth()->user();
 
-        $tags = new UserTagIdCategory();
+        $tags = new SiteTags();
+
         $tags->tag_name = $request->tags;
-        $tags->user_id = $user->id;
         $tags->created_by = $user->id;
+        $tags->updated_by = $user->id;
+
         $tags->save();
 
-        return response()->json(['message' => 'Tags saved successfully']);
+        return redirect()->back()->with('success' , 'Tags saved successfully');
     }
 
-    public function updateTag(Request $request, $id)
+    public function updateTag(Request $request)
     {
-        $tag = UserTagIdCategory::findOrFail($id);
-        $tag->tag_name = $request->input('tag');
-        $tag->save();
+        $tag = SiteTags::findOrFail($request->tag_id);
+        $tag->tag_name = $request->input('tag_name');
 
-        return response()->json(['message' => 'Tag updated successfully']);
+        $tag->update();
+
+        return redirect()->back()->with('success' , 'Tags updated successfully');
     }
     
-    public function deleteTag($tagId)
+    public function deleteTag(Request $request ,$tagId)
     {
-        $tag = UserTagIdCategory::findOrFail($tagId);
+        $tag = SiteTags::findOrFail($tagId);
+
         $tag->delete();
 
-        return response()->json(['message' => 'Tag deleted successfully']);
+        return redirect()->back()->with('success' , 'Tags deleted successfully');
     }
 }
 

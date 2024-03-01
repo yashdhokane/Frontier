@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class JobModel extends Model
 {
@@ -42,49 +43,126 @@ class JobModel extends Model
         'gross_total',
         'commission_total',
         'job_field_ids',
+        'service_area_id',
         'tag_ids',
         'close_date',
         'deleted_at',
         'created_at',
         'updated_at',
-        'updated_at',
     ];
+   
 
+  public function jobactivity()
+    {
+       return $this->hasMany(JobActivity::class, 'job_id', 'id');
+    }
+
+    public function serviceareaname()
+    {
+        return $this->hasOne(LocationServiceArea::class, 'area_id', 'service_area_id');
+    }
+
+    public function jobassignname()
+    {
+        return $this->hasOne(JobAssign::class, 'job_id', 'id');
+    }
+
+    public function jobserviceinfo()
+    {
+        return $this->hasOne(JobServices::class, 'job_id', 'id');
+    }
+    public function jobproductinfo()
+    {
+        return $this->hasOne(JobProduct::class, 'job_id', 'id');
+    }
+
+
+    public function jobdetailsinfo()
+    {
+        return $this->hasOne(JobDetails::class, 'job_id', 'id');
+    }
+
+
+
+
+
+    //customer data show  for jobs list page
     public function user()
     {
         return $this->belongsTo(User::class, 'customer_id'); // Assuming 'assigned_user_id' is the foreign key
     }
-    public function technician()
+
+    public function addresscustomer()
+    {
+        return $this->hasOne(CustomerUserAddress::class, 'user_id', 'customer_id');
+    }
+    public function Locationareaname($serviceAreas)
+    {
+        //dd($serviceAreas);
+        // Assuming $serviceAreas is a comma-separated list of area IDs
+        $areaIds = explode(',', $serviceAreas);
+
+        // Retrieve all LocationServiceArea records that match any of the area IDs
+        $areas = LocationServiceArea::whereIn('area_id', $areaIds)->pluck('area_name')->toArray();
+
+        return $areas;
+    }
+
+
+
+    //technician data show  for jobs list page
+    public function usertechnician()
     {
         return $this->belongsTo(User::class, 'technician_id'); // Assuming 'assigned_user_id' is the foreign key
     }
+
+    public function addresstechnician()
+    {
+        return $this->hasOne(CustomerUserAddress::class, 'user_id', 'technician_id');
+    }
+
+
+    //dispatcher data show  for jobs list page
+    public function userdispatcher()
+    {
+        return $this->belongsTo(User::class, 'added_by'); // Assuming 'assigned_user_id' is the foreign key
+    }
+
+    public function addressdispatcher()
+    {
+        return $this->hasOne(CustomerUserAddress::class, 'user_id', 'added_by');
+    }
+
+
+
+    public function technician()
+    {
+        return $this->belongsTo(User::class, 'technician_id');
+    }
+
     public function addedby()
     {
         return $this->belongsTo(User::class, 'added_by'); // Assuming 'assigned_user_id' is the foreign key
     }
-    public function jobDetails()
-    {
-        return $this->belongsTo(JobDetails::class, 'id', 'job_id'); // Assuming 'assigned_user_id' is the foreign key
-    }
-
     /*   public function techniciannote()
-{
-    return $this->belongsTo(JobNoteModel::class, 'technician_id', 'user_id');
-}
-*/
+  {
+      return $this->belongsTo(JobNoteModel::class, 'technician_id', 'user_id');
+  }
+  */
 
-    public function jobserviceinfo()
+  public function jobDetails()
     {
-        return $this->belongsTo(JobServices::class, 'id', 'job_id'); // Assuming 'assigned_job_id' is the foreign key
+        return $this->belongsTo(JobDetails::class, 'id','job_id'); // Assuming 'assigned_user_id' is the foreign key
     }
 
-    public function jobproductinfo()
+     public function JobAssign()
     {
-        return $this->belongsTo(JobProduct::class, 'id', 'job_id'); // Assuming 'assigned_job_id' is the foreign key
+        return $this->belongsTo(JobAssign::class, 'id','job_id'); // Assuming 'assigned_job_id' is the foreign key
+    }
+    
+    public function locationStateName()
+    {
+        return $this->hasMany(LocationState::class, 'state', 'state_code');
     }
 
-    public function JobAssign()
-    {
-        return $this->belongsTo(JobAssign::class, 'id','job_id'); // Assuming 'assigned_timezone_id' is the foreign key
-    }
 }

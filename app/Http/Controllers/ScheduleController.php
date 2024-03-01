@@ -105,25 +105,101 @@ class ScheduleController extends Controller
 
         $data = $request->all();
 
-        $time = str_replace(" ", ":00 ", $data['time']);
+        if (isset($data['id']) && !empty($data['id'])) {
 
-        $date = $data['date'];
+            $time = str_replace(" ", ":00 ", $data['time']);
 
-        $dateTime = Carbon::parse("$date $time");
+            $appliances = DB::table('appliances')->get();
 
-        $dateTime = $dateTime->format('Y-m-d\TH:i');
+            $manufacturers = DB::table('manufacturers')->get();
 
-        $technician = User::where('id', $data['id'])->first();
+            $date = $data['date'];
 
-        return view('schedule.create', compact('technician', 'dateTime'));
+            $dateTime = Carbon::parse("$date $time");
+
+            $dateTime = $dateTime->format('Y-m-d H:i:s');
+
+            $technician = User::join('user_address','user_address.user_id','users.id')->where('id', $data['id'])->first();
+
+            $getServices = Service::where('service_cost', '!=', 0)->get();
+
+            $getProduct = Products::whereNotNull('base_price')->where('status', 'Publish')->get();
+
+            return view('schedule.create', compact('technician', 'dateTime', 'manufacturers', 'appliances','getServices','getProduct'));
+        }
 
     }
 
-    public function autocompleteSearch(Request $request)
+    public function autocompleteCustomer(Request $request)
     {
-        $query = $request->get('query');
-        $filterResult = User::where('name', 'LIKE', '%' . $query . '%')->where('role', 'customer')->get();
-        return response()->json($filterResult);
+        $data = $request->all();
+
+        $customers = '';
+
+        $pendingJobs = '';
+
+        if (isset($data['name']) && !empty($data['name'])) {
+
+            $filterCustomer = User::where('name', 'LIKE', '%' . $data['name'] . '%')
+                ->where('role', 'customer')
+                ->get();
+
+            $filterJobs = DB::table('jobs')->select('jobs.job_title', 'users.name as customer_name', 'technician.name as technician_name', 'jobs.created_at', 'appliances.appliance_name')
+                ->join('appliances', 'appliances.appliance_id', 'jobs.appliances_id')
+                ->join('users', 'users.id', 'jobs.customer_id')
+                ->join('users as technician', 'technician.id', 'jobs.technician_id')
+                ->where('users.name', 'LIKE', '%' . $data['name'] . '%')
+                ->get();
+
+            if (isset($filterCustomer) && !empty($filterCustomer->count())) {
+
+                foreach ($filterCustomer as $key => $value) {
+
+                    $getCustomerAddress = DB::table('user_address')
+                        ->select('user_address.city', 'location_states.state_name', 'user_address.zipcode')
+                        ->join('location_states', 'location_states.state_id', 'user_address.state_id')
+                        ->where('user_id', $value->id)
+                        ->first();
+
+                    $imagePath = public_path('images/customer/' . $value->user_image);
+
+                    if (file_exists($imagePath) && !empty($value->user_image)) {
+                        $imageSrc = asset('public/images/customer') . '/' . $value->user_image;
+                    } else {
+                        $imageSrc = asset('public/images/login_img_bydefault.png');
+                    }
+
+                    $customers .= '<div class="customer_sr_box selectCustomer" data-id="' . $value->id . '" data-name="' . $value->name . '"><div class="row"><div class="col-md-2 d-flex align-items-center"><span>';
+                    $customers .= '<img src="' . $imageSrc . '" alt="user" class="rounded-circle" width="50">';
+                    $customers .= '</span></div><div class="col-md-8"><h6 class="font-weight-medium mb-0">' . $value->name . ' ';
+                    if (isset($getCustomerAddress->city) && !empty($getCustomerAddress->city)) {
+                        $customers .= '<small class="text-muted">' . $getCustomerAddress->city . ' Area</small>';
+                    }
+                    $customers .= '</h6><p class="text-muted test">' . $value->mobile . ' / ' . $value->email . '';
+                    if (isset($getCustomerAddress->city) && !empty($getCustomerAddress->city) && isset($getCustomerAddress->state_name) && !empty($getCustomerAddress->state_name) && isset($getCustomerAddress->zipcode) && !empty($getCustomerAddress->zipcode)) {
+                        $customers .= '<br />' . $getCustomerAddress->city . ', ' . $getCustomerAddress->state_name . ', ' . $getCustomerAddress->zipcode . '';
+                    }
+                    $customers .= '</p></div></div></div>';
+
+                }
+            }
+
+            if (isset($filterJobs) && !empty($filterJobs->count())) {
+                foreach ($filterJobs as $key => $value) {
+
+                    $createdDate = Carbon::parse($value->created_at);
+
+                    $pendingJobs .= '<div class="pending_jobs2"><div class="row"><div class="col-md-12">';
+                    $pendingJobs .= '<h6 class="font-weight-medium mb-0">' . $value->job_title . '</h6></div></div><div class="row">';
+                    $pendingJobs .= '<div class="col-md-6 reschedule_job">Customer: ' . $value->customer_name . '</div>';
+                    $pendingJobs .= '<div class="col-md-6 reschedule_job" style="display: contents;">Technician: ' . $value->technician_name . '</div></div><div class="row">';
+                    $pendingJobs .= '<div class="col-md-12 reschedule_job">' . $value->appliance_name . ' (On ' . $createdDate->format('Y-m-d') . ')</div></div></div>';
+                }
+            }
+
+        }
+
+        return ['customers' => $customers, 'pendingJobs' => $pendingJobs];
     }
 
     public function autocompleteTechnician(Request $request)
@@ -153,9 +229,9 @@ class ScheduleController extends Controller
 
         $customer = [];
 
-        if (isset($data['name']) && !empty($data['name'])) {
+        if (isset($data['id']) && !empty($data['id'])) {
 
-            $getCustomerDetails = User::where('name', $data['name'])->first();
+            $getCustomerDetails = User::where('id', $data['id'])->first();
 
             if (isset($getCustomerDetails) && !empty($getCustomerDetails)) {
                 $customer = $getCustomerDetails->toArray();
@@ -168,15 +244,42 @@ class ScheduleController extends Controller
 
     }
 
+    public function getServicesAndProductDetails(Request $request)
+    {
+        $data = $request->all();
+
+        $product = [];
+
+        $serives = [];
+
+        if (isset($data['searchProduct']) && !empty($data['searchProduct'])) {
+
+            $getProductDetails = Products::where('product_name', $data['searchProduct'])->where('status', 'Publish')->first();
+
+            if (isset($getProductDetails) && !empty($getProductDetails)) {
+                $product = $getProductDetails->toArray();
+            }
+
+            $getServicesDetails = Service::where('service_name', $data['searchServices'])->first();
+
+            if (isset($getServicesDetails) && !empty($getServicesDetails)) {
+                $serives = $getServicesDetails->toArray();
+            }
+        }
+
+        return ['product' => $product, 'serives' => $serives];
+
+    }
+
     public function getProductDetails(Request $request)
     {
         $data = $request->all();
 
         $product = [];
 
-        if (isset($data['searchProduct']) && !empty($data['searchProduct'])) {
+        if (isset($data['id']) && !empty($data['id'])) {
 
-            $getProductDetails = Products::where('product_name', $data['searchProduct'])->where('status', 'Publish')->first();
+            $getProductDetails = Products::where('product_id', $data['id'])->where('status', 'Publish')->first();
 
             if (isset($getProductDetails) && !empty($getProductDetails)) {
                 $product = $getProductDetails->toArray();
@@ -193,9 +296,9 @@ class ScheduleController extends Controller
 
         $serives = [];
 
-        if (isset($data['searchServices']) && !empty($data['searchServices'])) {
+        if (isset($data['id']) && !empty($data['id'])) {
 
-            $getServicesDetails = Service::where('service_name', $data['searchServices'])->first();
+            $getServicesDetails = Service::where('service_id', $data['id'])->first();
 
             if (isset($getServicesDetails) && !empty($getServicesDetails)) {
                 $serives = $getServicesDetails->toArray();
@@ -211,7 +314,7 @@ class ScheduleController extends Controller
 
         $data = $request->all();
 
-        try {
+        //try {
 
             if (isset($data) && !empty($data)) {
 
@@ -350,7 +453,7 @@ class ScheduleController extends Controller
                     $height_slot = $duration / 60;
                     $height_slot_px = $height_slot * 80 - 10;
 
-                    $returnDate = '<div class="dts mb-1 edit_schedule flexibleslot" data-bs-toggle="modal" data-bs-target="#edit" style="cursor: pointer;height:'.$height_slot_px.'px;background:'.$technician->color_code.';" data-id="' . $jobId . '">
+                    $returnDate = '<div class="dts mb-1 edit_schedule flexibleslot" data-bs-toggle="modal" data-bs-target="#edit" style="cursor: pointer;height:' . $height_slot_px . 'px;background:' . $technician->color_code . ';" data-id="' . $jobId . '">
                     <h5 style="font-size: 15px; padding-bottom: 0px; margin-bottom: 5px; margin-top: 3px;">' . $data['customer_name'] . '</h5>
                     <p style="font-size: 11px;"><i class="fas fa-clock"></i>' . $start_date_time->format('h a') . ' -- ' . $data['job_code'] . ' <br>' . $data['job_title'] . '</p>
                     <p style="font-size: 12px;">' . $getCustomerDetails->city . ',' . $getCustomerDetails->state_name . '</p></div>';
@@ -360,6 +463,8 @@ class ScheduleController extends Controller
                 } else {
 
                     $technician = User::where('id', $data['technician_id'])->first();
+
+                    $customer = User::where('id', $data['customer_id'])->first();
 
                     $start_date_time = Carbon::parse($data['datetime']);
 
@@ -373,7 +478,7 @@ class ScheduleController extends Controller
 
                     $getCustomerDetails = User::select('user_address.*')
                         ->join('user_address', 'user_address.user_id', 'users.id')
-                        ->where('users.id', $data['customer_id'])->where('user_address.address_type', $data['address'])
+                        ->where('users.id', $data['customer_id'])->where('user_address.address_type', $data['customer_address'])
                         ->first();
 
                     $jobsData = [
@@ -381,14 +486,14 @@ class ScheduleController extends Controller
                         'customer_id' => (isset($data['customer_id']) && !empty($data['customer_id'])) ? $data['customer_id'] : '',
                         'technician_id' => (isset($data['technician_id']) && !empty($data['technician_id'])) ? $data['technician_id'] : '',
                         'job_title' => (isset($data['job_title']) && !empty($data['job_title'])) ? $data['job_title'] : '',
-                        'job_type' => (isset($data['job_type']) && !empty($data['job_type'])) ? $data['job_type'] : '',
-                        'description' => (isset($data['description']) && !empty($data['description'])) ? $data['description'] : '',
+                        'warranty_type' => (isset($data['job_type']) && !empty($data['job_type'])) ? $data['job_type'] : '',
+                        'description' => (isset($data['job_description']) && !empty($data['job_description'])) ? trim($data['job_description']) : '',
                         'priority' => (isset($data['priority']) && !empty($data['priority'])) ? $data['priority'] : '',
                         'tax' => $service_tax + $product_tax,
                         'discount' => (isset($data['discount']) && !empty($data['discount'])) ? $data['discount'] : 0,
                         'gross_total' => (isset($data['total']) && !empty($data['total'])) ? $data['total'] : 0,
                         'commission_total' => (isset($data['subtotal']) && !empty($data['subtotal'])) ? $data['subtotal'] : 0,
-                        'address_type' => (isset($data['address']) && !empty($data['address'])) ? $data['address'] : '',
+                        'address_type' => (isset($data['customer_address']) && !empty($data['customer_address'])) ? $data['customer_address'] : '',
                         'address' => (isset($getCustomerDetails->address_line1) && !empty($getCustomerDetails->address_line1)) ? $getCustomerDetails->address_line1 : '',
                         'city' => (isset($getCustomerDetails->city) && !empty($getCustomerDetails->city)) ? $getCustomerDetails->city : '',
                         'state' => (isset($getCustomerDetails->state_name) && !empty($getCustomerDetails->state_name)) ? $getCustomerDetails->state_name : '',
@@ -421,7 +526,7 @@ class ScheduleController extends Controller
                         'customer_id' => (isset($data['customer_id']) && !empty($data['customer_id'])) ? $data['customer_id'] : '',
                         'job_id' => $jobId,
                         'assign_title' => (isset($data['job_title']) && !empty($data['job_title'])) ? $data['job_title'] : '',
-                        'assign_description' => (isset($data['description']) && !empty($data['description'])) ? $data['description'] : '',
+                        'assign_description' => (isset($data['job_description']) && !empty($data['job_description'])) ? $data['job_description'] : '',
                         'duration' => (isset($data['duration']) && !empty($data['duration'])) ? $data['duration'] : '',
                         'start_date_time' => $start_date_time->format('Y-m-d h:i:s'),
                         'end_date_time' => $end_date_time->format('Y-m-d h:i:s'),
@@ -436,15 +541,22 @@ class ScheduleController extends Controller
 
                     $jobAssignedID = DB::table('job_assigned')->insertGetId($JobAssignedData);
 
-                    if (isset($data['service_id']) && !empty($data['service_id']) && (isset($data['service_quantity']) && !empty($data['service_quantity']) && $data['service_quantity'] != 0)) {
+                    $jobDetails = [
+                        'job_id' => $jobId,
+                        'appliance_id' => (isset($data['appliances']) && !empty($data['appliances'])) ? $data['appliances'] : '',
+                        'model_number' => (isset($data['model_number']) && !empty($data['model_number'])) ? $data['model_number'] : '',
+                        'serial_number' => (isset($data['serial_number']) && !empty($data['serial_number'])) ? $data['serial_number'] : '',
+                        'manufacturer_id' => (isset($data['manufacturer']) && !empty($data['manufacturer'])) ? $data['manufacturer'] : '',
+                    ];
+
+                    $jobDetailsID = DB::table('job_details')->insertGetId($jobDetails);
+
+                    if (isset($data['services']) && !empty($data['services'])) {
 
                         $serviceData = [
-                            'service_id' => (isset($data['service_id']) && !empty($data['service_id'])) ? $data['service_id'] : '',
+                            'service_id' => (isset($data['services']) && !empty($data['services'])) ? $data['services'] : '',
                             'job_id' => $jobId,
-                            'service_description' => (isset($data['service_description']) && !empty($data['service_description'])) ? $data['service_description'] : '',
-                            'service_name' => (isset($data['service_name']) && !empty($data['service_name'])) ? $data['service_name'] : '',
                             'base_price' => (isset($data['service_cost']) && !empty($data['service_cost'])) ? $data['service_cost'] : '',
-                            'quantity' => (isset($data['service_quantity']) && !empty($data['service_quantity'])) ? $data['service_quantity'] : '',
                             'tax' => $service_tax,
                             'discount' => (isset($data['service_discount']) && !empty($data['service_discount'])) ? $data['service_discount'] : '',
                             'sub_total' => (isset($data['service_total']) && !empty($data['service_total'])) ? $data['service_total'] : '',
@@ -453,15 +565,12 @@ class ScheduleController extends Controller
                         $serviceDataInsert = DB::table('job_service_items')->insertGetId($serviceData);
                     }
 
-                    if (isset($data['product_id']) && !empty($data['product_id']) && (isset($data['product_quantity']) && !empty($data['product_quantity']) && $data['product_quantity'] != 0)) {
+                    if (isset($data['products']) && !empty($data['products'])) {
 
                         $productData = [
-                            'product_id' => (isset($data['product_id']) && !empty($data['product_id'])) ? $data['product_id'] : '',
+                            'product_id' => (isset($data['products']) && !empty($data['products'])) ? $data['products'] : '',
                             'job_id' => $jobId,
-                            'product_description' => (isset($data['product_description']) && !empty($data['product_description'])) ? $data['product_description'] : '',
-                            'product_name' => (isset($data['product_name']) && !empty($data['product_name'])) ? $data['product_name'] : '',
                             'base_price' => (isset($data['product_cost']) && !empty($data['product_cost'])) ? $data['product_cost'] : '',
-                            'quantity' => (isset($data['product_quantity']) && !empty($data['product_quantity'])) ? $data['product_quantity'] : '',
                             'tax' => $product_tax,
                             'discount' => (isset($data['product_discount']) && !empty($data['product_discount'])) ? $data['product_discount'] : '',
                             'sub_total' => (isset($data['product_total']) && !empty($data['product_total'])) ? $data['product_total'] : '',
@@ -502,8 +611,8 @@ class ScheduleController extends Controller
                     $height_slot = $duration / 60;
                     $height_slot_px = $height_slot * 80 - 10;
 
-                    $returnDate = '<div class="dts mb-1 edit_schedule flexibleslot" data-bs-toggle="modal" data-bs-target="#edit" style="cursor: pointer;height:'.$height_slot_px.'px;background:'.$technician->color_code.';" data-id="' . $jobId . '">
-                    <h5 style="font-size: 15px; padding-bottom: 0px; margin-bottom: 5px; margin-top: 3px;">' . $data['customer_name'] . '</h5>
+                    $returnDate = '<div class="dts mb-1 edit_schedule flexibleslot" data-bs-toggle="modal" data-bs-target="#edit" style="cursor: pointer;height:' . $height_slot_px . 'px;background:' . $technician->color_code . ';" data-id="' . $jobId . '">
+                    <h5 style="font-size: 15px; padding-bottom: 0px; margin-bottom: 5px; margin-top: 3px;">' . $customer->name . '</h5>
                     <p style="font-size: 11px;"><i class="fas fa-clock"></i>' . $start_date_time->format('h a') . ' -- ' . $data['job_code'] . ' <br>' . $data['job_title'] . '</p>
                     <p style="font-size: 12px;">' . $getCustomerDetails->city . ',' . $getCustomerDetails->state_name . '</p></div>';
 
@@ -512,12 +621,12 @@ class ScheduleController extends Controller
 
             }
 
-        } catch (\Exception $e) {
+        // } catch (\Exception $e) {
 
-            Storage::append('CreateSchedule.log', ' error_msg -- ' . json_encode($e->getMessage()) . ' line number: ' . json_encode($e->getLine()) . ' File: ' . json_encode($e->getFile()) . ' - ' . date('Y-m-d H:i:s') . PHP_EOL);
+        //     Storage::append('CreateSchedule.log', ' error_msg -- ' . json_encode($e->getMessage()) . ' line number: ' . json_encode($e->getLine()) . ' File: ' . json_encode($e->getFile()) . ' - ' . date('Y-m-d H:i:s') . PHP_EOL);
 
-            return 'false';
-        }
+        //     return 'false';
+        // }
 
     }
 
@@ -684,7 +793,7 @@ class ScheduleController extends Controller
                 $height_slot = $duration / 60;
                 $height_slot_px = $height_slot * 80 - 10;
 
-                $returnDate = '<div class="dts mb-1 edit_schedule flexibleslot" data-bs-toggle="modal" data-bs-target="#edit" style="cursor: pointer;height:'.$height_slot_px.'px;background:'.$technician->color_code.';" data-id="' . $jobId . '">
+                $returnDate = '<div class="dts mb-1 edit_schedule flexibleslot" data-bs-toggle="modal" data-bs-target="#edit" style="cursor: pointer;height:' . $height_slot_px . 'px;background:' . $technician->color_code . ';" data-id="' . $jobId . '">
                 <h5 style="font-size: 15px; padding-bottom: 0px; margin-bottom: 5px; margin-top: 3px;">' . $data['customer_name'] . '</h5>
                 <p style="font-size: 11px;"><i class="fas fa-clock"></i>' . $start_date_time->format('h a') . ' -- ' . $jobDetails->job_code . ' <br>' . $jobDetails->job_title . '</p>
                 <p style="font-size: 12px;">' . $jobDetails->city . ',' . $jobDetails->state . '</p></div>';

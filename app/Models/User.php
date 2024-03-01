@@ -48,7 +48,7 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function Locationareaname()
+public function Locationareaname()
     {
         return $this->hasOne(LocationServiceArea::class, 'area_id', 'service_areas');
     }
@@ -71,8 +71,8 @@ class User extends Authenticatable
     {
         return $this->hasOne(CustomerUserAddress::class, 'user_id', 'id');
     }
-    public function   locationStateName()
-    {
+   public function   locationStateName()
+   {
         return $this->hasOne(LocationState::class, 'state_id', 'state_id');
     }
     // User.php (assuming this is your User model)
@@ -104,20 +104,18 @@ class User extends Authenticatable
         return $this->belongsToMany(SiteTags::class, 'user_tags', 'user_id', 'tag_id');
     }
 
-    // User.php
+// User.php
 
-    public function homeAddress()
-    {
-        return $this->hasOne(CustomerUserAddress::class, 'user_id', 'id')
-            ->where('address_type', 'home');
-    }
+public function homeAddress()
+{
+    return $this->hasOne(CustomerUserAddress::class, 'user_id', 'id')
+        ->where('address_type', 'home');
+}
 
-    public function TimeZone()
+// Inside the User model
+ public function TimeZone()
     {
         return $this->belongsTo(TimeZone::class, 'timezone_id');
     }
-
-    // Inside the User model
-
 
 }

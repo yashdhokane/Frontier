@@ -41,10 +41,11 @@ class JobAssign extends Model
     {
         return $this->belongsTo(JobNoteModel::class, 'technician_note_id', 'id');
     }
-
-
+    
     public function TimeZone()
     {
         return $this->belongsTo(TimeZone::class, 'timezone_id'); // Assuming 'assigned_timezone_id' is the foreign key
     }
+
+
 }

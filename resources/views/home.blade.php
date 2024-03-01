@@ -51,6 +51,31 @@
     @endif
 
 
+    <style>
+        ::-webkit-scrollbar {
+            width: 7px;
+            height: 7px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #e0e0e0;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #c3c3c3;
+        }
+
+        ::-webkit-scrollbar-corner {
+            background-color: #dfdfdf;
+        }
+    </style>
+
+
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 
