@@ -40,13 +40,14 @@
                                     <div class="message-center  chat-users">
                                         <span class="chat-user message-item">
                                             <span class="user-img">
-                                                @if ($item->user)
+                                                @if ($item->user->user_image && file_exists(public_path('images/technician/' . $item->user->user_image)))
                                                     <img src="{{ asset('public/images/technician/' . $item->user->user_image) }}"
                                                         alt="user" class="rounded-circle" />
                                                 @else
-                                                    <img src="{{ asset('public/images/technician/1708105764_avatar-1.png') }}"
+                                                    <img src="{{ asset('public/images/technician/1707736455_avatar-8.png') }}"
                                                         alt="user" class="rounded-circle" />
                                                 @endif
+
                                                 <span class="profile-status online pull-right"></span>
                                             </span>
                                             <div class="mail-contnet">
@@ -200,7 +201,7 @@
 
                             // Check if the user image is available
                             var userImage = message.user.user_image ? message.user
-                                .user_image : 'default-image.jpg';
+                                .user_image : '1707736455_avatar-8.png';
 
                             // Construct the image source
                             var imageSrc = userImageSrc + userImage;
@@ -264,7 +265,7 @@
 
                             // Check if the user image is available
                             var userImage = message.user.user_image ? message.user
-                                .user_image : 'default-image.jpg';
+                                .user_image : '1707736455_avatar-8.png';
 
                             // Construct the image source
                             var imageSrc = userImageSrc + userImage;
@@ -365,13 +366,16 @@
                     // Example: Append user data to a container
                     $.each(users, function(index, user) {
                         $('.user-container').empty();
+                        var imageUrl = user.user_image ? ('public/images/technician/' + user
+                                .user_image) :
+                            'public/images/technician/1707736455_avatar-8.png';
                         $('.user-container').append(
-                            '<img src="public/images/technician/' + user
-                            .user_image +
-                            '" alt="dynamic-image"class="rounded-circle" width="45" /><span class="name fw-bold ms-2">' +
+                            '<img src="' + imageUrl +
+                            '" alt="dynamic-image" class="rounded-circle" width="45" /><span class="name fw-bold ms-2">' +
                             user.name + '</span>'
                         );
                     });
+
 
                     // Example: Append message data to a container
                     $.each(messages, function(index, message) {
@@ -387,12 +391,13 @@
                             'public/images/technician/' : 'public/images/users/';
 
                         // Check if the user image is available
-                        var userImage = message.user.user_image ? message.user
-                            .user_image : 'default-image.jpg';
+                        var userImage = message.user.user_image ? message.user.user_image :
+                            '1707736455_avatar-8.png';
 
                         // Construct the image source
                         var imageSrc = userImageSrc + userImage;
 
+                        // Constructing the HTML for each message and appending it to the chat-list
                         $('.chat-list').append(
                             '<li class="chat-item"><div class="chat-img"><img src="' +
                             imageSrc + '" alt="user" /></div>' +
@@ -406,6 +411,7 @@
                     });
 
 
+
                     // Scroll to the bottom of the chat list
                     $('.chat-box').scrollTop($('.chat-box')[0].scrollHeight);
 
@@ -415,7 +421,7 @@
                     console.error('Error:', error);
                 }
             });
-            
+
             $('.chatlist:first').trigger('click');
         });
     </script>

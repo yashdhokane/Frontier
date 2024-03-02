@@ -50,11 +50,11 @@ class JobModel extends Model
         'created_at',
         'updated_at',
     ];
-   
 
-  public function jobactivity()
+
+    public function jobactivity()
     {
-       return $this->hasMany(JobActivity::class, 'job_id', 'id');
+        return $this->hasMany(JobActivity::class, 'job_id', 'id');
     }
 
     public function serviceareaname()
@@ -150,16 +150,32 @@ class JobModel extends Model
   }
   */
 
-  public function jobDetails()
+    public function jobDetails()
     {
-        return $this->belongsTo(JobDetails::class, 'id','job_id'); // Assuming 'assigned_user_id' is the foreign key
+        return $this->belongsTo(JobDetails::class, 'id', 'job_id'); // Assuming 'assigned_user_id' is the foreign key
     }
 
-     public function JobAssign()
+    public function JobAssign()
     {
-        return $this->belongsTo(JobAssign::class, 'id','job_id'); // Assuming 'assigned_job_id' is the foreign key
+        return $this->belongsTo(JobAssign::class, 'id', 'job_id'); // Assuming 'assigned_job_id' is the foreign key
     }
-    
+
+    public function locationStateName()
+    {
+        return $this->hasMany(LocationState::class, 'state', 'state_code');
+    }
+
+    public function JobAssign()
+    {
+        return $this->belongsTo(JobAssign::class, 'id', 'job_id'); // Assuming 'assigned_timezone_id' is the foreign key
+    }
+
+
+    public function jobdetailsinfo()
+    {
+        return $this->hasOne(JobDetails::class, 'job_id', 'id');
+    }
+
     public function locationStateName()
     {
         return $this->hasMany(LocationState::class, 'state', 'state_code');

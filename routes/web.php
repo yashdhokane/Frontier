@@ -642,7 +642,7 @@ Route::middleware('auth')->group(function () {
     Route::put('book-list/services/{id}', [ServicesController::class, 'updateServices'])->name('services.update');
 
 
-
+  
     // Schedule
 
     Route::get('schedule', [ScheduleController::class, 'index'])->name('schedule');
@@ -690,6 +690,10 @@ Route::middleware('auth')->group(function () {
     Route::post('book-list/partscategory-update', [ProductCategoryController::class, 'updateproductcategory'])->name('productcategory.update');
 
     Route::delete('book-list/partscategory-delete/{id}', [ProductCategoryController::class, 'deleteproductcategory'])->name('productcategory.delete');
+    
+    Route::get('assign_product', [ProductCategoryController::class, 'assign_product'])->name('assign_product');
+    
+    Route::post('store/assign-product', [ProductCategoryController::class, 'store_assign_product']);
 
 
 
@@ -931,6 +935,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/update/payment/{id}', [PaymentController::class, 'update']);
     
+    Route::post('/store/comment/{id}', [PaymentController::class, 'comment']);
+
     Route::post('/store/comment/{id}', [PaymentController::class, 'comment']);
 
     // timezone 
