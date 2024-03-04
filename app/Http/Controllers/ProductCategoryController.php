@@ -158,7 +158,7 @@ class ProductCategoryController extends Controller
 
         $product = Products::all();
 
-        $assign = ProductAssigned::with('Technician')->get();
+        $assign = ProductAssigned::with('Technician','Product')->get();
 
         return view('product.assign_product', compact('technician', 'product', 'assign'));
     }

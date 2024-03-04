@@ -96,8 +96,8 @@
                                         <select id="manufacturer-filter" class="form-control">
                                             <option value="">All</option>
                                             @foreach ($manufacturer as $item)
-                                                <option value="{{ $item->id }}">
-                                                    {{ $item->id }}</option>
+                                                <option value="{{ $item->manufacturer_name }}">
+                                                    {{ $item->manufacturer_name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -137,7 +137,7 @@
                                             <!-- start row -->
                                             <tr>
                                                 <th>Invoice Id</th>
-                                                <th>MAnufaturee Id</th>
+                                                <th>Manufaturer Id</th>
                                                 <th>Job Details</th>
                                                 <th>Customer</th>
                                                 <th>Technician</th>
@@ -155,7 +155,7 @@
                                                     <td><a
                                                             href="{{ url('invoice-detail/' . $item->id) }}">{{ $item->invoice_number }}</a>
                                                     </td>
-                                                    <td>{{ $item->jobDetails->manufacturer_id }}</td>
+                                                    <td>{{ $item->jobDetails->manufacturername->manufacturer_name ?? null}}</td>
                                                     <td>{{ $item->JobModel->job_code }}<br>{{ $item->JobModel->job_title }}</td>
                                                     <td>{{ $item->user->name }}</td>
                                                     <td>{{ $item->JobModel->technician->name }}</td>
@@ -236,7 +236,7 @@
                                             <!-- start row -->
                                             <tr>
                                                 <th>Invoice Id</th>
-                                                <th>MAnufaturee Id</th>
+                                                <th>Manufaturer Id</th>
                                                 <th>Job Details</th>
                                                 <th>Customer</th>
                                                 <th>Technician</th>
@@ -328,10 +328,10 @@
             $('#technician-filter').on('change', function() {
                 var selectedStatus = $(this).val();
                 if (selectedStatus) {
-                    table.column(3).search('^' + selectedStatus + '$', true, false).draw();
+                    table.column(4).search('^' + selectedStatus + '$', true, false).draw();
                 } else {
                     // If no status is selected, clear the filter
-                    table.column(3).search('').draw();
+                    table.column(4).search('').draw();
                 }
             });
 
@@ -339,10 +339,10 @@
             $('#payment-status-filter').on('change', function() {
                 var selectedStatus = $(this).val();
                 if (selectedStatus) {
-                    table.column(6).search('^' + selectedStatus + '$', true, false).draw();
+                    table.column(7).search('^' + selectedStatus + '$', true, false).draw();
                 } else {
                     // If no status is selected, clear the filter
-                    table.column(6).search('').draw();
+                    table.column(7).search('').draw();
                 }
             });
 
