@@ -291,6 +291,8 @@ Route::group(['middleware' => 'role:customer'], function () {
 
     Route::POST('/users/store', [UserController::class, 'store'])->name('users.store');
 
+    Route::POST('/new/customer/schedule', [UserController::class, 'customer_schedule']);
+
 
 
     Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');

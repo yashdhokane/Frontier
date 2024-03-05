@@ -1,354 +1,1185 @@
 @extends('home')
 @section('content')
-<style>
-    .activegreen {
-        border: 2px solid green !important;
-    }
+    <style>
+        .activegreen {
+            border: 2px solid green !important;
+        }
 
-    .user_head_link {
-        color: #2962ff !important;
-        text-transform: uppercase;
-        font-size: 13px;
-    }
+        .user_head_link {
+            color: #2962ff !important;
+            text-transform: uppercase;
+            font-size: 13px;
+        }
 
-    .user_head_link:hover {
-        color: #ee9d01 !important;
-    }
+        .user_head_link:hover {
+            color: #ee9d01 !important;
+        }
 
-    .dts2 {
-        min-height: 60px;
-    }
+        .dts2 {
+            min-height: 60px;
+        }
 
-    .table> :not(caption)>*>* {
-        padding: 0.3rem;
-    }
+        .table> :not(caption)>*>* {
+            padding: 0.3rem;
+        }
 
-    .dat table th {
-        text-align: center;
-    }
+        .dat table th {
+            text-align: center;
+        }
 
-    .dts {
-        background: #3699ff;
-        padding: 5px;
-        border-radius: 5px;
-        color: #FFFFFF;
-    }
+        .dts {
+            background: #3699ff;
+            padding: 5px;
+            border-radius: 5px;
+            color: #FFFFFF;
+        }
 
-    .dts p {
-        margin-bottom: 5px;
-        line-height: 17px;
-    }
+        .dts p {
+            margin-bottom: 5px;
+            line-height: 17px;
+        }
 
-    .out {
-        background: #fbeccd !important;
-    }
+        .out {
+            background: #fbeccd !important;
+        }
 
-    .out:hover {
-        background: #fbeccd !important;
-    }
+        .out:hover {
+            background: #fbeccd !important;
+        }
 
-    .out .dts {
-        background: #fbeccd !important;
-    }
+        .out .dts {
+            background: #fbeccd !important;
+        }
 
-    .table-hover>tbody>tr:hover>* {
-        --bs-table-color-state: var(--bs-table-hover-color);
-        --bs-table-bg-state: transparent;
-    }
+        .table-hover>tbody>tr:hover>* {
+            --bs-table-color-state: var(--bs-table-hover-color);
+            --bs-table-bg-state: transparent;
+        }
 
-    img.calimg2 {
-        width: 224px;
-        margin: 0px 10px;
-    }
+        img.calimg2 {
+            width: 224px;
+            margin: 0px 10px;
+        }
 
-    .error {
-        color: #ca1414;
-    }
+        .error {
+            color: #ca1414;
+        }
 
-    .table-responsive {
-        overflow-x: auto !important;
-        width: 100% !important;
-    }
+        .table-responsive {
+            overflow-x: auto !important;
+            width: 100% !important;
+        }
 
-    .timeslot_td {
-        position: relative;
-        height: 80px;
-        width: 100px;
-        font-size: 12px;
-    }
+        .timeslot_td {
+            position: relative;
+            height: 80px;
+            width: 100px;
+            font-size: 12px;
+        }
 
-    .timeslot_th {
-        position: relative;
-        width: 100px;
-    }
+        .timeslot_th {
+            position: relative;
+            width: 100px;
+        }
 
-    .flexibleslot {
-        cursor: pointer;
-        position: absolute;
-        z-index: 1;
-        width: -webkit-fill-available;
-    }
+        .flexibleslot {
+            cursor: pointer;
+            position: absolute;
+            z-index: 1;
+            width: -webkit-fill-available;
+        }
 
-    .overflow_x {
-        overflow-x: auto;
-    }
+        .overflow_x {
+            overflow-x: auto;
+        }
 
-    .overflow_y {
-        overflow-y: auto;
-    }
+        .overflow_y {
+            overflow-y: auto;
+        }
 
-    .pending_jobs2 {
-        border: 1px solid #2962ff;
-        padding: 10px;
-        margin-bottom: 10px;
-        border-radius: 4px;
-        cursor: pointer;
-    }
+        .pending_jobs2 {
+            border: 1px solid #2962ff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
 
-    .img40 {
-        width: 40px;
-        height: 40px;
-        line-height: 40px;
-    }
+        .img40 {
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+        }
 
-    .customer_sr_box {
-        padding: 10px;
-        border: 1px solid #2962ff;
-        border-radius: 4px;
-        margin-bottom: 10px;
-        cursor: pointer;
-    }
+        .customer_sr_box {
+            padding: 10px;
+            border: 1px solid #2962ff;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
 
-    .confirm_job_box {
-        margin-bottom: 20px;
-    }
+        .confirm_job_box {
+            margin-bottom: 20px;
+        }
 
-    .test {
-        display: contents;
-        font-size: 11px;
-    }
+        .test {
+            display: contents;
+            font-size: 11px;
+        }
 
-    .reschedule_job {
-        font-size: 12px;
-    }
+        .reschedule_job {
+            font-size: 12px;
+        }
 
-    .customer_sr_box:hover {
-        background-color: #f3f3f3;
-    }
+        .customer_sr_box:hover {
+            background-color: #f3f3f3;
+        }
 
-    .pending_jobs2:hover {
-        background-color: #f3f3f3;
-    }
+        .pending_jobs2:hover {
+            background-color: #f3f3f3;
+        }
 
-    .service_css {
-        font-size: 11px;
-    }
+        .service_css {
+            font-size: 11px;
+        }
 
-    .total_css {
-        font-size: 14px;
-    }
+        .total_css {
+            font-size: 14px;
+        }
 
-    .customers {
-        height: 304px;
-        overflow-y: auto;
-    }
+        .customers {
+            height: 304px;
+            overflow-y: auto;
+        }
 
-    .rescheduleJobs {
-        height: 304px;
-        overflow-y: auto;
-    }
-</style>
-<div class="page-wrapper" style="display:inline;">
-    <!-- Container fluid  -->
-    <!-- -------------------------------------------------------------- -->
-    <div class="page-breadcrumb" style="margin-top: -21px;">
-        <div class="row">
-            <div class="col-5 align-self-center">
-                <h4 class="page-title">Calls Schedule</h4>
-            </div>
-            <div class="col-7 align-self-right" style="text-align: right;padding-right: 40px;">
-                <a href="#." style="margin-right: 10px;font-size: 13px;"><i class="fas fa-calendar-alt"></i>
-                    Select Dates</a>
-                <a href="#." style="margin-right: 10px;font-size: 13px;color: #ee9d01;font-weight: bold;"><i
-                        class="fas fa-calendar-check"></i> Today</a>
-                <a href="#." style="margin-right: 10px;font-size: 13px;"><i class="fas fa-calendar-alt"></i>
-                    Yesterday</a>
-                <a href="#." style="margin-right: 10px;font-size: 13px;"><i class="fas fa-calendar-alt"></i>
-                    Tomorrow</a>
+        .rescheduleJobs {
+            height: 304px;
+            overflow-y: auto;
+        }
+    </style>
+    <div class="page-wrapper" style="display:inline;">
+        <!-- Container fluid  -->
+        <!-- -------------------------------------------------------------- -->
+        <div class="page-breadcrumb" style="margin-top: -21px;">
+            <div class="row">
+                <div class="col-5 align-self-center">
+                    <h4 class="page-title">Calls Schedule</h4>
+                </div>
+                <div class="col-7 align-self-right" style="text-align: right;padding-right: 40px;">
+                    <a href="#." style="margin-right: 10px;font-size: 13px;"><i class="fas fa-calendar-alt"></i>
+                        Select Dates</a>
+                    <a href="#." style="margin-right: 10px;font-size: 13px;color: #ee9d01;font-weight: bold;"><i
+                            class="fas fa-calendar-check"></i> Today</a>
+                    <a href="#." style="margin-right: 10px;font-size: 13px;"><i class="fas fa-calendar-alt"></i>
+                        Yesterday</a>
+                    <a href="#." style="margin-right: 10px;font-size: 13px;"><i class="fas fa-calendar-alt"></i>
+                        Tomorrow</a>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="card">
-                <div>
-                    <div class="row gx-0">
-                        <div class="col-lg-12">
-                            <div class="p-4 calender-sidebar app-calendar">
-                                <div class="row">
-                                    <div class="col-md-2"><a href="schedule?date={{ $previousDate }}"><i
-                                                class="fas fa-arrow-left"></i></a></div>
-                                    <div class="col-md-8">
-                                        <h4 class="fc-toolbar-title text-center" id="fc-dom-1">
-                                            {{ $formattedDate }}
-                                        </h4>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="card">
+                    <div>
+                        <div class="row gx-0">
+                            <div class="col-lg-12">
+                                <div class="p-4 calender-sidebar app-calendar">
+                                    <div class="row">
+                                        <div class="col-md-2"><a href="schedule?date={{ $previousDate }}"><i
+                                                    class="fas fa-arrow-left"></i></a></div>
+                                        <div class="col-md-8">
+                                            <h4 class="fc-toolbar-title text-center" id="fc-dom-1">
+                                                {{ $formattedDate }}
+                                            </h4>
+                                        </div>
+                                        <div class="col-md-2" style="text-align: right;"><a
+                                                href="schedule?date={{ $tomorrowDate }}"><i
+                                                    class="fas fa-arrow-right"></i></a>
+                                        </div>
                                     </div>
-                                    <div class="col-md-2" style="text-align: right;"><a
-                                            href="schedule?date={{ $tomorrowDate }}"><i
-                                                class="fas fa-arrow-right"></i></a>
-                                    </div>
-                                </div>
-                                <div class="table-responsive dat">
-                                    <table id="demo-foo-addrow"
-                                        class="table table-bordered m-t-30 table-hover contact-list text-nowrap"
-                                        data-paging="true" data-paging-size="7">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                @if (isset($user_array) && !empty($user_array))
-                                                @foreach ($user_array as $value)
-                                                <th><a href="#" class="link user_head_link"
-                                                        style="color: {{ $user_data_array[$value]['color_code'] }} !important;">
-                                                        @if (isset($user_data_array[$value]['user_image']) &&
-                                                        !empty($user_data_array[$value]['user_image']))
-                                                        <img src="{{ asset('public/images/technician/' . $user_data_array[$value]['user_image']) }}"
-                                                            alt="user" width="48" class="rounded-circle" /><br>
-                                                        @else
-                                                        <img src="{{ asset('public/images/login_img_bydefault.png') }}"
-                                                            alt="user" width="48" class="rounded-circle " /><br>
-                                                        @endif
-                                                        {{ 'EMP' . $value }} <br>
-                                                        @if (isset($user_data_array[$value]) &&
-                                                        !empty($user_data_array[$value]))
-                                                        {{ $user_data_array[$value]['name'] }}
-                                                        @endif
-                                                    </a>
-                                                </th>
-                                                @endforeach
-                                                @endif
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @for ($i = 7; $i <= 18; $i++) <tr>
-                                                <td class="timeslot_td">
-                                                    @if ($i > 12)
-                                                    @php
-                                                    $time = $i - 12;
-                                                    $date = $time . ' pm';
-                                                    @endphp
-                                                    {{ $date }}
-                                                    @else
-                                                    @php
-                                                    $time = $i;
-                                                    $date = $i . ' am';
-                                                    @endphp
-                                                    {{ $date }}
-                                                    @endif
-                                                </td>
-                                                @if (isset($user_array) && !empty($user_array))
-                                                @foreach ($user_array as $value)
-                                                @php
-                                                $assigned_data = [];
-                                                if (
-                                                isset($assignment_arr[$value][$i]) &&
-                                                !empty($assignment_arr[$value][$i])
-                                                ) {
-                                                $assigned_data = $assignment_arr[$value][$i];
-                                                }
-                                                @endphp
-                                                <td class="timeslot_td" data-slot_time="{{ $time }}"
-                                                    data-technician_id="{{ $value }}">
-                                                    @if (isset($assigned_data) && !empty($assigned_data))
-                                                    <div class="testclass">
-                                                        @foreach ($assigned_data as $value2)
-                                                        @if ($i == $value2->start_slot)
-                                                        @php
-                                                        $duration = $value2->duration;
-                                                        $height_slot = $duration / 60;
-                                                        $height_slot_px =
-                                                        $height_slot * 80 - 10;
-                                                        @endphp
-                                                        <div class="dts mb-1 edit_schedule flexibleslot"
-                                                            data-bs-toggle="modal" data-bs-target="#edit"
-                                                            style="cursor: pointer;height:{{ $height_slot_px . 'px' }};background:{{ $value2->color_code }};"
-                                                            data-id="{{ $value2->main_id }}">
-                                                            <h5
-                                                                style="font-size: 15px; padding-bottom: 0px; margin-bottom: 5px; margin-top: 3px;">
-                                                                {{ $value2->customername }}
-                                                                &nbsp;&nbsp;
-                                                            </h5>
-                                                            <p style="font-size: 11px;"><i class="fas fa-clock"></i>
-                                                                {{ $date }} --
-                                                                {{ $value2->job_code }}<br>{{ $value2->job_title }}
-                                                            </p>
-                                                            <p style="font-size: 12px;">
-                                                                {{ $value2->city }},
-                                                                {{ $value2->state }}
-                                                            </p>
-                                                        </div>
-                                                        @endif
+                                    <div class="table-responsive dat">
+                                        <table id="demo-foo-addrow"
+                                            class="table table-bordered m-t-30 table-hover contact-list text-nowrap"
+                                            data-paging="true" data-paging-size="7">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    @if (isset($user_array) && !empty($user_array))
+                                                        @foreach ($user_array as $value)
+                                                            <th><a href="#" class="link user_head_link"
+                                                                    style="color: {{ $user_data_array[$value]['color_code'] }} !important;">
+                                                                    @if (isset($user_data_array[$value]['user_image']) && !empty($user_data_array[$value]['user_image']))
+                                                                        <img src="{{ asset('public/images/technician/' . $user_data_array[$value]['user_image']) }}"
+                                                                            alt="user" width="48"
+                                                                            class="rounded-circle" /><br>
+                                                                    @else
+                                                                        <img src="{{ asset('public/images/login_img_bydefault.png') }}"
+                                                                            alt="user" width="48"
+                                                                            class="rounded-circle " /><br>
+                                                                    @endif
+                                                                    {{ 'EMP' . $value }} <br>
+                                                                    @if (isset($user_data_array[$value]) && !empty($user_data_array[$value]))
+                                                                        {{ $user_data_array[$value]['name'] }}
+                                                                    @endif
+                                                                </a>
+                                                            </th>
                                                         @endforeach
-                                                    </div>
-                                                    @else
-                                                    <div class="dts2 createSchedule"
-                                                        style="height: 100%;position: revert;" data-bs-toggle="modal"
-                                                        data-id="{{ $value }}" data-time="{{ $date }}"
-                                                        data-date="{{ $filterDate }}" data-bs-target="#create"></div>
                                                     @endif
-                                                </td>
-                                                @endforeach
-                                                @endif
                                                 </tr>
+                                            </thead>
+                                            <tbody>
+                                                @for ($i = 7; $i <= 18; $i++)
+                                                    <tr>
+                                                        <td class="timeslot_td">
+                                                            @if ($i > 12)
+                                                                @php
+                                                                    $time = $i - 12;
+                                                                    $date = $time . ' pm';
+                                                                @endphp
+                                                                {{ $date }}
+                                                            @else
+                                                                @php
+                                                                    $time = $i;
+                                                                    $date = $i . ' am';
+                                                                @endphp
+                                                                {{ $date }}
+                                                            @endif
+                                                        </td>
+                                                        @if (isset($user_array) && !empty($user_array))
+                                                            @foreach ($user_array as $value)
+                                                                @php
+                                                                    $assigned_data = [];
+                                                                    if (isset($assignment_arr[$value][$i]) && !empty($assignment_arr[$value][$i])) {
+                                                                        $assigned_data = $assignment_arr[$value][$i];
+                                                                    }
+                                                                @endphp
+                                                                <td class="timeslot_td"
+                                                                    data-slot_time="{{ $time }}"
+                                                                    data-technician_id="{{ $value }}">
+                                                                    @if (isset($assigned_data) && !empty($assigned_data))
+                                                                        <div class="testclass">
+                                                                            @foreach ($assigned_data as $value2)
+                                                                                @if ($i == $value2->start_slot)
+                                                                                    @php
+                                                                                        $duration = $value2->duration;
+                                                                                        $height_slot = $duration / 60;
+                                                                                        $height_slot_px = $height_slot * 80 - 10;
+                                                                                    @endphp
+                                                                                    <div class="dts mb-1 edit_schedule flexibleslot"
+                                                                                        data-bs-toggle="modal"
+                                                                                        data-bs-target="#edit"
+                                                                                        style="cursor: pointer;height:{{ $height_slot_px . 'px' }};background:{{ $value2->color_code }};"
+                                                                                        data-id="{{ $value2->main_id }}">
+                                                                                        <h5
+                                                                                            style="font-size: 15px; padding-bottom: 0px; margin-bottom: 5px; margin-top: 3px;">
+                                                                                            {{ $value2->customername }}
+                                                                                            &nbsp;&nbsp;
+                                                                                        </h5>
+                                                                                        <p style="font-size: 11px;"><i
+                                                                                                class="fas fa-clock"></i>
+                                                                                            {{ $date }} --
+                                                                                            {{ $value2->job_code }}<br>{{ $value2->job_title }}
+                                                                                        </p>
+                                                                                        <p style="font-size: 12px;">
+                                                                                            {{ $value2->city }},
+                                                                                            {{ $value2->state }}
+                                                                                        </p>
+                                                                                    </div>
+                                                                                @endif
+                                                                            @endforeach
+                                                                        </div>
+                                                                    @else
+                                                                        <div class="dts2 createSchedule"
+                                                                            style="height: 100%;position: revert;"
+                                                                            data-bs-toggle="modal"
+                                                                            data-id="{{ $value }}"
+                                                                            data-time="{{ $date }}"
+                                                                            data-date="{{ $filterDate }}"
+                                                                            data-bs-target="#create"></div>
+                                                                    @endif
+                                                                </td>
+                                                            @endforeach
+                                                        @endif
+                                                    </tr>
                                                 @endfor
-                                        </tbody>
-                                    </table>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Modal -->
-        <div class="modal fade" id="create" tabindex="-1" aria-labelledby="scroll-long-inner-modal" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-scrollable2 modal-dialog modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header d-flex align-items-center" style="padding-bottom: 0px;">
-                        <h4 class="modal-title" id="myLargeModalLabel" style="margin-left: 28px;color: #2962ff;">ADD NEW
-                            JOB (ADD JOB & ASSIGN TECHNICIAN)
-                        </h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body createScheduleData">
-                        @include('schedule.create')
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Modal -->
-        <!-- Modal -->
-        <div class="modal fade" id="edit" tabindex="-1" aria-labelledby="scroll-long-inner-modal" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-scrollable2 modal-dialog modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header d-flex align-items-center" style="padding-bottom: 0px;">
-                        <h4 class="modal-title" id="myLargeModalLabel" style="margin-left: 28px;color: #2962ff;">
-                            UPDATE JOB
-                        </h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body editScheduleData">
-                        @include('schedule.edit')
+            <!-- Modal -->
+            <div class="modal fade" id="create" tabindex="-1" aria-labelledby="scroll-long-inner-modal"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable2 modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header d-flex align-items-center" style="padding-bottom: 0px;">
+                            <h4 class="modal-title" id="myLargeModalLabel" style="margin-left: 28px;color: #2962ff;">ADD NEW
+                                JOB (ADD JOB & ASSIGN TECHNICIAN)
+                            </h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body createScheduleData">
+                            @include('schedule.create')
+                        </div>
                     </div>
                 </div>
             </div>
+            <!-- Modal -->
+            <!-- Modal -->
+            <div class="modal fade" id="edit" tabindex="-1" aria-labelledby="scroll-long-inner-modal"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable2 modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header d-flex align-items-center" style="padding-bottom: 0px;">
+                            <h4 class="modal-title" id="myLargeModalLabel" style="margin-left: 28px;color: #2962ff;">
+                                UPDATE JOB
+                            </h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body editScheduleData">
+                            @include('schedule.edit')
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal -->
+
+            <!-- Modal -->
+            <div class="modal fade" id="newCustomer" tabindex="-1" aria-labelledby="scroll-long-inner-modal"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable2 modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header d-flex align-items-center" style="padding-bottom: 0px;">
+                            <h4 class="modal-title" id="myLargeModalLabel" style="margin-left: 28px;color: #2962ff;">ADD
+                                NEW CUSTOMER
+                            </h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body createCustomerData">
+
+
+
+                            <style>
+                                .required-field::after {
+
+                                    content: " *";
+
+                                    color: red;
+
+                                }
+                            </style>
+
+
+
+
+
+                            <form id="myForm" method="POST" action="{{ url('new/customer/schedule') }}"
+                                enctype="multipart/form-data">
+
+                                @csrf
+
+                                <div class="container-fluid">
+
+
+
+                                    <div class="row">
+
+                                        <div class="col-lg-9 d-flex align-items-stretch">
+
+                                            <div class="card w-100">
+
+
+
+                                                <div class="card-body border-top">
+
+
+
+                                                    <h4 class="card-title">Customer Information</h4>
+
+
+
+                                                    <div class="row">
+
+                                                        <div class="col-sm-12 col-md-4">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="first_name"
+                                                                    class="control-label col-form-label required-field">First
+                                                                    Name</label>
+
+                                                                <input type="text" class="form-control"
+                                                                    id="first_name" name="first_name" placeholder=""
+                                                                    required />
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="col-sm-12 col-md-4">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="last_name"
+                                                                    class="control-label col-form-label required-field">Last
+                                                                    Name</label>
+
+                                                                <input type="text" class="form-control" id="last_name"
+                                                                    name="last_name" placeholder="" required />
+
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="col-sm-12 col-md-4">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="display_name"
+                                                                    class="control-label col-form-label required-field">Display
+                                                                    Name (shown
+
+                                                                    on invoice)</label>
+
+                                                                <input type="text" class="form-control"
+                                                                    id="display_name" name="display_name" placeholder=""
+                                                                    required />
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+
+
+                                                    <div class="row mt-2">
+
+                                                        <div class="col-sm-12 col-md-4">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="email"
+                                                                    class="control-label col-form-label required-field">Email</label>
+
+                                                                <input type="email" class="form-control" id="email"
+                                                                    name="email" placeholder="" required />
+
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+
+
+
+                                                    <div class="row mt-2">
+
+                                                        <div class="col-sm-12 col-md-4">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="mobile_phone"
+                                                                    class="control-label col-form-label required-field">Mobile
+                                                                    Phone</label>
+
+                                                                <input type="text" class="form-control"
+                                                                    id="mobile_phone" name="mobile_phone" placeholder=""
+                                                                    required />
+
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="col-sm-12 col-md-4">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="home_phone"
+                                                                    class="control-label col-form-label">Home Phone</label>
+
+                                                                <input type="text" class="form-control"
+                                                                    id="home_phone" name="home_phone" placeholder="" />
+
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="col-sm-12 col-md-4">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="work_phone"
+                                                                    class="control-label col-form-label">Work Phone</label>
+
+                                                                <input type="text" class="form-control"
+                                                                    id="work_phone" name="work_phone" placeholder="" />
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+
+
+                                                    <div class="row mt-2">
+
+                                                        <div class="col-sm-12 col-md-4">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="image"
+                                                                    class="control-label col-form-label">Image
+                                                                    Upload</label>
+
+                                                                <input type="file" class="form-control" id="image"
+                                                                    name="image" accept="image/*" />
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-lg-3 d-flex align-items-stretch">
+
+                                            <div class="card w-100">
+
+                                                <div class="card-body border-top">
+
+                                                    <h4 class="card-title mb-3">&nbsp;</h4>
+
+                                                    <div class="row">
+
+                                                        <div class="col-sm-12 col-md-12">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="company"
+                                                                    class="control-label col-form-label">Company</label>
+
+                                                                <input type="text" class="form-control" id="company"
+                                                                    name="company" placeholder="" />
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="row">
+
+                                                        <div class="col-sm-12 col-md-12">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="role"
+                                                                    class="control-label col-form-label">Role</label>
+
+                                                                <input type="text" class="form-control" id="role"
+                                                                    name="role" placeholder="" />
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="row">
+
+                                                        <div class="col-sm-12 col-md-12">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="inputcontact"
+                                                                    class="control-label col-form-label">Type</label>
+
+                                                                <div class="form-check">
+
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="user_type" id="exampleRadios1"
+                                                                        value="Homeowner">
+
+                                                                    <label class="form-check-label"
+                                                                        for="exampleRadios1">Homeowner</label>
+
+                                                                </div>
+
+                                                                <div class="form-check">
+
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="user_type" id="exampleRadios2"
+                                                                        value="Business">
+
+                                                                    <label class="form-check-label"
+                                                                        for="exampleRadios2">Business</label>
+
+                                                                </div>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+
+
+
+                                        <div class="col-lg-12 d-flex align-items-stretch">
+
+                                            <div class="card w-100">
+
+
+
+                                                <div class="card-body border-top">
+
+                                                    <h4 class="card-title">Address</h4>
+
+                                                    <div class="row">
+
+                                                        <div class="col-sm-12 col-md-12">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="address1"
+                                                                    class="control-label col-form-label required-field">Address
+                                                                    Line 1
+
+                                                                    (Street)</label>
+
+                                                                <input type="text" class="form-control" id="address1"
+                                                                    name="address1" placeholder="" required />
+
+                                                            </div>
+
+                                                        </div>
+
+
+
+                                                    </div>
+
+                                                    <div class="row">
+
+                                                        <div class="col-sm-12 col-md-8">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="address_unit"
+                                                                    class="control-label col-form-label required-field">Address
+                                                                    Line 2</label>
+
+                                                                <input type="text" class="form-control"
+                                                                    id="address_unit" name="address_unit"
+                                                                    placeholder="" />
+
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="col-sm-12 col-md-4">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="display_name"
+                                                                    class="control-label col-form-label required-field">Type</label>
+
+                                                                <select class="form-select me-sm-2" id="address_type"
+                                                                    name="address_type">
+
+                                                                    <option value="">Select address..</option>
+
+                                                                    <option value="home">Home Address</option>
+
+                                                                    <option value="work">Work Address</option>
+
+                                                                    <option value="other">Other Address</option>
+
+                                                                </select>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+
+
+                                                    <div class="row">
+
+                                                        <div class="col-sm-12 col-md-4">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="state_id"
+                                                                    class="control-label col-form-label required-field">State</label>
+
+                                                                <select class="form-select me-sm-2" id="state_id"
+                                                                    name="state_id" required>
+
+                                                                    <option selected disabled value="">Select
+                                                                        State...</option>
+
+                                                                    @foreach ($locationStates as $locationState)
+                                                                        <option value="{{ $locationState->state_id }}">
+                                                                            {{ $locationState->state_name }}
+
+                                                                        </option>
+                                                                    @endforeach
+
+                                                                </select>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="col-sm-12 col-md-4">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="city"
+                                                                    class="control-label col-form-label required-field">City</label>
+
+                                                                <select class="form-select" id="city" name="city"
+                                                                    required>
+
+                                                                    <option selected disabled value="">Select City...
+                                                                    </option>
+
+                                                                </select>
+
+                                                            </div>
+                                                        </div>
+
+
+
+                                                        <div class="col-sm-12 col-md-4">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="zip_code"
+                                                                    class="control-label col-form-label required-field">Zip</label>
+
+                                                                <input type="text" class="form-control" id="zip_code"
+                                                                    name="zip_code" placeholder="" required />
+
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="row">
+
+                                                            <div class="col-sm-12 col-md-12">
+
+                                                                <button class="addnewemail" type="button"
+                                                                    style="margin-top: 20px;border: 1px solid #6c757d;width: 150px;padding: 5px 10px;border-radius: 2px;color: #6c757d;font-size: 12px;cursor: pointer;"
+                                                                    onclick="addNewAddress()">+ Add New Address</button>
+
+                                                            </div>
+
+                                                        </div>
+
+
+
+                                                    </div>
+
+                                                </div>
+
+
+
+                                                {{-- card address 2 --}}
+
+
+
+                                                <div id="adresscardtwo" class="card-body border-top"
+                                                    style="display:none;">
+
+                                                    <br>
+
+                                                    <h4 class="card-title">Address </h4>
+
+                                                    <div class="row">
+
+                                                        <div class="col-sm-12 col-md-12">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="address1"
+                                                                    class="control-label col-form-label">Address Line 1
+
+                                                                    (Street)</label>
+
+                                                                <input type="text" class="form-control" id="address1"
+                                                                    name="anotheraddress1" placeholder="" />
+
+                                                            </div>
+
+                                                        </div>
+
+
+
+                                                    </div>
+
+                                                    <div class="row">
+
+                                                        <div class="col-sm-12 col-md-8">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="address_unit"
+                                                                    class="control-label col-form-label">Address Line
+                                                                    2</label>
+
+                                                                <input type="text" class="form-control"
+                                                                    id="address_unit" name="anotheraddress_unit"
+                                                                    placeholder="" />
+
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="col-sm-12 col-md-4">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="display_name"
+                                                                    class="control-label col-form-label">Type</label>
+
+                                                                <select class="form-select me-sm-2"
+                                                                    id="anotheraddress_type" name="anotheraddress_type">
+
+                                                                    <option value="">Select address..</option>
+
+                                                                    <option value="home">Home Address</option>
+
+                                                                    <option value="work">Work Address</option>
+
+                                                                    <option value="other">Other Address</option>
+
+                                                                </select>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="row">
+
+                                                        <div class="col-sm-12 col-md-4">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="state_id"
+                                                                    class="control-label col-form-label">State</label>
+
+                                                                <select class="form-select me-sm-2" id="anotherstate_id"
+                                                                    name="anotherstate_id">
+
+                                                                    <option selected disabled value="">Select
+                                                                        State...</option>
+
+                                                                    @foreach ($locationStates as $locationState)
+                                                                        <option value="{{ $locationState->state_id }}">
+                                                                            {{ $locationState->state_name }}</option>
+                                                                    @endforeach
+
+                                                                </select>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="col-sm-12 col-md-4">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="city"
+                                                                    class="control-label col-form-label">City</label>
+
+                                                                <select class="form-select" id="anothercity"
+                                                                    name="anothercity">
+
+                                                                    <option selected disabled value="">Select City...
+                                                                    </option>
+
+                                                                </select>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="col-sm-12 col-md-4">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="anotherzip_code"
+                                                                    class="control-label col-form-label">Zip</label>
+
+                                                                <input type="text" class="form-control"
+                                                                    id="anotherzip_code" name="anotherzip_code"
+                                                                    placeholder="" />
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-lg-12 d-flex align-items-stretch">
+
+                                            <div class="card w-100">
+
+                                                <div class="card-body border-top">
+
+                                                    <h4 class="card-title mb-3">&nbsp;</h4>
+
+                                                    <div class="row">
+                                                        <div class="col-sm-12 col-md-12">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="source_id"
+                                                                    class="control-label col-form-label">Lead
+                                                                    Source</label>
+
+                                                                <select class="form-select me-sm-2" id="source_id"
+                                                                    name="source_id">
+
+                                                                    <option value="">Select Lead Source</option>
+
+                                                                    @foreach ($leadSources as $leadSource)
+                                                                        <option value="{{ $leadSource->source_id }}">
+                                                                            {{ $leadSource->source_name }}
+
+                                                                        </option>
+                                                                    @endforeach
+
+                                                                </select>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+
+
+                                    </div>
+
+                                    <div class="row">
+
+                                        <div class="col-lg-12 d-flex align-items-stretch">
+
+                                            <div class="card w-100">
+
+
+
+
+
+                                                <div class="card-body border-top">
+
+                                                    <h4 class="card-title">Notes</h4>
+
+                                                    <div class="row">
+
+                                                        <div class="col-sm-12 col-md-12">
+
+                                                            <div class="mb-3">
+
+                                                                <label class="control-label col-form-label">Customer
+                                                                    Notes</label>
+
+                                                                <input type="text" class="form-control"
+                                                                    id="customer_notes" name="customer_notes"
+                                                                    placeholder="" />
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+
+
+                                                    <div class="row">
+
+                                                        <div class="col-sm-12 col-md-12">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="tag_id"
+                                                                    class="control-label col-form-label">Customer
+                                                                    Tags</label>
+
+                                                                <select class="form-control" id="tag_id"
+                                                                    name="tag_id[]" multiple>
+
+                                                                    @foreach ($tags as $tag)
+                                                                        <option value="{{ $tag->tag_id }}">
+                                                                            {{ $tag->tag_name }}</option>
+                                                                    @endforeach
+
+                                                                </select>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+
+
+
+
+                                                </div>
+
+
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+
+                                        <div class="p-3 border-top">
+
+                                            <div class="action-form">
+
+                                                <div class="mb-3 mb-0 text-center">
+
+                                                    <button type="submit" id="submitBtn"
+                                                        class="btn btn-info rounded-pill px-4 waves-effect waves-light">Save</button>
+
+
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                            </form>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal -->
+
+
         </div>
-        <!-- Modal -->
     </div>
-</div>
+
+
 @section('script')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    var ajaxRequestForCustomer;
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function() {
+
+            $('#myForm').submit(function(e) {
+                e.preventDefault(); // Prevent default form submission
+
+                var formData = new FormData(this); // 'this' refers to the form DOM element
+
+                // Make an AJAX request to submit the form data
+                $.ajax({
+                    url: $(this).attr('action'), // Get the form action attribute
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    dataType: 'json',
+                    success: function(data) {
+                        // Handle success response here
+                        console.log(data.success); // Logging the value of data.success
+
+                        if (data.success === true) {
+                            // If success is true, close the current modal
+                            $('#newCustomer').modal('hide');
+                            // Display a success message using SweetAlert
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: 'Operation completed successfully.'
+                            }).then(function() {
+                                // Reset form fields
+                                $('#myForm')[0].reset();
+                                // Open another modal
+                                $('#create').modal('show');
+                            });
+                        }
+                        if (data.success === false) {
+                            // Display an error message using SweetAlert
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Operation failed. Please try again.'
+                            });
+                        }
+                    },
+
+                    error: function(xhr, status, error) {
+                        console.error('Error submitting form data:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Operation failed. Please try again.' + error
+                        });
+                    }
+                });
+            });
+
+
+
+        });
+    </script>
+
+    <script>
+        var ajaxRequestForCustomer;
 
         var ajaxRequestForService;
 
@@ -444,6 +1275,52 @@
                         },
                         onStepChanging: function(event, currentIndex, newIndex) {
 
+                            // new changes 
+                            if (newIndex > currentIndex) {
+                                // Assuming the user address step index is 3 (adjust if necessary)
+                                if (currentIndex === 0) {
+                                    // Check if user address is selected
+                                    var selectedAddress = $('.customer_address').val();
+                                    console.log(selectedAddress);
+                                    if (!selectedAddress) {
+                                        // User address is not selected, prevent navigation
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error',
+                                            text: 'Please select a user address before proceeding.'
+                                        });
+                                        return false; // Prevent navigation to the next step
+                                    }
+                                }
+                            }
+                            if (currentIndex === 1) {
+                                // Check if all required fields are filled
+                                var isValid = validateStep2Fields();
+                                if (!isValid) {
+                                    // Required fields are not filled, prevent navigation
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: 'Please fill in all required fields before proceeding.'
+                                    });
+                                    return false; // Prevent navigation to the next step
+                                }
+                            }
+                            if (currentIndex === 2) {
+                                // Check if all required fields are filled
+                                var isValid = validateStep3Fields();
+                                if (!isValid) {
+                                    // Required fields are not filled, prevent navigation
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: 'Please fill in all required fields before proceeding.'
+                                    });
+                                    return false; // Prevent navigation to the next step
+                                }
+                            }
+                            // end new chages 
+
                             if (newIndex < currentIndex) {
                                 return true;
                             }
@@ -470,6 +1347,8 @@
                                         .attr('content')
                                 },
                                 success: function(data) {
+
+
 
                                     $('a[href="#finish"]:eq(0)').text(
                                         'Submit Job');
@@ -529,11 +1408,18 @@
                                             title: "Success!",
                                             text: "Job Has Been Created",
                                             icon: "success"
+                                        }).then((result) => {
+                                            // Reload the page after the user clicks the 'OK' button on the success message
+                                            if (result.isConfirmed ||
+                                                result.isDismissed) {
+                                                location
+                                            .reload(); // Reload the current page
+                                            }
                                         });
 
-                                        scheduleButton.empty();
-                                        scheduleButton.html(
-                                            data.html);
+                                        // scheduleButton.empty();
+                                        // scheduleButton.html(
+                                        //     data.html);
                                     }
 
                                 }
@@ -615,7 +1501,7 @@
             var name = $(this).attr('data-name');
             $('.customer_id').val(id);
             $('.searchCustomer').val(name);
-            $('.searchCustomer').prop('disabled', true);
+            // $('.searchCustomer').prop('disabled', true);
             $('.customersSuggetions').hide();
             $('.pendingJobsSuggetions').hide();
             $('.CustomerAdderss').show();
@@ -967,6 +1853,343 @@
             $('.pre_product_discount').val(product_discount);
 
         });
-</script>
+
+        // new changes 
+        function validateStep2Fields() {
+            // Validate all fields in Step 2
+            var isValid = true;
+
+            // Check if job title is filled
+            var jobTitle = $('.job_title').val().trim();
+            if (jobTitle === '') {
+                isValid = false;
+            }
+
+            // Check if ticket number is filled
+            var ticketNumber = $('.job_code').val().trim();
+            if (ticketNumber === '') {
+                isValid = false;
+            }
+
+            // Check if appliances is selected
+            var appliances = $('.appliances').val();
+            if (!appliances) {
+                isValid = false;
+            }
+
+            // Check if manufacturer is selected
+            var manufacturer = $('select[name="manufacturer"]').val();
+            if (!manufacturer) {
+                isValid = false;
+            }
+
+            // Check if priority is selected
+            var priority = $('select[name="priority"]').val();
+            if (!priority) {
+                isValid = false;
+            }
+
+            // Check if model number is filled
+            var modelNumber = $('.model_number').val().trim();
+            if (modelNumber === '') {
+                isValid = false;
+            }
+
+            // Check if serial number is filled
+            var serialNumber = $('.serial_number').val().trim();
+            if (serialNumber === '') {
+                isValid = false;
+            }
+
+            // Check if job description is filled
+            var jobDescription = $('.job_description').val().trim();
+            if (jobDescription === '') {
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        function validateStep3Fields() {
+            // Validate all fields in Step 3
+            var isValid = true;
+
+            // Check if job type is selected
+            var jobType = $('.job_type').val();
+            if (jobType === '') {
+                isValid = false;
+            }
+
+            // Check if services are selected (only if in warranty)
+            var selectedServices = $('.services').val();
+            if (jobType === 'in_warranty' && (!selectedServices || selectedServices.length === 0)) {
+                isValid = false;
+            }
+
+            // Check if products are selected
+            var selectedProducts = $('.products').val();
+            if (!selectedProducts || selectedProducts.length === 0) {
+                isValid = false;
+            }
+
+            return isValid;
+        }
+        //  end new changes 
+    </script>
+
+    <script>
+        $(document).ready(function() {
+
+            $('#state_id').change(function() {
+
+                var stateId = $(this).val();
+                console.log(stateId);
+
+                var citySelect = $('#city');
+
+                citySelect.html('<option selected disabled value="">Loading...</option>');
+
+
+
+                // Make an AJAX request to fetch the cities based on the selected state
+
+                $.ajax({
+
+                    url: "{{ route('getcities') }}", // Correct route URL
+
+                    type: 'GET',
+
+                    data: {
+
+                        state_id: stateId
+
+                    },
+
+                    dataType: 'json',
+
+                    success: function(data) {
+
+                        citySelect.html(
+                            '<option selected disabled value="">Select City...</option>');
+
+                        $.each(data, function(index, city) {
+
+                            citySelect.append('<option value="' + city.city_id + '">' +
+                                city.city + ' - ' + city.zip + '</option>');
+
+                        });
+
+                    },
+
+                    error: function(xhr, status, error) {
+
+                        console.error('Error fetching cities:', error);
+
+                    }
+
+                });
+
+            });
+
+
+
+            // Trigger another function to get zip code after selecting a city
+
+            $('#city').change(function() {
+
+                var cityId = $(this).val();
+
+                var cityName = $(this).find(':selected').text().split(' - ')[
+                    0]; // Extract city name from option text
+
+                getZipCode(cityId, cityName); // Call the function to get the zip code
+
+            });
+
+        });
+
+
+
+        // Function to get zip code
+
+        function getZipCode(cityId, cityName) {
+
+            $.ajax({
+
+                url: "{{ route('getZipCode') }}", // Adjust route URL accordingly
+
+                type: 'GET',
+
+                data: {
+
+                    city_id: cityId,
+
+                    city_name: cityName
+
+                },
+
+                dataType: 'json',
+
+                success: function(data) {
+
+                    var zipCode = data.zip_code; // Assuming the response contains the zip code
+
+                    $('#zip_code').val(zipCode); // Set the zip code in the input field
+
+                },
+
+                error: function(xhr, status, error) {
+
+                    console.error('Error fetching zip code:', error);
+
+                }
+
+            });
+
+        }
+    </script>
+
+    <script>
+        $(document).ready(function() {
+
+            $('#anotherstate_id').change(function() {
+
+                var stateId = $(this).val();
+
+                var citySelect = $('#anothercity');
+
+                citySelect.html('<option selected disabled value="">Loading...</option>');
+
+
+
+                // Make an AJAX request to fetch the cities based on the selected state
+
+                $.ajax({
+
+                    url: "{{ route('getcitiesanother') }}", // Correct route URL
+
+                    type: 'GET',
+
+                    data: {
+
+                        anotherstate_id: stateId
+
+                    },
+
+                    dataType: 'json',
+
+                    success: function(data) {
+
+                        citySelect.html(
+                            '<option selected disabled value="">Select City...</option>');
+
+                        $.each(data, function(index, city) {
+
+                            citySelect.append('<option value="' + city.city_id + '">' +
+                                city.city + ' - ' + city.zip + '</option>');
+
+                        });
+
+                    },
+
+                    error: function(xhr, status, error) {
+
+                        console.error('Error fetching cities:', error);
+
+                    }
+
+                });
+
+            });
+
+
+
+            // Trigger another function to get zip code after selecting a city
+
+            $('#anothercity').change(function() {
+
+                var cityId = $(this).val();
+
+                var cityName = $(this).find(':selected').text().split(' - ')[
+                    0]; // Extract city name from option text
+
+                getZipCodeanother(cityId, cityName); // Call the function to get the zip code
+
+            });
+
+        });
+
+
+
+        // Function to get zip code
+
+        function getZipCodeanother(cityId, cityName) {
+
+            $.ajax({
+
+                url: "{{ route('getZipCodeanother') }}", // Adjust route URL accordingly
+
+                type: 'GET',
+
+                data: {
+
+                    anothercity_id: cityId,
+
+                    anothercity_name: cityName
+
+                },
+
+                dataType: 'json',
+
+                success: function(data) {
+
+                    var anotherzip_code = data.anotherzip_code; // Assuming the response contains the zip code
+
+                    $('#anotherzip_code').val(anotherzip_code); // Set the zip code in the input field
+
+                },
+
+                error: function(xhr, status, error) {
+
+                    console.error('Error fetching zip code:', error);
+
+                }
+
+            });
+
+        }
+    </script>
+
+
+    <script>
+        function addNewAddress() {
+
+            var addressCardTwo = document.getElementById("adresscardtwo");
+
+            if (addressCardTwo.style.display === "none") {
+
+                addressCardTwo.style.display = "block";
+
+            } else {
+
+                addressCardTwo.style.display = "none";
+
+            }
+
+            var addressCardTwoone = document.getElementById("adresscardtwo1");
+
+            if (addressCardTwoone.style.display === "none") {
+
+                addressCardTwoone.style.display = "block";
+
+            } else {
+
+                addressCardTwoone.style.display = "none";
+
+            }
+
+        }
+    </script>
 @endsection
+
 @endsection
