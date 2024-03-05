@@ -13,7 +13,7 @@ class ProductAssigned extends Model
 
 
     // Define fillable fields if needed
-    protected $fillable = ['product_id', 'technician_id'];
+    protected $fillable = ['product_id', 'technician_id','quantity'];
 
     public function Product()
     {

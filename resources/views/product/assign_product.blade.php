@@ -66,7 +66,7 @@
                                         <form action="{{ url('store/assign-product') }}" method="POST">
                                             @csrf
                                             <div class="row">
-                                                <div class="col-md-5">
+                                                <div class="col-md-4">
                                                     <label for="technician"
                                                         class="control-label bold mb5">Technician</label>
                                                     <select class="select2-with-menu-bg form-control" name="technician_id[]"
@@ -78,7 +78,7 @@
                                                         @endforeach
                                                     </select>
                                                 </div>
-                                                <div class="col-md-5">
+                                                <div class="col-md-4">
                                                     <label for="parts" class="control-label bold mb5">Parts</label>
                                                     <select class="select2-with-menu-bg form-control" name="product_id[]"
                                                         id="menu-bg-multiple" multiple="multiple" data-bgcolor="light"
@@ -89,6 +89,10 @@
                                                                 {{ $item->product_name }}</option>
                                                         @endforeach
                                                     </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label for="parts" class="control-label bold mb5">Quantity</label>
+                                                   <input type="number" class="form-control" name="quantity">
                                                 </div>
                                                 <div class="col-md-2">
                                                     <button type="submit" class="btn waves-effect waves-light btn-primary"
@@ -117,7 +121,7 @@
                                                 @foreach ($assign->where('technician_id', $item->id) as $assignment)
                                                     <li class="list-group-item d-flex align-items-center">
                                                         <i class="text-info fas fa-user mx-2"></i>
-                                                        {{ $assignment->Product->product_name ?? null }}
+                                                        {{ $assignment->Product->product_name ?? null }} ({{$assignment->quantity ?? null}})
                                                     </li>
                                                 @endforeach
 

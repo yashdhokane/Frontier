@@ -177,6 +177,7 @@ class ProductCategoryController extends Controller
                 $assign = new ProductAssigned();
                 $assign->product_id = $productId;
                 $assign->technician_id = $technicianId;
+                $assign->quantity = $request->quantity;
                 $assign->save();
             }
         }
