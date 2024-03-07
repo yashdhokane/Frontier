@@ -230,55 +230,60 @@
                                             </thead>
                                             <tbody>
                                                 @for ($i = 7; $i <= 18; $i++)
-                                                    <tr>
-                                                        <td class="timeslot_td">
-                                                            @if ($i > 12)
+                                                    @for ($minute = 0; $minute < 60; $minute += 30)
+                                                        <tr>
+                                                            <td class="timeslot_td">
                                                                 @php
-                                                                    $time = $i - 12;
-                                                                    $date = $time . ' pm';
-                                                                @endphp
-                                                                {{ $date }}
-                                                            @else
-                                                                @php
-                                                                    $time = $i;
-                                                                    $date = $i . ' am';
-                                                                @endphp
-                                                                {{ $date }}
-                                                            @endif
-                                                        </td>
-                                                        @if (isset($user_array) && !empty($user_array))
-                                                            @foreach ($user_array as $value)
-                                                                @php
-                                                                    $assigned_data = [];
-                                                                    if (isset($assignment_arr[$value][$i]) && !empty($assignment_arr[$value][$i])) {
-                                                                        $assigned_data = $assignment_arr[$value][$i];
+                                                                    $time = $i >= 12 ? ($i > 12 ? $i - 12 : $i) : $i;
+                                                                    $minutes = '00'; // Default minutes
+                                                                    if ($i % 1 !== 0) {
+                                                                        $minutes = '30'; // Adjust minutes for half-hour intervals
                                                                     }
+                                                                    $date = $i >= 12 ? 'pm' : 'am';
+
+                                                                    $display_hour = $i > 12 ? $i - 12 : $i;
+                                                                    $display_minute = $minute == 0 ? '00' : $minute;
+                                                                    $time = $display_hour . ':' . $display_minute . ' ' . $date;
+                                                                    $timeString = $time . ($minutes == '00' ? '' : ':30');
+                                                                    // Format $time for comparison
+                                                                    $formattedTime = date('h:i A', strtotime($time));
                                                                 @endphp
-                                                                <td class="timeslot_td"
-                                                                    data-slot_time="{{ $time }}"
-                                                                    data-technician_id="{{ $value }}">
-                                                                    @if (isset($assigned_data) && !empty($assigned_data))
-                                                                        <div class="testclass">
-                                                                            @foreach ($assigned_data as $value2)
-                                                                                @if ($i == $value2->start_slot)
+                                                                {{ $time }}
+                                                            </td>
+                                                            @if (isset($user_array) && !empty($user_array))
+                                                                @foreach ($user_array as $value)
+                                                                    @php
+                                                                        $assigned_data = [];
+                                                                        if (isset($assignment_arr[$value][$formattedTime]) && !empty($assignment_arr[$value][$formattedTime])) {
+                                                                            $assigned_data = $assignment_arr[$value][$formattedTime];
+                                                                            // dd($assigned_data);
+                                                                        }
+                                                                    @endphp
+                                                                    <td class="timeslot_td"
+                                                                        data-slot_time="{{ $timeString }}"
+                                                                        data-technician_id="{{ $value }}">
+                                                                        @if (isset($assigned_data) && !empty($assigned_data))
+                                                                            <div class="testclass">
+                                                                                @foreach ($assigned_data as $value2)
                                                                                     @php
                                                                                         $duration = $value2->duration;
-                                                                                        $height_slot = $duration / 60;
+                                                                                        $height_slot = $duration / 30;
                                                                                         $height_slot_px = $height_slot * 80 - 10;
+                                                                                        // dd($height_slot_px);
                                                                                     @endphp
                                                                                     <div class="dts mb-1 edit_schedule flexibleslot"
                                                                                         data-bs-toggle="modal"
                                                                                         data-bs-target="#edit"
-                                                                                        style="cursor: pointer;height:{{ $height_slot_px . 'px' }};background:{{ $value2->color_code }};"
+                                                                                        style="cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->color_code }};"
                                                                                         data-id="{{ $value2->main_id }}">
                                                                                         <h5
                                                                                             style="font-size: 15px; padding-bottom: 0px; margin-bottom: 5px; margin-top: 3px;">
                                                                                             {{ $value2->customername }}
                                                                                             &nbsp;&nbsp;
                                                                                         </h5>
-                                                                                        <p style="font-size: 11px;"><i
-                                                                                                class="fas fa-clock"></i>
-                                                                                            {{ $date }} --
+                                                                                        <p style="font-size: 11px;">
+                                                                                            <i class="fas fa-clock"></i>
+                                                                                            {{ $timeString }} --
                                                                                             {{ $value2->job_code }}<br>{{ $value2->job_title }}
                                                                                         </p>
                                                                                         <p style="font-size: 12px;">
@@ -286,22 +291,22 @@
                                                                                             {{ $value2->state }}
                                                                                         </p>
                                                                                     </div>
-                                                                                @endif
-                                                                            @endforeach
-                                                                        </div>
-                                                                    @else
-                                                                        <div class="dts2 createSchedule"
-                                                                            style="height: 100%;position: revert;"
-                                                                            data-bs-toggle="modal"
-                                                                            data-id="{{ $value }}"
-                                                                            data-time="{{ $date }}"
-                                                                            data-date="{{ $filterDate }}"
-                                                                            data-bs-target="#create"></div>
-                                                                    @endif
-                                                                </td>
-                                                            @endforeach
-                                                        @endif
-                                                    </tr>
+                                                                                @endforeach
+                                                                            </div>
+                                                                        @else
+                                                                            <div class="dts2 createSchedule"
+                                                                                style="height: 100%; position: revert;"
+                                                                                data-bs-toggle="modal"
+                                                                                data-id="{{ $value }}"
+                                                                                data-time="{{ $timeString }}"
+                                                                                data-date="{{ $filterDate }}"
+                                                                                data-bs-target="#create"></div>
+                                                                        @endif
+                                                                    </td>
+                                                                @endforeach
+                                                            @endif
+                                                        </tr>
+                                                    @endfor
                                                 @endfor
                                             </tbody>
                                         </table>
@@ -1422,7 +1427,7 @@
                     var getTotal = $('.total').val().trim();
                     var total = parseInt(getTotal) - parseInt(product_cost) + parseInt(
                         product_discount) - parseInt(
-                            product_tax);
+                        product_tax);
                     $('.total').val(total);
                     $('.totaltext').text('$' + total);
 
@@ -1430,8 +1435,9 @@
                     $('.customer_number_email').text(data.user.mobile + ' / ' + data.user.email);
                     $('.show_customer_name').text(data.user.name);
                     $('.show_customer_area').text(data.city + ' Area');
-                    $('.c_address').text(data.address_type + ': ' + data.address + ' ' + data.city + ' ' + data.state + ' ' + data.zipcode);
-                    
+                    $('.c_address').text(data.address_type + ': ' + data.address + ' ' + data.city +
+                        ' ' + data.state + ' ' + data.zipcode);
+
                 }
             });
 
@@ -1568,14 +1574,10 @@
                                             }
                                         });
 
-                                        var elements = $(
-                                            '[data-slot_time="' +
-                                            data
-                                            .start_date +
-                                            '"][data-technician_id="' +
-                                            data
-                                            .technician_id +
-                                            '"]');
+                                        var elements = $('[data-slot_time="' +
+                                            data.start_date +
+                                            '"][data-technician_id="' + data
+                                            .technician_id + '"]');
 
                                         elements.empty();
 

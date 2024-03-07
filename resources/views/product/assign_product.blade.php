@@ -92,7 +92,7 @@
                                                 </div>
                                                 <div class="col-md-2">
                                                     <label for="parts" class="control-label bold mb5">Quantity</label>
-                                                   <input type="number" class="form-control" name="quantity">
+                                                   <input type="number" class="form-control" name="quantity" required>
                                                 </div>
                                                 <div class="col-md-2">
                                                     <button type="submit" class="btn waves-effect waves-light btn-primary"
@@ -107,40 +107,58 @@
                     </div>
 
                     <div class="row">
-
                         @foreach ($technician as $item)
                             <div class="col-md-3">
-
                                 <div class="mb-2">
                                     <div class="card">
                                         <div class="card-body text-left">
                                             <h4 class="card-title mb-2">{{ $item->name }}</h4>
                                             <h6 class="mb-2">Assigned to </h6>
                                             <ul class="list-group list-group-horizontal-xl">
-
+                                                @php
+                                                    $assignedProducts = [];
+                                                @endphp
+                    
                                                 @foreach ($assign->where('technician_id', $item->id) as $assignment)
-                                                    <li class="list-group-item d-flex align-items-center">
-                                                        <i class="text-info fas fa-user mx-2"></i>
-                                                        {{ $assignment->Product->product_name ?? null }} ({{$assignment->quantity ?? null}})
-                                                    </li>
+                                                    @if (!isset($assignedProducts[$assignment->product_id]))
+                                                        @php
+                                                            $assignedProducts[$assignment->product_id] = $assignment->quantity;
+                                                        @endphp
+                                                    @else
+                                                        @php
+                                                            $assignedProducts[$assignment->product_id] += $assignment->quantity;
+                                                        @endphp
+                                                    @endif
                                                 @endforeach
-
-                                                @if ($assign->where('technician_id', $item->id)->isEmpty())
+                    
+                                                @if (empty($assignedProducts))
                                                     <p>No Part Assigned</p>
+                                                @else
+                                                    @foreach ($assignedProducts as $productId => $quantity)
+                                                        @php
+                                                            $productItem = $product->find($productId);
+                                                        @endphp
+                                                        @if ($productItem)
+                                                            <li class="list-group-item d-flex align-items-center">
+                                                                <i class="text-info fas fa-user mx-2"></i>
+                                                                {{ $productItem->product_name }} ({{ $quantity }})
+                                                            </li>
+                                                        @else
+                                                            <li class="list-group-item d-flex align-items-center">
+                                                                <i class="text-danger fas fa-exclamation-triangle mx-2"></i>
+                                                                Product not found ({{ $quantity }})
+                                                            </li>
+                                                        @endif
+                                                    @endforeach
                                                 @endif
-
                                             </ul>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         @endforeach
-
                     </div>
-
-
-
-
+                    
 
 
                 </div>

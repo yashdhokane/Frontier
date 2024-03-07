@@ -20,7 +20,7 @@ class PaymentController extends Controller
     {
         $payment = Payment::with('user', 'JobModel')->latest()->get();
 
-        $manufacturer = Manufacturer::all();
+        $manufacturer = Manufacturer::where('is_active','yes')->get();
 
         $tech = User::where('role', 'technician')->get();
 

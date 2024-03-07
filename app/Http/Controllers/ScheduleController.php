@@ -119,7 +119,9 @@ class ScheduleController extends Controller
 
                 if (isset($result) && !empty($result->count())) {
                     foreach ($result as $key2 => $value2) {
-                        $assignment_arr[$value][$value2->start_slot][] = $value2;
+                        $datetimeString = $value2->start_date_time;
+                        $time = date("h:i A", strtotime($datetimeString));
+                        $assignment_arr[$value][$time][] = $value2;
                     }
                 }
             }
@@ -451,7 +453,7 @@ class ScheduleController extends Controller
 
                 $returnDate = '<div class="dts mb-1 edit_schedule flexibleslot" data-bs-toggle="modal" data-bs-target="#edit" style="cursor: pointer;height:' . $height_slot_px . 'px;background:' . $technician->color_code . ';" data-id="' . $jobId . '">
                     <h5 style="font-size: 15px; padding-bottom: 0px; margin-bottom: 5px; margin-top: 3px;">' . $data['customer_name'] . '</h5>
-                    <p style="font-size: 11px;"><i class="fas fa-clock"></i>' . $start_date_time->format('h a') . ' -- ' . $data['job_code'] . ' <br>' . $data['job_title'] . '</p>
+                    <p style="font-size: 11px;"><i class="fas fa-clock"></i>' . $start_date_time->format('h:i:s') . ' -- ' . $data['job_code'] . ' <br>' . $data['job_title'] . '</p>
                     <p style="font-size: 12px;">' . $getCustomerDetails->userAddress->city . ',' . $getCustomerDetails->userAddress->state_name . '</p></div>';
 
                 return ['html' => $returnDate, 'start_date' => $start_date_time->copy()->format('g'), 'technician_id' => $data['technician_id']];

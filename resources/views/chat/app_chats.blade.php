@@ -178,6 +178,10 @@
                         // Example: Append user data to a container
                         $.each(users, function(index, user) {
                             $('.user-container').empty();
+                            // Check if the user has an image, if not, use a default image
+                            var userImage = user.user_image ?
+                                'public/images/technician/' + user.user_image :
+                                'public/images/technician/1707736455_avatar-8.png';
                             $('.user-container').append(
                                 '<img src="public/images/technician/' + user
                                 .user_image +
@@ -363,12 +367,16 @@
 
                     $('.chat-list').empty();
 
+                    $('.user-container').empty();
+
                     // Example: Append user data to a container
                     $.each(users, function(index, user) {
-                        $('.user-container').empty();
+                        // Determine the image URL
+                        console.log(user.user_image);
                         var imageUrl = user.user_image ? ('public/images/technician/' + user
                                 .user_image) :
                             'public/images/technician/1707736455_avatar-8.png';
+
                         $('.user-container').append(
                             '<img src="' + imageUrl +
                             '" alt="dynamic-image" class="rounded-circle" width="45" /><span class="name fw-bold ms-2">' +
