@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JobModel;
 use App\Models\LocationCity;
 use App\Models\LocationState;
 use App\Models\User;
@@ -58,6 +59,7 @@ class ScheduleController extends Controller
         $tomorrowDate = $currentDate->copy()->addDay()->format('Y-m-d');
 
         $filterDate = $currentDate->format('Y-m-d');
+        
 
         $user_array = [];
 
@@ -169,7 +171,7 @@ class ScheduleController extends Controller
                 ->where('role', 'customer')
                 ->get();
 
-            $filterJobs = DB::table('jobs')->select('jobs.job_title', 'users.name as customer_name', 'technician.name as technician_name', 'jobs.created_at', 'appliances.appliance_name')
+            $filterJobs = DB::table('jobs')->select('jobs.job_title','jobs.id','jobs.address', 'users.name as customer_name', 'technician.name as technician_name', 'jobs.created_at', 'appliances.appliance_name')
                 ->join('appliances', 'appliances.appliance_id', 'jobs.appliances_id')
                 ->join('users', 'users.id', 'jobs.customer_id')
                 ->join('users as technician', 'technician.id', 'jobs.technician_id')
@@ -213,15 +215,15 @@ class ScheduleController extends Controller
 
                     $createdDate = Carbon::parse($value->created_at);
 
-                    $pendingJobs .= '<div class="pending_jobs2"><div class="row"><div class="col-md-12">';
-                    $pendingJobs .= '<h6 class="font-weight-medium mb-0">' . $value->job_title . '</h6></div></div><div class="row">';
+                    $pendingJobs .= '<div class="pending_jobs2" data-id="' . $value->id . '" data-address="' . $value->address . '"><div class="row"><div class="col-md-12">';
+                    $pendingJobs .= '<h6 class="font-weight-medium mb-0">' . $value->job_title . '</h6></div>';
                     $pendingJobs .= '<div class="col-md-6 reschedule_job">Customer: ' . $value->customer_name . '</div>';
-                    $pendingJobs .= '<div class="col-md-6 reschedule_job" style="display: contents;">Technician: ' . $value->technician_name . '</div></div><div class="row">';
+                    $pendingJobs .= '<div class="col-md-6 reschedule_job" style="display: contents;">Technician: ' . $value->technician_name . '</div>';
                     $pendingJobs .= '<div class="col-md-12 reschedule_job">' . $value->appliance_name . ' (On ' . $createdDate->format('Y-m-d') . ')</div></div></div>';
                 }
             }
         }
-
+        
         return ['customers' => $customers, 'pendingJobs' => $pendingJobs];
     }
 
@@ -351,33 +353,22 @@ class ScheduleController extends Controller
 
                 $product_tax = (isset($data['product_tax']) && !empty($data['product_tax'])) ? $data['product_tax'] : 0;
 
-                $getCustomerDetails = User::select('user_address.*')
-                    ->join('user_address', 'user_address.user_id', 'users.id')
-                    ->where('users.id', $data['customer_id'])->where('user_address.address_type', $data['address'])
+                $getCustomerDetails = User::with('userAddress')
+                    ->where('id', $data['customer_id'])
                     ->first();
+                    // dd($getCustomerDetails);
 
                 $jobsData = [
                     'job_code' => (isset($data['job_code']) && !empty($data['job_code'])) ? $data['job_code'] : '',
-                    'customer_id' => (isset($data['customer_id']) && !empty($data['customer_id'])) ? $data['customer_id'] : '',
-                    'technician_id' => (isset($data['technician_id']) && !empty($data['technician_id'])) ? $data['technician_id'] : '',
                     'job_title' => (isset($data['job_title']) && !empty($data['job_title'])) ? $data['job_title'] : '',
-                    'job_type' => (isset($data['job_type']) && !empty($data['job_type'])) ? $data['job_type'] : '',
-                    'description' => (isset($data['description']) && !empty($data['description'])) ? $data['description'] : '',
+                    'appliances_id' => (isset($data['appliances']) && !empty($data['appliances'])) ? $data['appliances'] : '',
+                    'description' => (isset($data['job_description']) && !empty($data['job_description'])) ? $data['job_description'] : '',
                     'priority' => (isset($data['priority']) && !empty($data['priority'])) ? $data['priority'] : '',
+                    'warranty_type' => (isset($data['job_type']) && !empty($data['job_type'])) ? $data['job_type'] : '',
                     'tax' => $service_tax + $product_tax,
                     'discount' => (isset($data['discount']) && !empty($data['discount'])) ? $data['discount'] : 0,
                     'gross_total' => (isset($data['total']) && !empty($data['total'])) ? $data['total'] : 0,
                     'commission_total' => (isset($data['subtotal']) && !empty($data['subtotal'])) ? $data['subtotal'] : 0,
-                    'address_type' => (isset($data['address']) && !empty($data['address'])) ? $data['address'] : '',
-                    'address' => (isset($getCustomerDetails->address_line1) && !empty($getCustomerDetails->address_line1)) ? $getCustomerDetails->address_line1 : '',
-                    'city' => (isset($getCustomerDetails->city) && !empty($getCustomerDetails->city)) ? $getCustomerDetails->city : '',
-                    'state' => (isset($getCustomerDetails->state_name) && !empty($getCustomerDetails->state_name)) ? $getCustomerDetails->state_name : '',
-                    'zipcode' => (isset($getCustomerDetails->zipcode) && !empty($getCustomerDetails->zipcode)) ? $getCustomerDetails->zipcode : '',
-                    'latitude' => (isset($getCustomerDetails->latitude) && !empty($getCustomerDetails->latitude)) ? $getCustomerDetails->latitude : 0,
-                    'longitude' => (isset($getCustomerDetails->longitude) && !empty($getCustomerDetails->longitude)) ? $getCustomerDetails->longitude : 0,
-                    'updated_by' => auth()->id(),
-                    'job_field_ids' => 0,
-                    'tag_ids' => 0,
                     'updated_at' => date('Y-m-d H:i:s')
                 ];
 
@@ -408,33 +399,21 @@ class ScheduleController extends Controller
 
                 $jobAssignedID = DB::table('job_assigned')->where('job_id', $data['job_id'])->update($JobAssignedData);
 
-                if (isset($data['service_id']) && !empty($data['service_id']) && (isset($data['service_quantity']) && !empty($data['service_quantity']) && $data['service_quantity'] != 0)) {
+                if (isset($data['service_id']) && !empty($data['service_id']))
+                 {
 
                     $serviceData = [
                         'service_id' => (isset($data['service_id']) && !empty($data['service_id'])) ? $data['service_id'] : '',
-                        'service_description' => (isset($data['service_description']) && !empty($data['service_description'])) ? $data['service_description'] : '',
-                        'service_name' => (isset($data['service_name']) && !empty($data['service_name'])) ? $data['service_name'] : '',
-                        'base_price' => (isset($data['service_cost']) && !empty($data['service_cost'])) ? $data['service_cost'] : '',
-                        'quantity' => (isset($data['service_quantity']) && !empty($data['service_quantity'])) ? $data['service_quantity'] : '',
-                        'tax' => $service_tax,
-                        'discount' => (isset($data['service_discount']) && !empty($data['service_discount'])) ? $data['service_discount'] : '',
-                        'sub_total' => (isset($data['service_total']) && !empty($data['service_total'])) ? $data['service_total'] : '',
                     ];
 
                     $serviceDataInsert = DB::table('job_service_items')->where('job_id', $data['job_id'])->update($serviceData);
                 }
 
-                if (isset($data['product_id']) && !empty($data['product_id']) && (isset($data['product_quantity']) && !empty($data['product_quantity']) && $data['product_quantity'] != 0)) {
+                if (isset($data['product_id']) && !empty($data['product_id'])) 
+                {
 
                     $productData = [
                         'product_id' => (isset($data['product_id']) && !empty($data['product_id'])) ? $data['product_id'] : '',
-                        'product_description' => (isset($data['product_description']) && !empty($data['product_description'])) ? $data['product_description'] : '',
-                        'product_name' => (isset($data['product_name']) && !empty($data['product_name'])) ? $data['product_name'] : '',
-                        'base_price' => (isset($data['product_cost']) && !empty($data['product_cost'])) ? $data['product_cost'] : '',
-                        'quantity' => (isset($data['product_quantity']) && !empty($data['product_quantity'])) ? $data['product_quantity'] : '',
-                        'tax' => $product_tax,
-                        'discount' => (isset($data['product_discount']) && !empty($data['product_discount'])) ? $data['product_discount'] : '',
-                        'sub_total' => (isset($data['product_total']) && !empty($data['product_total'])) ? $data['product_total'] : '',
                     ];
 
                     $productDataInsert = DB::table('job_product_items')->where('job_id', $data['job_id'])->update($productData);
@@ -473,7 +452,7 @@ class ScheduleController extends Controller
                 $returnDate = '<div class="dts mb-1 edit_schedule flexibleslot" data-bs-toggle="modal" data-bs-target="#edit" style="cursor: pointer;height:' . $height_slot_px . 'px;background:' . $technician->color_code . ';" data-id="' . $jobId . '">
                     <h5 style="font-size: 15px; padding-bottom: 0px; margin-bottom: 5px; margin-top: 3px;">' . $data['customer_name'] . '</h5>
                     <p style="font-size: 11px;"><i class="fas fa-clock"></i>' . $start_date_time->format('h a') . ' -- ' . $data['job_code'] . ' <br>' . $data['job_title'] . '</p>
-                    <p style="font-size: 12px;">' . $getCustomerDetails->city . ',' . $getCustomerDetails->state_name . '</p></div>';
+                    <p style="font-size: 12px;">' . $getCustomerDetails->userAddress->city . ',' . $getCustomerDetails->userAddress->state_name . '</p></div>';
 
                 return ['html' => $returnDate, 'start_date' => $start_date_time->copy()->format('g'), 'technician_id' => $data['technician_id']];
             } else {
@@ -900,4 +879,18 @@ class ScheduleController extends Controller
             return $jobDetails;
         }
     }
+
+    public function pending_jobs(Request $request)
+    {
+        
+        $jobId = $request->job_id;
+
+        $job = JobModel::with('jobDetails','JobAssign','JobNote','jobserviceinfo','jobproductinfo','technician','user')
+        ->where('id', $jobId)->first();
+
+// dd($job);
+        return response()->json($job);
+
+    }
+
 }

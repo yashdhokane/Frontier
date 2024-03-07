@@ -9,6 +9,8 @@
                     <input type="hidden" class="technician_id" name="technician_id" value="{{ $technician->id }}">
                     <input type="hidden" class="datetime" name="datetime" value="{{ $dateTime }}">
                     <input type="hidden" class="customer_id" id="" name="customer_id" value="">
+                    <input type="hidden" class="job_id" id="" name="job_id" value="">
+                    <input type="hidden" class="address_type" id="" name="address_type" value="">
                     <!-- Step 1 -->
                     <h6>Customer Information </h6>
                     <section>
@@ -146,7 +148,7 @@
                                 <div class="mt-0 mb-3">
                                     <h6 class="card-title"><i class="fas fa fa-industry"></i> Manufacturer </h6>
                                     <div class="form-group">
-                                        <select class="form-control" id="exampleFormControlSelect1"
+                                        <select class="form-control manufaturer" id="exampleFormControlSelect1"
                                             name="manufacturer">
                                             <option disabled>-- Select Manufacturer -- </option>
                                             @if (isset($manufacturers) && !empty($manufacturers))
@@ -165,10 +167,10 @@
                                 <div class="mt-0 mb-3">
                                     <h6 class="card-title"><i class="fas fa-user"></i> Priority </h6>
                                     <div class="form-group">
-                                        <select class="form-control" id="exampleFormControlSelect1" name="priority">
-                                            <option>High</option>
-                                            <option>Low</option>
-                                            <option>Medium</option>
+                                        <select class="form-control priority" id="exampleFormControlSelect1" name="priority">
+                                            <option value="high">High</option>
+                                            <option value="low">Low</option>
+                                            <option value="medium">Medium</option>
                                         </select>
                                     </div>
                                 </div>
@@ -228,7 +230,7 @@
                                     <h6 class="card-title"><i class="fas fa fa-pencil-square-o"></i> Notes to
                                         Technician </h6>
                                     <div class="form-group">
-                                        <textarea class="form-control" rows="1" placeholder="Text Here..." name="technician_notes"></textarea>
+                                        <textarea class="form-control technician_notes" rows="1" placeholder="Text Here..." name="technician_notes"></textarea>
                                         <small id="textHelp" class="form-text text-muted">Technician must read this
                                             note before start of the job.</small>
                                     </div>
@@ -255,7 +257,7 @@
                                                 <i class="far fa-edit fill-white" style="font-size: 17px;"></i>
                                             </button>
                                         </div>
-                                        <input type="text" class="form-control" placeholder="Job Tags here"
+                                        <input type="text" class="form-control tags" placeholder="Job Tags here"
                                             name="tags" aria-label="" aria-describedby="basic-addon1">
                                     </div>
                                 </div>
@@ -459,7 +461,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 reschedule_job">
-                                            <p class="show_customer_adderss"> 12, ZABH Suite,
+                                            <p class="show_customer_adderss c_address"> 12, ZABH Suite,
                                                 DG Building,
                                                 Fairfield, Florida, 62034</p>
                                         </div>

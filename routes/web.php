@@ -677,6 +677,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('get/existing-schedule', [ScheduleController::class, 'getExistingSchedule'])->name('existing.schedule');
 
+    Route::get('get/pending_jobs', [ScheduleController::class, 'pending_jobs']);
+
 
 
 

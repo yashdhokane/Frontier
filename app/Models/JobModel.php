@@ -165,6 +165,11 @@ class JobModel extends Model
         return $this->hasMany(LocationState::class, 'state', 'state_code');
     }
 
+    public function JobNote()
+    {
+        return $this->hasMany(JobNoteModel::class, 'id', 'job_id');
+    }
+
 
 
 

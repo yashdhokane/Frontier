@@ -1243,6 +1243,201 @@
 
         }
 
+        //   new changes  
+        // on clicking on pendingJobs 
+
+        $(document).on('click', '.pending_jobs2', function() {
+
+            var job_id = $(this).attr('data-id');
+            var address = $(this).attr('data-address');
+
+            // Append the address value as a selected option to the select element
+            $('.customer_address').append('<option value="' + address + '" selected>' + address + '</option>');
+
+
+            $.ajax({
+                url: "get/pending_jobs",
+                data: {
+                    job_id: job_id,
+                },
+                type: 'GET',
+                success: function(data) {
+                    console.log(data);
+                    $('a[href="#next"]').click();
+
+                    $('.job_id').val(data.id);
+                    $('.customer_id').val(data.customer_id);
+                    $('.job_title').val(data.job_title);
+                    $('.job_code').val(data.job_code);
+                    $('.address_type').val(data.address_type);
+
+                    var appliances_id = data.appliances_id;
+
+                    // Iterate through each option in the select element
+                    $('.appliances option').each(function() {
+                        // Check if the value of the current option matches the appliances_id
+                        if ($(this).val() == appliances_id) {
+                            // Set the selected attribute for the matching option
+                            $(this).prop('selected', true);
+                        }
+                    });
+
+                    var manufaturer_id = data.job_details.manufacturer_id;
+
+                    // Iterate through each option in the select element
+                    $('.manufaturer option').each(function() {
+                        // Check if the value of the current option matches the manufaturer_id
+                        if ($(this).val() == manufaturer_id) {
+                            // Set the selected attribute for the matching option
+                            $(this).prop('selected', true);
+                        }
+                    });
+
+                    var priority = data.priority;
+
+                    // Iterate through each option in the select element
+                    $('.priority option').each(function() {
+                        // Check if the value of the current option matches the manufaturer_id
+                        if ($(this).val() == priority) {
+                            // Set the selected attribute for the matching option
+                            $(this).prop('selected', true);
+                        }
+                    });
+
+                    $('.model_number').val(data.job_details.model_number);
+                    $('.serial_number').val(data.job_details.serial_number);
+
+                    var duration = data.job_assign.duration;
+
+                    // Iterate through each option in the select element
+                    $('.duration option').each(function() {
+                        // Check if the value of the current option matches the manufaturer_id
+                        if ($(this).val() == duration) {
+                            // Set the selected attribute for the matching option
+                            $(this).prop('selected', true);
+                        }
+                    });
+
+                    $('.job_description').val(data.description);
+                    $('.technician_notes').val(data.job_note.note);
+                    $('.tags').val(data.tag_ids);
+
+                    // step 3 
+
+                    var warranty_type = data.warranty_type;
+
+                    // Iterate through each option in the select element
+                    $('.job_type option').each(function() {
+                        // Check if the value of the current option matches the manufaturer_id
+                        if ($(this).val() == warranty_type) {
+                            // Set the selected attribute for the matching option
+                            $(this).prop('selected', true);
+                        }
+                    });
+
+                    var service_id = data.jobserviceinfo.service_id;
+
+                    // Iterate through each option in the select element
+                    $('.services option').each(function() {
+                        // Check if the value of the current option matches the manufaturer_id
+                        if ($(this).val() == service_id) {
+                            // Set the selected attribute for the matching option
+                            $(this).prop('selected', true);
+                        }
+                    });
+
+                    $('.pre_service_id').val(data.jobserviceinfo.service_id);
+                    $('.pre_service_cost').val(data.jobserviceinfo.base_price);
+                    $('.service_cost').val(data.jobserviceinfo.base_price);
+                    $('.pre_service_discount').val(data.jobserviceinfo.discount);
+                    $('.service_discount').val(data.jobserviceinfo.discount);
+                    $('.service_tax_text').text('$' + data.jobserviceinfo.tax);
+                    $('.service_tax').val(data.jobserviceinfo.tax);
+                    $('.service_total_text').text('$' + data.jobserviceinfo.sub_total);
+                    $('.service_total').val(data.jobserviceinfo.sub_total);
+
+                    var product_id = data.jobproductinfo.product_id;
+
+                    // Iterate through each option in the select element
+                    $('.products option').each(function() {
+                        // Check if the value of the current option matches the manufaturer_id
+                        if ($(this).val() == product_id) {
+                            // Set the selected attribute for the matching option
+                            $(this).prop('selected', true);
+                        }
+                    });
+
+                    $('.pre_product_id').val(data.jobproductinfo.product_id);
+                    $('.pre_product_cost').val(data.jobproductinfo.base_price);
+                    $('.product_cost').val(data.jobproductinfo.base_price);
+                    $('.pre_product_discount').val(data.jobproductinfo.discount);
+                    $('.product_discount').val(data.jobproductinfo.discount);
+                    $('.product_tax_text').text('$' + data.jobproductinfo.tax);
+                    $('.product_tax').val(data.jobproductinfo.tax);
+                    $('.product_total_text').text('$' + data.jobproductinfo.sub_total);
+                    $('.product_total').val(data.jobproductinfo.sub_total);
+
+                    // for total section  services
+                    var service_cost = $('.service_cost').val();
+
+                    var service_discount = $('.service_discount').val();
+
+                    var service_tax = $('.service_tax').val();
+
+                    var getSubTotalVal = $('.subtotal').val().trim();
+                    var subTotal = parseInt(getSubTotalVal) - parseInt(service_cost);
+                    $('.subtotal').val(subTotal);
+                    $('.subtotaltext').text('$' + subTotal);
+
+                    var getDiscount = $('.discount').val().trim();
+                    var discount = parseInt(getDiscount) - parseInt(service_discount);
+                    $('.discount').val(discount);
+                    $('.discounttext').text('$' + discount);
+
+                    var getTotal = $('.total').val().trim();
+                    var total = parseInt(getTotal) - parseInt(service_cost) + parseInt(
+                        service_discount) - parseInt(
+                        service_tax);
+                    $('.total').val(total);
+                    $('.totaltext').text('$' + total);
+
+                    // product 
+
+                    var product_cost = $('.product_cost').val();
+
+                    var product_discount = $('.product_discount').val();
+
+                    var product_tax = $('.product_tax').val();
+
+                    var getSubTotalVal = $('.subtotal').val().trim();
+                    var subTotal = parseInt(getSubTotalVal) - parseInt(product_cost);
+                    $('.subtotal').val(subTotal);
+                    $('.subtotaltext').text('$' + subTotal);
+
+                    var getDiscount = $('.discount').val().trim();
+                    var discount = parseInt(getDiscount) - parseInt(product_discount);
+                    $('.discount').val(discount);
+                    $('.discounttext').text('$' + discount);
+
+                    var getTotal = $('.total').val().trim();
+                    var total = parseInt(getTotal) - parseInt(product_cost) + parseInt(
+                        product_discount) - parseInt(
+                            product_tax);
+                    $('.total').val(total);
+                    $('.totaltext').text('$' + total);
+
+                    // customer detail step 4 
+                    $('.customer_number_email').text(data.user.mobile + ' / ' + data.user.email);
+                    $('.show_customer_name').text(data.user.name);
+                    $('.show_customer_area').text(data.city + ' Area');
+                    $('.c_address').text(data.address_type + ': ' + data.address + ' ' + data.city + ' ' + data.state + ' ' + data.zipcode);
+                    
+                }
+            });
+
+        });
+
+
         $(document).on('click', '.createSchedule', function() {
 
             var id = $(this).attr('data-id');
@@ -1353,7 +1548,7 @@
                                     $('a[href="#finish"]:eq(0)').text(
                                         'Submit Job');
 
-                                    if (date.start_date) {
+                                    if (data.start_date) {
 
                                         $('.btn-close').trigger(
                                             'click');
@@ -1413,7 +1608,7 @@
                                             if (result.isConfirmed ||
                                                 result.isDismissed) {
                                                 location
-                                            .reload(); // Reload the current page
+                                                    .reload(); // Reload the current page
                                             }
                                         });
 
