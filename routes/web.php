@@ -679,6 +679,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('get/pending_jobs', [ScheduleController::class, 'pending_jobs']);
 
+    Route::get('get/user/by_number', [ScheduleController::class, 'get_by_number']);
+
 
 
 

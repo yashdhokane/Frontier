@@ -358,8 +358,7 @@
                             <h4 class="modal-title" id="myLargeModalLabel" style="margin-left: 28px;color: #2962ff;">
                                 UPDATE JOB
                             </h4>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body editScheduleData">
                             @include('schedule.edit')
@@ -494,27 +493,6 @@
                                                             </div>
 
                                                         </div>
-                                                    </div>
-
-
-
-                                                    <div class="row mt-2">
-
-                                                        <div class="col-sm-12 col-md-4">
-
-                                                            <div class="mb-3">
-
-                                                                <label for="mobile_phone"
-                                                                    class="control-label col-form-label required-field">Mobile
-                                                                    Phone</label>
-
-                                                                <input type="text" class="form-control"
-                                                                    id="mobile_phone" name="mobile_phone" placeholder=""
-                                                                    required />
-
-                                                            </div>
-
-                                                        </div>
 
                                                         <div class="col-sm-12 col-md-4">
 
@@ -543,6 +521,42 @@
                                                             </div>
 
                                                         </div>
+                                                    </div>
+
+
+
+                                                    <div class="row mt-2">
+
+                                                        <div class="col-sm-12 col-md-4">
+
+                                                            <div class="mb-3">
+
+                                                                <label for="mobile_phone"
+                                                                    class="control-label col-form-label required-field">Mobile
+                                                                    Phone</label>
+
+                                                                <input type="text" class="form-control"
+                                                                    id="mobile_phone" name="mobile_phone" placeholder=""
+                                                                    required />
+
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="col-md-6 customersSuggetions2" style="display: none;height: 200px;
+                                                        overflow-y: scroll;">
+                                                            <div class="card">
+                                                                <div class="card-body">
+                                                                    <div class="">
+                                                                        <h5 class="font-weight-medium mb-2">Select Customer
+                                                                        </h5>
+                                                                        <div class="customers2">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
 
                                                     </div>
 
@@ -1211,7 +1225,90 @@
                 window.location.href = scheduleLink;
             });
 
+            $('#mobile_phone').keyup(function() {
+                var phone = $(this).val();
+                $('.customersSuggetions2').show();
 
+                $.ajax({
+                    url: 'get/user/by_number',
+                    method: 'GET',
+                    data: {
+                        phone: phone
+                    }, // send the phone number to the server
+                    success: function(data) {
+                        // Handle the response from the server here
+                        console.log(data);
+                        $('.rescheduleJobs').empty();
+
+                        $('.customers2').empty();
+
+                        if (data.customers) {
+                            $('.customers2').append(data.customers);
+                        } else {
+                            $('.customers2').html(
+                                '<div class="customer_sr_box"><div class="row"><div class="col-md-12" style="text-align: center;"><h6 class="font-weight-medium mb-0">No Data Found</h6></div></div></div>'
+                            );
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle errors here
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+
+            $(document).on('click', '.selectCustomer2', function() {
+                $('#newCustomer').modal('hide');
+                $('#create').modal('show');
+                var id = $(this).attr('data-id');
+                var name = $(this).attr('data-name');
+                $('.customer_id').val(id);
+                $('.searchCustomer').val(name);
+                // $('.searchCustomer').prop('disabled', true);
+                $('.customersSuggetions').hide();
+                $('.pendingJobsSuggetions').hide();
+                $('.CustomerAdderss').show();
+
+                var selectElement = $('.customer_address');
+                selectElement.empty();
+
+                var option = $('<option>', {
+                    value: '',
+                    text: '-- Select Address --'
+                });
+
+                selectElement.append(option);
+
+                $.ajax({
+                    url: "{{ route('customer.details') }}",
+                    data: {
+                        id: id,
+                    },
+                    type: 'GET',
+                    success: function(data) {
+                        if (data) {
+                            $('.customer_number_email').text(data.mobile + ' / ' + data.email);
+                            $('.show_customer_name').text(data.name);
+                        }
+                        if (data.address && $.isArray(data.address)) {
+                            $.each(data.address, function(index, element) {
+                                var addressString = $.ucfirst(element.address_type) + ':  ' +
+                                    element.address_line1 + ', ' + element.city +
+                                    ', ' + element.state_name + ', ' + element
+                                    .zipcode;
+                                var option = $('<option>', {
+                                    value: element.address_type,
+                                    text: addressString
+                                });
+
+                                option.attr('data-city', element.city);
+
+                                selectElement.append(option);
+                            });
+                        }
+                    }
+                });
+            });
 
 
         });

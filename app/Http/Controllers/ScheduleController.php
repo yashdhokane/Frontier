@@ -483,6 +483,7 @@ class ScheduleController extends Controller
                     'job_code' => (isset($data['job_code']) && !empty($data['job_code'])) ? $data['job_code'] : '',
                     'customer_id' => (isset($data['customer_id']) && !empty($data['customer_id'])) ? $data['customer_id'] : '',
                     'technician_id' => (isset($data['technician_id']) && !empty($data['technician_id'])) ? $data['technician_id'] : '',
+                    'appliances_id' => (isset($data['appliances']) && !empty($data['appliances'])) ? $data['appliances'] : '',
                     'job_title' => (isset($data['job_title']) && !empty($data['job_title'])) ? $data['job_title'] : '',
                     'warranty_type' => (isset($data['job_type']) && !empty($data['job_type'])) ? $data['job_type'] : '',
                     'description' => (isset($data['job_description']) && !empty($data['job_description'])) ? trim($data['job_description']) : '',
@@ -891,9 +892,60 @@ class ScheduleController extends Controller
         $job = JobModel::with('jobDetails','JobAssign','JobNote','jobserviceinfo','jobproductinfo','technician','user')
         ->where('id', $jobId)->first();
 
-// dd($job);
         return response()->json($job);
 
+    }
+
+    public function get_by_number(Request $request)
+    {
+        
+        $phone = $request->phone;
+
+        $customers = '';
+
+        if (isset($phone) && !empty($phone)) {
+
+            $filterCustomer = User::where('mobile', 'LIKE', '%' . $phone . '%')
+                ->where('role', 'customer')
+                ->get();
+
+
+            if (isset($filterCustomer) && !empty($filterCustomer->count())) {
+
+                foreach ($filterCustomer as $key => $value) {
+
+                    $getCustomerAddress = DB::table('user_address')
+                        ->select('user_address.city', 'location_states.state_name', 'user_address.zipcode')
+                        ->join('location_states', 'location_states.state_id', 'user_address.state_id')
+                        ->where('user_id', $value->id)
+                        ->first();
+
+                    $imagePath = public_path('images/customer/' . $value->user_image);
+
+                    if (file_exists($imagePath) && !empty($value->user_image)) {
+                        $imageSrc = asset('public/images/customer') . '/' . $value->user_image;
+                    } else {
+                        $imageSrc = asset('public/images/login_img_bydefault.png');
+                    }
+
+                    $customers .= '<div class="customer_sr_box selectCustomer2" data-id="' . $value->id . '" data-name="' . $value->name . '"><div class="row"><div class="col-md-2 d-flex align-items-center"><span>';
+                    $customers .= '<img src="' . $imageSrc . '" alt="user" class="rounded-circle" width="50">';
+                    $customers .= '</span></div><div class="col-md-8"><h6 class="font-weight-medium mb-0">' . $value->name . ' ';
+                    if (isset($getCustomerAddress->city) && !empty($getCustomerAddress->city)) {
+                        $customers .= '<small class="text-muted">' . $getCustomerAddress->city . ' Area</small>';
+                    }
+                    $customers .= '</h6><p class="text-muted test">' . $value->mobile . ' / ' . $value->email . '';
+                    if (isset($getCustomerAddress->city) && !empty($getCustomerAddress->city) && isset($getCustomerAddress->state_name) && !empty($getCustomerAddress->state_name) && isset($getCustomerAddress->zipcode) && !empty($getCustomerAddress->zipcode)) {
+                        $customers .= '<br />' . $getCustomerAddress->city . ', ' . $getCustomerAddress->state_name . ', ' . $getCustomerAddress->zipcode . '';
+                    }
+                    $customers .= '</p></div></div></div>';
+                }
+            }
+
+           
+        }
+        
+        return ['customers' => $customers];
     }
 
 }
