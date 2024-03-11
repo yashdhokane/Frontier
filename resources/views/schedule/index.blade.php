@@ -1,5 +1,6 @@
 @extends('home')
 @section('content')
+
     <style>
         .activegreen {
             border: 2px solid green !important;
@@ -158,17 +159,20 @@
             overflow-y: auto;
         }
     </style>
+
     <div class="page-wrapper" style="display:inline;">
         <!-- Container fluid  -->
         <!-- -------------------------------------------------------------- -->
-        <div class="page-breadcrumb" style="margin-top: -21px;">
+        {{-- <div class="page-breadcrumb" style="margin-top: -21px;">
             <div class="row">
                 <div class="col-5 align-self-center">
                     <h4 class="page-title">Calls Schedule</h4>
                 </div>
                 <div class="col-7 align-self-right" style="text-align: right;padding-right: 40px;">
-                    <a href="#." style="margin-right: 10px;font-size: 13px;"><i class="fas fa-calendar-alt"></i>
+                    <a id="selectDates" style="margin-right: 10px; font-size: 13px;cursor: pointer;"><i
+                            class="fas fa-calendar-alt"></i>
                         Select Dates</a>
+
                     <a href="#." style="margin-right: 10px;font-size: 13px;color: #ee9d01;font-weight: bold;"><i
                             class="fas fa-calendar-check"></i> Today</a>
                     <a href="#." style="margin-right: 10px;font-size: 13px;"><i class="fas fa-calendar-alt"></i>
@@ -177,7 +181,7 @@
                         Tomorrow</a>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <div class="container-fluid">
             <div class="row">
                 <div class="card">
@@ -188,10 +192,20 @@
                                     <div class="row">
                                         <div class="col-md-2"><a href="schedule?date={{ $previousDate }}"><i
                                                     class="fas fa-arrow-left"></i></a></div>
-                                        <div class="col-md-8">
+                                        <div class="col-md-4">
                                             <h4 class="fc-toolbar-title text-center" id="fc-dom-1">
                                                 {{ $formattedDate }}
                                             </h4>
+                                        </div>
+                                        <div class="col-md-4 text-end">
+                                            <a id="selectDates"
+                                                style="margin-right: 10px; font-size: 13px;cursor: pointer;"><i
+                                                    class="fas fa-calendar-alt"></i>
+                                                Select Dates</a>
+
+                                            <a href="#."
+                                                style="margin-right: 10px;font-size: 13px;color: #ee9d01;font-weight: bold;"><i
+                                                    class="fas fa-calendar-check"></i> Today</a>
                                         </div>
                                         <div class="col-md-2" style="text-align: right;"><a
                                                 href="schedule?date={{ $tomorrowDate }}"><i
@@ -1122,6 +1136,13 @@
 @section('script')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!-- Bootstrap Datepicker CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
+        rel="stylesheet">
+
+    <!-- Bootstrap Datepicker JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
     <script>
         $(document).ready(function() {
 
@@ -1177,6 +1198,19 @@
                     }
                 });
             });
+
+            $('#selectDates').datepicker({
+                format: 'yyyy-mm-dd', // Specify the format
+                autoclose: true, // Close the datepicker when a date is selected
+                todayHighlight: true // Highlight today's date
+            }).on('changeDate', function(selected) {
+                var selectedDate = new Date(selected.date);
+                var formattedDate = selectedDate.getFullYear() + '-' + (selectedDate.getMonth() + 1) + '-' +
+                    selectedDate.getDate();
+                var scheduleLink = 'schedule?date=' + formattedDate; // Direct path
+                window.location.href = scheduleLink;
+            });
+
 
 
 
@@ -1515,7 +1549,7 @@
                                     Swal.fire({
                                         icon: 'error',
                                         title: 'Error',
-                                        text: 'Please fill in all required fields before proceeding.'
+                                        text: 'Please fill in warranty fields before proceeding.'
                                     });
                                     return false; // Prevent navigation to the next step
                                 }
@@ -2103,6 +2137,12 @@
             if (jobDescription === '') {
                 isValid = false;
             }
+            // Check if technician notes is filled
+            var technicianNotes = $('.technician_notes').val().trim();
+            if (technicianNotes === '') {
+                isValid = false;
+            }
+
 
             return isValid;
         }
@@ -2117,17 +2157,7 @@
                 isValid = false;
             }
 
-            // Check if services are selected (only if in warranty)
-            var selectedServices = $('.services').val();
-            if (jobType === 'in_warranty' && (!selectedServices || selectedServices.length === 0)) {
-                isValid = false;
-            }
 
-            // Check if products are selected
-            var selectedProducts = $('.products').val();
-            if (!selectedProducts || selectedProducts.length === 0) {
-                isValid = false;
-            }
 
             return isValid;
         }

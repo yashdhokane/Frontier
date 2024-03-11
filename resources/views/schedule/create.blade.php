@@ -1,4 +1,5 @@
 @if (isset($technician) && !empty($technician))
+
     <div class="container-fluid">
         <div class="card">
             <div class="card-body wizard-content">
@@ -104,7 +105,7 @@
                         <div class="row">
                             <div class="col-md-8">
                                 <div class="mt-0 mb-3">
-                                    <h6 class="card-title"><i class="fas fa fa-sticky-note"></i> Job Title </h6>
+                                    <h6 class="card-title required-field"><i class="fas fa fa-sticky-note"></i> Job Title </h6>
                                     <div class="form-group">
                                         <input type="text" name="job_title" class="form-control job_title"
                                             placeholder="Add Job Title Here" aria-label=""
@@ -114,7 +115,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="mt-0 mb-3">
-                                    <h6 class="card-title"><i class="fas fa fa-ticket"></i> Ticket Number </h6>
+                                    <h6 class="card-title required-field"><i class="fas fa fa-ticket"></i> Ticket Number </h6>
                                     <div class="form-group">
                                         <input type="text" class="form-control job_code"
                                             placeholder="Job Code here" name="job_code" aria-label=""
@@ -127,7 +128,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="mt-0 mb-3">
-                                    <h6 class="card-title"><i class="fas fa fa-television"></i> Appliances </h6>
+                                    <h6 class="card-title required-field"><i class="fas fa fa-television"></i> Appliances </h6>
                                     <div class="form-group">
                                         <select class="form-control appliances" id="exampleFormControlSelect1"
                                             name="appliances">
@@ -146,7 +147,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="mt-0 mb-3">
-                                    <h6 class="card-title"><i class="fas fa fa-industry"></i> Manufacturer </h6>
+                                    <h6 class="card-title required-field"><i class="fas fa fa-industry"></i> Manufacturer </h6>
                                     <div class="form-group">
                                         <select class="form-control manufaturer" id="exampleFormControlSelect1"
                                             name="manufacturer">
@@ -165,7 +166,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="mt-0 mb-3">
-                                    <h6 class="card-title"><i class="fas fa-user"></i> Priority </h6>
+                                    <h6 class="card-title required-field"><i class="fas fa-user"></i> Priority </h6>
                                     <div class="form-group">
                                         <select class="form-control priority" id="exampleFormControlSelect1" name="priority">
                                             <option value="high">High</option>
@@ -180,7 +181,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="mt-0 mb-3">
-                                    <h6 class="card-title"><i class="fas fa fa-hashtag"></i> Model Number </h6>
+                                    <h6 class="card-title required-field"><i class="fas fa fa-hashtag"></i> Model Number </h6>
                                     <div class="form-group">
                                         <input type="text" class="form-control model_number"
                                             placeholder="Model Number here" aria-label=""
@@ -190,7 +191,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="mt-0 mb-3">
-                                    <h6 class="card-title"><i class="fas fa fa-hashtag"></i> Serial Number </h6>
+                                    <h6 class="card-title required-field required-field"><i class="fas fa fa-hashtag"></i> Serial Number </h6>
                                     <div class="form-group">
                                         <input type="text" class="form-control serial_number"
                                             placeholder="Serial Number here" aria-label=""
@@ -199,7 +200,7 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <h6 class="card-title"><i class="fas fa fa-calendar-check-o"></i> Duration</h6>
+                                <h6 class="card-title required-field"><i class="fas fa fa-calendar-check-o"></i> Duration</h6>
                                 <div class="form-group">
                                     <select class="form-control duration" id="exampleFormControlSelect1"
                                         name="duration">
@@ -216,7 +217,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mt-0 mb-3">
-                                    <h6 class="card-title"><i class="fas fa fa-pencil-square-o"></i> Job Description
+                                    <h6 class="card-title required-field"><i class="fas fa fa-pencil-square-o"></i> Job Description
                                     </h6>
                                     <div class="form-group">
                                         <textarea class="form-control job_description" rows="1" placeholder="Text Here..." name="job_description"></textarea>
@@ -227,7 +228,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mt-0 mb-3">
-                                    <h6 class="card-title"><i class="fas fa fa-pencil-square-o"></i> Notes to
+                                    <h6 class="card-title required-field"><i class="fas fa fa-pencil-square-o"></i> Notes to
                                         Technician </h6>
                                     <div class="form-group">
                                         <textarea class="form-control technician_notes" rows="1" placeholder="Text Here..." name="technician_notes"></textarea>
@@ -271,7 +272,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="mt-0 mb-3">
-                                    <h6 class="card-title"><i class="fas fa fa-check-square"></i> Warranty </h6>
+                                    <h6 class="card-title required-field"><i class="fas fa fa-check-square"></i> Warranty </h6>
                                     <div class="form-group">
                                         <select class="form-control job_type" id="exampleFormControlSelect1"
                                             name="job_type">
