@@ -543,7 +543,8 @@
 
                                                         </div>
 
-                                                        <div class="col-md-6 customersSuggetions2" style="display: none;height: 200px;
+                                                        <div class="col-md-6 customersSuggetions2"
+                                                            style="display: none;height: 200px;
                                                         overflow-y: scroll;">
                                                             <div class="card">
                                                                 <div class="card-body">
@@ -1190,6 +1191,75 @@
                                 $('#myForm')[0].reset();
                                 // Open another modal
                                 $('#create').modal('show');
+
+                                var id = data.user.id;
+                                var name = data.user.name;
+                                $('.customer_id').val(id);
+                                $('.searchCustomer').val(name);
+                                // $('.searchCustomer').prop('disabled', true);
+                                $('.customersSuggetions').hide();
+                                $('.pendingJobsSuggetions').hide();
+                                $('.CustomerAdderss').show();
+
+                                var selectElement = $('.customer_address');
+                                selectElement.empty();
+
+                                var option = $('<option>', {
+                                    value: '',
+                                    text: '-- Select Address --'
+                                });
+
+                                selectElement.append(option);
+
+                                $.ajax({
+                                    url: "{{ route('customer.details') }}",
+                                    data: {
+                                        id: id,
+                                    },
+                                    type: 'GET',
+                                    success: function(data) {
+                                        if (data) {
+                                            $('.customer_number_email')
+                                                .text(data.mobile + ' / ' +
+                                                    data.email);
+                                            $('.show_customer_name').text(
+                                                data.name);
+                                        }
+                                        if (data.address && $.isArray(data
+                                                .address)) {
+                                            $.each(data.address, function(
+                                                index, element) {
+                                                var addressString =
+                                                    $.ucfirst(
+                                                        element
+                                                        .address_type
+                                                        ) + ':  ' +
+                                                    element
+                                                    .address_line1 +
+                                                    ', ' + element
+                                                    .city +
+                                                    ', ' + element
+                                                    .state_name +
+                                                    ', ' + element
+                                                    .zipcode;
+                                                var option = $(
+                                                    '<option>', {
+                                                        value: element
+                                                            .address_type,
+                                                        text: addressString
+                                                    });
+
+                                                option.attr(
+                                                    'data-city',
+                                                    element.city
+                                                    );
+
+                                                selectElement
+                                                    .append(option);
+                                            });
+                                        }
+                                    }
+                                });
                             });
                         }
                         if (data.success === false) {
@@ -1292,7 +1362,8 @@
                         }
                         if (data.address && $.isArray(data.address)) {
                             $.each(data.address, function(index, element) {
-                                var addressString = $.ucfirst(element.address_type) + ':  ' +
+                                var addressString = $.ucfirst(element.address_type) +
+                                    ':  ' +
                                     element.address_line1 + ', ' + element.city +
                                     ', ' + element.state_name + ', ' + element
                                     .zipcode;

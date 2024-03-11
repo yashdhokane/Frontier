@@ -140,7 +140,6 @@ class UserController extends Controller
 
     {
 
-        dd($request);
 
         // Validate the request
 
@@ -1245,7 +1244,6 @@ class UserController extends Controller
 
     {
 
-        //   dd($request);
         try {
 
             // Validate the request
@@ -1460,6 +1458,7 @@ class UserController extends Controller
 
             return response()->json([
                 'success' => true,
+                'user' => $user,
             ]);
         } catch (Exception $e) {
             // Handle exceptions
