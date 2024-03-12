@@ -516,14 +516,14 @@
                                 </div>
                             </div>
                             <div class="col-md-2 d-flex align-items-start">
-                                <label for="status" class="px-3">Status</label>
-                                <input type="checkbox" id="status" name="status" class="mt-1" style="transform: scale(2.5);" {{$job->status == 'closed' ? 'checked' : ''}}>
+                                <label for="status" class="px-3">Mark Complete</label>
+                                <input type="checkbox" id="status" name="status" class="mt-3" style="transform: scale(2.5);" {{$job->status == 'closed' ? 'checked' : ''}}>
                             </div>
                         </div>
 
                         <div class="row mt-2">
                             <div class="col-md-9">
-                                <h4 class="font-weight-medium mb-2">JOB DETAILS</h4>
+                                <h4 class="font-weight-medium mb-2">JOB DETAILS <a href="#" id="jobdetail"><i class="fa fa-edit fs-2 align-top"></i></a></h4>
                                 <div class="confirm_job_box">
                                     <div class="row">
                                         <div class="col-md-12" style="display: inline-flex;">
@@ -537,7 +537,8 @@
                                         <div class="col-md-12 reschedule_job show_job_information">LG - Washing Machine
                                             / Model: LG Washing
                                             Machine /
-                                            Serial Number: QDA8956246 </div>
+                                            Serial Number: QDA8956246 
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 reschedule_job ">
@@ -552,7 +553,7 @@
 
                         <div class="row mt-2">
                             <div class="col-md-12">
-                                <h4 class="font-weight-medium mb-0">SERVICES & PARTS</h4>
+                                <h4 class="font-weight-medium mb-0">SERVICES & PARTS  <a href="#" id="service_parts"><i class="fa fa-edit fs-2 align-top"></i></a></h4>
                                 <div class="confirm_job_box">
                                     <div class="row mb-2">
                                         <div class="col-md-7">

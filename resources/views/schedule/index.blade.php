@@ -1390,6 +1390,30 @@
                 });
             });
 
+            $(document).on('click', '#jobdetail', function() {
+                setTimeout(function() {
+                            var nextAnchor = $('a[href="#previous"]');
+
+                            // Trigger click event on the anchor tag with href="#next" three times
+                            for (var i = 0; i < 2; i++) {
+                                nextAnchor.trigger('click');
+                            }
+                        }); // Adjust the delay value as needed
+
+            });
+
+            $(document).on('click', '#service_parts', function() {
+                setTimeout(function() {
+                            var nextAnchor = $('a[href="#previous"]');
+
+                            // Trigger click event on the anchor tag with href="#next" three times
+                        
+                                nextAnchor.trigger('click');
+                            
+                        }); // Adjust the delay value as needed
+
+            });
+
             $(document).on('click', '.updateSchedule', function() {
 
                 var id = $(this).attr('data-id');
