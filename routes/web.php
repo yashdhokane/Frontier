@@ -671,6 +671,8 @@ Route::middleware('auth')->group(function () {
 
     Route::post('schedule/create/post', [ScheduleController::class, 'createSchedule'])->name('schedule.create.post');
 
+    Route::post('schedule/update/post', [ScheduleController::class, 'update'])->name('schedule.update.post');
+
     Route::get('schedule/edit', [ScheduleController::class, 'edit'])->name('schedule.edit');
 
     Route::post('schedule/update', [ScheduleController::class, 'updateSchedule'])->name('schedule.update');

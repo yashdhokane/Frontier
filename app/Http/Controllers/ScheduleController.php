@@ -60,7 +60,8 @@ class ScheduleController extends Controller
         $tomorrowDate = $currentDate->copy()->addDay()->format('Y-m-d');
 
         $filterDate = $currentDate->format('Y-m-d');
-        
+
+        $TodayDate = Carbon::now()->format('Y-m-d');
 
         $user_array = [];
 
@@ -128,7 +129,7 @@ class ScheduleController extends Controller
             }
         }
 
-        return view('schedule.index', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate','users', 'roles', 'locationStates', 'locationStates1' ,'leadSources', 'tags', 'cities','cities1'));
+        return view('schedule.index', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate','users', 'roles', 'locationStates', 'locationStates1' ,'leadSources', 'tags', 'cities','cities1','TodayDate'));
     }
 
     public function create(Request $request)
@@ -631,54 +632,34 @@ class ScheduleController extends Controller
 
         $data = $request->all();
 
-        $jobDetails = DB::table('jobs')
-            ->select(
-                'jobs.id',
-                'jobs.job_title',
-                'jobs.discount',
-                'jobs.gross_total',
-                'jobs.commission_total',
-                'users.name as customername',
-                'technician.name as technicianname',
-                'technician.id as technician_id',
-                'job_assigned.start_date_time',
-                'job_assigned.end_date_time',
-                'job_service_items.service_id',
-                'job_service_items.service_name',
-                'job_service_items.base_price as service_cost',
-                'job_service_items.quantity as service_quantity',
-                'job_service_items.discount as service_discount',
-                'job_service_items.sub_total as service_total',
-                'job_service_items.service_description',
-                'job_service_items.tax as service_tax',
-                'job_product_items.product_id',
-                'job_product_items.product_name',
-                'job_product_items.base_price as product_cost',
-                'job_product_items.quantity as product_quantity',
-                'job_product_items.discount as product_discount',
-                'job_product_items.sub_total as product_total',
-                'job_product_items.product_description',
-                'job_product_items.tax as product_tax',
-                'job_notes.note'
-            )
-            ->join('users', 'users.id', 'jobs.customer_id')
-            ->join('users as technician', 'technician.id', 'jobs.technician_id')
-            ->leftJoin('job_assigned', 'job_assigned.job_id', 'jobs.id')
-            ->leftJoin('job_service_items', 'job_service_items.job_id', 'jobs.id')
-            ->leftJoin('job_product_items', 'job_product_items.job_id', 'jobs.id')
-            ->leftJoin('job_notes', 'job_notes.job_id', 'jobs.id')
-            ->where('jobs.id', $data['id'])->first();
+        if (isset($data['id']) && !empty($data['id'])) {
 
+            $time = str_replace(" ", ":00 ", $data['time']);
 
-        $start_date_time = Carbon::parse($jobDetails->start_date_time);
+            $appliances = DB::table('appliances')->get();
 
-        $end_date_time = Carbon::parse($jobDetails->end_date_time);
+            $manufacturers = DB::table('manufacturers')->get();
 
-        $jobDetails->start_date_time = $start_date_time->format('Y-m-d\TH:i');
+            $date = $data['date'];
 
-        $jobDetails->end_date_time = $end_date_time->format('Y-m-d\TH:i');
+            $dateTime = Carbon::parse("$date $time");
 
-        return view('schedule.edit', compact('jobDetails'));
+            $dateTime = $dateTime->format('Y-m-d H:i:s');
+
+            $technician = User::join('user_address','user_address.user_id','users.id')->where('id', $data['id'])->first();
+
+            $getServices = Service::where('service_cost', '!=', 0)->get();
+
+            $getProduct = Products::whereNotNull('base_price')->where('status', 'Publish')->get();
+
+            $jobId = $request->job_id;
+
+            $job = JobModel::with('jobDetails','JobAssign','JobNote','jobserviceinfo','jobproductinfo','technician','user')
+            ->where('id', $jobId)->first();
+
+            return view('schedule.edit', compact('technician', 'dateTime', 'manufacturers', 'appliances','getServices','getProduct','job'));
+        }
+    
     }
 
     public function updateSchedule(Request $request)
@@ -948,4 +929,133 @@ class ScheduleController extends Controller
         return ['customers' => $customers];
     }
 
+    public function update(Request $request)
+    {
+
+        $data = $request->all();
+        
+
+        if (isset($data) && !empty($data)) {
+
+            if (isset($data['job_id']) && !empty($data['job_id'])) {
+
+
+                $duration = (int) $data['duration'];
+
+
+                $technician = User::where('id', $data['technician_id'])->first();
+
+                $service_tax = (isset($data['service_tax']) && !empty($data['service_tax'])) ? $data['service_tax'] : 0;
+
+                $product_tax = (isset($data['product_tax']) && !empty($data['product_tax'])) ? $data['product_tax'] : 0;
+
+                $getCustomerDetails = User::with('userAddress')
+                    ->where('id', $data['customer_id'])
+                    ->first();
+                    // dd($getCustomerDetails);
+
+                $jobsData = [
+                    'job_code' => (isset($data['job_code']) && !empty($data['job_code'])) ? $data['job_code'] : '',
+                    'job_title' => (isset($data['job_title']) && !empty($data['job_title'])) ? $data['job_title'] : '',
+                    'appliances_id' => (isset($data['appliances']) && !empty($data['appliances'])) ? $data['appliances'] : '',
+                    'description' => (isset($data['job_description']) && !empty($data['job_description'])) ? $data['job_description'] : '',
+                    'priority' => (isset($data['priority']) && !empty($data['priority'])) ? $data['priority'] : '',
+                    'warranty_type' => (isset($data['job_type']) && !empty($data['job_type'])) ? $data['job_type'] : '',
+                    'tax' => $service_tax + $product_tax,
+                    'discount' => (isset($data['discount']) && !empty($data['discount'])) ? $data['discount'] : 0,
+                    'gross_total' => (isset($data['total']) && !empty($data['total'])) ? $data['total'] : 0,
+                    'commission_total' => (isset($data['subtotal']) && !empty($data['subtotal'])) ? $data['subtotal'] : 0,
+                    'status' => (isset($data['status']) && !empty($data['status']) && $data['status'] == 'on') ? 'closed' : 0,
+                    'updated_at' => date('Y-m-d H:i:s')
+                ];
+
+                $jobId = DB::table('jobs')->where('id', $data['job_id'])->update($jobsData);
+
+                $jobNotes = [
+                    'note' => (isset($data['technician_notes']) && !empty($data['technician_notes'])) ? $data['technician_notes'] : '',
+                    'updated_by' => auth()->id(),
+                    'updated_at' => date('Y-m-d H:i:s')
+                ];
+
+                $jobNotesID = DB::table('job_notes')->where('job_id', $data['job_id'])->update($jobNotes);
+
+                $JobAssignedData = [
+                    'technician_id' => (isset($data['technician_id']) && !empty($data['technician_id'])) ? $data['technician_id'] : '',
+                    'customer_id' => (isset($data['customer_id']) && !empty($data['customer_id'])) ? $data['customer_id'] : '',
+                    'assign_title' => (isset($data['job_title']) && !empty($data['job_title'])) ? $data['job_title'] : '',
+                    'assign_description' => (isset($data['description']) && !empty($data['description'])) ? $data['description'] : '',
+                    'duration' => (isset($data['duration']) && !empty($data['duration'])) ? $data['duration'] : '',
+                    'updated_by' => auth()->id(),
+                    'updated_at' => date('Y-m-d H:i:s'),
+                    'technician_note_id' => $jobNotesID
+                ];
+
+                $jobAssignedID = DB::table('job_assigned')->where('job_id', $data['job_id'])->update($JobAssignedData);
+
+                if (isset($data['service_id']) && !empty($data['service_id']))
+                 {
+
+                    $serviceData = [
+                        'service_id' => (isset($data['service_id']) && !empty($data['service_id'])) ? $data['service_id'] : '',
+                    ];
+
+                    $serviceDataInsert = DB::table('job_service_items')->where('job_id', $data['job_id'])->update($serviceData);
+                }
+
+                if (isset($data['product_id']) && !empty($data['product_id'])) 
+                {
+
+                    $productData = [
+                        'product_id' => (isset($data['product_id']) && !empty($data['product_id'])) ? $data['product_id'] : '',
+                    ];
+
+                    $productDataInsert = DB::table('job_product_items')->where('job_id', $data['job_id'])->update($productData);
+                }
+
+                if ($request->hasFile('photos')) {
+
+                    $fileData = [];
+
+                    foreach ($request->file('photos') as $file) {
+
+                        $fileName = $data['job_id'] . '_' . $file->getClientOriginalName();
+
+                        $path = 'schedule';
+
+                        $file->storeAs($path, $fileName);
+
+                        $fileData[] = [
+                            'job_id' => $data['job_id'],
+                            'user_id' => auth()->id(),
+                            'path' => $path . '/',
+                            'filename' => $fileName,
+                            'type' => $file->getMimeType(),
+                            'size' => $file->getSize(),
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'updated_at' => date('Y-m-d H:i:s')
+                        ];
+                    }
+
+                    $fileDataInsert = DB::table('job_files')->insert($fileData);
+                }
+
+                return response()->json([
+                    'status' => true,
+                ]);
+
+            } else{
+                return response()->json([
+                    'status' => false,
+                ]);
+            }
+
+        }else{
+            return response()->json([
+                'status' => false,
+            ]);
+        }
+
+    
+
+    }
 }

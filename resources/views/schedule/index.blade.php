@@ -203,7 +203,7 @@
                                                     class="fas fa-calendar-alt"></i>
                                                 Select Dates</a>
 
-                                            <a href="#."
+                                            <a href="schedule?date={{ $TodayDate }}"
                                                 style="margin-right: 10px;font-size: 13px;color: #ee9d01;font-weight: bold;"><i
                                                     class="fas fa-calendar-check"></i> Today</a>
                                         </div>
@@ -285,9 +285,13 @@
                                                                                         $height_slot_px = $height_slot * 80 - 10;
                                                                                         // dd($height_slot_px);
                                                                                     @endphp
-                                                                                    <div class="dts mb-1 edit_schedule flexibleslot"
+                                                                                    <div class="dts mb-1 edit_schedule updateSchedule flexibleslot"
                                                                                         data-bs-toggle="modal"
                                                                                         data-bs-target="#edit"
+                                                                                        data-id="{{ $value }}"
+                                                                                        data-job-id="{{ $value2->job_id }}"
+                                                                                        data-time="{{ $timeString }}"
+                                                                                        data-date="{{ $filterDate }}"
                                                                                         style="cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->color_code }};"
                                                                                         data-id="{{ $value2->main_id }}">
                                                                                         <h5
@@ -1160,6 +1164,11 @@
 
     <script>
         $(document).ready(function() {
+            // Use setTimeout to wait a short period after the document is ready
+            setTimeout(function() {
+                // Trigger click event on the element with class .sidebartoggler
+                $('.sidebartoggler').click();
+            }); // Adjust the delay time as needed
 
             $('#myForm').submit(function(e) {
                 e.preventDefault(); // Prevent default form submission
@@ -1233,7 +1242,7 @@
                                                     $.ucfirst(
                                                         element
                                                         .address_type
-                                                        ) + ':  ' +
+                                                    ) + ':  ' +
                                                     element
                                                     .address_line1 +
                                                     ', ' + element
@@ -1252,7 +1261,7 @@
                                                 option.attr(
                                                     'data-city',
                                                     element.city
-                                                    );
+                                                );
 
                                                 selectElement
                                                     .append(option);
@@ -1381,6 +1390,168 @@
                 });
             });
 
+            $(document).on('click', '.updateSchedule', function() {
+
+                var id = $(this).attr('data-id');
+                var job_id = $(this).attr('data-job-id');
+                var time = $(this).attr('data-time');
+                var date = $(this).attr('data-date');
+
+                $.ajax({
+                    method: 'get',
+                    url: "{{ route('schedule.edit') }}",
+                    data: {
+                        id: id,
+                        job_id: job_id,
+                        time: time,
+                        date: date
+                    },
+                    beforeSend: function() {
+                        $('.editScheduleData').html('Processing Data...');
+                    },
+                    success: function(data) {
+
+                        $('.editScheduleData').empty();
+                        $('.editScheduleData').html(data);
+                        // Introduce a delay after the AJAX call to ensure content is fully loaded
+                        setTimeout(function() {
+                            var nextAnchor = $('a[href="#next"]');
+                            console.log(nextAnchor); // Verify if nextAnchor is found
+
+                            // Trigger click event on the anchor tag with href="#next" three times
+                            for (var i = 0; i < 3; i++) {
+                                nextAnchor.trigger('click');
+                            }
+                        }); // Adjust the delay value as needed
+
+                        $('.tab-wizard').steps({
+                            headerTag: 'h6',
+                            bodyTag: 'section',
+                            transitionEffect: 'fade',
+                            titleTemplate: '<span class="step">#index#</span> #title#',
+                            labels: {
+                                finish: 'Submit Job',
+                            },
+                            onStepChanging: function(event, currentIndex, newIndex) {
+
+                                if (newIndex === 0) {
+                                    // This condition prevents navigation to step 1
+                                    // Adjust the condition as needed based on your logic
+                                    if (someConditionIsMet) {
+                                        return false; // Prevent navigation to step 1
+                                    }
+                                }
+
+                                if (currentIndex === 1) {
+                                    // Check if all required fields are filled
+                                    var isValid = validateStep2Fields();
+                                    if (!isValid) {
+                                        // Required fields are not filled, prevent navigation
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error',
+                                            text: 'Please fill in all required fields before proceeding.'
+                                        });
+                                        return false; // Prevent navigation to the next step
+                                    }
+                                }
+                                if (currentIndex === 2) {
+                                    // Check if all required fields are filled
+                                    var isValid = validateStep3Fields();
+                                    if (!isValid) {
+                                        // Required fields are not filled, prevent navigation
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error',
+                                            text: 'Please fill in warranty fields before proceeding.'
+                                        });
+                                        return false; // Prevent navigation to the next step
+                                    }
+                                }
+                                // end new chages 
+
+                                if (newIndex < currentIndex) {
+                                    return true;
+                                }
+
+                                if (newIndex == 3) {
+                                    showAllInformation(newIndex);
+                                }
+
+                                return true;
+                            },
+                            onFinished: function(event, currentIndex) {
+
+                                var form = $('#updateScheduleForm')[0];
+                                var params = new FormData(form);
+
+                                $.ajax({
+                                    url: "{{ route('schedule.update.post') }}",
+                                    data: params,
+                                    method: 'post',
+                                    processData: false,
+                                    contentType: false,
+                                    headers: {
+                                        'X-CSRF-TOKEN': $(
+                                                'meta[name="csrf-token"]')
+                                            .attr('content')
+                                    },
+                                    success: function(data) {
+
+
+
+                                        $('a[href="#finish"]:eq(0)')
+                                            .text('Submit Job');
+
+                                        if (data.status == true) {
+
+                                            $('.btn-close').trigger(
+                                                'click');
+
+                                            Swal.fire({
+                                                title: "Success!",
+                                                text: "Job Has Been Updated",
+                                                icon: "success"
+                                            }).then((
+                                                result) => {
+                                                if (result
+                                                    .isConfirmed ||
+                                                    result
+                                                    .dismiss ===
+                                                    Swal
+                                                    .DismissReason
+                                                    .backdrop
+                                                ) {
+                                                    location
+                                                        .reload();
+                                                }
+                                            });
+
+
+                                        } else if (data.status ==
+                                            false) {
+
+                                            $('.btn-close').trigger(
+                                                'click');
+
+                                            Swal.fire({
+                                                icon: "error",
+                                                title: "Error",
+                                                text: "Something went wrong !",
+                                            });
+
+                                        }
+                                    }
+
+
+                                });
+                            },
+                        });
+
+
+                    }
+                });
+            });
 
         });
     </script>

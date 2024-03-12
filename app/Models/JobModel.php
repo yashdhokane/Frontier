@@ -167,7 +167,7 @@ class JobModel extends Model
 
     public function JobNote()
     {
-        return $this->hasMany(JobNoteModel::class, 'id', 'job_id');
+        return $this->belongsTo(JobNoteModel::class, 'id', 'job_id');
     }
 
 
