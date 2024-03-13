@@ -13,7 +13,7 @@
                 <div class="d-flex align-items-center">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="https://gaffis.in/frontier/website/home">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
                             <li class="breadcrumb-item active" aria-current="page">Admin</li>
                         </ol>
                     </nav>
@@ -138,7 +138,7 @@
                 <td>
                   <div class="d-flex align-items-center">
                   @if($user->user_image)
-                    <img src="{{ asset('public/images/multiadmin/' . $user->user_image) }}" alt="avatar" class="rounded-circle"
+                    <img src="{{ asset('public/images/admin/' . $user->user_image) }}" alt="avatar" class="rounded-circle"
                       width="45" />
                     @else
                     <img src="{{asset('public/images/login_img_bydefault.png')}}" alt="avatar" class="rounded-circle" width="45" />

@@ -363,7 +363,7 @@
                         <ul class="list-unstyled mt-1">
                             <li class="d-flex align-items-start">
                                 @isset($item->user_image)
-                                <img src="{{ asset('public/images/multiadmin/' . $item->user_image) ?? asset('public/images/default_user_image.jpg') }}"
+                                <img src="{{ asset('public/images/admin/' . $item->user_image) ?? asset('public/images/default_user_image.jpg') }}"
                                     width="60" class="me-5 rounded-circle" alt="user" />
                                 @else
                                 <img src="{{asset('public/admin/assets/images/users/default_image.jpg')}}"

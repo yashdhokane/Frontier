@@ -90,7 +90,7 @@ class MultiAdminController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('images/multiadmin'), $imageName);
+            $image->move(public_path('images/admin'), $imageName);
             $user->user_image = $imageName;
         }
         $user->save();
@@ -244,11 +244,11 @@ class MultiAdminController extends Controller
             // Handle image update logic here
             $image = $request->file('image');
             $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('images/multiadmin'), $imageName);
+            $image->move(public_path('images/admin'), $imageName);
 
             // Remove the old image if it exists
             if ($user->user_image) {
-                $oldImagePath = public_path('images/multiadmin') . '/' . $user->user_image;
+                $oldImagePath = public_path('images/admin') . '/' . $user->user_image;
                 if (file_exists($oldImagePath)) {
                     unlink($oldImagePath);
                 }

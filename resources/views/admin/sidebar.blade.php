@@ -72,12 +72,11 @@
                     <a class="sidebar-link has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i
                             data-feather="clipboard" class="feather-icon"></i><span class="hide-menu">Jobs</span></a>
                     <ul aria-expanded="false" class="collapse first-level">
-                        <li class="sidebar-item"><a href="https://gaffis.in/frontier/website/schedule"
-                                class="sidebar-link"><i class="fas fa-calendar-check"></i><span class="hide-menu">
-                                    Schedule </span></a></li>
-                        <li class="sidebar-item"><a href="https://gaffis.in/frontier/website/map"
-                                class="sidebar-link"><i class="fas fa-calendar-check"></i><span class="hide-menu">
-                                    Reschedule </span></a></li>
+                        <li class="sidebar-item"><a href="{{route('schedule')}}" class="sidebar-link"><i
+                                    class="fas fa-calendar-check"></i><span class="hide-menu"> Schedule </span></a></li>
+                        <li class="sidebar-item"><a href="{{route('map')}}" class="sidebar-link"><i
+                                    class="fas fa-calendar-check"></i><span class="hide-menu"> Reschedule </span></a>
+                        </li>
                         <li class="sidebar-item"><a href="{{ route('tickets.index') }}" class="sidebar-link"><i
                                     class="mdi mdi-book-multiple"></i><span class="hide-menu"> Jobs List
                                 </span></a></li>
@@ -170,12 +169,7 @@
                         <li class="sidebar-item"><a href="{{ route('users.index') }}" class="sidebar-link"><i
                                     class="fas fa-users"></i><span class="hide-menu">
                                     Customers </span></a></li>
-                        <li class="sidebar-item"><a href="{{ route('dispatcher.index') }}" class="sidebar-link"><i
-                                    class="fas fa-users"></i><span class="hide-menu">
-                                    Dispatchers </span></a></li>
-                        <li class="sidebar-item"><a href="{{ route('multiadmin.index') }}" class="sidebar-link"><i
-                                    class="fas fa-users"></i><span class="hide-menu">
-                                    Admin </span></a></li>
+
 
                     </ul>
                 </li>
@@ -184,12 +178,11 @@
                     <a class="sidebar-link has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i
                             data-feather="clipboard" class="feather-icon"></i><span class="hide-menu">Jobs</span></a>
                     <ul aria-expanded="false" class="collapse first-level">
-                        <li class="sidebar-item"><a href="https://gaffis.in/frontier/website/schedule"
-                                class="sidebar-link"><i class="fas fa-calendar-check"></i><span class="hide-menu">
-                                    Schedule </span></a></li>
-                        <li class="sidebar-item"><a href="https://gaffis.in/frontier/website/map"
-                                class="sidebar-link"><i class="fas fa-calendar-check"></i><span class="hide-menu">
-                                    Reschedule </span></a></li>
+                        <li class="sidebar-item"><a href="{{route('schedule')}}" class="sidebar-link"><i
+                                    class="fas fa-calendar-check"></i><span class="hide-menu"> Schedule </span></a></li>
+                        <li class="sidebar-item"><a href="{{route('map')}}" class="sidebar-link"><i
+                                    class="fas fa-calendar-check"></i><span class="hide-menu"> Reschedule </span></a>
+                        </li>
                         <li class="sidebar-item"><a href="{{ route('tickets.index') }}" class="sidebar-link"><i
                                     class="mdi mdi-book-multiple"></i><span class="hide-menu"> Jobs List </span></a>
                         </li>
@@ -201,16 +194,16 @@
                             data-feather="bookmark" class="feather-icon"></i><span class="hide-menu">Price Book
                         </span></a>
                     <ul aria-expanded="false" class="collapse first-level">
-                        <li class="sidebar-item"><a href="https://gaffis.in/frontier/website/book-list/services"
+                        <li class="sidebar-item"><a href="{{ route('services.index') }}"
                                 class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu">
                                     Services </span></a></li>
-                        <li class="sidebar-item"><a href="https://gaffis.in/frontier/website/book-list/partscategory"
+                        <li class="sidebar-item"><a href="{{ route('product.index') }}"
                                 class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu">
                                     Parts </span></a></li>
                         <li class="sidebar-item"><a href="{{route('assign_product')}}" class="sidebar-link"><i
                                     class="mdi mdi-book-multiple"></i> <span class="hide-menu">Assign Parts </span></a>
                         </li>
-                        <li class="sidebar-item"><a href="https://gaffis.in/frontier/website/book-list/estimate"
+                        <li class="sidebar-item"><a href="{{ route('estimate.index') }}"
                                 class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu">
                                     Estimate Templates </span></a></li>
                     </ul>
@@ -221,76 +214,16 @@
                             data-feather="clipboard" class="feather-icon"></i><span
                             class="hide-menu">Payments</span></a>
                     <ul aria-expanded="false" class="collapse first-level">
-                        <li class="sidebar-item"><a href="{{route('payment-list')}}" class="sidebar-link"><i
+                        <li class="sidebar-item"><a href="{{ route('payment-list') }}" class="sidebar-link"><i
                                     class="far fa-money-bill-alt"></i><span class="hide-menu"> Payments</span></a></li>
                         <li class="sidebar-item"><a href="#." class="sidebar-link"><i
-                                    class="far fa-money-bill-alt"></i><span class="hide-menu"> Invoices</span></a></li>
+                                    class="far fa-money-bill-alt"></i><span class="hide-menu">
+                                    Invoices</span></a></li>
                         <li class="sidebar-item"><a href="#." class="sidebar-link"><i
-                                    class="far fa-money-bill-alt"></i><span class="hide-menu"> Estimates</span></a></li>
+                                    class="far fa-money-bill-alt"></i><span class="hide-menu">
+                                    Estimates</span></a></li>
                     </ul>
                 </li>
-
-                <li class="sidebar-item">
-                    <a class="sidebar-link has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i
-                            class="fas fa-chart-line" style="font-size: 16px;"></i> <span class="hide-menu">Reports
-                        </span></a>
-                    <ul aria-expanded="false" class="collapse first-level">
-                        <li class="sidebar-item"><a href="#." class="sidebar-link"><i class="mdi mdi-book-multiple"></i>
-                                <span class="hide-menu"> Performance Matrix </span></a></li>
-                        <li class="sidebar-item"><a href="#." class="sidebar-link"><i class="mdi mdi-book-multiple"></i>
-                                <span class="hide-menu"> Technician Earnings </span></a></li>
-                        <li class="sidebar-item"><a href="#." class="sidebar-link"><i class="mdi mdi-book-multiple"></i>
-                                <span class="hide-menu"> Call Monitoring </span></a></li>
-                    </ul>
-                </li>
-
-                <li class="sidebar-item">
-                    <a class="sidebar-link has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i
-                            class="fas far fa-sun" style="font-size: 16px;"></i> <span class="hide-menu">Settings
-                        </span></a>
-                    <ul aria-expanded="false" class="collapse first-level">
-                        <li class="sidebar-item"><a href="https://gaffis.in/frontier/website/setting/service-area"
-                                class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu">
-                                    Service Area </span></a></li>
-
-                        <li class="sidebar-item">
-                            <a class="sidebar-link has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i
-                                    data-feather="bookmark" class="feather-icon"></i><span class="hide-menu">Price Book
-                                </span></a>
-                            <ul aria-expanded="false" class="collapse first-level">
-                                <li class="sidebar-item"><a href="https://gaffis.in/frontier/website/book-list/services"
-                                        class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span
-                                            class="hide-menu"> Services </span></a></li>
-                                <li class="sidebar-item"><a
-                                        href="https://gaffis.in/frontier/website/book-list/partscategory"
-                                        class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span
-                                            class="hide-menu"> Parts </span></a></li>
-                                <li class="sidebar-item"><a href="{{route('assign_product')}}" class="sidebar-link"><i
-                                            class="mdi mdi-book-multiple"></i> <span class="hide-menu">Assign Parts
-                                        </span></a></li>
-                                <li class="sidebar-item"><a href="https://gaffis.in/frontier/website/book-list/estimate"
-                                        class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span
-                                            class="hide-menu"> Estimate Templates </span></a></li>
-                            </ul>
-                        </li>
-
-                        <li class="sidebar-item"><a href="{{route('lead.lead-source')}}" class="sidebar-link"><i
-                                    class="mdi mdi-book-multiple"></i> <span class="hide-menu"> Lead Source </span></a>
-                        </li>
-                        <li class="sidebar-item"><a href="{{route('tags.tags-list')}}" class="sidebar-link"><i
-                                    class="mdi mdi-book-multiple"></i> <span class="hide-menu"> Tags </span></a></li>
-                        <li class="sidebar-item"><a href="{{route('site_job_fields')}}" class="sidebar-link"><i
-                                    class="mdi mdi-book-multiple"></i> <span class="hide-menu"> Job Fields </span></a>
-                        </li>
-                    </ul>
-                </li>
-
-                <!--<li class="sidebar-item">
-                        <a class="sidebar-link waves-effect waves-dark sidebar-link " href="#."
-                            aria-expanded="false"><i class="fas fa-chart-line" style="font-size: 16px;"></i><span
-                                class="hide-menu">Reports</span></a>
-                    </li>-->
-
 
                 <li class="sidebar-item">
                     <a class="sidebar-link has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i
@@ -298,7 +231,7 @@
                         <span class="hide-menu">Reports
                         </span></a>
                     <ul aria-expanded="false" class="collapse first-level">
-                        <li class="sidebar-item"><a href="#." class="sidebar-link"><i class="mdi mdi-book-multiple"></i>
+                        <li class="sidebar-item"><a href="{{route('performanncematrix')}}" class="sidebar-link"><i class="mdi mdi-book-multiple"></i>
                                 <span class="hide-menu">
                                     Performance Matrix </span></a></li>
                         <li class="sidebar-item"><a href="#." class="sidebar-link"><i class="mdi mdi-book-multiple"></i>
@@ -316,18 +249,18 @@
                         <span class="hide-menu">Settings
                         </span></a>
                     <ul aria-expanded="false" class="collapse first-level">
-                        <li class="sidebar-item"><a href="https://gaffis.in/frontier/website/setting/service-area"
+                        <li class="sidebar-item"><a href="{{ route('servicearea.index') }}"
                                 class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu">
                                     Service Area </span></a></li>
 
-                        <li class="sidebar-item"><a href="https://gaffis.in/frontier/website/setting/buisness-profile"
+                        <li class="sidebar-item"><a href="{{ route('buisnessprofile.index') }}"
                                 class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu">
                                     Business Profile </span></a></li>
                         <li class="sidebar-item"><a
-                                href="https://gaffis.in/frontier/website/setting/businessHours/business-hours"
+                                href="{{ route('businessHours.business-hours') }}"
                                 class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu">
                                     Working Hours </span></a></li>
-                        <li class="sidebar-item"><a href="https://gaffis.in/frontier/website/setting/manufacturer"
+                        <li class="sidebar-item"><a href="{{ route('manufacturer.index') }}"
                                 class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu">
                                     Manufacturer</span></a></li>
                         <li class="sidebar-item"><a href="{{ route('tax.index') }}" class="sidebar-link"><i
@@ -437,10 +370,10 @@
                     <a class="sidebar-link has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i
                             data-feather="clipboard" class="feather-icon"></i><span class="hide-menu">Jobs</span></a>
                     <ul aria-expanded="false" class="collapse first-level">
-                        <li class="sidebar-item"><a href="https://gaffis.in/frontier/website/schedule"
+                        <li class="sidebar-item"><a href="{{ route('schedule') }}"
                                 class="sidebar-link"><i class="fas fa-calendar-check"></i><span class="hide-menu">
                                     Schedule </span></a></li>
-                        <li class="sidebar-item"><a href="https://gaffis.in/frontier/website/map"
+                        <li class="sidebar-item"><a href="{{ route('map') }}"
                                 class="sidebar-link"><i class="fas fa-calendar-check"></i><span class="hide-menu">
                                     Reschedule </span></a></li>
                         <li class="sidebar-item"><a href="{{ route('tickets.index') }}" class="sidebar-link"><i
@@ -454,16 +387,16 @@
                             data-feather="bookmark" class="feather-icon"></i><span class="hide-menu">Price Book
                         </span></a>
                     <ul aria-expanded="false" class="collapse first-level">
-                        <li class="sidebar-item"><a href="https://gaffis.in/frontier/website/book-list/services"
+                        <li class="sidebar-item"><a href="{{ route('services.index') }}"
                                 class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu">
                                     Services </span></a></li>
-                        <li class="sidebar-item"><a href="https://gaffis.in/frontier/website/book-list/partscategory"
+                        <li class="sidebar-item"><a href="{{ route('product.index') }}"
                                 class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu">
                                     Parts </span></a></li>
                         <li class="sidebar-item"><a href="{{route('assign_product')}}" class="sidebar-link"><i
                                     class="mdi mdi-book-multiple"></i> <span class="hide-menu">Assign Parts </span></a>
                         </li>
-                        <li class="sidebar-item"><a href="https://gaffis.in/frontier/website/book-list/estimate"
+                        <li class="sidebar-item"><a href="{{ route('estimate.index') }}"
                                 class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu">
                                     Estimate Templates </span></a></li>
                     </ul>
@@ -491,7 +424,7 @@
                         <span class="hide-menu">Reports
                         </span></a>
                     <ul aria-expanded="false" class="collapse first-level">
-                        <li class="sidebar-item"><a href="#." class="sidebar-link"><i class="mdi mdi-book-multiple"></i>
+                        <li class="sidebar-item"><a href="{{route('performanncematrix')}}" class="sidebar-link"><i class="mdi mdi-book-multiple"></i>
                                 <span class="hide-menu">
                                     Performance Matrix </span></a></li>
                         <li class="sidebar-item"><a href="#." class="sidebar-link"><i class="mdi mdi-book-multiple"></i>
@@ -509,18 +442,18 @@
                         <span class="hide-menu">Settings
                         </span></a>
                     <ul aria-expanded="false" class="collapse first-level">
-                        <li class="sidebar-item"><a href="https://gaffis.in/frontier/website/setting/service-area"
+                        <li class="sidebar-item"><a href="{{ route('servicearea.index') }}"
                                 class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu">
                                     Service Area </span></a></li>
 
-                        <li class="sidebar-item"><a href="https://gaffis.in/frontier/website/setting/buisness-profile"
+                        <li class="sidebar-item"><a href="{{ route('buisnessprofile.index') }}"
                                 class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu">
                                     Business Profile </span></a></li>
                         <li class="sidebar-item"><a
-                                href="https://gaffis.in/frontier/website/setting/businessHours/business-hours"
+                                href="{{ route('businessHours.business-hours') }}"
                                 class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu">
                                     Working Hours </span></a></li>
-                        <li class="sidebar-item"><a href="https://gaffis.in/frontier/website/setting/manufacturer"
+                        <li class="sidebar-item"><a href="{{ route('manufacturer.index') }}"
                                 class="sidebar-link"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu">
                                     Manufacturer</span></a></li>
                         <li class="sidebar-item"><a href="{{ route('tax.index') }}" class="sidebar-link"><i

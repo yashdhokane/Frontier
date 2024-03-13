@@ -1,9 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+
+
 
 namespace App\Http\Controllers;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 
+use Illuminate\Support\Facades\DB;
 use App\Models\Admin;
 use Illuminate\Http\Request;
 
@@ -52,5 +56,53 @@ class AdminController extends Controller
 
         return redirect()->route('admins.index');
     }
+
+
+
+//permissions 
+
+
+public function permissionindex()
+{
+    $permissions = DB::table('permissions')->orderByDesc('id')->get();
+    return view('permission.permissionindex', compact('permissions'));
+}
+
+public function permissiondelete(Request $request)
+{
+    $id = $request->input('id');
+    $permission = DB::table('permissions')->where('id', $id)->first();
+
+    if (!$permission) {
+        return redirect()->back()->with('error', 'Permission not found');
+    }
+
+    DB::table('permissions')->where('id', $id)->delete();
+
+    return redirect()->route('permissionindex')->with('success', 'Permission deleted successfully');
+}
+
+public function permissionstore(Request $request)
+{
+   // dd($request->all());
+    // Validate the request data
+    $validator = Validator::make($request->all(), [
+        // 'name' => 'required|unique:permissions|max:255',
+    ]);
+
+    if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+    }
+
+    // Store the permission in the database
+    DB::table('permissions')->insert([
+        'name' => $request->input('permission_name'),
+        'created_at' => Carbon::now(),
+    ]);
+
+    return redirect()->route('permissionindex')->with('success', 'Permission created successfully');
+}
+
+
 }
 

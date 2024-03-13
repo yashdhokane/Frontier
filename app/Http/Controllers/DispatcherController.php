@@ -19,6 +19,7 @@ class DispatcherController extends Controller
 {
     public function index()
     {
+
         $users = User::where('role', 'dispatcher')->orderBy('created_at', 'desc') // Assuming 'created_at' is a timestamp column
                   ->get();
 
@@ -27,18 +28,20 @@ class DispatcherController extends Controller
 
     public function create()
     {
+    $permissions = DB::table('permissions')->pluck('name')->toArray();
+
         $users = User::all();
         //    $roles = Role::all();
         $locationStates = LocationState::all();
         $tags = SiteTags::all(); // Fetch all tags
 
 
-        return view('dispatcher.create', compact('users', 'tags', 'locationStates'));
+        return view('dispatcher.create', compact('permissions','users', 'tags', 'locationStates'));
     }
 
     public function store(Request $request)
     {
-        //dd($request->all());
+        // dd($request->all());
         // Validate the request
         $validator = Validator::make($request->all(), [
 
@@ -79,6 +82,8 @@ class DispatcherController extends Controller
         $user->email = $request['email'];
         $user->mobile = $request['mobile_phone'];
         $user->role = $request['role'];
+         $permissionsString = json_encode($request->input('permissions'));
+        $user->permissions = $permissionsString;
         $user->password = Hash::make($request['password']);
 
 
@@ -200,6 +205,7 @@ $location = CustomerUserAddress::where('user_id', $dispatcher->id)->get();
             $source = $dispatcher->source;
 
             $tags = SiteTags::all();
+             $permissions = DB::table('permissions')->pluck('name')->toArray();
 
 
 
@@ -209,7 +215,7 @@ $location = CustomerUserAddress::where('user_id', $dispatcher->id)->get();
             // Convert the comma-separated tag_id string to an array
             $selectedTags = explode(',', $userTags->pluck('tag_id')->implode(','));
 
-            return view('dispatcher.edit', compact('dispatcher', 'locationStates', 'userTags', 'selectedTags', 'meta', 'location', 'Note', 'tags', 'source', 'first_name', 'last_name', 'home_phone', 'work_phone'));
+            return view('dispatcher.edit', compact('dispatcher','permissions', 'locationStates', 'userTags', 'selectedTags', 'meta', 'location', 'Note', 'tags', 'source', 'first_name', 'last_name', 'home_phone', 'work_phone'));
         } else {
             // Handle the case where meta is not found, perhaps redirect to an error page
             return redirect()->route('dispatcher.index');

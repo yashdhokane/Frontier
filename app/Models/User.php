@@ -112,15 +112,14 @@ public function homeAddress()
         ->where('address_type', 'home');
 }
 
-public function userAddress()
-{
-    return $this->hasOne(CustomerUserAddress::class, 'user_id', 'id');
-}
-
 // Inside the User model
  public function TimeZone()
     {
         return $this->belongsTo(TimeZone::class, 'timezone_id');
     }
 
+public function userAddress()
+{
+    return $this->hasOne(CustomerUserAddress::class, 'user_id', 'id');
+}
 }

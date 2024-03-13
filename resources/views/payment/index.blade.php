@@ -136,12 +136,12 @@
                                         <thead>
                                             <!-- start row -->
                                             <tr>
-                                                <th>Invoice Id</th>
-                                                <th>Manufaturer Id</th>
+                                                <th>ID</th>
+                                                <th>Manufacturer</th>
                                                 <th>Job Details</th>
                                                 <th>Customer</th>
                                                 <th>Technician</th>
-                                                <th>Invoice Date</th>
+                                                <th>Inv. Date</th>
                                                 <th>Amount</th>
                                                 <th>Status</th>
                                                 <th>Action</th>
@@ -157,7 +157,7 @@
                                                     </td>
                                                     <td>{{ $item->jobDetails->manufacturername->manufacturer_name ?? null}}</td>
                                                     <td>{{ $item->JobModel->job_code }}<br>{{ $item->JobModel->job_title }}</td>
-                                                    <td>{{ $item->user->name }}</td>
+                                                    <td>{{ $item->user->name ?? null}}</td>
                                                     <td>{{ $item->JobModel->technician->name }}</td>
                                                     <td>{{ $convertDateToTimezone($item->issue_date) }}</td>
                                                     <td>${{ $item->total }}</td>
@@ -235,12 +235,12 @@
                                         <tfoot>
                                             <!-- start row -->
                                             <tr>
-                                                <th>Invoice Id</th>
-                                                <th>Manufaturer Id</th>
+                                                <th>ID</th>
+                                                <th>Manufacturer</th>
                                                 <th>Job Details</th>
                                                 <th>Customer</th>
                                                 <th>Technician</th>
-                                                <th>Invoice Date</th>
+                                                <th>Inv. Date</th>
                                                 <th>Amount</th>
                                                 <th>Status</th>
                                                 <th>Action</th>

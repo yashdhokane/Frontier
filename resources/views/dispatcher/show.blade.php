@@ -13,8 +13,8 @@
                 <div class="d-flex align-items-center">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="https://gaffis.in/frontier/website/home">Home</a></li>
-                            <li class="breadcrumb-item"><a href="#">Dispatcher</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('dispatcher.index') }}">Dispatcher</a></li>
                             <li class="breadcrumb-item active" aria-current="page">Profile</li>
                         </ol>
                     </nav>
@@ -58,7 +58,8 @@
                             </div>
                             <div class="col-6">
                                 <small class="text-muted pt-1 db">Profile Created</small>
-<h6>{{ $dispatcher->created_at ? \Carbon\Carbon::parse($dispatcher->created_at)->format('m-d-Y') : null }}</h6>
+                                <h6>{{ $dispatcher->created_at ?
+                                    \Carbon\Carbon::parse($dispatcher->created_at)->format('m-d-Y') : null }}</h6>
                             </div>
                             <div class="col-6">
                                 <small class="text-muted pt-1 db">Lifetime value</small>
@@ -160,8 +161,8 @@
                                                     <img src="{{ asset('public/images/dispatcher/' . $dispatcher->user_image) }}"
                                                         class="rounded-circle" width="150" />
                                                     @else
-                                                    <img src="{{asset('public/images/login_img_bydefault.png')}}" alt="avatar"
-                                                        class="rounded-circle" width="150" />
+                                                    <img src="{{asset('public/images/login_img_bydefault.png')}}"
+                                                        alt="avatar" class="rounded-circle" width="150" />
                                                     @endif
                                                     <h4 class="card-title mt-1">{{ $dispatcher->name }}</h4>
                                                     {{-- <h6 class="card-subtitle">{{ $dispatcher->company ?? 'null' }}
@@ -174,26 +175,28 @@
                                     <div class="col-md-1 col-xs-6 b-r">&nbsp;
                                     </div>
                                     <div class="col-md-8 col-xs-6 b-r">
-    <div>
-        @foreach($location as $location)
-            <div>
-                <small class="text-muted pt-4 db">Address</small>
-                <div style="display:flex;">
-                    @if($location)
-                        <h6>{{ $userAddresscity}}</h6>&nbsp;
-                        <h6>{{ $location->locationStateName->state_name ?? null }}</h6>
-                        <span>,</span>
-                        <h6>{{ $location->zipcode }}</h6>
-                    @else
-                        <h6>null</h6>
-                    @endif
-                    <br />
-                </div>
-<iframe id="map" width="100%" height="150" frameborder="0" style="border: 0" allowfullscreen></iframe>
-            </div>
-            <hr />
-        @endforeach </div>
-        </div>
+                                        <div>
+                                            @foreach($location as $location)
+                                            <div>
+                                                <small class="text-muted pt-4 db">Address</small>
+                                                <div style="display:flex;">
+                                                    @if($location)
+                                                    <h6>{{ $userAddresscity}}</h6>&nbsp;
+                                                    <h6>{{ $location->locationStateName->state_name ?? null }}</h6>
+                                                    <span>,</span>
+                                                    <h6>{{ $location->zipcode }}</h6>
+                                                    @else
+                                                    <h6>null</h6>
+                                                    @endif
+                                                    <br />
+                                                </div>
+                                                <iframe id="map" width="100%" height="150" frameborder="0"
+                                                    style="border: 0" allowfullscreen></iframe>
+                                            </div>
+                                            <hr />
+                                            @endforeach
+                                        </div>
+                                    </div>
 
 
                                 </div>
@@ -231,9 +234,9 @@
                                             <tr>
                                                 <td><span class="badge bg-light-warning text-warning font-medium">In
                                                         Progress</span></td>
-                                                <td><a href="ticket-detail.html" class="font-medium link">Repairing
+                                                <td><a href="#." class="font-medium link">Repairing
                                                         Task</a><br /><span class="badge bg-warning">LG</span></td>
-                                                <td><a href="ticket-detail.html" class="fw-bold link">123456</a></td>
+                                                <td><a href="#." class="fw-bold link">123456</a></td>
                                                 <td>11-14-2023</td>
                                                 <td>Adam James</td>
                                             </tr>
@@ -241,9 +244,9 @@
                                                 <td><span
                                                         class="badge bg-light-danger text-danger font-medium">Closed</span>
                                                 </td>
-                                                <td><a href="ticket-detail.html" class="font-medium link">Repairing
+                                                <td><a href="#." class="font-medium link">Repairing
                                                         Task</a><br /><span class="badge bg-warning">LG</span></td>
-                                                <td><a href="ticket-detail.html" class="fw-bold link">123456</a></td>
+                                                <td><a href="#." class="fw-bold link">123456</a></td>
                                                 <td>11-14-2023</td>
                                                 <td>Jack Smith</td>
                                             </tr>
@@ -251,9 +254,9 @@
                                                 <td><span
                                                         class="badge bg-light-danger text-danger font-medium">Closed</span>
                                                 </td>
-                                                <td><a href="ticket-detail.html" class="font-medium link">Technical
+                                                <td><a href="#." class="font-medium link">Technical
                                                         Task</a><br /><span class="badge bg-dark">LG </span></td>
-                                                <td><a href="ticket-detail.html" class="fw-bold link">123456</a></td>
+                                                <td><a href="#." class="fw-bold link">123456</a></td>
                                                 <td>11-14-2023</td>
                                                 <td>James Nelson</td>
                                             </tr>
@@ -381,8 +384,8 @@
                                 <div class="profiletimeline mt-0">
                                     <div class="sl-item">
                                         <div class="sl-left">
-                                            <img src="https://gaffis.in/frontier/webapp/design/assets/images/users/1.jpg"
-                                                alt="user" class="rounded-circle" />
+                                            <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}" alt="user"
+                                                class="rounded-circle" />
                                         </div>
                                         <div class="sl-right">
                                             <div>
@@ -403,8 +406,8 @@
                                     <hr />
                                     <div class="sl-item">
                                         <div class="sl-left">
-                                            <img src="https://gaffis.in/frontier/webapp/design/assets/images/users/3.jpg"
-                                                alt="user" class="rounded-circle" />
+                                            <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}" alt="user"
+                                                class="rounded-circle" />
                                         </div>
                                         <div class="sl-right">
                                             <div>
@@ -425,8 +428,8 @@
                                     <hr />
                                     <div class="sl-item">
                                         <div class="sl-left">
-                                            <img src="https://gaffis.in/frontier/webapp/design/assets/images/users/4.jpg"
-                                                alt="user" class="rounded-circle" />
+                                            <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}" alt="user"
+                                                class="rounded-circle" />
                                         </div>
                                         <div class="sl-right">
                                             <div>
@@ -483,19 +486,18 @@
     <!-- End Container fluid  -->
 </div>
 </div>
- @section('script')
-    <script>
-  
-     // Get latitude and longitude values from your data or variables
+@section('script')
+<script>
+    // Get latitude and longitude values from your data or variables
         var latitude = {{$latitude}}; // Example latitude
         var longitude = {{$longitude}}; // Example longitude
 
         // Construct the URL with the latitude and longitude values
         var mapUrl = 'https://www.google.com/maps/embed/v1/view?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&center=' + latitude + ',' + longitude + '&zoom=13';
 
-        document.getElementById('map').src = mapUrl; 
-    </script> 
+        document.getElementById('map').src = mapUrl;
+</script>
 
 @endsection
 
-        @endsection
+@endsection

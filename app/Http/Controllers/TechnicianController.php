@@ -180,9 +180,29 @@ class TechnicianController extends Controller
             ->where('technician_id', $technician->id)
             ->orderBy('created_at', 'desc')
             ->first();
-        $jobasign = DB::table('job_assigned')
+        $jobasign = DB::table('jobs')
             ->where('technician_id', $technician->id)
             ->get();
+
+           
+
+
+            //  $payments = DB::table('payments')
+            // ->where('job_id', $technician->id)
+            // ->get();
+    $payments = DB::table('payments')
+    ->whereIn('job_id', function ($query) use ($technician) {
+        $query->select('id')
+            ->from('jobs')
+            ->where('technician_id', $technician->id);
+    })
+    ->get();
+
+    //dd( $payments);
+
+
+
+
         $customerimage = DB::table('user_files')
             ->where('user_id', $technician->id)
             ->get();
@@ -201,7 +221,7 @@ class TechnicianController extends Controller
             ->where('user_address.user_id', $technician->id)
             ->value('location_cities.longitude');
 
-        return view('technicians.show', compact('technician', 'longitude', 'latitude', 'userAddresscity', 'jobasign', 'customerimage', 'location', 'jobasigndate', 'home_phone'));
+        return view('technicians.show', compact('technician','payments', 'longitude', 'latitude', 'userAddresscity', 'jobasign', 'customerimage', 'location', 'jobasigndate', 'home_phone'));
     }
 
     public function edit($id)

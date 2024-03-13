@@ -14,15 +14,15 @@ class ProductAssigned extends Model
 
     // Define fillable fields if needed
     protected $fillable = ['product_id', 'technician_id','quantity'];
-
+    
     public function Product()
     {
-        return $this->belongsTo(Products::class, 'product_id', 'product_id');
+        return $this->belongsTo(Products::class, 'product_id','product_id');
     }
 
     public function Technician()
     {
-        return $this->belongsTo(User::class, 'technician_id', 'id');
+        return $this->belongsTo(User::class, 'technician_id','id');
     }
 
 

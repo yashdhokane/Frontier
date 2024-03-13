@@ -19,21 +19,23 @@ use Illuminate\Http\Request;
 class TicketController extends Controller
 {
     // Display a listing of the tickets
-    public function index()
+     public function index()
     {
         $servicearea = LocationServiceArea::all();
-         $manufacturer = Manufacturer::all();
-          $technicianrole = User::where('role','technician')->get();
+        $manufacturer = Manufacturer::all();
+        $technicianrole = User::where('role', 'technician')->get();
         $totalCalls = JobModel::count();
         $inProgress = JobModel::where('status', 'in_progress')->count();
         $opened = JobModel::where('status', 'open')->count();
         $complete = JobModel::where('status', 'closed')->count();
+        $status = JobModel::all();
         $tickets = JobModel::orderBy('created_at', 'desc')->get();
-        $technicians = JobModel::with('jobdetailsinfo','jobassignname')->orderBy('created_at', 'desc')->get();
+        $technicians = JobModel::with('jobdetailsinfo', 'jobassignname')->orderBy('created_at', 'desc')->get();
         //dd($technicians->jobdetailsinfo->manufacturername[15]);
 
         return view('tickets.index', [
             'tickets' => $tickets,
+            'status' => $status,
             'manufacturer' => $manufacturer,
             'technicianrole' => $technicianrole,
             'technicians' => $technicians,

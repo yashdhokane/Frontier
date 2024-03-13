@@ -26,8 +26,8 @@
                     <div class="d-flex align-items-center">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="https://gaffis.in/frontier/website/home">Home</a></li>
-                                <li class="breadcrumb-item"><a href="#">Admin</a></li>
+                                <li class="breadcrumb-item"><a href="{{route('home')}}">Home</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('multiadmin.index') }}">Admin</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">Add New </li>
                             </ol>
                         </nav>

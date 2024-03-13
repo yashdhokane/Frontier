@@ -15,7 +15,7 @@
     />
     <meta name="robots" content="noindex,nofollow" />
     <title>Frontier Tech Services - Web Application to manage technicians</title>
-    <link rel="canonical" href="https://gaffis.in/frontier/webapp/design/html/ltr/" />
+    <link rel="canonical" href="{{ route('home') }}" />
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="{{asset('public/admin/assets/images/favicon.png')}}" />
     <!-- Custom CSS -->

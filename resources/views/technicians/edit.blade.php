@@ -2,42 +2,44 @@
 @section('content')
 
 <style>
-.required-field::after {
-    content: " *";
-    color: red;
-}
-
+    .required-field::after {
+        content: " *";
+        color: red;
+    }
 </style>
 
 {{-- model change password --}}
 <div id="changePasswordModal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Change Password</h4>
-        <button type="button" class="close btn btn-danger" data-dismiss="modal" style="opacity: 1; " aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-                           <div id="passwordMatchMessage" class="alert" style="display:none; margin-bottom:5px;"></div> 
-        <form id="changePasswordForm" method="get" action="{{route('update-customer-password')}}" >
-        @csrf
-         <input type="hidden" class="form-control" name="id"
-                                        value="{{$technician->id}}" placeholder="" required />
-          <div class="form-group">
-            <label for="newPassword">New Password</label>
-            <input type="password" class="form-control" id="newPassword" name="password" required>
-          </div>
-          <div class="form-group " style="margin-top:15px;">
-            <label  for="confirmPassword">Confirm Password</label>
-            <input type="password" class="form-control" id="confirmPassword" name="confirm_password" required>
-          </div>
-          <button style="margin-top:15px;" type="submit" class="btn btn-primary btn-block">Change Password</button>
-        </form>
-      </div>
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Change Password</h4>
+                <button type="button" class="close btn btn-danger" data-dismiss="modal" style="opacity: 1; "
+                    aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="passwordMatchMessage" class="alert" style="display:none; margin-bottom:5px;"></div>
+                <form id="changePasswordForm" method="get" action="{{route('update-customer-password')}}">
+                    @csrf
+                    <input type="hidden" class="form-control" name="id" value="{{$technician->id}}" placeholder=""
+                        required />
+                    <div class="form-group">
+                        <label for="newPassword">New Password</label>
+                        <input type="password" class="form-control" id="newPassword" name="password" required>
+                    </div>
+                    <div class="form-group " style="margin-top:15px;">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirmPassword" name="confirm_password"
+                            required>
+                    </div>
+                    <button style="margin-top:15px;" type="submit" class="btn btn-primary btn-block">Change
+                        Password</button>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 {{-- -- end model --}}
 <form action="{{ route('technicians.update', $technician->id) }}" method="POST" enctype="multipart/form-data">
@@ -59,8 +61,9 @@
                     <div class="d-flex align-items-center">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                <li class="breadcrumb-item"><a href="https://gaffis.in/frontier/website/technicians">Technicians</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('technicians.index') }}">Technicians</a>
+                                </li>
                                 <li class="breadcrumb-item active" aria-current="page">Add New </li>
                             </ol>
                         </nav>
@@ -126,13 +129,14 @@
 
                     <div class="card-body border-top">
 
-                      
-                  
+
+
                         <h4 class="card-title">Contact Info</h4>
                         <div class="row">
                             <div class="col-sm-12 col-md-6">
                                 <div class="mb-3">
-                                    <label for="first_name" class="control-label col-form-label required-field">First Name</label>
+                                    <label for="first_name" class="control-label col-form-label required-field">First
+                                        Name</label>
                                     <input type="text" class="form-control" id="first_name" name="first_name"
                                         value="{{ old('first_name', $first_name) }}" placeholder="" required />
 
@@ -141,7 +145,8 @@
                             </div>
                             <div class="col-sm-12 col-md-6">
                                 <div class="mb-3">
-                                    <label for="last_name" class="control-label col-form-label required-field">Last Name</label>
+                                    <label for="last_name" class="control-label col-form-label required-field">Last
+                                        Name</label>
                                     <input type="text" class="form-control" id="last_name"
                                         value="{{ old('last_name', $last_name) }}" name="last_name" placeholder="" />
                                 </div>
@@ -150,14 +155,15 @@
                         <div class="row">
                             <div class="col-sm-12 col-md-12">
                                 <div class="mb-3">
-                                    <label for="display_name" class="control-label col-form-label required-field">Display Name (shown
+                                    <label for="display_name"
+                                        class="control-label col-form-label required-field">Display Name (shown
                                         on invoice)</label>
                                     <input type="text" class="form-control" id="display_name" name="display_name"
                                         value="{{ old('display_name', $technician->name) }}" placeholder="" required />
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col-sm-12 col-md-12">
                                 <div class="mb-3">
@@ -168,7 +174,7 @@
                                 </div>
                             </div>
                         </div>
-                                                <a href="#" id="openChangePasswordModal">Click here to change password</a>
+                        <a href="#" id="openChangePasswordModal">Click here to change password</a>
 
                     </div>
 
@@ -180,43 +186,49 @@
                     <div class="card-body border-top">
                         <h4 class="card-title mb-3">Other Info&nbsp;</h4>
 
-<!-- Date of Birth -->
-<div class="row">
-    <div class="col-sm-12 col-md-12">
-        <div class="mb-3">
-            <label for="dob" class="control-label col-form-label required-field">DOB</label>
-            <!-- Date input field with preselected value -->
-            <input type="date" class="form-control" id="dob" name="dob" placeholder=""  value="{{ old('dob', $dob) }}" required/>
-        </div>
-    </div>
-</div>
+                        <!-- Date of Birth -->
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12">
+                                <div class="mb-3">
+                                    <label for="dob" class="control-label col-form-label required-field">DOB</label>
+                                    <!-- Date input field with preselected value -->
+                                    <input type="date" class="form-control" id="dob" name="dob" placeholder=""
+                                        value="{{ old('dob', $dob) }}" required />
+                                </div>
+                            </div>
+                        </div>
 
-<!-- License Number -->
-<div class="row">
-    <div class="col-sm-12 col-md-12">
-        <div class="mb-3">
-            <label for="license_number" class="control-label col-form-label required-field">License Number</label>
-            <!-- Text input field for license number with preselected value -->
-            <input type="text" class="form-control" id="license_number" name="license_number" placeholder=""  value="{{ old('license_number',$license_number) }}"  required/>
-        </div>
-    </div>
-</div>
+                        <!-- License Number -->
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12">
+                                <div class="mb-3">
+                                    <label for="license_number"
+                                        class="control-label col-form-label required-field">License Number</label>
+                                    <!-- Text input field for license number with preselected value -->
+                                    <input type="text" class="form-control" id="license_number" name="license_number"
+                                        placeholder="" value="{{ old('license_number',$license_number) }}" required />
+                                </div>
+                            </div>
+                        </div>
 
-<!-- SSN (Social Security Number) -->
-<div class="row">
-    <div class="col-sm-12 col-md-12">
-        <div class="mb-3">
-            <label for="ssn" class="control-label col-form-label">SSN(Social Security Number)</label>
-            <!-- Text input field for SSN with preselected value -->
-            <input type="text" class="form-control" id="ssn" name="ssn" placeholder="" value="{{ old('ssn', $ssn) }}" />
-        </div>
-    </div>
-</div>
+                        <!-- SSN (Social Security Number) -->
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12">
+                                <div class="mb-3">
+                                    <label for="ssn" class="control-label col-form-label">SSN(Social Security
+                                        Number)</label>
+                                    <!-- Text input field for SSN with preselected value -->
+                                    <input type="text" class="form-control" id="ssn" name="ssn" placeholder=""
+                                        value="{{ old('ssn', $ssn) }}" />
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="row">
                             <div class="col-sm-12 col-md-12">
                                 <div class="mb-3">
-                                    <label for="mobile_phone" class="control-label col-form-label required-field">Mobile Phone</label>
+                                    <label for="mobile_phone" class="control-label col-form-label required-field">Mobile
+                                        Phone</label>
                                     <input type="text" class="form-control" id="mobile_phone" name="mobile_phone"
                                         value="{{ old('mobile_phone', $technician->mobile) }}" placeholder=""
                                         required />
@@ -246,64 +258,64 @@
             </div>
 
             <div class="col-lg-3 d-flex align-items-stretch">
-    <div class="card w-100">
-        <div class="card-body border-top">
-            <h4 class="card-title mb-3">&nbsp;</h4>
+                <div class="card w-100">
+                    <div class="card-body border-top">
+                        <h4 class="card-title mb-3">&nbsp;</h4>
 
-            <div class="row" style="margin-top: 10px;">
-                <div class="col-sm-12 col-md-12" style="margin-top: 10px;">
-                    <div class="mb-3">
-                        <label class="control-label col-form-label">Service Area</label><br>
-                        @php
-                        if (isset($technician->service_areas) && !empty($technician->service_areas)) {
-                            $service_areas = explode(',', $technician->service_areas);
-                        } else {
-                            $service_areas = [];
-                        }
-                        @endphp
-                        <div class="form-check">
-                            @foreach($serviceAreas as $area)
-                            <div>
-                                <label class="form-check-label" for="service_areas{{ $area->area_id }}">
-                                    <input class="form-check-input" type="checkbox" @if(in_array($area->area_id,
-                                    $service_areas)) checked @endif
-                                    id="service_areas{{ $area->area_id }}" name="service_areas[]"
-                                    value="{{ $area->area_id }}">
-                                    {{ $area->area_name }}
-                                </label>
+                        <div class="row" style="margin-top: 10px;">
+                            <div class="col-sm-12 col-md-12" style="margin-top: 10px;">
+                                <div class="mb-3">
+                                    <label class="control-label col-form-label">Service Area</label><br>
+                                    @php
+                                    if (isset($technician->service_areas) && !empty($technician->service_areas)) {
+                                    $service_areas = explode(',', $technician->service_areas);
+                                    } else {
+                                    $service_areas = [];
+                                    }
+                                    @endphp
+                                    <div class="form-check">
+                                        @foreach($serviceAreas as $area)
+                                        <div>
+                                            <label class="form-check-label" for="service_areas{{ $area->area_id }}">
+                                                <input class="form-check-input" type="checkbox"
+                                                    @if(in_array($area->area_id,
+                                                $service_areas)) checked @endif
+                                                id="service_areas{{ $area->area_id }}" name="service_areas[]"
+                                                value="{{ $area->area_id }}">
+                                                {{ $area->area_name }}
+                                            </label>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                </div>
                             </div>
-                            @endforeach
                         </div>
                     </div>
                 </div>
             </div>
+
+
+            <div class="row" style="display:none;">
+                <div class="col-sm-12 col-md-12">
+                    <div class="mb-3">
+                        <label for="role" class="control-label col-form-label">Role</label>
+                        <input type="text" class="form-control" id="role" value="{{ old('role', $technician->role) }}"
+                            name="role" placeholder="" value="technician" />
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
-</div>
 
 
-                <div class="row" style="display:none;">
-                    <div class="col-sm-12 col-md-12">
-                        <div class="mb-3">
-                            <label for="role" class="control-label col-form-label">Role</label>
-                            <input type="text" class="form-control" id="role"
-                                value="{{ old('role', $technician->role) }}" name="role" placeholder=""
-                                value="technician" />
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-
-            <!-- row -->
+    <!-- row -->
     <div class="row" style="width:99%; margin-left:5px;">
 
-			<div class="col-lg-9 d-flex align-items-stretch">
-				<div class="card w-100">
+        <div class="col-lg-9 d-flex align-items-stretch">
+            <div class="card w-100">
 
-					<div class="card-body border-top">
+                <div class="card-body border-top">
 
                     <h4 class="card-title">Address</h4>
                     <div class="row">
@@ -316,43 +328,46 @@
                                     required />
                             </div>
                         </div>
-                       
+
                     </div>
-                     <div class="col-sm-12 col-md-12">
-                            <div class="mb-3">
-                                <label for="address_unit" class="control-label col-form-label">Address Line 2</label>
-                                <input type="text" class="form-control" id="address_unit" name="address_unit"
-                                    value="{{ old('address_unit', $location->address_line2 ?? null) }}"
-                                    placeholder="" />
-                            </div>
+                    <div class="col-sm-12 col-md-12">
+                        <div class="mb-3">
+                            <label for="address_unit" class="control-label col-form-label">Address Line 2</label>
+                            <input type="text" class="form-control" id="address_unit" name="address_unit"
+                                value="{{ old('address_unit', $location->address_line2 ?? null) }}" placeholder="" />
                         </div>
+                    </div>
                     <div class="row">
                         <div class="col-sm-12 col-md-4">
-    <div class="mb-3">
-        <label for="state_id" class="control-label col-form-label required-field required-field">State</label>
-        <select class="form-select me-sm-2" id="state_id" name="state_id" required>
-            <option selected disabled value="">Select State...</option>
-            @foreach($locationStates as $locationState)
-                <option value="{{ $locationState->state_id }}" {{ ($location->state_id ?? null) == $locationState->state_id ? 'selected' : '' }}>
-                    {{ $locationState->state_name }}
-                </option>
-            @endforeach
-        </select>
-    </div>
-</div>
-                           <div class="col-sm-12 col-md-4">
-                                <div class="mb-3">
-        <label for="city" class="control-label col-form-label required-field">City</label>
-        <select class="form-select" id="city" name="city" required>
-            <option selected disabled value="">Select City...</option>
-             @foreach($cities as $locationState)
-                <option value="{{ $locationState->city_id }}" {{ ($location->city ?? null) == $locationState->city_id ? 'selected' : '' }}>
-                    {{ $locationState->city }}
-                </option>
-            @endforeach
-        </select>
-    </div>                     </div>
-                           
+                            <div class="mb-3">
+                                <label for="state_id"
+                                    class="control-label col-form-label required-field required-field">State</label>
+                                <select class="form-select me-sm-2" id="state_id" name="state_id" required>
+                                    <option selected disabled value="">Select State...</option>
+                                    @foreach($locationStates as $locationState)
+                                    <option value="{{ $locationState->state_id }}" {{ ($location->state_id ?? null) ==
+                                        $locationState->state_id ? 'selected' : '' }}>
+                                        {{ $locationState->state_name }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-4">
+                            <div class="mb-3">
+                                <label for="city" class="control-label col-form-label required-field">City</label>
+                                <select class="form-select" id="city" name="city" required>
+                                    <option selected disabled value="">Select City...</option>
+                                    @foreach($cities as $locationState)
+                                    <option value="{{ $locationState->city_id }}" {{ ($location->city ?? null) ==
+                                        $locationState->city_id ? 'selected' : '' }}>
+                                        {{ $locationState->city }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
 
                         <div class="col-sm-12 col-md-4">
                             <div class="mb-3">
@@ -369,38 +384,38 @@
                 </div>
 
             </div>
-            
+
         </div>
         <div class="col-lg-3 d-flex align-items-stretch">
-    <div class="card w-100">
-        <div class="card-body border-top">
-            <h4 class="card-title mb-3">&nbsp;</h4>
+            <div class="card w-100">
+                <div class="card-body border-top">
+                    <h4 class="card-title mb-3">&nbsp;</h4>
 
-            <div class="row" style="margin-top: 10px;">
-                <div class="col-sm-12 col-md-12" style="margin-top: 10px;">
-                    <div class="mb-3">
-                        <div class="row">
+                    <div class="row" style="margin-top: 10px;">
+                        <div class="col-sm-12 col-md-12" style="margin-top: 10px;">
+                            <div class="mb-3">
+                                <div class="row">
 
-                            <label for="tag_id" class="control-label col-form-label">User
-                                Tags</label>
-                            <select class="form-control" id="tag_id" name="tag_id[]" multiple>
-                                @foreach($tags as $tag)
-                                <option value="{{ $tag->tag_id }}" {{ $userTags->contains('tag_id',
-                                    $tag->tag_id) ? 'selected' : '' }}>
-                                    {{ $tag->tag_name }}
-                                </option>
-                                @endforeach
-                            </select>
+                                    <label for="tag_id" class="control-label col-form-label">User
+                                        Tags</label>
+                                    <select class="form-control" id="tag_id" name="tag_id[]" multiple>
+                                        @foreach($tags as $tag)
+                                        <option value="{{ $tag->tag_id }}" {{ $userTags->contains('tag_id',
+                                            $tag->tag_id) ? 'selected' : '' }}>
+                                            {{ $tag->tag_name }}
+                                        </option>
+                                        @endforeach
+                                    </select>
 
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+
             </div>
         </div>
-
-        
-    </div>
-</div>
 
 
         {{-- <div class="col-lg-3 d-flex align-items-stretch">
@@ -422,23 +437,23 @@
 
     </div>
 
-    
-    
-    <!-- End row -->
 
-    <!-- row -->
 
     <!-- End row -->
 
     <!-- row -->
-    
-<div class="row">
+
+    <!-- End row -->
+
+    <!-- row -->
+
+    <div class="row">
         <div class="p-3 border-top">
             <div class="action-form">
                 <div class="mb-3 mb-0 text-center">
                     <button type="submit" class="btn btn-info rounded-pill px-4 waves-effect waves-light">Save</button>
-                 <a href="https://gaffis.in/frontier/website/technicians">    <button type="button"
-                        class="btn btn-dark rounded-pill px-4 waves-effect waves-light">Cancel</button> </a>
+                    <a href="{{ route('technicians.index') }}"> <button type="button"
+                            class="btn btn-dark rounded-pill px-4 waves-effect waves-light">Cancel</button> </a>
                 </div>
             </div>
         </div>
@@ -448,8 +463,8 @@
     <!-- End row -->
 
 
- 
-   
+
+
 </form>
 
 @section('script')
@@ -481,7 +496,7 @@
     });
 </script>
 <script>
-  document.getElementById('openChangePasswordModal').addEventListener('click', function(event) {
+    document.getElementById('openChangePasswordModal').addEventListener('click', function(event) {
     event.preventDefault();
     $('#changePasswordModal').modal('show');
   });
@@ -492,13 +507,12 @@
   });
 </script>
 <script>
-
-$(document).ready(function(){
+    $(document).ready(function(){
     $('#state_id').change(function(){
         var stateId = $(this).val();
         var citySelect = $('#city');
         citySelect.html('<option selected disabled value="">Loading...</option>');
-        
+
         // Make an AJAX request to fetch the cities based on the selected state
         $.ajax({
             url: "{{ route('getcities') }}", // Correct route URL
@@ -518,7 +532,7 @@ $(document).ready(function(){
             }
         });
     });
-    
+
     // Trigger another function to get zip code after selecting a city
     $('#city').change(function() {
         var cityId = $(this).val();

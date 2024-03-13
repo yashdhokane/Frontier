@@ -97,10 +97,14 @@
                     <div class="table-responsive" style="overflow-x: auto;">
                         <table id="zero_config" class="table table-bordered text-nowrap" data-paging="true"
                             data-paging-size="7" style="width:auto">
-                            <div class="d-flex">
-                                <div class="d-flex align-items-baseline " style="margin-bottom:10px;">
+                            <div class="d-flex flex-wrap">
+                            <div class="col-md-12 row" style="margin-bottom:7px;">
+                                <div class="col-md-3">
+                                <div class="d-flex flex-column align-items-baseline">
                                     <!-- Date filtering input -->
-                                    <label>Month:</label>
+                                    
+                                
+                                    <label><b>Month:</b></label>
                                     <select id="month-filter" class="form-control mx-2">
                                         <option value="">All</option>
                                         @php
@@ -121,39 +125,59 @@
                                             }
                                             @endphp
                                     </select>
+                                    </div>
                                 </div>
-                                 <div class="d-flex align-items-baseline">
-                                        <!-- Filter by other column (example: Manufacturer) -->
-                                        <label class="text-nowrap">Manufacturer:</label>
-                                        <select id="manufacturer-filter" class="form-control mx-2">
-                                            <option value="">All</option>
-                                            @foreach ($manufacturer as $item)
-                                            <option value="{{ $item->manufacturer_name }}">
-                                                {{ $item->manufacturer_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                     <div class="d-flex align-items-baseline">
-                                        <!-- Filter by other column (example: Manufacturer) -->
-                                        <label class="text-nowrap">Technician:</label>
-                                        <select id="technician-filter" class="form-control mx-2">
-                                            <option value="">All</option>
-                                            @foreach ($technicianrole as $item)
-                                            <option value="{{ $item->name }}">
-                                                {{ $item->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                
+                                <div class="col-md-3">
+                                <div class="d-flex flex-column  align-items-baseline">
+                                    <!-- Filter by other column (example: Manufacturer) -->
+                                    <label class="text-nowrap"><b>Manufacturer:</b></label>
+                                    <select id="manufacturer-filter" class="form-control mx-2">
+                                        <option value="">All</option>
+                                        @foreach ($manufacturer as $item)
+                                        <option value="{{ $item->manufacturer_name }}">
+                                            {{ $item->manufacturer_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                </div>
+                                <div class="col-md-3">
+                                <div class="d-flex flex-column align-items-baseline">
+                                    <!-- Filter by other column (example: Manufacturer) -->
+                                    <label class="text-nowrap"><b>Technician </b></label>
+                                    <select id="technician-filter" class="form-control mx-2">
+                                        <option value="">All</option>
+                                        @foreach ($technicianrole as $item)
+                                        <option value="{{ $item->name }}">
+                                            {{ $item->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                </div>
+                                <div class="col-md-3">
+                                <div class="d-flex flex-column  align-items-baseline">
+                                    <!-- Filter by status -->
+                                    <label class="text-nowrap"><b>Status:</b></label>
+                                    <select id="status-filter" class="form-control mx-2">
+                                        <option value="">All</option>
+                                        <option value="open">Open</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="resolved">Resolved</option>
+                                        <option value="closed">Closed</option>
+                                        <option value="rejected">Rejected</option>
+                                    </select>
+                                </div>
+                                </div>
+                              </div>
+
+                               
+
                                 <thead>
                                     <tr>
                                         <th>Ticket ID</th>
                                         <th>Ticket Details</th>
                                         <th>Customer</th>
                                         <th>Technician</th>
-                                        <th>Date</th>
-                                        <th>Time Slot</th>
-                                        <th>Status</th>
+                                        <th>Date & Time</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -161,30 +185,33 @@
                                     @foreach ($tickets as $ticket)
                                     <tr>
                                         <td>
-                                            <a href="#" class="fw-bold link"><span class="mb-1 badge bg-primary">{{
+                                            <a href="{{ route('tickets.show', $ticket->id) }}"
+                                                class="fw-bold link"><span class="mb-1 badge bg-primary">{{
                                                     $ticket->job_code }}</span></a>
                                         </td>
                                         <td>
-
-                                                        <div class="col-md-6">
-                                                                        <a href="#" class="font-medium link"> {{ $ticket->job_title ?? null }}</a><br>
-<span style="font-size:12px;">
-    @if ($ticket->jobdetailsinfo && $ticket->jobdetailsinfo->apliencename)
-        {{ $ticket->jobdetailsinfo->apliencename->appliance_name }}/ 
-    @endif
-     @if ($ticket->jobdetailsinfo && $ticket->jobdetailsinfo->manufacturername)
-        {{ $ticket->jobdetailsinfo->manufacturername->manufacturer_name }}/ 
-    @endif
-    @if ($ticket->jobdetailsinfo && $ticket->jobdetailsinfo->model_number)
-        {{ $ticket->jobdetailsinfo->model_number }}/ 
-    @endif
-    @if ($ticket->jobdetailsinfo && $ticket->jobdetailsinfo->serial_number)
-        {{ $ticket->jobdetailsinfo->serial_number }}
-    @endif
-</span>
-
-
-                                                        
+                                            <div class="text-wrap2">
+                                                <a href="{{ route('tickets.show', $ticket->id) }}"
+                                                    class="font-medium link"> {{ $ticket->job_title ??
+                                                    null }}</a> <span
+                                                    class="badge bg-light-warning text-warning font-medium">{{
+                                                    $ticket->status
+                                                    }}</span>
+                                            </div>
+                                            <div style="font-size:12px;">
+                                                @if ($ticket->jobdetailsinfo && $ticket->jobdetailsinfo->apliencename)
+                                                {{ $ticket->jobdetailsinfo->apliencename->appliance_name }}/
+                                                @endif
+                                                @if ($ticket->jobdetailsinfo &&
+                                                $ticket->jobdetailsinfo->manufacturername)
+                                                {{ $ticket->jobdetailsinfo->manufacturername->manufacturer_name }}/
+                                                @endif
+                                                @if ($ticket->jobdetailsinfo && $ticket->jobdetailsinfo->model_number)
+                                                {{ $ticket->jobdetailsinfo->model_number }}/
+                                                @endif
+                                                @if ($ticket->jobdetailsinfo && $ticket->jobdetailsinfo->serial_number)
+                                                {{ $ticket->jobdetailsinfo->serial_number }}
+                                                @endif
                                             </div>
                                         </td>
                                         <td>
@@ -201,23 +228,19 @@
                                             Unassigned
                                             @endif
                                         </td>
- <td>
-    @if ($ticket->jobassignname && $ticket->jobassignname->start_date_time)
-        <div>{{ $convertDateToTimezone($ticket->jobassignname->start_date_time) }}</div>
-    @else
-        <div></div>
-    @endif
-</td>
-
-
-
                                         <td>
-                                            {{ $convertTimeToTimezone($ticket->JobAssign->start_date_time, 'H:i:a') }}
-                                            to {{ $convertTimeToTimezone($ticket->JobAssign->end_date_time, 'H:i:a') }}
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-light-warning text-warning font-medium">{{
-                                                $ticket->status }}</span>
+                                            @if ($ticket->jobassignname && $ticket->jobassignname->start_date_time)
+                                            <div class="font-medium link">{{
+                                                $convertDateToTimezone($ticket->jobassignname->start_date_time) }}</div>
+                                            @else
+                                            <div></div>
+                                            @endif
+                                            <div style="font-size:12px;">
+                                                {{ $convertTimeToTimezone($ticket->JobAssign->start_date_time, 'H:i:a')
+                                                }}
+                                                to {{ $convertTimeToTimezone($ticket->JobAssign->end_date_time, 'H:i:a')
+                                                }}
+                                            </div>
                                         </td>
                                         <td>
                                             <span><a class="btn btn-success"
@@ -267,22 +290,19 @@
             var table = $('#zero_config').DataTable();
 
             // Month filtering
-           $('#month-filter').on('change', function() {
-            var selectedMonth = $(this).val();
-            if (selectedMonth) {
-                var Month = moment(selectedMonth, 'MMMM YYYY').startOf('month').format('MM'); // First day of the selected month
-                var Year = moment(selectedMonth, 'MMMM YYYY').startOf('month').format('YYYY'); //  selected year
-                // Perform filtering on the table to include all dates within the range between start date and end date
-                table.column(4).search('^' + Month + '-' + '\\d{2}-' + Year + '$', true, false).draw();
-                console.log(Month);
-                                console.log(Year);
-                                console.log(table.column(4).search('^' + Month + '-' + '\\d{2}-' + Year + '$', true, false).draw());
-
-            } else {
-                // If no month is selected, clear the filter
-                table.column(4).search('').draw();
-            }
+         $('#month-filter').on('change', function() {
+        var selectedMonth = $(this).val();
+        if (selectedMonth) {
+        var Month = moment(selectedMonth, 'MMMM YYYY').format('MM'); // Extract the month
+        var Year = moment(selectedMonth, 'MMMM YYYY').format('YYYY'); // Extract the year
+        // Perform filtering on the table to include all dates within the selected month and year
+        table.column(4).search('^' + Month + '-' + '\\d{2}-' + Year, true, false).draw();
+        } else {
+        // If no month is selected, clear the filter
+        table.column(4).search('').draw();
+        }
         });
+
 
             // Manufacturer filtering
             $('#manufacturer-filter').on('change', function() {
@@ -295,7 +315,10 @@
 });
 
 
-
+$('#status-filter').on('change', function () {
+var status = $(this).val();
+table.columns(1).search(status).draw();
+});
 
 
         });

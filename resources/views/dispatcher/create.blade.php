@@ -1,11 +1,10 @@
 @extends('home')
 @section('content')
 <style>
-.required-field::after {
-    content: " *";
-    color: red;
-}
-
+    .required-field::after {
+        content: " *";
+        color: red;
+    }
 </style>
 <form id="myForm" action="{{ route('dispatcher.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
@@ -25,8 +24,9 @@
                     <div class="d-flex align-items-center">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="https://gaffis.in/frontier/website/home">Home</a></li>
-                                <li class="breadcrumb-item"><a href="#">Dispatcher</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('dispatcher.index') }}">Dispatcher</a>
+                                </li>
                                 <li class="breadcrumb-item active" aria-current="page">Add New </li>
                             </ol>
                         </nav>
@@ -90,7 +90,7 @@
             <div class="col-lg-6 d-flex align-items-stretch">
                 <div class="card w-100">
                     <div class="card-body border-top">
-                    <div id="passwordMatchMessage" class="alert" style="display:none; margin-bottom:5px;"></div> 
+                        <div id="passwordMatchMessage" class="alert" style="display:none; margin-bottom:5px;"></div>
 
                         <h4 class="card-title">Account Info</h4>
 
@@ -98,15 +98,16 @@
                             <div class="col-sm-12 col-md-12">
                                 <div class="mb-3">
                                     <label for="email" class="control-label col-form-label required-field">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email"
-                                        placeholder="" required />
+                                    <input type="email" class="form-control" id="email" name="email" placeholder=""
+                                        required />
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-12 col-md-6">
                                 <div class="mb-3">
-                                    <label for="password" class="control-label col-form-label required-field">Password</label>
+                                    <label for="password"
+                                        class="control-label col-form-label required-field">Password</label>
                                     <input type="password" class="form-control" id="password" name="password"
                                         placeholder="" required />
 
@@ -115,19 +116,21 @@
                             </div>
                             <div class="col-sm-12 col-md-6">
                                 <div class="mb-3">
-                                    <label for="confirm_password" class="control-label col-form-label required-field">Confirm Password</label>
-                                    <input type="password" class="form-control" id="confirm_password" name="confirm_password"
-                                        placeholder="" required />
-                              </div>
+                                    <label for="confirm_password"
+                                        class="control-label col-form-label required-field">Confirm Password</label>
+                                    <input type="password" class="form-control" id="confirm_password"
+                                        name="confirm_password" placeholder="" required />
+                                </div>
                             </div>
                         </div>
-                        
+
                         {{-- --}}
-                         <h4 class="card-title">Contact Info</h4>
+                        <h4 class="card-title">Contact Info</h4>
                         <div class="row">
                             <div class="col-sm-12 col-md-6">
                                 <div class="mb-3">
-                                    <label for="first_name" class="control-label col-form-label required-field">First Name</label>
+                                    <label for="first_name" class="control-label col-form-label required-field">First
+                                        Name</label>
                                     <input type="text" class="form-control" id="first_name" name="first_name"
                                         placeholder="" required />
 
@@ -136,7 +139,8 @@
                             </div>
                             <div class="col-sm-12 col-md-6">
                                 <div class="mb-3">
-                                    <label for="last_name" class="control-label col-form-label required-field">Last Name</label>
+                                    <label for="last_name" class="control-label col-form-label required-field">Last
+                                        Name</label>
                                     <input type="text" class="form-control" id="last_name" name="last_name"
                                         placeholder="" required />
                                 </div>
@@ -145,14 +149,15 @@
                         <div class="row">
                             <div class="col-sm-12 col-md-12">
                                 <div class="mb-3">
-                                    <label for="display_name" class="control-label col-form-label required-field">Display Name (shown
+                                    <label for="display_name"
+                                        class="control-label col-form-label required-field">Display Name (shown
                                         on invoice)</label>
                                     <input type="text" class="form-control" id="display_name" name="display_name"
                                         placeholder="" required />
                                 </div>
                             </div>
                         </div>
-                       
+
                         <div class="row">
                             <div class="col-sm-12 col-md-12">
                                 <div class="mb-3">
@@ -173,7 +178,8 @@
                         <div class="row">
                             <div class="col-sm-12 col-md-12">
                                 <div class="mb-3">
-                                    <label for="mobile_phone" class="control-label col-form-label required-field">Mobile Phone</label>
+                                    <label for="mobile_phone" class="control-label col-form-label required-field">Mobile
+                                        Phone</label>
                                     <input type="text" class="form-control" id="mobile_phone" name="mobile_phone"
                                         placeholder="" required />
                                 </div>
@@ -219,6 +225,49 @@
                                 </div>
                             </div>
                         </div>
+                        <h5 class="card-title mb-3"> Permission to user view</h5>
+{{--<div class="row">
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <div class="mb-3">
+                @foreach($permissions as $permission)
+                <input type="checkbox" id="{{ $permission }}_permission" name="permissions[]" value="{{ $permission }}">
+                <label for="{{ $permission }}_permission">{{ ucfirst($permission) }}</label><br>
+                @endforeach
+            </div>
+        </div>
+    </div>
+</div> --}}
+<div class="row">
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <div class="mb-6">
+               
+                <input type="checkbox" id="permission" name="permissions[]" value="multiadmin.index">
+                <label for="permission">Profiles(Admin)</label><br>
+                  <input type="checkbox" id="permission" name="permissions[]" value="home">
+                <label for="permission">Dashboard</label><br>
+                  <input type="checkbox" id="permission" name="permissions[]" value="dispatcher.index">
+                <label for="permission">Dispatcher</label><br>
+                  <input type="checkbox" id="permission" name="permissions[]" value="tickets.index">
+                <label for="permission">Jobs</label><br>
+           <input type="checkbox" id="permission" name="permissions[]" value="payment-list">
+
+                <label for="permission">Payments</label><br>
+                  <input type="checkbox" id="permission" name="permissions[]" value="services.index">
+                <label for="permission">Pricebook(services)</label><br>
+                        <input type="checkbox" id="permission" name="permissions[]" value="dispatcher.index">
+                <label for="permission">Profiles(dispatcher)</label><br>
+                        <input type="checkbox" id="permission" name="permissions[]" value="performanncematrix">
+                <label for="permission">Reports(performannce Mx)</label><br>
+                        <input type="checkbox" id="permission" name="permissions[]" value="servicearea.index">
+                <label for="permission">Settings(service area)</label><br>
+              
+            </div>
+        </div>
+    </div>
+</div>
+
                         <div class="row" style="display:none;">
                             <div class="col-sm-12 col-md-12">
                                 <div class="mb-3">
@@ -248,25 +297,27 @@
                         <div class="row">
                             <div class="col-sm-12 col-md-12">
                                 <div class="mb-3">
-                                    <label for="address1" class="control-label col-form-label required-field">Address Line 1
+                                    <label for="address1" class="control-label col-form-label required-field">Address
+                                        Line 1
                                         (Street)</label>
                                     <input type="text" class="form-control" id="address1" name="address1" placeholder=""
                                         required />
                                 </div>
                             </div>
-                            
+
                         </div>
                         <div class="col-sm-12 col-md-12">
-                                <div class="mb-3">
-                                    <label for="address_unit" class="control-label col-form-label">Address Line 2</label>
-                                    <input type="text" class="form-control" id="address_unit" name="address_unit"
-                                        placeholder="" />
-                                </div>
+                            <div class="mb-3">
+                                <label for="address_unit" class="control-label col-form-label">Address Line 2</label>
+                                <input type="text" class="form-control" id="address_unit" name="address_unit"
+                                    placeholder="" />
                             </div>
+                        </div>
                         <div class="row">
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
-                                    <label for="state_id" class="control-label col-form-label required-field">State</label>
+                                    <label for="state_id"
+                                        class="control-label col-form-label required-field">State</label>
                                     <select class="form-select me-sm-2" id="state_id" name="state_id" required>
                                         <option selected disabled value="">Select State...</option>
                                         @foreach($locationStates as $locationState)
@@ -277,15 +328,17 @@
                                 </div>
                             </div>
                             <div class="col-sm-12 col-md-4">
-                               <div class="mb-3">
-        <label for="city" class="control-label col-form-label required-field">City</label>
-        <select class="form-select" id="city" name="city" required>
-            <option selected disabled value="">Select City...</option>
-        </select>
-    </div>                            </div>
-                                                    <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
-                                    <label for="zip_code" class="control-label col-form-label required-field">Zip</label>
+                                    <label for="city" class="control-label col-form-label required-field">City</label>
+                                    <select class="form-select" id="city" name="city" required>
+                                        <option selected disabled value="">Select City...</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4">
+                                <div class="mb-3">
+                                    <label for="zip_code"
+                                        class="control-label col-form-label required-field">Zip</label>
                                     <input type="text" class="form-control" id="zip_code" name="zip_code" placeholder=""
                                         required />
                                 </div>
@@ -331,8 +384,8 @@
                     <div class="mb-3 mb-0 text-center">
                         <button id="submitBtn" type="submit"
                             class="btn btn-info rounded-pill px-4 waves-effect waves-light">Save</button>
-                       <a href="{{route('dispatcher.index')}}">  <button type="button"
-                            class="btn btn-dark rounded-pill px-4 waves-effect waves-light">Cancel</button> </a>
+                        <a href="{{route('dispatcher.index')}}"> <button type="button"
+                                class="btn btn-dark rounded-pill px-4 waves-effect waves-light">Cancel</button> </a>
                     </div>
                 </div>
             </div>
@@ -383,13 +436,12 @@
     });
 </script>
 <script>
-
-$(document).ready(function(){
+    $(document).ready(function(){
     $('#state_id').change(function(){
         var stateId = $(this).val();
         var citySelect = $('#city');
         citySelect.html('<option selected disabled value="">Loading...</option>');
-        
+
         // Make an AJAX request to fetch the cities based on the selected state
         $.ajax({
             url: "{{ route('getcities') }}", // Correct route URL
@@ -409,7 +461,7 @@ $(document).ready(function(){
             }
         });
     });
-    
+
     // Trigger another function to get zip code after selecting a city
     $('#city').change(function() {
         var cityId = $(this).val();

@@ -27,8 +27,8 @@
                     <div class="d-flex align-items-center">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                <li class="breadcrumb-item"><a href="https://gaffis.in/frontier/website/technicians">Technicians</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('technicians.index') }}">Technicians</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">Add New </li>
                             </ol>
                         </nav>

@@ -31,7 +31,7 @@ class AdminProfileController extends Controller
         if ($request->hasFile('user_image')) {
             $file = $request->file('user_image');
             $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images/'), $filename);
+            $file->move(public_path('images/superadmin'), $filename);
         }
 
 

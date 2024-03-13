@@ -13,8 +13,8 @@
                 <div class="d-flex align-items-center">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="https://gaffis.in/frontier/website/home">Home</a></li>
-                            <li class="breadcrumb-item"><a href="#">Admin</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('multiadmin.index') }}">Admin</a></li>
                             <li class="breadcrumb-item active" aria-current="page">Profile</li>
                         </ol>
                     </nav>
@@ -157,7 +157,7 @@
                                             <div class="card-body">
                                                 <center class="mt-1">
                                                     @if($multiadmin->user_image)
-                                                    <img src="{{ asset('public/images/multiadmin/' . $multiadmin->user_image) }}"
+                                                    <img src="{{ asset('public/images/admin/' . $multiadmin->user_image) }}"
                                                         class="rounded-circle" width="150" />
                                                     @else
                                                     <img src="{{asset('public/images/login_img_bydefault.png')}}" alt="avatar"
@@ -380,7 +380,7 @@
                                 <div class="profiletimeline mt-0">
                                     <div class="sl-item">
                                         <div class="sl-left">
-                                            <img src="https://gaffis.in/frontier/webapp/design/assets/images/users/1.jpg"
+                                            <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}"
                                                 alt="user" class="rounded-circle" />
                                         </div>
                                         <div class="sl-right">
@@ -402,7 +402,7 @@
                                     <hr />
                                     <div class="sl-item">
                                         <div class="sl-left">
-                                            <img src="https://gaffis.in/frontier/webapp/design/assets/images/users/3.jpg"
+                                            <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}"
                                                 alt="user" class="rounded-circle" />
                                         </div>
                                         <div class="sl-right">
@@ -424,7 +424,7 @@
                                     <hr />
                                     <div class="sl-item">
                                         <div class="sl-left">
-                                            <img src="https://gaffis.in/frontier/webapp/design/assets/images/users/4.jpg"
+                                            <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}"
                                                 alt="user" class="rounded-circle" />
                                         </div>
                                         <div class="sl-right">

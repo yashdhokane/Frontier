@@ -13,7 +13,7 @@
         <div class="d-flex align-items-center">
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="https://gaffis.in/frontier/website/home">Home</a></li>
+              <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
               <li class="breadcrumb-item active" aria-current="page">Customers</li>
             </ol>
           </nav>
@@ -174,12 +174,12 @@
                             <span class="badge bg-warning">No Tags Available</span>
                         </div>
                     </div>
-                @endif 
+                @endif
                 --}}
 
                 <span class="user-work text-muted">{{ $user->email }}</span><br />
                         <span class="user-work text-muted">{{ $user->mobile }}</span><br />
-                
+
                 <div class="row">
                     <div class="col-12">
                         <span class="badge bg-info"></span>
@@ -210,9 +210,9 @@
     @if($userAddress)
          <span class="user-work text-muted">{{ $userAddresscity }}</span>&nbsp;
 
-  
+
              <span class="user-work text-muted">{{ $userAddress->state_name }}</span>
-      
+
 
          <span class="user-work text-muted">,</span>
          <span class="user-work text-muted">{{ $userAddress->zipcode }}</span>

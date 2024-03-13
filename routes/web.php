@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\PerformanceMatrix;
+
 use App\Http\Controllers\ProductController;
 
 use App\Http\Controllers\MultiAdminController;
@@ -644,7 +646,7 @@ Route::middleware('auth')->group(function () {
     Route::put('book-list/services/{id}', [ServicesController::class, 'updateServices'])->name('services.update');
 
 
-  
+
     // Schedule
 
     Route::get('schedule', [ScheduleController::class, 'index'])->name('schedule');
@@ -673,7 +675,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('schedule/update/post', [ScheduleController::class, 'update'])->name('schedule.update.post');
 
-    Route::get('schedule/edit', [ScheduleController::class, 'edit'])->name('schedule.edit');
+   Route::get('schedule/edit', [ScheduleController::class, 'edit'])->name('schedule.edit');
 
     Route::post('schedule/update', [ScheduleController::class, 'updateSchedule'])->name('schedule.update');
 
@@ -698,10 +700,6 @@ Route::middleware('auth')->group(function () {
     Route::post('book-list/partscategory-update', [ProductCategoryController::class, 'updateproductcategory'])->name('productcategory.update');
 
     Route::delete('book-list/partscategory-delete/{id}', [ProductCategoryController::class, 'deleteproductcategory'])->name('productcategory.delete');
-    
-    Route::get('assign_product', [ProductCategoryController::class, 'assign_product'])->name('assign_product');
-    
-    Route::post('store/assign-product', [ProductCategoryController::class, 'store_assign_product']);
 
 
 
@@ -945,8 +943,6 @@ Route::middleware('auth')->group(function () {
     
     Route::post('/store/comment/{id}', [PaymentController::class, 'comment']);
 
-    Route::post('/store/comment/{id}', [PaymentController::class, 'comment']);
-
     // timezone 
 
     Route::post('/change_timezone', [TimezoneController::class, 'store']);
@@ -958,7 +954,7 @@ Route::middleware('auth')->group(function () {
 
 
 
-
+Route::get('/performance-matrix', [PerformanceMatrix::class, 'performanncematrix'])->name('performanncematrix');
 
 });
 
@@ -978,3 +974,11 @@ Route::get('/getZipCode', [UserController::class, 'getZipCode'])->name('getZipCo
 
 Route::get('/getZipCodeanother', [UserController::class, 'getZipCodeanother'])->name('getZipCodeanother');
 Route::post('/technician-note-store', [TicketController::class, 'techniciannotestore'])->name('techniciannote');
+
+Route::post('/check-mobile',  [UserController::class, 'checkMobile'])->name('check-mobile');
+
+Route::get('/permission-index',  [AdminController::class, 'permissionindex'])->name('permissionindex');
+
+Route::post('/permission-store',  [AdminController::class, 'permissionstore'])->name('permissions.store');
+
+Route::post('/permission-delete',  [AdminController::class, 'permissiondelete'])->name('permissions.delete');

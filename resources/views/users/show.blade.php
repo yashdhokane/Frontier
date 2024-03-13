@@ -13,8 +13,8 @@
                 <div class="d-flex align-items-center">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="https://gaffis.in/frontier/website/home">Home</a></li>
-                            <li class="breadcrumb-item"><a href="https://gaffis.in/frontier/website/users">Customers</a>
+                            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('users.index') }}">Customers</a>
                             </li>
                             <li class="breadcrumb-item active" aria-current="page">Profile</li>
                         </ol>
@@ -234,7 +234,7 @@
                                                     </a>
                                                     @else
                                                     <!-- Default image if no image available -->
-                                                    <img src="{{ asset('https://gaffis.in/frontier/website/public/admin/assets/images/users/1.jpg') }}"
+                                                    <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}"
                                                         alt="Default Image" style="width: 50px; height: 50px;">
                                                     @endif
                                                 </div>
@@ -253,25 +253,41 @@
                                     <table id="zero_config" class="table table-bordered text-nowrap">
                                         <thead>
                                             <tr>
-                                                <th>Status</th>
-                                                <th>Title</th>
-                                                <th>ID</th>
+                                             <th>ID</th>
+                                                <th>Job Name </th>
                                                 <th>Date</th>
                                                 <th>Technician</th>
+                                                <th>Status</th>
+
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach($jobasign as $customercall)
                                             <tr>
-                                                <td><span class="badge bg-light-warning text-warning font-medium">In
-                                                        Progress</span></td>
-                                                <td><a href="#" class="font-medium link">{{$customercall->assign_title
+                                            <td>{{ $loop->iteration }}</td>
+                                                <td><a href="{{ route('tickets.show', $customercall->id) }}" class="font-medium link">{{$customercall->job_title
                                                         ?? null}}</a><br />
                                                 </td>
-                                                <td><a href="#" class="fw-bold link">{{$customercall->id ?? null}}</a>
-                                                </td>
-                                                <td>{{ \Carbon\Carbon::parse($customercall->created_at)->format('d-m-y')
-                                                    }}</td>
+                           {{--  <td><a href="#" class="fw-bold link">{{$customercall->job_code ?? null}}</a>
+                                                 </td> --}}
+                                                @php
+    $jobassign = DB::table('job_assigned')->where('job_id', $customercall->id)->first();
+    $created_at = $jobassign ? $jobassign->created_at : null;
+@endphp
+
+<td>
+    @if ($created_at)
+        <div class="font-medium link">{{ \Carbon\Carbon::parse($created_at)->format('m-d-y') }}
+</div>
+        <div style="font-size:12px;">
+           {{ \Carbon\Carbon::parse($jobassign->start_date_time)->format('g:ia') }}
+            to {{ \Carbon\Carbon::parse($jobassign->end_date_time)->format('g:ia') }}
+        </div>
+    @else
+        <div>N/A</div>
+    @endif
+</td>
+
                                                 <td>
                                                     @php
                                                     $technician = DB::table('users')->where('id',
@@ -280,6 +296,8 @@
 
                                                     {{ $technician ? $technician->name : 'N/A' }}
                                                 </td>
+   <td><span class="badge bg-light-warning text-warning font-medium">{{$customercall->status ?? null}}</span></td>
+
 
                                             </tr>
                                             @endforeach
@@ -298,48 +316,42 @@
                                         <table id="zero_config" class="table table-bordered text-nowrap">
                                             <thead>
                                                 <tr>
-                                                    <th>#</th>
+                                                   
                                                     <th>Ticket</th>
                                                     <th>Date</th>
                                                     <th>Amount</th>
                                                     <th>Technician</th>
-                                                    <th>Action</th>
+                                                   
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                            @foreach($payments as $payment)
                                                 <tr>
-                                                    <td>1</td>
-                                                    <td>AONO-123456401</td>
-                                                    <td>11-08-2023</td>
-                                                    <td>$320 <span class="badge bg-success font-weight-100">Paid</span>
+                                                  @php
+                                                    $jobname = DB::table('jobs')->where('id',
+                                                    $payment->job_id)->first();
+                                                    @endphp
+                                                   
+<td>
+    <a href=" {{ route('invoicedetail', ['id' => $payment->id]) }}" class="font-medium link">{{ $jobname->job_title ?? 'N/A' }}</a>
+</td>
+<td>{{ isset($payment->created_at) ? \Carbon\Carbon::parse($payment->created_at)->format('m-d-Y @ g:i a') : null }}</td>
+                                                    <td>{{$payment->total ?? null}} <span class="badge bg-success font-weight-100">{{$payment->status ?? null}} </span>
                                                     </td>
-                                                    <td>Adam Smith</td>
                                                     <td>
-                                                        <div class="btn-group">
-                                                            <button type="button"
-                                                                class="btn btn-light-primary text-primary dropdown-toggle"
-                                                                data-bs-toggle="dropdown" aria-haspopup="true"
-                                                                aria-expanded="false">
-                                                                <i class="ri-settings-3-fill align-middle fs-5"></i>
-                                                            </button>
-                                                            <div class="dropdown-menu">
-                                                                <a class="dropdown-item" href="javascript:void(0)"><i
-                                                                        data-feather="eye" class="feather-sm me-2"></i>
-                                                                    Open</a>
-                                                                <a class="dropdown-item" href="javascript:void(0)"><i
-                                                                        data-feather="edit-2"
-                                                                        class="feather-sm me-2"></i> Edit</a>
-                                                                <a class="dropdown-item" href="javascript:void(0)"><i
-                                                                        data-feather="trash-2"
-                                                                        class="feather-sm me-2"></i> Delete</a>
-                                                                <a class="dropdown-item" href="javascript:void(0)"><i
-                                                                        data-feather="message-circle"
-                                                                        class="feather-sm me-2"></i>
-                                                                    Comments</a>
-                                                            </div>
-                                                        </div>
-                                                    </td>
+                                                    @php
+    $job = DB::table('jobs')->where('id', $payment->job_id)->first(); // Retrieve job details
+    if ($job) {
+        $technician1 = DB::table('users')->where('id', $job->technician_id)->first(); // Retrieve technician details
+        $technician_name = $technician ? $technician->name : 'Unknown'; // Get technician's name or set to 'Unknown' if not found
+    } else {
+        $technician_name = 'Unknown'; // Set technician's name to 'Unknown' if job details are not found
+    }
+@endphp
+                                           {{$technician1->name ?? null}} </td>
+                                                   
                                                 </tr>
+                                                 @endforeach
                                             </tbody>
                                         </table>
                                     </div>
@@ -354,49 +366,19 @@
                                                         <th>Date</th>
                                                         <th>Amount</th>
                                                         <th>Technician</th>
-                                                        <th>Action</th>
+                                                       
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <td>1</td>
-                                                        <td>AONO-123456401</td>
-                                                        <td>11-08-2023</td>
-                                                        <td>$320 <span
-                                                                class="badge bg-success font-weight-100">Paid</span>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td><span
+                                                                class="badge bg-success font-weight-100"></span>
                                                         </td>
-                                                        <td>Adam Smith</td>
-                                                        <td>
-                                                            <div class="btn-group">
-                                                                <button type="button"
-                                                                    class="btn btn-light-primary text-primary dropdown-toggle"
-                                                                    data-bs-toggle="dropdown" aria-haspopup="true"
-                                                                    aria-expanded="false">
-                                                                    <i class="ri-settings-3-fill align-middle fs-5"></i>
-                                                                </button>
-                                                                <div class="dropdown-menu">
-                                                                    <a class="dropdown-item"
-                                                                        href="javascript:void(0)"><i data-feather="eye"
-                                                                            class="feather-sm me-2"></i>
-                                                                        Open</a>
-                                                                    <a class="dropdown-item"
-                                                                        href="javascript:void(0)"><i
-                                                                            data-feather="edit-2"
-                                                                            class="feather-sm me-2"></i>
-                                                                        Edit</a>
-                                                                    <a class="dropdown-item"
-                                                                        href="javascript:void(0)"><i
-                                                                            data-feather="trash-2"
-                                                                            class="feather-sm me-2"></i>
-                                                                        Delete</a>
-                                                                    <a class="dropdown-item"
-                                                                        href="javascript:void(0)"><i
-                                                                            data-feather="message-circle"
-                                                                            class="feather-sm me-2"></i>
-                                                                        Comments</a>
-                                                                </div>
-                                                            </div>
-                                                        </td>
+                                                        <td></td>
+                                                      
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -412,8 +394,8 @@
                                 <div class="profiletimeline mt-0">
                                     <div class="sl-item">
                                         <div class="sl-left">
-                                            <img src="{{asset('https://gaffis.in/frontier/webapp/design/assets/images/users/1.jpg')}}"
-                                                alt="user" class="rounded-circle" />
+                                            <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}" alt="user"
+                                                class="rounded-circle" />
                                         </div>
                                         <div class="sl-right">
                                             <div>
@@ -438,8 +420,8 @@
                                     <hr />
                                     <div class="sl-item">
                                         <div class="sl-left">
-                                            <img src="{{asset('https://gaffis.in/frontier/webapp/design/assets/images/users/1.jpg')}}"
-                                                alt="user" class="rounded-circle" />
+                                            <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}" alt="user"
+                                                class="rounded-circle" />
                                         </div>
                                         <div class="sl-right">
                                             <div>
@@ -464,8 +446,8 @@
                                     <hr />
                                     <div class="sl-item">
                                         <div class="sl-left">
-                                            <img src="https://gaffis.in/frontier/webapp/design/assets/images/users/1.jpg"
-                                                alt="user" class="rounded-circle" />
+                                            <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}" alt="user"
+                                                class="rounded-circle" />
                                         </div>
                                         <div class="sl-right">
                                             <div>

@@ -18,7 +18,7 @@
               <div class="d-flex align-items-center">
                 <nav aria-label="breadcrumb">
                   <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="settings.html">Settings</a></li>
+                    <li class="breadcrumb-item"><a href="#.">Settings</a></li>
                      <li class="breadcrumb-item active" aria-current="page">Tags </li>
                   </ol>
                 </nav>

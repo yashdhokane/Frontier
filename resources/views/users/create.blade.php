@@ -62,9 +62,9 @@
 
                             <ol class="breadcrumb">
 
-                                <li class="breadcrumb-item"><a href="https://gaffis.in/frontier/website/home">Home</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
 
-                                <li class="breadcrumb-item"><a href="https://gaffis.in/frontier/website/users">Customers</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('users.index') }}">Customers</a></li>
 
                                 <li class="breadcrumb-item active" aria-current="page">Add New Customer</li>
 
@@ -189,760 +189,212 @@
             <div class="col-lg-9 d-flex align-items-stretch">
 
                 <div class="card w-100">
-
-
-
+  
                     <div class="card-body border-top">
-
-                        
-
+ 
 						<h4 class="card-title">Customer Information</h4>
-
-						
-
-                        <div class="row">
-
-                            <div class="col-sm-12 col-md-4">
-
-                                <div class="mb-3">
-
-                                    <label for="first_name" class="control-label col-form-label required-field">First Name</label>
-
-                                    <input type="text" class="form-control" id="first_name" name="first_name"
-
-                                        placeholder="" required />
-
-
-
-
-
-                                </div>
-
-                            </div>
-
-                            <div class="col-sm-12 col-md-4">
-
-                                <div class="mb-3">
-
-                                    <label for="last_name" class="control-label col-form-label required-field">Last Name</label>
-
-                                    <input type="text" class="form-control" id="last_name" name="last_name"
-
-                                        placeholder="" required />
-
-                                </div>
-
-                            </div>
-
-                            <div class="col-sm-12 col-md-4">
-
-                                <div class="mb-3">
-
-                                    <label for="display_name" class="control-label col-form-label required-field">Display Name (shown
-
-                                        on invoice)</label>
-
-                                    <input type="text" class="form-control" id="display_name" name="display_name"
-
-                                        placeholder="" required />
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        
-
-						<div class="row mt-2">
-
-                            <div class="col-sm-12 col-md-4">
-
-                                <div class="mb-3">
-
-                                    <label for="email" class="control-label col-form-label required-field">Email</label>
-
-                                    <input type="email" class="form-control" id="email" name="email" placeholder=""
-
-                                        required />
-
-                                </div>
-
-                            </div>
-
-							<div class="col-sm-12 col-md-4">
-
-                            </div>
-
-							<div class="col-sm-12 col-md-4">
-
-                            </div>
-
-                        </div>
-
-						
-
-						<div class="row mt-2">
-
-                            <div class="col-sm-12 col-md-4">
-
-                                <div class="mb-3">
-
-                                    <label for="mobile_phone" class="control-label col-form-label required-field">Mobile Phone</label>
-
-                                    <input type="text" class="form-control" id="mobile_phone" name="mobile_phone"
-
-                                        placeholder="" required />
-
-                                </div>
-
-                            </div>
-
+						<div class="row">
                              <div class="col-sm-12 col-md-4">
-
-                                <div class="mb-3">
-
-                                    <label for="home_phone" class="control-label col-form-label">Home Phone</label>
-
-                                    <input type="text" class="form-control" id="home_phone" name="home_phone"
-
-                                        placeholder="" />
-
+                                 <div class="mb-3">
+                                     <label for="first_name" class="control-label bold mb5 col-form-label required-field">First Name</label>
+                                     <input type="text" class="form-control" id="first_name" name="first_name" placeholder="" required />
                                 </div>
-
+                             </div>
+                             <div class="col-sm-12 col-md-4">
+                                 <div class="mb-3">
+                                     <label for="last_name" class="control-label bold mb5 col-form-label required-field">Last Name</label>
+                                     <input type="text" class="form-control" id="last_name" name="last_name" placeholder="" required />
+                                </div>
+                             </div>
+                             <div class="col-sm-12 col-md-4">
+                                 <div class="mb-3">
+                                     <label for="display_name" class="control-label bold mb5 col-form-label required-field">Display Name (shown on invoice)</label>
+                                    <input type="text" class="form-control" id="display_name" name="display_name" placeholder="" required />
+                                </div>
                             </div>
-
+						</div>
+ 						<div class="row">
 							<div class="col-sm-12 col-md-4">
-
-                                <div class="mb-3">
-
-                                    <label for="work_phone" class="control-label col-form-label">Work Phone</label>
-
-                                    <input type="text" class="form-control" id="work_phone" name="work_phone"
-
-                                        placeholder="" />
-
+                                 <div class="mb-3">
+                                     <label for="email" class="control-label bold mb5 col-form-label required-field">Email</label>
+									 <input type="email" class="form-control" id="email" name="email" placeholder="" required />
+                                 </div>
+							</div>
+							<div class="col-sm-12 col-md-4">
+                                 <div class="mb-3">
+                                     <label for="mobile_phone" class="control-label bold mb5 col-form-label required-field">Mobile Phone</label>
+                                     <input type="number" maxlength="10" class="form-control" id="mobile_phone" name="mobile_phone" placeholder="" required />
                                 </div>
-
                             </div>
-
-                        </div>
-
+							<div class="col-sm-12 col-md-4">
+                            </div>
+						</div>
 						
-
-                        <div class="row mt-2">
-
-                            <div class="col-sm-12 col-md-4">
-
-                                <div class="mb-3">
-
-                                    <label for="image" class="control-label col-form-label">Image Upload</label>
-
-                                    <input type="file" class="form-control" id="image" name="image" accept="image/*" />
-
+                        <h4 class="card-title">Address</h4>
+						<div class="row">
+							<div class="col-sm-12 col-md-12">
+								<div class="mb-3">
+								<label for="address1" class="control-label bold mb5 col-form-label required-field">Address Line 1
+								(Street)</label>
+								<input type="text" class="form-control" id="address1" name="address1" placeholder="" required />
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12 col-md-8">
+								<div class="mb-3">
+									<label for="address_unit" class="control-label bold mb5 col-form-label required-field">Address Line 2</label>
+									<input type="text" class="form-control" id="address_unit" name="address_unit" placeholder="" />
+								</div>
+							</div>
+							<div class="col-sm-12 col-md-4">
+								<div class="mb-3">
+									<label for="display_name" class="control-label bold mb5 col-form-label required-field"  >Type</label >
+									<select class="form-select me-sm-2" id="address_type" name="address_type" >
+									<option value="">Select address..</option>
+									<option value="home">Home Address</option>
+									<option value="work">Work Address</option>
+									<option value="other">Other Address</option>
+									</select>
+								</div>
+							</div>
+						</div>                     
+						<div class="row">
+							<div class="col-sm-12 col-md-4">
+								<div class="mb-3">
+									<label for="state_id" class="control-label bold mb5 col-form-label required-field">State</label>
+									<select class="form-select me-sm-2" id="state_id" name="state_id" required>
+									<option selected disabled value="">Select State...</option>
+									@foreach($locationStates as $locationState)
+									<option value="{{ $locationState->state_id }}">{{ $locationState->state_name }}
+									</option>
+									@endforeach
+									</select>
+								</div>
+							</div>
+							<div class="col-sm-12 col-md-4">
+								<div class="mb-3">
+									<label for="city" class="control-label bold mb5 col-form-label required-field">City</label>
+									<select class="form-select" id="city" name="city" required>
+									<option selected disabled value="">Select City...</option>
+									</select>
+								</div>                            
+							</div>
+							<div class="col-sm-12 col-md-4">
+								<div class="mb-3">
+									<label for="zip_code" class="control-label bold mb5 col-form-label required-field">Zip</label>
+									<input type="text" class="form-control" id="zip_code" name="zip_code" placeholder="" required />
+								</div>
+							</div>
+ 						</div>
+						
+						<h4 class="card-title mt-4">Other Details</h4>
+						<div class="row mt-2">
+							<div class="col-sm-12 col-md-4">
+								<div class="mb-3">
+									<label for="home_phone" class="control-label bold mb5 col-form-label">Home Phone</label>
+									<input type="text" class="form-control" id="home_phone" name="home_phone" placeholder="" />
+								</div>
+							</div>
+							<div class="col-sm-12 col-md-4">
+								<div class="mb-3">
+									<label for="work_phone" class="control-label bold mb5 col-form-label">Work Phone</label>
+									<input type="text" class="form-control" id="work_phone" name="work_phone" placeholder="" />
+								</div>
+							</div>
+							<div class="col-sm-12 col-md-4">
+								<div class="mb-3">
+								<label for="source_id" class="control-label bold mb5 col-form-label">Lead Source</label>
+									<select class="form-select me-sm-2" id="source_id" name="source_id">
+									<option value="">Select Lead Source</option>
+									@foreach($leadSources as $leadSource)
+									<option value="{{ $leadSource->source_id }}">{{ $leadSource->source_name }}
+									</option>
+									@endforeach
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="row mt-2">
+							<div class="col-sm-12 col-md-4">
+								<div class="mb-3">
+								<label for="company" class="control-label bold mb5 col-form-label">Company</label>
+								<input type="text" class="form-control" id="company" name="company" placeholder="" />
+								</div>
+							</div>
+							<div class="col-sm-12 col-md-4">
+								<div class="mb-3">
+									<label for="role" class="control-label bold mb5 col-form-label">Role</label>
+									<input type="text" class="form-control" id="role" name="role" placeholder="" />
+								</div>
+							</div>
+							<div class="col-sm-12 col-md-4">
+								<div class="mb-3">
+									<label for="inputcontact" class="control-label bold mb5 col-form-label">Type</label>
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="user_type" id="exampleRadios1" value="Homeowner">
+										<label class="form-check-label" for="exampleRadios1">Homeowner</label>
+									</div>
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="user_type" id="exampleRadios2" value="Business">
+										<label class="form-check-label" for="exampleRadios2">Business</label>
+									</div>
+								</div>
+							</div> 
+						</div>
+						<div class="row mt-2">
+							<div class="col-sm-12 col-md-8">
+                                 <div class="mb-3">
+                                     <label for="image" class="control-label bold mb5 col-form-label">Image Upload</label>
+                                     <input type="file" class="form-control" id="image" name="image" accept="image/*" />
+                                 </div>
+							</div>
+							<div class="col-sm-12 col-md-4">
+								<div class="mb-3">
+                                    <label for="tag_id" class="control-label bold mb5 col-form-label">Customer Tags</label>
+                                    <select class="form-control" id="tag_id" name="tag_id[]" multiple>
+                                        @foreach($tags as $tag)
+                                        <option value="{{ $tag->tag_id }}">{{ $tag->tag_name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
-
+							</div>
+						</div>
+						<div class="row mt-2">
+                            <div class="col-sm-12 col-md-12">
+                                <div class="mb-3">
+                                    <label class="control-label bold mb5 col-form-label">Customer Notes</label>
+                                    <input type="text" class="form-control" id="customer_notes" name="customer_notes" placeholder="" />
+                                </div>
                             </div>
-
                         </div>
+					
+					</div>
 
-                    </div>
-
-
-
-                </div>
+                 </div>
 
             </div>
+			
+			<div class="col-lg-3 d-flex align-items-stretch">
+				<div class="card w-100">
+					<div class="card-body border-top">
+						SPACE TO SHOW RECORDS
+
+                       <div>
+    <span id="mobile_error" style="margin-top: 5px; color: red;"></span>
+</div>
+
+					</div>
+				</div>
+                
+			</div>
 
  
 
-            <div class="col-lg-3 d-flex align-items-stretch">
-
-                <div class="card w-100">
-
-                    <div class="card-body border-top">
-
-                        <h4 class="card-title mb-3">&nbsp;</h4>
-
-                        <div class="row">
-
-                            <div class="col-sm-12 col-md-12">
-
-                                <div class="mb-3">
-
-                                    <label for="company" class="control-label col-form-label">Company</label>
-
-                                    <input type="text" class="form-control" id="company" name="company"
-
-                                        placeholder="" />
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="row">
-
-                            <div class="col-sm-12 col-md-12">
-
-                                <div class="mb-3">
-
-                                    <label for="role" class="control-label col-form-label">Role</label>
-
-                                    <input type="text" class="form-control" id="role" name="role" placeholder="" />
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="row">
-
-                            <div class="col-sm-12 col-md-12">
-
-                                <div class="mb-3">
-
-                                    <label for="inputcontact" class="control-label col-form-label">Type</label>
-
-                                    <div class="form-check">
-
-                                        <input class="form-check-input" type="radio" name="user_type"
-
-                                            id="exampleRadios1" value="Homeowner">
-
-                                        <label class="form-check-label" for="exampleRadios1">Homeowner</label>
-
-                                    </div>
-
-                                    <div class="form-check">
-
-                                        <input class="form-check-input" type="radio" name="user_type"
-
-                                            id="exampleRadios2" value="Business">
-
-                                        <label class="form-check-label" for="exampleRadios2">Business</label>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-
         </div>
 
         <!-- End row -->
-
-
-
-
-
-        <!-- row -->
-
-        <div class="row">
-
-
-
-            <div class="col-lg-9 d-flex align-items-stretch">
-
-                <div class="card w-100">
-
-
-
-                    <div class="card-body border-top">
-
-                        <h4 class="card-title">Address</h4>
-
- <div class="row">
-
-                            <div class="col-sm-12 col-md-12">
-
-                                <div class="mb-3">
-
-                                    <label for="address1" class="control-label col-form-label required-field">Address Line 1
-
-                                        (Street)</label>
-
-                                    <input type="text" class="form-control" id="address1" name="address1" placeholder=""
-
-                                        required />
-
-                                </div>
-
-                            </div>
-
-                            
-
-                        </div>
-
-                          <div class="row">
-
-                        <div class="col-sm-12 col-md-8">
-
-                                <div class="mb-3">
-
-                                    <label for="address_unit" class="control-label col-form-label required-field">Address Line 2</label>
-
-                                    <input type="text" class="form-control" id="address_unit" name="address_unit"
-
-                                        placeholder="" />
-
-                                </div>
-
-                            </div>
-
-                            <div class="col-sm-12 col-md-4">
-
-							<div class="mb-3">
-
-								<label for="display_name" class="control-label col-form-label required-field"  >Type</label >
-
-								<select class="form-select me-sm-2" id="address_type" name="address_type" >
-
- 									<option value="">Select address..</option>
-
-                                     <option value="home">Home Address</option>
-
-									<option value="work">Work Address</option>
-
-									<option value="other">Other Address</option>
-
- 								  </select>
-
-							</div>
-
-							</div>
-
-                            	</div>
-
-                       
-
-                        <div class="row">
-
-                        <div class="col-sm-12 col-md-4">
-
-                                <div class="mb-3">
-
-                                    <label for="state_id" class="control-label col-form-label required-field">State</label>
-
-                                    <select class="form-select me-sm-2" id="state_id" name="state_id" required>
-
-                                        <option selected disabled value="">Select State...</option>
-
-                                        @foreach($locationStates as $locationState)
-
-                                        <option value="{{ $locationState->state_id }}">{{ $locationState->state_name }}
-
-                                        </option>
-
-                                        @endforeach
-
-                                    </select>
-
-                                </div>
-
-                            </div>
-
-                            <div class="col-sm-12 col-md-4">
-
-                               <div class="mb-3">
-
-        <label for="city" class="control-label col-form-label required-field">City</label>
-
-        <select class="form-select" id="city" name="city" required>
-
-            <option selected disabled value="">Select City...</option>
-
-        </select>
-
-    </div>                            </div>
-
-                            
-
-                            <div class="col-sm-12 col-md-4">
-
-                                <div class="mb-3">
-
-                                    <label for="zip_code" class="control-label col-form-label required-field">Zip</label>
-
-                                    <input type="text" class="form-control" id="zip_code" name="zip_code" placeholder=""
-
-                                        required />
-
-                                </div>
-
-                            </div>
-
-                           <div class="row">
-
-    <div class="col-sm-12 col-md-12">
-
-        <button class="addnewemail" type="button" style="margin-top: 20px;border: 1px solid #6c757d;width: 150px;padding: 5px 10px;border-radius: 2px;color: #6c757d;font-size: 12px;cursor: pointer;" onclick="addNewAddress()">+ Add New Address</button>
-
-    </div>
-
-</div>
-
-
-
-                        </div>
-
-                        <div class="row">
-
-                            <div class="col-sm-12 col-md-12">
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-
-                    {{-- card address 2 --}}
-
-
-
-                    <div id="adresscardtwo" class="card-body border-top" style="display:none;">
-
-                    <br>
-
-                        <h4 class="card-title">Address </h4>
-
-                        <div class="row">
-
-                            <div class="col-sm-12 col-md-12">
-
-                                <div class="mb-3">
-
-                                    <label for="address1" class="control-label col-form-label">Address Line 1
-
-                                        (Street)</label>
-
-                                    <input type="text" class="form-control" id="address1" name="anotheraddress1" placeholder=""
-
-                                         />
-
-                                </div>
-
-                            </div>
-
-                            
-
-                        </div>
-
-                          <div class="row">
-
-                        <div class="col-sm-12 col-md-8">
-
-                                <div class="mb-3">
-
-                                    <label for="address_unit" class="control-label col-form-label">Address Line 2</label>
-
-                                    <input type="text" class="form-control" id="address_unit" name="anotheraddress_unit"
-
-                                        placeholder="" />
-
-                                </div>
-
-                            </div>
-
-                            <div class="col-sm-12 col-md-4">
-
-							<div class="mb-3">
-
-								<label for="display_name" class="control-label col-form-label" >Type</label >
-
-								<select class="form-select me-sm-2" id="anotheraddress_type" name="anotheraddress_type" >
-
- 									<option value="">Select address..</option>
-
-                                     <option value="home">Home Address</option>
-
-									<option value="work">Work Address</option>
-
-									<option value="other">Other Address</option>
-
- 								  </select>
-
-							</div>
-
-							</div>
-
-                            	</div>
-
-                        <div class="row">
-
-                        <div class="col-sm-12 col-md-4">
-
-    <div class="mb-3">
-
-        <label for="state_id" class="control-label col-form-label">State</label>
-
-        <select class="form-select me-sm-2" id="anotherstate_id" name="anotherstate_id">
-
-            <option selected disabled value="">Select State...</option>
-
-            @foreach($locationStates as $locationState)
-
-                <option value="{{ $locationState->state_id }}">{{ $locationState->state_name }}</option>
-
-            @endforeach
-
-        </select>
-
-    </div>
-
-</div>
-
-<div class="col-sm-12 col-md-4">
-
-    <div class="mb-3">
-
-        <label for="city" class="control-label col-form-label">City</label>
-
-        <select class="form-select" id="anothercity" name="anothercity" >
-
-            <option selected disabled value="">Select City...</option>
-
-        </select>
-
-    </div>
-
-</div>           
-
-                            <div class="col-sm-12 col-md-4">
-
-                                <div class="mb-3">
-
-                                    <label for="anotherzip_code" class="control-label col-form-label">Zip</label>
-
-                                    <input type="text" class="form-control" id="anotherzip_code" name="anotherzip_code" placeholder=""
-
-                                         />
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="row">
-
-                            <div class="col-sm-12 col-md-12">
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                     
-
-
-
-                </div>
-
-            </div>
-
-            <div class="col-lg-3 d-flex align-items-stretch">
-
-                <div class="card w-100">
-
-                    <div class="card-body border-top">
-
-                        <h4 class="card-title mb-3">&nbsp;</h4>
-
-                        <div class="row">
-
-                          {{--  <div class="col-sm-12 col-md-12">
-
-                                <div class="mb-3">
-
-                                    <div class="form-group">
-
-                                        <label for="lead_source" class="control-label col-form-label">Customer Bills
-
-                                            to</label>
-
-                                        <input type="search" class="form-control" value="search customer...">
-
-                                    </div>
-
-                                </div>
-
-                            </div> --}} 
-
-                            <div class="col-sm-12 col-md-12">
-
-                                <div class="mb-3">
-
-                                    <label for="source_id" class="control-label col-form-label">Lead Source</label>
-
-                                    <select class="form-select me-sm-2" id="source_id" name="source_id">
-
-                                        <option value="">Select Lead Source</option>
-
-                                        @foreach($leadSources as $leadSource)
-
-                                        <option value="{{ $leadSource->source_id }}">{{ $leadSource->source_name }}
-
-                                        </option>
-
-                                        @endforeach
-
-                                    </select>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-
-        </div>
-
-        <!-- End row -->
-
-
-
-        <!-- row -->
-
-        <div class="row">
-
-
-
-            <div class="col-lg-9 d-flex align-items-stretch">
-
-                <div class="card w-100">
-
-
-
-
-
-                    <div class="card-body border-top">
-
-                        <h4 class="card-title">Notes</h4>
-
-                        <div class="row">
-
-                            <div class="col-sm-12 col-md-12">
-
-                                <div class="mb-3">
-
-                                    <label class="control-label col-form-label">Customer Notes</label>
-
-                                    <input type="text" class="form-control" id="customer_notes" name="customer_notes"
-
-                                        placeholder="" />
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                  
-
-                        <div class="row">
-
-                            <div class="col-sm-12 col-md-12">
-
-                                <div class="mb-3">
-
-                                    <label for="tag_id" class="control-label col-form-label">Customer Tags</label>
-
-                                    <select class="form-control" id="tag_id" name="tag_id[]" multiple>
-
-                                        @foreach($tags as $tag)
-
-                                        <option value="{{ $tag->tag_id }}">{{ $tag->tag_name }}</option>
-
-                                        @endforeach
-
-                                    </select>
-
-                                </div>
-
-                            </div>
-
-                        </div> 
-
-                        
-
-
-
-   {{--    <div class="row">
-
-    <div class="col-sm-12 col-md-12">
-
-        <div class="mb-3">
-
-            <label for="customerTags">Customer Tags</label>
-
-            <!-- Use input with list attribute for auto-suggestions -->
-
-            <input type="text" id="customerTags" name="customerTags" list="tagList" class="form-control">
-
-            
-
-            <!-- Datalist for auto-suggestions -->
-
-            <datalist id="tagList">
-
-                @foreach($tags as $tag)
-
-                    <option value="{{ $tag->tag_name }}">
-
-                @endforeach
-
-            </datalist>
-
-        </div>
-
-    </div>
-
-</div> --}}
-
-
-
-                    </div>
-
-
-
-                </div>
-
-            </div>
-
-
-
-
-
-
-
-        </div>
-
-        <!-- End row -->
-
-
+ 
 
         <!-- row -->
 
@@ -958,7 +410,7 @@
 
                             class="btn btn-info rounded-pill px-4 waves-effect waves-light">Save</button>
 
-                         <a href="https://gaffis.in/frontier/website/users">  <button type="button"
+                         <a href="{{ route('users.index') }}">  <button type="button"
 
                             class="btn btn-dark rounded-pill px-4 waves-effect waves-light">Cancel</button> </a>
 
@@ -1287,7 +739,25 @@ function getZipCodeanother (cityId, cityName) {
 
 
 <script>
+const firstNameInput = document.getElementById('first_name');
+const lastNameInput = document.getElementById('last_name');
+const displayNameInput = document.getElementById('display_name');
 
+// Function to update the display name field
+function updateDisplayName() {
+    const firstName = firstNameInput.value.trim();
+    const lastName = lastNameInput.value.trim();
+    
+    // Concatenate first and last name
+    const displayName = firstName + ' ' + lastName;
+    
+    // Set the display name input value
+    displayNameInput.value = displayName;
+}
+
+// Listen for input changes on first and last name fields
+firstNameInput.addEventListener('input', updateDisplayName);
+lastNameInput.addEventListener('input', updateDisplayName);
 /*
 
 document.getElementById('myForm').addEventListener('submit', function(event) {
@@ -1311,6 +781,42 @@ document.getElementById('myForm').addEventListener('submit', function(event) {
     });
 
 }); */
+
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const mobileInput = document.getElementById('mobile_phone');
+    const mobileError = document.getElementById('mobile_error');
+       const submitBtn = document.getElementById('submitBtn');
+    
+    mobileInput.addEventListener('blur', function () {
+        const mobileNumber = this.value.trim();
+        if (mobileNumber !== '') {
+            // Send AJAX request to check if mobile number exists
+            fetch('{{ route("check-mobile") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ mobile_number: mobileNumber })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.exists) {
+                    const userName = data.user.name;
+                    mobileError.textContent = `${userName} already used this mobile number`;
+                    submitBtn.disabled = true;
+                } else {
+                    mobileError.textContent = '';
+                     submitBtn.disabled = false;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    });
+});
 
 </script>
 
