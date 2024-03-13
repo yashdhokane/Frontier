@@ -2,22 +2,25 @@
 @section('content')
 
     <style>
+        .form-control:focus {
+            box-shadow: 0 0 0 0rem rgba(54,153,255,.25);
+        }
         .popupDiv {
-    position: absolute;
-    background-color: #ffffff;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 10px;
-    z-index: 1000; /* Ensure the popup appears above other content */
-}
+            position: absolute;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            z-index: 1000; /* Ensure the popup appears above other content */
+        }
 
-.popupDiv div {
-    padding: 5px 0;
-}
+        .popupDiv div {
+            padding: 5px 0;
+        }
 
-.popupDiv div span {
-    margin-left: 5px;
-}
+        .popupDiv div span {
+            margin-left: 5px;
+        }
 
         .activegreen {
             border: 2px solid green !important;
@@ -180,26 +183,9 @@
     <div class="page-wrapper" style="display:inline;">
         <!-- Container fluid  -->
         <!-- -------------------------------------------------------------- -->
-        {{-- <div class="page-breadcrumb" style="margin-top: -21px;">
-            <div class="row">
-                <div class="col-5 align-self-center">
-                    <h4 class="page-title">Calls Schedule</h4>
-                </div>
-                <div class="col-7 align-self-right" style="text-align: right;padding-right: 40px;">
-                    <a id="selectDates" style="margin-right: 10px; font-size: 13px;cursor: pointer;"><i
-                            class="fas fa-calendar-alt"></i>
-                        Select Dates</a>
-
-                    <a href="#." style="margin-right: 10px;font-size: 13px;color: #ee9d01;font-weight: bold;"><i
-                            class="fas fa-calendar-check"></i> Today</a>
-                    <a href="#." style="margin-right: 10px;font-size: 13px;"><i class="fas fa-calendar-alt"></i>
-                        Yesterday</a>
-                    <a href="#." style="margin-right: 10px;font-size: 13px;"><i class="fas fa-calendar-alt"></i>
-                        Tomorrow</a>
-                </div>
-            </div>
-        </div> --}}
+       
         <div class="container-fluid">
+
             <div class="row">
                 <div class="card">
                     <div>
@@ -339,7 +325,7 @@
                                                                             </div>
                                                                                 <div class="popupDiv fs-4"
                                                                                     style="display: none;">
-                                                                                    <div class="createSchedule align-items-sm-center d-flexgap-3 fw-semibold" style="cursor: pointer;" data-bs-toggle="modal" data-id="{{ $value }}" data-time="{{ $timeString }}" data-date="{{ $filterDate }}" data-bs-target="#create" >
+                                                                                    <div class="createSchedule align-items-sm-center d-flex gap-3 fw-semibold" style="cursor: pointer;" data-bs-toggle="modal" data-id="{{ $value }}" data-time="{{ $timeString }}" data-date="{{ $filterDate }}" data-bs-target="#create" >
                                                                                         <i class="fa fa-plus-square"></i>
                                                                                         <span>JOb</span>
                                                                                     </div>
@@ -351,7 +337,7 @@
                                                                                     </div>
                                                                                     <hr class="m-0">
                                                                                     <div class="align-items-sm-center d-flex gap-3 fw-semibold"
-                                                                                        style="cursor: pointer;"><i
+                                                                                        style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#event"><i
                                                                                             class="fa fa-calendar-plus"></i>
                                                                                         <span>Event</span>
                                                                                     </div>
@@ -372,6 +358,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- Modal -->
             <div class="modal fade" id="create" tabindex="-1" aria-labelledby="scroll-long-inner-modal"
                 aria-hidden="true">
@@ -1184,6 +1171,64 @@
             </div>
             <!-- Modal -->
 
+            <!-- Modal -->
+            <div class="modal fade" id="event" tabindex="-1" aria-labelledby="scroll-long-inner-modal"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable2 modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header d-flex align-items-center" style="padding-bottom: 0px;">
+                            <h4 class="modal-title" id="myLargeModalLabel" style="margin-left: 28px;color: #2962ff;">
+                                New Event
+                            </h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body createCustomerData">
+                            <div class="row justify-content-evenly">
+
+                                <div class="col-md-5 p-3 shadow ">
+                                    <h5 class="d-flex justify-content-between">
+                                        <span><i class="fa fa-calendar-alt"></i> Schedule</span>  <i class="fa fa-edit"></i>
+                                    </h5>
+                                    <hr>
+                                    <div class="d-flex gap-5 my-2">
+                                        <label for="fdate">From</label>
+                                         <input type="date" name="" id="" class="form-control">
+                                         <select class="time-dropdown form-control-sm"></select>
+ 
+                                    </div>
+                                    <div class="d-flex gap-5 my-2">
+                                        <label for="tdate">To</label>
+                                        <input type="date" name="" id="" class="ms-3 form-control">
+                                        <select class="time-dropdown form-control-sm"></select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5 p-3 shadow ">
+                                    <h5 class="d-flex justify-content-between">
+                                        <span><i class="fa fa-calendar-alt"></i> Event Details</span>  
+                                    </h5>
+                                    <hr>
+                                    <div class="my-2">
+                                        <input type="text" name="" id="" placeholder="Name" class="border-0 border-bottom form-control">
+                                    </div>
+                                    <div class="my-2">
+                                        <input type="text" name="" id="" placeholder="Note" class="border-0 border-bottom form-control">
+                                    </div>
+                                    <div class="my-2">
+                                        <input type="text" name="" id="" placeholder="Location" class="border-0 border-bottom form-control">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- Modal -->
+
 
         </div>
     </div>
@@ -1198,6 +1243,45 @@
 
      <!-- Bootstrap Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script>
+           document.addEventListener('DOMContentLoaded', function() {
+                const timeDropdowns = document.querySelectorAll('.time-dropdown');
+
+                // Function to generate time options
+                function generateTimeOptions(dropdown) {
+                    const options = [];
+                    const now = new Date();
+                    const currentHour = now.getHours();
+                    const currentMinute = now.getMinutes();
+                    const halfHour = (currentMinute < 30) ? '00' : '30';
+
+                    // Start from the current half-hour interval
+                    for (let hour = currentHour; hour < 24; hour++) {
+                        for (let minute of ['00', '30']) {
+                            // Skip if the current time has passed
+                            if ((hour === currentHour && minute < halfHour) || hour < currentHour) {
+                                continue;
+                            }
+                            const formattedHour = (hour % 12 === 0) ? 12 : hour % 12; // Convert to 12-hour format
+                            const ampm = (hour < 12) ? 'AM' : 'PM'; // Determine AM or PM
+                            const formattedMinute = minute;
+                            const formattedTime = `${formattedHour}:${formattedMinute} ${ampm}`;
+                            options.push(`<option value="${formattedTime}">${formattedTime}</option>`);
+                        }
+                    }
+
+                    // Append options to the dropdown
+                    dropdown.innerHTML = options.join('');
+                }
+
+                // Call the function to generate time options for each dropdown
+                timeDropdowns.forEach(function(dropdown) {
+                    generateTimeOptions(dropdown);
+                });
+            });
+
+
+    </script>
 
     <script>
         $(document).ready(function() {
@@ -1665,7 +1749,7 @@
             $('.popupDiv').hide();
         });
     });
-</script>
+   </script>
 
     <script>
         var ajaxRequestForCustomer;
