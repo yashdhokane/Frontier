@@ -965,7 +965,7 @@ class ScheduleController extends Controller
                     'discount' => (isset($data['discount']) && !empty($data['discount'])) ? $data['discount'] : 0,
                     'gross_total' => (isset($data['total']) && !empty($data['total'])) ? $data['total'] : 0,
                     'commission_total' => (isset($data['subtotal']) && !empty($data['subtotal'])) ? $data['subtotal'] : 0,
-                    'status' => (isset($data['status']) && !empty($data['status']) && $data['status'] == 'on') ? 'closed' : 0,
+                    'status' => (isset($data['status']) && !empty($data['status']) && $data['status'] == 'on') ? 'closed' : 'open',
                     'updated_at' => date('Y-m-d H:i:s')
                 ];
 

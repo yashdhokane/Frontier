@@ -2,6 +2,23 @@
 @section('content')
 
     <style>
+        .popupDiv {
+    position: absolute;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    z-index: 1000; /* Ensure the popup appears above other content */
+}
+
+.popupDiv div {
+    padding: 5px 0;
+}
+
+.popupDiv div span {
+    margin-left: 5px;
+}
+
         .activegreen {
             border: 2px solid green !important;
         }
@@ -312,13 +329,33 @@
                                                                                 @endforeach
                                                                             </div>
                                                                         @else
-                                                                            <div class="dts2 createSchedule"
+                                                                            <div class="dts2 clickPoint"
                                                                                 style="height: 100%; position: revert;"
-                                                                                data-bs-toggle="modal"
+                                                                                {{-- data-bs-toggle="modal" --}}
                                                                                 data-id="{{ $value }}"
                                                                                 data-time="{{ $timeString }}"
                                                                                 data-date="{{ $filterDate }}"
-                                                                                data-bs-target="#create"></div>
+                                                                                data-bs-target="#create">
+                                                                            </div>
+                                                                                <div class="popupDiv fs-4"
+                                                                                    style="display: none;">
+                                                                                    <div class="createSchedule align-items-sm-center d-flexgap-3 fw-semibold" style="cursor: pointer;" data-bs-toggle="modal" data-id="{{ $value }}" data-time="{{ $timeString }}" data-date="{{ $filterDate }}" data-bs-target="#create" >
+                                                                                        <i class="fa fa-plus-square"></i>
+                                                                                        <span>JOb</span>
+                                                                                    </div>
+                                                                                    <hr class="m-0">
+                                                                                    <div class="align-items-sm-center d-flex gap-3 fw-semibold"
+                                                                                        style="cursor: pointer;"><i
+                                                                                            class="fa fa-pen-square"></i>
+                                                                                        <span>Estimate</span>
+                                                                                    </div>
+                                                                                    <hr class="m-0">
+                                                                                    <div class="align-items-sm-center d-flex gap-3 fw-semibold"
+                                                                                        style="cursor: pointer;"><i
+                                                                                            class="fa fa-calendar-plus"></i>
+                                                                                        <span>Event</span>
+                                                                                    </div>
+                                                                                </div>
                                                                         @endif
                                                                     </td>
                                                                 @endforeach
@@ -1159,7 +1196,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
         rel="stylesheet">
 
-    <!-- Bootstrap Datepicker JS -->
+     <!-- Bootstrap Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
     <script>
@@ -1579,6 +1616,56 @@
 
         });
     </script>
+
+   <script>
+    $(document).ready(function() {
+        $('.clickPoint').click(function(e) {
+            e.stopPropagation();
+            var popupDiv = $(this).next('.popupDiv');
+
+            // Hide any previously displayed popupDiv elements
+            $('.popupDiv').not(popupDiv).hide();
+
+            // Position and show the clicked popupDiv
+            var mouseX = e.clientX;
+            var mouseY = e.clientY;
+
+            // Calculate the distance from the clicked point to the edges of the window
+            var distanceTop = mouseY;
+            var distanceBottom = $(window).height();
+            var distanceLeft = mouseX;
+            var distanceRight = $(window).width();
+
+            // Calculate the margin values in pixels
+            var topMargin = 30;
+            var bottomMargin = 30;
+            var leftMargin = 20;
+            var rightMargin = 20;
+
+            // Calculate the position of the popupDiv based on margins and distances
+            var position = {};
+            if (distanceTop > distanceBottom && distanceTop > popupDiv.outerHeight() + bottomMargin) {
+                position.top = popupDiv.outerHeight() - bottomMargin;
+            } else {
+                position.top = topMargin;
+            }
+
+            if (distanceLeft > distanceRight && distanceLeft > popupDiv.outerWidth() + rightMargin) {
+                position.left = popupDiv.outerWidth() - rightMargin;
+            } else {
+                position.left = leftMargin;
+            }
+
+            // Set the position and show the popupDiv
+            popupDiv.css(position).toggle();
+        });
+
+        // Hide the popup div when clicking outside of it
+        $(document).click(function() {
+            $('.popupDiv').hide();
+        });
+    });
+</script>
 
     <script>
         var ajaxRequestForCustomer;
