@@ -222,7 +222,7 @@
 
 
         </div>
-        <div id="rightArrow" class="mt-4">
+        <div id="rightArrow" class="mt-4 h-100">
             <i class="fa fa-arrow-alt-circle-right fs-7 ms-3 text-primary" title="Filter"></i>
         </div>
         <div class="container-fluid">
@@ -266,7 +266,8 @@
                                                     <th></th>
                                                     @if (isset($user_array) && !empty($user_array))
                                                         @foreach ($user_array as $value)
-                                                            <th><a href="#" class="link user_head_link"
+                                                            <th class="tech_th" data-tech-id="{{ $value }}"><a
+                                                                    href="#" class="link user_head_link"
                                                                     style="color: {{ $user_data_array[$value]['color_code'] }} !important;">
                                                                     @if (isset($user_data_array[$value]['user_image']) && !empty($user_data_array[$value]['user_image']))
                                                                         <img src="{{ asset('public/images/technician/' . $user_data_array[$value]['user_image']) }}"
@@ -302,8 +303,14 @@
 
                                                                     $display_hour = $i > 12 ? $i - 12 : $i;
                                                                     $display_minute = $minute == 0 ? '00' : $minute;
-                                                                    $time = $display_hour . ':' . $display_minute . ' ' . $date;
-                                                                    $timeString = $time . ($minutes == '00' ? '' : ':30');
+                                                                    $time =
+                                                                        $display_hour .
+                                                                        ':' .
+                                                                        $display_minute .
+                                                                        ' ' .
+                                                                        $date;
+                                                                    $timeString =
+                                                                        $time . ($minutes == '00' ? '' : ':30');
                                                                     // Format $time for comparison
                                                                     $formattedTime = date('h:i A', strtotime($time));
                                                                 @endphp
@@ -313,8 +320,16 @@
                                                                 @foreach ($user_array as $value)
                                                                     @php
                                                                         $assigned_data = [];
-                                                                        if (isset($assignment_arr[$value][$formattedTime]) && !empty($assignment_arr[$value][$formattedTime])) {
-                                                                            $assigned_data = $assignment_arr[$value][$formattedTime];
+                                                                        if (
+                                                                            isset(
+                                                                                $assignment_arr[$value][$formattedTime],
+                                                                            ) &&
+                                                                            !empty(
+                                                                                $assignment_arr[$value][$formattedTime]
+                                                                            )
+                                                                        ) {
+                                                                            $assigned_data =
+                                                                                $assignment_arr[$value][$formattedTime];
                                                                             // dd($assigned_data);
                                                                         }
                                                                     @endphp
@@ -327,7 +342,8 @@
                                                                                     @php
                                                                                         $duration = $value2->duration;
                                                                                         $height_slot = $duration / 30;
-                                                                                        $height_slot_px = $height_slot * 80 - 10;
+                                                                                        $height_slot_px =
+                                                                                            $height_slot * 80 - 10;
                                                                                         // dd($height_slot_px);
                                                                                     @endphp
                                                                                     <div class="dts mb-1 edit_schedule updateSchedule flexibleslot"
@@ -962,18 +978,46 @@
                                     <span><i class="fa fa-calendar-alt"></i> Schedule</span> <i class="fa fa-edit"></i>
                                 </h5>
                                 <hr>
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="mb-3">
+                                        <label for="inputEmail3" class="control-label col-form-label">Start Time</label>
+
+                                    </div>
+                                </div>
                                 <div class="d-flex gap-5 my-2">
                                     <label for="fdate">From</label>
                                     <input type="date" name="start_date" id="start_date" class="form-control">
-                                    <select class="time-dropdown form-control-sm" name="start_time"
-                                        id="start_time"></select>
+                                    <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                class="feather feather-clock feather-sm">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <polyline points="12 6 12 12 16 14"></polyline>
+                                            </svg>
+                                        </span>
+                                        <input type="time" class="form-control" name="start_time" id="start_time"
+                                            aria-label="Username" aria-describedby="basic-addon1">
+                                    </div>
 
                                 </div>
                                 <div class="d-flex gap-5 my-2">
                                     <label for="tdate">To</label>
                                     <input type="date" name="end_date" id="end_date" class="ms-3 form-control">
-                                    <select class="time-dropdown form-control-sm" name="end_time"
-                                        id="end_time"></select>
+                                    <div class="input-group">
+                                        <span class="input-group-text" id="basic-addon1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                class="feather feather-clock feather-sm">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <polyline points="12 6 12 12 16 14"></polyline>
+                                            </svg>
+                                        </span>
+                                        <input type="time" class="form-control" name="end_time" id="end_time"
+                                            aria-label="Username" aria-describedby="basic-addon1">
+                                    </div>
                                 </div>
                             </div>
 
@@ -1055,25 +1099,18 @@
                 var isChecked = $(this).prop('checked');
                 var id = $(this).data('id'); // Retrieve the value of the data-id attribute
 
-                // Perform AJAX call to update the status
-                $.ajax({
-                    method: 'get', // Use the appropriate HTTP method
-                    url: "update/technician_status", // Replace with your route URL
-                    data: {
-                        id: id,
-                        isChecked: isChecked ? 1 : 0 // Send 1 if checked, 0 if unchecked
-                    },
-                    success: function(response) {
-                        // Handle the success response
-                        if (response.success == true) {
-                            location.reload();
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        // Handle errors
-                    }
-                });
+                if (isChecked) {
+                    // Hide elements with class tech_th that match the id
+                    $('.tech_th[data-tech-id="' + id + '"]').show();
+                    $('.timeslot_td[data-technician_id="' + id + '"]').show();
+                } else {
+                    // Show elements with class tech_th that match the id
+                    $('.tech_th[data-tech-id="' + id + '"]').hide();
+                    $('.timeslot_td[data-technician_id="' + id + '"]').hide();
+                }
             });
+
+
 
             $('#leftArrow').on('click', function() {
                 $('#filterSchedule').animate({
@@ -2825,7 +2862,6 @@
 
         }
     </script>
-
 
     <script>
         function addNewAddress() {

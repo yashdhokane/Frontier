@@ -1092,23 +1092,7 @@ class ScheduleController extends Controller
         ]);
     }
 
-    public function technician_status(Request $request)
-    {
-        
-        $user = User::find($request->id);
-
-        if($request->isChecked == 1){
-            $user->status = 'active';
-        }else{
-            $user->status = 'deactive';
-        }
-
-        $user->update();
-
-        return response()->json([
-            'success' => true,
-        ]);
-    }
+  
     
 
 }

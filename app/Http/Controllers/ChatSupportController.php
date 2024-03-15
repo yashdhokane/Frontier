@@ -4,7 +4,8 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Models\ChatConversation;
+use App\Models\ChatMessage;
 use App\Models\User;
 
 use App\Models\Jobfields;
@@ -15,8 +16,6 @@ use Illuminate\Http\Request;
 
 use Carbon\Carbon;
 
-
-
 class ChatSupportController extends Controller
 
 {
@@ -24,28 +23,25 @@ class ChatSupportController extends Controller
 
     public function index()
     {
-        $chats = SupportMessage::with('user')->latest()->get();
 
-        return view('chat.app_chats', compact('chats'));
+        $chatConversion = ChatConversation::with('Participant.user')->latest('last_activity')->get();
+
+        // dd($chatConversion);
+
+        return view('chat.app_chats', compact('chatConversion'));
     }
 
 
     public function get_chats(Request $request)
     {
         $id = $request->id;
-        $user_one = $request->user_one;
-        $user_two = $request->user_two;
 
-        // Find the user data for both users
-        $users = User::whereIn('id', [$user_one, $user_two])->get();
+        $chat = ChatMessage::with('user')->where('conversation_id', $id)->get();
 
-        // Retrieve chat messages for the specified support message ID
-        $sms = SupportMessageReply::with('user')->where('support_message_id', $id)->get();
 
         // Return the user data and chat messages as a JSON response
         return response()->json([
-            'users' => $users,
-            'messages' => $sms,
+            'chat' => $chat,
         ]);
     }
     public function store(Request $request)

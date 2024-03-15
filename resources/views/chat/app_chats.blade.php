@@ -32,37 +32,37 @@
                     </div>
                     @if (auth()->id() == 1)
                         <ul class="mailbox list-style-none app-chat">
-                            @foreach ($chats as $item)
-                                <li class="chatlist cursor-pointer">
-                                    <input type="hidden" value="{{ $item->id }}" class="support_message_id">
-                                    <input type="hidden" value="{{ $item->user_one }}" class="user_one">
-                                    <input type="hidden" value="{{ $item->user_two }}" class="user_two">
-                                    <div class="message-center  chat-users">
-                                        <span class="chat-user message-item">
-                                            <span class="user-img">
-                                                @if ($item->user->user_image && file_exists(public_path('images/technician/' . $item->user->user_image)))
-                                                    <img src="{{ asset('public/images/technician/' . $item->user->user_image) }}"
-                                                        alt="user" class="rounded-circle" />
-                                                @else
-                                                    <img src="{{ asset('public/images/technician/1707736455_avatar-8.png') }}"
-                                                        alt="user" class="rounded-circle" />
-                                                @endif
-
-                                                <span class="profile-status online pull-right"></span>
-                                            </span>
-                                            <div class="mail-contnet">
-                                                @if ($item->user)
-                                                    <h5 class="message-title cursor-pointer">{{ $item->user->name }}</h5>
-                                                @else
-                                                    <p class="m-00">Technician not available</p>
-                                                @endif
-                                                <span class="mail-desc">Just see the my admin!</span>
-                                                <span class="time">{{ $item->created_at->format('g:i A') }}</span>
-                                            </div>
-                                        </span>
+                            @foreach ($chatConversion as $item)
+                            <li class="chatlist cursor-pointer" data-id="{{$item->id}}">
+                                
+                                <a href="javascript:void(0)" class="chat-user message-item px-2">
+                                    <div class="d-flex align-items-center user-img1">
+                                        @foreach ($item->Participant as $value)
+                                            @if ($value->user)
+                                                <img src="{{ asset('public/images/technician/' . $value->user->user_image) }}"
+                                                    class="rounded-circle me-n2 card-hover border border-2 border-white user-img" width="35">
+                                            @endif
+                                        @endforeach
                                     </div>
-                                </li>
-                            @endforeach
+                        
+                                    <div class="mail-contnet">
+                                        <h6 class="message-title" data-username="2">
+                                            @foreach ($item->Participant as $value)
+                                                @if ($value->user)
+                                                    {{ $value->user->name }},
+                                                @endif
+                                            @endforeach
+                                        </h6>
+                                    </div>
+                        
+                                    <div>
+                                        <span class="mail-desc">Just see the my admin!</span>
+                                        <div class="time">{{$item->last_activity}}</div>
+                                    </div>
+                                </a>
+                            </li>
+                        @endforeach
+                        
 
 
                         </ul>
@@ -142,21 +142,15 @@
 
     <script>
         $(document).ready(function() {
+            // done part start 
             // Event listener for the button click
             $('.chatlist').click(function() {
+                
 
                 $('.chat-not-selected').hide();
                 $('.chatting-box').show();
                 $('.chat').show();
-
-
-                let user_one = $(this).find('.user_one').val();
-
-                let user_two = $(this).find('.user_two').val();
-
-                let id = $(this).find('.support_message_id').val();
-
-                $('#name_support_message_id').val(id);
+                var id = $(this).data('id');
 
                 // Make an AJAX request to fetch data
                 $.ajax({
@@ -164,31 +158,28 @@
                     method: 'GET',
                     data: {
                         id: id,
-                        user_one: user_one,
-                        user_two: user_two,
                     },
                     dataType: 'json', // Specify the expected data type
                     success: function(response) {
                         // Access user data and messages data from the response
-                        var users = response.users;
-                        var messages = response.messages;
+                        var chat = response.chat;
 
                         $('.chat-list').empty();
 
                         // Example: Append user data to a container
-                        $.each(users, function(index, user) {
+                        $.each(chat, function(index, chats) {
                             $('.user-container').empty();
                             $('.user-container').append(
-                                '<img src="public/images/technician/' + user
+                                '<img src="public/images/technician/' + chats.user
                                 .user_image +
                                 '" alt="dynamic-image"class="rounded-circle" width="45" /><span class="name fw-bold ms-2">' +
-                                user.name + '</span>'
+                                    chats.user.name + '</span>'
                             );
                         });
 
                         // Example: Append message data to a container
-                        $.each(messages, function(index, message) {
-                            var createdAtDate = new Date(message.created_at);
+                        $.each(chat, function(index, chats) {
+                            var createdAtDate = new Date(chats.time);
                             var formattedDate = createdAtDate.toLocaleDateString();
                             var formattedTime = createdAtDate.toLocaleTimeString([], {
                                 hour: '2-digit',
@@ -196,11 +187,11 @@
                             });
 
                             // Check if the user is a technician
-                            var userImageSrc = message.user.role === 'technician' ?
+                            var userImageSrc = chats.user.role === 'technician' ?
                                 'public/images/technician/' : 'public/images/users/';
 
                             // Check if the user image is available
-                            var userImage = message.user.user_image ? message.user
+                            var userImage = chats.user.user_image ? chats.user
                                 .user_image : '1707736455_avatar-8.png';
 
                             // Construct the image source
@@ -210,8 +201,8 @@
                                 '<li class="chat-item"><div class="chat-img"><img src="' +
                                 imageSrc + '" alt="user" /></div>' +
                                 '<div class="chat-content"><h6 class="font-medium">' +
-                                message.user.name + '</h6>' +
-                                '<div class="box bg-light">' + message.reply +
+                                    chats.user.name + '</h6>' +
+                                '<div class="box bg-light">' + chats.message +
                                 '</div></div>' +
                                 '<div class="chat-time">' + formattedDate + ' ' +
                                 formattedTime + '</div></li>'
@@ -239,32 +230,41 @@
                     url: 'get-chat-messages', // Replace 'your-api-endpoint' with your actual API endpoint
                     method: 'GET',
                     data: {
-                        id: $('#name_support_message_id').val(),
-                        user_one: $('.user_one').val(),
-                        user_two: $('.user_two').val(),
+                        id: id,
                     },
                     dataType: 'json', // Specify the expected data type
                     success: function(response) {
-                        // Clear existing chat list
+                        // Access user data and messages data from the response
+                        var chat = response.chat;
+
                         $('.chat-list').empty();
 
-                        // Append new chat messages
-                        $.each(response.messages, function(index, message) {
-                            var createdAtDate = new Date(message.created_at);
+                        // Example: Append user data to a container
+                        $.each(chat, function(index, chats) {
+                            $('.user-container').empty();
+                            $('.user-container').append(
+                                '<img src="public/images/technician/' + chats.user
+                                .user_image +
+                                '" alt="dynamic-image"class="rounded-circle" width="45" /><span class="name fw-bold ms-2">' +
+                                    chats.user.name + '</span>'
+                            );
+                        });
 
-                            // Format date and time
-                            var formattedDate = createdAtDate
-                                .toLocaleDateString(); // Change the date format if needed
+                        // Example: Append message data to a container
+                        $.each(chat, function(index, chats) {
+                            var createdAtDate = new Date(chats.time);
+                            var formattedDate = createdAtDate.toLocaleDateString();
                             var formattedTime = createdAtDate.toLocaleTimeString([], {
                                 hour: '2-digit',
                                 minute: '2-digit'
                             });
+
                             // Check if the user is a technician
-                            var userImageSrc = message.user.role == 'technician' ?
+                            var userImageSrc = chats.user.role === 'technician' ?
                                 'public/images/technician/' : 'public/images/users/';
 
                             // Check if the user image is available
-                            var userImage = message.user.user_image ? message.user
+                            var userImage = chats.user.user_image ? chats.user
                                 .user_image : '1707736455_avatar-8.png';
 
                             // Construct the image source
@@ -272,24 +272,30 @@
 
                             $('.chat-list').append(
                                 '<li class="chat-item"><div class="chat-img"><img src="' +
-                                imageSrc +
-                                '" alt="user" /></div><div class="chat-content"><h6 class="font-medium">' +
-                                message.user.name +
-                                '</h6><div class="box bg-light">' + message.reply +
-
-                                '</div></div><div class="chat-time">' +
-                                formattedDate + ' ' + formattedTime +
-                                '</div></li>'
+                                imageSrc + '" alt="user" /></div>' +
+                                '<div class="chat-content"><h6 class="font-medium">' +
+                                    chats.user.name + '</h6>' +
+                                '<div class="box bg-light">' + chats.message +
+                                '</div></div>' +
+                                '<div class="chat-time">' + formattedDate + ' ' +
+                                formattedTime + '</div></li>'
                             );
                         });
+
+
                         // Scroll to the bottom of the chat list
                         $('.chat-box').scrollTop($('.chat-box')[0].scrollHeight);
+
                     },
+
                     error: function(xhr, status, error) {
                         console.error('Error:', error);
                     }
                 });
             }
+
+            
+            // done part start end
 
             // Listen for keypress event on input field
             $('#textarea1').on('keypress', function(event) {
@@ -345,84 +351,83 @@
                 history.replaceState({}, document.title, window.location.pathname);
             }
 
+            
+            // done part start 
+
             // Trigger AJAX function to load chat messages based on the extracted parameters
 
             $.ajax({
-                url: 'get-chat-messages', // Replace 'your-api-endpoint' with your actual API endpoint
-                method: 'GET',
-                data: {
-                    id: id,
-                    user_one: user_one,
-                    user_two: user_two,
-                },
-                dataType: 'json', // Specify the expected data type
-                success: function(response) {
-                    // Access user data and messages data from the response
-                    var users = response.users;
-                    var messages = response.messages;
+                    url: 'get-chat-messages', // Replace 'your-api-endpoint' with your actual API endpoint
+                    method: 'GET',
+                    data: {
+                        id: id,
+                    },
+                    dataType: 'json', // Specify the expected data type
+                    success: function(response) {
+                        // Access user data and messages data from the response
+                        var chat = response.chat;
 
-                    $('.chat-list').empty();
+                        $('.chat-list').empty();
 
-                    // Example: Append user data to a container
-                    $.each(users, function(index, user) {
-                        $('.user-container').empty();
-                        var imageUrl = user.user_image ? ('public/images/technician/' + user
-                                .user_image) :
-                            'public/images/technician/1707736455_avatar-8.png';
-                        $('.user-container').append(
-                            '<img src="' + imageUrl +
-                            '" alt="dynamic-image" class="rounded-circle" width="45" /><span class="name fw-bold ms-2">' +
-                            user.name + '</span>'
-                        );
-                    });
-
-
-                    // Example: Append message data to a container
-                    $.each(messages, function(index, message) {
-                        var createdAtDate = new Date(message.created_at);
-                        var formattedDate = createdAtDate.toLocaleDateString();
-                        var formattedTime = createdAtDate.toLocaleTimeString([], {
-                            hour: '2-digit',
-                            minute: '2-digit'
+                        // Example: Append user data to a container
+                        $.each(chat, function(index, chats) {
+                            $('.user-container').empty();
+                            $('.user-container').append(
+                                '<img src="public/images/technician/' + chats.user
+                                .user_image +
+                                '" alt="dynamic-image"class="rounded-circle" width="45" /><span class="name fw-bold ms-2">' +
+                                    chats.user.name + '</span>'
+                            );
                         });
 
-                        // Check if the user is a technician
-                        var userImageSrc = message.user.role === 'technician' ?
-                            'public/images/technician/' : 'public/images/users/';
+                        // Example: Append message data to a container
+                        $.each(chat, function(index, chats) {
+                            var createdAtDate = new Date(chats.time);
+                            var formattedDate = createdAtDate.toLocaleDateString();
+                            var formattedTime = createdAtDate.toLocaleTimeString([], {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            });
 
-                        // Check if the user image is available
-                        var userImage = message.user.user_image ? message.user.user_image :
-                            '1707736455_avatar-8.png';
+                            // Check if the user is a technician
+                            var userImageSrc = chats.user.role === 'technician' ?
+                                'public/images/technician/' : 'public/images/users/';
 
-                        // Construct the image source
-                        var imageSrc = userImageSrc + userImage;
+                            // Check if the user image is available
+                            var userImage = chats.user.user_image ? chats.user
+                                .user_image : '1707736455_avatar-8.png';
 
-                        // Constructing the HTML for each message and appending it to the chat-list
-                        $('.chat-list').append(
-                            '<li class="chat-item"><div class="chat-img"><img src="' +
-                            imageSrc + '" alt="user" /></div>' +
-                            '<div class="chat-content"><h6 class="font-medium">' +
-                            message.user.name + '</h6>' +
-                            '<div class="box bg-light">' + message.reply +
-                            '</div></div>' +
-                            '<div class="chat-time">' + formattedDate + ' ' +
-                            formattedTime + '</div></li>'
-                        );
-                    });
+                            // Construct the image source
+                            var imageSrc = userImageSrc + userImage;
+
+                            $('.chat-list').append(
+                                '<li class="chat-item"><div class="chat-img"><img src="' +
+                                imageSrc + '" alt="user" /></div>' +
+                                '<div class="chat-content"><h6 class="font-medium">' +
+                                    chats.user.name + '</h6>' +
+                                '<div class="box bg-light">' + chats.message +
+                                '</div></div>' +
+                                '<div class="chat-time">' + formattedDate + ' ' +
+                                formattedTime + '</div></li>'
+                            );
+                        });
 
 
+                        // Scroll to the bottom of the chat list
+                        $('.chat-box').scrollTop($('.chat-box')[0].scrollHeight);
 
-                    // Scroll to the bottom of the chat list
-                    $('.chat-box').scrollTop($('.chat-box')[0].scrollHeight);
+                    },
 
-                },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
 
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
-                }
-            });
 
             $('.chatlist:first').trigger('click');
+
+            
+            // done part start 
         });
     </script>
 @endsection
