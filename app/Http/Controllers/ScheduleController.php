@@ -912,7 +912,7 @@ class ScheduleController extends Controller
                         $imageSrc = asset('public/images/login_img_bydefault.png');
                     }
 
-                    $customers .= '<div class="customer_sr_box selectCustomer2" data-id="' . $value->id . '" data-name="' . $value->name . '"><div class="row"><div class="col-md-2 d-flex align-items-center"><span>';
+                    $customers .= '<div class="customer_sr_box selectCustomer2 px-0" data-id="' . $value->id . '" data-name="' . $value->name . '"><div class="row justify-content-around"><div class="col-md-2 d-flex align-items-center"><span>';
                     $customers .= '<img src="' . $imageSrc . '" alt="user" class="rounded-circle" width="50">';
                     $customers .= '</span></div><div class="col-md-8"><h6 class="font-weight-medium mb-0">' . $value->name . ' ';
                     if (isset($getCustomerAddress->city) && !empty($getCustomerAddress->city)) {
