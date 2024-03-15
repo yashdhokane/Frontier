@@ -685,6 +685,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('get/user/by_number', [ScheduleController::class, 'get_by_number']);
 
+    Route::post('store/event/', [ScheduleController::class, 'store_event']);
+
+    Route::get('update/technician_status', [ScheduleController::class, 'technician_status']);
+
 
 
 

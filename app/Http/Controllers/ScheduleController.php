@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Event;
 use App\Models\JobModel;
 use App\Models\LocationCity;
 use App\Models\LocationState;
@@ -71,6 +72,8 @@ class ScheduleController extends Controller
 
         $technician = User::where('role', 'technician')->where('status', 'active')->get();
 
+        $tech = User::where('role', 'technician')->get();
+
         if (isset($technician) && !empty($technician->count())) {
             foreach ($technician as $key => $value) {
                 $user_array[] = $value->id;
@@ -129,7 +132,7 @@ class ScheduleController extends Controller
             }
         }
 
-        return view('schedule.index', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate','users', 'roles', 'locationStates', 'locationStates1' ,'leadSources', 'tags', 'cities','cities1','TodayDate'));
+        return view('schedule.index', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate','users', 'roles', 'locationStates', 'locationStates1' ,'leadSources', 'tags', 'cities','cities1','TodayDate','tech'));
     }
 
     public function create(Request $request)
@@ -1058,4 +1061,54 @@ class ScheduleController extends Controller
     
 
     }
+
+    public function store_event(Request $request)
+    {
+        $auth = Auth::user()->id; 
+    
+        $event = new Event();
+    
+        $event->user_id = $auth;
+        $event->event_name = $request->event_name;
+        $event->event_description = $request->event_description;
+        $event->event_location = $request->event_location;
+    
+         // Concatenate date and time values and format them properly
+        $startDateTime = date('Y-m-d H:i:s', strtotime($request->start_date . ' ' . $request->start_time));
+        $endDateTime = date('Y-m-d H:i:s', strtotime($request->end_date . ' ' . $request->end_time));
+
+        // Assign concatenated values to the start_date_time and end_date_time fields
+        $event->start_date_time = $startDateTime;
+        $event->end_date_time = $endDateTime;
+    
+        $event->added_by = $auth;
+        $event->updated_by = $auth;
+    
+        $event->save();
+        
+    
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+
+    public function technician_status(Request $request)
+    {
+        
+        $user = User::find($request->id);
+
+        if($request->isChecked == 1){
+            $user->status = 'active';
+        }else{
+            $user->status = 'deactive';
+        }
+
+        $user->update();
+
+        return response()->json([
+            'success' => true,
+        ]);
+    }
+    
+
 }
