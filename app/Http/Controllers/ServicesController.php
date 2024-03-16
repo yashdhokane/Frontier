@@ -35,94 +35,104 @@ class ServicesController extends Controller
     public function createServices()
     {
         $services = ServiceCategory::all();
-        $manufacturers= Manufacturer::all();
-        return view('services.create_services', compact('services','manufacturers'));
+        $manufacturers = Manufacturer::all();
+        return view('services.create_services', compact('services', 'manufacturers'));
     }
 
-   public function storeServices(Request $request)
-{
-    // dd($request->all());
-    // Remove the validation code
-    $adminId = Auth::id();
-    // Combine hours and minutes
-    $serviceOnline = $request->has('service_online') ? 'yes' : 'no';
+    public function storeServices(Request $request)
+    {
 
-    // Combine hours and minutes
-    $combinedTime = $request->input('hours') . ':' . $request->input('minutes');
 
-    // Save to the database without validation
-    Services::create([
-        'service_category_id' => $request->input('service_category_id'),
-        'service_name' => $request->input('service_name'),
-        'service_description' => $request->input('service_description'),
-        'service_code' => $request->input('service_code'),
-        'service_online' => $serviceOnline,
-        'service_for' => $request->input('service_for'),
-        'troubleshooting_question1' => $request->input('troubleshooting_question1'),
-        'troubleshooting_question2' => $request->input('troubleshooting_question2'),
-        'service_image' => $request->file('service_image')->store('images'),
-        'service_time' => $combinedTime,
-        'created_by' => $adminId,
-        'updated_by' => $adminId,
-        'service_cost' => $request->input('service_cost'), // Add this line
-        'service_quantity' => $request->input('service_quantity'), // Add this line
-        'service_discount' => $request->input('service_discount'), // Add this line
-        'service_tax' => $request->input('service_tax'), // Add this line
-        'service_total' => $request->input('service_total'), // Add this line
-    ]);
+        $adminId = Auth::id();
 
-    // Redirect to the index route with the service_category_id parameter
-    return redirect()->route('services.listingServices', ['category_id' => $request->input('service_category_id')])
-        ->with('success', 'Service created successfully!');
-}
-  
+
+        // Serialize manufacturer_ids manually
+        $manufacturer_ids = json_encode($request->manufacturer_ids);
+
+        $service = new Service();
+        // Save to the database without validation
+
+        $service->service_category_id = $request->service_category_id;
+        $service->service_name = $request->service_name;
+        $service->service_description = $request->service_description;
+        $service->service_code = $request->service_code;
+        $service->troubleshooting_question1 = $request->troubleshooting_question1;
+        $service->troubleshooting_question2 = $request->troubleshooting_question2;
+        $service->service_time = $request->hours;
+        $service->created_by = $adminId;
+        $service->updated_by = $adminId;
+        $service->service_cost = $request->service_cost; // Add this linethis line
+        $service->service_discount = $request->service_discount; // Add this line
+        $service->service_tax = $request->service_tax; // Add this line
+        $service->service_total = $request->service_total; // Add this line
+        $service->manufacturer_ids = $manufacturer_ids;
+        $service->in_warranty = $request->in_warranty; // Add this line
+        $service->job_online = $request->service_online; // Add this line
+        $service->estimate_online = $request->estimate_online; // Add this line
+
+        $service->save();
+
+        // Redirect to the index route with the service_category_id parameter
+        return redirect()->route('services.listingServices', ['category_id' => $request->input('service_category_id')])
+            ->with('success', 'Service created successfully!');
+    }
+
+
+
     public function editServices($service_id)
     {
-        $service = Services::findOrFail($service_id);
 
-        // Retrieve all service categories
-        $serviceCategories = ServiceCategory::all();
-        $manufacturers= Manufacturer::all();
-        // Separate hours and minutes
-        list($hours, $minutes) = explode(':', $service->service_time);
+        $services = ServiceCategory::all();
 
-        return view('services.edit_services', compact('service','manufacturers', 'hours', 'minutes', 'serviceCategories'));
+        $manufacturers = Manufacturer::all();
+
+        $service = Services::find($service_id);
+
+        return view('services.edit_services', compact('services', 'manufacturers', 'service'));
     }
 
 
     public function updateServices(Request $request, $service_id)
-{
-    // Find the service by ID
-    $service = Services::findOrFail($service_id);
+    {
+        $adminId = Auth::id();
 
-    // Combine hours and minutes
-    $serviceOnline = $request->has('service_online') ? 'yes' : 'no';
-    $combinedTime = $request->input('hours') . ':' . $request->input('minutes');
 
-    // Update service attributes without validation
-    $service->update([
-        'service_category_id' => $request->input('service_category_id'),
-        'service_name' => $request->input('service_name'),
-        'service_description' => $request->input('service_description'),
-        'service_code' => $request->input('service_code'),
-        'service_online' => $serviceOnline,
-        'service_for' => $request->input('service_for'),
-        'troubleshooting_question1' => $request->input('troubleshooting_question1'),
-        'troubleshooting_question2' => $request->input('troubleshooting_question2'),
-        'service_image' => $request->file('service_image') ? $request->file('service_image')->store('images') : $service->service_image,
-        'service_time' => $combinedTime,
-        'updated_by' => Auth::id(),
-        'service_cost' => $request->input('service_cost'), // Add this line
-        'service_quantity' => $request->input('service_quantity'), // Add this line
-        'service_discount' => $request->input('service_discount'), // Add this line
-        'service_tax' => $request->input('service_tax'), // Add this line
-        'service_total' => $request->input('service_total'), // Add this line
-    ]);
+        // Serialize manufacturer_ids manually
+        $manufacturer_ids = json_encode($request->manufacturer_ids);
 
-    // Redirect to the index route with success message
-    return redirect()->route('services.listingServices', ['category_id' => $request->input('service_category_id')])
-        ->with('success', 'Service updated successfully!');
-}
+        $service =  Services::find($service_id);
+        // Save to the database without validation
+
+        $service->service_category_id = $request->service_category_id;
+        $service->service_name = $request->service_name;
+        $service->service_description = $request->service_description;
+        $service->service_code = $request->service_code;
+        $service->troubleshooting_question1 = $request->troubleshooting_question1;
+        $service->troubleshooting_question2 = $request->troubleshooting_question2;
+        $service->service_time = $request->hours;
+        $service->created_by = $adminId;
+        $service->updated_by = $adminId;
+        $service->service_cost = $request->service_cost; // Add this linethis line
+        $service->service_discount = $request->service_discount; // Add this line
+        $service->service_tax = $request->service_tax; // Add this line
+        $service->service_total = $request->service_total; // Add this line
+        $service->manufacturer_ids = $manufacturer_ids;
+        if ($request->in_warranty) {
+            $service->in_warranty = $request->in_warranty; // Add this line
+        }
+        if ($request->service_online) {
+            $service->job_online = $request->service_online; // Add this line
+        }
+        if ($request->estimate_online) {
+            $service->estimate_online = $request->estimate_online; // Add this line
+        }
+
+        $service->update();
+
+        // Redirect to the index route with success message
+        return redirect()->route('services.listingServices', ['category_id' => $request->input('service_category_id')])
+            ->with('success', 'Service updated successfully!');
+    }
 
     public function deleteService($service_id)
     {
@@ -139,5 +149,4 @@ class ServicesController extends Controller
         // Redirect to the index route with a success message
         return redirect()->back()->with('success', 'Service deleted successfully.');
     }
-
 }

@@ -646,7 +646,7 @@ Route::middleware('auth')->group(function () {
 
 
 
-    Route::put('book-list/services/{id}', [ServicesController::class, 'updateServices'])->name('services.update');
+    Route::post('book-list/services/{id}', [ServicesController::class, 'updateServices']);
 
 
 
