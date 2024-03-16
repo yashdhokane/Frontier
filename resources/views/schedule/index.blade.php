@@ -186,45 +186,6 @@
         <!-- Container fluid  -->
         <!-- -------------------------------------------------------------- -->
 
-        <div class="bg-white p-3 mt-4 h-100" id="filterSchedule" style="display: none;">
-
-            <div class="d-flex gap-5 justify-content-between">
-                <i class="fa fa-calendar-check fs-7"></i>
-                <div>
-                    <a href="schedule?date={{ $TodayDate }}">
-                        <h4 class="btn btn-outline-dark">Today</h4>
-                    </a>
-
-                    <i class="fa fa-arrow-alt-circle-left fs-7 ms-3 text-primary" id="leftArrow" style=""></i>
-                </div>
-            </div>
-            <hr>
-            <div>
-                <h6>Schedule</h6>
-                <div id="datepicker-container" class="pe-5">
-                    <input type="text" id="datepicker">
-                </div>
-
-            </div>
-            <hr>
-            <div>
-                <h4>TECHNICIAN</h4>
-                <input type="text" name="searchTechnician" id="searchTechnician" class="form-control mb-4 border-black">
-                @foreach ($tech as $k => $item)
-                    <div class="d-flex gap-3 technician-item">
-                        <input type="checkbox" class="technician_check" data-id="{{ $item->id }}"
-                            id="tech{{ $k }}" style="transform: scale(1.5);"
-                            {{ $item->status == 'active' ? 'checked' : '' }}>
-                        <label for="tech{{ $k }}" class="fs-4">{{ $item->name }}</label>
-                    </div>
-                @endforeach
-            </div>
-
-
-        </div>
-        <div id="rightArrow" class="mt-4 h-100">
-            <i class="fa fa-arrow-alt-circle-right fs-7 ms-3 text-primary" title="Filter"></i>
-        </div>
         <div class="container-fluid">
 
             <div class="row">

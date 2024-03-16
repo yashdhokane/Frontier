@@ -373,6 +373,41 @@
                         <li class="sidebar-item"><a href="{{ route('schedule') }}"
                                 class="sidebar-link"><i class="fas fa-calendar-check"></i><span class="hide-menu">
                                     Schedule </span></a></li>
+                                    @if(request()->is('schedule'))
+                                    <li class="sidebar-item"><a href="#" class="sidebar-link">
+                                        <span class="hide-menu"> 
+                                        @php
+                                            $tech = DB::table('users')->where('role', 'technician')->get();
+                                        @endphp
+                                        
+                                            <div class="bg-white h-100" id="filterSchedule">
+            
+                                                <div>
+                                                    <div id="datepicker-container" class="">
+                                                        <input type="text" id="datepicker">
+                                                    </div>
+            
+                                                </div>
+                                                <hr>
+                                                <div>
+                                                    <h4>TECHNICIAN</h4>
+                                                    <input type="text" name="searchTechnician" id="searchTechnician" class="form-control mb-4 border-black">
+                                                    @foreach ($tech as $k => $item)
+                                                        <div class="d-flex gap-3 technician-item">
+                                                            <input type="checkbox" class="technician_check" data-id="{{ $item->id }}"
+                                                                id="tech{{ $k }}" style="transform: scale(1.5);"
+                                                                {{ $item->status == 'active' ? 'checked' : '' }}>
+                                                            <label for="tech{{ $k }}" class="fs-4">{{ $item->name }}</label>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+            
+            
+                                            </div>
+                                                     </span></a>
+                                    </li>
+                                    @endif
+                                  
                         <li class="sidebar-item"><a href="{{ route('map') }}"
                                 class="sidebar-link"><i class="fas fa-calendar-check"></i><span class="hide-menu">
                                     Reschedule </span></a></li>

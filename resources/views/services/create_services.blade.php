@@ -11,7 +11,7 @@
     <!-- -------------------------------------------------------------- -->
     <!-- Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
-    <div class="page-breadcrumb">
+    <div class="page-breadcrumb" style="padding-top: 0px;">
         <div class="row">
             <div class="col-5 align-self-center">
                 <h4 class="page-title">Add New Services</h4>
@@ -63,104 +63,65 @@
                             <textarea id="text" name="service_description" class="form-control" style="height: 120px;"
                                 required></textarea>
                         </div>
-                        <div class="mb-3">
-                            <label class="control-label required-field">Service Code</label>
-                            <input type="text" name="service_code" id="task" class="form-control" placeholder=""
-                                required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="control-label required-field">Featured Image</label>
-                            <input type="file" name="service_image" id="image" class="form-control" required>
-                        </div>
+                       
+ 
+                        
 
-
-                        <div class="mb-3">
-                            <label for="service" class="control-label col-form-label required-field">Service Category</label>
-                            <select class="form-select me-sm-2" id="service" name="service_category_id" required>
-                                <option selected disabled value="">Select Service...</option>
-                                @foreach($services as $service)
-                                <option value="{{ $service->id }}">{{ $service->category_name }}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-    <label for="manufacturer" class="control-label col-form-label required-field">Manufacturer</label>
-    <select class="form-select me-sm-2" id="manufacturer" name="manufacturer_ids[]" multiple required>
-        <option selected disabled value="">Select Manufacturers...</option>
-        @foreach($manufacturers as $manufacturer)
-            <option value="{{ $manufacturer->id }}">{{ $manufacturer->manufacturer_name }}</option>
-        @endforeach
-    </select>
+<div class="row">
+	<div class="col-md-4 col-xl-2">
+		<div class="mb-3">
+		<label for="service" class="control-label col-form-label required-field">Category</label>
+		<select class="form-select" id="service" name="service_category_id" required>
+		<option selected disabled value="">Select Category...</option>
+		@foreach($services as $service)
+		<option value="{{ $service->id }}">{{ $service->category_name }}
+		</option>
+		@endforeach
+		</select>
+		</div>
+	</div>
+	<div class="col-md-4 col-xl-2">
+		<div class="mb-3">
+		<label class="control-label col-form-label required-field">Service Code</label>
+		<input type="text" name="service_code" id="task" class="form-control" placeholder=""
+		required>
+		</div>
+	</div>
+	<div class="col-md-4 col-xl-2">
+		<div class="mb-3">
+			<label class="control-label col-form-label required-field">Service Duration</label>
+				<select class="form-control form-select" name="hours" data-placeholder="Choose hours"
+				tabindex="1" required>
+				<option value="30">30 Mins</option>
+				<option value="60">60 Mins</option>
+				<option value="90">90 Mins</option>
+				<option value="120">120 Mins</option>
+ 				</select>
+		</div>
+	</div>
 </div>
 
+<div class="row">
+	<div class="col-md-12 col-xl-2">
+		<div class="mb-3">
+			<label for="manufacturer" class="control-label col-form-label required-field">Manufacturer</label>
+			<select class="form-select me-sm-2" id="manufacturer" name="manufacturer_ids[]" multiple required>
+				<option selected disabled value="">Select Manufacturers...</option>
+				@foreach($manufacturers as $manufacturer)
+					<option value="{{ $manufacturer->id }}">{{ $manufacturer->manufacturer_name }}</option>
+				@endforeach
+			</select>
+		</div>
+	</div>
+</div>
+
+					
+
 
                 </div>
                 <!-- Card -->
 
-                <!-- Card -->
-                <div class="card card-body">
-                    <h4 class="required-field">BOOKING</h4>
-
-                    <div class="mb-3">
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" name="service_online" type="checkbox" value="yes"
-                                id="flexSwitchCheckChecked">
-                            <label class="form-check-label" for="flexSwitchCheckChecked"> Show this service in Online
-                                Booking</label>
-                        </div>
-                    </div>
-                    <div class="row mt-4">
-                        <div class="col-md-12">
-                            <h6>Duration</h6>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="mb-3">
-                                <label class="control-label required-field">Hours</label>
-                                <select class="form-control form-select" name="hours" data-placeholder="Choose hours"
-                                    tabindex="1" required>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <h6 style="height: 17px;"></h6>
-                            <div class="mb-3">
-                                <select class="form-control form-select" name="minutes"
-                                    data-placeholder="Choose minutes" tabindex="1" required>
-                                    <option value="0">0</option>
-                                    <option value="15">15</option>
-                                    <option value="30">30</option>
-                                    <option value="45">45</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6">&nbsp;</div>
-                    </div>
-                    <div class="row mt-4">
-                        <div class="col-md-6">
-                            <h6 class="required-field">Book this service as:</h6>
-                            <div class="form-check">
-                                <input type="radio" id="customRadio11" name="service_for" value="Job"
-                                    class="form-check-input" required>
-                                <label class="form-check-label" for="customRadio11"
-                                    style="margin-right:40px;">Job</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="radio" id="customRadio1" name="service_for" value="Estimate"
-                                    class="form-check-input">
-                                <label class="form-check-label" for="customRadio11">Estimate</label>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <!-- Card -->
-
+ 
                 <!-- Card -->
                 <div class="card card-body">
                     <h4>TROUBLESHOOTING</h4>
@@ -186,29 +147,55 @@
             <!-- column -->
             <div class="col-lg-4 col-md-4">
 
+				 <div class="card card-body">
+                    <h4 class="required-field">Warranty</h4>
+					<div class="mb-4">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" name="in_warranty" type="checkbox" value="yes"
+                                id="flexSwitchCheckChecked">
+                            <label class="form-check-label" for="flexSwitchCheckChecked"> Show this service in Warranty</label>
+                        </div>
+                    </div>
+					<h4 class="required-field">Job Schedule</h4>
+					<div class="mb-4">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" name="service_online" type="checkbox" value="yes"
+                                id="flexSwitchCheckChecked">
+                            <label class="form-check-label" for="flexSwitchCheckChecked"> Show this service in Job Schedule</label>
+                        </div>
+                    </div>
+ 					<h4 class="required-field">Job Estimate</h4>
+					<div class="mb-4">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" name="estimate_online" type="checkbox" value="yes"
+                                id="flexSwitchCheckChecked">
+                            <label class="form-check-label" for="flexSwitchCheckChecked"> Show this service in Job Estimate</label>
+                        </div>
+                    </div>
+				</div>
+					
                 <!-- Card -->
                 <div class="card card-body">
                     <h4>Pricing</h4>
 
                     <div class="mb-3">
-                        <label class="control-label required-field">Cost (Base Price)</label>
+                        <label class="control-label required-field">Price (Unit Price)</label>
                         <input type="number" id="service" class="form-control" name="service_cost" placeholder="" required>
                     </div>
-                    <div class="mb-3">
-                        <label class="control-label required-field">Quantity</label>
-                        <input type="number" id="service" name="service_quantity" class="form-control" placeholder="" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="control-label required-field">Discount</label>
+                     <div class="mb-3">
+                        <label class="control-label required-field">Discount (In Percentage)</label>
                         <input type="number" id="service" name="service_discount" class="form-control" placeholder="" required>
+						<small id="name" class="form-text text-muted">It should be in percentage</small>
                     </div>
                     <div class="mb-3">
-                        <label class="control-labe required-field">Tax</label>
+                        <label class="control-labe required-field">Tax (In Percentage)</label>
                         <input type="number" id="service" name="service_tax" class="form-control" placeholder="" required>
+						<small id="name" class="form-text text-muted">If applicable only</small>
                     </div>
                     <div class="mb-3">
                         <label class="control-label required-field">Total</label>
                         <input type="number" id="service" name="service_total" class="form-control" placeholder="" required>
+						<small id="name" class="form-text text-muted">Gross Total = Unit Price - Discount + Tax</small>
                     </div>
 
                 </div>

@@ -11,82 +11,22 @@
     <!-- -------------------------------------------------------------- -->
 
 
-
-    <div class="page-breadcrumb">
-        <div class="row">
+	<div class="page-breadcrumb" style="padding-top: 0px;">
+         <div class="row">
             <div class="col-5 align-self-center">
-                <h4 class="page-title">Frontier Services Inc</h4>
-                <div class="d-flex align-items-center">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="">Price Book</a></li>
-                            <li class="breadcrumb-item"><a href="">Service Category</a></li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
+                <h4 class="page-title">Services</h4>
+			</div>
             <div class="col-7 align-self-center">
                 <div class="d-flex no-block justify-content-end align-items-center">
                     <div class="me-2">
-                        <div class="lastmonth"></div>
+                        <a href="javascript:void(0)" id="btn-add-contact" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#add-contact"><i class=" fas fa-user-plus "></i> New Category</a>
                     </div>
-                    <div class="">
-                        <small>LAST MONTH</small>
-                        <h4 class="text-info mb-0 font-medium">$58,256</h4>
-                    </div>
-                </div>
+                 </div>
             </div>
         </div>
     </div>
-    @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-
-    </div>
-    @endif
-    <!-- ------------------------------------------------------------ -->
-    <!-- End Bread crumb and right sidebar toggle -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- Container fluid  -->
-    <!-- -------------------------------------------------------------- -->
-    <div class="container-fluid">
-
-        <div class="card card-body">
-            <div class="row">
-                <div class="col-md-4 col-xl-2">
-                    <form>
-                        <input type="text" class="form-control product-search" id="input-search"
-                            placeholder="Search Service..." />
-                    </form>
-                </div>
-                <div class="
-                    col-md-8 col-xl-10
-                    text-end
-                    d-flex
-                    justify-content-md-end justify-content-center
-                    mt-3 mt-md-0
-                  ">
-                    <div class="action-btn show-btn" style="display: none">
-                        <a href="javascript:void(0)" class="
-                        delete-multiple
-                        btn-light-danger btn
-                        me-2
-                        text-danger
-                        d-flex
-                        align-items-center
-                        font-medium
-                      ">
-                            <i data-feather="trash-2" class="feather-sm fill-white me-1"></i>
-                            Delete All Row</a>
-                    </div>
-                    <a href="javascript:void(0)" id="btn-add-contact" class="btn btn-info" data-bs-toggle="modal"
-                        data-bs-target="#add-contact">
-                        <i data-feather="users" class="feather-sm fill-white me-1"> </i>
-                        Add Services</a>
-                </div>
-
-                <!-- Add Popup Model  1 latest -->
+	
+	<!-- Add Popup Model  1 latest -->
                 <div id="add-contact" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog">
@@ -101,22 +41,16 @@
                                     class="form-horizontal form-material" enctype="multipart/form-data">
                                     @csrf
                                     <div class="form-group">
-                                        <div class="col-md-12 mb-3"> <input type="text" class="form-control"
+                                        <div class="col-md-12 mb-4"> 
+											<input type="text" class="form-control"
                                                 name="category_name" placeholder="" required/>
                                         </div>
-
-
+ 
                                         <div class="col-md-12 mb-3">
-                                            <div class="
-                                    fileupload
-                                    btn btn-danger btn-rounded
-                                    waves-effect waves-light
-                                    btn-sm
-                                  ">
-                                                <span><i class="ri-upload-line align-middle me-1 m-r-5"></i>Upload
-                                                    Category Image</span>
-                                                <input type="file" name="category_image" class="upload" />
+                                            <div class="">
+                                                  <input type="file" name="category_image"  class="form-control" />
                                             </div>
+ 
                                         </div>
                                     </div>
 
@@ -137,20 +71,31 @@
                     <!-- /.modal-dialog -->
                 </div>
                 <!-- End Popup Model 1 latest-->
+				
+    @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
 
-            </div>
-        </div>
+    </div>
+    @endif
+    <!-- ------------------------------------------------------------ -->
+    <!-- End Bread crumb and right sidebar toggle -->
+    <!-- -------------------------------------------------------------- -->
+    <!-- -------------------------------------------------------------- -->
+    <!-- Container fluid  -->
+    <!-- -------------------------------------------------------------- -->
+    <div class="container-fluid">
 
-
-        <!-- Row -->
+         <!-- Row -->
         <style>
             .srdrop {
                 float: right;
             }
         </style>
 
-        <div class="row">
-
+        <div class="row card-body">
+		
+ 	
             <!-- column -->
             @foreach ($servicecategory as $item)
             <div class="col-lg-3 col-md-6 col-xl-2">
@@ -211,6 +156,7 @@
             </div>
             @endforeach
 
+			</div>
 
 
             <!-- Card -->
