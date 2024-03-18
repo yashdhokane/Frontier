@@ -1,15 +1,83 @@
 li.toplinks {
-margin: 20px 15px;
-color: #FFF;
+	margin: 20px 15px;
+	color: #FFF;
 }  
 li.toplinks a{
-color: #FFF;
+	color: #FFF;
 }
 .lightbg {
-background: #3699ff;
+	background: #3699ff;
 }
 .megamenutop1 {
-background-color: #ee9d01;
-padding: 0px 20px !important;
-font-weight: bold;
+	background-color: #ee9d01;
+	padding: 0px 20px !important;
+	font-weight: bold;
 }
+.bold {
+	font-weight: bold;
+}
+.mb5 {
+	margin-bottom: 5px;
+}
+.img_sq_manufacturer {
+  width: 100%;
+  height: auto;
+  min-height: 224px;
+  border-radius: 6px;
+}
+.ft14 {
+	font-size: 14px;
+}
+.ft15 {
+	font-size: 15px;
+}
+.ft16 {
+	font-size: 16px;
+}
+.page-breadcrumb .page-title {
+	text-transform: uppercase;
+	letter-spacing: 2px;
+}
+.table-custom #zero_config_length {
+  float: right;
+  margin-bottom: 10px;
+}
+.table-custom #zero_config_filter {
+  display: none;
+}
+.table-custom #zero_config_info {
+  float: left;
+  margin-top: 15px;
+}
+.table-custom #zero_config_paginate {
+  margin-top: 30px;
+  margin-bottom: 15px;
+}
+.table-custom2 #zero_config_length {
+  display: none;
+}
+.table-custom2 #zero_config_filter {
+  display: none;
+}
+.table-custom2 #zero_config_info {
+  float: left;
+  margin-top: 15px;
+}
+.table-custom2 #zero_config_paginate {
+  margin-top: 30px;
+  margin-bottom: 15px;
+}
+.nav-pills.custom-pills .nav-link.active {
+	color: #FFF;
+	background-color: #2962ff;
+}
+
+.form-control, .form-select {
+	border: 1px solid #CDCDCD;
+}
+
+
+
+
+
+
