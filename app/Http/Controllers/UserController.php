@@ -121,29 +121,30 @@ class UserController extends Controller
         $user->source_id = $request['source_id'];
         $user->password = Hash::make($request['password']);
 
+        $user->save();
+        $userId = $user->id;
 
         if ($request->hasFile('image')) {
-            // Get the user ID
-            $userId = $user->id;
-        
-            // Create a new folder with user ID as the folder name
-            $folderPath = public_path('images/customer/' . $userId);
-            if (!file_exists($folderPath)) {
-                mkdir($folderPath, 0777, true);
+            // Generate a unique directory name based on user ID and timestamp
+            $directoryName = $userId;
+
+            // Construct the full path for the directory
+            $directoryPath = public_path('images/customer/' . $directoryName);
+
+            // Ensure the directory exists; if not, create it
+            if (!file_exists($directoryPath)) {
+                mkdir($directoryPath, 0777, true);
             }
-        
-            // Move the uploaded image to the newly created folder
+
+            // Move the uploaded image to the unique directory
             $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move($folderPath, $imageName);
-        
+            $imageName = $image->getClientOriginalName(); // Or generate a unique name if needed
+            $image->move($directoryPath, $imageName);
+
             // Save the image path in the user record
             $user->user_image =  $imageName;
             $user->save();
         }
-        
-
-        $user->save();
 
         $userId = $user->id;
         $currentTimestamp = now();
@@ -206,7 +207,6 @@ class UserController extends Controller
 
 
 
-        dd("done");
         return redirect()->route('users.index')->with('success', 'User created successfully');
     }
 
