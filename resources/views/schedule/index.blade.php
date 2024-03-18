@@ -210,7 +210,7 @@
                                                 Select Dates</a>
 
                                             <a href="schedule?date={{ $TodayDate }}"
-                                                style="margin-right: 10px;font-size: 13px;color: #ee9d01;font-weight: bold;"><i
+                                                style=" margin-right: 10px;font-size: 13px;color: #ee9d01;font-weight: bold;"><i
                                                     class="fas fa-calendar-check"></i> Today</a>
                                         </div>
                                         <div class="col-md-2" style="text-align: right;"><a

@@ -289,6 +289,7 @@ Route::group(['middleware' => 'role:customer'], function () {
 
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
 
+Route::post('/get-user-status', [UserController::class, 'getUserStatus'])->name('get.user.status');
 
 
     Route::POST('/users/store', [UserController::class, 'store'])->name('users.store');
@@ -678,7 +679,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('schedule/update/post', [ScheduleController::class, 'update'])->name('schedule.update.post');
 
-    Route::get('schedule/edit', [ScheduleController::class, 'edit'])->name('schedule.edit');
+   Route::get('schedule/edit', [ScheduleController::class, 'edit'])->name('schedule.edit');
 
     Route::post('schedule/update', [ScheduleController::class, 'updateSchedule'])->name('schedule.update');
 
@@ -687,6 +688,7 @@ Route::middleware('auth')->group(function () {
     Route::get('get/pending_jobs', [ScheduleController::class, 'pending_jobs']);
 
     Route::get('get/user/by_number', [ScheduleController::class, 'get_by_number']);
+    Route::get('get_number_customer_one', [UserController::class, 'get_number_customer_one'])->name('get_number_customer_one');
 
     Route::post('store/event/', [ScheduleController::class, 'store_event']);
 
@@ -722,7 +724,7 @@ Route::middleware('auth')->group(function () {
     Route::get('book-list/parts/{id}/destroy', [productController::class, 'destroy'])->name('product.destroy');
 
     Route::get('assign_product', [ProductCategoryController::class, 'assign_product'])->name('assign_product');
-
+    
     Route::post('store/assign-product', [ProductCategoryController::class, 'store_assign_product']);
 
 
@@ -944,7 +946,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/invoice-detail/{id}', [PaymentController::class, 'invoice_detail'])->name('invoicedetail');
 
     Route::get('/update/payment/{id}', [PaymentController::class, 'update']);
-
+    
     Route::post('/store/comment/{id}', [PaymentController::class, 'comment']);
 
     // timezone 
@@ -958,7 +960,8 @@ Route::middleware('auth')->group(function () {
 
 
 
-    Route::get('/performance-matrix', [PerformanceMatrix::class, 'performanncematrix'])->name('performanncematrix');
+Route::get('/performance-matrix', [PerformanceMatrix::class, 'performanncematrix'])->name('performanncematrix');
+
 });
 
 Route::post('/reset-password', [UserController::class, 'resetPassword'])->name('resetPassword');

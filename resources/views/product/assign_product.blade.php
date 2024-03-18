@@ -1,7 +1,6 @@
 @extends('home')
 @section('content')
-    <link rel="stylesheet" href="{{ asset('public/admin/dist/libs/select2/dist/css/select2.min.css') }}">
-    <!-- -------------------------------------------------------------- -->
+   <!-- -------------------------------------------------------------- -->
     <!-- Main wrapper - style you can find in pages.scss -->
     <!-- -------------------------------------------------------------- -->
     <div id="main-wrapper">
@@ -180,10 +179,4 @@
     <!-- End Wrapper -->
     <!-- -------------------------------------------------------------- -->
 
-    <script src="{{ asset('public/admin/dist/libs/jquery/dist/jquery.min.js') }}"></script>
-    <!-- This page JavaScript -->
-    <!-- --------------------------------------------------------------- -->
-    <script src="{{ asset('public/admin/dist/libs/select2/dist/js/select2.full.min.js') }}"></script>
-    <script src="{{ asset('public/admin/dist/libs/select2/dist/js/select2.min.js') }}"></script>
-    <script src="{{ asset('public/admin/dist/js/pages/forms/select2/select2.init.js') }}"></script>
 @endsection

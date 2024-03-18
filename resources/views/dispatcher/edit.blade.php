@@ -484,10 +484,12 @@
                         </div>
 
                     </div>
-                    <h5 class="card-title mb-3"> Permission to user view</h5>
-<div class="row">
+<div class="row" >
+
     <div class="col-sm-12 col-md-12">
-        <div class="mb-3">
+        <div class="mb-3" style="display:none;">
+                            <h5 class="card-title mb-3"> Permission to user view</h5>
+
 @foreach($permissions as $permission)
     <input type="checkbox" id="{{ $permission }}_permission" name="permissions[]" value="{{ $permission }}"
            @if(is_array($dispatcher->permissions) && in_array($permission, json_decode($dispatcher->permissions, true))) checked="checked" @endif>

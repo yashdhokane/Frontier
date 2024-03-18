@@ -249,7 +249,8 @@
 
                         <div class="tab-pane fade" id="calls_tab" role="tabpanel" aria-labelledby="pills-setting-tab">
                             <div class="card-body">
-                                <div class="table-responsive mt-4">
+								<h4>Calls / Tickets</h4>
+                                <div class="table-responsive mt-4 table-custom2">
                                     <table id="zero_config" class="table table-bordered text-nowrap">
                                         <thead>
                                             <tr>
@@ -311,7 +312,7 @@
 
                         <div class="tab-pane fade" id="payment_tab" role="tabpanel" aria-labelledby="pills-payment-tab">
                             <div class="card-body">
-                                <h4>Payments</h6>
+                                <h4>Payments</h4>
                                     <div class="table-responsive mt-4">
                                         <table id="zero_config" class="table table-bordered text-nowrap">
                                             <thead>

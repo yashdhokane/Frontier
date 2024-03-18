@@ -1,6 +1,6 @@
 @extends('home')
 @section('content')
-<style>
+  <style>
         .required-field::after {
             content: " *";
             color: red;
@@ -240,7 +240,7 @@
 
     </div>
 
-   
+  
     <script>
         $(document).ready(function() {
             $('#manufacturer_ids').select2();

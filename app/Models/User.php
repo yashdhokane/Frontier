@@ -24,6 +24,8 @@ class User extends Authenticatable
         'password',
         'role',
         'image',
+         'status',
+        'login',
         'source_id',
         'service_areas',
     ];

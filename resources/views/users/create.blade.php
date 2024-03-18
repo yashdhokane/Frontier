@@ -2,6 +2,7 @@
 
 @section('content')
 
+    <link rel="stylesheet" href="{{ asset('public/admin/dist/libs/select2/dist/css/select2.min.css') }}">
 
 
 
@@ -216,14 +217,15 @@
  						<div class="row">
 							<div class="col-sm-12 col-md-4">
                                  <div class="mb-3">
-                                     <label for="email" class="control-label bold mb5 col-form-label required-field">Email</label>
-									 <input type="email" class="form-control" id="email" name="email" placeholder="" required />
+                                     <label for="email" class="control-label bold mb5 col-form-label ">Email</label>
+									 <input type="email" class="form-control" id="email" name="email" placeholder=""  />
                                  </div>
 							</div>
 							<div class="col-sm-12 col-md-4">
                                  <div class="mb-3">
                                      <label for="mobile_phone" class="control-label bold mb5 col-form-label required-field">Mobile Phone</label>
                                      <input type="number" maxlength="10" class="form-control" id="mobile_phone" name="mobile_phone" placeholder="" required />
+                                     <small id="name" class="form-text text-muted">Don’t add +1. Only add mobile number without space.</small>
                                 </div>
                             </div>
 							<div class="col-sm-12 col-md-4">
@@ -243,7 +245,7 @@
 						<div class="row">
 							<div class="col-sm-12 col-md-8">
 								<div class="mb-3">
-									<label for="address_unit" class="control-label bold mb5 col-form-label required-field">Address Line 2</label>
+									<label for="address_unit" class="control-label bold mb5 col-form-label ">Address Line 2</label>
 									<input type="text" class="form-control" id="address_unit" name="address_unit" placeholder="" />
 								</div>
 							</div>
@@ -352,7 +354,9 @@
 							<div class="col-sm-12 col-md-4">
 								<div class="mb-3">
                                     <label for="tag_id" class="control-label bold mb5 col-form-label">Customer Tags</label>
-                                    <select class="form-control" id="tag_id" name="tag_id[]" multiple>
+                                    <select class="form-control select2-hidden-accessible" id="select2-with-tags" name="tag_id[]"  multiple="multiple" data-bgcolor="light"
+                                                      data-select2-id="select2-data-select2-with-tags" tabindex="-1" aria-hidden="true"
+                                                        style="width: 100%" >
                                         @foreach($tags as $tag)
                                         <option value="{{ $tag->tag_id }}">{{ $tag->tag_name }}</option>
                                         @endforeach
@@ -364,7 +368,7 @@
                             <div class="col-sm-12 col-md-12">
                                 <div class="mb-3">
                                     <label class="control-label bold mb5 col-form-label">Customer Notes</label>
-                                    <input type="text" class="form-control" id="customer_notes" name="customer_notes" placeholder="" />
+                                    <textarea  type="text" class="form-control" id="customer_notes" name="customer_notes" rows="1" placeholder="" > </textarea>
                                 </div>
                             </div>
                         </div>
@@ -375,19 +379,30 @@
 
             </div>
 			
-			<div class="col-lg-3 d-flex align-items-stretch">
+			<div class=" col-lg-3 d-flex align-items-stretch">
 				<div class="card w-100">
 					<div class="card-body border-top">
-						SPACE TO SHOW RECORDS
+					
 
-                       <div>
-    <span id="mobile_error" style="margin-top: 5px; color: red;"></span>
-</div>
+                                              <div class="customersSuggetions2"
+                                                        style="display: none;height: 200px;
+                                                            overflow-y: scroll;">
+                                                        <div class="card">
+                                                            <div class="card-body px-0">
+                                                                <div class="">
+                                                                    <h5 class="font-weight-medium mb-2">Select Customer
+                                                                    </h5>
+                                                                    <div class="customers2">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
-					</div>
-				</div>
+					                             </div>
+				                            </div>
                 
-			</div>
+			                            </div>
 
  
 
@@ -784,42 +799,52 @@ document.getElementById('myForm').addEventListener('submit', function(event) {
 
 </script>
 
+
+
+
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const mobileInput = document.getElementById('mobile_phone');
-    const mobileError = document.getElementById('mobile_error');
-       const submitBtn = document.getElementById('submitBtn');
-    
-    mobileInput.addEventListener('blur', function () {
-        const mobileNumber = this.value.trim();
-        if (mobileNumber !== '') {
-            // Send AJAX request to check if mobile number exists
-            fetch('{{ route("check-mobile") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({ mobile_number: mobileNumber })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.exists) {
-                    const userName = data.user.name;
-                    mobileError.textContent = `${userName} already used this mobile number`;
-                    submitBtn.disabled = true;
+$(document).ready(function(){
+$('#mobile_phone').keyup(function() {
+                var phone = $(this).val();
+                if (phone.length >= 10) {
+                    $('.customersSuggetions2').show();
                 } else {
-                    mobileError.textContent = '';
-                     submitBtn.disabled = false;
+                    $('.customersSuggetions2').hide();
                 }
-            })
-            .catch(error => console.error('Error:', error));
-        }
-    });
+              
+
+                $.ajax({
+                   url: '{{ route('get_number_customer_one') }}',
+                    method: 'get',
+                    data: {
+                        phone: phone
+                    }, // send the phone number to the server
+                    success: function(data) {
+                        // Handle the response from the server here
+                        console.log(data);
+                        $('.rescheduleJobs').empty();
+
+                        $('.customers2').empty();
+
+                        if (data.customers) {
+                            $('.customers2').append(data.customers);
+                        } else {
+                            $('.customers2').html(
+                                '<div class="customer_sr_box"><div class="row"><div class="col-md-12" style="text-align: center;"><h6 class="font-weight-medium mb-0">No Data Found</h6></div></div></div>'
+                            );
+                        }
+                    },
+                    //   alert(1);
+                    error: function(xhr, status, error) {
+                        // Handle errors here
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+
 });
 
 </script>
-
 
 
 

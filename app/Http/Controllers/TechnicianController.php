@@ -422,4 +422,54 @@ class TechnicianController extends Controller
     }
 
 
+   public function techniciancomment(Request $request)
+{
+    $addedByUserId = auth()->user()->id;
+    $user = User::findOrFail($request->id); 
+
+    $payment = new UserNotesCustomer();
+    $payment->user_id = $user->id; 
+    $payment->added_by = $addedByUserId;
+        $payment->last_updated_by = $addedByUserId;
+
+    $payment->note = $request->note;
+
+    $payment->save();
+
+    return redirect()->back()->with('success', 'Comment added successfully');
+}
+ 
+public function technicianstaus(Request $request)
+{
+    //dd($id);
+
+    // Find the user based on the provided $id
+    $user = User::findOrFail($request->user_id);
+//dd($user);
+
+    // Check if the current status is 'active', then change it to 'deactive'
+    if ($user->status == 'active') {
+        $user->status = 'deactive';
+    } else {
+        // Otherwise, change it to 'active'
+        $user->status = 'active';
+    }
+
+    // Check if the current login state is 'enable', then change it to 'disable'
+    if ($user->login == 'enable') {
+        $user->login = 'disable';
+    } else {
+        // Otherwise, change it to 'enable'
+        $user->login = 'enable';
+    }
+// dd($user->login,$user->status)
+    // Save the changes to the user model
+    $user->save();
+
+    return redirect()->back()->with('success', 'Status updated successfully');
+}
+
+
+
+
 }

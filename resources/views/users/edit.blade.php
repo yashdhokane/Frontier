@@ -289,15 +289,21 @@
                             </div>
                         </div>
                         <div class="row">
-                         
+                         <div class="col-sm-12 col-md-4">
+                                 <div class="mb-3">
+                                     <label for="email" class="control-label  col-form-label ">Email</label>
+									 <input type="email" class="form-control" id="email" name="email" value="{{old('email', $user->email )}}" placeholder=""  />
+                                 </div>
+							</div>
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
 
                                     <label for="mobile_phone" class="control-label col-form-label required-field">Mobile
                                         Phone</label>
 
-                                    <input type="text" class="form-control" name="mobile_phone" 
+                                    <input type="text" class="form-control" maxlength="10"  name="mobile_phone" 
                                         value="{{old('mobile_phone', $user->mobile )}}" placeholder="" required />
+                                        <small id="name" class="form-text text-muted">Don’t add +1. Only add mobile number without space.</small>
 
                                 </div>
                             </div>
@@ -327,7 +333,7 @@
                                 <div class="mb-3">
 
                                     <label for="address_unit"
-                                        class="control-label col-form-label required-field">Address Line2</label>
+                                        class="control-label col-form-label ">Address Line2</label>
 
                                     <input type="text" class="form-control" id="address_unit" name="address_unit"
                                         value="{{ old('address_unit', $location->address_line2 ?? null) }}"
@@ -342,20 +348,13 @@
                                     <label for="anotheraddress_type"
                                         class="control-label col-form-label required-field">Type</label>
 
-                                    <select class="form-select me-sm-2" id="address_type" name="address_type">
+                                 <select class="form-select me-sm-2" id="address_type" name="address_type">
+    <option value="">Select Address Type...</option>
+    <option value="home" {{ ($location->address_type ?? null) == 'home' ? 'selected' : '' }}>Home Address</option>
+    <option value="work" {{ ($location->address_type ?? null) == 'work' ? 'selected' : '' }}>Work Address</option>
+    <option value="other" {{ ($location->address_type ?? null) == 'other' ? 'selected' : '' }}>Other Address</option>
+</select>
 
-                                        <option value="">Select Address Type...</option>
-
-                                        <option value="home" {{ ($location->address_type ?? null) == 'home' ? 'selected'
-                                            : '' }}>Home Address</option>
-
-                                        <option value="work" {{ ($location->address_type ?? null) == 'work' ? 'selected'
-                                            : '' }}>Work Address</option>
-
-                                        <option value="other" {{ ($location->address_type ?? null) == 'other' ?
-                                            'selected' : '' }}>Other Address</option>
-
-                                    </select>
 
                                 </div>
                             </div>
@@ -543,10 +542,10 @@
 
                                 <div class="mb-3">
 
-                                    <label for="tag_id" class="control-label col-form-label">Customer Tags</label>
-
-                                    <select class="form-control js-example-basic-multiple" id="tag_id" name="tag_id[]"
-                                        multiple>
+          <label for="tag_id" class="control-label bold mb5 col-form-label">Customer Tags</label>
+                                    <select class="form-control select2-hidden-accessible" id="select2-with-tags" name="tag_id[]"  multiple="multiple" data-bgcolor="light"
+                                                      data-select2-id="select2-data-select2-with-tags" tabindex="-1" aria-hidden="true"
+                                                        style="width: 100%" >
 
                                         @foreach($tags as $tag)
 
@@ -571,8 +570,7 @@
 
                                     <label class="control-label col-form-label">Customer Notes</label>
 
-                                    <input type="text" class="form-control" id="customer_notes" name="customer_notes"
-                                        value="{{ old('customer_notes', $Note->note ?? null) }}" placeholder="" />
+                                    <textarea class="form-control" id="customer_notes" name="customer_notes" placeholder="" rows="1">{{ old('customer_notes', $Note->note ?? null) }}</textarea>
 
                                 </div>
                             </div>
@@ -587,7 +585,7 @@
             <div class="col-lg-3 d-flex align-items-stretch">
                 <div class="card w-100">
                     <div class="card-body border-top">
-                        SPACE TO SHOW RECORDS
+
 
                         <div>
                             <span id="mobile_error" style="margin-top: 5px; color: red;"></span>

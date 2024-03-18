@@ -229,17 +229,46 @@
                 </div>
                 </td>
              <td class="action footable-last-visible" style="display: table-cell;">
-                                    <div class="action-btn" style="display:flex">
-                                        <a href="{{ route('multiadmin.show', $user->id) }}" class="text-info edit">
-                                            <span class="badge bg-info">
-                                                <i data-feather="eye" class="feather-sm fill-white"></i> View
-                                            </span>
-                                        </a>
-                                        <a href="{{ route('multiadmin.edit', $user->id) }}" class="text-info edit ms-2">
-                                            <span class="badge bg-success">
-                                                <i data-feather="eye" class="feather-sm fill-white"></i> Edit
-                                            </span>
-                                        </a>
+                                     
+                                   <div class="btn-group">
+                              <button
+                                type="button"
+                                class="btn btn-light-primary text-primary dropdown-toggle"
+                                data-bs-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                              >
+                                <i class="ri-settings-3-fill align-middle fs-5"></i>
+                              </button>
+                              <div class="dropdown-menu">
+                                <a class="dropdown-item" href="{{ route('multiadmin.show', $user->id) }}"
+                                  ><i data-feather="eye" class="feather-sm me-2"></i> View</a
+                                >
+                                <a class="dropdown-item" href="{{ route('multiadmin.edit', $user->id) }}"
+                                  ><i data-feather="edit-2" class="feather-sm me-2"></i> Edit</a
+                                >
+                               <a class="dropdown-item activity"
+                                                                    href="javascript:void(0)" data-bs-toggle="modal"
+                                                                    data-bs-target="#commentModal1"
+                                                                    onclick="setUserId({{ $user->id }})">
+                                                                    <i data-feather="activity"
+                                                                        class="feather-sm me-2"></i> Status
+                                                                </a>
+
+                                   <a class="dropdown-item add-comment"
+                                                                    href="javascript:void(0)" data-bs-toggle="modal"
+                                                                    data-bs-target="#commentModal"
+                                                                     onclick="setUserIdForCommentModal('{{ $user->id }}')">
+                                                                    <i data-feather="message-circle"
+                                                                        class="feather-sm me-2"></i> Comments
+                                                                </a>
+                                 <a class="dropdown-item" href="{{route('permissionindex')}}">
+  <i data-feather="user-check" class="feather-sm me-2"></i>
+  Permission
+</a>
+
+                              </div>
+                            </div>
                                         {{--
                                         <form method="POST" action="{{ route('technicians.destroy', $user->id) }}"
                                             onsubmit="return confirm('Are you sure you want to delete this user?')">
@@ -270,6 +299,68 @@
         <!-- End PAge Content -->
         <!-- -------------------------------------------------------------- -->
     </div>
+
+    
+            <!-- Modal for adding comment -->
+                                                <div class="modal fade" id="commentModal" tabindex="-1"
+                                                    aria-labelledby="commentModalLabel"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title"
+                                                                    id="commentModalLabel">Add Comment
+                                                                </h5>
+                                                                {{-- <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal" aria-label="Close"></button> --}}
+                                                            </div>
+                                                            <!-- Comment form -->
+                                                           <form action="{{ route('techniciancomment.store') }}" method="POST">
+
+                                                                @csrf
+                                                                <div class="modal-body">
+                                                                    <div class="mb-3">
+                                                                        <label for="comment">Comment:</label>
+                                                                         <input type="hidden" name="id" id="userIdForCommentModal">
+                                                                        <textarea class="form-control" id="comment" name="note" rows="3">
+                                                                            
+                                                                        </textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+
+                                                                    <button type="submit"
+                                                                        class="btn btn-primary">Submit</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                              <div class="modal fade" id="commentModal1" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="commentModalLabel">Change Status</h5>
+            </div>
+            <!-- Comment form -->
+            <form id="commentForm" action="{{ route('technicianstaus.update') }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="mb-3"> 
+                                        <input type="hidden" name="user_id" id="userId">
+
+                        Are you sure to change status ?</div>
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary" id="confirmButton">Yes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                  
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
     <!-- Share Modal -->
     <div class="modal fade" id="Sharemodel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
@@ -352,6 +443,16 @@
         );
 
     </script>
-
+ <script>
+    function setUserId(userId) {
+        document.getElementById('userId').value = userId;
+    }
+</script>
+<script>
+    // Function to set the user ID in the comment modal
+    function setUserIdForCommentModal(userId) {
+        document.getElementById('userIdForCommentModal').value = userId;
+    }
+</script>
     @endsection
     @endsection

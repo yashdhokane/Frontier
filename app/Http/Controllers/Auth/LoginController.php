@@ -24,28 +24,60 @@ protected $redirectTO = RouteServiceProvider::Home;
     }
 
     public function login(Request $request)
+
     {
+
+
 
         $input = $request->all();
 
+
+
         $this->validate($request, [
+
             
+
             'email' => 'required|email',
+
             'password' => 'required',
+
         ]);
 
+
+
         if(auth()->Auth::attempt(array('email' => $input['email'], 'password' => $input['password']))) 
+
         {
+
+        //   $user = Auth::user();
+
+        // if ($user->status == 'disable' || $user->login == 'disable') {
+        //     Auth::logout(); 
+        //     return redirect()->route('login')->with('error', 'Your account is disabled. Please contact the administrator.');
+        // }
+        // dd($user->status);
+
             if (Auth::user()->usertype == 'admin'){
+
                 return redirect()->route('admin.main');
+
             }else if  (Auth::user()->usertype == 'technician'){
+
                 return redirect()->route('admin.main');
+
             }else{
+
                 return redirect()->route('home');
+
             }
+
         }else{
+
             return redirect()->route('login')->with('error','email-address and password are wrong');
+
         }
+
     }
+
 
 }

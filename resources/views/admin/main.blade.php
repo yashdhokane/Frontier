@@ -604,7 +604,7 @@
 
 
 
-                                            <td>{{ $item->user->name ?? null}}</td>
+                                            <td>{{ $item->user->name }}</td>
 
                                             <td>
                                                 {{ $convertDateToTimezone($item->created_at, null, 'm-d-Y') ?? '' }}

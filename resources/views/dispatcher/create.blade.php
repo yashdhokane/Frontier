@@ -225,7 +225,7 @@
                                 </div>
                             </div>
                         </div>
-                        <h5 class="card-title mb-3"> Permission to user view</h5>
+                       
 {{--<div class="row">
     <div class="row">
         <div class="col-sm-12 col-md-12">
@@ -238,7 +238,8 @@
         </div>
     </div>
 </div> --}}
-<div class="row">
+<div class="row" style="display:none;">
+ <h5 class="card-title mb-3"> Permission to user view</h5>
     <div class="row">
         <div class="col-sm-12 col-md-12">
             <div class="mb-6">

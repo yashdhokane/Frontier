@@ -6,6 +6,8 @@
             border: 1px solid #2962ff !important;
             height: 60px;
         }
+
+
     </style>
     <!-- Page wrapper  -->
     <!-- -------------------------------------------------------------- -->
@@ -14,7 +16,7 @@
             <!-- -------------------------------------------------------------- -->
             <!-- Left Part  -->
             <!-- -------------------------------------------------------------- -->
-            <div class="left-part bg-white fixed-left-part user-chat-box">
+            <div class=" left-part bg-white fixed-left-part user-chat-box" style="height: 100%; overflow-y: auto;">
                 <!-- Mobile toggle button -->
                 <a class="ri-menu-fill ri-close-fill btn btn-success show-left-part d-block d-md-none"
                     href="javascript:void(0)"></a>
@@ -22,7 +24,7 @@
                 <div class="p-3">
                     <h4>Chat Sidebar</h4>
                 </div>
-                <div class="scrollable position-relative" style="height: 100%">
+                <div class=" position-relative" style="height: 100%; ">
                     <div class="p-3 border-bottom">
                         <form>
                             <div class="searchbar">
@@ -138,8 +140,13 @@
     </div>
     <!-- -------------------------------------------------------------- -->
     <!-- End Page wrapper  -->
+ 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+   <script src="{{ asset('public/admin/dist/libs/perfect-scrollbar/dist/js/perfect-scrollbar.jquery.js')}}"></script>
+  <script src="{{ asset('public/admin/dist/libs/jquery-sparkline/jquery.sparkline.min.js')}}"></script>
+    <script src="{{ asset('public/admin/dist/libs/jquery/dist/jquery.min.js')}}"></script>
+    <script src="{{ asset('public/admin/assets/extra-libs/taskboard/js/jquery.ui.touch-punch-improved')}}.js"></script>
+     <script src="{{ asset('public/admin/assets/extra-libs/taskboard/js/jquery-ui.min')}}.js"></script> 
     <script>
         $(document).ready(function() {
             // done part start 
@@ -431,3 +438,4 @@
         });
     </script>
 @endsection
+
