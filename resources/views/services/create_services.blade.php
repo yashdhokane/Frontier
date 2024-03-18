@@ -1,6 +1,6 @@
 @extends('home')
 @section('content')
-    <style>
+<style>
         .required-field::after {
             content: " *";
             color: red;
@@ -107,9 +107,10 @@
                                     <div class="mb-3">
                                         <label for="manufacturer"
                                             class="control-label col-form-label required-field">Manufacturer</label>
-                                        <select class="form-select me-sm-2" id="manufacturer" name="manufacturer_ids[]"
-                                            multiple required>
-                                            <option selected disabled value="">Select Manufacturers...</option>
+                                            <select class="select2-with-menu-bg form-control  me-sm-2" name="manufacturer_ids[]"
+                                            id="menu-bg-multiple" multiple="multiple" data-bgcolor="light"
+                                            data-bgcolor-variation="accent-3" data-text-color="blue"
+                                            style="width: 100%" required>
                                             @foreach ($manufacturers as $manufacturer)
                                                 <option value="{{ $manufacturer->id }}">
                                                     {{ $manufacturer->manufacturer_name }}</option>
@@ -238,5 +239,12 @@
     </div>
 
     </div>
+
+   
+    <script>
+        $(document).ready(function() {
+            $('#manufacturer_ids').select2();
+        });
+    </script>
 @stop
 <!-- -------------------------------------------------------------- -->
