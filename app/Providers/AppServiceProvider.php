@@ -38,6 +38,17 @@ class AppServiceProvider extends ServiceProvider
                 // Convert the time to the user's preferred timezone
                 return $time ? \Carbon\Carbon::parse($time)->timezone($userTimezone)->format($format) : null;
             });
+
+            // Function to format date
+            $view->with('formatDate', function ($date, $format = 'm-d-Y') {
+                // Format the date
+                return $date ? \Carbon\Carbon::parse($date)->format($format) : null;
+            });
+
+            // Function to default image
+            $defaultImage = 'public/default/default.png';
+            $view->with('defaultImage', $defaultImage);
+
         });
     }
 }
