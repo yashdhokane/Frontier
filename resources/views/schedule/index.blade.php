@@ -1185,10 +1185,7 @@
     <script>
         $(document).ready(function() {
             // Use setTimeout to wait a short period after the document is ready
-            setTimeout(function() {
-                // Trigger click event on the element with class .sidebartoggler
-                $('.sidebartoggler').click();
-            }); // Adjust the delay time as needed
+           
 
             $('#myForm').submit(function(e) {
                 e.preventDefault(); // Prevent default form submission

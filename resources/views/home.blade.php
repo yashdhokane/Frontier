@@ -20,7 +20,7 @@
 
     <title>Frontier Tech Services - Web Application to manage technicians</title>
 
-    <link rel="canonical" href="{{route('home')}}" />
+    <link rel="canonical" href="{{ route('home') }}" />
 
     <!-- Favicon icon -->
 
@@ -50,20 +50,19 @@
         </style>
     @endif
 
-<style>
-#main-wrapper[data-layout=vertical][data-boxed-layout=boxed] .page-wrapper>.container-fluid,
-#main-wrapper[data-layout=vertical][data-boxed-layout=boxed] .page-wrapper>.container-lg,
-#main-wrapper[data-layout=vertical][data-boxed-layout=boxed] .page-wrapper>.container-md,
-#main-wrapper[data-layout=vertical][data-boxed-layout=boxed] .page-wrapper>.container-sm,
-#main-wrapper[data-layout=vertical][data-boxed-layout=boxed] .page-wrapper>.container-xl,
-#main-wrapper[data-layout=vertical][data-boxed-layout=boxed] .page-wrapper>.container-xxl,
-#main-wrapper[data-layout=vertical][data-boxed-layout=boxed] .page-wrapper>.page-breadcrumb {
-    max-width: 100% !important;
-    margin: 0 auto;
-    position: relative
-}
-
-</style>
+    <style>
+        #main-wrapper[data-layout=vertical][data-boxed-layout=boxed] .page-wrapper>.container-fluid,
+        #main-wrapper[data-layout=vertical][data-boxed-layout=boxed] .page-wrapper>.container-lg,
+        #main-wrapper[data-layout=vertical][data-boxed-layout=boxed] .page-wrapper>.container-md,
+        #main-wrapper[data-layout=vertical][data-boxed-layout=boxed] .page-wrapper>.container-sm,
+        #main-wrapper[data-layout=vertical][data-boxed-layout=boxed] .page-wrapper>.container-xl,
+        #main-wrapper[data-layout=vertical][data-boxed-layout=boxed] .page-wrapper>.container-xxl,
+        #main-wrapper[data-layout=vertical][data-boxed-layout=boxed] .page-wrapper>.page-breadcrumb {
+            max-width: 100% !important;
+            margin: 0 auto;
+            position: relative
+        }
+    </style>
     <style>
         ::-webkit-scrollbar {
             width: 7px;
@@ -184,6 +183,8 @@
 
         @if ($prefix == 'setting')
             @include('admin.setting_sidebar')
+        @elseif ($prefix == 'schedule')
+            @include('schedule.sidebar')
         @else
             @include('admin.sidebar')
         @endif
@@ -263,7 +264,14 @@
 
     @include('admin.script')
     @yield('script')
-
+    <script>
+        $(document).ready(function() {
+            setTimeout(function() {
+                // Trigger click event on the element with class .sidebartoggler
+                $('.sidebartoggler').click();
+            }); // Adjust the delay time as needed
+        });
+    </script>
 </body>
 
 </html>
