@@ -96,7 +96,7 @@
                 <div class="card-body">
                     <div class="table-responsive" style="overflow-x: auto;">
                         <table id="zero_config" class="table table-bordered text-nowrap" data-paging="true"
-                            data-paging-size="7" style="width:auto">
+                            data-paging-size="7">
                             <div class="d-flex flex-wrap">
                             <div class="col-md-12 row" style="margin-bottom:7px;">
                                 <div class="col-md-3">
@@ -216,14 +216,14 @@
                                         </td>
                                         <td>
                                             @if ($ticket->user)
-                                            {{ $ticket->user->name }}
+                                            {{ $ticket->user->name ?? null}}
                                             @else
                                             Unassigned
                                             @endif
                                         </td>
                                         <td>
                                             @if ($ticket->technician)
-                                            {{ $ticket->technician->name }}
+                                            {{ $ticket->technician->name  ?? null}}
                                             @else
                                             Unassigned
                                             @endif
@@ -236,9 +236,9 @@
                                             <div></div>
                                             @endif
                                             <div style="font-size:12px;">
-                                                {{ $convertTimeToTimezone($ticket->JobAssign->start_date_time, 'H:i:a')
+                                                {{ $convertTimeToTimezone($ticket->JobAssign->start_date_time ?? null, 'H:i:a')
                                                 }}
-                                                to {{ $convertTimeToTimezone($ticket->JobAssign->end_date_time, 'H:i:a')
+                                                to {{ $convertTimeToTimezone($ticket->JobAssign->end_date_time ?? null, 'H:i:a')
                                                 }}
                                             </div>
                                         </td>

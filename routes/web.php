@@ -434,6 +434,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/tickets/{id}', [TicketController::class, 'destroy'])->name('tickets.destroy');
 
 
+    Route::post('add/customer_tags/{id}', [TicketController::class, 'addCustomerTags']);
+
+    Route::post('add/job_tags/{id}', [TicketController::class, 'job_tags']);
+    
+    Route::post('add/attachment/{id}', [TicketController::class, 'attachment']);
+
+    Route::post('add/leadsource/{id}', [TicketController::class, 'leadSource']);
+
+
 
     // Show tickets assigned to a specific user
 

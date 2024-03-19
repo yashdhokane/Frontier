@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\JobFile;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
@@ -12,14 +14,17 @@ use App\Models\LocationServiceArea;
 
 use App\Models\JobNoteModel;
 use App\Models\JobModel;
+use App\Models\SiteJobFields;
+use App\Models\SiteLeadSource;
 use App\Models\Ticket;
 use App\Models\Technician;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class TicketController extends Controller
 {
     // Display a listing of the tickets
-     public function index()
+    public function index()
     {
         $servicearea = LocationServiceArea::all();
         $manufacturer = Manufacturer::all();
@@ -90,25 +95,43 @@ class TicketController extends Controller
     // Display the specified ticket
     public function show($id)
     {
-        $technicians = JobModel::find($id);
-        $ticket = JobModel::with('user','jobactivity')->findOrFail($id);
+        $technicians = JobModel::with('jobassignname', 'usertechnician','addedby')->find($id);
+        $ticket = JobModel::with('user', 'jobactivity')->findOrFail($id);
         $techniciansnotes = JobNoteModel::where('job_id', '=', $id)
             ->Leftjoin('users', 'users.id', '=', 'job_notes.added_by')
             ->select('job_notes.*', 'users.name', 'users.user_image')
             ->get();
-          //  $sitetags='';
-           $name=$technicians->tag_ids;
-            // dd($name);
-                 $names=explode(',',$name);
-                // dd($names);
-               //  foreach($names as $items)
-                // {
-               $Sitetagnames=SiteTags::where('tag_id' ,  $names)->get();
-                 // dd($Sitetagnames);
-                // }
-              //dd($techniciansnotes);
-              return view('tickets.show', ['ticket' => $ticket,'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes,]);
-       }
+
+
+        $name = $technicians->tag_ids;
+
+        $names = explode(',', $name);
+
+        $Sitetagnames = SiteTags::whereIn('tag_id', $names)->get();
+        $customer_tag = SiteTags::all();
+
+
+        $namejobs = $technicians->job_field_ids;
+
+        $namesjobtag = explode(',', $namejobs);
+
+        $jobtagnames = SiteJobFields::whereIn('field_id', $namesjobtag)->get();
+
+        $job_tag = SiteJobFields::all();
+
+        $lead = User::where('id', $technicians->customer_id)->first();
+        $lead_id = $lead->source_id;
+
+        $leadone = explode(',', $lead_id);
+
+        $source = SiteLeadSource::whereIn('source_id', $leadone)->get();
+
+        $leadsource = SiteLeadSource::all();
+
+
+        return view('tickets.show', ['ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source]);
+    }
+
     // Show the form for editing the specified ticket 
     public function edit($id)
     {
@@ -202,27 +225,152 @@ class TicketController extends Controller
 
     public function techniciannotestore(Request $request)
     {
-       // dd($request->all());
+        // dd($request->all());
         // Validate the incoming request data
-        $request->validate([
-         
-            
-        ]);
+        $request->validate([]);
 
-       
+
         $jobNote = new JobNoteModel([
             'user_id' => $request->technician_id,
             'job_id' => $request->id,
             'note' => $request->note,
-            'added_by' => Auth::id(), 
-            'updated_by' => Auth::id(), 
-            
+            'added_by' => Auth::id(),
+            'updated_by' => Auth::id(),
+
         ]);
 
-       
+
         $jobNote->save();
 
-        
+
         return redirect()->back()->with('success', 'Job note created successfully');
+    }
+    public function addCustomerTags(Request $request, $id)
+    {
+
+        // Serialize manufacturer_ids manually
+        $job = JobModel::find($id);
+
+        // Get the existing tag_ids and convert them into an array
+        $existingTags = explode(',', $job->tag_ids);
+
+        // Add the new tag(s) to the array
+        $newTags = $request->customer_tags;
+        $allTags = array_merge($existingTags, $newTags);
+
+        // Remove duplicate tags (optional)
+        $allTags = array_unique($allTags);
+
+        // Convert the array back to a comma-separated string
+        $customer_tags_string = implode(',', $allTags);
+
+        // Update the tag_ids attribute with the combined tags
+        $job->tag_ids = $customer_tags_string;
+
+        // Save the changes
+        $job->save();
+
+
+        return redirect()->back()->with('success', 'Cusomer tags added successfully');
+    }
+    public function job_tags(Request $request, $id)
+    {
+
+        // Serialize manufacturer_ids manually
+        $job = JobModel::find($id);
+
+        // Get the existing tag_ids and convert them into an array
+        $existingTags = explode(',', $job->job_field_ids);
+
+        // Add the new tag(s) to the array
+        $newTags = $request->job_tags;
+        $allTags = array_merge($existingTags, $newTags);
+
+        // Remove duplicate tags (optional)
+        $allTags = array_unique($allTags);
+
+        // Convert the array back to a comma-separated string
+        $customer_tags_string = implode(',', $allTags);
+
+        // Update the tag_ids attribute with the combined tags
+        $job->job_field_ids = $customer_tags_string;
+
+        // Save the changes
+        $job->save();
+
+
+        return redirect()->back()->with('success', 'Job tags added successfully');
+    }
+
+
+    public function attachment(Request $request, $id)
+    {
+        $file = new JobFile();
+        $file->job_id = $id;
+        $file->user_id = Auth::user()->id;
+        $file->save();
+
+        if ($request->hasFile('attachment')) {
+            $uploadedFile = $request->file('attachment');
+
+            // Check if the file upload was successful
+            if ($uploadedFile->isValid()) {
+                // Generate a unique filename
+                $filename = uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+                $imageName1 = $uploadedFile->getClientOriginalName();
+
+                // Construct the full path for the directory
+                $directoryPath = public_path('images/users/' . Auth::user()->id);
+
+                // Ensure the directory exists; if not, create it
+                if (!File::exists($directoryPath)) {
+                    File::makeDirectory($directoryPath, 0777, true);
+                }
+
+                // Move the uploaded file to the unique directory
+                if ($uploadedFile->move($directoryPath, $filename)) {
+                    // Save file details to the database
+                    $file->filename = $imageName1;
+                    $file->path = $directoryPath;
+                    $file->type = $uploadedFile->getClientMimeType();
+                    $file->save();
+
+                    return redirect()->back()->with('success', 'Attachment added successfully');
+                } else {
+                    return redirect()->back()->with('error', 'Failed to move uploaded file');
+                }
+            } else {
+                return redirect()->back()->with('error', 'Invalid file upload');
+            }
+        } else {
+            return redirect()->back()->with('error', 'No file uploaded');
+        }
+    }
+
+    public function leadSource(Request $request, $id)
+    {
+        $technicians = JobModel::with('jobassignname', 'usertechnician')->find($id);
+        $job = User::where('id', $technicians->customer_id)->first();
+       
+
+        $existingTags = explode(',', $job->source_id);
+
+        // Add the new tag(s) to the array
+        $newTags = $request->lead_source;
+        $allTags = array_merge($existingTags, $newTags);
+
+        // Remove duplicate tags (optional)
+        $allTags = array_unique($allTags);
+
+        // Convert the array back to a comma-separated string
+        $customer_tags_string = implode(',', $allTags);
+        // Update the tag_ids attribute with the combined tags
+        $job->source_id = $customer_tags_string;
+
+        // Save the changes
+        $job->save();
+
+
+        return redirect()->back()->with('success', 'Job tags added successfully');
     }
 }

@@ -46,7 +46,7 @@ class AppServiceProvider extends ServiceProvider
             });
 
             // Function to default image
-            $defaultImage = 'public/default/default.png';
+            $defaultImage = '../public/default/default.png';
             $view->with('defaultImage', $defaultImage);
 
         });
