@@ -62,8 +62,7 @@
                             </div>
                             <div class="mb-3">
                                 <label class="control-label required-field">Description</label>
-                                <textarea  name="service_description" class="form-control" style="height: 120px;" required>
-                                    {{ trim($service->service_description) }}</textarea>
+                                <textarea  name="service_description" class="form-control"  style="height: 120px; text-align: left;" required>{{ $service->service_description }}</textarea>
                             </div>
 
 
