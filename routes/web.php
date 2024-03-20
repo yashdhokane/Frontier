@@ -651,6 +651,11 @@ Route::middleware('auth')->group(function () {
     Route::get('book-list/services/{service_id}/edit', [ServicesController::class, 'editServices'])->name('services.edit');
 
 
+    Route::get('inactive/service/{id}', [ServicesController::class, 'inactive']);
+
+    Route::get('active/service/{id}', [ServicesController::class, 'active']);
+
+
 
     Route::delete('book-list/services/{service_id}', [ServicesController::class, 'deleteService'])->name('services.delete');
 

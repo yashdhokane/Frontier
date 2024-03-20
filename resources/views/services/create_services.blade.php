@@ -246,5 +246,13 @@
             $('#manufacturer_ids').select2();
         });
     </script>
+     <script>
+        $(document).ready(function() {
+            setTimeout(function() {
+                // Trigger click event on the element with class .sidebartoggler
+                $('.sidebartoggler').click();
+            }); // Adjust the delay time as needed
+        });
+    </script>
 @stop
 <!-- -------------------------------------------------------------- -->

@@ -62,8 +62,8 @@
                             </div>
                             <div class="mb-3">
                                 <label class="control-label required-field">Description</label>
-                                <textarea id="text" value="" name="service_description" class="form-control" style="height: 120px;" required>
-                                    {{ $service->service_description }}</textarea>
+                                <textarea  name="service_description" class="form-control" style="height: 120px;" required>
+                                    {{ trim($service->service_description) }}</textarea>
                             </div>
 
 
@@ -263,6 +263,14 @@
     <script>
         $(document).ready(function() {
             $('#manufacturer_ids').select2();
+        });
+    </script>
+     <script>
+        $(document).ready(function() {
+            setTimeout(function() {
+                // Trigger click event on the element with class .sidebartoggler
+                $('.sidebartoggler').click();
+            }); // Adjust the delay time as needed
         });
     </script>
 @stop

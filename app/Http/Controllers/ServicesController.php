@@ -47,7 +47,7 @@ class ServicesController extends Controller
 
 
         // Serialize manufacturer_ids manually
-        $manufacturer_ids = json_encode($request->manufacturer_ids);
+        $manufacturer_ids = implode(',',$request->manufacturer_ids);
 
         $service = new Service();
         // Save to the database without validation
@@ -148,5 +148,41 @@ class ServicesController extends Controller
 
         // Redirect to the index route with a success message
         return redirect()->back()->with('success', 'Service deleted successfully.');
+    }
+
+    public function inactive(Request $request , $id)
+    {
+        $service = Services::find($id);
+
+        if (!$service) {
+            // Handle not found case, redirect or show an error message
+            return redirect()->back()->with('error', 'Service not found.');
+        }
+
+        $service->service_active = 'no';
+
+        // Delete the service
+        $service->update();
+
+        // Redirect to the index route with a success message
+        return redirect()->back()->with('success', 'Service updated successfully.');
+    }
+
+    public function active(Request $request , $id)
+    {
+        $service = Services::find($id);
+
+        if (!$service) {
+            // Handle not found case, redirect or show an error message
+            return redirect()->back()->with('error', 'Service not found.');
+        }
+
+        $service->service_active = 'yes';
+
+        // Delete the service
+        $service->update();
+
+        // Redirect to the index route with a success message
+        return redirect()->back()->with('success', 'Service updated successfully.');
     }
 }
