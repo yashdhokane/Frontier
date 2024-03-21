@@ -713,7 +713,7 @@ Route::middleware('auth')->group(function () {
 
 
 
-    Route::get('book-list/partscategory', [ProductCategoryController::class, 'index'])->name('product.index');
+    Route::get('parts', [ProductCategoryController::class, 'index'])->name('product.index');
 
     Route::post('book-list/partscategory-store', [ProductCategoryController::class, 'storeproductcategory'])->name('productcategory.store');
 
@@ -735,6 +735,10 @@ Route::middleware('auth')->group(function () {
 
     Route::put('book-list/parts/{id}', [ProductController::class, 'update'])->name('product.update');
 
+    Route::put('inactive/parts/{id}', [ProductController::class, 'inactive']);
+
+    Route::put('active/parts/{id}', [ProductController::class, 'active']);
+
     Route::get('book-list/parts/{id}/destroy', [productController::class, 'destroy'])->name('product.destroy');
 
     Route::get('assign_product', [ProductCategoryController::class, 'assign_product'])->name('assign_product');
@@ -744,7 +748,7 @@ Route::middleware('auth')->group(function () {
 
 
 
-    Route::get('book-list/parts-list/{product_id?}', [ProductController::class, 'listingproduct'])->name('product.listingproduct');
+    Route::get('partCategory', [ProductController::class, 'listingproduct'])->name('partCategory');
 
     Route::get('book-list/parts-list/productsaxaclist', [ProductController::class, 'productsaxaclist'])->name('productsaxaclist');
 

@@ -1,210 +1,228 @@
 @extends('home')
 @section('content')
 
-<!-- Page wrapper  -->
-<!-- -------------------------------------------------------------- -->
-<div class="page-wrapper" style="display:inline;">
+    <!-- Page wrapper  -->
     <!-- -------------------------------------------------------------- -->
-    <!-- Bread crumb and right sidebar toggle -->
-    <!-- -------------------------------------------------------------- -->
-    <div class="page-breadcrumb">
-        <div class="row">
-            <div class="col-5 align-self-center">
-                <h4 class="page-title">{{ \App\Models\ProductCategory::find($product_id)->category_name ?? null }}
-
-                </h4>
-                <div class="d-flex align-items-center">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{route('product.index')}}">Price Book</a></li>
-                            <li class="breadcrumb-item"><a href="{{route('product.index')}}">Parts </a></li>
-                            @if($product_id)
-                            <li class="breadcrumb-item">
-                                {{ \App\Models\ProductCategory::find($product_id)->category_name ?? null }}
-                            </li>
-                            @else
-                            <li class="breadcrumb-item"><a href="{{ url('services-category.html') }}">Category</a></li>
-                            @endif
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-            <div class="col-7 align-self-center">
-                <div class="d-flex no-block justify-content-end align-items-center">
-
-                    <a href="{{ route('product.createproduct') }}" id="btn-add-contact" class="btn btn-info">
-                        <i data-feather="users" class="feather-sm fill-white me-1"> </i>
-                        Add New Parts</a>
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- -------------------------------------------------------------- -->
-    <!-- End Bread crumb and right sidebar toggle -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- Container fluid  -->
-    @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-    @endif
-    <!-- -------------------------------------------------------------- -->
-    <div class="container-fluid">
+    <div class="page-wrapper" style="display:inline;">
         <!-- -------------------------------------------------------------- -->
-        <!-- Start Page Content -->
+
         <!-- -------------------------------------------------------------- -->
-        <div class="row">
-            <!-- Column -->
-            <div class="col-lg-12">
-                <!-- ---------------------
-                            start Product Orders
-                        ---------------- -->
-                <div class="card">
-                    <div class="card-body">
-                        <div class="table-responsive">
+        <!-- Bread crumb and right sidebar toggle -->
+        <!-- -------------------------------------------------------------- -->
 
-                            <table class="table product-overview" id="zero_config">
-                             <div class="row">
-                             <div class="col-md-2"> </div>
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-                                            <label for="service" class="control-label col-form-label required-field">Category</label>
-                                            <select class="form-select me-sm-2" id="service" name="product_category_id"
-                                                required>
-                                                <option selected disabled value="">Select Part Category...</option>
-                                                @foreach($product as $product)
-                                                <option value="{{ $product->id }}">{{
-                                                    $product->category_name }}
-                                                </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+
+            </div>
+        @endif
+        <!-- ------------------------------------------------------------ -->
+        <!-- End Bread crumb and right sidebar toggle -->
+        <!-- -------------------------------------------------------------- -->
+        <!-- -------------------------------------------------------------- -->
+        <!-- Container fluid  -->
+        <!-- -------------------------------------------------------------- -->
+        <div class="show-categories">
+
+            <div class="container-fluid">
+
+                <div class="card card-body">
+                    <div class="row">
+                        <div class="col-md-4 col-xl-2">
+                            <h4 class="page-title">Parts</h4>
+                        </div>
+                        <div
+                            class="col-md-8 col-xl-10 text-end d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
+                            <a href="javascript:void(0)" id="btn-add-contact" class="btn btn-info" data-bs-toggle="modal"
+                                data-bs-target="#add-contact"><i class=" fas fa-user-plus "></i> New Category</a>
+                        </div>
+
+                        <!-- Add Popup Model  1 latest -->
+                        <div id="add-contact" class="modal fade in" tabindex="-1" role="dialog"
+                            aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header d-flex align-items-center">
+                                        <h4 class="modal-title" id="myModalLabel">New Category</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                            fdprocessedid="k7jfjv"></button>
                                     </div>
-
-
-                             <div class="col-md-4" style="margin-top: 13px;">
-                                        <div class="mb-3">
-                                            <label class="control-label required-field">Manufacturer</label>
-                                            <select class="form-select" name="manufacturer" id="manufacturer"
-                                                data-placeholder="Choose a Manufacturer" tabindex="1">
-                                                @foreach($manufacture as $manufacturer)
-                                                <option value="{{ $manufacturer->id }}">{{
-                                                    $manufacturer->manufacturer_name }}
-                                                </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2"> </div>
-                                     </div>
-
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Photo</th>
-                                        <th>Parts</th>
-                                        <th>Stock</th>
-                                       <th>Manufacturer</th>
-
-                                        <th>Price</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($products as $index => $item)
-                                    <tr>
-                                        <td>{{ $index + 1 }}</td>
-                                        <td>@if($item->product_image)
-                                            <img class="card-img-top img-responsive"
-                                                src="{{ asset('public/product_image/' . $item->product_image) }}"
-                                                alt="Card image cap" width="80px" height="80px" />
-                                            @else
-                                            <img class="card-img-top img-responsive"
-                                                src="{{ asset('public/images/1.png') }}"
-                                                alt="Default Image" width="80px" height="80px" />
-                                            @endif
-                                        </td>
-                                        <td>{{ $item->product_name }}</td>
-                                        <td>{{ $item->stock }}</td>
-                                      <td>{{$item->manufacturername->manufacturer_name ?? null}}</td> 
-                                        <td>{{ $item->base_price }}</td>
-                                        {{-- <td>sale</td> --}}
-                                        <td><span class="badge bg-danger font-weight-100">{{ $item->status }}</span>
-                                        </td>
-
-                                        <td>
-                                            <div style="display:flex;">
-                                                <div>
-                                                    <a href="{{ route('product.edit',['product_id' => $item->product_id]) }}"
-                                                        class="text-dark pe-2">
-                                                        <i data-feather="edit-2" class="feather-sm fill-white"></i>
-                                                    </a>
+                                    <div class="modal-body">
+                                        <form action="{{ route('productcategory.store') }}" method="post"
+                                            class="form-horizontal form-material" enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="form-group">
+                                                <div class="col-md-12 mb-3"> <input type="text" class="form-control"
+                                                        name="category_name" placeholder="Category Name" required />
                                                 </div>
-                                                <div>
+                                                <div class="col-md-12 mb-3">
+                                                    <div class="">
+                                                        <label for="" class="my-2">Category Image </label>
+                                                        <input type="file" name="category_image" class="form-control" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-info " data-bs-dismiss="modal">
+                                            Save
+                                        </button>
+                                        <button type="button" class="btn btn-info waves-effect" data-bs-dismiss="modal">
+                                            Cancel
+                                        </button>
+
+                                    </div>
+                                    </form>
+                                </div>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
+                        <!-- End Popup Model 1 latest-->
+
+                    </div>
+                </div>
+
+
+                <div class="row">
+
+                    <!-- column -->
+                    @foreach ($productcategory as $item)
+                        <div class="col-lg-3 col-md-6 col-xl-2">
+                            <!-- Card -->
+
+                            <div class="card">
+
+
+                                <a href="">
+
+                                    @if ($item->category_image)
+                                        <img class="card-img-top img-responsive"
+                                            src="{{ asset('public/images/parts/'.$item->id.'/' . $item->category_image) }}"
+                                            style="width:228.5px; height:200px;" alt="Card image cap" />
+                                    @else
+                                        <img class="card-img-top img-responsive"
+                                            src="{{ asset('public/images/Noimage.png') }}"
+                                            style="width:228.5px; height:200px;" alt="Default Image" />
+                                    @endif
+                                </a>
+
+
+
+                                <div class="card-body">
+                                    <h6 class="card-title">{{ $item->category_name }} <div
+                                            class="dropdown dropstart srdrop ">
+
+                                            <a href="#" class="link" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+
+                                                <i data-feather="more-vertical" class="feather-sm"></i>
+
+                                            </a>
+
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+
+                                                <li><a class="dropdown-item viewinfo" href="javascript:void(0)"
+                                                        data-bs-toggle="modal" data-bs-target="#add-contact1"
+                                                        id="{{ $item->id }}">Edit</a>
+                                                </li>
+
+                                                <li>
                                                     <form method="post"
-                                                        action="{{ route('product.destroy', ['id' => $item->product_id]) }}">
+                                                        action="{{ route('productcategory.delete', ['id' => $item->id]) }}">
                                                         @csrf
                                                         @method('DELETE')
 
-                                                        <a href="{{ route('product.destroy', ['id' => $item->product_id]) }}"
-                                                            class="text-dark">
-                                                            <i data-feather="trash-2" class="feather-sm fill-white"></i>
-                                                        </a>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
 
+                                                        <button type="submit" class="dropdown-item"
+                                                            style="border: none; background: none; cursor: pointer;">
+                                                            Delete
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+
+                                        </div>
+                                    </h6>
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                    @endforeach
+
+
+
+                    <!-- Card -->
+
+                    <!-- edit Popup Model  1 -->
+                    <div id="add-contact1" class="modal fade in" tabindex="-1" role="dialog"
+                        aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header d-flex align-items-center">
+                                    <h4 class="modal-title" id="myModalLabel">Edit Parts Category</h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                        fdprocessedid="k7jfjv"></button>
+                                </div>
+
+
+                                <div class="modal-body" id="appendbody">
+
+                                </div>
+
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
                         </div>
                     </div>
+                    <!-- edit End Popup Model 1 -->
+
+
+
+
+                    <!-- column -->
+                    <!-- column -->
+
                 </div>
-                <!-- ---------------------
-                            end Product Orders
-                        ---------------- -->
+                <!-- Row -->
+
+
             </div>
-            <!-- Column -->
+
         </div>
+
+
+
         <!-- -------------------------------------------------------------- -->
-        <!-- End PAge Content -->
+        <!-- Recent comment and chats -->
         <!-- -------------------------------------------------------------- -->
     </div>
-</div>
-</div>
-
-
 @section('script')
-<script>
-    $(document).ready(function() {
-        // Function to handle dropdown change event
-        $('#service, #manufacturer').change(function() {
-            var category_id = $('#service').val();
-            var manufacturer_id = $('#manufacturer').val();
 
-            // Send AJAX request
+    <script>
+        $(document).on('click', '.viewinfo', function() {
+            $("#add-contact1").modal({
+                backdrop: "static",
+                keyboard: false,
+            });
+            var entry_id = $(this).attr('id');
+            $("#appendbody").empty();
             $.ajax({
-               '{{ route('productsaxaclist') }}',// Replace with your route
-                method: 'GET',
+                url: '{{ route('editproduct') }}',
+                type: 'get',
                 data: {
-                    category_id: product_category_id,
-                    manufacturer_id: product_manu_id
+                    entry_id: entry_id
+
                 },
-                success: function(response) {
-                    // Update the table with the response data
-                    $('.product-table').html(response);
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
+                dataType: 'json',
+                success: function(data) {
+                    $("#appendbody").html(data);
                 }
             });
         });
-    });
-</script>
-@endsection
-@endsection
+    </script>
+@stop
+@stop

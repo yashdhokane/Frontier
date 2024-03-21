@@ -14,22 +14,11 @@ use Illuminate\Support\Facades\Auth;
 class ProductController extends Controller
 {
 
-    public function listingproduct($product_id = null)
+    public function listingproduct()
     {
-        // If $product_id is provided, filter products by product ID
-        $query = Products::orderBy('created_at', 'desc');
-        if ($product_id) {
-            $query->where('product_category_id', $product_id);
-        }
-
-        $products = $query->get();
-        // echo ($product_id);
-        $manufacture = Manufacturer::all();
-        $product = ProductCategory::get();
-
-        return view('product.listing_product', compact('products','manufacture','product', 'product_id'));
+        $productcategory = ProductCategory::all();
+        return view('product.listing_product', ['productcategory' => $productcategory]);
     }
-
 
 
     public function createproduct()
@@ -38,25 +27,12 @@ class ProductController extends Controller
         $product = ProductCategory::get();
         $technicians = User::where('role', 'technician')->get();
         return view('product.create_product', compact('product', 'manufacture', 'technicians'));
-
     }
 
     public function store(Request $request)
     {
         // dd($request->all());
-        // Validate the request data
-        $request->validate([
-            // 'product_name' => 'required|string|max:255',
-            // 'product_short' => 'required|string',
-            // 'product_category_id' => 'required|integer',
-            // 'status' => 'required|string', // You need to add the input field for status in your form
-            // 'base_price' => 'required|numeric',
-            // 'discount' => 'required|numeric',
-            // 'product_code' => 'required|string|max:20',
-            // 'stock' => 'required|integer',
-            // 'product_description' => 'required|string',
-            // 'product_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+       
 
         $adminId = Auth::id();
 
@@ -74,7 +50,7 @@ class ProductController extends Controller
             'product_name' => $request->input('product_name'),
             'product_manu_id' => $request->input('product_manu_id'),
 
-            
+
             'product_short' => $request->input('product_short'),
             'product_category_id' => $request->input('product_category_id'),
             'status' => $request->input('status'),
@@ -112,8 +88,8 @@ class ProductController extends Controller
         $assignedTo = $request->input('assigned_to');
 
         if ($assignedTo === 'all') {
-           // $technicianIds = User::where('role', 'technician')->pluck('id')->toArray();
-           $technicianIds = $request->input('technician_id', []);
+            // $technicianIds = User::where('role', 'technician')->pluck('id')->toArray();
+            $technicianIds = $request->input('technician_id', []);
         } elseif ($assignedTo === 'selected') {
             $technicianIds = $request->input('technician_id', []);
         } else {
@@ -132,7 +108,7 @@ class ProductController extends Controller
 
 
 
-        return redirect()->route('product.listingproduct', ['product_id' => $productCategoryId])
+        return redirect()->route('product.index', ['product_id' => $productCategoryId])
             ->with('success', 'Product & Material created successfully');
     }
 
@@ -140,19 +116,7 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         // dd($request->all());
-        // Validate the request data
-        $request->validate([
-            // 'product_name' => 'required|string|max:255',
-            // 'product_short' => 'required|string',
-            // 'product_category_id' => 'required|integer',
-            // 'status' => 'required|string',
-            // 'base_price' => 'required|numeric',
-            // 'discount' => 'required|numeric',
-            // 'product_code' => 'required|string|max:20',
-            // 'stock' => 'required|integer',
-            // 'product_description' => 'required|string',
-            // 'product_image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+       
 
         $adminId = Auth::id();
 
@@ -183,9 +147,9 @@ class ProductController extends Controller
         $product->update([
             'product_name' => $request->input('product_name'),
             'product_short' => $request->input('product_short'),
-                        'product_manu_id' => $request->input('product_manu_id'),
+            'product_manu_id' => $request->input('product_manu_id'),
 
-            
+
             'product_category_id' => $request->input('product_category_id'),
             'status' => $request->input('status'),
             'base_price' => $request->input('base_price'),
@@ -216,8 +180,8 @@ class ProductController extends Controller
         $assignedTo = $request->input('assigned_to');
 
         if ($assignedTo === 'all') {
- $technicianIds = $request->input('technician_id', []);
-         } elseif ($assignedTo === 'selected') {
+            $technicianIds = $request->input('technician_id', []);
+        } elseif ($assignedTo === 'selected') {
             $technicianIds = $request->input('technician_id', []);
         } else {
 
@@ -235,60 +199,60 @@ class ProductController extends Controller
 
 
         // Redirect or respond as needed
-        return redirect()->route('product.listingproduct', ['product_id' => $request->input('product_category_id')])
+        return redirect()->route('product.index', ['product_id' => $request->input('product_category_id')])
             ->with('success', 'Product & Material updated successfully');
     }
 
-   public function edit($id)
-{
-    // Find the product by ID
-    $product = Products::find($id);
-    $manufacture = Manufacturer::all();        
-    $technicians = User::where('role', 'technician')->get();
+    public function edit($id)
+    {
+        // Find the product by ID
+        $product = Products::find($id);
+        $manufacture = Manufacturer::all();
+        $technicians = User::where('role', 'technician')->get();
 
-    // Retrieve selected technicians for the product
-    $selectedTechnicians = DB::table('products_assigned')
-        ->where('product_id', $id)
-        ->pluck('technician_id')
-        ->toArray();
+        // Retrieve selected technicians for the product
+        $selectedTechnicians = DB::table('products_assigned')
+            ->where('product_id', $id)
+            ->pluck('technician_id')
+            ->toArray();
 
-    // Find all product categories
-    $productCategories = ProductCategory::all();
-    $Color = $product->meta()->where('meta_key', 'Color')->value('meta_value') ?? '';
-    $Sizes = $product->meta()->where('meta_key', 'Sizes')->value('meta_value') ?? '';
-    $material = $product->meta()->where('meta_key', 'material')->value('meta_value') ?? '';
-    $weight = $product->meta()->where('meta_key', 'weight')->value('meta_value') ?? '';
+        // Find all product categories
+        $productCategories = ProductCategory::all();
+        $Color = $product->meta()->where('meta_key', 'Color')->value('meta_value') ?? '';
+        $Sizes = $product->meta()->where('meta_key', 'Sizes')->value('meta_value') ?? '';
+        $material = $product->meta()->where('meta_key', 'material')->value('meta_value') ?? '';
+        $weight = $product->meta()->where('meta_key', 'weight')->value('meta_value') ?? '';
 
-    // Pass both the product, product categories, and technicians to the view
-    return view('product.edit_product', compact('product', 'manufacture', 'productCategories', 'Color', 'Sizes', 'material', 'weight', 'technicians', 'selectedTechnicians'));
-}
+        // Pass both the product, product categories, and technicians to the view
+        return view('product.edit_product', compact('product', 'manufacture', 'productCategories', 'Color', 'Sizes', 'material', 'weight', 'technicians', 'selectedTechnicians'));
+    }
 
     public function destroy($id)
     {
         // Find the product by ID
         $product = Products::find($id);
 
-    // Check if the product exists
-    if (!$product) {
-        return redirect()->back()->with('error', 'Product not found.');
-    }
-
-    // Delete associated meta data
-    ProductMeta::where('product_id', $id)->delete();
-
-    // Delete associated product assignment
-    DB::table('products_assigned')->where('product_id', $id)->delete();
-
-    // Delete the product image file if it exists
-    if ($product->product_image) {
-        $imagePath = public_path('product_image') . '/' . $product->product_image;
-        if (file_exists($imagePath)) {
-            unlink($imagePath);
+        // Check if the product exists
+        if (!$product) {
+            return redirect()->back()->with('error', 'Product not found.');
         }
-    }
 
-    // Delete the product
-    $product->delete();
+        // Delete associated meta data
+        ProductMeta::where('product_id', $id)->delete();
+
+        // Delete associated product assignment
+        DB::table('products_assigned')->where('product_id', $id)->delete();
+
+        // Delete the product image file if it exists
+        if ($product->product_image) {
+            $imagePath = public_path('product_image') . '/' . $product->product_image;
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+        }
+
+        // Delete the product
+        $product->delete();
         // Redirect or respond as needed
         return redirect()->route('product.listingproduct')->with('success', 'Product deleted successfully');
     }
@@ -296,27 +260,53 @@ class ProductController extends Controller
 
 
     // Controller method
-public function listProductsAjax(Request $request) {
-   dd(1);// Retrieve query parameters
-    $category_id = $request->input('product_category_id');
-    $manufacturer_id = $request->input('product_manu_id');
+    public function listProductsAjax(Request $request)
+    {
+        dd(1); // Retrieve query parameters
+        $category_id = $request->input('product_category_id');
+        $manufacturer_id = $request->input('product_manu_id');
 
-    // Query products based on the selected category and manufacturer
-    $products = Products::query();
+        // Query products based on the selected category and manufacturer
+        $products = Products::query();
 
-    if ($category_id) {
-        $products->where('product_category_id', $category_id);
+        if ($category_id) {
+            $products->where('product_category_id', $category_id);
+        }
+
+        if ($manufacturer_id) {
+            $products->where('product_manu_id', $manufacturer_id);
+        }
+
+        // Fetch products data
+        $products = $products->get();
+
+        // Pass data to the view and return the HTML
+        return view('product.listingproduct', compact('products'))->render();
     }
 
-    if ($manufacturer_id) {
-        $products->where('product_manu_id', $manufacturer_id);
+    public function inactive(Request $request, $id)
+    {
+     
+        $product = Products::find($id);
+
+        $product->status = 'Draft';
+
+        $product->update();
+
+       return redirect()->back()->with('success', 'Status Inactive successfully');
     }
 
-    // Fetch products data
-    $products = $products->get();
+    public function active(Request $request, $id)
+    {
+     
+        $product = Products::find($id);
 
-    // Pass data to the view and return the HTML
-    return view('product.listingproduct', compact('products'))->render();
-}
+        $product->status = 'Publish';
+
+        $product->update();
+
+       return redirect()->back()->with('success', 'Status Active successfully');
+    }
+
 
 }

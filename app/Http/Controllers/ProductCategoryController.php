@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Manufacturer;
 use App\Models\ProductAssigned;
 use Illuminate\Http\Request;
 use App\Models\ProductCategory;
@@ -14,8 +15,14 @@ class ProductCategoryController extends Controller
     public function index()
     {
 
-        $productcategory = ProductCategory::all();
-        return view('product.index', ['productcategory' => $productcategory]);
+        $products = Products::orderBy('created_at', 'desc')->get();
+
+
+        // echo ($product_id);
+        $manufacture = Manufacturer::all();
+        $product = ProductCategory::get();
+
+        return view('product.index', compact('products', 'manufacture', 'product'));
     }
     public function getCategoryById($id)
     {
@@ -28,33 +35,39 @@ class ProductCategoryController extends Controller
     {
         $adminId = Auth::id();
 
-        $request->validate([
-            // 'category_name' => 'required|string|max:255',
-            // 'category_image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
 
-        // Check if a file is present in the request
+
+        $cat = new ProductCategory();
+
+        $cat->category_name = $request->input('category_name');
+        $cat->added_by = $adminId;
+        $cat->updated_by = $adminId;
+
+        $cat->save();
+
         if ($request->hasFile('category_image')) {
-            // Get the file from the request
-            $categoryImage = $request->file('category_image');
+            // Generate a unique directory name based on user ID and timestamp
+            $directoryName = $cat->id;
 
-            // Move the file to the desired public directory
-            $imageName = time() . '_' . $categoryImage->getClientOriginalName();
-            $categoryImage->move(public_path('images'), $imageName);
-        } else {
-            // If no file is present, set $imageName to null
-            $imageName = null;
+            // Construct the full path for the directory
+            $directoryPath = public_path('images/parts/' . $directoryName);
+
+            // Ensure the directory exists; if not, create it
+            if (!file_exists($directoryPath)) {
+                mkdir($directoryPath, 0777, true);
+            }
+
+            // Move the uploaded image to the unique directory
+            $image = $request->file('category_image');
+            $imageName = $image->getClientOriginalName(); // Or generate a unique name if needed
+            $image->move($directoryPath, $imageName);
+
+            // Save the image path in the user record
+            $cat->category_image =  $imageName;
+            $cat->save();
         }
 
-        // Save the record to the database
-        ProductCategory::create([
-            'category_name' => $request->input('category_name'),
-            'category_image' => $imageName,
-            'added_by' => $adminId,
-            'updated_by' => $adminId,
-        ]);
-
-        return redirect()->route('product.index')->with('success', 'Products & Materials created successfully!');
+        return redirect()->back()->with('success', 'Products & Materials created successfully!');
     }
 
     public function editproductCategory($id)
@@ -131,7 +144,7 @@ class ProductCategoryController extends Controller
         // Save the changes to the database
         $productCategory->save();
 
-        return redirect()->route('product.index')->with('success', 'Products & Materials updated successfully!');
+        return redirect()->back()->with('success', 'Products & Materials updated successfully!');
     }
     public function deleteproductcategory($id)
     {
@@ -158,7 +171,7 @@ class ProductCategoryController extends Controller
 
         $product = Products::all();
 
-        $assign = ProductAssigned::with('Technician','Product')->get();
+        $assign = ProductAssigned::with('Technician', 'Product')->get();
 
         return view('product.assign_product', compact('technician', 'product', 'assign'));
     }

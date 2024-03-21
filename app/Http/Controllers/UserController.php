@@ -981,4 +981,55 @@ if ($request['address1'] && $request['address_unit'] && $request['city'] && $req
 
         return response()->json(['status' => $status]);
     }
+
+    
+    function getUserAddress($user_id, $attr)
+    {
+        $whereclause = " WHERE user_address.user_id = " . $user_id;
+
+        if (isset ($attr['address_primary']) && $attr['address_primary'] != "") {
+            $whereclause .= " AND address_primary = '" . $attr['address_primary'] . "'";
+        }
+        if (isset ($attr['address_type']) && $attr['address_type'] != "") {
+            $whereclause .= " AND address_type = '" . $attr['address_type'] . "'";
+        }
+
+        $sql_address = "SELECT user_address.*,  location_states.state_name, location_states.state_code, location_cities.city
+                    FROM `user_address`
+                    INNER JOIN location_states ON user_address.state_id = location_states.state_id
+                    INNER JOIN location_cities ON user_address.city = location_cities.city_id
+                    " . $whereclause;
+
+        $rs_address = DB::select($sql_address);
+        // $address = (array) $rs_address[0];
+        if (!empty ($rs_address)) {
+            $address = (array) $rs_address[0];
+        } else {
+
+            $address = null;
+        }
+
+
+        if ($address !== null) {
+            if (isset ($attr['address_format']) && $attr['address_format'] != "") {
+                $exp1 = explode(',', $attr['address_format']);
+                $return_addr_arr = [];
+
+                foreach ($exp1 as $item) {
+                    $return_addr_arr[] = $address[trim($item)];
+                }
+
+                $return_addr = implode(", ", $return_addr_arr);
+            } else {
+                //DEFAULT ADDRESS
+                $return_addr = $address['address_line1'] . ', ' . $address['address_line2'] . ', ' . $address['city'] . ', ' . $address['zipcode'] . ', ' . $address['state_code'];
+            }
+        } else {
+            // Handle the case when $address is null
+            // For example, set $return_addr to a default value or return null
+            $return_addr = null;
+        }
+
+        return $return_addr;
+    }
 }

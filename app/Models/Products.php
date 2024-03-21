@@ -43,4 +43,9 @@ class Products extends Model
         return $this->hasOne(manufacturer::class, 'id', 'product_manu_id');
     }
 
+    public function categoryProduct() 
+    {
+        return $this->belongsTo(ProductCategory::class, 'product_category_id');
+    }
+
 }
