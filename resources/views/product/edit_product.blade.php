@@ -326,7 +326,21 @@
                                                                 name="technician_id[]" value="{{ $technician->id }}"
                                                                 @if (collect($selectedTechnicians)->contains($technician->id)) checked @endif>
                                                             <label
-                                                                class="form-check-label">{{ $technician->name }}</label>
+                                                                class="form-check-label">{{ $technician->name }}
+                                                            </label>
+                                                            @php
+                                                            $assign = DB::table('products_assigned')
+                                                                ->where('technician_id', $technician->id)
+                                                                ->where('product_id', $product->product_id)
+                                                                ->get();
+                                                        
+                                                            $quantityCount = $assign->isEmpty() ? 0 : $assign->sum('quantity');
+                                                        @endphp
+                                                        
+                                                            @if ($assign) (
+                                                                {{ $quantityCount }}
+                                                                ) 
+                                                            @endif
                                                         </div>
                                                     @endforeach
                                                 </div>
