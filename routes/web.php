@@ -735,9 +735,9 @@ Route::middleware('auth')->group(function () {
 
     Route::put('book-list/parts/{id}', [ProductController::class, 'update'])->name('product.update');
 
-    Route::put('inactive/parts/{id}', [ProductController::class, 'inactive']);
+    Route::get('inactive/parts/{id}', [ProductController::class, 'inactive']);
 
-    Route::put('active/parts/{id}', [ProductController::class, 'active']);
+    Route::get('active/parts/{id}', [ProductController::class, 'active']);
 
     Route::get('book-list/parts/{id}/destroy', [productController::class, 'destroy'])->name('product.destroy');
 
