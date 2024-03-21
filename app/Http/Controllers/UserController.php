@@ -766,25 +766,32 @@ if ($request['address1'] && $request['address_unit'] && $request['city'] && $req
             $user->password = Hash::make($request['password']);
 
 
-
-
-
-            if ($request->hasFile('image')) {
-
-                $image = $request->file('image');
-
-                $imageName = time() . '_' . $image->getClientOriginalName();
-
-                $image->move(public_path('images/customer'), $imageName);
-
-                $user->user_image = $imageName;
-            }
-
             $user->save();
-
-
-
             $userId = $user->id;
+    
+            if ($request->hasFile('image')) {
+                // Generate a unique directory name based on user ID and timestamp
+                $directoryName = $userId;
+    
+                // Construct the full path for the directory
+                $directoryPath = public_path('images/customer/' . $directoryName);
+    
+                // Ensure the directory exists; if not, create it
+                if (!file_exists($directoryPath)) {
+                    mkdir($directoryPath, 0777, true);
+                }
+    
+                // Move the uploaded image to the unique directory
+                $image = $request->file('image');
+                $imageName = $image->getClientOriginalName(); // Or generate a unique name if needed
+                $image->move($directoryPath, $imageName);
+    
+                // Save the image path in the user record
+                $user->user_image =  $imageName;
+                $user->save();
+            }
+    
+
 
             $currentTimestamp = now();
 

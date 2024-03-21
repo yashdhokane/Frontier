@@ -519,6 +519,7 @@
                                                                 <input type="text" class="form-control"
                                                                     id="display_name" name="display_name" placeholder=""
                                                                     required />
+                                                                    <small id="name" class="form-text text-muted">It will shown on Invoice.</small>
 
                                                             </div>
 
@@ -529,10 +530,10 @@
                                                             <div class="mb-3">
 
                                                                 <label for="email"
-                                                                    class="control-label col-form-label required-field">Email</label>
+                                                                    class="control-label col-form-label">Email</label>
 
                                                                 <input type="email" class="form-control" id="email"
-                                                                    name="email" placeholder="" required />
+                                                                    name="email" placeholder="" />
 
                                                             </div>
 
@@ -549,6 +550,7 @@
                                                                 <input type="text" class="form-control"
                                                                     id="mobile_phone" name="mobile_phone" placeholder=""
                                                                     required />
+                                                                    <small id="name" class="form-text text-muted">Don’t add +1. Only add mobile number without space.</small>
 
                                                             </div>
 
@@ -580,7 +582,7 @@
                                                             <div class="mb-3">
 
                                                                 <label for="address_unit"
-                                                                    class="control-label col-form-label required-field">Address
+                                                                    class="control-label col-form-label">Address
                                                                     Line 2</label>
 
                                                                 <input type="text" class="form-control"
@@ -795,28 +797,19 @@
                                                                 <label for="tag_id"
                                                                     class="control-label bold mb5 col-form-label">Customer
                                                                     Tags</label>
-                                                                <select class="form-control" id="tag_id"
-                                                                    name="tag_id[]" multiple="">
-                                                                    <option value="298">This is customertags1 11
-                                                                    </option>
-                                                                    <option value="299">This is customer tags2</option>
-                                                                    <option value="302">Enim id exercitation</option>
-                                                                    <option value="303">Officiis voluptatem</option>
-                                                                    <option value="307">Add tag here 1 11</option>
-                                                                    <option value="310">Ea tenetur aut volup</option>
-                                                                    <option value="311">Quis aspernatur qui</option>
-                                                                    <option value="313">Reprehenderit anim</option>
-                                                                    <option value="314">Rerum cupiditate sol</option>
-                                                                    <option value="315">Pariatur Et quibusd</option>
-                                                                    <option value="316">Dolore doloribus qui</option>
-                                                                    <option value="317">Totam omnis optio n</option>
-                                                                    <option value="319">Ratione in est quibu</option>
-                                                                    <option value="330">Tag Z</option>
-                                                                    <option value="334">test99 99 999 99</option>
-                                                                    <option value="335">test 88</option>
-                                                                    <option value="336">test 5556</option>
-                                                                    <option value="338">test 886</option>
+
+                                                                <select class="select2-with-menu-bg form-control  me-sm-2"
+                                                                    name="tag_id[]" id="menu-bg-multiple"
+                                                                    multiple="multiple" data-bgcolor="light"
+                                                                    data-bgcolor-variation="accent-3"
+                                                                    data-text-color="blue" style="width: 100%" required>
+                                                                    @foreach ($tags as $tag)
+                                                                        <option value="{{ $tag->tag_id }}">
+                                                                            {{ $tag->tag_name }}</option>
+                                                                    @endforeach
                                                                 </select>
+
+                                                                <small id="name" class="form-text text-muted">You can select multiple tags.</small>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -827,9 +820,7 @@
                                                                 <label
                                                                     class="control-label bold mb5 col-form-label">Customer
                                                                     Notes</label>
-                                                                <input type="text" class="form-control"
-                                                                    id="customer_notes" name="customer_notes"
-                                                                    placeholder="">
+                                                                <textarea type="text" class="form-control" id="customer_notes" name="customer_notes" placeholder=""></textarea>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -843,8 +834,6 @@
                                         <div class="col-lg-3 d-flex align-items-stretch">
                                             <div class="card w-100">
                                                 <div class="card-body border-top px-0">
-                                                    SPACE TO SHOW RECORDS
-
                                                     <div class="customersSuggetions2"
                                                         style="display: none;height: 200px;
                                                             overflow-y: scroll;">
@@ -874,6 +863,9 @@
                                             <div class="action-form">
 
                                                 <div class="mb-3 mb-0 text-center">
+
+                                                    <button type="button" id="cancelBtn"
+                                                        class="btn btn-dark rounded-pill px-4 waves-effect waves-light">Cancel</button>
 
                                                     <button type="submit" id="submitBtn"
                                                         class="btn btn-info rounded-pill px-4 waves-effect waves-light">Save</button>
@@ -1016,7 +1008,6 @@
 
 
 @section('script')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Bootstrap Datepicker CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
@@ -1026,7 +1017,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script>
         $(document).ready(function() {
+            $('#menu-bg-multiple').select2();
+        });
+    </script>
 
+    <script>
+        $(document).ready(function() {
+           
             $('#datepicker').hide(); // Hide the input field initially
             $('#datepicker-container').datepicker({
                 format: 'yyyy-mm-dd', // Specify the format
@@ -1137,6 +1134,13 @@
             $('#event_technician_id').val(id);
         });
 
+        $('#cancelBtn').on('click', function() {
+
+            $('#newCustomer').modal('hide');
+            $('#create').modal('show');
+
+        });
+
         $('#addEvent').submit(function(e) {
             e.preventDefault(); // Prevent default form submission
 
@@ -1185,7 +1189,7 @@
     <script>
         $(document).ready(function() {
             // Use setTimeout to wait a short period after the document is ready
-           
+
 
             $('#myForm').submit(function(e) {
                 e.preventDefault(); // Prevent default form submission

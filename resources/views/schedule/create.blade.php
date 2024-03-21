@@ -76,8 +76,15 @@
                             <div class="col-md-6 pendingJobsSuggetions" style="display: none">
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <h5 class="font-weight-medium mb-2">Reschedule Pending Jobs</h5>
-                                        <div class="rescheduleJobs">
+										<div class="row">
+											<div class="col-md-9"><h5 class="font-weight-medium mb-2" style="position: relative;">Reschedule Pending Jobs </h5></div>
+											<div class="col-md-3"><i class="ri-sort-asc"></i></div>
+										</div>
+										<div class="row">
+											<div class="col-md-6">[RADIO] Show Open jobs in New York</div>
+											<div class="col-md-6">[RADIO] Show Open jobs of Technician</div>
+										</div>
+                                         <div class="rescheduleJobs">
                                         </div>
                                     </div>
                                 </div>
@@ -284,39 +291,11 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="row">
-                            <h6 class="card-title"><i class="fas fa fa-ticket"></i> [In Warranty] Services</h5>
+  
+						<div class="row mt-3">
+                            <h6 class="card-title"><i class="fas ri-dashboard-3-line"></i> Select Services</h5>
                         </div>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="mt-2">
-                                    <label for="jobTitle1">Select Service</label>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="mt-2">
-                                    <label for="videoUrl1">Unit Price</label>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="mt-2">
-                                    <label for="videoUrl1">Discount</label>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="mt-2">
-                                    <label for="videoUrl1">Tax</label>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="mt-2">
-                                    <label for="videoUrl1">Total</label>
-                                </div>
-                            </div>
-                        </div>
-
+ 
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="mb-2">
@@ -333,6 +312,7 @@
                                                 @endforeach
                                             @endif
                                         </select>
+										
                                         <input type="hidden" class="pre_service_id" value="">
                                     </div>
                                 </div>
@@ -345,6 +325,7 @@
                                     <input type="number" class="form-control service_cost" id="videoUrl1"
                                         placeholder="$0.00" name="service_cost" value="" />
                                     <input type="hidden" class="pre_service_cost" value="">
+									<small id="name" class="form-text text-muted">Price</small>
                                 </div>
                             </div>
                             <div class="col-md-2">
@@ -352,6 +333,7 @@
                                     <input class="form-control service_discount" type="number"
                                         name="service_discount" value="" placeholder="$0.00">
                                     <input type="hidden" class="pre_service_discount" value="">
+									<small id="name" class="form-text text-muted">Discount(%)</small>
                                 </div>
                             </div>
                             <div class="col-md-2">
@@ -359,17 +341,19 @@
                                     $0.00
                                 </div>
                                 <input class="service_tax" type="hidden" name="service_tax" value="">
+								<small id="name" class="form-text text-muted">Tax</small>
                             </div>
                             <div class="col-md-2">
                                 <div class="mb-2 service_total_text">
                                     $0
                                 </div>
+								<small id="name" class="form-text text-muted">Line Total</small>
                                 <input class="service_total" type="hidden" name="service_total" value="">
                             </div>
                         </div>
 
                         <div class="row mt-3">
-                            <h6 class="card-title"><i class="fas fa fa-cart-plus"></i> Parts</h5>
+                            <h6 class="card-title"><i class="fas fa fa-cart-plus"></i> Select Parts</h5>
                         </div>
                         <div class="row">
                             <div class="col-md-4">
@@ -399,6 +383,7 @@
                                     <input type="number" class="form-control product_cost" id="videoUrl1"
                                         placeholder="$0.00" name="product_cost" value="" />
                                     <input type="hidden" class="pre_product_cost" value="">
+ 									<small id="name" class="form-text text-muted">Price</small>
                                 </div>
                             </div>
                             <div class="col-md-2">
@@ -406,18 +391,21 @@
                                     <input class="form-control product_discount" type="number"
                                         name="product_discount" value="" placeholder="$0.00">
                                     <input type="hidden" class="pre_product_discount" value="">
+									<small id="name" class="form-text text-muted">Discount(%)</small>
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="mb-2 product_tax_text">
                                     $0.00
                                 </div>
+								<small id="name" class="form-text text-muted">Tax</small>
                                 <input class="product_tax" type="hidden" name="product_tax" value="">
                             </div>
                             <div class="col-md-2">
                                 <div class="mb-2 product_total_text">
                                     $0
                                 </div>
+								<small id="name" class="form-text text-muted">Line Total</small>
                                 <input class="product_total" type="hidden" name="product_total" value="">
                             </div>
                         </div>
@@ -445,7 +433,7 @@
 
                         <div class="row mt-2">
                             <div class="col-md-6">
-                                <h4 class="font-weight-medium mb-2">CUSTOMER DETAILS</h4>
+                                <h4 class="font-weight-medium mb-2">CUSTOMER DETAILS 22</h4>
                                 <div class="confirm_job_box">
                                     <div class="row">
                                         <div class="col-md-12" style="display: inline-flex;">

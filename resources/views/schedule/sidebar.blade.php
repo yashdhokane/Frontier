@@ -7,6 +7,14 @@
             <div style="height: 10px;"></div>
 
             <ul id="sidebarnav">
+				<li class="sidebar-item">
+					<a class="sidebar-link waves-effect waves-dark sidebar-link ft1" href="#."  aria-expanded="false">
+					<i class="fas ri-calendar-line"></i><span class="hide-menu">Date</span></a>
+				</li>
+				<li class="sidebar-item">
+					<a class="sidebar-link waves-effect waves-dark sidebar-link ft1" href="#."  aria-expanded="false">
+					<i class="fas ri-user-2-fill"></i><span class="hide-menu">Technicians</span></a>
+				</li>
                 <li class="sidebar-item">
                    
                         @if (request()->is('schedule'))
@@ -46,8 +54,11 @@
                                         </div>
                                     </span></a>
                             </li>
+							
                         @endif
                     </li>
+					
+					
             </ul>
 
         </nav>
