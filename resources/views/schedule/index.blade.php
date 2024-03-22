@@ -1705,9 +1705,10 @@
             var getTax = parseInt(service_tax) - parseInt(product_tax);
             var getTotal = $('.total').val().trim();
 
-            $('.show_total_discount').text('$' + getDiscount);
-            $('.show_total_tax').text('$' + getTax);
-            $('.show_total').text('$' + getTotal);
+                        
+            $('.show_total_discount').text(getDiscount >= 0 ? '$' + getDiscount : '$' + Math.abs(getDiscount));
+            $('.show_total_tax').text(getTax >= 0 ? '$' + getTax : '$' + Math.abs(getTax));
+            $('.show_total').text(getTotal >= 0 ? '$' + getTotal : '$' + Math.abs(getTotal));
 
         }
 
