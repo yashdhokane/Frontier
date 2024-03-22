@@ -339,7 +339,7 @@ class ScheduleController extends Controller
 
     public function createSchedule(Request $request)
     {
-
+        
         $data = $request->all();
 
         //try {
@@ -427,31 +427,44 @@ class ScheduleController extends Controller
                 }
 
                 if ($request->hasFile('photos')) {
-
                     $fileData = [];
-
+                
                     foreach ($request->file('photos') as $file) {
-
+                        // Generate a unique filename
                         $fileName = $data['job_id'] . '_' . $file->getClientOriginalName();
-
-                        $path = 'schedule';
-
-                        $file->storeAs($path, $fileName);
-
+                
+                        // Generate a unique directory name based on user ID and timestamp
+                        $directoryName = $data['job_id'];
+                
+                        // Construct the full path for the directory
+                        $directoryPath = public_path('uploads/jobs/' . $directoryName);
+                
+                        // Ensure the directory exists; if not, create it
+                        if (!file_exists($directoryPath)) {
+                            mkdir($directoryPath, 0777, true);
+                        }
+                
+                        // Move the uploaded file to the unique directory
+                        $file->move($directoryPath, $fileName);
+                
+                        // Save file details to the database
                         $fileData[] = [
                             'job_id' => $data['job_id'],
                             'user_id' => auth()->id(),
-                            'path' => $path . '/',
-                            'filename' => $fileName,
+                            'path' => $directoryPath . '/', // Store the full path
+                            'filename' => $file->getClientOriginalName(),
                             'type' => $file->getMimeType(),
                             'size' => $file->getSize(),
-                            'created_at' => date('Y-m-d H:i:s'),
-                            'updated_at' => date('Y-m-d H:i:s')
+                            'created_at' => now(), // Use Laravel's helper function for timestamps
+                            'updated_at' => now()
                         ];
                     }
-
+                
+                    // Insert file data into the database
                     $fileDataInsert = DB::table('job_files')->insert($fileData);
                 }
+                
+               
 
                 $height_slot = $duration / 60;
                 $height_slot_px = $height_slot * 80 - 10;
@@ -582,32 +595,48 @@ class ScheduleController extends Controller
                     $productDataInsert = DB::table('job_product_items')->insertGetId($productData);
                 }
 
-                if ($request->hasFile('photos')) {
+               
 
+                $jobId = DB::table('jobs')->insertGetId($jobsData);
+
+                if ($request->hasFile('photos')) {
                     $fileData = [];
 
                     foreach ($request->file('photos') as $file) {
-
+                        // Generate a unique filename
                         $fileName = $jobId . '_' . $file->getClientOriginalName();
 
-                        $path = 'schedule';
+                        // Generate a unique directory name based on job ID
+                        $directoryName = $jobId;
 
-                        $file->storeAs($path, $fileName);
+                        // Construct the full path for the directory
+                        $directoryPath = public_path('uploads/jobs/' . $directoryName);
 
+                        // Ensure the directory exists; if not, create it
+                        if (!file_exists($directoryPath)) {
+                            mkdir($directoryPath, 0777, true);
+                        }
+
+                        // Move the uploaded file to the unique directory
+                        $file->move($directoryPath, $fileName);
+
+                        // Save file details to the database
                         $fileData[] = [
                             'job_id' => $jobId,
                             'user_id' => auth()->id(),
-                            'path' => $path . '/',
-                            'filename' => $fileName,
-                            'type' => $file->getMimeType(),
-                            'size' => $file->getSize(),
-                            'created_at' => date('Y-m-d H:i:s'),
-                            'updated_at' => date('Y-m-d H:i:s')
+                            'path' => $directoryPath . '/', // Store the full path
+                            'filename' => $file->getClientOriginalName(),
+                            // 'type' => $file->getMimeType(),
+                            // 'size' => $file->getSize(),
+                            'created_at' => now(), // Use Laravel's helper function for timestamps
+                            'updated_at' => now()
                         ];
                     }
 
+                    // Insert file data into the database
                     $fileDataInsert = DB::table('job_files')->insert($fileData);
                 }
+
 
                 $height_slot = $duration / 60;
                 $height_slot_px = $height_slot * 80 - 10;

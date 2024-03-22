@@ -1009,6 +1009,8 @@
 
 @section('script')
 
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- Bootstrap Datepicker CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
         rel="stylesheet">
@@ -2021,7 +2023,7 @@
                                 },
                                 success: function(data) {
 
-
+                                 console.log(data);
 
                                     $('a[href="#finish"]:eq(0)').text(
                                         'Submit Job');
@@ -2086,9 +2088,6 @@
                                             }
                                         });
 
-                                        // scheduleButton.empty();
-                                        // scheduleButton.html(
-                                        //     data.html);
                                     }
 
                                 }

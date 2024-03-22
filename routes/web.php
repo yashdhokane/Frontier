@@ -123,6 +123,7 @@ use App\Http\Controllers\ChatSupportController;
 use App\Http\Controllers\PaymentController;
 
 use App\Http\Controllers\TimezoneController;
+use Illuminate\Support\Facades\Artisan;
 
 /*
 
@@ -161,6 +162,10 @@ use App\Http\Controllers\TimezoneController;
 
 
 */
+Route::get('clear', function () {
+    Artisan::call('cache:clear');
+    return "Cache cleared successfully";
+});
 
 // Catch all routes
 Route::fallback(function () {

@@ -251,9 +251,8 @@
                                     <h6 class="card-title"><i class="far fa fa-photo"></i> Photos / Attachments </h6>
                                     <div class="input-group">
                                         <input class="form-control" type="file" id="formFile" name="photos[]"
-                                            multiple style="width: 150px;">
+                                            multiple style="width: 150px;" multiple>
                                     </div>
-                                    <div class="input-link"><a href="#" class="card-link">+ Add More</a></div>
                                 </div>
                             </div>
                             <div class="col-md-5">
@@ -438,21 +437,19 @@
                                     <div class="row">
                                         <div class="col-md-12" style="display: inline-flex;">
                                             <h6 class="font-weight-medium mb-0 show_customer_name">
-                                                Jack Smith
+                                               
                                             </h6>&nbsp;
-                                            <small class="text-muted show_customer_area"> Miami Area</small>
+                                            <small class="text-muted show_customer_area"> </small>
                                         </div>
                                     </div>
                                     <div class="row" style="margin-bottom: -13px">
                                         <div class="col-md-12 reschedule_job">
-                                            <p class="customer_number_email">+1 1234567890 / james@mailinator.com</p>
+                                            <p class="customer_number_email"></p>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 reschedule_job">
-                                            <p class="show_customer_adderss c_address"> 12, ZABH Suite,
-                                                DG Building,
-                                                Fairfield, Florida, 62034</p>
+                                            <p class="show_customer_adderss c_address"></p>
                                         </div>
                                     </div>
                                 </div>
@@ -482,22 +479,19 @@
                                 <div class="confirm_job_box">
                                     <div class="row">
                                         <div class="col-md-12" style="display: inline-flex;">
-                                            <h6 class="font-weight-medium mb-0 show_job_title">Test Job Title </h6>
+                                            <h6 class="font-weight-medium mb-0 show_job_title"> </h6>
                                             &nbsp;
                                             <small class="text-muted reschedule_job show_job_code">
-                                                ABC4567</small>
+                                                </small>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-12 reschedule_job show_job_information">LG - Washing Machine
-                                            / Model: LG Washing
-                                            Machine /
-                                            Serial Number: QDA8956246 </div>
+                                        <div class="col-md-12 reschedule_job show_job_information"></div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 reschedule_job ">
-                                            <p class="show_job_description">job description</p>
-                                            <p class="show_job_duration" style="margin-top: -16px;">Duration: 2 hours
+                                            <p class="show_job_description"></p>
+                                            <p class="show_job_duration" style="margin-top: -16px;">
                                             </p>
                                         </div>
                                     </div>
@@ -529,44 +523,40 @@
                                     <div class="row mb-2">
                                         <div class="col-md-7">
                                             <div class="mt-1" style="display: inline-flex;">
-                                                <h6 class="font-weight-medium mb-0 show_service_code_name">CODE1 -
-                                                    Custom
-                                                    Job </h6>&nbsp;
-                                                <small class="text-muted show_warranty"> In Warranty</small>
+                                                <h6 class="font-weight-medium mb-0 show_service_code_name"> </h6>&nbsp;
+                                                <small class="text-muted show_warranty"> </small>
                                             </div>
                                         </div>
                                         <div class="col-md-1 service_css">
-                                            <div class="mt-1 show_service_cost">$100.00</div>
+                                            <div class="mt-1 show_service_cost"></div>
                                         </div>
                                         <div class="col-md-1 service_css">
-                                            <div class="mt-1 show_service_discount">$10.00</div>
+                                            <div class="mt-1 show_service_discount"></div>
                                         </div>
                                         <div class="col-md-1 service_css">
-                                            <div class="mt-1 show_service_tax">$9.00</div>
+                                            <div class="mt-1 show_service_tax"></div>
                                         </div>
                                         <div class="col-md-2 service_css">
-                                            <div class="mt-1 show_service_total">$99.00</div>
+                                            <div class="mt-1 show_service_total"></div>
                                         </div>
                                     </div>
                                     <div class="row mb-2">
                                         <div class="col-md-7">
                                             <div class="mt-1">
-                                                <h6 class="font-weight-medium mb-0 show_product_code_name">CODE1 - Part
-                                                    Name
-                                                    here </h6>
+                                                <h6 class="font-weight-medium mb-0 show_product_code_name"></h6>
                                             </div>
                                         </div>
                                         <div class="col-md-1 service_css">
-                                            <div class="mt-1 show_product_cost">$100.00</div>
+                                            <div class="mt-1 show_product_cost"></div>
                                         </div>
                                         <div class="col-md-1 service_css">
-                                            <div class="mt-1 show_product_discount">$10.00</div>
+                                            <div class="mt-1 show_product_discount"></div>
                                         </div>
                                         <div class="col-md-1 service_css">
-                                            <div class="mt-1 show_product_tax">$9.00</div>
+                                            <div class="mt-1 show_product_tax"></div>
                                         </div>
                                         <div class="col-md-2 service_css">
-                                            <div class="mt-1 show_product_total">$99.00</div>
+                                            <div class="mt-1 show_product_total"></div>
                                         </div>
                                     </div>
                                     <div class="row" style="border-top: 2px dotted #343434">
@@ -576,17 +566,17 @@
                                         </div>
                                         <div class="col-md-1 total_css">
                                             <div class="mt-2">
-                                                <p><strong class="show_total_discount">$20.00</strong></p>
+                                                <p><strong class="show_total_discount"></strong></p>
                                             </div>
                                         </div>
                                         <div class="col-md-1 total_css">
                                             <div class="mt-2">
-                                                <p><strong class="show_total_tax">$18.00</strong></p>
+                                                <p><strong class="show_total_tax"></strong></p>
                                             </div>
                                         </div>
                                         <div class="col-md-2 total_css">
                                             <div class="mt-2">
-                                                <h4><strong class="show_total">$198.00</strong></h4>
+                                                <h4><strong class="show_total"></strong></h4>
                                             </div>
                                         </div>
                                     </div>
