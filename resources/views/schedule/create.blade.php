@@ -81,8 +81,8 @@
 											<div class="col-md-3"><i class="ri-sort-asc"></i></div>
 										</div>
 										<div class="row">
-											<div class="col-md-6">[RADIO] Show Open jobs in New York</div>
-											<div class="col-md-6">[RADIO] Show Open jobs of Technician</div>
+											<div class="col-md-6 d-flex align-items-baseline"><input class="mx-1" type="radio" name="teritory" id="newyork" data-state="NY" checked> Show Open jobs in New York</div>
+											<div class="col-md-6 d-flex align-items-baseline"><input class="mx-1" type="radio" name="teritory" id=""> Show Open jobs of Technician</div>
 										</div>
                                          <div class="rescheduleJobs">
                                         </div>
@@ -335,13 +335,13 @@
 									<small id="name" class="form-text text-muted">Discount(%)</small>
                                 </div>
                             </div>
-                            <div class="col-md-2">
+                            {{-- <div class="col-md-2">
                                 <div class="mb-2 service_tax_text">
                                     $0.00
                                 </div>
                                 <input class="service_tax" type="hidden" name="service_tax" value="">
 								<small id="name" class="form-text text-muted">Tax</small>
-                            </div>
+                            </div> --}}
                             <div class="col-md-2">
                                 <div class="mb-2 service_total_text">
                                     $0
@@ -393,13 +393,13 @@
 									<small id="name" class="form-text text-muted">Discount(%)</small>
                                 </div>
                             </div>
-                            <div class="col-md-2">
+                            {{-- <div class="col-md-2">
                                 <div class="mb-2 product_tax_text">
                                     $0.00
                                 </div>
 								<small id="name" class="form-text text-muted">Tax</small>
                                 <input class="product_tax" type="hidden" name="product_tax" value="">
-                            </div>
+                            </div> --}}
                             <div class="col-md-2">
                                 <div class="mb-2 product_total_text">
                                     $0
@@ -417,6 +417,8 @@
                                 </h5><br>
                                 <h5 style="display: inline-flex;">Discount:&nbsp;<div class="discounttext">$0</div>
                                 </h5><br>
+                                <h5 style="display: inline-flex;">Tax:&nbsp;<div class="taxcodetext">$0</div>
+                                </h5><br>
                                 <h4 style="display: inline-flex;">Total:&nbsp;<div class="totaltext">$0</div>
                                 </h4>
                                 <input type="hidden" class="subtotal" name="subtotal" value="0">
@@ -432,7 +434,7 @@
 
                         <div class="row mt-2">
                             <div class="col-md-6">
-                                <h4 class="font-weight-medium mb-2">CUSTOMER DETAILS 22</h4>
+                                <h4 class="font-weight-medium mb-2">CUSTOMER DETAILS</h4>
                                 <div class="confirm_job_box">
                                     <div class="row">
                                         <div class="col-md-12" style="display: inline-flex;">

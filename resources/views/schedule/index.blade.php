@@ -1433,7 +1433,8 @@
 
             });
 
-            $(document).on('click', '.updateSchedule', function() {
+            $(document).on('click', '.updateSchedule', function(e) {
+                e.preventDefault();
 
                 var id = $(this).attr('data-id');
                 var job_id = $(this).attr('data-job-id');
@@ -1459,7 +1460,6 @@
                         // Introduce a delay after the AJAX call to ensure content is fully loaded
                         setTimeout(function() {
                             var nextAnchor = $('a[href="#next"]');
-                            console.log(nextAnchor); // Verify if nextAnchor is found
 
                             // Trigger click event on the anchor tag with href="#next" three times
                             for (var i = 0; i < 3; i++) {
@@ -1478,11 +1478,8 @@
                             onStepChanging: function(event, currentIndex, newIndex) {
 
                                 if (newIndex === 0) {
-                                    // This condition prevents navigation to step 1
-                                    // Adjust the condition as needed based on your logic
-                                    if (someConditionIsMet) {
                                         return false; // Prevent navigation to step 1
-                                    }
+                                   
                                 }
 
                                 if (currentIndex === 1) {
@@ -2011,7 +2008,6 @@
                                 },
                                 success: function(data) {
 
-                                    console.log(data);
 
                                     $('a[href="#finish"]:eq(0)').text(
                                         'Submit Job');
@@ -2206,6 +2202,7 @@
         $(document).on('change', '.services', function(event) {
 
             event.stopPropagation();
+            var customerId = $('.selectCustomer').data('id');
 
             var id = $(this).val().trim();
 
@@ -2296,6 +2293,19 @@
                 });
             }
 
+            $.ajax({
+                    url: "get/usertax",
+                    data: {
+                        customerId: customerId,
+                    },
+                    type: 'GET',
+                    success: function(data) {
+                      $('.taxcodetext').empty();
+
+                      $('.taxcodetext').append(''+ data.state_tax+'% for '+data.state_code+'');
+                    },
+            });
+
         });
 
         $(document).on('change', '.service_cost', function() {
@@ -2359,6 +2369,7 @@
         $(document).on('change', '.products', function(event) {
 
             event.stopPropagation();
+            var customerId = $('.selectCustomer').data('id');
 
             var id = $(this).val().trim();
 
@@ -2449,6 +2460,19 @@
                     }
                 });
             }
+            $.ajax({
+                    url: "get/usertax",
+                    data: {
+                        customerId: customerId,
+                    },
+                    type: 'GET',
+                    success: function(data) {
+                      $('.taxcodetext').empty();
+
+                      $('.taxcodetext').append(''+ data.state_tax+'% for '+data.state_code+'');
+                    },
+            });
+
         });
 
         $(document).on('change', '.product_cost', function() {
@@ -2841,6 +2865,7 @@
 
         }
     </script>
+    
     <script>
         $(document).ready(function() {
             $('#tag_idss').select2();

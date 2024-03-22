@@ -711,6 +711,8 @@ Route::middleware('auth')->group(function () {
 
     Route::post('store/event/', [ScheduleController::class, 'store_event']);
 
+    Route::get('get/usertax', [ScheduleController::class, 'usertax']);
+
 
 
 

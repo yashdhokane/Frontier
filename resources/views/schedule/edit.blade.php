@@ -336,11 +336,6 @@
                             </div>
                             <div class="col-md-2">
                                 <div class="mt-2">
-                                    <label for="videoUrl1">Tax</label>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="mt-2">
                                     <label for="videoUrl1">Total</label>
                                 </div>
                             </div>
@@ -389,12 +384,9 @@
                                 </div>
                                 <input class="service_tax" type="hidden" name="service_tax" value="{{ $job->jobserviceinfo->tax}}">
                             </div>
-                            <div class="col-md-2">
-                                <div class="mb-2 service_total_text">
-                                    ${{ $job->jobserviceinfo->sub_total}}
-                                </div>
-                                <input class="service_total" type="hidden" name="service_total" value="{{ $job->jobserviceinfo->sub_total}}">
-                            </div>
+                            
+                            <input class="service_total" type="hidden" name="service_total" value="{{ $job->jobserviceinfo->sub_total}}">
+                           
                         </div>
 
                         <div class="row mt-3">
@@ -437,12 +429,8 @@
                                     <input type="hidden" class="pre_product_discount" value="{{ $job->jobproductinfo->discount}}">
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <div class="mb-2 product_tax_text">
-                                    ${{ $job->jobproductinfo->tax }}
-                                </div>
-                                <input class="product_tax" type="hidden" name="product_tax" value="{{ $job->jobproductinfo->tax}}">
-                            </div>
+                             <input class="product_tax" type="hidden" name="product_tax" value="{{ $job->jobproductinfo->tax}}">
+                           
                             <div class="col-md-2">
                                 <div class="mb-2 product_total_text">
                                     ${{ $job->jobproductinfo->sub_total }}
@@ -458,6 +446,8 @@
                                     </div>
                                 </h5><br>
                                 <h5 style="display: inline-flex;">Discount:&nbsp;<div class="discounttext">${{$job->discount}}</div>
+                                </h5><br>
+                                <h5 style="display: inline-flex;">Tax:&nbsp;<div class="taxcodetext1">{{$statecode->state_tax}}% for {{$statecode->state_code}}</div>
                                 </h5><br>
                                 <h4 style="display: inline-flex;">Total:&nbsp;<div class="totaltext">${{$job->gross_total}}</div>
                                 </h4>
@@ -527,23 +517,21 @@
                                 <div class="confirm_job_box">
                                     <div class="row">
                                         <div class="col-md-12" style="display: inline-flex;">
-                                            <h6 class="font-weight-medium mb-0 show_job_title">Test Job Title </h6>
+                                            <h6 class="font-weight-medium mb-0 show_job_title"></h6>
                                             &nbsp;
                                             <small class="text-muted reschedule_job show_job_code">
-                                                ABC4567</small>
+                                                </small>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-12 reschedule_job show_job_information">LG - Washing Machine
-                                            / Model: LG Washing
-                                            Machine /
-                                            Serial Number: QDA8956246 
+                                        <div class="col-md-12 reschedule_job show_job_information">
+                                            
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 reschedule_job ">
-                                            <p class="show_job_description">job description</p>
-                                            <p class="show_job_duration" style="margin-top: -16px;">Duration: 2 hours
+                                            <p class="show_job_description"></p>
+                                            <p class="show_job_duration" style="margin-top: -16px;">
                                             </p>
                                         </div>
                                     </div>
@@ -582,16 +570,16 @@
                                             </div>
                                         </div>
                                         <div class="col-md-1 service_css">
-                                            <div class="mt-1 show_service_cost">$100.00</div>
+                                            <div class="mt-1 show_service_cost">$0</div>
                                         </div>
                                         <div class="col-md-1 service_css">
-                                            <div class="mt-1 show_service_discount">$10.00</div>
+                                            <div class="mt-1 show_service_discount">$0</div>
                                         </div>
                                         <div class="col-md-1 service_css">
-                                            <div class="mt-1 show_service_tax">$9.00</div>
+                                            <div class="mt-1 show_service_tax">$0</div>
                                         </div>
                                         <div class="col-md-2 service_css">
-                                            <div class="mt-1 show_service_total">$99.00</div>
+                                            <div class="mt-1 show_service_total">$0</div>
                                         </div>
                                     </div>
                                     <div class="row mb-2">
@@ -603,16 +591,16 @@
                                             </div>
                                         </div>
                                         <div class="col-md-1 service_css">
-                                            <div class="mt-1 show_product_cost">$100.00</div>
+                                            <div class="mt-1 show_product_cost">$0</div>
                                         </div>
                                         <div class="col-md-1 service_css">
-                                            <div class="mt-1 show_product_discount">$10.00</div>
+                                            <div class="mt-1 show_product_discount">$0</div>
                                         </div>
                                         <div class="col-md-1 service_css">
-                                            <div class="mt-1 show_product_tax">$9.00</div>
+                                            <div class="mt-1 show_product_tax">$0</div>
                                         </div>
                                         <div class="col-md-2 service_css">
-                                            <div class="mt-1 show_product_total">$99.00</div>
+                                            <div class="mt-1 show_product_total">$0</div>
                                         </div>
                                     </div>
                                     <div class="row" style="border-top: 2px dotted #343434">
@@ -622,17 +610,17 @@
                                         </div>
                                         <div class="col-md-1 total_css">
                                             <div class="mt-2">
-                                                <p><strong class="show_total_discount">$20.00</strong></p>
+                                                <p><strong class="show_total_discount">$0</strong></p>
                                             </div>
                                         </div>
                                         <div class="col-md-1 total_css">
                                             <div class="mt-2">
-                                                <p><strong class="show_total_tax">$18.00</strong></p>
+                                                <p><strong class="show_total_tax">$0</strong></p>
                                             </div>
                                         </div>
                                         <div class="col-md-2 total_css">
                                             <div class="mt-2">
-                                                <h4><strong class="show_total">$198.00</strong></h4>
+                                                <h4><strong class="show_total">$0</strong></h4>
                                             </div>
                                         </div>
                                     </div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CustomerUserAddress;
 use App\Models\Event;
 use App\Models\JobModel;
 use App\Models\LocationCity;
@@ -689,7 +690,10 @@ class ScheduleController extends Controller
             $job = JobModel::with('jobDetails','JobAssign','JobNote','jobserviceinfo','jobproductinfo','technician','user')
             ->where('id', $jobId)->first();
 
-            return view('schedule.edit', compact('technician', 'dateTime', 'manufacturers', 'appliances','getServices','getProduct','job'));
+            $customer1 = CustomerUserAddress::with('locationStateName')->where('user_id', $job->customer_id)->first();
+            $statecode = $customer1->locationStateName; 
+
+            return view('schedule.edit', compact('technician', 'dateTime', 'manufacturers', 'appliances','getServices','getProduct','job','statecode'));
         }
     
     }
@@ -1122,7 +1126,12 @@ class ScheduleController extends Controller
         ]);
     }
 
-  
+    public function usertax(Request $request)
+    {
+       $customer = CustomerUserAddress::with('locationStateName')->where('user_id', $request->customerId)->first();
+       $statecode = $customer->locationStateName;
+       return response()->json($statecode);
+    }
     
 
 }
