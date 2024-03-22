@@ -1,6 +1,5 @@
 @extends('home')
 @section('content')
-
     <style>
         .form-control:focus {
             box-shadow: 0 0 0 0rem rgba(54, 153, 255, .25);
@@ -429,6 +428,7 @@
             <!-- Modal -->
 
             <!-- Modal -->
+
             <div class="modal fade" id="newCustomer" tabindex="-1" aria-labelledby="scroll-long-inner-modal"
                 aria-hidden="true">
                 <div class="modal-dialog modal-dialog-scrollable2 modal-dialog modal-xl">
@@ -519,7 +519,8 @@
                                                                 <input type="text" class="form-control"
                                                                     id="display_name" name="display_name" placeholder=""
                                                                     required />
-                                                                    <small id="name" class="form-text text-muted">It will shown on Invoice.</small>
+                                                                <small id="name" class="form-text text-muted">It will
+                                                                    shown on Invoice.</small>
 
                                                             </div>
 
@@ -550,7 +551,8 @@
                                                                 <input type="text" class="form-control"
                                                                     id="mobile_phone" name="mobile_phone" placeholder=""
                                                                     required />
-                                                                    <small id="name" class="form-text text-muted">Don’t add +1. Only add mobile number without space.</small>
+                                                                <small id="name" class="form-text text-muted">Don’t
+                                                                    add +1. Only add mobile number without space.</small>
 
                                                             </div>
 
@@ -797,11 +799,9 @@
                                                                 <label for="tag_id"
                                                                     class="control-label bold mb5 col-form-label">Customer
                                                                     Tags</label>
-
-                                                                <select class="select2-with-menu-bg form-control  me-sm-2"
-                                                                    name="tag_id[]" id="menu-bg-multiple"
-                                                                    multiple="multiple" data-bgcolor="light"
-                                                                    data-bgcolor-variation="accent-3"
+                                                                <select class="form-control  me-sm-2" name="tag_id[]"
+                                                                    id="tag_idss" multiple="multiple"
+                                                                    data-bgcolor="light" data-bgcolor-variation="accent-3"
                                                                     data-text-color="blue" style="width: 100%" required>
                                                                     @foreach ($tags as $tag)
                                                                         <option value="{{ $tag->tag_id }}">
@@ -809,7 +809,8 @@
                                                                     @endforeach
                                                                 </select>
 
-                                                                <small id="name" class="form-text text-muted">You can select multiple tags.</small>
+                                                                <small id="name" class="form-text text-muted">You can
+                                                                    select multiple tags.</small>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -884,6 +885,8 @@
 
 
 
+                            </form>
+
                         </div>
 
                     </div>
@@ -894,13 +897,11 @@
             </div>
 
 
-            </form>
 
 
 
         </div>
-    </div>
-    </div>
+
     </div>
     <!-- Modal -->
 
@@ -1003,13 +1004,9 @@
     <!-- Modal -->
 
 
-    </div>
-    </div>
-
 
 @section('script')
-
-   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Bootstrap Datepicker CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
@@ -1017,15 +1014,10 @@
 
     <!-- Bootstrap Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#menu-bg-multiple').select2();
-        });
-    </script>
 
     <script>
         $(document).ready(function() {
-           
+
             $('#datepicker').hide(); // Hide the input field initially
             $('#datepicker-container').datepicker({
                 format: 'yyyy-mm-dd', // Specify the format
@@ -1949,14 +1941,12 @@
                             finish: 'Submit Job',
                         },
                         onStepChanging: function(event, currentIndex, newIndex) {
-
-                            // new changes 
+                            // Check if navigating forward to the next step
                             if (newIndex > currentIndex) {
                                 // Assuming the user address step index is 3 (adjust if necessary)
                                 if (currentIndex === 0) {
                                     // Check if user address is selected
                                     var selectedAddress = $('.customer_address').val();
-                                    console.log(selectedAddress);
                                     if (!selectedAddress) {
                                         // User address is not selected, prevent navigation
                                         Swal.fire({
@@ -1966,36 +1956,32 @@
                                         });
                                         return false; // Prevent navigation to the next step
                                     }
+                                } else if (currentIndex === 1) {
+                                    // Check if all required fields are filled for step 2
+                                    var isValid = validateStep2Fields();
+                                    if (!isValid) {
+                                        // Required fields are not filled, prevent navigation
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error',
+                                            text: 'Please fill in all required fields before proceeding.'
+                                        });
+                                        return false; // Prevent navigation to the next step
+                                    }
+                                } else if (currentIndex === 2) {
+                                    // Check if all required fields are filled for step 3
+                                    var isValid = validateStep3Fields();
+                                    if (!isValid) {
+                                        // Required fields are not filled, prevent navigation
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error',
+                                            text: 'Please fill in warranty fields before proceeding.'
+                                        });
+                                        return false; // Prevent navigation to the next step
+                                    }
                                 }
                             }
-                            if (currentIndex === 1) {
-                                // Check if all required fields are filled
-                                var isValid = validateStep2Fields();
-                                if (!isValid) {
-                                    // Required fields are not filled, prevent navigation
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Error',
-                                        text: 'Please fill in all required fields before proceeding.'
-                                    });
-                                    return false; // Prevent navigation to the next step
-                                }
-                            }
-                            if (currentIndex === 2) {
-                                // Check if all required fields are filled
-                                var isValid = validateStep3Fields();
-                                if (!isValid) {
-                                    // Required fields are not filled, prevent navigation
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Error',
-                                        text: 'Please fill in warranty fields before proceeding.'
-                                    });
-                                    return false; // Prevent navigation to the next step
-                                }
-                            }
-                            // end new chages 
-
                             if (newIndex < currentIndex) {
                                 return true;
                             }
@@ -2004,8 +1990,10 @@
                                 showAllInformation(newIndex);
                             }
 
+                            // Allow navigation to the previous step or to step 3
                             return true;
                         },
+
                         onFinished: function(event, currentIndex) {
 
                             var form = $('#createScheduleForm')[0];
@@ -2023,7 +2011,7 @@
                                 },
                                 success: function(data) {
 
-                                 console.log(data);
+                                    console.log(data);
 
                                     $('a[href="#finish"]:eq(0)').text(
                                         'Submit Job');
@@ -2853,6 +2841,13 @@
 
         }
     </script>
+    <script>
+        $(document).ready(function() {
+            $('#tag_idss').select2();
+        });
+    </script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 @endsection
 
 @endsection
