@@ -335,14 +335,7 @@
 									<small id="name" class="form-text text-muted">Discount(%)</small>
                                 </div>
                             </div>
-                            {{-- <div class="col-md-2">
-                                <div class="mb-2 service_tax_text">
-                                    $0.00
-                                </div>
                                 <input class="service_tax" type="hidden" name="service_tax" value="">
-								<small id="name" class="form-text text-muted">Tax</small>
-                            </div> --}}
-                            <div class="col-md-2">
                                 <div class="mb-2 service_total_text">
                                     $0
                                 </div>
@@ -393,13 +386,8 @@
 									<small id="name" class="form-text text-muted">Discount(%)</small>
                                 </div>
                             </div>
-                            {{-- <div class="col-md-2">
-                                <div class="mb-2 product_tax_text">
-                                    $0.00
-                                </div>
-								<small id="name" class="form-text text-muted">Tax</small>
                                 <input class="product_tax" type="hidden" name="product_tax" value="">
-                            </div> --}}
+                            
                             <div class="col-md-2">
                                 <div class="mb-2 product_total_text">
                                     $0
