@@ -66,8 +66,10 @@
 
                         </div>
 
-                        <a class="dropdown-item" href="{{route('myprofile.index')}}"><i data-feather="user"
-                                class="feather-sm text-info me-1 ms-1"></i> My Profile</a>
+                      <a class="dropdown-item" href="{{ route('myprofile.index') }}">
+                       <i data-feather="user" class="feather-sm text-info me-1 ms-1"></i> My Profile
+                        </a>
+
 
                         <a class="dropdown-item" href="{{ route('app_chats') }}"><i data-feather="mail"
                                 class="feather-sm text-success me-1 ms-1"></i> Messages</a>

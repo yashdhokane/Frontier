@@ -75,8 +75,29 @@ li.toplinks a{
 .form-control, .form-select {
 	border: 1px solid #CDCDCD;
 }
+.card-border {
+	border: 1px solid #D8D8D8;
+}
+.srdrop {
+	float: right;
+}
+.profile-menu-btn a {
+  border-radius: 6px !important;
+}
 
-
+.ft1 .fas { color: #0066ff !important;font-size: 20px !important;}
+.ft2 .fas {color: #fb8c00 !important;font-size: 20px !important;}
+.ft2 .span {color: #432818 !important;}
+.ft2_sub .fas {color: #432818 !important;font-size: 15px !important;}
+.fs20 {	font-size: 20px !important;}
+.ft3 .fas {color: #55a630 !important;font-size: 20px !important;}
+.ft4 .fas {color: #7400b8 !important;font-size: 20px !important;}
+.ft5 .fas {color: #ff0454 !important;font-size: 20px !important;}
+.ft6 .fas {color: #023e8a !important;font-size: 20px !important;}
+.ft7 .fas {color: #00a7e1 !important;font-size: 20px !important;}
+.ft8 .fas {color: #fa0105 !important;font-size: 20px !important;}
+.ri-message-2-line {  color: #e50180 !important;}
+.sidebar-nav ul .sidebar-item .sidebar-link {  opacity: 1;}
 
 
 

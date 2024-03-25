@@ -216,14 +216,14 @@
                                         </td>
                                         <td>
                                             @if ($ticket->user)
-                                            {{ $ticket->user->name ?? null}}
+                                            {{ $ticket->user->name }}
                                             @else
                                             Unassigned
                                             @endif
                                         </td>
                                         <td>
                                             @if ($ticket->technician)
-                                            {{ $ticket->technician->name  ?? null}}
+                                            {{ $ticket->technician->name }}
                                             @else
                                             Unassigned
                                             @endif

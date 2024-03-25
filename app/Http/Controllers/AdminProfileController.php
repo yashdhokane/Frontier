@@ -3,24 +3,125 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 use Illuminate\Http\Request;
 use App\Models\LocationState;
 use App\Models\CustomerUserAddress;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\File;
 
 // use Google\Service\AnalyticsReporting\User;
 
 class AdminProfileController extends Controller
 {
-    public function index()
-    {
-        $userAddress = CustomerUserAddress::first();
-        $user = User::first();
-        $locationStates = LocationState::all();
-        return view('adminprofile.myprofile', compact('locationStates', 'user', 'userAddress'));
-    }
 
-    public function store(Request $request)
+
+    
+public function email_verified(Request $request)
+{
+    $userId = auth()->id(); 
+    $user = User::find($userId);
+    
+    if ($user && $user->id == $userId) {
+        // Check if email_notifications is already set to 1
+        if ($user->email_verified == 1) {
+            $user->email_verified = 0; // Set to 0
+        } else {
+            $user->email_verified = 1; // Set to 1
+        }
+        
+        $user->save();
+
+        return redirect()->back()->with('success', 'Email verified preference updated.');
+    } else {
+        return redirect()->back()->with('error', 'Unauthorized access.');
+    }
+}
+
+public function sms(Request $request)
+{
+    $userId = auth()->id(); 
+    $user = User::find($userId);
+    
+    if ($user && $user->id == $userId) {
+        // Check if email_notifications is already set to 1
+        if ($user->sms_notification == 1) {
+            $user->sms_notification = 0; // Set to 0
+        } else {
+            $user->sms_notification = 1; // Set to 1
+        }
+        
+        $user->save();
+
+        return redirect()->back()->with('success', 'SMS Notification preference updated.');
+    } else {
+        return redirect()->back()->with('error', 'Unauthorized access.');
+    }
+}
+
+public function email(Request $request)
+{
+    $userId = auth()->id(); 
+    $user = User::find($userId);
+    
+    if ($user && $user->id == $userId) {
+        // Check if email_notifications is already set to 1
+        if ($user->email_notifications == 1) {
+            $user->email_notifications = 0; // Set to 0
+        } else {
+            $user->email_notifications = 1; // Set to 1
+        }
+        
+        $user->save();
+
+        return redirect()->back()->with('success', 'Email notification preference updated.');
+    } else {
+        return redirect()->back()->with('error', 'Unauthorized access.');
+    }
+}
+  public function index()
+{
+    $userId = auth()->id(); // Retrieve the authenticated user's ID
+
+    // Find the user and related data using the authenticated user's ID
+    $user = User::find($userId);
+        $userAddress = CustomerUserAddress::where('user_id', $userId)->first();
+
+    $locationStates = LocationState::all();
+    $meta = $user->meta;
+
+    // Retrieve user meta information
+    $first_name = $user->meta()->where('meta_key', 'first_name')->first()->meta_value ?? '';
+    $last_name = $user->meta()->where('meta_key', 'last_name')->first()->meta_value ?? '';
+    $home_phone = $user->meta()->where('meta_key', 'home_phone')->first()->meta_value ?? '';
+    $work_phone = $user->meta()->where('meta_key', 'work_phone')->first()->meta_value ?? '';
+    $ssn = $user->meta()->where('meta_key', 'ssn')->first()->meta_value ?? '';
+    $dob = $user->meta()->where('meta_key', 'dob')->first()->meta_value ?? '';
+
+    return view('adminprofile.myprofile', compact('dob', 'ssn', 'work_phone', 'home_phone', 'last_name', 'first_name', 'locationStates', 'user', 'userAddress'));
+}
+
+public function activity(){
+    $userId = Auth::id();
+$activity = DB::table('job_activity')
+    ->join('users', 'job_activity.user_id', '=', 'users.id')
+    ->where('job_activity.user_id', $userId)
+    ->get();
+
+  
+    return view('adminprofile.myprofile_activity',compact('activity'));
+}
+
+    public function account(){
+     $userId = auth()->id(); 
+    $user = User::find($userId);
+    return view('adminprofile.myprofile_account', compact('user'));
+}
+
+
+     public function store(Request $request)
     {
         $request->validate([
             // 'image' => 'required|mimes:gif,jpg,png,jpeg',
@@ -72,7 +173,7 @@ class AdminProfileController extends Controller
 
     public function infoadmin(Request $request)
     {
-        // dd($request->all());
+    //    dd($request->all());
         $request->validate([
             // 'currentpassword' => 'required',
             // 'password' => 'required|min:8', // Adjust the minimum length as needed
@@ -93,12 +194,27 @@ class AdminProfileController extends Controller
                 'city' => $request->city,
                 'state_id' => $request->state_id,
                 'address_line1' => $request->address_line1,
+				    'address_line2' => $request->address_line2,
+                    				    'zipcode' => $request->zipcode,
+
 
             ]
         );
-        // dd(1);
+
+	$user = User::find($request->id);
+    $user->meta()->updateOrCreate(['meta_key' => 'first_name'], ['meta_value' => $request['first_name']]);
+    $user->meta()->updateOrCreate(['meta_key' => 'last_name'], ['meta_value' => $request['last_name']]);
+    $user->meta()->updateOrCreate(['meta_key' => 'home_phone'], ['meta_value' => $request['home_phone']]);
+    $user->meta()->updateOrCreate(['meta_key' => 'work_phone'], ['meta_value' => $request['work_phone']]);
+   $user->meta()->updateOrCreate(['meta_key' => 'ssn'], ['meta_value' => $request['ssn']]);
+    $user->meta()->updateOrCreate(['meta_key' => 'dob'], ['meta_value' => $request['dob']]);
+
+	    // dd(1);
 
         return redirect()->back()->with('success', 'Information updated successfully.');
     }
+
+
+    
 
 }

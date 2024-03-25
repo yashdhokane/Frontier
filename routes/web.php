@@ -123,6 +123,8 @@ use App\Http\Controllers\ChatSupportController;
 use App\Http\Controllers\PaymentController;
 
 use App\Http\Controllers\TimezoneController;
+
+
 use Illuminate\Support\Facades\Artisan;
 
 /*
@@ -295,7 +297,7 @@ Route::group(['middleware' => 'role:customer'], function () {
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
 
 Route::post('/get-user-status', [UserController::class, 'getUserStatus'])->name('get.user.status');
-
+    Route::get('/autocomplete/city', [UserController::class, 'autocomplete'])->name('autocomplete.city');
 
     Route::POST('/users/store', [UserController::class, 'store'])->name('users.store');
 
@@ -656,11 +658,10 @@ Route::middleware('auth')->group(function () {
     Route::get('book-list/services/{service_id}/edit', [ServicesController::class, 'editServices'])->name('services.edit');
 
 
+
     Route::get('inactive/service/{id}', [ServicesController::class, 'inactive']);
 
     Route::get('active/service/{id}', [ServicesController::class, 'active']);
-
-
 
     Route::delete('book-list/services/{service_id}', [ServicesController::class, 'deleteService'])->name('services.delete');
 
@@ -711,8 +712,6 @@ Route::middleware('auth')->group(function () {
 
     Route::post('store/event/', [ScheduleController::class, 'store_event']);
 
-    Route::get('get/usertax', [ScheduleController::class, 'usertax']);
-
 
 
 
@@ -720,6 +719,7 @@ Route::middleware('auth')->group(function () {
 
 
 
+   
     Route::get('parts', [ProductCategoryController::class, 'index'])->name('product.index');
 
     Route::post('book-list/partscategory-store', [ProductCategoryController::class, 'storeproductcategory'])->name('productcategory.store');
@@ -742,6 +742,7 @@ Route::middleware('auth')->group(function () {
 
     Route::put('book-list/parts/{id}', [ProductController::class, 'update'])->name('product.update');
 
+
     Route::get('inactive/parts/{id}', [ProductController::class, 'inactive']);
 
     Route::get('active/parts/{id}', [ProductController::class, 'active']);
@@ -751,11 +752,13 @@ Route::middleware('auth')->group(function () {
     Route::get('assign_product', [ProductCategoryController::class, 'assign_product'])->name('assign_product');
     
     Route::post('store/assign-product', [ProductCategoryController::class, 'store_assign_product']);
-
-
-
-
+    
     Route::get('partCategory', [ProductController::class, 'listingproduct'])->name('partCategory');
+
+
+
+
+    Route::get('book-list/parts-list/{product_id?}', [ProductController::class, 'listingproduct'])->name('product.listingproduct');
 
     Route::get('book-list/parts-list/productsaxaclist', [ProductController::class, 'productsaxaclist'])->name('productsaxaclist');
 
@@ -897,7 +900,16 @@ Route::middleware('auth')->group(function () {
 
     //adminprofile
 
-    Route::get('/my-profile', [AdminProfileController::class, 'index'])->name('myprofile.index');
+Route::get('/my-profile', [AdminProfileController::class, 'index'])->name('myprofile.index')->middleware('auth');
+
+Route::get('/my-profile/activity', [AdminProfileController::class, 'activity'])->name('myprofile.activity')->middleware('auth');
+
+Route::get('/my-profile/account', [AdminProfileController::class, 'account'])->name('myprofile.account')->middleware('auth');
+Route::post('/my-profile/account/email', [AdminProfileController::class, 'email'])->name('myprofile.email')->middleware('auth');
+
+Route::post('/my-profile/account/sms', [AdminProfileController::class, 'sms'])->name('myprofile.sms')->middleware('auth');
+
+Route::post('/my-profile/account/email-verify', [AdminProfileController::class, 'email_verified'])->name('myprofile.email_verified')->middleware('auth');
 
     Route::post('/my-profile-store', [AdminProfileController::class, 'store'])->name('user.adminprofileimg');
 

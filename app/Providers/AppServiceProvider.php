@@ -49,6 +49,9 @@ class AppServiceProvider extends ServiceProvider
             $defaultImage = '../public/default/default.png';
             $view->with('defaultImage', $defaultImage);
 
+            //useraddress function
+     
+
         });
     }
 }

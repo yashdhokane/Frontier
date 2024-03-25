@@ -7,16 +7,16 @@
     <!-- Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
     <div class="page-breadcrumb" style="padding-top: 0px;">
-		<div class="row">
-			<div class="col-6 align-self-center">
-				<h4 class="page-title">Technicians</h4>
-			</div>
-			<div class="col-6 align-self-center">
-				<div class="d-flex no-block justify-content-end align-items-center">
-				</div>
-			</div>
-		</div>
-	</div>
+        <div class="row">
+            <div class="col-6 align-self-center">
+                <h4 class="page-title">Technicians</h4>
+            </div>
+            <div class="col-6 align-self-center">
+                <div class="d-flex no-block justify-content-end align-items-center">
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- -------------------------------------------------------------- -->
     <!-- End Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
@@ -48,13 +48,16 @@
             <div class="card card-body">
                 <div class="row">
                     <div class="col-md-4 col-xl-2">
-                        <form>
-                            <input type="text" class="form-control product-search" id="input-search"
+                                     <form>
+
+                            <input type="text" name="" class="form-control " aria-controls="" id="searchInput"
                                 placeholder="Search Technicians..." />
                         </form>
                     </div>
-                    <div class="col-md-8 col-xl-10 text-end d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
-                         <a href="{{route('technicians.create')}}" id="" class="btn btn-info"><i class=" fas fa-user-plus "></i> New  Technicians</a>
+                    <div
+                        class="col-md-8 col-xl-10 text-end d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
+                        <a href="{{route('technicians.create')}}" id="" class="btn btn-info"><i
+                                class=" fas fa-user-plus "></i> New Technicians</a>
                     </div>
                 </div>
             </div>
@@ -65,8 +68,8 @@
 
 
             <div class="card card-body">
-                <div class="table-responsive table-custom"  >
-                    <table  id="zero_config" class="table table-striped search-table v-middle " data-paging="true">
+                <div class="table-responsive table-custom">
+                    <table id="zero_config" class="table table-striped search-table v-middle " data-paging="true">
                         <thead class="header-item ft16">
 
                             {{-- <th>
@@ -88,7 +91,7 @@
                         <tbody>
                             <!-- Loop through each user -->
                             @foreach($users as $user)
-                            <tr class="search-items @if($user->status == 'deactive' ) { table-danger1 } @else { table-success1 } @endif ">
+                            <tr class="search-items">
                                 {{-- <td>
                                     <div class="n-chk align-self-center text-center">
                                         <div class="form-check">
@@ -104,11 +107,11 @@
                                 <td>
                                     <div class="d-flex align-items-center">
                                         @if($user->user_image)
-                                        <img src="{{ asset('public/images/technician/' . $user->user_image) }}" class="rounded-circle"
-                                            width="45" />
+                                        <img src="{{ asset('public/images/Uploads/users/' . $user->id . '/' .  $user->user_image) }}"
+                                            class="rounded-circle" width="45" />
                                         @else
-                                        <img src="{{asset('public/images/login_img_bydefault.png')}}" alt="avatar" class="rounded-circle"
-                                            width="45" />
+                                        <img src="{{asset('public/images/login_img_bydefault.png')}}" alt="avatar"
+                                            class="rounded-circle" width="45" />
                                         @endif
 
                                         <div class="ms-2">
@@ -116,14 +119,14 @@
                                                 <a href="{{ route('technicians.show', $user->id) }}">
                                                     <h5 class="user-name mb-0" data-name="name"> {{ $user->name }}</h5>
                                                 </a>
-                                             </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-									<span class="user-work">{{ $user->email }}</span><br />
-									<span class="user-work">{{ $user->mobile }}</span><br />
-                                 </td>
+                                    <span class="user-work">{{ $user->email }}</span><br />
+                                    <span class="user-work">{{ $user->mobile }}</span><br />
+                                </td>
                                 <td class="text-wrap">
                                     {{-- <span class="usr-location" data-location="{{ $user->location }}">{{
                                         $user->Location->city ??
@@ -133,53 +136,46 @@
                                     {{ $user->area_name }}
                                     @endif
                                 </td>
-                                <td><span class="mb-1 badge @if($user->status == 'deactive' ) { bg-danger } @else { bg-success } @endif">{{ $user->status }}</span> 
-								</td>
-								
-								
-								
+                                <td><span
+                                        class="mb-1 badge @if($user->status == 'deactive' ) { bg-danger } @else { bg-success } @endif">{{
+                                        $user->status }}</span>
+                                </td>
+
+
+
                                 <td class="action footable-last-visible" style="display: table-cell;">
-                                   
-                                   <div class="btn-group">
-                              <button
-                                type="button"
-                                class="btn btn-light-primary text-primary dropdown-toggle"
-                                data-bs-toggle="dropdown"
-                                aria-haspopup="true"
-                                aria-expanded="false"
-                              >
-                                <i class="ri-settings-3-fill align-middle fs-5"></i>
-                              </button>
-                              <div class="dropdown-menu">
-                                <a class="dropdown-item" href="{{ route('technicians.show', $user->id) }}"
-                                  ><i data-feather="eye" class="feather-sm me-2"></i> View</a
-                                >
-                                <a class="dropdown-item" href="{{ route('technicians.edit', $user->id) }}"
-                                  ><i data-feather="edit-2" class="feather-sm me-2"></i> Edit</a
-                                >
-                               <a class="dropdown-item activity"
-                                                                    href="javascript:void(0)" data-bs-toggle="modal"
-                                                                    data-bs-target="#commentModal1"
-                                                                    onclick="setUserId({{ $user->id }})">
-                                                                    <i data-feather="activity"
-                                                                        class="feather-sm me-2"></i> Status
-                                                                </a>
 
-                                   <a class="dropdown-item add-comment"
-                                                                    href="javascript:void(0)" data-bs-toggle="modal"
-                                                                    data-bs-target="#commentModal"
-                                                                     onclick="setUserIdForCommentModal('{{ $user->id }}')">
-                                                                    <i data-feather="message-circle"
-                                                                        class="feather-sm me-2"></i> Comments
-                                                                </a>
-                                 <a class="dropdown-item" href="{{route('permissionindex')}}">
-  <i data-feather="user-check" class="feather-sm me-2"></i>
-  Permission
-</a>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-light-primary text-primary dropdown-toggle"
+                                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="ri-settings-3-fill align-middle fs-5"></i>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item"
+                                                href="{{ route('technicians.show', $user->id) }}"><i data-feather="eye"
+                                                    class="feather-sm me-2"></i> View</a>
+                                            <a class="dropdown-item"
+                                                href="{{ route('technicians.edit', $user->id) }}"><i
+                                                    data-feather="edit-2" class="feather-sm me-2"></i> Edit</a>
+                                            <a class="dropdown-item activity" href="javascript:void(0)"
+                                                data-bs-toggle="modal" data-bs-target="#commentModal1"
+                                                onclick="setUserId({{ $user->id }})">
+                                                <i data-feather="activity" class="feather-sm me-2"></i> Status
+                                            </a>
 
-                              </div>
-                            </div>
-                                   {{--  <div class="action-btn" style="display:flex">
+                                            <a class="dropdown-item add-comment" href="javascript:void(0)"
+                                                data-bs-toggle="modal" data-bs-target="#commentModal"
+                                                onclick="setUserIdForCommentModal('{{ $user->id }}')">
+                                                <i data-feather="message-circle" class="feather-sm me-2"></i> Comments
+                                            </a>
+                                            <a class="dropdown-item" href="{{route('permissionindex')}}">
+                                                <i data-feather="user-check" class="feather-sm me-2"></i>
+                                                Permission
+                                            </a>
+
+                                        </div>
+                                    </div>
+                                    {{-- <div class="action-btn" style="display:flex">
 
                                         <a href="{{ route('technicians.show', $user->id) }}" class="text-info edit">
                                             <span class="badge bg-info">
@@ -211,7 +207,38 @@
                                     </div>
                                 </td>
                             </tr>
-                            @endforeach
+                            {{-- model staus active in active--}}
+                            <div class="modal fade" id="commentModal1" tabindex="-1" aria-labelledby="commentModalLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="commentModalLabel">Change Status</h5>
+                                        </div>
+                                        <!-- Comment form -->
+                                        <form id="commentForm" action="{{ route('technicianstaus.update') }}"
+                                            method="POST">
+                                            @csrf
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <input type="hidden" name="user_id" id="userId">
+                                                    <span id="confirmationMessage"></span>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-primary"
+                                                    id="confirmButton">Yes</button>
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">No</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+
+
+                                {{-- end model--}}
+                                @endforeach
                         </tbody>
 
                     </table>
@@ -223,118 +250,106 @@
         <!-- -------------------------------------------------------------- -->
     </div>
 
-         <!-- Modal for adding comment -->
+    <!-- Modal for adding comment -->
 
-            <!-- Modal for adding comment -->
-                                                <div class="modal fade" id="commentModal" tabindex="-1"
-                                                    aria-labelledby="commentModalLabel"
-                                                    aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title"
-                                                                    id="commentModalLabel">Add Comment
-                                                                </h5>
-                                                                {{-- <button type="button" class="btn-close"
-                                                                    data-bs-dismiss="modal" aria-label="Close"></button> --}}
-                                                            </div>
-                                                            <!-- Comment form -->
-                                                           <form action="{{ route('techniciancomment.store') }}" method="POST">
+    <!-- Modal for adding comment -->
+    <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="commentModalLabel">Add Comment
+                    </h5>
+                    {{-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    --}}
+                </div>
+                <!-- Comment form -->
+                <form action="{{ route('techniciancomment.store') }}" method="POST">
 
-                                                                @csrf
-                                                                <div class="modal-body">
-                                                                    <div class="mb-3">
-                                                                        <label for="comment">Comment:</label>
-                                                                         <input type="hidden" name="id" id="userIdForCommentModal">
-                                                                        <textarea class="form-control" id="comment" name="note" rows="3">
-                                                                            
-                                                                        </textarea>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="modal-footer">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="comment">Comment:</label>
+                            <input type="hidden" name="id" id="userIdForCommentModal">
+                            <textarea class="form-control" id="comment" name="note" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
 
-                                                                    <button type="submit"
-                                                                        class="btn btn-primary">Submit</button>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                              <div class="modal fade" id="commentModal1" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="commentModalLabel">Change Status</h5>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
             </div>
-            <!-- Comment form -->
-            <form id="commentForm" action="{{ route('technicianstaus.update') }}" method="POST">
-                @csrf
-                <div class="modal-body">
-                    <div class="mb-3"> 
-                                        <input type="hidden" name="user_id" id="userId">
-
-                        Are you sure to change status ?</div>
-                </div>
-                <div class="modal-footer">
-                  <button type="submit" class="btn btn-primary" id="confirmButton">Yes</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                  
-                </div>
-            </form>
         </div>
     </div>
-</div>
 
 
-   
-@section('script')
-    <script>
-        $(document).ready(function () {
-        $('.deletelink').on('click', function () {
-            var userId = $(this).data('question-id');
 
-            $.ajax({
+
+
+    @section('script')
+   <script>
+$(document).ready(function () {
+    var table = $('#zero_config').DataTable();
+
+    // Apply search on input change
+    $('#searchInput').on('keyup', function() {
+        table.search(this.value).draw();
+    });
+
+    $('.deletelink').on('click', function () {
+        var questionId = $(this).data('question-id');
+
+        $.ajax({
             url: '/delete/question/' + questionId,
             type: 'get',
             dataType: 'json',
             success: function (data) {
-            $(this).closest('tr').remove();
-
-
-
-            alert(data.success);
+                $(this).closest('tr').remove();
+                alert(data.success);
             },
             error: function (xhr, status, error) {
-            alert('Error: ' + xhr.responseText);
+                alert('Error: ' + xhr.responseText);
             }
-            });
-            });
-
-
         });
+    });
+});
+</script>
 
- </script>
 
- 
- <script>
-      $('#zero_config').DataTable();
-	  
-
-    </script>
+  
 
     <script>
-    function setUserId(userId) {
-        document.getElementById('userId').value = userId;
+        function setUserId(userId) {
+        $('#userId').val(userId);
+
+        // Fetch the user's status using AJAX
+        $.ajax({
+            url: "{{ route('get.user.status') }}",
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            },
+            data: {
+                user_id: userId
+            },
+            dataType: 'json',
+            success: function(data) {
+                // Update the confirmation message based on the user's status
+                const message = (data.status === 'active') ? 'Are you sure to change status to Inactive?' : 'Are you sure to change status to Active?';
+                $('#confirmationMessage').text(message);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
     }
-</script>
-<script>
-    // Function to set the user ID in the comment modal
+    </script>
+    <script>
+        // Function to set the user ID in the comment modal
     function setUserIdForCommentModal(userId) {
         document.getElementById('userIdForCommentModal').value = userId;
     }
-</script>
-@endsection
-@endsection
-
-
+    </script>
+    @endsection
+    @endsection

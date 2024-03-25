@@ -12,7 +12,7 @@ class CustomerUserAddress extends Model {
     protected $fillable = [
         'user_id', 'address_type', 'address_primary', 'address_line1', 'address_line2',
         'city', 'zipcode', 'state_name', 'state_id', 'country_id', 'address_notes',
-        'latitude', 'longitude'
+        'latitude', 'longitude','city_id'
     ];
 
 public function cityname(){

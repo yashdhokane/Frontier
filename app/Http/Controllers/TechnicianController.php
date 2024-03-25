@@ -34,11 +34,11 @@ class TechnicianController extends Controller
 
         foreach ($users as $key => $value) {
             $areaName = [];
-            if (isset($value->service_areas) && !empty($value->service_areas)) {
+            if (isset ($value->service_areas) && !empty ($value->service_areas)) {
                 $service_areas = explode(',', $value->service_areas);
                 foreach ($service_areas as $key1 => $value1) {
                     $location_service_area = DB::table('location_service_area')->where('area_id', $value1)->first();
-                    if (isset($location_service_area->area_name) && !empty($location_service_area->area_name)) {
+                    if (isset ($location_service_area->area_name) && !empty ($location_service_area->area_name)) {
                         $areaName[] = $location_service_area->area_name;
                     }
                 }
@@ -53,7 +53,7 @@ class TechnicianController extends Controller
 
     public function create()
     {
-  
+
         $serviceAreas = LocationServiceArea::all();
         $users = User::all();
         //    $roles = Role::all();
@@ -66,8 +66,8 @@ class TechnicianController extends Controller
 
     public function store(Request $request)
     {
-       //dd($request->all());
-        // Validate the request
+        //dd($request->all());
+
         $validator = Validator::make($request->all(), [
 
             'first_name' => 'required|max:255',
@@ -75,24 +75,12 @@ class TechnicianController extends Controller
             'display_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'mobile_phone' => 'required|max:20',
-            // 'home_phone' => 'required|max:20',
-            // 'work_phone' => 'required|max:20',
-//    'role' => 'required',
-
             'address1' => 'required',
-            // 'address_unit' => 'required',
-
             'city' => 'required',
             'state_id' => 'required',
-            // 'tag_id' => 'required',
             'zip_code' => 'max:10',
             'license_number' => 'required',
-
-
-             'dob' => 'required', // Update the maximum length as needed
-
-            // 'image' => 'required',
-
+            'dob' => 'required',
 
         ]);
         if ($validator->fails()) {
@@ -110,17 +98,32 @@ class TechnicianController extends Controller
         $user->role = $request['role'];
         $user->password = Hash::make($request['password']);
         // $user->service_areas = implode(',', $request['service_areas']);
-        // Check if service areas are selected before imploding
-        $user->service_areas = !empty($request['service_areas']) ? implode(',', $request['service_areas']) : null;
+        $user->service_areas = !empty ($request['service_areas']) ? implode(',', $request['service_areas']) : null;
 
+        $user->save();
+        $userId = $user->id;
 
         if ($request->hasFile('image')) {
+            // Generate a unique directory name based on user ID and timestamp
+            $directoryName = $userId;
+
+            // Construct the full path for the directory
+            $directoryPath = public_path('images/Uploads/users/' . $directoryName);
+
+            // Ensure the directory exists; if not, create it
+            if (!file_exists($directoryPath)) {
+                mkdir($directoryPath, 0777, true);
+            }
+
+            // Move the uploaded image to the unique directory
             $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('images/technician/'), $imageName);
+            $imageName = $image->getClientOriginalName(); // Or generate a unique name if needed
+            $image->move($directoryPath, $imageName);
+
+            // Save the image path in the user record
             $user->user_image = $imageName;
+            $user->save();
         }
-        $user->save();
 
         $userId = $user->id;
         $currentTimestamp = now();
@@ -142,16 +145,20 @@ class TechnicianController extends Controller
         $customerAddress = new CustomerUserAddress();
         $customerAddress->user_id = $userId;
         $customerAddress->address_line1 = $request['address1'];
+        $customerAddress->address_primary = ($request['address_type'] == 'home') ? 'yes' : 'no';
+        $customerAddress->address_type = $request['address_type'];
+
         $customerAddress->address_line2 = $request['address_unit'];
         $customerAddress->city = $request['city'];
         $customerAddress->state_id = $request['state_id'];
         $customerAddress->zipcode = $request['zip_code'];
+
         $customerAddress->save();
 
 
         $tagIds = $request['tag_id'];
 
-        if (!empty($tagIds)) {
+        if (!empty ($tagIds)) {
             foreach ($tagIds as $tagId) {
                 $userTag = new UserTag();
                 $userTag->user_id = $userId;
@@ -171,7 +178,14 @@ class TechnicianController extends Controller
     public function show($id)
     {
 
+
+
         $technician = User::find($id);
+        //dd($technician);
+      
+
+           $notename = DB::table('user_notes')->where('user_id',
+                                        $technician->id)->get();
         $meta = $technician->meta;
         $home_phone = $technician->meta()->where('meta_key', 'home_phone')->value('meta_value') ?? '';
         $location = CustomerUserAddress::where('user_id', $technician->id)->get();
@@ -184,21 +198,21 @@ class TechnicianController extends Controller
             ->where('technician_id', $technician->id)
             ->get();
 
-           
 
 
-            //  $payments = DB::table('payments')
-            // ->where('job_id', $technician->id)
-            // ->get();
-    $payments = DB::table('payments')
-    ->whereIn('job_id', function ($query) use ($technician) {
-        $query->select('id')
-            ->from('jobs')
-            ->where('technician_id', $technician->id);
-    })
-    ->get();
 
-    //dd( $payments);
+        //  $payments = DB::table('payments')
+        // ->where('job_id', $technician->id)
+        // ->get();
+        $payments = DB::table('payments')
+            ->whereIn('job_id', function ($query) use ($technician) {
+                $query->select('id')
+                    ->from('jobs')
+                    ->where('technician_id', $technician->id);
+            })
+            ->get();
+
+        //dd( $payments);
 
 
 
@@ -221,7 +235,7 @@ class TechnicianController extends Controller
             ->where('user_address.user_id', $technician->id)
             ->value('location_cities.longitude');
 
-        return view('technicians.show', compact('technician','payments', 'longitude', 'latitude', 'userAddresscity', 'jobasign', 'customerimage', 'location', 'jobasigndate', 'home_phone'));
+        return view('technicians.show', compact('technician','notename', 'payments', 'longitude', 'latitude', 'userAddresscity', 'jobasign', 'customerimage', 'location', 'jobasigndate', 'home_phone'));
     }
 
     public function edit($id)
@@ -242,7 +256,7 @@ class TechnicianController extends Controller
             $last_name = $technician->meta()->where('meta_key', 'last_name')->value('meta_value') ?? '';
             $home_phone = $technician->meta()->where('meta_key', 'home_phone')->value('meta_value') ?? '';
             $work_phone = $technician->meta()->where('meta_key', 'work_phone')->value('meta_value') ?? '';
-             $ssn = $technician->meta()->where('meta_key', 'ssn')->value('meta_value') ?? '';
+            $ssn = $technician->meta()->where('meta_key', 'ssn')->value('meta_value') ?? '';
             $dob = $technician->meta()->where('meta_key', 'dob')->value('meta_value') ?? '';
             $license_number = $technician->meta()->where('meta_key', 'license_number')->value('meta_value') ?? '';
 
@@ -273,7 +287,7 @@ class TechnicianController extends Controller
 
             // $serviceAreas = $technician->serviceAreas()->get();
 
-            return view('technicians.edit', compact('technician', 'serviceAreas','license_number', 'ssn','dob','locationStates', 'userTags', 'selectedTags', 'meta', 'location', 'Note', 'tags', 'source', 'first_name', 'last_name', 'home_phone', 'work_phone', 'cities'));
+            return view('technicians.edit', compact('technician', 'serviceAreas', 'license_number', 'ssn', 'dob', 'locationStates', 'userTags', 'selectedTags', 'meta', 'location', 'Note', 'tags', 'source', 'first_name', 'last_name', 'home_phone', 'work_phone', 'cities'));
         } else {
             // Handle the case where meta is not found, perhaps redirect to an error page
             return redirect()->route('technicians.index');
@@ -290,10 +304,10 @@ class TechnicianController extends Controller
             'address1' => 'required',
             'city' => 'required',
             'state_id' => 'required',
-             'license_number' => 'required',
+            'license_number' => 'required',
 
             'zip_code' => 'max:10',
-           'dob' => 'required',
+            'dob' => 'required',
 
         ]);
 
@@ -318,22 +332,26 @@ class TechnicianController extends Controller
         if ($request->filled('password')) {
             $user->password = Hash::make($request['password']);
         }
-        if ($request->hasFile('image')) {
-            // Handle image update logic here
-            $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('images/technician/'), $imageName);
 
-            // Remove the old image if it exists
+        if ($request->hasFile('image')) {
+            $directoryName = $user->id;
+            $directoryPath = public_path('images/Uploads/users/' . $directoryName);
+            if (!file_exists($directoryPath)) {
+                mkdir($directoryPath, 0777, true);
+            }
+            $image = $request->file('image');
+            $imageName = $image->getClientOriginalName();
+            $image->move($directoryPath, $imageName);
             if ($user->user_image) {
-                $oldImagePath = public_path('images/technician/') . '/' . $user->user_image;
-                if (file_exists($oldImagePath)) {
-                    unlink($oldImagePath);
+                $previousImagePath = public_path('images/Uploads/users/' . $directoryName . '/' . $user->user_image);
+                if (file_exists($previousImagePath)) {
+                    unlink($previousImagePath);
                 }
             }
-
             $user->user_image = $imageName;
         }
+        $user->save();
+
         if ($request->has('service_areas') && is_array($request->input('service_areas'))) {
             // If service areas are provided, implode the array
             $serviceAreasString = implode(',', $request->input('service_areas'));
@@ -367,15 +385,15 @@ class TechnicianController extends Controller
             ['meta_key' => 'work_phone'],
             ['meta_value' => $request['work_phone']]
         );
-  $user->meta()->updateOrCreate(
+        $user->meta()->updateOrCreate(
             ['meta_key' => 'dob'],
             ['meta_value' => $request['dob']]
         );
-          $user->meta()->updateOrCreate(
+        $user->meta()->updateOrCreate(
             ['meta_key' => 'ssn'],
             ['meta_value' => $request['ssn']]
         );
-          $user->meta()->updateOrCreate(
+        $user->meta()->updateOrCreate(
             ['meta_key' => 'license_number'],
             ['meta_value' => $request['license_number']]
         );
@@ -383,31 +401,26 @@ class TechnicianController extends Controller
         $user->location()->updateOrCreate(
             ['user_id' => $id],
             [
+                'address_type' => $request['address_type'],
                 'address_line1' => $request['address1'],
                 'address_line2' => $request['address_unit'],
                 'city' => $request['city'],
                 'state_id' => $request['state_id'],
                 'zipcode' => $request['zip_code'],
+                'address_primary' => ($request['address_type'] == 'home') ? 'yes' : 'no',
             ]
         );
 
         // Update user notes
-        $user->Note()->updateOrCreate(
-            ['user_id' => $id],
-            ['note' => $request['customer_notes']]
-        );
 
-        // Update user tags
-        //$tagIds = implode(',', $request['tag_id']);
-        //  $user->tags()->sync(explode(',', $tagIds));
-        // Get the tag IDs from the request
+
+
         $tagIds = $request->input('tag_id', []);
-
-        // Attach all new tags to the user
+        $user->tags()->detach();
         $user->tags()->attach($tagIds);
-
-        // Synchronize existing tags without detaching
         $user->tags()->syncWithoutDetaching($tagIds);
+
+
 
 
         return redirect()->route('technicians.index')->with('success', 'Technician updated successfully');
@@ -422,52 +435,52 @@ class TechnicianController extends Controller
     }
 
 
-   public function techniciancomment(Request $request)
-{
-    $addedByUserId = auth()->user()->id;
-    $user = User::findOrFail($request->id); 
+    public function techniciancomment(Request $request)
+    {
+        $addedByUserId = auth()->user()->id;
+        $user = User::findOrFail($request->id);
 
-    $payment = new UserNotesCustomer();
-    $payment->user_id = $user->id; 
-    $payment->added_by = $addedByUserId;
+        $payment = new UserNotesCustomer();
+        $payment->user_id = $user->id;
+        $payment->added_by = $addedByUserId;
         $payment->last_updated_by = $addedByUserId;
 
-    $payment->note = $request->note;
+        $payment->note = $request->note;
 
-    $payment->save();
+        $payment->save();
 
-    return redirect()->back()->with('success', 'Comment added successfully');
-}
- 
-public function technicianstaus(Request $request)
-{
-    //dd($id);
-
-    // Find the user based on the provided $id
-    $user = User::findOrFail($request->user_id);
-//dd($user);
-
-    // Check if the current status is 'active', then change it to 'deactive'
-    if ($user->status == 'active') {
-        $user->status = 'deactive';
-    } else {
-        // Otherwise, change it to 'active'
-        $user->status = 'active';
+        return redirect()->back()->with('success', 'Comment added successfully');
     }
 
-    // Check if the current login state is 'enable', then change it to 'disable'
-    if ($user->login == 'enable') {
-        $user->login = 'disable';
-    } else {
-        // Otherwise, change it to 'enable'
-        $user->login = 'enable';
-    }
-// dd($user->login,$user->status)
-    // Save the changes to the user model
-    $user->save();
+    public function technicianstaus(Request $request)
+    {
+        //dd($id);
 
-    return redirect()->back()->with('success', 'Status updated successfully');
-}
+        // Find the user based on the provided $id
+        $user = User::findOrFail($request->user_id);
+        //dd($user);
+
+        // Check if the current status is 'active', then change it to 'deactive'
+        if ($user->status == 'active') {
+            $user->status = 'deactive';
+        } else {
+            // Otherwise, change it to 'active'
+            $user->status = 'active';
+        }
+
+        // Check if the current login state is 'enable', then change it to 'disable'
+        if ($user->login == 'enable') {
+            $user->login = 'disable';
+        } else {
+            // Otherwise, change it to 'enable'
+            $user->login = 'enable';
+        }
+        // dd($user->login,$user->status)
+        // Save the changes to the user model
+        $user->save();
+
+        return redirect()->back()->with('success', 'Status updated successfully');
+    }
 
 
 

@@ -14,6 +14,51 @@
         color: red;
 
     }
+
+    
+    #autocomplete-results {
+        position: absolute;
+        background-color: #fff;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 1000;
+        width: calc(30% - 2px);
+        /* Subtract border width from input width */
+    }
+
+    #autocomplete-results ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    #autocomplete-results li {
+        padding: 8px 12px;
+        cursor: pointer;
+    }
+
+    #autocomplete-results li:hover {
+        background-color: #f0f0f0;
+    }
+
+    #autocomplete-results li:hover::before {
+        content: "";
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #ffffff;
+        z-index: -1;
+    }
+
+    /* Ensure hover effect covers the entire autocomplete result */
+    #autocomplete-results li:hover::after {
+        content: "";
+        display: block;
+        position: absolute;
+    }
 </style>
 
 
@@ -289,21 +334,23 @@
                             </div>
                         </div>
                         <div class="row">
-                         <div class="col-sm-12 col-md-4">
-                                 <div class="mb-3">
-                                     <label for="email" class="control-label  col-form-label ">Email</label>
-									 <input type="email" class="form-control" id="email" name="email" value="{{old('email', $user->email )}}" placeholder=""  />
-                                 </div>
-							</div>
+                            <div class="col-sm-12 col-md-4">
+                                <div class="mb-3">
+                                    <label for="email" class="control-label  col-form-label ">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email"
+                                        value="{{old('email', $user->email )}}" placeholder="" />
+                                </div>
+                            </div>
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
 
                                     <label for="mobile_phone" class="control-label col-form-label required-field">Mobile
                                         Phone</label>
 
-                                    <input type="text" class="form-control" maxlength="10"  name="mobile_phone" 
+                                    <input type="number" maxlength="10" class="form-control" name="mobile_phone"
                                         value="{{old('mobile_phone', $user->mobile )}}" placeholder="" required />
-                                        <small id="name" class="form-text text-muted">Don’t add +1. Only add mobile number without space.</small>
+                                    <small id="name" class="form-text text-muted">Don’t add +1. Only add mobile number
+                                        without space.</small>
 
                                 </div>
                             </div>
@@ -332,8 +379,8 @@
                             <div class="col-sm-12 col-md-8">
                                 <div class="mb-3">
 
-                                    <label for="address_unit"
-                                        class="control-label col-form-label ">Address Line2</label>
+                                    <label for="address_unit" class="control-label col-form-label ">Address
+                                        Line2</label>
 
                                     <input type="text" class="form-control" id="address_unit" name="address_unit"
                                         value="{{ old('address_unit', $location->address_line2 ?? null) }}"
@@ -348,12 +395,15 @@
                                     <label for="anotheraddress_type"
                                         class="control-label col-form-label required-field">Type</label>
 
-                                 <select class="form-select me-sm-2" id="address_type" name="address_type">
-    <option value="">Select Address Type...</option>
-    <option value="home" {{ ($location->address_type ?? null) == 'home' ? 'selected' : '' }}>Home Address</option>
-    <option value="work" {{ ($location->address_type ?? null) == 'work' ? 'selected' : '' }}>Work Address</option>
-    <option value="other" {{ ($location->address_type ?? null) == 'other' ? 'selected' : '' }}>Other Address</option>
-</select>
+                                    <select class="form-select me-sm-2" id="address_type" name="address_type">
+                                        <option value="">Select Address Type...</option>
+                                        <option value="home" {{ ($location->address_type ?? null) == 'home' ? 'selected'
+                                            : '' }}>Home Address</option>
+                                        <option value="work" {{ ($location->address_type ?? null) == 'work' ? 'selected'
+                                            : '' }}>Work Address</option>
+                                        <option value="other" {{ ($location->address_type ?? null) == 'other' ?
+                                            'selected' : '' }}>Other Address</option>
+                                    </select>
 
 
                                 </div>
@@ -388,28 +438,16 @@
                             </div>
                             <div class="col-sm-12 col-md-4">
 
-                                <div class="mb-3">
+                             <div class="mb-3">
+    <label for="city" class="control-label bold mb5 col-form-label required-field">City</label>
+    {{-- <select class="form-select" id="city" name="city" required>
+        <option selected disabled value="">Select City...</option>
+    </select> --}}
+    <input type="text" class="form-control" id="city" name="city" value="{{ $location->city }}" oninput="searchCity()" required />
+    {{-- <input type="hidden" class="form-control" id="city_id" name="city_id" oninput="searchCity1()" required /> --}}
+    <div id="autocomplete-results"></div>
+</div>
 
-                                    <label for="city" class="control-label col-form-label required-field">City</label>
-
-                                    <select class="form-select" id="city" name="city" required>
-
-                                        <option selected disabled value="">Select City...</option>
-
-                                        @foreach($cities as $locationState)
-
-                                        <option value="{{ $locationState->city_id }}" {{ ($location->city ?? null) ==
-                                            $locationState->city_id ? 'selected' : '' }}>
-
-                                            {{ $locationState->city }}
-
-                                        </option>
-
-                                        @endforeach
-
-                                    </select>
-
-                                </div>
                             </div>
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
@@ -432,8 +470,8 @@
 
                                     <label for="home_phone" class="control-label col-form-label">Home Phone</label>
 
-                                    <input type="text" class="form-control" name="home_phone" placeholder=""
-                                        value="{{ old('home_phone', $home_phone) }}" />
+                                    <input type="number" maxlength="10" class="form-control" name="home_phone"
+                                        placeholder="" value="{{ old('home_phone', $home_phone) }}" />
 
                                 </div>
                             </div>
@@ -442,7 +480,7 @@
 
                                     <label for="work_phone" class="control-label col-form-label">Work Phone</label>
 
-                                    <input type="text" class="form-control" name="work_phone"
+                                    <input type="number" maxlength="10" class="form-control" name="work_phone"
                                         value="{{ old('work_phone', $work_phone) }}" placeholder="" />
 
                                 </div>
@@ -542,10 +580,12 @@
 
                                 <div class="mb-3">
 
-          <label for="tag_id" class="control-label bold mb5 col-form-label">Customer Tags</label>
-                                    <select class="form-control select2-hidden-accessible" id="select2-with-tags" name="tag_id[]"  multiple="multiple" data-bgcolor="light"
-                                                      data-select2-id="select2-data-select2-with-tags" tabindex="-1" aria-hidden="true"
-                                                        style="width: 100%" >
+                                    <label for="tag_id" class="control-label bold mb5 col-form-label">Customer
+                                        Tags</label>
+                                    <select class="form-control select2-hidden-accessible" id="select2-with-tags"
+                                        name="tag_id[]" multiple="multiple" data-bgcolor="light"
+                                        data-select2-id="select2-data-select2-with-tags" tabindex="-1"
+                                        aria-hidden="true" style="width: 100%">
 
                                         @foreach($tags as $tag)
 
@@ -570,7 +610,9 @@
 
                                     <label class="control-label col-form-label">Customer Notes</label>
 
-                                    <textarea class="form-control" id="customer_notes" name="customer_notes" placeholder="" rows="1">{{ old('customer_notes', $Note->note ?? null) }}</textarea>
+                                    <textarea class="form-control" id="customer_notes" name="customer_notes"
+                                        placeholder=""
+                                        rows="1">{{ old('customer_notes', $Note->note ?? null) }}</textarea>
 
                                 </div>
                             </div>
@@ -792,6 +834,62 @@
     });
 
 
+ // Function to get zip code
+    function searchCity() {
+        $("#city").autocomplete({
+            source: function(request, response) {
+                $.ajax({
+                    url: "{{ route('autocomplete.city') }}"
+                    , data: {
+                        term: request.term
+                    }
+                    , dataType: "json"
+                    , type: "GET"
+                    , success: function(data) {
+                        response(data);
+                    }
+                    , error: function(response) {
+                        console.log("Error fetching city data:", response);
+                    }
+                });
+            }
+            , minLength: 2
+            , select: function(event, ui) {
+                $("#city").val(ui.item.city);
+                $("#city_id").val(ui.item.city_id);
+                return false;
+            }
+        }).data("ui-autocomplete")._renderItem = function(ul, item) {
+            var listItem = $("<li>").text(item.city).appendTo("#autocomplete-results");
+            listItem.data("city_id", item.city_id);
+            return listItem;
+        };
+
+        $("#autocomplete-results").on("click", "li", function() {
+            var cityName = $(this).text();
+            var cityId = $(this).data("city_id");
+
+            // Check if cityId is retrieved properly
+            console.log("Selected City ID:", cityId);
+
+            // Set the city ID before emptying autocomplete results
+            $("#city_id").val(cityId);
+
+            $("#city").val(cityName);
+            $("#autocomplete-results").hide();
+
+
+            $("#city").show();
+
+
+        });
+        $("#city").click(function() {
+
+            // Show the autocomplete results box
+            $("#autocomplete-results").show();
+        });
+
+    }
 
     // Function to get zip code
 

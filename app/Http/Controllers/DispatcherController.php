@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Support\Facades\DB;
@@ -21,14 +22,14 @@ class DispatcherController extends Controller
     {
 
         $users = User::where('role', 'dispatcher')->orderBy('created_at', 'desc') // Assuming 'created_at' is a timestamp column
-                  ->get();
+            ->get();
 
         return view('dispatcher.index', compact('users'));
     }
 
     public function create()
     {
-    $permissions = DB::table('permissions')->pluck('name')->toArray();
+        $permissions = DB::table('permissions')->pluck('name')->toArray();
 
         $users = User::all();
         //    $roles = Role::all();
@@ -36,37 +37,22 @@ class DispatcherController extends Controller
         $tags = SiteTags::all(); // Fetch all tags
 
 
-        return view('dispatcher.create', compact('permissions','users', 'tags', 'locationStates'));
+        return view('dispatcher.create', compact('permissions', 'users', 'tags', 'locationStates'));
     }
 
     public function store(Request $request)
     {
         // dd($request->all());
-        // Validate the request
         $validator = Validator::make($request->all(), [
-
             'first_name' => 'required|max:255',
             'last_name' => 'required|max:255',
             'display_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'mobile_phone' => 'required|max:20',
-            // 'home_phone' => 'required|max:20',
-            // 'work_phone' => 'required|max:20',
-//    'role' => 'required',
-
             'address1' => 'required',
-            // 'address_unit' => 'required',
-
             'city' => 'required',
             'state_id' => 'required',
             'zip_code' => 'max:10',
-          //  'tag_id' => 'required',
-
-
-            // 'user_tags' => 'required', // Update the maximum length as needed
-
-            // 'image' => 'required',
-
 
         ]);
         if ($validator->fails()) {
@@ -76,40 +62,41 @@ class DispatcherController extends Controller
                 ->withInput();
         }
 
-        // If validation passes, create the user and related records
         $user = new User();
         $user->name = $request['display_name'];
         $user->email = $request['email'];
         $user->mobile = $request['mobile_phone'];
         $user->role = $request['role'];
-         $permissionsString = json_encode($request->input('permissions'));
+        $permissionsString = json_encode($request->input('permissions'));
         $user->permissions = $permissionsString;
         $user->password = Hash::make($request['password']);
+        $user->save();
+        $userId = $user->id;
 
+        if ($request->hasFile('image')) {
+            // Generate a unique directory name based on user ID and timestamp
+            $directoryName = $userId;
 
-if ($request->hasFile('image')) {
-    $image = $request->file('image');
-    $imageName = time() . '_' . $image->getClientOriginalName();
+            // Construct the full path for the directory
+            $directoryPath = public_path('images/Uploads/users/' . $directoryName);
 
-    // Determine the user's image folder path
-    $userFolder = public_path('images/dispatcher/') . '/' . $user->id;
+            // Ensure the directory exists; if not, create it
+            if (!file_exists($directoryPath)) {
+                mkdir($directoryPath, 0777, true);
+            }
 
-    // Create the user's image folder if it doesn't exist
-    if (!file_exists($userFolder)) {
-        mkdir($userFolder, 0777, true);
-    }
+            // Move the uploaded image to the unique directory
+            $image = $request->file('image');
+            $imageName = $image->getClientOriginalName(); // Or generate a unique name if needed
+            $image->move($directoryPath, $imageName);
 
-    // Move the image to the user's folder
-    $image->move($userFolder, $imageName);
-
-    // Update the user's image field
-    $user->user_image = $imageName;
-}
-
-$user->save();
-
+            // Save the image path in the user record
+            $user->user_image = $imageName;
+            $user->save();
+        }
 
         $userId = $user->id;
+
         $currentTimestamp = now();
 
         $userMeta = [
@@ -127,14 +114,16 @@ $user->save();
         $customerAddress->user_id = $userId;
         $customerAddress->address_line1 = $request['address1'];
         $customerAddress->address_line2 = $request['address_unit'];
+        $customerAddress->address_primary = ($request['address_type'] == 'home') ? 'yes' : 'no';
+        $customerAddress->address_type = $request['address_type'];
         $customerAddress->city = $request['city'];
         $customerAddress->state_id = $request['state_id'];
         $customerAddress->zipcode = $request['zip_code'];
         $customerAddress->save();
 
- $tagIds = $request['tag_id'];
+        $tagIds = $request['tag_id'];
 
-        if (!empty($tagIds)) {
+        if (!empty ($tagIds)) {
             foreach ($tagIds as $tagId) {
                 $userTag = new UserTag();
                 $userTag->user_id = $userId;
@@ -154,29 +143,39 @@ $user->save();
 
     public function show($id)
     {
-         $dispatcher = User::find($id);
-          $meta = $dispatcher->meta;
+        $dispatcher = User::find($id);
+        // dd($dispatcher);
+          $notename = DB::table('user_notes')->where('user_id',
+                                        $dispatcher->id)->get();
+        $meta = $dispatcher->meta;
+        $jobasign = DB::table('jobs')
+            ->where('added_by', $dispatcher->id)
+            ->get();
+        $activity = DB::table('job_activity')
+            ->where('user_id', $dispatcher->id)
+            ->get();
+
         $home_phone = $dispatcher->meta()->where('meta_key', 'home_phone')->value('meta_value') ?? '';
- $userAddresscity = DB::table('user_address')
-    ->leftJoin('location_cities', 'user_address.city', '=', 'location_cities.city_id')
-    ->where('user_address.user_id', $dispatcher->id)
-    ->value('location_cities.city');
+        $userAddresscity = DB::table('user_address')
+            ->leftJoin('location_cities', 'user_address.city', '=', 'location_cities.city_id')
+            ->where('user_address.user_id', $dispatcher->id)
+            ->value('location_cities.city');
 
-     $latitude = DB::table('user_address')
-    ->leftJoin('location_cities', 'user_address.city', '=', 'location_cities.city_id')
-    ->where('user_address.user_id', $dispatcher->id)
-    ->value('location_cities.latitude');
-     $longitude = DB::table('user_address')
-    ->leftJoin('location_cities', 'user_address.city', '=', 'location_cities.city_id')
-    ->where('user_address.user_id', $dispatcher->id)
-    ->value('location_cities.longitude');
+        $latitude = DB::table('user_address')
+            ->leftJoin('location_cities', 'user_address.city', '=', 'location_cities.city_id')
+            ->where('user_address.user_id', $dispatcher->id)
+            ->value('location_cities.latitude');
+        $longitude = DB::table('user_address')
+            ->leftJoin('location_cities', 'user_address.city', '=', 'location_cities.city_id')
+            ->where('user_address.user_id', $dispatcher->id)
+            ->value('location_cities.longitude');
 
-$location = CustomerUserAddress::where('user_id', $dispatcher->id)->get();
+        $location = CustomerUserAddress::where('user_id', $dispatcher->id)->get();
 
-       
-       
 
-        return view('dispatcher.show', compact('dispatcher','location','latitude','longitude','userAddresscity', 'home_phone'));
+
+
+        return view('dispatcher.show', compact('dispatcher','notename', 'activity', 'jobasign', 'location', 'latitude', 'longitude', 'userAddresscity', 'home_phone'));
     }
 
 
@@ -205,7 +204,7 @@ $location = CustomerUserAddress::where('user_id', $dispatcher->id)->get();
             $source = $dispatcher->source;
 
             $tags = SiteTags::all();
-             $permissions = DB::table('permissions')->pluck('name')->toArray();
+            $permissions = DB::table('permissions')->pluck('name')->toArray();
 
 
 
@@ -215,7 +214,7 @@ $location = CustomerUserAddress::where('user_id', $dispatcher->id)->get();
             // Convert the comma-separated tag_id string to an array
             $selectedTags = explode(',', $userTags->pluck('tag_id')->implode(','));
 
-            return view('dispatcher.edit', compact('dispatcher','permissions', 'locationStates', 'userTags', 'selectedTags', 'meta', 'location', 'Note', 'tags', 'source', 'first_name', 'last_name', 'home_phone', 'work_phone'));
+            return view('dispatcher.edit', compact('dispatcher', 'permissions', 'locationStates', 'userTags', 'selectedTags', 'meta', 'location', 'Note', 'tags', 'source', 'first_name', 'last_name', 'home_phone', 'work_phone'));
         } else {
             // Handle the case where meta is not found, perhaps redirect to an error page
             return redirect()->route('dispatcher.index');
@@ -228,7 +227,7 @@ $location = CustomerUserAddress::where('user_id', $dispatcher->id)->get();
             'first_name' => 'required|max:255',
             'last_name' => 'required|max:255',
             'display_name' => 'required|string|max:255',
-           // 'email' => 'required|email|unique:users,email,' . $id,
+            // 'email' => 'required|email|unique:users,email,' . $id,
             'mobile_phone' => 'required|max:20',
             'address1' => 'required',
             'city' => 'required',
@@ -252,31 +251,31 @@ $location = CustomerUserAddress::where('user_id', $dispatcher->id)->get();
         }
 
         $user->name = $request['display_name'];
-  // $user->email = $request['email'];
+        // $user->email = $request['email'];
         $user->mobile = $request['mobile_phone'];
         $user->role = $request['role'];
-       if ($request->filled('password')) {
-    $user->password = Hash::make($request['password']);
-}
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request['password']);
+        }
 
 
         if ($request->hasFile('image')) {
-            // Handle image update logic here
+            $directoryName = $user->id;
+            $directoryPath = public_path('images/Uploads/users/' . $directoryName);
+            if (!file_exists($directoryPath)) {
+                mkdir($directoryPath, 0777, true);
+            }
             $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('images/dispatcher'), $imageName);
-
-            // Remove the old image if it exists
+            $imageName = $image->getClientOriginalName();
+            $image->move($directoryPath, $imageName);
             if ($user->user_image) {
-                $oldImagePath = public_path('images/dispatcher') . '/' . $user->user_image;
-                if (file_exists($oldImagePath)) {
-                    unlink($oldImagePath);
+                $previousImagePath = public_path('images/Uploads/users/' . $directoryName . '/' . $user->user_image);
+                if (file_exists($previousImagePath)) {
+                    unlink($previousImagePath);
                 }
             }
-
             $user->user_image = $imageName;
         }
-
         $user->save();
 
 
@@ -310,22 +309,15 @@ $location = CustomerUserAddress::where('user_id', $dispatcher->id)->get();
                 'city' => $request['city'],
                 'state_id' => $request['state_id'],
                 'zipcode' => $request['zip_code'],
+                'address_type' => $request['address_type'],
+
+                'address_primary' => ($request['address_type'] == 'home') ? 'yes' : 'no',
             ]
         );
 
-        // Update user notes
-        $user->Note()->updateOrCreate(
-            ['user_id' => $id],
-            ['note' => $request['customer_notes']]
-        );
-
-        // Update user tags
-      $tagIds = $request->input('tag_id', []);
-
-        // Attach all new tags to the user
+        $tagIds = $request->input('tag_id', []);
+        $user->tags()->detach();
         $user->tags()->attach($tagIds);
-
-        // Synchronize existing tags without detaching
         $user->tags()->syncWithoutDetaching($tagIds);
 
         return redirect()->route('dispatcher.index')->with('success', 'Dispatcher updated successfully');

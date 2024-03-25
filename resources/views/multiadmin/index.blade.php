@@ -63,8 +63,9 @@
             <div class="card card-body">
                 <div class="row">
                     <div class="col-md-4 col-xl-2">
-                        <form>
-                            <input type="text" class="form-control product-search" id="input-search"
+                                                   <form>
+
+                            <input type="text" name="" class="form-control " aria-controls="" id="searchInput"
                                 placeholder="Search Admin..." />
                         </form>
                     </div>
@@ -102,7 +103,7 @@
 
             <div class="card card-body">
                 <div class="table-responsive" style="overflow-x: auto">
-                    <table class="table search-table v-middle text-nowrap">
+                    <table id="zero_config" class="table search-table v-middle text-nowrap">
                         <thead class="header-item">
 
                             {{-- <th>
@@ -116,180 +117,207 @@
                                 </div>
                             </th> --}}
                             <th>Name</th>
-              <th>Contacts</th>
-              <th>Location/Address</th>
-              <th>Action</th>
+                            <th>Contacts</th>
+                            <th>Location/Address</th>
+                            <th>Status</th>
+                            <th>Action</th>
                         </thead>
-                         <tbody>
+                        <tbody>
                             <!-- Loop through each user -->
-                             @foreach($users as $user)
-              <tr class="search-items">
-                {{--
-                <td>
-                  <div class="n-chk align-self-center text-center">
-                    <div class="form-check">
-                      <input type="checkbox" class="form-check-input contact-chkbox primary"
-                        id="checkbox{{ $user->id }}"> <!-- Assuming your user model has an 'id' field -->
+                            @foreach($users as $user)
+                            <tr class="search-items ">
+                                {{--
+                                <td>
+                                    <div class="n-chk align-self-center text-center">
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input contact-chkbox primary"
+                                                id="checkbox{{ $user->id }}">
+                                            <!-- Assuming your user model has an 'id' field -->
 
-                      <label class="form-check-label" for="checkbox{{ $user->id }}"></label>
-                    </div>
-                  </div>
-                </td> --}}
-                <td>
-                  <div class="d-flex align-items-center">
-                  @if($user->user_image)
-                    <img src="{{ asset('public/images/admin/' . $user->user_image) }}" alt="avatar" class="rounded-circle"
-                      width="45" />
-                    @else
-                    <img src="{{asset('public/images/login_img_bydefault.png')}}" alt="avatar" class="rounded-circle" width="45" />
-
-
-                    @endif
-
-                    <div class="ms-2">
-                      <div class="user-meta-info">
-                        <a href="{{ route('users.show', $user->id) }}">
-                          <h5 class="user-name mb-0" data-name="name"> {{ $user->name }}</h5>
-                        </a>
-                      {{-- <span class="user-work text-muted">{{ $user->email }}</span><br />
-                        <span class="user-work text-muted">{{ $user->mobile }}</span><br /> --}}
-                        <span class="badge bg-dark">{{ $user->status }}</span>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-  <td>
-        <div class="row">
-            <div class="col-sm-12 col-md-12">
-               {{--   @if ($user->tags->isNotEmpty())
-                   @foreach ($user->tags as $tag)
-                        <div class="row">
-                            <div class="col-12" style="margin-top:3px;">
-                                <span class="badge bg-warning">{{ $tag->tag_name }}</span>
-                            </div>
-                        </div>
-                    @endforeach
-                @else
-                    <div class="row">
-                        <div class="col-12">
-                            <span class="badge bg-warning">No Tags Available</span>
-                        </div>
-                    </div>
-                @endif 
-                --}}
-
-                <span class="user-work text-muted">{{ $user->email }}</span><br />
-                        <span class="user-work text-muted">{{ $user->mobile }}</span><br />
-                
-                <div class="row">
-                    <div class="col-12">
-                        <span class="badge bg-info"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </td>
-
-                <td>
-            {{--       <span class="usr-location" data-location="{{ $user->homeAddress }}">{{ $user->homeAddress->city ??
-                    'null'}}</span>  --}}
-                    <div style="display:flex;">
-                   @if($user)
-  @php
-    $userAddress = DB::table('user_address')
-        ->leftJoin('location_states', 'user_address.state_id', '=', 'location_states.state_id')
-        ->where('user_id', $user->id)
-        ->first();
-       $userAddresscity = DB::table('user_address')
-    ->leftJoin('location_cities', 'user_address.city', '=', 'location_cities.city_id')
-    ->where('user_address.user_id', $user->id)
-    ->value('location_cities.city');
+                                            <label class="form-check-label" for="checkbox{{ $user->id }}"></label>
+                                        </div>
+                                    </div>
+                                </td> --}}
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        @if($user->user_image)
+                                        <img src="{{ asset('public/images/Uploads/users/'. $user->id . '/' . $user->user_image) }}"
+                                            alt="avatar" class="rounded-circle" width="45" />
+                                        @else
+                                        <img src="{{asset('public/images/login_img_bydefault.png')}}" alt="avatar"
+                                            class="rounded-circle" width="45" />
 
 
-@endphp
+                                        @endif
 
-    @if($userAddress)
-         <span class="user-work text-muted">{{ $userAddresscity }}</span>&nbsp;
+                                        <div class="ms-2">
+                                            <div class="user-meta-info">
+                                                <a href="{{ route('users.show', $user->id) }}">
+                                                    <h5 class="user-name mb-0" data-name="name"> {{ $user->name }}</h5>
+                                                </a>
+                                                {{-- <span class="user-work text-muted">{{ $user->email }}</span><br />
+                                                <span class="user-work text-muted">{{ $user->mobile }}</span><br /> --}}
+                                                <span class="badge bg-dark">{{ $user->status }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-12">
+                                            {{-- @if ($user->tags->isNotEmpty())
+                                            @foreach ($user->tags as $tag)
+                                            <div class="row">
+                                                <div class="col-12" style="margin-top:3px;">
+                                                    <span class="badge bg-warning">{{ $tag->tag_name }}</span>
+                                                </div>
+                                            </div>
+                                            @endforeach
+                                            @else
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <span class="badge bg-warning">No Tags Available</span>
+                                                </div>
+                                            </div>
+                                            @endif
+                                            --}}
 
-  
-             <span class="user-work text-muted">{{ $userAddress->state_name }}</span>
-      
+                                            <span class="user-work text-muted">{{ $user->email }}</span><br />
+                                            <span class="user-work text-muted">{{ $user->mobile }}</span><br />
 
-         <span class="user-work text-muted">,</span>
-         <span class="user-work text-muted">{{ $userAddress->zipcode }}</span>
-    @else
-         <span class="user-work text-muted">null</span>
-    @endif
-@else
-     <span class="user-work text-muted">null</span>
-@endif
-<br />
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <span class="badge bg-info"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    {{-- <span class="usr-location" data-location="{{ $user->homeAddress }}">{{
+                                        $user->homeAddress->city ??
+                                        'null'}}</span> --}}
+                                    <div style="display:flex;">
+                                        @if($user)
+                                        @php
+                                        $userAddress = DB::table('user_address')
+                                        ->leftJoin('location_states', 'user_address.state_id', '=',
+                                        'location_states.state_id')
+                                        ->where('user_id', $user->id)
+                                        ->first();
+                                        $userAddresscity = DB::table('user_address')
+                                        ->leftJoin('location_cities', 'user_address.city', '=',
+                                        'location_cities.city_id')
+                                        ->where('user_address.user_id', $user->id)
+                                        ->value('location_cities.city');
 
 
-                </div>
-                </td>
-             <td class="action footable-last-visible" style="display: table-cell;">
-                                     
-                                   <div class="btn-group">
-                              <button
-                                type="button"
-                                class="btn btn-light-primary text-primary dropdown-toggle"
-                                data-bs-toggle="dropdown"
-                                aria-haspopup="true"
-                                aria-expanded="false"
-                              >
-                                <i class="ri-settings-3-fill align-middle fs-5"></i>
-                              </button>
-                              <div class="dropdown-menu">
-                                <a class="dropdown-item" href="{{ route('multiadmin.show', $user->id) }}"
-                                  ><i data-feather="eye" class="feather-sm me-2"></i> View</a
-                                >
-                                <a class="dropdown-item" href="{{ route('multiadmin.edit', $user->id) }}"
-                                  ><i data-feather="edit-2" class="feather-sm me-2"></i> Edit</a
-                                >
-                               <a class="dropdown-item activity"
-                                                                    href="javascript:void(0)" data-bs-toggle="modal"
-                                                                    data-bs-target="#commentModal1"
-                                                                    onclick="setUserId({{ $user->id }})">
-                                                                    <i data-feather="activity"
-                                                                        class="feather-sm me-2"></i> Status
-                                                                </a>
+                                        @endphp
 
-                                   <a class="dropdown-item add-comment"
-                                                                    href="javascript:void(0)" data-bs-toggle="modal"
-                                                                    data-bs-target="#commentModal"
-                                                                     onclick="setUserIdForCommentModal('{{ $user->id }}')">
-                                                                    <i data-feather="message-circle"
-                                                                        class="feather-sm me-2"></i> Comments
-                                                                </a>
-                                 <a class="dropdown-item" href="{{route('permissionindex')}}">
-  <i data-feather="user-check" class="feather-sm me-2"></i>
-  Permission
-</a>
+                                        @if($userAddress)
+                                        <span class="user-work text-muted">{{ $userAddresscity }}</span>&nbsp;
 
-                              </div>
-                            </div>
-                                        {{--
-                                        <form method="POST" action="{{ route('technicians.destroy', $user->id) }}"
-                                            onsubmit="return confirm('Are you sure you want to delete this user?')">
-                                            @csrf
-                                            @method('DELETE')
 
-                                            <button type="submit" class="text-dark  ms-2"
-                                                style="border: none; background: none; cursor: pointer;">
-                                                <span class="badge bg-danger">
-                                                    <i data-feather="trash-2" class="feather-sm fill-white"></i> Delete
-                                                </span>
-                                            </button>
-                                        </form>
-                                        --}}
+                                        <span class="user-work text-muted">{{ $userAddress->state_name }}</span>
+
+
+                                        <span class="user-work text-muted">,</span>
+                                        <span class="user-work text-muted">{{ $userAddress->zipcode }}</span>
+                                        @else
+                                        <span class="user-work text-muted">null</span>
+                                        @endif
+                                        @else
+                                        <span class="user-work text-muted">null</span>
+                                        @endif
+                                        <br />
 
 
                                     </div>
                                 </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
+                                <td><span
+                                        class="mb-1 badge @if($user->status == 'deactive' ) { bg-danger } @else { bg-success } @endif">{{
+                                        $user->status }}</span>
+                                </td>
+                                <td class="action footable-last-visible" style="display: table-cell;">
+
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-light-primary text-primary dropdown-toggle"
+                                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="ri-settings-3-fill align-middle fs-5"></i>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item" href="{{ route('multiadmin.show', $user->id) }}"><i
+                                                    data-feather="eye" class="feather-sm me-2"></i> View</a>
+                                            <a class="dropdown-item" href="{{ route('multiadmin.edit', $user->id) }}"><i
+                                                    data-feather="edit-2" class="feather-sm me-2"></i> Edit</a>
+                                            <a class="dropdown-item activity" href="javascript:void(0)"
+                                                data-bs-toggle="modal" data-bs-target="#commentModal1"
+                                                onclick="setUserId({{ $user->id }})">
+                                                <i data-feather="activity" class="feather-sm me-2"></i> Status
+                                            </a>
+
+                                            <a class="dropdown-item add-comment" href="javascript:void(0)"
+                                                data-bs-toggle="modal" data-bs-target="#commentModal"
+                                                onclick="setUserIdForCommentModal('{{ $user->id }}')">
+                                                <i data-feather="message-circle" class="feather-sm me-2"></i> Comments
+                                            </a>
+                                            <a class="dropdown-item" href="{{route('permissionindex')}}">
+                                                <i data-feather="user-check" class="feather-sm me-2"></i>
+                                                Permission
+                                            </a>
+
+                                        </div>
+                                    </div>
+                                    {{--
+                                    <form method="POST" action="{{ route('technicians.destroy', $user->id) }}"
+                                        onsubmit="return confirm('Are you sure you want to delete this user?')">
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button type="submit" class="text-dark  ms-2"
+                                            style="border: none; background: none; cursor: pointer;">
+                                            <span class="badge bg-danger">
+                                                <i data-feather="trash-2" class="feather-sm fill-white"></i> Delete
+                                            </span>
+                                        </button>
+                                    </form>
+                                    --}}
+
+
+                </div>
+                </td>
+                </tr>
+                {{-- model staus active in active--}}
+                <div class="modal fade" id="commentModal1" tabindex="-1" aria-labelledby="commentModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="commentModalLabel">Change Status</h5>
+                            </div>
+                            <!-- Comment form -->
+                            <form id="commentForm" action="{{ route('technicianstaus.update') }}" method="POST">
+                                @csrf
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <input type="hidden" name="user_id" id="userId">
+                                        <span id="confirmationMessage"></span>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary" id="confirmButton">Yes</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+
+
+                    {{-- end model--}}
+                    @endforeach
+                    </tbody>
 
                     </table>
                 </div>
@@ -300,67 +328,63 @@
         <!-- -------------------------------------------------------------- -->
     </div>
 
-    
-            <!-- Modal for adding comment -->
-                                                <div class="modal fade" id="commentModal" tabindex="-1"
-                                                    aria-labelledby="commentModalLabel"
-                                                    aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title"
-                                                                    id="commentModalLabel">Add Comment
-                                                                </h5>
-                                                                {{-- <button type="button" class="btn-close"
-                                                                    data-bs-dismiss="modal" aria-label="Close"></button> --}}
-                                                            </div>
-                                                            <!-- Comment form -->
-                                                           <form action="{{ route('techniciancomment.store') }}" method="POST">
 
-                                                                @csrf
-                                                                <div class="modal-body">
-                                                                    <div class="mb-3">
-                                                                        <label for="comment">Comment:</label>
-                                                                         <input type="hidden" name="id" id="userIdForCommentModal">
-                                                                        <textarea class="form-control" id="comment" name="note" rows="3">
-                                                                            
-                                                                        </textarea>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="modal-footer">
+    <!-- Modal for adding comment -->
+    <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="commentModalLabel">Add Comment
+                    </h5>
+                    {{-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    --}}
+                </div>
+                <!-- Comment form -->
+                <form action="{{ route('techniciancomment.store') }}" method="POST">
 
-                                                                    <button type="submit"
-                                                                        class="btn btn-primary">Submit</button>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="comment">Comment:</label>
+                            <input type="hidden" name="id" id="userIdForCommentModal">
+                            <textarea class="form-control" id="comment" name="note" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
 
-                                              <div class="modal fade" id="commentModal1" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="commentModalLabel">Change Status</h5>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
             </div>
-            <!-- Comment form -->
-            <form id="commentForm" action="{{ route('technicianstaus.update') }}" method="POST">
-                @csrf
-                <div class="modal-body">
-                    <div class="mb-3"> 
-                                        <input type="hidden" name="user_id" id="userId">
-
-                        Are you sure to change status ?</div>
-                </div>
-                <div class="modal-footer">
-                  <button type="submit" class="btn btn-primary" id="confirmButton">Yes</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                  
-                </div>
-            </form>
         </div>
     </div>
-</div>
+
+    <div class="modal fade" id="commentModal1" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="commentModalLabel">Change Status</h5>
+                </div>
+                <!-- Comment form -->
+                <form id="commentForm" action="{{ route('technicianstaus.update') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <input type="hidden" name="user_id" id="userId">
+
+                            Are you sure to change status ?
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" id="confirmButton">Yes</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <!-- Share Modal -->
     <div class="modal fade" id="Sharemodel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
@@ -408,9 +432,9 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             Close
-                        </button> 
+                        </button>
                         <button type="submit" class="btn btn-success">
                             <i class="ri-send-plane-fill align-middle"></i> Send
                         </button>
@@ -421,38 +445,64 @@
     </div>
     @section('script')
     <script>
-        $(document).ready(function () {
-        $('.deletelink').on('click', function () {
-            var userId = $(this).data('question-id');
+$(document).ready(function () {
+    var table = $('#zero_config').DataTable();
 
-            $.ajax({
+    // Apply search on input change
+    $('#searchInput').on('keyup', function() {
+        table.search(this.value).draw();
+    });
+
+    $('.deletelink').on('click', function () {
+        var questionId = $(this).data('question-id');
+
+        $.ajax({
             url: '/delete/question/' + questionId,
             type: 'get',
             dataType: 'json',
             success: function (data) {
-            $(this).closest('tr').remove();
-            alert(data.success);
+                $(this).closest('tr').remove();
+                alert(data.success);
             },
             error: function (xhr, status, error) {
-            alert('Error: ' + xhr.responseText);
+                alert('Error: ' + xhr.responseText);
             }
-            });
-            });
-
-            }
-        );
-
-    </script>
- <script>
-    function setUserId(userId) {
-        document.getElementById('userId').value = userId;
-    }
+        });
+    });
+});
 </script>
-<script>
-    // Function to set the user ID in the comment modal
+
+    <script>
+        function setUserId(userId) {
+        $('#userId').val(userId);
+
+        // Fetch the user's status using AJAX
+        $.ajax({
+            url: "{{ route('get.user.status') }}",
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+            },
+            data: {
+                user_id: userId
+            },
+            dataType: 'json',
+            success: function(data) {
+                // Update the confirmation message based on the user's status
+                const message = (data.status === 'active') ? 'Are you sure to change status to Inactive?' : 'Are you sure to change status to Active?';
+                $('#confirmationMessage').text(message);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+    </script>
+    <script>
+        // Function to set the user ID in the comment modal
     function setUserIdForCommentModal(userId) {
         document.getElementById('userIdForCommentModal').value = userId;
     }
-</script>
+    </script>
     @endsection
     @endsection

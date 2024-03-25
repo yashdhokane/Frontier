@@ -130,19 +130,20 @@
                                 role="tab" aria-controls="pills-profile" aria-selected="true">Profile</a>
                         </li>
 
-                        <li class="nav-item" style="display:none;">
+                        <li class="nav-item">
                             <a class="nav-link" id="pills-setting-tab" data-bs-toggle="pill" href="#calls_tab"
-                                role="tab" aria-controls="pills-setting" aria-selected="false">Calls</a>
+                                role="tab" aria-controls="pills-setting" aria-selected="false">Calls Scheduled</a>
                         </li>
 
-                        <li class="nav-item" style="display:none;">
-                            <a class="nav-link" id="pills-payment-tab" data-bs-toggle="pill" href="#payment_tab"
-                                role="tab" aria-controls="pills-payments" aria-selected="false">Payments & Estimates</a>
-                        </li>
+
 
                         <li class="nav-item">
                             <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#others_tab"
-                                role="tab" aria-controls="pills-timeline" aria-selected="false">Other Details</a>
+                                role="tab" aria-controls="pills-timeline" aria-selected="false">Note Tab</a>
+                        </li>
+                        <li class="nav-item" style="">
+                            <a class="nav-link" id="pills-payment-tab" data-bs-toggle="pill" href="#payment_tab"
+                                role="tab" aria-controls="pills-payments" aria-selected="false">Activity</a>
                         </li>
 
                     </ul>
@@ -158,7 +159,7 @@
                                             <div class="card-body">
                                                 <center class="mt-1">
                                                     @if($dispatcher->user_image)
-                                                    <img src="{{ asset('public/images/dispatcher/' . $dispatcher->user_image) }}"
+                                                    <img src="{{ asset('public/images/Uploads/users/'. $dispatcher->id . '/' . $dispatcher->user_image) }}"
                                                         class="rounded-circle" width="150" />
                                                     @else
                                                     <img src="{{asset('public/images/login_img_bydefault.png')}}"
@@ -223,43 +224,65 @@
                                     <table id="zero_config" class="table table-bordered text-nowrap">
                                         <thead>
                                             <tr>
-                                                <th>Status</th>
-                                                <th>Title</th>
                                                 <th>ID</th>
+                                                <th>Job Name </th>
                                                 <th>Date</th>
                                                 <th>Technician</th>
+                                                <th>Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @foreach($jobasign as $customercall)
                                             <tr>
-                                                <td><span class="badge bg-light-warning text-warning font-medium">In
-                                                        Progress</span></td>
-                                                <td><a href="#." class="font-medium link">Repairing
-                                                        Task</a><br /><span class="badge bg-warning">LG</span></td>
-                                                <td><a href="#." class="fw-bold link">123456</a></td>
-                                                <td>11-14-2023</td>
-                                                <td>Adam James</td>
-                                            </tr>
-                                            <tr>
-                                                <td><span
-                                                        class="badge bg-light-danger text-danger font-medium">Closed</span>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td><a href="{{ route('tickets.show', $customercall->id) }}"
+                                                        class="font-medium link">{{$customercall->job_title
+                                                        ?? null}}</a><br />
                                                 </td>
-                                                <td><a href="#." class="font-medium link">Repairing
-                                                        Task</a><br /><span class="badge bg-warning">LG</span></td>
-                                                <td><a href="#." class="fw-bold link">123456</a></td>
-                                                <td>11-14-2023</td>
-                                                <td>Jack Smith</td>
-                                            </tr>
-                                            <tr>
-                                                <td><span
-                                                        class="badge bg-light-danger text-danger font-medium">Closed</span>
+                                                {{-- <td><a href="#" class="fw-bold link">{{$customercall->job_code ??
+                                                        null}}</a>
+                                                </td> --}}
+                                                @php
+                                                $jobassign = DB::table('job_assigned')->where('job_id',
+                                                $customercall->id)->first();
+                                                $created_at = $jobassign ? $jobassign->created_at : null;
+                                                @endphp
+
+                                                <td>
+                                                    @if ($created_at)
+                                                    <div class="font-medium link">{{
+                                                        \Carbon\Carbon::parse($created_at)->format('m-d-y') }}
+                                                    </div>
+                                                    <div style="font-size:12px;">
+                                                        {{
+                                                        \Carbon\Carbon::parse($jobassign->start_date_time)->format('g:ia')
+                                                        }}
+                                                        to {{
+                                                        \Carbon\Carbon::parse($jobassign->end_date_time)->format('g:ia')
+                                                        }}
+                                                    </div>
+                                                    @else
+                                                    <div>N/A</div>
+                                                    @endif
                                                 </td>
-                                                <td><a href="#." class="font-medium link">Technical
-                                                        Task</a><br /><span class="badge bg-dark">LG </span></td>
-                                                <td><a href="#." class="fw-bold link">123456</a></td>
-                                                <td>11-14-2023</td>
-                                                <td>James Nelson</td>
+
+                                                <td>
+                                                    @php
+                                                    $technician = DB::table('users')->where('id',
+                                                    $customercall->technician_id)->first();
+                                                    @endphp
+
+                                                    {{ $technician ? $technician->name : 'N/A' }}
+                                                </td>
+                                                <td><span
+                                                        class="badge bg-light-warning text-warning font-medium">{{$customercall->status
+                                                        ?? null}}</span></td>
+
+
                                             </tr>
+                                            @endforeach
+
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -267,144 +290,108 @@
                         </div>
 
                         <div class="tab-pane fade" id="payment_tab" role="tabpanel" aria-labelledby="pills-payment-tab">
+
                             <div class="card-body">
-                                <h4>Payments</h6>
-                                    <div class="table-responsive mt-4">
-                                        <table id="zero_config" class="table table-bordered text-nowrap">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Ticket</th>
-                                                    <th>Date</th>
-                                                    <th>Amount</th>
-                                                    <th>Technician</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>1</td>
-                                                    <td>AONO-123456401</td>
-                                                    <td>11-08-2023</td>
-                                                    <td>$320 <span class="badge bg-success font-weight-100">Paid</span>
-                                                    </td>
-                                                    <td>Adam Smith</td>
-                                                    <td>
-                                                        <div class="btn-group">
-                                                            <button type="button"
-                                                                class="btn btn-light-primary text-primary dropdown-toggle"
-                                                                data-bs-toggle="dropdown" aria-haspopup="true"
-                                                                aria-expanded="false">
-                                                                <i class="ri-settings-3-fill align-middle fs-5"></i>
-                                                            </button>
-                                                            <div class="dropdown-menu">
-                                                                <a class="dropdown-item" href="javascript:void(0)"><i
-                                                                        data-feather="eye" class="feather-sm me-2"></i>
-                                                                    Open</a>
-                                                                <a class="dropdown-item" href="javascript:void(0)"><i
-                                                                        data-feather="edit-2"
-                                                                        class="feather-sm me-2"></i> Edit</a>
-                                                                <a class="dropdown-item" href="javascript:void(0)"><i
-                                                                        data-feather="trash-2"
-                                                                        class="feather-sm me-2"></i> Delete</a>
-                                                                <a class="dropdown-item" href="javascript:void(0)"><i
-                                                                        data-feather="message-circle"
-                                                                        class="feather-sm me-2"></i>
-                                                                    Comments</a>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <br />
-                                    <h4>Estimates</h6>
-                                        <div class="table-responsive mt-4">
-                                            <table id="zero_config" class="table table-bordered text-nowrap">
-                                                <thead>
-                                                    <tr>
-                                                        <th>#</th>
-                                                        <th>Ticket</th>
-                                                        <th>Date</th>
-                                                        <th>Amount</th>
-                                                        <th>Technician</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>1</td>
-                                                        <td>AONO-123456401</td>
-                                                        <td>11-08-2023</td>
-                                                        <td>$320 <span
-                                                                class="badge bg-success font-weight-100">Paid</span>
-                                                        </td>
-                                                        <td>Adam Smith</td>
-                                                        <td>
-                                                            <div class="btn-group">
-                                                                <button type="button"
-                                                                    class="btn btn-light-primary text-primary dropdown-toggle"
-                                                                    data-bs-toggle="dropdown" aria-haspopup="true"
-                                                                    aria-expanded="false">
-                                                                    <i class="ri-settings-3-fill align-middle fs-5"></i>
-                                                                </button>
-                                                                <div class="dropdown-menu">
-                                                                    <a class="dropdown-item"
-                                                                        href="javascript:void(0)"><i data-feather="eye"
-                                                                            class="feather-sm me-2"></i> Open</a>
-                                                                    <a class="dropdown-item"
-                                                                        href="javascript:void(0)"><i
-                                                                            data-feather="edit-2"
-                                                                            class="feather-sm me-2"></i> Edit</a>
-                                                                    <a class="dropdown-item"
-                                                                        href="javascript:void(0)"><i
-                                                                            data-feather="trash-2"
-                                                                            class="feather-sm me-2"></i> Delete</a>
-                                                                    <a class="dropdown-item"
-                                                                        href="javascript:void(0)"><i
-                                                                            data-feather="message-circle"
-                                                                            class="feather-sm me-2"></i>
-                                                                        Comments</a>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                <div class="table-responsive mt-4">
+                                    <table id="zero_config" class="table table-bordered text-nowrap">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Activity</th>
+                                                <th>Date</th>
+                                                <th>Added by</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            @foreach($activity as $customercall)
+                                            <tr>
+
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td> {{$customercall->activity ??
+                                                    null}}
+                                                </td>
+                                                {{-- <td><a href="#" class="fw-bold link">{{$customercall->job_code ??
+                                                        null}}</a>
+                                                </td> --}}
+
+
+                                                <td>
+                                                    @if ($customercall->created_at)
+                                                    <div class="font-medium link">{{
+                                                        \Carbon\Carbon::parse($customercall->created_at)->format('m-d-y')
+                                                        }}
+                                                    </div>
+
+                                                    @else
+                                                    <div>N/A</div>
+                                                    @endif
+                                                </td>
+
+                                                <td>
+                                                    @php
+                                                    $technician = DB::table('users')->where('id',
+                                                    $customercall->user_id)->first();
+                                                    @endphp
+
+                                                    {{ $technician ? $technician->name : 'N/A' }}
+                                                </td>
+
+
+
+                                            </tr>
+                                            @endforeach
+
+
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-
 
 
                         <div class="tab-pane fade show " id="others_tab" role="tabpanel"
                             aria-labelledby="pills-timeline-tab">
                             <div class="card-body">
                                 <div class="profiletimeline mt-0">
+                                @foreach ($notename as $notename )
                                     <div class="sl-item">
                                         <div class="sl-left">
-                                            <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}" alt="user"
-                                                class="rounded-circle" />
+                                            @php
+                                        $username = DB::table('users')->where('id',
+                                        $notename->added_by)->first();
+                                        @endphp
+@if($username && $username->user_image)                                            <img src="{{ asset('public/images/Uploads/users/'. $username->id . '/' . $username->user_image) }}"
+                                                class="rounded-circle" alt="user" />
+                                            @else
+                                            <img src="{{ asset('public/images/login_img_bydefault.png') }}" alt="user"
+                                                class=" rounded-circle" />
+                                            @endif
+
                                         </div>
+                                       
                                         <div class="sl-right">
                                             <div>
-                                                <a href="javascript:void(0)" class="link">John Doe</a>
-                                                <span class="sl-date">1 days ago</span>
-                                                <p><strong>LG AC REPAIR </strong><a href="javascript:void(0)"> View
-                                                        Ticket</a></p>
+                                                <a href="javascript:void(0)" class="link"> {{$username->name ??
+                                                    null}}</a>
+                                                <span class="sl-date">
+                                                    {{ \Carbon\Carbon::parse($notename->created_at)->diffForHumans() }}
+                                                </span>
+                                                <p><strong> </strong><a href="javascript:void(0)">
+                                                    </a></p>
                                                 <div class="row">
-                                                    <div class="col-lg-12 col-md-12">Lorem ipsum dolor sit amet,
-                                                        consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                                                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                                                        nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                                                        commodo consequat</div>
+                                                    <div class="col-lg-12 col-md-12">
+                                                        {{ $notename->note }}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+
                                     <hr />
-                                    <div class="sl-item">
+                                    @endforeach
+                                    {{-- <div class="sl-item">
                                         <div class="sl-left">
                                             <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}" alt="user"
                                                 class="rounded-circle" />
@@ -413,13 +400,17 @@
                                             <div>
                                                 <span class="sl-date">2 days ago</span>
                                                 <a href="javascript:void(0)" class="link">John Smith</a>
-                                                <p><strong>LG AC REPAIR </strong><a href="javascript:void(0)"> View
+                                                <p><strong>LG AC REPAIR </strong><a href="javascript:void(0)">
+                                                        View
                                                         Ticket</a></p>
                                                 <div class="row">
                                                     <div class="col-lg-12 col-md-12">Lorem ipsum dolor sit amet,
-                                                        consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                                                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                                                        nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                                                        consectetur adipiscing elit, sed do eiusmod tempor
+                                                        incididunt ut
+                                                        labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                                        quis
+                                                        nostrud exercitation ullamco laboris nisi ut aliquip ex
+                                                        ea
                                                         commodo consequat</div>
                                                 </div>
                                             </div>
@@ -435,21 +426,26 @@
                                             <div>
                                                 <a href="javascript:void(0)" class="link">James Nelson</a>
                                                 <span class="sl-date">4 days ago</span>
-                                                <p><strong>LG AC REPAIR </strong><a href="javascript:void(0)"> View
+                                                <p><strong>LG AC REPAIR </strong><a href="javascript:void(0)">
+                                                        View
                                                         Ticket</a></p>
                                                 <div class="row">
                                                     <div class="col-lg-12 col-md-12">Lorem ipsum dolor sit amet,
-                                                        consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                                                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                                                        nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                                                        consectetur adipiscing elit, sed do eiusmod tempor
+                                                        incididunt ut
+                                                        labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                                        quis
+                                                        nostrud exercitation ullamco laboris nisi ut aliquip ex
+                                                        ea
                                                         commodo consequat</div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>
+
 
 
 
