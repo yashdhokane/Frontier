@@ -1447,6 +1447,31 @@
                                             $('.pending_jobs2').addClass('d-none');
                                         }
 
+                                       // Function to toggle the order of elements
+                                        function toggleOrder() {
+                                            var ascendingOrder = true; // Flag to track sorting order
+                                            // Get the list of .pending_jobs2 elements
+                                            var $pendingJobs = $('.pending_jobs2');
+                                            // Toggle the sorting order flag
+                                            ascendingOrder = !ascendingOrder;
+                                            
+                                            // Sort the elements based on their positions in the DOM
+                                            $pendingJobs.sort(function(a, b) {
+                                                if (ascendingOrder) {
+                                                    return $(a).index() - $(b).index();
+                                                } else {
+                                                    return $(b).index() - $(a).index();
+                                                }
+                                            });
+                                            
+                                            // Append the sorted elements to their parent
+                                            $pendingJobs.appendTo($pendingJobs.parent());
+                                        }
+
+                                        // Event handler for clicking on #makedescending
+                                        $('#makedescending').on('click', toggleOrder);
+
+                                        // Iterate over each .pending_jobs2 element
                                         $('.pending_jobs2').each(function() {
                                             var $element = $(this); // Store reference to the element
                                             var technicianId = $element.data('technician-id');
@@ -1480,37 +1505,13 @@
                                                     $('#techall').change(function() {
                                                         updateVisibility();
                                                     });
-
-                                                    var ascendingOrder = true; // Flag to track sorting order
-
-                                                    // Event handler for clicking on #makedescending
-                                                    $('#makedescending').on('click',function() {
-                                                        // Get the list of .pending_jobs2 elements
-                                                        var $pendingJobs = $('.pending_jobs2');
-                                                        // Toggle the sorting order flag
-                                                        ascendingOrder = !ascendingOrder;
-                                                        
-                                                        // Sort the elements based on their positions in the DOM
-                                                        $pendingJobs.sort(function(a, b) {
-                                                            if (ascendingOrder) {
-                                                                return $(a).index() - $(b).index();
-                                                            } else {
-                                                                return $(b).index() - $(a).index();
-                                                            }
-                                                        });
-                                                        
-                                                        // Append the sorted elements to their parent
-                                                        $pendingJobs.appendTo($pendingJobs.parent());
-                                                    });
-
-
-
                                                 },
                                                 error: function(xhr, status, error) {
                                                     console.log('Error occurred during AJAX request:', error);
                                                 }
                                             });
                                         });
+
 
                                     } else {
                                         $('.rescheduleJobs').html(
