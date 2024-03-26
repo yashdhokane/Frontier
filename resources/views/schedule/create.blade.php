@@ -336,6 +336,7 @@
                                 </div>
                             </div>
                                 <input class="service_tax" type="hidden" name="service_tax" value="">
+                                <div class="col-md-2">
                                 <div class="mb-2 service_total_text">
                                     $0
                                 </div>
