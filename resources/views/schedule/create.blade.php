@@ -78,11 +78,11 @@
                                     <div class="table-responsive">
 										<div class="row">
 											<div class="col-md-9"><h5 class="font-weight-medium mb-2" style="position: relative;">Reschedule Pending Jobs </h5></div>
-											<div class="col-md-3"><i class="ri-sort-asc"></i></div>
+											<div class="col-md-3" id="makedescending" style="cursor: pointer;"><i class="ri-sort-asc"></i></div>
 										</div>
 										<div class="row">
 											<div class="col-md-6 d-flex align-items-baseline"><input class="mx-1" type="radio" name="teritory" id="newyork" data-state="NY" checked> Show Open jobs in New York</div>
-											<div class="col-md-6 d-flex align-items-baseline"><input class="mx-1" type="radio" name="teritory" id=""> Show Open jobs of Technician</div>
+											<div class="col-md-6 d-flex align-items-baseline"><input class="mx-1" type="radio" name="teritory" id="techall"> Show Open jobs of Technician</div>
 										</div>
                                          <div class="rescheduleJobs">
                                         </div>

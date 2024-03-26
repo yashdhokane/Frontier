@@ -712,6 +712,10 @@ Route::middleware('auth')->group(function () {
 
     Route::post('store/event/', [ScheduleController::class, 'store_event']);
 
+    Route::post('schedule/new_customer', [ScheduleController::class, 'schedule_new_customer']);
+
+    Route::get('get/userstate', [ScheduleController::class, 'userstate']);
+
 
 
 

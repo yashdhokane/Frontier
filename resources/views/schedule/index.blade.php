@@ -1,185 +1,6 @@
 @extends('home')
 @section('content')
-    <style>
-        .form-control:focus {
-            box-shadow: 0 0 0 0rem rgba(54, 153, 255, .25);
-        }
-
-        .popupDiv {
-            position: absolute;
-            background-color: #ffffff;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            padding: 10px;
-            z-index: 1000;
-            /* Ensure the popup appears above other content */
-        }
-
-        .popupDiv div {
-            padding: 5px 0;
-        }
-
-        .popupDiv div span {
-            margin-left: 5px;
-        }
-
-        .activegreen {
-            border: 2px solid green !important;
-        }
-
-        .user_head_link {
-            color: #2962ff !important;
-            text-transform: uppercase;
-            font-size: 13px;
-        }
-
-        .user_head_link:hover {
-            color: #ee9d01 !important;
-        }
-
-        .dts2 {
-            min-height: 60px;
-        }
-
-        .table> :not(caption)>*>* {
-            padding: 0.3rem;
-        }
-
-        .dat table th {
-            text-align: center;
-        }
-
-        .dts {
-            background: #3699ff;
-            padding: 5px;
-            border-radius: 5px;
-            color: #FFFFFF;
-        }
-
-        .dts p {
-            margin-bottom: 5px;
-            line-height: 17px;
-        }
-
-        .out {
-            background: #fbeccd !important;
-        }
-
-        .out:hover {
-            background: #fbeccd !important;
-        }
-
-        .out .dts {
-            background: #fbeccd !important;
-        }
-
-        .table-hover>tbody>tr:hover>* {
-            --bs-table-color-state: var(--bs-table-hover-color);
-            --bs-table-bg-state: transparent;
-        }
-
-        img.calimg2 {
-            width: 224px;
-            margin: 0px 10px;
-        }
-
-        .error {
-            color: #ca1414;
-        }
-
-        .table-responsive {
-            overflow-x: auto !important;
-            width: 100% !important;
-        }
-
-        .timeslot_td {
-            position: relative;
-            height: 80px;
-            width: 100px;
-            font-size: 12px;
-        }
-
-        .timeslot_th {
-            position: relative;
-            width: 100px;
-        }
-
-        .flexibleslot {
-            cursor: pointer;
-            position: absolute;
-            z-index: 1;
-            width: -webkit-fill-available;
-        }
-
-        .overflow_x {
-            overflow-x: auto;
-        }
-
-        .overflow_y {
-            overflow-y: auto;
-        }
-
-        .pending_jobs2 {
-            border: 1px solid #2962ff;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .img40 {
-            width: 40px;
-            height: 40px;
-            line-height: 40px;
-        }
-
-        .customer_sr_box {
-            padding: 10px;
-            border: 1px solid #2962ff;
-            border-radius: 4px;
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
-
-        .confirm_job_box {
-            margin-bottom: 20px;
-        }
-
-        .test {
-            display: contents;
-            font-size: 11px;
-        }
-
-        .reschedule_job {
-            font-size: 12px;
-        }
-
-        .customer_sr_box:hover {
-            background-color: #f3f3f3;
-        }
-
-        .pending_jobs2:hover {
-            background-color: #f3f3f3;
-        }
-
-        .service_css {
-            font-size: 11px;
-        }
-
-        .total_css {
-            font-size: 14px;
-        }
-
-        .customers {
-            height: 304px;
-            overflow-y: auto;
-        }
-
-        .rescheduleJobs {
-            height: 304px;
-            overflow-y: auto;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url('public/admin/schedule/style.css') }}">
 
     <div class="page-wrapper p-0 ms-2" style="display:flex;">
         <!-- Container fluid  -->
@@ -443,449 +264,7 @@
 
                         <div class="modal-body createCustomerData">
 
-
-
-                            <style>
-                                .required-field::after {
-
-                                    content: " *";
-
-                                    color: red;
-
-                                }
-                            </style>
-
-
-
-
-
-                            <form id="myForm" method="POST" action="{{ url('new/customer/schedule') }}"
-                                enctype="multipart/form-data">
-
-                                @csrf
-
-                                <div class="container-fluid">
-                                    <div class="row">
-
-                                        <div class="col-lg-9 d-flex align-items-stretch">
-
-                                            <div class="card w-100">
-
-                                                <div class="card-body border-top">
-                                                    <h4 class="card-title">Customer Information</h4>
-
-                                                    <div class="row">
-
-                                                        <div class="col-sm-12 col-md-4">
-
-                                                            <div class="mb-3">
-
-                                                                <label for="first_name"
-                                                                    class="control-label col-form-label required-field">First
-                                                                    Name</label>
-
-                                                                <input type="text" class="form-control"
-                                                                    id="first_name" name="first_name" placeholder=""
-                                                                    required />
-                                                            </div>
-
-                                                        </div>
-
-                                                        <div class="col-sm-12 col-md-4">
-
-                                                            <div class="mb-3">
-
-                                                                <label for="last_name"
-                                                                    class="control-label col-form-label required-field">Last
-                                                                    Name</label>
-
-                                                                <input type="text" class="form-control" id="last_name"
-                                                                    name="last_name" placeholder="" required />
-
-                                                            </div>
-
-                                                        </div>
-
-                                                        <div class="col-sm-12 col-md-4">
-
-                                                            <div class="mb-3">
-
-                                                                <label for="display_name"
-                                                                    class="control-label col-form-label required-field">Display
-                                                                    Name (shown
-
-                                                                    on invoice)</label>
-
-                                                                <input type="text" class="form-control"
-                                                                    id="display_name" name="display_name" placeholder=""
-                                                                    required />
-                                                                <small id="name" class="form-text text-muted">It will
-                                                                    shown on Invoice.</small>
-
-                                                            </div>
-
-                                                        </div>
-
-                                                        <div class="col-sm-12 col-md-4">
-
-                                                            <div class="mb-3">
-
-                                                                <label for="email"
-                                                                    class="control-label col-form-label">Email</label>
-
-                                                                <input type="email" class="form-control" id="email"
-                                                                    name="email" placeholder="" />
-
-                                                            </div>
-
-                                                        </div>
-
-                                                        <div class="col-sm-12 col-md-4">
-
-                                                            <div class="mb-3">
-
-                                                                <label for="mobile_phone"
-                                                                    class="control-label col-form-label required-field">Mobile
-                                                                    Phone</label>
-
-                                                                <input type="text" class="form-control"
-                                                                    id="mobile_phone" name="mobile_phone" placeholder=""
-                                                                    required />
-                                                                <small id="name" class="form-text text-muted">Don’t
-                                                                    add +1. Only add mobile number without space.</small>
-
-                                                            </div>
-
-                                                        </div>
-
-
-                                                        <h4 class="card-title">Address</h4>
-
-
-                                                        <div class="col-sm-12 col-md-12">
-
-                                                            <div class="mb-3">
-
-                                                                <label for="address1"
-                                                                    class="control-label col-form-label required-field">Address
-                                                                    Line 1
-
-                                                                    (Street)</label>
-
-                                                                <input type="text" class="form-control" id="address1"
-                                                                    name="address1" placeholder="" required />
-
-                                                            </div>
-
-                                                        </div>
-
-                                                        <div class="col-sm-12 col-md-8">
-
-                                                            <div class="mb-3">
-
-                                                                <label for="address_unit"
-                                                                    class="control-label col-form-label">Address
-                                                                    Line 2</label>
-
-                                                                <input type="text" class="form-control"
-                                                                    id="address_unit" name="address_unit"
-                                                                    placeholder="" />
-
-                                                            </div>
-
-                                                        </div>
-
-                                                        <div class="col-sm-12 col-md-4">
-
-                                                            <div class="mb-3">
-
-                                                                <label for="display_name"
-                                                                    class="control-label col-form-label required-field">Type</label>
-
-                                                                <select class="form-select me-sm-2" id="address_type"
-                                                                    name="address_type">
-
-                                                                    <option value="">Select address..</option>
-
-                                                                    <option value="home">Home Address</option>
-
-                                                                    <option value="work">Work Address</option>
-
-                                                                    <option value="other">Other Address</option>
-
-                                                                </select>
-
-                                                            </div>
-
-                                                        </div>
-
-                                                        <div class="col-sm-12 col-md-4">
-
-                                                            <div class="mb-3">
-
-                                                                <label for="state_id"
-                                                                    class="control-label col-form-label required-field">State</label>
-
-                                                                <select class="form-select me-sm-2" id="state_id"
-                                                                    name="state_id" required>
-
-                                                                    <option selected disabled value="">Select
-                                                                        State...</option>
-
-                                                                    @foreach ($locationStates as $locationState)
-                                                                        <option value="{{ $locationState->state_id }}">
-                                                                            {{ $locationState->state_name }}
-
-                                                                        </option>
-                                                                    @endforeach
-
-                                                                </select>
-
-                                                            </div>
-
-                                                        </div>
-
-                                                        <div class="col-sm-12 col-md-4">
-
-                                                            <div class="mb-3">
-
-                                                                <label for="city"
-                                                                    class="control-label col-form-label required-field">City</label>
-
-                                                                <select class="form-select" id="city" name="city"
-                                                                    required>
-
-                                                                    <option selected disabled value="">Select City...
-                                                                    </option>
-
-                                                                </select>
-
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="col-sm-12 col-md-4">
-
-                                                            <div class="mb-3">
-
-                                                                <label for="zip_code"
-                                                                    class="control-label col-form-label required-field">Zip</label>
-
-                                                                <input type="text" class="form-control" id="zip_code"
-                                                                    name="zip_code" placeholder="" required />
-
-                                                            </div>
-
-                                                        </div>
-
-                                                        <h4 class="card-title">Other Details</h4>
-
-                                                        <div class="col-sm-12 col-md-4">
-
-                                                            <div class="mb-3">
-
-                                                                <label for="home_phone"
-                                                                    class="control-label col-form-label">Home Phone</label>
-
-                                                                <input type="text" class="form-control"
-                                                                    id="home_phone" name="home_phone" placeholder="" />
-
-                                                            </div>
-
-                                                        </div>
-
-                                                        <div class="col-sm-12 col-md-4">
-
-                                                            <div class="mb-3">
-
-                                                                <label for="work_phone"
-                                                                    class="control-label col-form-label">Work Phone</label>
-
-                                                                <input type="text" class="form-control"
-                                                                    id="work_phone" name="work_phone" placeholder="" />
-
-                                                            </div>
-
-                                                        </div>
-
-                                                        <div class="col-sm-12 col-md-4">
-
-                                                            <div class="mb-3">
-
-                                                                <label for="source_id"
-                                                                    class="control-label col-form-label">Lead
-                                                                    Source</label>
-
-                                                                <select class="form-select me-sm-2" id="source_id"
-                                                                    name="source_id">
-
-                                                                    <option value="">Select Lead Source</option>
-
-                                                                    @foreach ($leadSources as $leadSource)
-                                                                        <option value="{{ $leadSource->source_id }}">
-                                                                            {{ $leadSource->source_name }}
-
-                                                                        </option>
-                                                                    @endforeach
-
-                                                                </select>
-
-                                                            </div>
-
-                                                        </div>
-
-                                                        <div class="col-sm-12 col-md-4">
-
-                                                            <div class="mb-3">
-
-                                                                <label for="company"
-                                                                    class="control-label col-form-label">Company</label>
-
-                                                                <input type="text" class="form-control" id="company"
-                                                                    name="company" placeholder="" />
-
-                                                            </div>
-
-                                                        </div>
-
-                                                        <div class="col-sm-12 col-md-4">
-
-                                                            <div class="mb-3">
-
-                                                                <label for="role"
-                                                                    class="control-label col-form-label">Role</label>
-
-                                                                <input type="text" class="form-control" id="role"
-                                                                    name="role" placeholder="" />
-
-                                                            </div>
-
-                                                        </div>
-
-                                                        <div class="col-sm-12 col-md-4">
-                                                            <div class="mb-3">
-                                                                <label for="inputcontact"
-                                                                    class="control-label bold mb5 col-form-label">Type</label>
-                                                                <div class="form-check">
-                                                                    <input class="form-check-input" type="radio"
-                                                                        name="user_type" id="exampleRadios1"
-                                                                        value="Homeowner">
-                                                                    <label class="form-check-label"
-                                                                        for="exampleRadios1">Homeowner</label>
-                                                                </div>
-                                                                <div class="form-check">
-                                                                    <input class="form-check-input" type="radio"
-                                                                        name="user_type" id="exampleRadios2"
-                                                                        value="Business">
-                                                                    <label class="form-check-label"
-                                                                        for="exampleRadios2">Business</label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-
-                                                    <div class="row mt-2">
-                                                        <div class="col-sm-12 col-md-8">
-                                                            <div class="mb-3">
-                                                                <label for="image"
-                                                                    class="control-label bold mb5 col-form-label">Image
-                                                                    Upload</label>
-                                                                <input type="file" class="form-control" id="image"
-                                                                    name="image" accept="image/*">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-12 col-md-4">
-                                                            <div class="mb-3">
-                                                                <label for="tag_id"
-                                                                    class="control-label bold mb5 col-form-label">Customer
-                                                                    Tags</label>
-                                                                <select class="form-control  me-sm-2" name="tag_id[]"
-                                                                    id="tag_idss" multiple="multiple"
-                                                                    data-bgcolor="light" data-bgcolor-variation="accent-3"
-                                                                    data-text-color="blue" style="width: 100%" required>
-                                                                    @foreach ($tags as $tag)
-                                                                        <option value="{{ $tag->tag_id }}">
-                                                                            {{ $tag->tag_name }}</option>
-                                                                    @endforeach
-                                                                </select>
-
-                                                                <small id="name" class="form-text text-muted">You can
-                                                                    select multiple tags.</small>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="row mt-2">
-                                                        <div class="col-sm-12 col-md-12">
-                                                            <div class="mb-3">
-                                                                <label
-                                                                    class="control-label bold mb5 col-form-label">Customer
-                                                                    Notes</label>
-                                                                <textarea type="text" class="form-control" id="customer_notes" name="customer_notes" placeholder=""></textarea>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-
-
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-3 d-flex align-items-stretch">
-                                            <div class="card w-100">
-                                                <div class="card-body border-top px-0">
-                                                    <div class="customersSuggetions2"
-                                                        style="display: none;height: 200px;
-                                                            overflow-y: scroll;">
-                                                        <div class="card">
-                                                            <div class="card-body px-0">
-                                                                <div class="">
-                                                                    <h5 class="font-weight-medium mb-2">Select Customer
-                                                                    </h5>
-                                                                    <div class="customers2">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-                                    <div class="row">
-
-                                        <div class="p-3 border-top">
-
-                                            <div class="action-form">
-
-                                                <div class="mb-3 mb-0 text-center">
-
-                                                    <button type="button" id="cancelBtn"
-                                                        class="btn btn-dark rounded-pill px-4 waves-effect waves-light">Cancel</button>
-
-                                                    <button type="submit" id="submitBtn"
-                                                        class="btn btn-info rounded-pill px-4 waves-effect waves-light">Save</button>
-
-
-
-                                                </div>
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-
-
-                            </form>
+                            @include('schedule.new_customer')
 
                         </div>
 
@@ -925,76 +304,8 @@
                     </div>
                     <hr color="#6a737c">
                     <div class="modal-body createCustomerData pb-5">
-                        <div class="row justify-content-evenly">
+                        @include('schedule.event')
 
-                            <div class="col-md-5 p-3 shadow ">
-                                <h5 class="d-flex justify-content-between">
-                                    <span><i class="fa fa-calendar-alt"></i> Schedule</span> <i class="fa fa-edit"></i>
-                                </h5>
-                                <hr>
-                                <div class="col-sm-12 col-md-6">
-                                    <div class="mb-3">
-                                        <label for="inputEmail3" class="control-label col-form-label">Start Time</label>
-
-                                    </div>
-                                </div>
-                                <div class="d-flex gap-5 my-2">
-                                    <label for="fdate">From</label>
-                                    <input type="date" name="start_date" id="start_date" class="form-control">
-                                    <div class="input-group">
-                                        <span class="input-group-text" id="basic-addon1">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                class="feather feather-clock feather-sm">
-                                                <circle cx="12" cy="12" r="10"></circle>
-                                                <polyline points="12 6 12 12 16 14"></polyline>
-                                            </svg>
-                                        </span>
-                                        <input type="time" class="form-control" name="start_time" id="start_time"
-                                            aria-label="Username" aria-describedby="basic-addon1">
-                                    </div>
-
-                                </div>
-                                <div class="d-flex gap-5 my-2">
-                                    <label for="tdate">To</label>
-                                    <input type="date" name="end_date" id="end_date" class="ms-3 form-control">
-                                    <div class="input-group">
-                                        <span class="input-group-text" id="basic-addon1">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                class="feather feather-clock feather-sm">
-                                                <circle cx="12" cy="12" r="10"></circle>
-                                                <polyline points="12 6 12 12 16 14"></polyline>
-                                            </svg>
-                                        </span>
-                                        <input type="time" class="form-control" name="end_time" id="end_time"
-                                            aria-label="Username" aria-describedby="basic-addon1">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-5 p-3 shadow ">
-                                <h5 class="d-flex justify-content-between">
-                                    <span><i class="fa fa-calendar-alt"></i> Event Details</span>
-                                </h5>
-                                <hr>
-                                <div class="my-2">
-                                    <input type="text" name="event_name" id="event_name" placeholder="Name"
-                                        class="border-0 border-bottom form-control bg-light">
-                                </div>
-                                <div class="my-2">
-                                    <textarea name="event_description" id="event_description" cols="3" rows="3" placeholder="Note"
-                                        class="border-0 border-bottom form-control bg-light"></textarea>
-                                </div>
-                                <div class="my-2">
-                                    <input type="text" name="event_location" id="event_location"
-                                        placeholder="Location" class="border-0 border-bottom form-control bg-light">
-                                </div>
-                            </div>
-
-                        </div>
                     </div>
 
                 </div>
@@ -1478,8 +789,8 @@
                             onStepChanging: function(event, currentIndex, newIndex) {
 
                                 if (newIndex === 0) {
-                                        return false; // Prevent navigation to step 1
-                                   
+                                    return false; // Prevent navigation to step 1
+
                                 }
 
                                 if (currentIndex === 1) {
@@ -1705,7 +1016,7 @@
             var getTax = parseInt(service_tax) - parseInt(product_tax);
             var getTotal = $('.total').val().trim();
 
-                        
+
             $('.show_total_discount').text(getDiscount >= 0 ? '$' + getDiscount : '$' + Math.abs(getDiscount));
             $('.show_total_tax').text(getTax >= 0 ? '$' + getTax : '$' + Math.abs(getTax));
             $('.show_total').text(getTotal >= 0 ? '$' + getTotal : '$' + Math.abs(getTotal));
@@ -2124,8 +1435,83 @@
                                         );
                                     }
                                     if (data.pendingJobs) {
-                                        $('.rescheduleJobs').append(data
-                                            .pendingJobs);
+                                        $('.rescheduleJobs').append(data.pendingJobs);
+
+                                       // Hide elements initially
+
+                                        var newyork = $('#newyork');
+                                        var techAll = $('#techall');
+
+                                        // Initial check if 'newyork' checkbox is checked
+                                        if (newyork.prop('checked')) {
+                                            $('.pending_jobs2').addClass('d-none');
+                                        }
+
+                                        $('.pending_jobs2').each(function() {
+                                            var $element = $(this); // Store reference to the element
+                                            var technicianId = $element.data('technician-id');
+                                            $.ajax({
+                                                method: 'get',
+                                                url: "get/userstate",
+                                                data: { technicianId: technicianId },
+                                                success: function(values) {
+                                                    var code = values.state_code;
+
+                                                    // Function to update visibility based on checkboxes
+                                                    function updateVisibility() {
+                                                        if (newyork.prop('checked') && code === 'NY') {
+                                                            $element.removeClass('d-none');
+                                                        } else if (techAll.prop('checked')) {
+                                                            $element.removeClass('d-none');
+                                                        } else {
+                                                            $element.addClass('d-none');
+                                                        }
+                                                    }
+
+                                                    // Update visibility initially
+                                                    updateVisibility();
+
+                                                    // Event handler for 'newyork' checkbox change
+                                                    $('#newyork').change(function() {
+                                                        updateVisibility();
+                                                    });
+
+                                                    // Event handler for 'techall' checkbox change
+                                                    $('#techall').change(function() {
+                                                        updateVisibility();
+                                                    });
+
+                                                    var ascendingOrder = true; // Flag to track sorting order
+
+                                                    // Event handler for clicking on #makedescending
+                                                    $('#makedescending').on('click',function() {
+                                                        // Get the list of .pending_jobs2 elements
+                                                        var $pendingJobs = $('.pending_jobs2');
+                                                        // Toggle the sorting order flag
+                                                        ascendingOrder = !ascendingOrder;
+                                                        
+                                                        // Sort the elements based on their positions in the DOM
+                                                        $pendingJobs.sort(function(a, b) {
+                                                            if (ascendingOrder) {
+                                                                return $(a).index() - $(b).index();
+                                                            } else {
+                                                                return $(b).index() - $(a).index();
+                                                            }
+                                                        });
+                                                        
+                                                        // Append the sorted elements to their parent
+                                                        $pendingJobs.appendTo($pendingJobs.parent());
+                                                    });
+
+
+
+                                                },
+                                                error: function(xhr, status, error) {
+                                                    console.log('Error occurred during AJAX request:', error);
+                                                }
+                                            });
+                                        });
+
                                     } else {
                                         $('.rescheduleJobs').html(
                                             '<div class="pending_jobs2"><div class="row"><div class="col-md-12" style="text-align: center;"><h6 class="font-weight-medium mb-0">No Data Found</h6></div></div></div>'
@@ -2142,10 +1528,17 @@
 
                         }
 
+
+
                     });
 
+
+
                 }
+
+
             });
+
         });
 
         $(document).on('click', '.selectCustomer', function() {
@@ -2295,16 +1688,16 @@
             }
 
             $.ajax({
-                    url: "get/usertax",
-                    data: {
-                        customerId: customerId,
-                    },
-                    type: 'GET',
-                    success: function(data) {
-                      $('.taxcodetext').empty();
+                url: "get/usertax",
+                data: {
+                    customerId: customerId,
+                },
+                type: 'GET',
+                success: function(data) {
+                    $('.taxcodetext').empty();
 
-                      $('.taxcodetext').append(''+ data.state_tax+'% for '+data.state_code+'');
-                    },
+                    $('.taxcodetext').append('' + data.state_tax + '% for ' + data.state_code + '');
+                },
             });
 
         });
@@ -2462,16 +1855,16 @@
                 });
             }
             $.ajax({
-                    url: "get/usertax",
-                    data: {
-                        customerId: customerId,
-                    },
-                    type: 'GET',
-                    success: function(data) {
-                      $('.taxcodetext').empty();
+                url: "get/usertax",
+                data: {
+                    customerId: customerId,
+                },
+                type: 'GET',
+                success: function(data) {
+                    $('.taxcodetext').empty();
 
-                      $('.taxcodetext').append(''+ data.state_tax+'% for '+data.state_code+'');
-                    },
+                    $('.taxcodetext').append('' + data.state_tax + '% for ' + data.state_code + '');
+                },
             });
 
         });
@@ -2866,7 +2259,7 @@
 
         }
     </script>
-    
+
     <script>
         $(document).ready(function() {
             $('#tag_idss').select2();

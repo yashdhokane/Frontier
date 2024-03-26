@@ -179,7 +179,7 @@ class ScheduleController extends Controller
                 ->where('role', 'customer')
                 ->get();
 
-            $filterJobs = DB::table('jobs')->select('jobs.job_title','jobs.id','jobs.address', 'users.name as customer_name', 'technician.name as technician_name', 'jobs.created_at', 'appliances.appliance_name')
+            $filterJobs = DB::table('jobs')->select('jobs.job_title','jobs.id','jobs.address','jobs.technician_id', 'users.name as customer_name', 'technician.name as technician_name', 'jobs.created_at', 'appliances.appliance_name')
                 ->join('appliances', 'appliances.appliance_id', 'jobs.appliances_id')
                 ->join('users', 'users.id', 'jobs.customer_id')
                 ->join('users as technician', 'technician.id', 'jobs.technician_id')
@@ -223,7 +223,7 @@ class ScheduleController extends Controller
 
                     $createdDate = Carbon::parse($value->created_at);
 
-                    $pendingJobs .= '<div class="pending_jobs2" data-id="' . $value->id . '" data-address="' . $value->address . '"><div class="row"><div class="col-md-12">';
+                    $pendingJobs .= '<div class="pending_jobs2" data-code="" data-technician-id="' . $value->technician_id . '" data-id="' . $value->id . '" data-address="' . $value->address . '"><div class="row"><div class="col-md-12">';
                     $pendingJobs .= '<h6 class="font-weight-medium mb-0">' . $value->job_title . '</h6></div>';
                     $pendingJobs .= '<div class="col-md-6 reschedule_job">Customer: ' . $value->customer_name . '</div>';
                     $pendingJobs .= '<div class="col-md-6 reschedule_job" style="display: contents;">Technician: ' . $value->technician_name . '</div>';
@@ -1131,6 +1131,25 @@ class ScheduleController extends Controller
        $customer = CustomerUserAddress::with('locationStateName')->where('user_id', $request->customerId)->first();
        $statecode = $customer->locationStateName;
        return response()->json($statecode);
+    }
+
+    public function schedule_new_customer(Request $request)
+    {
+        $locationStates = LocationState::all();
+        $leadSources = SiteLeadSource::all();
+
+        $tags = SiteTags::all(); // Fetch all tags
+        
+        return view('schedule.new_customer',compact('locationStates', 'leadSources', 'tags'));
+    }
+
+    public function userstate(Request $request)
+    {
+       
+        $a = CustomerUserAddress::where('user_id',$request->technicianId)->with('locationStateName')->first();
+        $address = $a->locationStateName;
+        
+        return response()->json($address);
     }
     
 

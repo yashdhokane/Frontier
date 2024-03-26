@@ -1,0 +1,187 @@
+
+.form-control:focus {
+    box-shadow: 0 0 0 0rem rgba(54, 153, 255, .25);
+}
+
+.popupDiv {
+    position: absolute;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    z-index: 1000;
+    /* Ensure the popup appears above other content */
+}
+
+.popupDiv div {
+    padding: 5px 0;
+}
+
+.popupDiv div span {
+    margin-left: 5px;
+}
+
+.activegreen {
+    border: 2px solid green !important;
+}
+
+.user_head_link {
+    color: #2962ff !important;
+    text-transform: uppercase;
+    font-size: 13px;
+}
+
+.user_head_link:hover {
+    color: #ee9d01 !important;
+}
+
+.dts2 {
+    min-height: 60px;
+}
+
+.table> :not(caption)>*>* {
+    padding: 0.3rem;
+}
+
+.dat table th {
+    text-align: center;
+}
+
+.dts {
+    background: #3699ff;
+    padding: 5px;
+    border-radius: 5px;
+    color: #FFFFFF;
+}
+
+.dts p {
+    margin-bottom: 5px;
+    line-height: 17px;
+}
+
+.out {
+    background: #fbeccd !important;
+}
+
+.out:hover {
+    background: #fbeccd !important;
+}
+
+.out .dts {
+    background: #fbeccd !important;
+}
+
+.table-hover>tbody>tr:hover>* {
+    --bs-table-color-state: var(--bs-table-hover-color);
+    --bs-table-bg-state: transparent;
+}
+
+img.calimg2 {
+    width: 224px;
+    margin: 0px 10px;
+}
+
+.error {
+    color: #ca1414;
+}
+
+.table-responsive {
+    overflow-x: auto !important;
+    width: 100% !important;
+}
+
+.timeslot_td {
+    position: relative;
+    height: 80px;
+    width: 100px;
+    font-size: 12px;
+}
+
+.timeslot_th {
+    position: relative;
+    width: 100px;
+}
+
+.flexibleslot {
+    cursor: pointer;
+    position: absolute;
+    z-index: 1;
+    width: -webkit-fill-available;
+}
+
+.overflow_x {
+    overflow-x: auto;
+}
+
+.overflow_y {
+    overflow-y: auto;
+}
+
+.pending_jobs2 {
+    border: 1px solid #2962ff;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.img40 {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+}
+
+.customer_sr_box {
+    padding: 10px;
+    border: 1px solid #2962ff;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.confirm_job_box {
+    margin-bottom: 20px;
+}
+
+.test {
+    display: contents;
+    font-size: 11px;
+}
+
+.reschedule_job {
+    font-size: 12px;
+}
+
+.customer_sr_box:hover {
+    background-color: #f3f3f3;
+}
+
+.pending_jobs2:hover {
+    background-color: #f3f3f3;
+}
+
+.service_css {
+    font-size: 11px;
+}
+
+.total_css {
+    font-size: 14px;
+}
+
+.customers {
+    height: 304px;
+    overflow-y: auto;
+}
+
+.rescheduleJobs {
+    height: 304px;
+    overflow-y: auto;
+}
+
+.required-field::after {
+
+    content: " *";
+
+    color: red;
+
+}
