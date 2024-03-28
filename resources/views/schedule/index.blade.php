@@ -289,6 +289,7 @@
         <div class="modal-dialog modal-dialog-scrollable2 modal-dialog modal-xl">
             <form action="{{ url('store/event/') }}" method="POST" id="addEvent">
                 <input type="hidden" name="event_technician_id" id="event_technician_id" value="">
+                <input type="hidden" name="scheduleType" id="scheduleType" value="event">
                 @csrf
                 <div class="modal-content">
                     <div class="modal-header d-flex align-items-center" style="padding-bottom: 0px;">

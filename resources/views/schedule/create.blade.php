@@ -11,6 +11,7 @@
                     <input type="hidden" class="datetime" name="datetime" value="{{ $dateTime }}">
                     <input type="hidden" class="customer_id" id="" name="customer_id" value="">
                     <input type="hidden" class="job_id" id="" name="job_id" value="">
+                    <input type="hidden" class="scheduleType" id="" name="scheduleType" value="job">
                     <input type="hidden" class="address_type" id="" name="address_type" value="">
                     <!-- Step 1 -->
                     <h6>Customer Information </h6>

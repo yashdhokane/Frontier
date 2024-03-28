@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\Service;
 use App\Models\Products;
 use App\Models\Role;
+use App\Models\Schedule;
 use App\Models\SiteLeadSource;
 use App\Models\SiteTags;
 use DB;
@@ -385,7 +386,7 @@ class ScheduleController extends Controller
 
                 $jobId = DB::table('jobs')->where('id', $data['job_id'])->update($jobsData);
 
-                if($jobId)
+                if($jobId && $data['scheduleType'])
                 {
 
                     $now = Carbon::now();
@@ -400,6 +401,17 @@ class ScheduleController extends Controller
                    $activity->activity = 'Job Re-Scheduled for'.$formattedDateTime;
 
                    $activity->save();
+
+                   $schedule = new Schedule();
+
+                   $schedule->schedule_type = $data['scheduleType'];
+                   $schedule->job_id = $jobId;
+                   $schedule->start_date_time = $start_date_time;
+                   $schedule->end_date_time = $end_date_time;
+                   $schedule->added_by = auth()->user()->id;
+                   $schedule->updated_by = auth()->user()->id;
+
+                   $schedule->save();
 
                 }
 
@@ -552,7 +564,7 @@ class ScheduleController extends Controller
 
                 // for job activity 
 
-                if($jobId)
+                if($jobId && $data['scheduleType'])
                 {
 
                     $now = Carbon::now();
@@ -567,6 +579,18 @@ class ScheduleController extends Controller
                    $activity->activity = 'Job scheduled for'.$formattedDateTime;
 
                    $activity->save();
+
+                   $schedule = new Schedule();
+
+                   $schedule->schedule_type = $data['scheduleType'];
+                   $schedule->job_id = $jobId;
+                   $schedule->start_date_time = $start_date_time;
+                   $schedule->end_date_time = $end_date_time;
+                   $schedule->added_by = auth()->user()->id;
+                   $schedule->updated_by = auth()->user()->id;
+
+                   $schedule->save();
+
 
                 }
 
@@ -640,8 +664,6 @@ class ScheduleController extends Controller
                 }
 
                
-
-                $jobId = DB::table('jobs')->insertGetId($jobsData);
 
                 if ($request->hasFile('photos')) {
                     $fileData = [];
@@ -1162,6 +1184,20 @@ class ScheduleController extends Controller
         $event->updated_by = $auth;
     
         $event->save();
+
+        if($request->scheduleType)
+        {
+            $schedule = new Schedule();
+
+            $schedule->schedule_type = $request->scheduleType;
+            $schedule->event_id = $event->id;
+            $schedule->start_date_time = $startDateTime;
+            $schedule->end_date_time = $endDateTime;
+            $schedule->added_by = auth()->user()->id;
+            $schedule->updated_by = auth()->user()->id;
+
+            $schedule->save();
+        }
         
     
         return response()->json([
