@@ -339,10 +339,8 @@ enctype="multipart/form-data">
                                 <label for="tag_id"
                                     class="control-label bold mb5 col-form-label">Customer
                                     Tags</label>
-                                <select class="form-control  me-sm-2" name="tag_id[]"
-                                    id="tag_idss" multiple="multiple"
-                                    data-bgcolor="light" data-bgcolor-variation="accent-3"
-                                    data-text-color="blue" style="width: 100%" required>
+                                <select class="form-control  me-sm-2" id="" name="tag_id[]"
+                                     multiple="multiple" style="width: 100%" required>
                                     @foreach ($tags as $tag)
                                         <option value="{{ $tag->tag_id }}">
                                             {{ $tag->tag_name }}</option>

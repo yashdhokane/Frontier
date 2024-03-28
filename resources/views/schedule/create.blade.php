@@ -264,8 +264,13 @@
                                                 <i class="far fa-edit fill-white" style="font-size: 17px;"></i>
                                             </button>
                                         </div>
-                                        <input type="text" class="form-control tags" placeholder="Job Tags here"
-                                            name="tags" aria-label="" aria-describedby="basic-addon1">
+                                        <select class="form-control me-sm-2 tags" id="" name="tags[]"
+                                                multiple="multiple" required>
+                                            @foreach ($tags as $tag)
+                                                <option value="{{ $tag->tag_id }}">
+                                                    {{ $tag->tag_name }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                             </div>

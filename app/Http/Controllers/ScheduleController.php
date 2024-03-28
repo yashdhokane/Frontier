@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CustomerUserAddress;
 use App\Models\Event;
+use App\Models\JobActivity;
 use App\Models\JobModel;
 use App\Models\LocationCity;
 use App\Models\LocationState;
@@ -153,6 +154,8 @@ class ScheduleController extends Controller
 
             $dateTime = Carbon::parse("$date $time");
 
+            $tags = SiteTags::all();
+
             $dateTime = $dateTime->format('Y-m-d H:i:s');
 
             $technician = User::join('user_address','user_address.user_id','users.id')->where('id', $data['id'])->first();
@@ -161,7 +164,7 @@ class ScheduleController extends Controller
 
             $getProduct = Products::whereNotNull('base_price')->where('status', 'Publish')->get();
 
-            return view('schedule.create', compact('technician', 'dateTime', 'manufacturers', 'appliances','getServices','getProduct'));
+            return view('schedule.create', compact('technician', 'dateTime', 'manufacturers', 'appliances','getServices','getProduct','tags'));
         }
     }
 
@@ -179,7 +182,7 @@ class ScheduleController extends Controller
                 ->where('role', 'customer')
                 ->get();
 
-            $filterJobs = DB::table('jobs')->select('jobs.job_title','jobs.id','jobs.address','jobs.technician_id', 'users.name as customer_name', 'technician.name as technician_name', 'jobs.created_at', 'appliances.appliance_name')
+            $filterJobs = DB::table('jobs')->select('jobs.job_title','jobs.id','jobs.customer_id','jobs.address','jobs.technician_id', 'users.name as customer_name', 'technician.name as technician_name', 'jobs.created_at', 'appliances.appliance_name')
                 ->join('appliances', 'appliances.appliance_id', 'jobs.appliances_id')
                 ->join('users', 'users.id', 'jobs.customer_id')
                 ->join('users as technician', 'technician.id', 'jobs.technician_id')
@@ -204,7 +207,7 @@ class ScheduleController extends Controller
                         $imageSrc = asset('public/images/login_img_bydefault.png');
                     }
 
-                    $customers .= '<div class="customer_sr_box selectCustomer" data-id="' . $value->id . '" data-name="' . $value->name . '"><div class="row"><div class="col-md-2 d-flex align-items-center"><span>';
+                    $customers .= '<div class="customer_sr_box selectCustomer" data-customer-id="' . $value->id . '" data-id="' . $value->id . '" data-name="' . $value->name . '"><div class="row"><div class="col-md-2 d-flex align-items-center"><span>';
                     $customers .= '<img src="' . $imageSrc . '" alt="user" class="rounded-circle" width="50">';
                     $customers .= '</span></div><div class="col-md-8"><h6 class="font-weight-medium mb-0">' . $value->name . ' ';
                     if (isset($getCustomerAddress->city) && !empty($getCustomerAddress->city)) {
@@ -223,7 +226,7 @@ class ScheduleController extends Controller
 
                     $createdDate = Carbon::parse($value->created_at);
 
-                    $pendingJobs .= '<div class="pending_jobs2" data-code="" data-technician-id="' . $value->technician_id . '" data-id="' . $value->id . '" data-address="' . $value->address . '"><div class="row"><div class="col-md-12">';
+                    $pendingJobs .= '<div class="pending_jobs2" data-customer-id="' . $value->customer_id . '" data-technician-id="' . $value->technician_id . '" data-id="' . $value->id . '" data-address="' . $value->address . '"><div class="row"><div class="col-md-12">';
                     $pendingJobs .= '<h6 class="font-weight-medium mb-0">' . $value->job_title . '</h6></div>';
                     $pendingJobs .= '<div class="col-md-6 reschedule_job">Customer: ' . $value->customer_name . '</div>';
                     $pendingJobs .= '<div class="col-md-6 reschedule_job" style="display: contents;">Technician: ' . $value->technician_name . '</div>';
@@ -382,6 +385,24 @@ class ScheduleController extends Controller
 
                 $jobId = DB::table('jobs')->where('id', $data['job_id'])->update($jobsData);
 
+                if($jobId)
+                {
+
+                    $now = Carbon::now();
+
+                    // Format the date and time
+                    $formattedDateTime = $now->format('D, M j \a\t g:ia');
+
+                   $activity = new JobActivity();
+
+                   $activity->job_id = $jobId;
+                   $activity->user_id = auth()->user()->id;
+                   $activity->activity = 'Job Re-Scheduled for'.$formattedDateTime;
+
+                   $activity->save();
+
+                }
+
                 $jobNotes = [
                     'note' => (isset($data['technician_notes']) && !empty($data['technician_notes'])) ? $data['technician_notes'] : '',
                     'updated_by' => auth()->id(),
@@ -497,6 +518,8 @@ class ScheduleController extends Controller
                     ->where('users.id', $data['customer_id'])->where('user_address.address_type', $data['customer_address'])
                     ->first();
 
+                $tagIds = implode(',', $request->tags);
+
                 $jobsData = [
                     'job_code' => (isset($data['job_code']) && !empty($data['job_code'])) ? $data['job_code'] : '',
                     'customer_id' => (isset($data['customer_id']) && !empty($data['customer_id'])) ? $data['customer_id'] : '',
@@ -520,12 +543,32 @@ class ScheduleController extends Controller
                     'added_by' => auth()->id(),
                     'updated_by' => auth()->id(),
                     'job_field_ids' => 0,
-                    'tag_ids' => 0,
+                    'tag_ids' => $tagIds,
                     'created_at' => date('Y-m-d H:i:s'),
                     'updated_at' => date('Y-m-d H:i:s')
                 ];
 
                 $jobId = DB::table('jobs')->insertGetId($jobsData);
+
+                // for job activity 
+
+                if($jobId)
+                {
+
+                    $now = Carbon::now();
+
+                    // Format the date and time
+                    $formattedDateTime = $now->format('D, M j \a\t g:ia');
+
+                   $activity = new JobActivity();
+
+                   $activity->job_id = $jobId;
+                   $activity->user_id = auth()->user()->id;
+                   $activity->activity = 'Job scheduled for'.$formattedDateTime;
+
+                   $activity->save();
+
+                }
 
                 $jobNotes = [
                     'job_id' => $jobId,

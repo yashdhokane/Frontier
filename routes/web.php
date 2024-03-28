@@ -714,6 +714,8 @@ Route::middleware('auth')->group(function () {
 
     Route::post('schedule/new_customer', [ScheduleController::class, 'schedule_new_customer']);
 
+    Route::get('get/usertax', [ScheduleController::class, 'usertax']);
+
     Route::get('get/userstate', [ScheduleController::class, 'userstate']);
 
 

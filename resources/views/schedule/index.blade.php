@@ -1030,6 +1030,7 @@
 
             var job_id = $(this).attr('data-id');
             var address = $(this).attr('data-address');
+            var customerId = $(this).data('customer-id');
 
             // Append the address value as a selected option to the select element
             $('.customer_address').append('<option value="' + address + '" selected>' + address + '</option>');
@@ -1191,20 +1192,21 @@
 
                     var getSubTotalVal = $('.subtotal').val().trim();
                     var subTotal = parseInt(getSubTotalVal) - parseInt(product_cost);
-                    $('.subtotal').val(subTotal);
-                    $('.subtotaltext').text('$' + subTotal);
+                    $('.subtotal').val(Math.abs(subTotal));
+                    $('.subtotaltext').text('$' + Math.abs(subTotal));
 
                     var getDiscount = $('.discount').val().trim();
                     var discount = parseInt(getDiscount) - parseInt(product_discount);
-                    $('.discount').val(discount);
-                    $('.discounttext').text('$' + discount);
+                    $('.discount').val(Math.abs(discount));
+                    $('.discounttext').text('$' + Math.abs(discount));
 
                     var getTotal = $('.total').val().trim();
                     var total = parseInt(getTotal) - parseInt(product_cost) + parseInt(
                         product_discount) - parseInt(
                         product_tax);
-                    $('.total').val(total);
-                    $('.totaltext').text('$' + total);
+                    $('.total').val(Math.abs(total));
+
+                    $('.totaltext').text('$' + Math.abs(total));
 
                     // customer detail step 4 
                     $('.customer_number_email').text(data.user.mobile + ' / ' + data.user.email);
@@ -1213,8 +1215,22 @@
                     $('.c_address').text(data.address_type + ': ' + data.address + ' ' + data.city +
                         ' ' + data.state + ' ' + data.zipcode);
 
+                        $.ajax({
+                            url: "get/usertax",
+                            data: {
+                                customerId: customerId,
+                            },
+                            type: 'GET',
+                            success: function(data) {
+                                $('.taxcodetext').empty();
+
+                                $('.taxcodetext').append('' + data.state_tax + '% for ' + data.state_code + '');
+                            },
+                        });    
+
                 }
             });
+            
 
         });
 
@@ -1435,9 +1451,10 @@
                                         );
                                     }
                                     if (data.pendingJobs) {
-                                        $('.rescheduleJobs').append(data.pendingJobs);
+                                        $('.rescheduleJobs').append(data
+                                            .pendingJobs);
 
-                                       // Hide elements initially
+                                        // Hide elements initially
 
                                         var newyork = $('#newyork');
                                         var techAll = $('#techall');
@@ -1447,67 +1464,111 @@
                                             $('.pending_jobs2').addClass('d-none');
                                         }
 
-                                       // Function to toggle the order of elements
+                                        // Function to toggle the order of elements
                                         function toggleOrder() {
-                                            var ascendingOrder = true; // Flag to track sorting order
+                                            var ascendingOrder =
+                                            true; // Flag to track sorting order
                                             // Get the list of .pending_jobs2 elements
                                             var $pendingJobs = $('.pending_jobs2');
                                             // Toggle the sorting order flag
                                             ascendingOrder = !ascendingOrder;
-                                            
+
                                             // Sort the elements based on their positions in the DOM
                                             $pendingJobs.sort(function(a, b) {
                                                 if (ascendingOrder) {
-                                                    return $(a).index() - $(b).index();
+                                                    return $(a).index() - $(
+                                                        b).index();
                                                 } else {
-                                                    return $(b).index() - $(a).index();
+                                                    return $(b).index() - $(
+                                                        a).index();
                                                 }
                                             });
-                                            
+
                                             // Append the sorted elements to their parent
-                                            $pendingJobs.appendTo($pendingJobs.parent());
+                                            $pendingJobs.appendTo($pendingJobs
+                                                .parent());
                                         }
 
                                         // Event handler for clicking on #makedescending
-                                        $('#makedescending').on('click', toggleOrder);
+                                        $('#makedescending').on('click',
+                                            toggleOrder);
 
                                         // Iterate over each .pending_jobs2 element
                                         $('.pending_jobs2').each(function() {
-                                            var $element = $(this); // Store reference to the element
-                                            var technicianId = $element.data('technician-id');
+                                            var $element = $(
+                                            this); // Store reference to the element
+                                            var technicianId = $element
+                                                .data('technician-id');
                                             $.ajax({
                                                 method: 'get',
                                                 url: "get/userstate",
-                                                data: { technicianId: technicianId },
-                                                success: function(values) {
-                                                    var code = values.state_code;
+                                                data: {
+                                                    technicianId: technicianId
+                                                },
+                                                success: function(
+                                                    values) {
+                                                    var code =
+                                                        values
+                                                        .state_code;
 
                                                     // Function to update visibility based on checkboxes
                                                     function updateVisibility() {
-                                                        if (newyork.prop('checked') && code === 'NY') {
-                                                            $element.removeClass('d-none');
-                                                        } else if (techAll.prop('checked')) {
-                                                            $element.removeClass('d-none');
+                                                        if (newyork
+                                                            .prop(
+                                                                'checked'
+                                                                ) &&
+                                                            code ===
+                                                            'NY'
+                                                            ) {
+                                                            $element
+                                                                .removeClass(
+                                                                    'd-none'
+                                                                    );
+                                                        } else if (
+                                                            techAll
+                                                            .prop(
+                                                                'checked'
+                                                                )
+                                                            ) {
+                                                            $element
+                                                                .removeClass(
+                                                                    'd-none'
+                                                                    );
                                                         } else {
-                                                            $element.addClass('d-none');
+                                                            $element
+                                                                .addClass(
+                                                                    'd-none'
+                                                                    );
                                                         }
                                                     }
 
                                                     // Update visibility initially
-                                                    updateVisibility();
+                                                    updateVisibility
+                                                        ();
 
                                                     // Event handler for 'newyork' checkbox change
-                                                    $('#newyork').change(function() {
-                                                        updateVisibility();
-                                                    });
+                                                    $('#newyork')
+                                                        .change(
+                                                            function() {
+                                                                updateVisibility
+                                                                    ();
+                                                            });
 
                                                     // Event handler for 'techall' checkbox change
-                                                    $('#techall').change(function() {
-                                                        updateVisibility();
-                                                    });
+                                                    $('#techall')
+                                                        .change(
+                                                            function() {
+                                                                updateVisibility
+                                                                    ();
+                                                            });
                                                 },
-                                                error: function(xhr, status, error) {
-                                                    console.log('Error occurred during AJAX request:', error);
+                                                error: function(xhr,
+                                                    status,
+                                                    error) {
+                                                    console.log(
+                                                        'Error occurred during AJAX request:',
+                                                        error
+                                                        );
                                                 }
                                             });
                                         });
@@ -1597,7 +1658,8 @@
         $(document).on('change', '.services', function(event) {
 
             event.stopPropagation();
-            var customerId = $('.selectCustomer').data('id');
+            var customerId = $('.selectCustomer').data('customer-id');
+            console.log(customerId);
 
             var id = $(this).val().trim();
 
@@ -1668,19 +1730,19 @@
 
                             var getSubTotalVal = $('.subtotal').val().trim();
                             var subTotal = parseInt(getSubTotalVal) + parseInt(data.service_cost);
-                            $('.subtotal').val(subTotal);
-                            $('.subtotaltext').text('$' + subTotal);
+                            $('.subtotal').val(Math.abs(subTotal));
+                            $('.subtotaltext').text('$' + Math.abs(subTotal));
 
                             var getDiscount = $('.discount').val().trim();
                             var discount = parseInt(getDiscount) + parseInt(data.service_discount);
-                            $('.discount').val(discount);
-                            $('.discounttext').text('$' + discount);
+                            $('.discount').val(Math.abs(discount));
+                            $('.discounttext').text('$' + Math.abs(discount));
 
                             var getTotal = $('.total').val().trim();
                             var total = parseInt(getTotal) + parseInt(data.service_cost) - parseInt(data
                                 .service_discount) + parseInt(data.service_tax);
-                            $('.total').val(total);
-                            $('.totaltext').text('$' + total);
+                            $('.total').val(Math.abs(total));
+                            $('.totaltext').text('$' + Math.abs(total));
 
                         }
 
@@ -1695,8 +1757,9 @@
                 },
                 type: 'GET',
                 success: function(data) {
+                    console.log(data);
                     $('.taxcodetext').empty();
-
+                     console.log(data);
                     $('.taxcodetext').append('' + data.state_tax + '% for ' + data.state_code + '');
                 },
             });
@@ -1764,7 +1827,7 @@
         $(document).on('change', '.products', function(event) {
 
             event.stopPropagation();
-            var customerId = $('.selectCustomer').data('id');
+            var customerId = $('.selectCustomer').data('customer-id');
 
             var id = $(this).val().trim();
 
@@ -2261,13 +2324,23 @@
         }
     </script>
 
+    <!-- Include Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <!-- Include Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script>
         $(document).ready(function() {
-            $('#tag_idss').select2();
+            $('#newCustomer').on('shown.bs.modal', function() {
+                console.log('Modal shown, about to initialize Select2');
+                setTimeout(function() {
+                    $('#tagselect2').select2();
+                    console.log('Select2 initialized');
+                }, 100); // Adjust the delay time as needed
+            });
         });
     </script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 @endsection
 
 @endsection
