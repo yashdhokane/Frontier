@@ -159,6 +159,23 @@ enctype="multipart/form-data">
 
                         </div>
 
+                       
+
+                        <div class="col-sm-12 col-md-4">
+
+                            <div class="mb-3">
+
+                                <label for="city"
+                                    class="control-label col-form-label required-field">City</label>
+
+                                <input type="text" class="form-control" id="city"
+                                name="city" placeholder="" required />
+
+                                
+
+                            </div>
+                        </div>
+
                         <div class="col-sm-12 col-md-4">
 
                             <div class="mb-3">
@@ -183,24 +200,6 @@ enctype="multipart/form-data">
 
                             </div>
 
-                        </div>
-
-                        <div class="col-sm-12 col-md-4">
-
-                            <div class="mb-3">
-
-                                <label for="city"
-                                    class="control-label col-form-label required-field">City</label>
-
-                                <select class="form-select" id="city" name="city"
-                                    required>
-
-                                    <option selected disabled value="">Select City...
-                                    </option>
-
-                                </select>
-
-                            </div>
                         </div>
 
                         <div class="col-sm-12 col-md-4">
