@@ -23,7 +23,7 @@ use Storage;
 
 class ScheduleController extends Controller
 {
-    
+
 
     public function index(Request $request)
     {
@@ -72,6 +72,8 @@ class ScheduleController extends Controller
         $user_data_array = [];
 
         $assignment_arr = [];
+
+        $schedule_arr = [];
 
         $technician = User::where('role', 'technician')->where('status', 'active')->get();
 
@@ -132,10 +134,24 @@ class ScheduleController extends Controller
                         $assignment_arr[$value][$time][] = $value2;
                     }
                 }
+
+                $schedule_arr[$value] = [];
+
+                $schedule = Schedule::with('JobModel','technician')->where('technician_id', $value)
+                            ->where('start_date_time', 'LIKE', "%$filterDate%")->get();
+                if (isset($schedule) && !empty($schedule->count())) {
+                    foreach ($schedule as $k => $item) {
+                        $datetimeString = $item->start_date_time;
+                        $time = date("h:i A", strtotime($datetimeString));
+                        $schedule_arr[$value][$time][] = $item;
+                        // dd($schedule_arr);
+                    }
+                }
             }
         }
 
-        return view('schedule.index', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate','users', 'roles', 'locationStates', 'locationStates1' ,'leadSources', 'tags', 'cities','cities1','TodayDate','tech'));
+
+        return view('schedule.index', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate', 'users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', 'cities', 'cities1', 'TodayDate', 'tech', 'schedule_arr'));
     }
 
     public function create(Request $request)
@@ -159,13 +175,13 @@ class ScheduleController extends Controller
 
             $dateTime = $dateTime->format('Y-m-d H:i:s');
 
-            $technician = User::join('user_address','user_address.user_id','users.id')->where('id', $data['id'])->first();
+            $technician = User::join('user_address', 'user_address.user_id', 'users.id')->where('id', $data['id'])->first();
 
             $getServices = Service::where('service_cost', '!=', 0)->get();
 
             $getProduct = Products::whereNotNull('base_price')->where('status', 'Publish')->get();
 
-            return view('schedule.create', compact('technician', 'dateTime', 'manufacturers', 'appliances','getServices','getProduct','tags'));
+            return view('schedule.create', compact('technician', 'dateTime', 'manufacturers', 'appliances', 'getServices', 'getProduct', 'tags'));
         }
     }
 
@@ -183,7 +199,7 @@ class ScheduleController extends Controller
                 ->where('role', 'customer')
                 ->get();
 
-            $filterJobs = DB::table('jobs')->select('jobs.job_title','jobs.id','jobs.customer_id','jobs.address','jobs.technician_id', 'users.name as customer_name', 'technician.name as technician_name', 'jobs.created_at', 'appliances.appliance_name')
+            $filterJobs = DB::table('jobs')->select('jobs.job_title', 'jobs.id', 'jobs.customer_id', 'jobs.address', 'jobs.technician_id', 'users.name as customer_name', 'technician.name as technician_name', 'jobs.created_at', 'appliances.appliance_name')
                 ->join('appliances', 'appliances.appliance_id', 'jobs.appliances_id')
                 ->join('users', 'users.id', 'jobs.customer_id')
                 ->join('users as technician', 'technician.id', 'jobs.technician_id')
@@ -235,7 +251,7 @@ class ScheduleController extends Controller
                 }
             }
         }
-        
+
         return ['customers' => $customers, 'pendingJobs' => $pendingJobs];
     }
 
@@ -344,7 +360,7 @@ class ScheduleController extends Controller
 
     public function createSchedule(Request $request)
     {
-        
+
         $data = $request->all();
 
         //try {
@@ -368,7 +384,7 @@ class ScheduleController extends Controller
                 $getCustomerDetails = User::with('userAddress')
                     ->where('id', $data['customer_id'])
                     ->first();
-                    // dd($getCustomerDetails);
+                // dd($getCustomerDetails);
 
                 $jobsData = [
                     'job_code' => (isset($data['job_code']) && !empty($data['job_code'])) ? $data['job_code'] : '',
@@ -386,34 +402,32 @@ class ScheduleController extends Controller
 
                 $jobId = DB::table('jobs')->where('id', $data['job_id'])->update($jobsData);
 
-                if($jobId && $data['scheduleType'])
-                {
+                if ($jobId && $data['scheduleType']) {
 
                     $now = Carbon::now();
 
                     // Format the date and time
                     $formattedDateTime = $now->format('D, M j \a\t g:ia');
 
-                   $activity = new JobActivity();
+                    $activity = new JobActivity();
 
-                   $activity->job_id = $jobId;
-                   $activity->user_id = auth()->user()->id;
-                   $activity->activity = 'Job Re-Scheduled for'.$formattedDateTime;
+                    $activity->job_id = $jobId;
+                    $activity->user_id = auth()->user()->id;
+                    $activity->activity = 'Job Re-Scheduled for' . $formattedDateTime;
 
-                   $activity->save();
+                    $activity->save();
 
-                   $schedule = new Schedule();
+                    $schedule = new Schedule();
 
-                   $schedule->schedule_type = $data['scheduleType'];
-                   $schedule->job_id = $jobId;
-                   $schedule->start_date_time = $start_date_time;
-                   $schedule->end_date_time = $end_date_time;
-                   $schedule->technician_id = $data['technician_id'];
-                   $schedule->added_by = auth()->user()->id;
-                   $schedule->updated_by = auth()->user()->id;
+                    $schedule->schedule_type = $data['scheduleType'];
+                    $schedule->job_id = $jobId;
+                    $schedule->start_date_time = $start_date_time;
+                    $schedule->end_date_time = $end_date_time;
+                    $schedule->technician_id = $data['technician_id'];
+                    $schedule->added_by = auth()->user()->id;
+                    $schedule->updated_by = auth()->user()->id;
 
-                   $schedule->save();
-
+                    $schedule->save();
                 }
 
                 $jobNotes = [
@@ -441,8 +455,7 @@ class ScheduleController extends Controller
 
                 $jobAssignedID = DB::table('job_assigned')->where('job_id', $data['job_id'])->update($JobAssignedData);
 
-                if (isset($data['service_id']) && !empty($data['service_id']))
-                 {
+                if (isset($data['service_id']) && !empty($data['service_id'])) {
 
                     $serviceData = [
                         'service_id' => (isset($data['service_id']) && !empty($data['service_id'])) ? $data['service_id'] : '',
@@ -451,8 +464,7 @@ class ScheduleController extends Controller
                     $serviceDataInsert = DB::table('job_service_items')->where('job_id', $data['job_id'])->update($serviceData);
                 }
 
-                if (isset($data['product_id']) && !empty($data['product_id'])) 
-                {
+                if (isset($data['product_id']) && !empty($data['product_id'])) {
 
                     $productData = [
                         'product_id' => (isset($data['product_id']) && !empty($data['product_id'])) ? $data['product_id'] : '',
@@ -463,25 +475,25 @@ class ScheduleController extends Controller
 
                 if ($request->hasFile('photos')) {
                     $fileData = [];
-                
+
                     foreach ($request->file('photos') as $file) {
                         // Generate a unique filename
                         $fileName = $data['job_id'] . '_' . $file->getClientOriginalName();
-                
+
                         // Generate a unique directory name based on user ID and timestamp
                         $directoryName = $data['job_id'];
-                
+
                         // Construct the full path for the directory
                         $directoryPath = public_path('uploads/jobs/' . $directoryName);
-                
+
                         // Ensure the directory exists; if not, create it
                         if (!file_exists($directoryPath)) {
                             mkdir($directoryPath, 0777, true);
                         }
-                
+
                         // Move the uploaded file to the unique directory
                         $file->move($directoryPath, $fileName);
-                
+
                         // Save file details to the database
                         $fileData[] = [
                             'job_id' => $data['job_id'],
@@ -494,12 +506,12 @@ class ScheduleController extends Controller
                             'updated_at' => now()
                         ];
                     }
-                
+
                     // Insert file data into the database
                     $fileDataInsert = DB::table('job_files')->insert($fileData);
                 }
-                
-               
+
+
 
                 $height_slot = $duration / 60;
                 $height_slot_px = $height_slot * 80 - 10;
@@ -565,35 +577,32 @@ class ScheduleController extends Controller
 
                 // for job activity 
 
-                if($jobId && $data['scheduleType'])
-                {
+                if ($jobId && $data['scheduleType']) {
 
                     $now = Carbon::now();
 
                     // Format the date and time
                     $formattedDateTime = $now->format('D, M j \a\t g:ia');
 
-                   $activity = new JobActivity();
+                    $activity = new JobActivity();
 
-                   $activity->job_id = $jobId;
-                   $activity->user_id = auth()->user()->id;
-                   $activity->activity = 'Job scheduled for'.$formattedDateTime;
+                    $activity->job_id = $jobId;
+                    $activity->user_id = auth()->user()->id;
+                    $activity->activity = 'Job scheduled for' . $formattedDateTime;
 
-                   $activity->save();
+                    $activity->save();
 
-                   $schedule = new Schedule();
+                    $schedule = new Schedule();
 
-                   $schedule->schedule_type = $data['scheduleType'];
-                   $schedule->job_id = $jobId;
-                   $schedule->start_date_time = $start_date_time;
-                   $schedule->end_date_time = $end_date_time;
-                   $schedule->technician_id = $data['technician_id'];
-                   $schedule->added_by = auth()->user()->id;
-                   $schedule->updated_by = auth()->user()->id;
+                    $schedule->schedule_type = $data['scheduleType'];
+                    $schedule->job_id = $jobId;
+                    $schedule->start_date_time = $start_date_time;
+                    $schedule->end_date_time = $end_date_time;
+                    $schedule->technician_id = $data['technician_id'];
+                    $schedule->added_by = auth()->user()->id;
+                    $schedule->updated_by = auth()->user()->id;
 
-                   $schedule->save();
-
-
+                    $schedule->save();
                 }
 
                 $jobNotes = [
@@ -665,7 +674,7 @@ class ScheduleController extends Controller
                     $productDataInsert = DB::table('job_product_items')->insertGetId($productData);
                 }
 
-               
+
 
                 if ($request->hasFile('photos')) {
                     $fileData = [];
@@ -746,7 +755,7 @@ class ScheduleController extends Controller
 
             $dateTime = $dateTime->format('Y-m-d H:i:s');
 
-            $technician = User::join('user_address','user_address.user_id','users.id')->where('id', $data['id'])->first();
+            $technician = User::join('user_address', 'user_address.user_id', 'users.id')->where('id', $data['id'])->first();
 
             $getServices = Service::where('service_cost', '!=', 0)->get();
 
@@ -754,15 +763,14 @@ class ScheduleController extends Controller
 
             $jobId = $request->job_id;
 
-            $job = JobModel::with('jobDetails','JobAssign','JobNote','jobserviceinfo','jobproductinfo','technician','user')
-            ->where('id', $jobId)->first();
+            $job = JobModel::with('jobDetails', 'JobAssign', 'JobNote', 'jobserviceinfo', 'jobproductinfo', 'technician', 'user')
+                ->where('id', $jobId)->first();
 
             $customer1 = CustomerUserAddress::with('locationStateName')->where('user_id', $job->customer_id)->first();
-            $statecode = $customer1->locationStateName; 
+            $statecode = $customer1->locationStateName;
 
-            return view('schedule.edit', compact('technician', 'dateTime', 'manufacturers', 'appliances','getServices','getProduct','job','statecode'));
+            return view('schedule.edit', compact('technician', 'dateTime', 'manufacturers', 'appliances', 'getServices', 'getProduct', 'job', 'statecode'));
         }
-    
     }
 
     public function updateSchedule(Request $request)
@@ -970,20 +978,19 @@ class ScheduleController extends Controller
 
     public function pending_jobs(Request $request)
     {
-        
+
         $jobId = $request->job_id;
 
-        $job = JobModel::with('jobDetails','JobAssign','JobNote','jobserviceinfo','jobproductinfo','technician','user')
-        ->where('id', $jobId)->first();
+        $job = JobModel::with('jobDetails', 'JobAssign', 'JobNote', 'jobserviceinfo', 'jobproductinfo', 'technician', 'user')
+            ->where('id', $jobId)->first();
 
         return response()->json($job);
-
     }
 
     public function get_by_number(Request $request)
     {
-       // dd($request->all());
-       
+        // dd($request->all());
+
         $phone = $request->phone;
 
         $customers = '';
@@ -1026,10 +1033,8 @@ class ScheduleController extends Controller
                     $customers .= '</p></div></div></div>';
                 }
             }
-
-           
         }
-        
+
         return ['customers' => $customers];
     }
 
@@ -1037,7 +1042,7 @@ class ScheduleController extends Controller
     {
 
         $data = $request->all();
-        
+
 
         if (isset($data) && !empty($data)) {
 
@@ -1056,7 +1061,7 @@ class ScheduleController extends Controller
                 $getCustomerDetails = User::with('userAddress')
                     ->where('id', $data['customer_id'])
                     ->first();
-                    // dd($getCustomerDetails);
+                // dd($getCustomerDetails);
 
                 $jobsData = [
                     'job_code' => (isset($data['job_code']) && !empty($data['job_code'])) ? $data['job_code'] : '',
@@ -1096,8 +1101,7 @@ class ScheduleController extends Controller
 
                 $jobAssignedID = DB::table('job_assigned')->where('job_id', $data['job_id'])->update($JobAssignedData);
 
-                if (isset($data['service_id']) && !empty($data['service_id']))
-                 {
+                if (isset($data['service_id']) && !empty($data['service_id'])) {
 
                     $serviceData = [
                         'service_id' => (isset($data['service_id']) && !empty($data['service_id'])) ? $data['service_id'] : '',
@@ -1106,8 +1110,7 @@ class ScheduleController extends Controller
                     $serviceDataInsert = DB::table('job_service_items')->where('job_id', $data['job_id'])->update($serviceData);
                 }
 
-                if (isset($data['product_id']) && !empty($data['product_id'])) 
-                {
+                if (isset($data['product_id']) && !empty($data['product_id'])) {
 
                     $productData = [
                         'product_id' => (isset($data['product_id']) && !empty($data['product_id'])) ? $data['product_id'] : '',
@@ -1146,49 +1149,43 @@ class ScheduleController extends Controller
                 return response()->json([
                     'status' => true,
                 ]);
-
-            } else{
+            } else {
                 return response()->json([
                     'status' => false,
                 ]);
             }
-
-        }else{
+        } else {
             return response()->json([
                 'status' => false,
             ]);
         }
-
-    
-
     }
 
     public function store_event(Request $request)
     {
-        $auth = Auth::user()->id; 
-    
+        $auth = Auth::user()->id;
+
         $event = new Event();
-    
-        $event->user_id = $auth;
+
+        $event->technician_id = $request->event_technician_id;
         $event->event_name = $request->event_name;
         $event->event_description = $request->event_description;
         $event->event_location = $request->event_location;
-    
-         // Concatenate date and time values and format them properly
+
+        // Concatenate date and time values and format them properly
         $startDateTime = date('Y-m-d H:i:s', strtotime($request->start_date . ' ' . $request->start_time));
         $endDateTime = date('Y-m-d H:i:s', strtotime($request->end_date . ' ' . $request->end_time));
 
         // Assign concatenated values to the start_date_time and end_date_time fields
         $event->start_date_time = $startDateTime;
         $event->end_date_time = $endDateTime;
-    
+
         $event->added_by = $auth;
         $event->updated_by = $auth;
-    
+
         $event->save();
 
-        if($request->scheduleType)
-        {
+        if ($request->scheduleType) {
             $schedule = new Schedule();
 
             $schedule->schedule_type = $request->scheduleType;
@@ -1201,8 +1198,8 @@ class ScheduleController extends Controller
 
             $schedule->save();
         }
-        
-    
+
+
         return response()->json([
             'success' => true,
         ]);
@@ -1210,9 +1207,9 @@ class ScheduleController extends Controller
 
     public function usertax(Request $request)
     {
-       $customer = CustomerUserAddress::with('locationStateName')->where('user_id', $request->customerId)->first();
-       $statecode = $customer->locationStateName;
-       return response()->json($statecode);
+        $customer = CustomerUserAddress::with('locationStateName')->where('user_id', $request->customerId)->first();
+        $statecode = $customer->locationStateName;
+        return response()->json($statecode);
     }
 
     public function schedule_new_customer(Request $request)
@@ -1221,18 +1218,16 @@ class ScheduleController extends Controller
         $leadSources = SiteLeadSource::all();
 
         $tags = SiteTags::all(); // Fetch all tags
-        
-        return view('schedule.new_customer',compact('locationStates', 'leadSources', 'tags'));
+
+        return view('schedule.new_customer', compact('locationStates', 'leadSources', 'tags'));
     }
 
     public function userstate(Request $request)
     {
-       
-        $a = CustomerUserAddress::where('user_id',$request->technicianId)->with('locationStateName')->first();
+
+        $a = CustomerUserAddress::where('user_id', $request->technicianId)->with('locationStateName')->first();
         $address = $a->locationStateName;
-        
+
         return response()->json($address);
     }
-    
-
 }

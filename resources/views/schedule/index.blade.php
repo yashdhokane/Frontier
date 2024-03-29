@@ -103,14 +103,14 @@
                                                                         $assigned_data = [];
                                                                         if (
                                                                             isset(
-                                                                                $assignment_arr[$value][$formattedTime],
+                                                                                $schedule_arr[$value][$formattedTime],
                                                                             ) &&
                                                                             !empty(
-                                                                                $assignment_arr[$value][$formattedTime]
+                                                                                $schedule_arr[$value][$formattedTime]
                                                                             )
                                                                         ) {
                                                                             $assigned_data =
-                                                                                $assignment_arr[$value][$formattedTime];
+                                                                                $schedule_arr[$value][$formattedTime];
                                                                             // dd($assigned_data);
                                                                         }
                                                                     @endphp
@@ -120,40 +120,101 @@
                                                                         @if (isset($assigned_data) && !empty($assigned_data))
                                                                             <div class="testclass">
                                                                                 @foreach ($assigned_data as $value2)
-                                                                                    @php
-                                                                                        $duration = $value2->duration;
-                                                                                        $height_slot = $duration / 30;
-                                                                                        $height_slot_px =
-                                                                                            $height_slot * 80 - 10;
-                                                                                        // dd($height_slot_px);
-                                                                                    @endphp
-                                                                                    <a
-                                                                                        href="{{ route('tickets.show', $value2->job_id) }}">
-                                                                                        <div class="dts mb-1  flexibleslot"
-                                                                                            {{-- data-bs-toggle="modal" --}}
-                                                                                            {{-- data-bs-target="#edit" --}}
-                                                                                            data-id="{{ $value }}"
-                                                                                            data-job-id="{{ $value2->job_id }}"
-                                                                                            data-time="{{ $timeString }}"
-                                                                                            data-date="{{ $filterDate }}"
-                                                                                            style="cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->color_code }};"
-                                                                                            data-id="{{ $value2->main_id }}">
-                                                                                            <h5
-                                                                                                style="font-size: 15px; padding-bottom: 0px; margin-bottom: 5px; margin-top: 3px;">
-                                                                                                {{ $value2->customername }}
-                                                                                                &nbsp;&nbsp;
-                                                                                            </h5>
-                                                                                            <p style="font-size: 11px;">
-                                                                                                <i class="fas fa-clock"></i>
-                                                                                                {{ $timeString }} --
-                                                                                                {{ $value2->job_code }}<br>{{ $value2->job_title }}
-                                                                                            </p>
-                                                                                            <p style="font-size: 12px;">
-                                                                                                {{ $value2->city }},
-                                                                                                {{ $value2->state }}
-                                                                                            </p>
-                                                                                        </div>
-                                                                                    </a>
+
+                                                                                    {{-- for schedule type job  --}}
+                                                                                    @if ($value2->schedule_type == 'job')
+                                                                                        @php
+                                                                                            $duration =
+                                                                                                $value2->JobModel
+                                                                                                    ->jobassignname
+                                                                                                    ->duration ?? null;
+                                                                                            $height_slot =
+                                                                                                $duration / 30;
+                                                                                            $height_slot_px =
+                                                                                                $height_slot * 80 - 10;
+                                                                                            // dd($height_slot_px);
+                                                                                        @endphp
+                                                                                        <a
+                                                                                            href="{{ $value2->job_id ? route('tickets.show', $value2->job_id) : '#' }}">
+
+                                                                                            <div class="dts mb-1  flexibleslot"
+                                                                                                {{-- data-bs-toggle="modal" --}}
+                                                                                                {{-- data-bs-target="#edit" --}}
+                                                                                                data-id="{{ $value }}"
+                                                                                                data-job-id="{{ $value2->job_id }}"
+                                                                                                data-time="{{ $timeString }}"
+                                                                                                data-date="{{ $filterDate }}"
+                                                                                                style="cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->JobModel->technician->color_code ?? null }};"
+                                                                                                data-id="{{ $value2->job_id }}">
+                                                                                                <h5
+                                                                                                    style="font-size: 15px; padding-bottom: 0px; margin-bottom: 5px; margin-top: 3px;">
+                                                                                                    {{ $value2->JobModel->user->name ?? null }}
+                                                                                                    &nbsp;&nbsp;
+                                                                                                </h5>
+                                                                                                <p style="font-size: 11px;">
+                                                                                                    <i
+                                                                                                        class="fas fa-clock"></i>
+                                                                                                    {{ $timeString }} --
+                                                                                                    {{ $value2->JobModel->job_code ?? null }}<br>{{ $value2->JobModel->job_title ?? null }}
+                                                                                                </p>
+                                                                                                <p style="font-size: 12px;">
+                                                                                                    {{ $value2->JobModel->city ?? null }},
+                                                                                                    {{ $value2->JobModel->state ?? null }}
+                                                                                                </p>
+                                                                                            </div>
+                                                                                        </a>
+                                                                                    @endif
+
+                                                                                    {{-- for schedule type evnt  --}}
+                                                                                    @if ($value2->schedule_type == 'event')
+                                                                                        @php
+
+                                                                                           $to = $value2->event->start_date_time ?? null;
+                                                                                            $from = $value2->event->end_date_time ?? null;
+
+                                                                                            // Convert strings to DateTime objects
+                                                                                            $toDateTime = new DateTime($to);
+                                                                                            $fromDateTime = new DateTime($from);
+
+                                                                                            // Calculate the difference in seconds
+                                                                                            $interval = $toDateTime->diff($fromDateTime);
+
+                                                                                            // Calculate duration in minutes
+                                                                                            $duration = $interval->h * 60 + $interval->i;
+
+                                                                                            $height_slot =
+                                                                                                $duration / 30;
+                                                                                            $height_slot_px =
+                                                                                                $height_slot * 80 - 10;
+                                                                                        @endphp
+                                                                                        
+
+                                                                                            <div class="dts mb-1  flexibleslot"
+                                                                                                {{-- data-bs-toggle="modal" --}}
+                                                                                                {{-- data-bs-target="#edit" --}}
+                                                                                                data-id="{{ $value }}"
+                                                                                                data-time="{{ $timeString }}"
+                                                                                                data-date="{{ $filterDate }}"
+                                                                                                style="cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->technician->color_code ?? null }};">
+                                                                                                <h5
+                                                                                                    style="font-size: 15px; padding-bottom: 0px; margin-bottom: 5px; margin-top: 3px;">
+                                                                                                    {{ $value2->event->event_name ?? null }}
+                                                                                                    &nbsp;&nbsp;
+                                                                                                </h5>
+                                                                                                <p style="font-size: 11px;">
+                                                                                                    <i
+                                                                                                        class="fas fa-clock"></i>
+                                                                                                    {{ $timeString }} --
+                                                                                                    {{ $value2->JobModel->job_code ?? null }}<br>{{ $value2->JobModel->job_title ?? null }}
+                                                                                                </p>
+                                                                                                <p style="font-size: 12px;">
+                                                                                                    {{ $value2->JobModel->city ?? null }},
+                                                                                                    {{ $value2->JobModel->state ?? null }}
+                                                                                                </p>
+                                                                                            </div>
+                                                                                       
+                                                                                    @endif
+
                                                                                 @endforeach
                                                                             </div>
                                                                         @else
@@ -748,7 +809,7 @@
 
             });
 
-            
+
 
         });
     </script>
@@ -1013,20 +1074,20 @@
 
                     var getSubTotalVal = $('.subtotal').val().trim();
                     var subTotal = parseInt(getSubTotalVal) - parseInt(service_cost);
-                    $('.subtotal').val(subTotal);
-                    $('.subtotaltext').text('$' + subTotal);
+                    $('.subtotal').val(Math.abs(subTotal));
+                    $('.subtotaltext').text('$' + Math.abs(subTotal));
 
                     var getDiscount = $('.discount').val().trim();
                     var discount = parseInt(getDiscount) - parseInt(service_discount);
-                    $('.discount').val(discount);
-                    $('.discounttext').text('$' + discount);
+                    $('.discount').val(Math.abs(discount));
+                    $('.discounttext').text('$' + Math.abs(discount));
 
                     var getTotal = $('.total').val().trim();
                     var total = parseInt(getTotal) - parseInt(service_cost) + parseInt(
                         service_discount) - parseInt(
                         service_tax);
-                    $('.total').val(total);
-                    $('.totaltext').text('$' + total);
+                    $('.total').val(Math.abs(total));
+                    $('.totaltext').text('$' + Math.abs(total));
 
                     // product 
 
@@ -1344,7 +1405,7 @@
                                         $('.pending_jobs2').each(function() {
                                             var $element = $(
                                                 this
-                                                ); // Store reference to the element
+                                            ); // Store reference to the element
                                             var technicianId = $element
                                                 .data('technician-id');
                                             $.ajax({
@@ -1521,19 +1582,19 @@
 
                 var getSubTotalVal = $('.subtotal').val().trim();
                 var subTotal = parseInt(getSubTotalVal) - parseInt(service_cost);
-                $('.subtotal').val(subTotal);
-                $('.subtotaltext').text('$' + subTotal);
+                $('.subtotal').val(Math.abs(subTotal));
+                $('.subtotaltext').text('$' + Math.abs(subTotal));
 
                 var getDiscount = $('.discount').val().trim();
                 var discount = parseInt(getDiscount) - parseInt(service_discount);
-                $('.discount').val(discount);
-                $('.discounttext').text('$' + discount);
+                $('.discount').val(Math.abs(discount));
+                $('.discounttext').text('$' + Math.abs(discount));
 
                 var getTotal = $('.total').val().trim();
                 var total = parseInt(getTotal) - parseInt(service_cost) + parseInt(service_discount) - parseInt(
                     service_tax);
-                $('.total').val(total);
-                $('.totaltext').text('$' + total);
+                $('.total').val(Math.abs(total));
+                $('.totaltext').text('$' + Math.abs(total));
 
                 $('.service_cost').val(0);
 
@@ -1689,19 +1750,19 @@
 
                 var getSubTotalVal = $('.subtotal').val().trim();
                 var subTotal = parseInt(getSubTotalVal) - parseInt(product_cost);
-                $('.subtotal').val(subTotal);
-                $('.subtotaltext').text('$' + subTotal);
+                $('.subtotal').val(Math.abs(subTotal));
+                $('.subtotaltext').text('$' + Math.abs(subTotal));
 
                 var getDiscount = $('.discount').val().trim();
                 var discount = parseInt(getDiscount) - parseInt(product_discount);
-                $('.discount').val(discount);
-                $('.discounttext').text('$' + discount);
+                $('.discount').val(Math.abs(discount));
+                $('.discounttext').text('$' + Math.abs(discount));
 
                 var getTotal = $('.total').val().trim();
                 var total = parseInt(getTotal) - parseInt(product_cost) + parseInt(product_discount) - parseInt(
                     product_tax);
-                $('.total').val(total);
-                $('.totaltext').text('$' + total);
+                $('.total').val(Math.abs(total));
+                $('.totaltext').text('$' + Math.abs(total));
 
                 $('.product_cost').val(0);
 
@@ -1747,19 +1808,19 @@
                             var getSubTotalVal = $('.subtotal').val().trim();
                             var subTotal = parseInt(getSubTotalVal) + parseInt(data
                                 .base_price);
-                            $('.subtotal').val(subTotal);
-                            $('.subtotaltext').text('$' + subTotal);
+                            $('.subtotal').val(Math.abs(subTotal));
+                            $('.subtotaltext').text('$' + Math.abs(subTotal));
 
                             var getDiscount = $('.discount').val().trim();
                             var discount = parseInt(getDiscount) + parseInt(data.discount);
-                            $('.discount').val(discount);
-                            $('.discounttext').text('$' + discount);
+                            $('.discount').val(Math.abs(discount));
+                            $('.discounttext').text('$' + Math.abs(discount));
 
                             var getTotal = $('.total').val().trim();
                             var total = parseInt(getTotal) + parseInt(data.base_price) -
                                 parseInt(data.discount) + parseInt(data.tax);
-                            $('.total').val(total);
-                            $('.totaltext').text('$' + total);
+                            $('.total').val(Math.abs(total));
+                            $('.totaltext').text('$' + Math.abs(total));
 
                         }
 
