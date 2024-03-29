@@ -408,6 +408,7 @@ class ScheduleController extends Controller
                    $schedule->job_id = $jobId;
                    $schedule->start_date_time = $start_date_time;
                    $schedule->end_date_time = $end_date_time;
+                   $schedule->technician_id = $data['technician_id'];
                    $schedule->added_by = auth()->user()->id;
                    $schedule->updated_by = auth()->user()->id;
 
@@ -586,6 +587,7 @@ class ScheduleController extends Controller
                    $schedule->job_id = $jobId;
                    $schedule->start_date_time = $start_date_time;
                    $schedule->end_date_time = $end_date_time;
+                   $schedule->technician_id = $data['technician_id'];
                    $schedule->added_by = auth()->user()->id;
                    $schedule->updated_by = auth()->user()->id;
 
@@ -1193,6 +1195,7 @@ class ScheduleController extends Controller
             $schedule->event_id = $event->id;
             $schedule->start_date_time = $startDateTime;
             $schedule->end_date_time = $endDateTime;
+            $schedule->technician_id = $request->event_technician_id;
             $schedule->added_by = auth()->user()->id;
             $schedule->updated_by = auth()->user()->id;
 

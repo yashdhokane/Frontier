@@ -127,30 +127,33 @@
                                                                                             $height_slot * 80 - 10;
                                                                                         // dd($height_slot_px);
                                                                                     @endphp
-                                                                                    <div class="dts mb-1 edit_schedule updateSchedule flexibleslot"
-                                                                                        data-bs-toggle="modal"
-                                                                                        data-bs-target="#edit"
-                                                                                        data-id="{{ $value }}"
-                                                                                        data-job-id="{{ $value2->job_id }}"
-                                                                                        data-time="{{ $timeString }}"
-                                                                                        data-date="{{ $filterDate }}"
-                                                                                        style="cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->color_code }};"
-                                                                                        data-id="{{ $value2->main_id }}">
-                                                                                        <h5
-                                                                                            style="font-size: 15px; padding-bottom: 0px; margin-bottom: 5px; margin-top: 3px;">
-                                                                                            {{ $value2->customername }}
-                                                                                            &nbsp;&nbsp;
-                                                                                        </h5>
-                                                                                        <p style="font-size: 11px;">
-                                                                                            <i class="fas fa-clock"></i>
-                                                                                            {{ $timeString }} --
-                                                                                            {{ $value2->job_code }}<br>{{ $value2->job_title }}
-                                                                                        </p>
-                                                                                        <p style="font-size: 12px;">
-                                                                                            {{ $value2->city }},
-                                                                                            {{ $value2->state }}
-                                                                                        </p>
-                                                                                    </div>
+                                                                                    <a
+                                                                                        href="{{ route('tickets.show', $value2->job_id) }}">
+                                                                                        <div class="dts mb-1  flexibleslot"
+                                                                                            {{-- data-bs-toggle="modal" --}}
+                                                                                            {{-- data-bs-target="#edit" --}}
+                                                                                            data-id="{{ $value }}"
+                                                                                            data-job-id="{{ $value2->job_id }}"
+                                                                                            data-time="{{ $timeString }}"
+                                                                                            data-date="{{ $filterDate }}"
+                                                                                            style="cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->color_code }};"
+                                                                                            data-id="{{ $value2->main_id }}">
+                                                                                            <h5
+                                                                                                style="font-size: 15px; padding-bottom: 0px; margin-bottom: 5px; margin-top: 3px;">
+                                                                                                {{ $value2->customername }}
+                                                                                                &nbsp;&nbsp;
+                                                                                            </h5>
+                                                                                            <p style="font-size: 11px;">
+                                                                                                <i class="fas fa-clock"></i>
+                                                                                                {{ $timeString }} --
+                                                                                                {{ $value2->job_code }}<br>{{ $value2->job_title }}
+                                                                                            </p>
+                                                                                            <p style="font-size: 12px;">
+                                                                                                {{ $value2->city }},
+                                                                                                {{ $value2->state }}
+                                                                                            </p>
+                                                                                        </div>
+                                                                                    </a>
                                                                                 @endforeach
                                                                             </div>
                                                                         @else
@@ -745,165 +748,7 @@
 
             });
 
-            $(document).on('click', '.updateSchedule', function(e) {
-                e.preventDefault();
-
-                var id = $(this).attr('data-id');
-                var job_id = $(this).attr('data-job-id');
-                var time = $(this).attr('data-time');
-                var date = $(this).attr('data-date');
-
-                $.ajax({
-                    method: 'get',
-                    url: "{{ route('schedule.edit') }}",
-                    data: {
-                        id: id,
-                        job_id: job_id,
-                        time: time,
-                        date: date
-                    },
-                    beforeSend: function() {
-                        $('.editScheduleData').html('Processing Data...');
-                    },
-                    success: function(data) {
-
-                        $('.editScheduleData').empty();
-                        $('.editScheduleData').html(data);
-                        // Introduce a delay after the AJAX call to ensure content is fully loaded
-                        setTimeout(function() {
-                            var nextAnchor = $('a[href="#next"]');
-
-                            // Trigger click event on the anchor tag with href="#next" three times
-                            for (var i = 0; i < 3; i++) {
-                                nextAnchor.trigger('click');
-                            }
-                        }); // Adjust the delay value as needed
-
-                        $('.tab-wizard').steps({
-                            headerTag: 'h6',
-                            bodyTag: 'section',
-                            transitionEffect: 'fade',
-                            titleTemplate: '<span class="step">#index#</span> #title#',
-                            labels: {
-                                finish: 'Submit Job',
-                            },
-                            onStepChanging: function(event, currentIndex, newIndex) {
-
-                                if (newIndex === 0) {
-                                    return false; // Prevent navigation to step 1
-
-                                }
-
-                                if (currentIndex === 1) {
-                                    // Check if all required fields are filled
-                                    var isValid = validateStep2Fields();
-                                    if (!isValid) {
-                                        // Required fields are not filled, prevent navigation
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Error',
-                                            text: 'Please fill in all required fields before proceeding.'
-                                        });
-                                        return false; // Prevent navigation to the next step
-                                    }
-                                }
-                                if (currentIndex === 2) {
-                                    // Check if all required fields are filled
-                                    var isValid = validateStep3Fields();
-                                    if (!isValid) {
-                                        // Required fields are not filled, prevent navigation
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Error',
-                                            text: 'Please fill in warranty fields before proceeding.'
-                                        });
-                                        return false; // Prevent navigation to the next step
-                                    }
-                                }
-                                // end new chages 
-
-                                if (newIndex < currentIndex) {
-                                    return true;
-                                }
-
-                                if (newIndex == 3) {
-                                    showAllInformation(newIndex);
-                                }
-
-                                return true;
-                            },
-                            onFinished: function(event, currentIndex) {
-
-                                var form = $('#updateScheduleForm')[0];
-                                var params = new FormData(form);
-
-                                $.ajax({
-                                    url: "{{ route('schedule.update.post') }}",
-                                    data: params,
-                                    method: 'post',
-                                    processData: false,
-                                    contentType: false,
-                                    headers: {
-                                        'X-CSRF-TOKEN': $(
-                                                'meta[name="csrf-token"]')
-                                            .attr('content')
-                                    },
-                                    success: function(data) {
-
-
-
-                                        $('a[href="#finish"]:eq(0)')
-                                            .text('Submit Job');
-
-                                        if (data.status == true) {
-
-                                            $('.btn-close').trigger(
-                                                'click');
-
-                                            Swal.fire({
-                                                title: "Success!",
-                                                text: "Job Has Been Updated",
-                                                icon: "success"
-                                            }).then((
-                                                result) => {
-                                                if (result
-                                                    .isConfirmed ||
-                                                    result
-                                                    .dismiss ===
-                                                    Swal
-                                                    .DismissReason
-                                                    .backdrop
-                                                ) {
-                                                    location
-                                                        .reload();
-                                                }
-                                            });
-
-
-                                        } else if (data.status ==
-                                            false) {
-
-                                            $('.btn-close').trigger(
-                                                'click');
-
-                                            Swal.fire({
-                                                icon: "error",
-                                                title: "Error",
-                                                text: "Something went wrong !",
-                                            });
-
-                                        }
-                                    }
-
-
-                                });
-                            },
-                        });
-
-
-                    }
-                });
-            });
+            
 
         });
     </script>
@@ -1216,22 +1061,23 @@
                     $('.c_address').text(data.address_type + ': ' + data.address + ' ' + data.city +
                         ' ' + data.state + ' ' + data.zipcode);
 
-                        $.ajax({
-                            url: "get/usertax",
-                            data: {
-                                customerId: customerId,
-                            },
-                            type: 'GET',
-                            success: function(data) {
-                                $('.taxcodetext').empty();
+                    $.ajax({
+                        url: "get/usertax",
+                        data: {
+                            customerId: customerId,
+                        },
+                        type: 'GET',
+                        success: function(data) {
+                            $('.taxcodetext').empty();
 
-                                $('.taxcodetext').append('' + data.state_tax + '% for ' + data.state_code + '');
-                            },
-                        });    
+                            $('.taxcodetext').append('' + data.state_tax + '% for ' + data
+                                .state_code + '');
+                        },
+                    });
 
                 }
             });
-            
+
 
         });
 
@@ -1468,7 +1314,7 @@
                                         // Function to toggle the order of elements
                                         function toggleOrder() {
                                             var ascendingOrder =
-                                            true; // Flag to track sorting order
+                                                true; // Flag to track sorting order
                                             // Get the list of .pending_jobs2 elements
                                             var $pendingJobs = $('.pending_jobs2');
                                             // Toggle the sorting order flag
@@ -1497,7 +1343,8 @@
                                         // Iterate over each .pending_jobs2 element
                                         $('.pending_jobs2').each(function() {
                                             var $element = $(
-                                            this); // Store reference to the element
+                                                this
+                                                ); // Store reference to the element
                                             var technicianId = $element
                                                 .data('technician-id');
                                             $.ajax({
@@ -1517,29 +1364,29 @@
                                                         if (newyork
                                                             .prop(
                                                                 'checked'
-                                                                ) &&
+                                                            ) &&
                                                             code ===
                                                             'NY'
-                                                            ) {
+                                                        ) {
                                                             $element
                                                                 .removeClass(
                                                                     'd-none'
-                                                                    );
+                                                                );
                                                         } else if (
                                                             techAll
                                                             .prop(
                                                                 'checked'
-                                                                )
-                                                            ) {
+                                                            )
+                                                        ) {
                                                             $element
                                                                 .removeClass(
                                                                     'd-none'
-                                                                    );
+                                                                );
                                                         } else {
                                                             $element
                                                                 .addClass(
                                                                     'd-none'
-                                                                    );
+                                                                );
                                                         }
                                                     }
 
@@ -1569,7 +1416,7 @@
                                                     console.log(
                                                         'Error occurred during AJAX request:',
                                                         error
-                                                        );
+                                                    );
                                                 }
                                             });
                                         });
@@ -1760,7 +1607,7 @@
                 success: function(data) {
                     console.log(data);
                     $('.taxcodetext').empty();
-                     console.log(data);
+                    console.log(data);
                     $('.taxcodetext').append('' + data.state_tax + '% for ' + data.state_code + '');
                 },
             });
@@ -2213,7 +2060,6 @@
 
         }
     </script>
-
 @endsection
 
 @endsection
