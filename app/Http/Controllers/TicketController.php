@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JobActivity;
 use App\Models\JobFile;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,10 +15,12 @@ use App\Models\LocationServiceArea;
 
 use App\Models\JobNoteModel;
 use App\Models\JobModel;
+use App\Models\Schedule;
 use App\Models\SiteJobFields;
 use App\Models\SiteLeadSource;
 use App\Models\Ticket;
 use App\Models\Technician;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
@@ -225,26 +228,31 @@ class TicketController extends Controller
 
     public function techniciannotestore(Request $request)
     {
-        // dd($request->all());
-        // Validate the incoming request data
-        $request->validate([]);
-
-
+        // Create a new job note
         $jobNote = new JobNoteModel([
             'user_id' => $request->technician_id,
             'job_id' => $request->id,
             'note' => $request->note,
             'added_by' => Auth::id(),
             'updated_by' => Auth::id(),
-
         ]);
-
-
+    
         $jobNote->save();
-
-
+    
+        // Check if the job note was successfully saved
+        if ($jobNote) {
+            // Create a new job activity
+            $activity = new JobActivity();
+            $activity->job_id = $request->id;
+            $activity->user_id = Auth::id();
+            $activity->activity = 'Job Note added';
+            $activity->save();
+        }
+    
+        // Redirect back with success message
         return redirect()->back()->with('success', 'Job note created successfully');
     }
+
     public function addCustomerTags(Request $request, $id)
     {
 
@@ -269,6 +277,14 @@ class TicketController extends Controller
 
         // Save the changes
         $job->save();
+        
+        $activity = new JobActivity();
+
+        $activity->job_id = $id;
+        $activity->user_id = auth()->user()->id;
+        $activity->activity = 'Customer Tags Updated';
+
+        $activity->save();
 
 
         return redirect()->back()->with('success', 'Cusomer tags added successfully');
@@ -297,6 +313,14 @@ class TicketController extends Controller
 
         // Save the changes
         $job->save();
+
+        $activity = new JobActivity();
+
+        $activity->job_id = $id;
+        $activity->user_id = auth()->user()->id;
+        $activity->activity = 'Job Tags Updated';
+
+        $activity->save();
 
 
         return redirect()->back()->with('success', 'Job tags added successfully');
@@ -335,6 +359,14 @@ class TicketController extends Controller
                     $file->type = $uploadedFile->getClientMimeType();
                     $file->save();
 
+                    $activity = new JobActivity();
+
+                    $activity->job_id = $id;
+                    $activity->user_id = auth()->user()->id;
+                    $activity->activity = 'Attachments Uploaded';
+            
+                    $activity->save();
+
                     return redirect()->back()->with('success', 'Attachment added successfully');
                 } else {
                     return redirect()->back()->with('error', 'Failed to move uploaded file');
@@ -345,6 +377,8 @@ class TicketController extends Controller
         } else {
             return redirect()->back()->with('error', 'No file uploaded');
         }
+
+       
     }
 
     public function leadSource(Request $request, $id)
@@ -369,6 +403,15 @@ class TicketController extends Controller
 
         // Save the changes
         $job->save();
+
+        $activity = new JobActivity();
+
+        $activity->job_id = $id;
+        $activity->user_id = auth()->user()->id;
+        $activity->activity = 'Lead Source Updated';
+
+        $activity->save();
+
 
 
         return redirect()->back()->with('success', 'Job tags added successfully');
