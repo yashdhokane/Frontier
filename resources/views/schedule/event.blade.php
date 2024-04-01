@@ -24,14 +24,26 @@
                         <polyline points="12 6 12 12 16 14"></polyline>
                     </svg>
                 </span>
-                <input type="time" class="form-control" name="start_time" id="start_time"
-                    aria-label="Username" aria-describedby="basic-addon1">
+                <select class="form-control" name="start_time" id="start_time"
+                aria-label="Username" aria-describedby="basic-addon1">
+                <option >00:00</option>
+                    <?php
+                    // Generate options for end time
+                    for ($hour = 7; $hour <= 19; $hour++) {
+                        for ($minute = 0; $minute < 60; $minute += 30) {
+                            $time = sprintf('%02d:%02d', $hour, $minute);
+                            echo "<option value=\"$time\">$time</option>";
+                        }
+                    }
+                    ?>
+                </select>
             </div>
 
         </div>
         <div class="d-flex gap-5 my-2">
             <label for="tdate">To</label>
             <input type="date" name="end_date" id="end_date" class="ms-3 form-control">
+          
             <div class="input-group">
                 <span class="input-group-text" id="basic-addon1">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -42,8 +54,19 @@
                         <polyline points="12 6 12 12 16 14"></polyline>
                     </svg>
                 </span>
-                <input type="time" class="form-control" name="end_time" id="end_time"
-                    aria-label="Username" aria-describedby="basic-addon1">
+                <select class="form-control" name="end_time" id="end_time"
+                aria-label="Username" aria-describedby="basic-addon1">
+                <option >00:00</option>
+                    <?php
+                    // Generate options for end time
+                    for ($hour = 7; $hour <= 19; $hour++) {
+                        for ($minute = 0; $minute < 60; $minute += 30) {
+                            $time = sprintf('%02d:%02d', $hour, $minute);
+                            echo "<option value=\"$time\">$time</option>";
+                        }
+                    }
+                    ?>
+                </select>
             </div>
         </div>
     </div>
