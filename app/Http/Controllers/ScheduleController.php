@@ -413,7 +413,7 @@ class ScheduleController extends Controller
 
                     $activity->job_id = $jobId;
                     $activity->user_id = auth()->user()->id;
-                    $activity->activity = 'Job Re-Scheduled for' . $formattedDateTime;
+                    $activity->activity = 'Job Re-Scheduled for ' . $formattedDateTime;
 
                     $activity->save();
 

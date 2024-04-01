@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JobActivity;
+use App\Models\Schedule;
 use App\Models\User;
 use DB;
 use Carbon\Carbon;
@@ -199,6 +201,32 @@ class MapController extends Controller
                     ];
 
                     $jobAssignedID = DB::table('job_assigned')->where('job_id', $value['job_id'])->update($JobAssignedData);
+
+                    $now = Carbon::now();
+
+                    // Format the date and time
+                    $formattedDateTime = $now->format('D, M j \a\t g:ia');
+
+                    $activity = new JobActivity();
+
+                    $activity->job_id = $jobAssignedID;
+                    $activity->user_id = auth()->user()->id;
+                    $activity->activity = 'Job Re-Scheduled for ' . $formattedDateTime;
+
+                    $activity->save();
+
+                    $schedule = new Schedule();
+
+                    $schedule->schedule_type = 'job';
+                    $schedule->job_id = $jobAssignedID;
+                    $schedule->start_date_time = $start_date_time;
+                    $schedule->end_date_time = $end_date_time;
+                    $schedule->technician_id = $technician_id;
+                    $schedule->added_by = auth()->user()->id;
+                    $schedule->updated_by = auth()->user()->id;
+
+                    $schedule->save();
+
                 }
 
             }
