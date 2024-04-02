@@ -154,6 +154,171 @@ class ScheduleController extends Controller
         return view('schedule.index', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate', 'users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', 'cities', 'cities1', 'TodayDate', 'tech', 'schedule_arr'));
     }
 
+    public function schedule_new(Request $request)
+    {
+        $users = User::all();
+
+        $roles = Role::all();
+
+        $locationStates = LocationState::all();
+
+        $locationStates1 = LocationState::all();
+
+
+
+        $leadSources = SiteLeadSource::all();
+
+        $tags = SiteTags::all(); // Fetch all tags
+
+
+
+        // Fetch all cities initially
+
+        $cities = LocationCity::all();
+
+        $cities1 = LocationCity::all();
+
+        $data = $request->all();
+
+        if (isset($data['date']) && !empty($data['date'])) {
+            $currentDate = Carbon::parse($data['date']);
+        } else {
+            $currentDate = Carbon::now();
+        }
+
+        $formattedDate = $currentDate->format('l, F j, Y');
+
+        $previousDate = $currentDate->copy()->subDay()->format('Y-m-d');
+
+        $tomorrowDate = $currentDate->copy()->addDay()->format('Y-m-d');
+
+        $filterDate = $currentDate->format('Y-m-d');
+
+        $TodayDate = Carbon::now()->format('Y-m-d');
+
+        $user_array = [];
+
+        $user_data_array = [];
+
+        $assignment_arr = [];
+
+        $schedule_arr = [];
+
+        $technician = User::where('role', 'technician')->where('status', 'active')->get();
+
+        $tech = User::where('role', 'technician')->get();
+
+        if (isset($technician) && !empty($technician->count())) {
+            foreach ($technician as $key => $value) {
+                $user_array[] = $value->id;
+                $user_data_array[$value->id]['name'] = $value->name;
+                $user_data_array[$value->id]['color_code'] = $value->color_code;
+                $user_data_array[$value->id]['user_image'] = $value->user_image;
+            }
+        }
+
+        if (isset($user_array) && !empty($user_array)) {
+
+            foreach ($user_array as $key => $value) {
+
+                $assignment_arr[$value] = [];
+
+                $result = DB::table('job_assigned')
+                    ->select(
+                        'job_assigned.id as assign_id',
+                        'job_assigned.job_id as job_id',
+                        'job_assigned.start_date_time',
+                        'job_assigned.end_date_time',
+                        'job_assigned.start_slot',
+                        'job_assigned.end_slot',
+                        'job_assigned.duration',
+                        'jobs.id as main_id',
+                        'jobs.job_code',
+                        'jobs.job_title',
+                        'jobs.status',
+                        'jobs.address',
+                        'jobs.city',
+                        'jobs.state',
+                        'jobs.zipcode',
+                        'jobs.created_at',
+                        'users.name as customername',
+                        'users.email as customeremail',
+                        'technician.name as technicianname',
+                        'technician.email as technicianemail',
+                        'technician.color_code',
+                        'technician.user_image',
+                        'job_assigned.technician_id'
+                    )
+                    ->join('jobs', 'jobs.id', 'job_assigned.job_id')
+                    ->join('users', 'users.id', 'jobs.customer_id')
+                    ->join('users as technician', 'technician.id', 'job_assigned.technician_id')
+                    ->where('job_assigned.technician_id', $value)
+                    ->where('job_assigned.start_date_time', 'LIKE', "%$filterDate%")
+                    ->get();
+
+                if (isset($result) && !empty($result->count())) {
+                    foreach ($result as $key2 => $value2) {
+                        $datetimeString = $value2->start_date_time;
+                        $time = date("h:i A", strtotime($datetimeString));
+                        $assignment_arr[$value][$time][] = $value2;
+                    }
+                }
+
+                $schedule_arr[$value] = [];
+
+                $schedule = Schedule::with('JobModel','technician')->where('technician_id', $value)
+                            ->where('start_date_time', 'LIKE', "%$filterDate%")->get();
+                if (isset($schedule) && !empty($schedule->count())) {
+                    foreach ($schedule as $k => $item) {
+                        $datetimeString = $item->start_date_time;
+                        $time = date("h:i A", strtotime($datetimeString));
+                        $schedule_arr[$value][$time][] = $item;
+                        // dd($schedule_arr);
+                    }
+                }
+            }
+        }
+
+
+        return view('schedule.schedule_new', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate', 'users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', 'cities', 'cities1', 'TodayDate', 'tech', 'schedule_arr'));
+    }
+
+    public function create_job(Request $request, $id, $t , $d)
+    {
+        // dd($request);
+        // $data = $request->all();
+
+        if (isset($id) && !empty($id)) {
+
+            $time = str_replace(" ", ":00 ", $t);
+
+            $appliances = DB::table('appliances')->get();
+
+            $manufacturers = DB::table('manufacturers')->get();
+
+            $date = $d;
+
+            $dateTime = Carbon::parse("$date $time");
+
+            $tags = SiteTags::all();
+
+            $dateTime = $dateTime->format('Y-m-d H:i:s');
+
+            $technician = User::join('user_address', 'user_address.user_id', 'users.id')->where('id', $id)->first();
+
+            $getServices = Service::where('service_cost', '!=', 0)->get();
+
+            $getProduct = Products::whereNotNull('base_price')->where('status', 'Publish')->get();
+            $locationStates = LocationState::all();
+
+            $leadSources = SiteLeadSource::all();
+    
+            $tags = SiteTags::all(); // Fetch all tags
+
+            return view('schedule.create_job', compact('tags','leadSources','locationStates','technician', 'dateTime', 'manufacturers', 'appliances', 'getServices', 'getProduct', 'tags'));
+        }
+
+    }
     public function create(Request $request)
     {
 

@@ -166,6 +166,7 @@ use Illuminate\Support\Facades\Artisan;
 */
 Route::get('clear', function () {
     Artisan::call('cache:clear');
+    Artisan::call('route:clear');
     return "Cache cleared successfully";
 });
 
@@ -675,7 +676,12 @@ Route::middleware('auth')->group(function () {
 
     Route::get('schedule', [ScheduleController::class, 'index'])->name('schedule');
 
+    Route::get('schedule_new', [ScheduleController::class, 'schedule_new'])->name('schedule_new');
+
     Route::get('schedule/create', [ScheduleController::class, 'create'])->name('schedule.create');
+
+    Route::get('create_job/{id}/{time}/{date}', [ScheduleController::class, 'create_job'])->name('create_job');
+
 
     Route::get('autocomplete-customer', [ScheduleController::class, 'autocompleteCustomer'])->name('autocomplete.customer');
 
@@ -705,7 +711,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('get/existing-schedule', [ScheduleController::class, 'getExistingSchedule'])->name('existing.schedule');
 
-    Route::get('get/pending_jobs', [ScheduleController::class, 'pending_jobs']);
+    Route::get('get/pending_jobs', [ScheduleController::class, 'pending_jobs'])->name('pending_jobs');
 
     Route::get('get/user/by_number', [ScheduleController::class, 'get_by_number']);
     Route::get('get_number_customer_one', [UserController::class, 'get_number_customer_one'])->name('get_number_customer_one');
@@ -714,9 +720,9 @@ Route::middleware('auth')->group(function () {
 
     Route::post('schedule/new_customer', [ScheduleController::class, 'schedule_new_customer']);
 
-    Route::get('get/usertax', [ScheduleController::class, 'usertax']);
+    Route::get('get/usertax', [ScheduleController::class, 'usertax'])->name('usertax');
 
-    Route::get('get/userstate', [ScheduleController::class, 'userstate']);
+    Route::get('get/userstate', [ScheduleController::class, 'userstate'])->name('userstate');
 
 
 
