@@ -36,7 +36,7 @@
 }
 
 .dts2 {
-    min-height: 60px;
+    min-height: 50px;
 }
 
 .table> :not(caption)>*>* {
@@ -49,14 +49,31 @@
 
 .dts {
     background: #3699ff;
-    padding: 5px;
-    border-radius: 5px;
+    padding: 2px 4px;
+    border-radius: 0px;
     color: #FFFFFF;
 }
 
 .dts p {
     margin-bottom: 5px;
     line-height: 17px;
+}
+
+.slot_time_60_span tr:nth-child(2n) {
+  border-bottom: 1px solid #EDEDED;
+}
+.slot_time_60_span tr:nth-child(2n+1) {
+  border-bottom: 1px solid #D8D8D8;
+}
+.timeslot_td_time {
+  padding: 12px 5px;
+  text-align: center;
+  font-weight: 400;
+  font-size: 12px;
+}
+
+.prevnextarrow {
+  font-size: 20px;
 }
 
 .out {
@@ -92,9 +109,10 @@ img.calimg2 {
 
 .timeslot_td {
     position: relative;
-    height: 80px;
+    height: 40px;
     width: 100px;
     font-size: 12px;
+	padding: 0px !important;
 }
 
 .timeslot_th {
@@ -185,3 +203,20 @@ img.calimg2 {
     color: red;
 
 }
+
+
+.open_job_details {
+    display: none;
+    position: absolute;
+    z-index: 1;
+    background-color: #fefefe;
+    padding: 20px;
+    border: 1px solid #888;
+    bottom: 90%;
+  }
+  
+  .popup-content {
+    width: 200px;
+  }
+ 
+  

@@ -14,10 +14,12 @@
                     <div>
                         <div class="row gx-0">
                             <div class="col-lg-12">
-                                <div class="p-4 calender-sidebar app-calendar">
+                                <div class="p-2 calender-sidebar app-calendar">
                                     <div class="row">
-                                        <div class="col-md-2"><a href="schedule?date={{ $previousDate }}"><i
-                                                    class="fas fa-arrow-left"></i></a></div>
+                                        <div class="col-md-2">
+                                            <a href="schedule?date={{ $previousDate }}"><i
+                                                    class="prevnextarrow ri-arrow-left-line"></i></a>
+                                        </div>
                                         <div class="col-md-4">
                                             <h4 class="fc-toolbar-title text-center" id="fc-dom-1">
                                                 {{ $formattedDate }}
@@ -26,16 +28,14 @@
                                         <div class="col-md-4 text-end">
                                             <a id="selectDates"
                                                 style="margin-right: 10px; font-size: 13px;cursor: pointer;"><i
-                                                    class="fas fa-calendar-alt"></i>
-                                                Select Dates</a>
-
+                                                    class="fas fa-calendar-alt"></i> Select Dates</a>
                                             <a href="schedule?date={{ $TodayDate }}"
                                                 style=" margin-right: 10px;font-size: 13px;color: #ee9d01;font-weight: bold;"><i
                                                     class="fas fa-calendar-check"></i> Today</a>
                                         </div>
-                                        <div class="col-md-2" style="text-align: right;"><a
-                                                href="schedule?date={{ $tomorrowDate }}"><i
-                                                    class="fas fa-arrow-right"></i></a>
+                                        <div class="col-md-2" style="text-align: right;">
+                                            <a href="schedule?date={{ $tomorrowDate }}"><i
+                                                    class="prevnextarrow ri-arrow-right-line"></i></a>
                                         </div>
                                     </div>
                                     <div class="table-responsive dat">
@@ -69,33 +69,39 @@
                                                     @endif
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody class="slot_time_60_span">
                                                 @for ($i = 7; $i <= 18; $i++)
                                                     @for ($minute = 0; $minute < 60; $minute += 30)
                                                         <tr>
                                                             <td class="timeslot_td">
-                                                                @php
-                                                                    $time = $i >= 12 ? ($i > 12 ? $i - 12 : $i) : $i;
-                                                                    $minutes = '00'; // Default minutes
-                                                                    if ($i % 1 !== 0) {
-                                                                        $minutes = '30'; // Adjust minutes for half-hour intervals
-                                                                    }
-                                                                    $date = $i >= 12 ? 'pm' : 'am';
+                                                                <div class="timeslot_td_time">
+                                                                    @php
+                                                                        $time =
+                                                                            $i >= 12 ? ($i > 12 ? $i - 12 : $i) : $i;
+                                                                        $minutes = '00'; // Default minutes
+                                                                        if ($i % 1 !== 0) {
+                                                                            $minutes = '30'; // Adjust minutes for half-hour intervals
+                                                                        }
+                                                                        $date = $i >= 12 ? 'pm' : 'am';
 
-                                                                    $display_hour = $i > 12 ? $i - 12 : $i;
-                                                                    $display_minute = $minute == 0 ? '00' : $minute;
-                                                                    $time =
-                                                                        $display_hour .
-                                                                        ':' .
-                                                                        $display_minute .
-                                                                        ' ' .
-                                                                        $date;
-                                                                    $timeString =
-                                                                        $time . ($minutes == '00' ? '' : ':30');
-                                                                    // Format $time for comparison
-                                                                    $formattedTime = date('h:i A', strtotime($time));
-                                                                @endphp
-                                                                {{ $time }}
+                                                                        $display_hour = $i > 12 ? $i - 12 : $i;
+                                                                        $display_minute = $minute == 0 ? '00' : $minute;
+                                                                        $time =
+                                                                            $display_hour .
+                                                                            ':' .
+                                                                            $display_minute .
+                                                                            ' ' .
+                                                                            $date;
+                                                                        $timeString =
+                                                                            $time . ($minutes == '00' ? '' : ':30');
+                                                                        // Format $time for comparison
+                                                                        $formattedTime = date(
+                                                                            'h:i A',
+                                                                            strtotime($time),
+                                                                        );
+                                                                    @endphp
+                                                                    {{ $time }}
+                                                                </div>
                                                             </td>
                                                             @if (isset($user_array) && !empty($user_array))
                                                                 @foreach ($user_array as $value)
@@ -120,7 +126,6 @@
                                                                         @if (isset($assigned_data) && !empty($assigned_data))
                                                                             <div class="testclass">
                                                                                 @foreach ($assigned_data as $value2)
-
                                                                                     {{-- for schedule type job  --}}
                                                                                     @if ($value2->schedule_type == 'job')
                                                                                         @php
@@ -131,10 +136,9 @@
                                                                                             $height_slot =
                                                                                                 $duration / 30;
                                                                                             $height_slot_px =
-                                                                                                $height_slot * 80 - 10;
-                                                                                            // dd($height_slot_px);
+                                                                                                $height_slot * 50;
                                                                                         @endphp
-                                                                                        <a
+                                                                                        <a class="show_job_details"
                                                                                             href="{{ $value2->job_id ? route('tickets.show', $value2->job_id) : '#' }}">
 
                                                                                             <div class="dts mb-1  flexibleslot"
@@ -146,75 +150,96 @@
                                                                                                 data-date="{{ $filterDate }}"
                                                                                                 style="cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->JobModel->technician->color_code ?? null }};"
                                                                                                 data-id="{{ $value2->job_id }}">
-                                                                                                <h5
-                                                                                                    style="font-size: 15px; padding-bottom: 0px; margin-bottom: 5px; margin-top: 3px;">
-                                                                                                    {{ $value2->JobModel->user->name ?? null }}
-                                                                                                    &nbsp;&nbsp;
-                                                                                                </h5>
-                                                                                                <p style="font-size: 11px;">
+                                                                                                <div class="cls_slot_title">
                                                                                                     <i
-                                                                                                        class="fas fa-clock"></i>
-                                                                                                    {{ $timeString }} --
-                                                                                                    {{ $value2->JobModel->job_code ?? null }}<br>{{ $value2->JobModel->job_title ?? null }}
-                                                                                                </p>
-                                                                                                <p style="font-size: 12px;">
+                                                                                                        class="ri-tools-line"></i>
+                                                                                                    {{ $value2->JobModel->user->name ?? null }}
+                                                                                                </div>
+                                                                                                <div class="cls_slot_time">
+                                                                                                    <i
+                                                                                                        class="ri-truck-line"></i>
+                                                                                                    {{ $timeString }}
+                                                                                                </div>
+                                                                                                <div
+                                                                                                    class="cls_slot_job_card">
+                                                                                                    {{ $value2->JobModel->job_title ?? null }}
+                                                                                                </div>
+                                                                                                <div
+                                                                                                    class="cls_slot_job_card">
                                                                                                     {{ $value2->JobModel->city ?? null }},
                                                                                                     {{ $value2->JobModel->state ?? null }}
-                                                                                                </p>
+                                                                                                </div>
                                                                                             </div>
                                                                                         </a>
+                                                                                        <div class="open_job_details">
+                                                                                            <div class="popup-content">
+                                                                                                <h5><i
+                                                                                                        class="fas fa-id-badge"></i>
+                                                                                                    <strong>Job #{{ $value2->JobModel->job_code ?? null }}</strong>
+                                                                                                </h5>
+                                                                                                <p>{{ $value2->start_date_time ? date('M d Y g:i a', strtotime($value2->start_date_time)) : null }} - {{ \Carbon\Carbon::parse($value2->end_date_time)->format('g:i A') }}
+
+                                                                                                </p>
+                                                                                                <h5><i
+                                                                                                        class="fas fa-user"></i>
+                                                                                                    <strong>{{ $value2->JobModel->user->name ?? null }}</strong>
+                                                                                                </h5>
+                                                                                            </div>
+                                                                                        </div>
                                                                                     @endif
 
                                                                                     {{-- for schedule type evnt  --}}
                                                                                     @if ($value2->schedule_type == 'event')
                                                                                         @php
 
-                                                                                           $to = $value2->event->start_date_time ?? null;
-                                                                                            $from = $value2->event->end_date_time ?? null;
+                                                                                            $to =
+                                                                                                $value2->event
+                                                                                                    ->start_date_time ??
+                                                                                                null;
+                                                                                            $from =
+                                                                                                $value2->event
+                                                                                                    ->end_date_time ??
+                                                                                                null;
 
                                                                                             // Convert strings to DateTime objects
-                                                                                            $toDateTime = new DateTime($to);
-                                                                                            $fromDateTime = new DateTime($from);
+                                                                                            $toDateTime = new DateTime(
+                                                                                                $to,
+                                                                                            );
+                                                                                            $fromDateTime = new DateTime(
+                                                                                                $from,
+                                                                                            );
 
                                                                                             // Calculate the difference in seconds
-                                                                                            $interval = $toDateTime->diff($fromDateTime);
+                                                                                            $interval = $toDateTime->diff(
+                                                                                                $fromDateTime,
+                                                                                            );
 
                                                                                             // Calculate duration in minutes
-                                                                                            $duration = $interval->h * 60 + $interval->i;
+                                                                                            $duration =
+                                                                                                $interval->h * 60 +
+                                                                                                $interval->i;
 
                                                                                             $height_slot =
                                                                                                 $duration / 30;
                                                                                             $height_slot_px =
-                                                                                                $height_slot * 80 - 10;
+                                                                                                $height_slot * 50;
                                                                                         @endphp
-                                                                                        
 
-                                                                                            <div class="dts mb-1  flexibleslot"
-                                                                                                {{-- data-bs-toggle="modal" --}}
-                                                                                                {{-- data-bs-target="#edit" --}}
-                                                                                                data-id="{{ $value }}"
-                                                                                                data-time="{{ $timeString }}"
-                                                                                                data-date="{{ $filterDate }}"
-                                                                                                style="cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->technician->color_code ?? null }};">
-                                                                                                <h5
-                                                                                                    style="font-size: 15px; padding-bottom: 0px; margin-bottom: 5px; margin-top: 3px;">
-                                                                                                    {{ $value2->event->event_name ?? null }}
-                                                                                                    &nbsp;&nbsp;
-                                                                                                </h5>
-                                                                                                <p style="font-size: 11px;">
-                                                                                                    <i
-                                                                                                        class="fas fa-clock"></i>
-                                                                                                    {{ $timeString }} --
-                                                                                                    {{ $value2->JobModel->job_code ?? null }}<br>{{ $value2->JobModel->job_title ?? null }}
-                                                                                                </p>
-                                                                                                <p style="font-size: 12px;">
-                                                                                                    {{ $value2->JobModel->city ?? null }},
-                                                                                                    {{ $value2->JobModel->state ?? null }}
-                                                                                                </p>
+
+                                                                                        <div class="dts mb-1  flexibleslot"
+                                                                                            {{-- data-bs-toggle="modal" --}}
+                                                                                            {{-- data-bs-target="#edit" --}}
+                                                                                            data-id="{{ $value }}"
+                                                                                            data-time="{{ $timeString }}"
+                                                                                            data-date="{{ $filterDate }}"
+                                                                                            style="cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->technician->color_code ?? null }};">
+                                                                                            <div class="slot_title mt-1">
+                                                                                                <i
+                                                                                                    class="ri-calendar-check-line"></i>
+                                                                                                {{ $value2->event->event_name ?? null }}
                                                                                             </div>
-                                                                                       
+                                                                                        </div>
                                                                                     @endif
-
                                                                                 @endforeach
                                                                             </div>
                                                                         @else
@@ -390,6 +415,42 @@
 
     <!-- Bootstrap Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+    <script>
+        // JavaScript (jQuery)
+        $(document).ready(function() {
+            // Show job details on hover
+            $('.show_job_details').hover(function() {
+                // Show the corresponding popup
+                $(this).next('.open_job_details').fadeIn();
+            }, function() {
+                // Hide the popup when mouse leaves
+                $(this).next('.open_job_details').fadeOut();
+            });
+
+            // Close the popup when mouse leaves
+            $('.open_job_details').mouseleave(function() {
+                $(this).fadeOut();
+            });
+        });
+
+
+        function openPopup(popup) {
+            if (popup) {
+                popup.style.display = 'block';
+            } else {
+                console.error('Popup element is null');
+            }
+        }
+
+        function closePopup(popup) {
+            if (popup) {
+                popup.style.display = 'none';
+            } else {
+                console.error('Popup element is null');
+            }
+        }
+    </script>
 
     <script>
         $(document).ready(function() {
