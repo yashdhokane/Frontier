@@ -170,7 +170,7 @@
                                             <div class="card-body">
                                                 <center class="mt-1">
                                                     @if($user->user_image)
-                                                    <img src="{{ asset('public/images/users/' . $user->id . '/' . $user->user_image) }}"
+                                                    <img src="{{ asset('public/images/Uploads/users/' . $user->id . '/' . $user->user_image) }}"
                                                         class="rounded-circle" width="150" />
                                                     @else
                                                     <img src="{{ asset('public/images/login_img_bydefault.png') }}"
@@ -419,7 +419,7 @@
                                         <div class="sl-left">
 
                                             @if($user->user_image)
-                                            <img src="{{ asset('public/images/users/'. $user->id . '/' . $user->user_image) }}"
+                                            <img src="{{ asset('public/images/Uploads/users/'. $user->id . '/' . $user->user_image) }}"
                                                 class="rounded-circle" alt="user" />
                                             @else
                                             <img src="{{ asset('public/images/login_img_bydefault.png') }}" alt="user"
@@ -430,7 +430,8 @@
                                         <div class="sl-right">
                                             <div>
                                                 <a href="javascript:void(0)" class="link"> {{$user->name ?? null}}</a>
-                                                <span class="sl-date">{{ $user->Note->created_at->diffForHumans() }}
+                                                <span class="sl-date">{{ $user->Note ? $convertDateToTimezone($user->Note->created_at) : '' }}
+
                                                 </span>
                                                 <p><strong> </strong><a href="javascript:void(0)">
                                                     </a></p>

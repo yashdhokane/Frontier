@@ -22,5 +22,6 @@ class ChatConversation extends Model
     {
         return $this->hasMany(ChatParticipants::class, 'conversation_id', 'id');
     }
+    public $timestamps = false;
 
 }

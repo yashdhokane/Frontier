@@ -339,8 +339,8 @@
                             <div class="col-md-4">
                                 <div class="mb-2">
                                     <h5 class="card-title"><i class="fa fa-calendar" aria-hidden="true"></i>
-                                        {{ $convertDateToTimezone($technicians->jobassignname->start_date_time ?? null, 'jS F Y') }},
-                                        {{ $convertTimeToTimezone($technicians->jobassignname->start_date_time ?? null, 'h:i A') }}</h5>
+                                        {{ \Carbon\Carbon::parse($technicians->jobassignname->start_date_time ?? null)->format('jS F Y, h:i A') }}
+                                     </h5>
                                 </div>
                             </div>
                         </div>

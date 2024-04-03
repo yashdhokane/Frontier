@@ -9,7 +9,7 @@
     @if($user && $user->user_image)
         {{-- Display the user's image --}}
        <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href=""
-                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">  <img src="{{ asset('public/images/' . $user->role . '/' . $user->user_image) }}"
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">  <img src="{{ asset('public/images/Uploads/users/' . $user->id . '/' . $user->user_image) }}"
             alt="User Image" class="rounded-circle" width="31"  /></a>
     @else
         {{-- Default image --}}
@@ -41,7 +41,7 @@
     {{-- Check if the user has an image --}}
     @if($user && $user->user_image)
         {{-- Display the user's image --}}
-        <img src="{{ asset('public/images/' . $user->role . '/' . $user->user_image) }}"
+        <img src="{{ asset('public/images/Uploads/users/' . $user->id . '/' . $user->user_image) }}"
             alt="User Image" class="rounded-circle" width="60" />
     @else
         {{-- Default image --}}

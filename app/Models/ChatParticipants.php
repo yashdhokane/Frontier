@@ -22,11 +22,12 @@ class ChatParticipants extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id',);
+        return $this->belongsTo(User::class, 'user_id', );
     }
     public function latestParticipant()
     {
         return $this->hasOne(ChatParticipants::class, 'conversation_id')
             ->latest('id');
     }
+    public $timestamps = false;
 }

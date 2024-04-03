@@ -15,7 +15,7 @@
 
     }
 
-    
+
     #autocomplete-results {
         position: absolute;
         background-color: #fff;
@@ -438,15 +438,18 @@
                             </div>
                             <div class="col-sm-12 col-md-4">
 
-                             <div class="mb-3">
-    <label for="city" class="control-label bold mb5 col-form-label required-field">City</label>
-    {{-- <select class="form-select" id="city" name="city" required>
-        <option selected disabled value="">Select City...</option>
-    </select> --}}
-    <input type="text" class="form-control" id="city" name="city" value="{{ $location->city }}" oninput="searchCity()" required />
-    {{-- <input type="hidden" class="form-control" id="city_id" name="city_id" oninput="searchCity1()" required /> --}}
-    <div id="autocomplete-results"></div>
-</div>
+                                <div class="mb-3">
+                                    <label for="city"
+                                        class="control-label bold mb5 col-form-label required-field">City</label>
+                                    {{-- <select class="form-select" id="city" name="city" required>
+                                        <option selected disabled value="">Select City...</option>
+                                    </select> --}}
+                                    <input type="text" class="form-control" id="city" name="city"
+                                        value="{{ $location->city ?? null }}" oninput="searchCity()" required />
+                                    {{-- <input type="hidden" class="form-control" id="city_id" name="city_id"
+                                        oninput="searchCity1()" required /> --}}
+                                    <div id="autocomplete-results"></div>
+                                </div>
 
                             </div>
                             <div class="col-sm-12 col-md-4">
@@ -1187,29 +1190,7 @@
     // Listen for input changes on first and last name fields
     firstNameInput.addEventListener('input', updateDisplayName);
     lastNameInput.addEventListener('input', updateDisplayName);
-    /*
 
-    document.getElementById('myForm').addEventListener('submit', function(event) {
-
-        var requiredInputs = document.querySelectorAll('.form-control');
-
-        requiredInputs.forEach(function(input) {
-
-            if (!input.checkValidity()) {
-
-                input.classList.add('invalid-field');
-
-                event.preventDefault(); // Prevent form submission if there are invalid fields
-
-            } else {
-
-                input.classList.remove('invalid-field'); // Remove red border if field is valid
-
-            }
-
-        });
-
-    }); */
 
 </script>
 

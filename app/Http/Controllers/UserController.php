@@ -193,21 +193,8 @@ class UserController extends Controller
             }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
             // Construct the address string
             $address = $request['address1'] . ', ' . $request['city'];
-
 
 
             // Make a request to the Google Maps Geocoding API  . ', ' . $request['zip_code']
@@ -251,7 +238,7 @@ class UserController extends Controller
 
         $tagIds = $request['tag_id'];
 
-        if (!empty ($tagIds)) {
+        if (!empty($tagIds)) {
             foreach ($tagIds as $tagId) {
                 $userTag = new UserTag();
                 $userTag->user_id = $userId;
@@ -278,7 +265,7 @@ class UserController extends Controller
         $address = $this->getUserAddress($userId, $attr);
 
         $userAddresscity = DB::table('user_address')
-            ->leftJoin('location_cities', 'user_address.city', '=', 'location_cities.city_id')
+            ->leftJoin('location_cities', 'user_address.city_id', '=', 'location_cities.city_id')
             ->leftJoin('location_states', 'user_address.state_id', '=', 'location_states.state_id')
             ->where('user_address.user_id', $user->id)
             ->get();
@@ -331,10 +318,10 @@ class UserController extends Controller
     {
         $whereclause = " WHERE user_address.user_id = " . $user_id;
 
-        if (isset ($attr['address_primary']) && $attr['address_primary'] != "") {
+        if (isset($attr['address_primary']) && $attr['address_primary'] != "") {
             $whereclause .= " AND address_primary = '" . $attr['address_primary'] . "'";
         }
-        if (isset ($attr['address_type']) && $attr['address_type'] != "") {
+        if (isset($attr['address_type']) && $attr['address_type'] != "") {
             $whereclause .= " AND address_type = '" . $attr['address_type'] . "'";
         }
 
@@ -346,7 +333,7 @@ class UserController extends Controller
 
         $rs_address = DB::select($sql_address);
         // $address = (array) $rs_address[0];
-        if (!empty ($rs_address)) {
+        if (!empty($rs_address)) {
             $address = (array) $rs_address[0];
         } else {
 
@@ -355,7 +342,7 @@ class UserController extends Controller
 
 
         if ($address !== null) {
-            if (isset ($attr['address_format']) && $attr['address_format'] != "") {
+            if (isset($attr['address_format']) && $attr['address_format'] != "") {
                 $exp1 = explode(',', $attr['address_format']);
                 $return_addr_arr = [];
 
@@ -558,21 +545,85 @@ class UserController extends Controller
             ['meta_key' => 'work_phone'],
             ['meta_value' => $request['work_phone']]
         );
+        $customerAddress = CustomerUserAddress::findOrFail($id);
+
+        if ($request->filled('address_type') && $request->filled('city')) {
+            // Create or update the customer address
+            $customerAddress = CustomerUserAddress::updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'address_line1' => $request['address1'],
+                    'address_line2' => $request['address_unit'],
+                    'address_primary' => ($request['address_type'] == 'home') ? 'yes' : 'no',
+                    'city' => $request['city'],
+                    'address_type' => $request['address_type'],
+                    'state_id' => $request['state_id'],
+                    // Fetch nearest ZIP code or use requested ZIP code if not found
+                    'zipcode' => DB::table('location_cities')
+                        ->select('zip')
+                        ->where('zip', 'like', '%' . $request['zip_code'] . '%')
+                        ->orderByRaw('ABS(zip - ' . $request['zip_code'] . ')')
+                        ->value('zip') ?? $request['zip_code'],
+                ]
+            );
+
+            // Set city_id based on city and ZIP code
+            $city = DB::table('location_cities')->where('city', $request['city'])->first();
+            if ($city) {
+                $matchingCity = DB::table('location_cities')->where('zip', $customerAddress->zipcode)->first();
+                $customerAddress->city_id = $matchingCity ? $matchingCity->city_id : 0;
+            } else {
+                $nearestCity = DB::table('location_cities')
+                    ->select('city_id')
+                    ->where('zip', 'like', '%' . $customerAddress->zipcode . '%')
+                    ->orderByRaw('ABS(zip - ' . $customerAddress->zipcode . ')')
+                    ->first();
+                $customerAddress->city_id = $nearestCity ? $nearestCity->city_id : 0;
+            }
+
+            // Construct the address string
+            $address = $request['address1'] . ', ' . $request['city'];
+
+            // Make a request to the Google Maps Geocoding API
+            $response = file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($address) . '&key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&callback');
+
+            // Decode the JSON response
+            $data = json_decode($response);
+
+            // Check if the response contains results
+            if ($data && $data->status === 'OK') {
+                // Extract latitude and longitude from the response
+                $latitude = $data->results[0]->geometry->location->lat;
+                $longitude = $data->results[0]->geometry->location->lng;
+
+                // Store latitude and longitude in the $customerAddress object
+                $customerAddress->latitude = $latitude;
+                $customerAddress->longitude = $longitude;
+            } else {
+                // Handle error or set default values
+                $customerAddress->latitude = null;
+                $customerAddress->longitude = null;
+            }
+
+            // Save the updated customer address
+            $customerAddress->save();
+        }
 
 
-        $user->location()->updateOrCreate(
-            ['user_id' => $id],
-            [
-                'address_type' => $request['address_type'],
-                'address_line1' => $request['address1'],
-                'address_line2' => $request['address_unit'],
 
-                'city' => $request['city'],
-                'state_id' => $request['state_id'],
-                'zipcode' => $request['zip_code'],
-                'address_primary' => ($request['address_type'] == 'home') ? 'yes' : 'no',
-            ]
-        );
+        // $user->location()->updateOrCreate(
+        //     ['user_id' => $id],
+        //     [
+        //         'address_type' => $request['address_type'],
+        //         'address_line1' => $request['address1'],
+        //         'address_line2' => $request['address_unit'],
+
+        //         'city' => $request['city'],
+        //         'state_id' => $request['state_id'],
+        //         'zipcode' => $request['zip_code'],
+        //         'address_primary' => ($request['address_type'] == 'home') ? 'yes' : 'no',
+        //     ]
+        // );
 
         /* Update or create the first location record if the required fields are not null
         if ($request['address1'] && $request['address_unit'] && $request['city'] && $request['zip_code'] && $request['state_id'] && $request['zip_code'] && $request['address_type']) {
@@ -651,7 +702,7 @@ class UserController extends Controller
             UserLeadSourceCustomer::where('user_id', $id)->delete();
 
             // Delete the user's image if it exists and a new image is not being uploaded
-            if (empty (request()->file('image')) && !empty ($user->user_image)) {
+            if (empty(request()->file('image')) && !empty($user->user_image)) {
                 $imagePath = public_path('images') . '/' . $user->user_image;
                 if (File::exists($imagePath)) {
                     File::delete($imagePath);
@@ -883,29 +934,29 @@ class UserController extends Controller
 
             $user->save();
             $userId = $user->id;
-    
+
             if ($request->hasFile('image')) {
                 // Generate a unique directory name based on user ID and timestamp
                 $directoryName = $userId;
-    
+
                 // Construct the full path for the directory
                 $directoryPath = public_path('images/customer/' . $directoryName);
-    
+
                 // Ensure the directory exists; if not, create it
                 if (!file_exists($directoryPath)) {
                     mkdir($directoryPath, 0777, true);
                 }
-    
+
                 // Move the uploaded image to the unique directory
                 $image = $request->file('image');
                 $imageName = $image->getClientOriginalName(); // Or generate a unique name if needed
                 $image->move($directoryPath, $imageName);
-    
+
                 // Save the image path in the user record
-                $user->user_image =  $imageName;
+                $user->user_image = $imageName;
                 $user->save();
             }
-    
+
 
 
             $currentTimestamp = now();
@@ -996,7 +1047,7 @@ class UserController extends Controller
 
 
 
-            if (!empty ($tagIds)) {
+            if (!empty($tagIds)) {
 
                 foreach ($tagIds as $tagId) {
 
@@ -1046,12 +1097,12 @@ class UserController extends Controller
         $phone = $request->phone;
         $customers = '';
 
-        if (isset ($phone) && !empty ($phone)) {
+        if (isset($phone) && !empty($phone)) {
             $filterCustomer = User::where('mobile', 'LIKE', '%' . $phone . '%')
                 ->where('role', 'customer')
                 ->get();
 
-            if (isset ($filterCustomer) && $filterCustomer->count() > 0) {
+            if (isset($filterCustomer) && $filterCustomer->count() > 0) {
                 foreach ($filterCustomer as $key => $value) {
                     $getCustomerAddress = DB::table('user_address')
                         ->select('user_address.city', 'location_states.state_name', 'user_address.zipcode')
@@ -1063,7 +1114,7 @@ class UserController extends Controller
 
                     // Define $imageSrc here (assuming it represents the user's image source)
                     $imagePath = public_path('images/Uploads/users/' . $value->user_image);
-                    if (file_exists($imagePath) && !empty ($value->user_image)) {
+                    if (file_exists($imagePath) && !empty($value->user_image)) {
                         $imageSrc = asset('public/images/Uploads/users') . '/' . $value->user_image;
                     } else {
                         $imageSrc = asset('public/images/login_img_bydefault.png');
@@ -1073,11 +1124,11 @@ class UserController extends Controller
                     $customers .= '<div class="customer_sr_box selectCustomer2 px-0" data-id="' . $value->id . '" data-name="' . $value->name . '"><div class="row justify-content-around"><div class="col-md-2 d-flex align-items-center"><span>';
                     $customers .= '<img src="' . $imageSrc . '" alt="user" class="rounded-circle" width="50">';
                     $customers .= '</span></div><div class="col-md-9"><h6 class="font-weight-medium mb-0">' . $value->name . ' ';
-                    if (isset ($getCustomerAddress->city) && !empty ($getCustomerAddress->city)) {
+                    if (isset($getCustomerAddress->city) && !empty($getCustomerAddress->city)) {
                         $customers .= '<small class="text-muted">' . $getCustomerAddress->city . ' Area</small>';
                     }
                     $customers .= '</h6><p class="text-muted test">' . $value->mobile . ' / ' . $value->email . '';
-                    if (isset ($getCustomerAddress->city) && !empty ($getCustomerAddress->city) && isset ($getCustomerAddress->state_name) && !empty ($getCustomerAddress->state_name) && isset ($getCustomerAddress->zipcode) && !empty ($getCustomerAddress->zipcode)) {
+                    if (isset($getCustomerAddress->city) && !empty($getCustomerAddress->city) && isset($getCustomerAddress->state_name) && !empty($getCustomerAddress->state_name) && isset($getCustomerAddress->zipcode) && !empty($getCustomerAddress->zipcode)) {
                         $customers .= '<br />' . $getCustomerAddress->city . ', ' . $getCustomerAddress->state_name . ', ' . $getCustomerAddress->zipcode . '';
                     }
                     $customers .= '</p></div></div></div>';

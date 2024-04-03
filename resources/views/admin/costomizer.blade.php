@@ -4,9 +4,9 @@
 	<div class="customizer-body">
 	
         <ul class="nav customizer-tab" role="tablist">
-			<li class="nav-item"><a class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" ><i class="ri-tools-fill fs-6"></i></a></li>
-			<li class="nav-item"><a class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" href="#chat" role="tab" aria-controls="chat" aria-selected="false" ><i class="ri-message-3-line fs-6"></i></a></li>
-			<li class="nav-item"><a class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false" ><i class="ri-timer-line fs-6"></i></a></li>
+			<li class="nav-item"><a class="nav-link active" id="timezone-tab" data-bs-toggle="pill" href="#timezone" role="tab" aria-controls="timezone" aria-selected="true" ><i class="ri-tools-fill fs-6"></i></a></li>
+ 			<li class="nav-item"><a class="nav-link" id="tab-activity-tab" data-bs-toggle="pill" href="#tab-activity" role="tab" aria-controls="tab-activity" aria-selected="false" ><i class="ri-timer-line fs-6"></i></a></li>
+			<li class="nav-item"><a class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" href="#chat" role="tab" aria-controls="chat" aria-selected="false" ><i class="ri-information-line fs-6"></i></a></li>
         </ul>
 		
         <div class="tab-content" id="pills-tabContent">
@@ -22,8 +22,9 @@
                 $time = User::with('TimeZone')->where('id', $id)->first();
 
             @endphp
-            <!-- Tab 1 -->
-            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+			
+            <!-- Tab Timezone -->
+            <div class="tab-pane fade show active" id="timezone" role="tabpanel" aria-labelledby="timezone-tab">
                 <div class="p-3 border-bottom">
                     <h4 class="mb-2 mt-2">Current Time</h4>
                     <div class="mt-2">
@@ -80,48 +81,10 @@
                     </div>
                 </div>
             </div>
-            <!-- End Tab 1 -->
+            <!-- End Tab Timezone -->
 			
-			<!-- Tab 2 -->
-			<div class="tab-pane fade p-3" id="chat" role="tabpanel" aria-labelledby="pills-profile-tab">
-				<h4 class="mt-3 mb-3">Messages</h4>
-				<ul class="mailbox list-style-none mt-3">
-					<li>
-						<div class="message-center chat-scroll">
-							<a href="#" class="message-item" id="chat_user_1" data-user-id="1">
-							<span class="user-img"><img src="{{ asset('public/admin/assets/images/users/1.jpg') }}" alt="user" class="rounded-circle" /><span class="profile-status online pull-right"></span></span>
-							<div class="mail-contnet">
-							<h5 class="message-title">Pavan kumar</h5>
-							<span class="mail-desc">Just see the my admin!</span>
-							<span class="time">9:30 AM</span>
-							</div>
-							</a>
-							<!-- Message -->
-							<a href="#" class="message-item" id="chat_user_2" data-user-id="2">
-							<span class="user-img"><img src="{{ asset('public/admin/assets/images/users/1.jpg') }}" alt="user" class="rounded-circle" /><span class="profile-status online pull-right"></span></span>
-							<div class="mail-contnet">
-							<h5 class="message-title">Sonu Nigam</h5>
-							<span class="mail-desc">I've sung a song! See you at</span>
-							<span class="time">9:10 AM</span>
-							</div>
-							</a>
-							<!-- Message -->
-							<a href="#" class="message-item" id="chat_user_3" data-user-id="3">
-							<span class="user-img"><img src="{{ asset('public/admin/assets/images/users/1.jpg') }}" alt="user" class="rounded-circle" /><span class="profile-status online pull-right"></span></span>
-							<div class="mail-contnet">
-							<h5 class="message-title">Arijit Sinh</h5>
-							<span class="mail-desc">I am a singer!</span>
-							<span class="time">9:08 AM</span>
-							</div>
-							</a>
- 						</div>
-					</li>
-				</ul>
-			</div>
-			<!-- End Tab 2 -->
-			
-			<!-- Tab 3 -->
-			<div class="tab-pane fade p-3" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab" >
+			<!-- Tab Activity -->
+			<div class="tab-pane fade p-3" id="tab-activity" role="tabpanel" aria-labelledby="tab-activity-tab" >
 				<h4 class="mt-3 mb-3">Activity Timeline</h4>
 				<div class="steamline">
 					<div class="sl-item">
@@ -154,7 +117,23 @@
  					</div>
  				</div>
 			</div>
-			<!-- End Tab 3 -->
+			<!-- End Tab Activity -->
+			
+			<!-- Tab Information -->
+			<div class="tab-pane fade p-3" id="chat" role="tabpanel" aria-labelledby="pills-profile-tab">
+				<h4 class="mt-3 mb-3">Information</h4>
+				<ul class="list-group list-group-flush">
+					<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="#.">Contact Support </a></li>
+					<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="#.">View Website </a></li>
+					<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="#.">Download App </a></li>
+					<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="#.">Privacy Policy </a></li>
+					<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="#.">Documentation </a></li>
+				</ul>
+				<div class="mt-3 mb-3">All Rights Reserved by Frontier Tech Services. Designed and Developed by <a href="https://gaffis.com/" target="blank">Gaffis Technologies Private Limited</a>.</div>
+			</div>
+			<!-- End Tab Information -->
+			
+			
 			
 		</div>
 		

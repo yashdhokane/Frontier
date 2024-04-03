@@ -111,7 +111,7 @@
                                     <span class="user-work text-muted">{{ $user->email }}</span><br />
                                     <span class="user-work text-muted">{{ $user->mobile }}</span><br />
                                 </td>
-  <td>
+                                <td>
                                     {{-- <span class="usr-location" data-location="{{ $user->homeAddress }}">{{
                                         $user->homeAddress->city ??
                                         'null'}}</span> --}}
@@ -124,7 +124,7 @@
                                         ->where('user_id', $user->id)
                                         ->first();
                                         $userAddresscity = DB::table('user_address')
-                                        ->leftJoin('location_cities', 'user_address.city', '=',
+                                        ->leftJoin('location_cities', 'user_address.city_id', '=',
                                         'location_cities.city_id')
                                         ->where('user_address.user_id', $user->id)
                                         ->value('location_cities.city');
@@ -133,7 +133,7 @@
                                         @endphp
 
                                         @if($userAddress)
-                                        <span class="user-work text-muted">{{ $userAddresscity }}, {{
+                                        <span class="user-work text-muted">{{ $userAddresscity ?? null }}, {{
                                             $userAddress->state_name }}, {{ $userAddress->zipcode }}</span>
                                         @else
                                         <span class="user-work text-muted">N/A</span>
@@ -142,8 +142,8 @@
                                         <span class="user-work text-muted">N/A</span>
                                         @endif
                                         <br />
-                                     
-    
+
+
 
 
                                     </div>
@@ -334,7 +334,7 @@
         </div>
     </div>
 
-  @section('script')
+    @section('script')
     <script>
         $(document).ready(function() {
             var table = $('#zero_config').DataTable();
@@ -397,4 +397,4 @@
     </script>
     @endsection
 
-        @endsection
+    @endsection

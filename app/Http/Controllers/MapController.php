@@ -201,8 +201,8 @@ class MapController extends Controller
                     ];
 
                     $jobAssignedID = DB::table('job_assigned')->where('job_id', $value['job_id'])->update($JobAssignedData);
-
-                    $now = Carbon::now();
+                
+                     $now = Carbon::now();
 
                     // Format the date and time
                     $formattedDateTime = $now->format('D, M j \a\t g:ia');
@@ -226,7 +226,8 @@ class MapController extends Controller
                     $schedule->updated_by = auth()->user()->id;
 
                     $schedule->save();
-
+                
+                
                 }
 
             }

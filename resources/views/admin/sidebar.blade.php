@@ -124,16 +124,19 @@
                 <li class="sidebar-item">
                     <a class="sidebar-link has-arrow waves-effect waves-dark ft6" href="#" aria-expanded="false"><i class="fas fa-chart-line" style="font-size: 16px;"></i><span class="hide-menu">Reports</span></a>
                     <ul aria-expanded="false" class="collapse first-level">
-                        <li class="sidebar-item">
+						<li class="sidebar-item">
+							<a href="{{route('jobreport.index')}}" class="sidebar-link"><i class="ri-file-chart-line"></i> <span class="hide-menu">Jobs</span></a>
+						</li>
+						<li class="sidebar-item">
+							<a href="{{route('technicianreport.index')}}" class="sidebar-link"><i class="ri-file-chart-line"></i> <span class="hide-menu">Technicians</span></a>
+						</li>
+						<li class="sidebar-item">
+							<a href="{{route('employeereport.index')}}" class="sidebar-link"><i class="ri-file-chart-line"></i> <span class="hide-menu">Employees </span></a>
+						</li>
+                         <li class="sidebar-item">
 							<a href="{{route('performanncematrix')}}" class="sidebar-link"><i class="ri-file-chart-line"></i> <span class="hide-menu">Performance Matrix </span></a>
 						</li>
-                        <li class="sidebar-item">
-							<a href="#." class="sidebar-link"><i class="ri-booklet-line"></i><span class="hide-menu">Technician Earnings </span></a>
-						</li>
-                        <li class="sidebar-item">
-							<a href="#." class="sidebar-link"><i class="ri-file-chart-2-line"></i><span class="hide-menu">Call Monitoring </span></a>
-						</li>
-                    </ul>
+                     </ul>
                 </li>
 				
 				<li class="sidebar-item">

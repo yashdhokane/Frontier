@@ -7,6 +7,8 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
@@ -26,13 +28,25 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-   $user = Auth::user();
+        $user = Auth::user();
 
         if ($user->status == 'disable' || $user->login == 'disable') {
             Auth::logout(); 
             return redirect()->route('login')->with('error', 'Your account is disabled. Please contact with the administrator.');
         }
        
+        $user->update(['last_login' => now()]);
+       
+         $ipAddress = $request->ip();
+
+   
+       
+
+   
+   DB::table('user_login_history')->updateOrInsert(
+    ['user_id' => auth()->id()],
+    ['ip_address' => $ipAddress, 'login' => now()]
+);
 
 
         $request->session()->regenerate();

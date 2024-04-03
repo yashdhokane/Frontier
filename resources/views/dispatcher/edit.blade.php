@@ -13,20 +13,54 @@
 
 
 
-
 <style>
     .required-field::after {
-
-
-
         content: " *";
-
-
-
         color: red;
+    }
 
+    #autocomplete-results {
+        position: absolute;
+        background-color: #fff;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 1000;
+        width: calc(30% - 2px);
+        /* Subtract border width from input width */
+    }
 
+    #autocomplete-results ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
 
+    #autocomplete-results li {
+        padding: 8px 12px;
+        cursor: pointer;
+    }
+
+    #autocomplete-results li:hover {
+        background-color: #f0f0f0;
+    }
+
+    #autocomplete-results li:hover::before {
+        content: "";
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #ffffff;
+        z-index: -1;
+    }
+
+    /* Ensure hover effect covers the entire autocomplete result */
+    #autocomplete-results li:hover::after {
+        content: "";
+        display: block;
+        position: absolute;
     }
 </style>
 
@@ -1163,94 +1197,47 @@
 
 
                     <div class="row">
-
-
-
                         <div class="col-sm-12 col-md-4">
-
-
-
                             <div class="mb-3">
 
-
-
-                                <label for="state_id"
-                                    class="control-label col-form-label required-field required-field">State</label>
-
-
+                                <label for="state_id" class="control-label col-form-label required-field">State</label>
 
                                 <select class="form-select me-sm-2" id="state_id" name="state_id" required>
 
-
-
                                     <option selected disabled value="">Select State...</option>
-
-
 
                                     @foreach($locationStates as $locationState)
 
-
-
-                                    <option value="{{ $locationState->state_id }}" {{ ($location->state_id ?? null) ==
-
-                                        $locationState->state_id ? 'selected' : '' }}>
-
-
+                                    <option value="{{ $locationState->state_id }}" {{ ($location->state_id ?? null)
+                                        == $locationState->state_id ? 'selected' : '' }}>
 
                                         {{ $locationState->state_name }}
 
-
-
                                     </option>
-
-
 
                                     @endforeach
 
-
-
                                 </select>
-
-
 
                             </div>
 
-
-
                         </div>
-
-
-
                         <div class="col-sm-12 col-md-4">
 
-
-
                             <div class="mb-3">
-
-
-
-                                <label for="city" class="control-label col-form-label required-field">City</label>
-
-
-
-                                <select class="form-select" id="city" name="city" required>
-
-
-
+                                <label for="city"
+                                    class="control-label bold mb5 col-form-label required-field">City</label>
+                                {{-- <select class="form-select" id="city" name="city" required>
                                     <option selected disabled value="">Select City...</option>
-
-
-
-                                </select>
-
-
-
+                                </select> --}}
+                                <input type="text" class="form-control" id="city" name="city"
+                                    value="{{ $location->city ?? null }}" oninput="searchCity()" required />
+                                {{-- <input type="hidden" class="form-control" id="city_id" name="city_id"
+                                    oninput="searchCity1()" required /> --}}
+                                <div id="autocomplete-results"></div>
                             </div>
 
                         </div>
-
-
-
 
 
 
@@ -1671,140 +1658,129 @@
 
 
 <script>
-    $(document).ready(function(){
+    $(document).ready(function () {
 
+        $('#state_id').change(function () {
 
+            var stateId = $(this).val();
 
-    $('#state_id').change(function(){
+            var citySelect = $('#city');
 
+            citySelect.html('<option selected disabled value="">Loading...</option>');
 
 
-        var stateId = $(this).val();
 
+            // Make an AJAX request to fetch the cities based on the selected state
 
+            $.ajax({
 
-        var citySelect = $('#city');
+                url: "{{ route('getcities') }}", // Correct route URL
 
+                type: 'GET',
 
+                data: {
 
-        citySelect.html('<option selected disabled value="">Loading...</option>');
+                    state_id: stateId
 
+                },
 
+                dataType: 'json',
 
+                success: function (data) {
 
+                    citySelect.html('<option selected disabled value="">Select City...</option>');
 
+                    $.each(data, function (index, city) {
 
+                        citySelect.append('<option value="' + city.city_id + '">' + city.city + ' - ' + city.zip + '</option>');
 
-        // Make an AJAX request to fetch the cities based on the selected state
+                    });
 
+                },
 
+                error: function (xhr, status, error) {
 
-        $.ajax({
+                    console.error('Error fetching cities:', error);
 
+                }
 
-
-            url: "{{ route('getcities') }}", // Correct route URL
-
-
-
-            type: 'GET',
-
-
-
-            data: {
-
-
-
-                state_id: stateId
-
-
-
-            },
-
-
-
-            dataType: 'json',
-
-
-
-            success: function(data){
-
-
-
-                citySelect.html('<option selected disabled value="">Select City...</option>');
-
-
-
-                $.each(data, function(index, city){
-
-
-
-                    citySelect.append('<option value="' + city.city_id + '">' + city.city + ' - ' + city.zip + '</option>');
-
-
-
-                });
-
-
-
-            },
-
-
-
-            error: function(xhr, status, error){
-
-
-
-                console.error('Error fetching cities:', error);
-
-
-
-            }
-
-
+            });
 
         });
 
 
 
-    });
+        // Trigger another function to get zip code after selecting a city
 
+        $('#city').change(function () {
 
+            var cityId = $(this).val();
 
+            var cityName = $(this).find(':selected').text().split(' - ')[0]; // Extract city name from option text
 
+            getZipCode(cityId, cityName); // Call the function to get the zip code
 
-
-
-    // Trigger another function to get zip code after selecting a city
-
-
-
-    $('#city').change(function() {
-
-
-
-        var cityId = $(this).val();
-
-
-
-        var cityName = $(this).find(':selected').text().split(' - ')[0]; // Extract city name from option text
-
-
-
-        getZipCode(cityId, cityName); // Call the function to get the zip code
-
-
+        });
 
     });
 
 
+ // Function to get zip code
+    function searchCity() {
+        $("#city").autocomplete({
+            source: function(request, response) {
+                $.ajax({
+                    url: "{{ route('autocomplete.city') }}"
+                    , data: {
+                        term: request.term
+                    }
+                    , dataType: "json"
+                    , type: "GET"
+                    , success: function(data) {
+                        response(data);
+                    }
+                    , error: function(response) {
+                        console.log("Error fetching city data:", response);
+                    }
+                });
+            }
+            , minLength: 2
+            , select: function(event, ui) {
+                $("#city").val(ui.item.city);
+                $("#city_id").val(ui.item.city_id);
+                return false;
+            }
+        }).data("ui-autocomplete")._renderItem = function(ul, item) {
+            var listItem = $("<li>").text(item.city).appendTo("#autocomplete-results");
+            listItem.data("city_id", item.city_id);
+            return listItem;
+        };
 
-});
+        $("#autocomplete-results").on("click", "li", function() {
+            var cityName = $(this).text();
+            var cityId = $(this).data("city_id");
+
+            // Check if cityId is retrieved properly
+            console.log("Selected City ID:", cityId);
+
+            // Set the city ID before emptying autocomplete results
+            $("#city_id").val(cityId);
+
+            $("#city").val(cityName);
+            $("#autocomplete-results").hide();
 
 
+            $("#city").show();
 
 
+        });
+        $("#city").click(function() {
 
+            // Show the autocomplete results box
+            $("#autocomplete-results").show();
+        });
+
+    }
 
 
 // Function to get zip code
@@ -1899,7 +1875,29 @@ function getZipCode(cityId, cityName) {
 
 
 
+<script>
+    const firstNameInput = document.getElementById('first_name');
+    const lastNameInput = document.getElementById('last_name');
+    const displayNameInput = document.getElementById('display_name');
 
+    // Function to update the display name field
+    function updateDisplayName() {
+        const firstName = firstNameInput.value.trim();
+        const lastName = lastNameInput.value.trim();
+
+        // Concatenate first and last name
+        const displayName = firstName + ' ' + lastName;
+
+        // Set the display name input value
+        displayNameInput.value = displayName;
+    }
+
+    // Listen for input changes on first and last name fields
+    firstNameInput.addEventListener('input', updateDisplayName);
+    lastNameInput.addEventListener('input', updateDisplayName);
+
+
+</script>
 
 
 

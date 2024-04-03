@@ -7,6 +7,7 @@ use App\Http\Controllers\PerformanceMatrix;
 use App\Http\Controllers\ProductController;
 
 use App\Http\Controllers\MultiAdminController;
+use App\Http\Controllers\ReportsController;
 
 
 
@@ -166,7 +167,6 @@ use Illuminate\Support\Facades\Artisan;
 */
 Route::get('clear', function () {
     Artisan::call('cache:clear');
-    Artisan::call('route:clear');
     return "Cache cleared successfully";
 });
 
@@ -216,6 +216,7 @@ require __DIR__ . '/auth.php';
 
 
 Route::get('/home', [HomeController::class, 'index'])->middleware('auth')->name('home');
+Route::get('/getSiteSettings', [HomeController::class, 'getSiteSettings'])->middleware('auth')->name('getSiteSettings');
 
 
 
@@ -519,6 +520,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/tasks/{id}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 
 
+//Reports
+
+    Route::get('/reports/technician', [ReportsController::class, 'technicianreport'])->name('technicianreport.index');
+
+    Route::get('/reports/employee', [ReportsController::class, 'employeereport'])->name('employeereport.index');
+    Route::get('/reports/jobs', [ReportsController::class, 'jobreport'])->name('jobreport.index');
+
+
 
     // Lead Source Route here(st)
 
@@ -678,10 +687,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('schedule_new', [ScheduleController::class, 'schedule_new'])->name('schedule_new');
 
-    Route::get('schedule/create', [ScheduleController::class, 'create'])->name('schedule.create');
-
     Route::get('create_job/{id}/{time}/{date}', [ScheduleController::class, 'create_job'])->name('create_job');
 
+
+    Route::get('schedule/create', [ScheduleController::class, 'create'])->name('schedule.create');
 
     Route::get('autocomplete-customer', [ScheduleController::class, 'autocompleteCustomer'])->name('autocomplete.customer');
 
@@ -723,6 +732,7 @@ Route::middleware('auth')->group(function () {
     Route::get('get/usertax', [ScheduleController::class, 'usertax'])->name('usertax');
 
     Route::get('get/userstate', [ScheduleController::class, 'userstate'])->name('userstate');
+
 
 
 
@@ -981,13 +991,19 @@ Route::post('/my-profile/account/email-verify', [AdminProfileController::class, 
 
 
     //chat
+    
+    //chat
+    Route::post('/add-user-to-conversation', [ChatSupportController::class, 'addUserToConversation'])->name('addUserToConversation');
+
+
+    Route::get('/autocompleteUser', [ChatSupportController::class, 'autocompleteUser'])->name('autocomplete.user');
+
 
     Route::get('/app_chats', [ChatSupportController::class, 'index'])->name('app_chats');
 
     Route::get('/get-chat-messages', [ChatSupportController::class, 'get_chats']);
 
     Route::post('/store_reply', [ChatSupportController::class, 'store'])->name('store_reply');
-
     // payments
 
     Route::get('/payment-list', [PaymentController::class, 'index'])->name('payment-list');

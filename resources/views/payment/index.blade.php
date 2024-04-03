@@ -153,15 +153,15 @@
                                             @foreach ($payment as $index => $item)
                                                 <tr>
                                                     <td><a
-                                                            href="{{ url('invoice-detail/' . $item->id) }}">{{ $item->invoice_number }}</a>
+                                                            href="{{ url('invoice-detail/' . $item->id) }}">{{ $item->invoice_number  ?? null}}</a>
                                                     </td>
                                                     <td>{{ $item->jobDetails->manufacturername->manufacturer_name ?? null}}</td>
-                                                    <td>{{ $item->JobModel->job_code }}<br>{{ $item->JobModel->job_title }}</td>
+                                                    <td>{{ $item->JobModel->job_code ?? null }}<br>{{ $item->JobModel->job_title ?? null }}</td>
                                                     <td>{{ $item->user->name ?? null}}</td>
-                                                    <td>{{ $item->JobModel->technician->name }}</td>
-                                                    <td>{{ $convertDateToTimezone($item->issue_date) }}</td>
-                                                    <td>${{ $item->total }}</td>
-                                                    <td style="text-transform: capitalize;">{{ $item->status }}</td>
+                                                    <td>{{ $item->JobModel->technician->name ?? null}}</td>
+                                                    <td>{{ $convertDateToTimezone($item->issue_date ?? null) }}</td>
+                                                    <td>${{ $item->total  ?? null }}</td>
+                                                    <td style="text-transform: capitalize;">{{ $item->status ?? null }}</td>
                                                     <td>
                                                         <div class="btn-group">
                                                             <button type="button"

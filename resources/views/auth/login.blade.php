@@ -91,7 +91,7 @@
           <div id="loginform">
             <div class="logo">
               <span class="db"><img src="{{asset('public/admin/assets/images/logo-icon.png')}}" alt="logo" /></span>
-              <h5 class="font-medium mb-3">Sign In to Admin</h5>
+              <h5 class="font-medium mb-3">SIGN IN TO ADMIN</h5>
               @if(session('error'))
     <div class="alert alert-danger">
         {{ session('error') }}
@@ -147,35 +147,11 @@
                       </button>
                     </div>
                   </div>
-                  <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12 mt-2 text-center">
-                      <div class="social">
-                        <a
-                          href="javascript:void(0)"
-                          class="btn btn-facebook"
-                          data-bs-toggle="tooltip"
-                          title=""
-                          data-original-title="Login with Facebook"
-                        >
-                          <i aria-hidden="true" class="ri-facebook-box-fill fs-4"></i>
-                        </a>
-                        <a
-                          href="javascript:void(0)"
-                          class="btn btn-googleplus"
-                          data-bs-toggle="tooltip"
-                          title=""
-                          data-original-title="Login with Google"
-                        >
-                          <i aria-hidden="true" class="ri-google-fill fs-4"></i>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="mb-3 mb-0 mt-2">
+                   <div class="mb-3 mb-0 mt-2">
                     <div class="col-sm-12 text-center">
                       Don't have an account?
-                      <a href="{{route('register')}}" class="text-info ms-1"
-                        ><b>Sign Up</b></a
+                      <a href="#." class="text-info ms-1"
+                        ><b>Contact Support</b></a
                       >
                     </div>
                   </div>

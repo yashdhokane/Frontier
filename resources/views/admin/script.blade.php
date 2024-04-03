@@ -46,34 +46,39 @@
 <!-- This page JavaScript -->
 
 <!-- --------------------------------------------------------------- -->
-
+<!-- COMMENTED BY SR
 <script src="{{ asset('public/admin/dist/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
-
 <script src="{{ asset('public/admin/dist/js/pages/dashboards/dashboard1.js') }}"></script>
+-->
 
 
 
 <!-- working pages  JavaScript by yd -->
-    <script src="{{ asset('public/admin/dist/libs/select2/dist/js/select2.full.min.js') }}"></script>
-    <script src="{{ asset('public/admin/dist/libs/select2/dist/js/select2.min.js') }}"></script>
-    <script src="{{ asset('public/admin/dist/js/pages/forms/select2/select2.init.js') }}"></script>
- <script src="{{ asset('public/admin/dist/js/pages/contact/contact.js') }}"></script> 
+<script src="{{ asset('public/admin/dist/libs/select2/dist/js/select2.full.min.js') }}"></script>
+<script src="{{ asset('public/admin/dist/libs/select2/dist/js/select2.min.js') }}"></script>
+<script src="{{ asset('public/admin/dist/js/pages/forms/select2/select2.init.js') }}"></script>
 
+<!-- COMMENTED BY SR
+<script src="{{ asset('public/admin/dist/js/pages/contact/contact.js') }}"></script> 
+-->
 
-
-{{-- <script src="{{ asset('public/admin/dist/libs/apexcharts/dist/apexcharts.min.js') }}"></script> --}}
-
+<!-- COMMENTED BY SR
 <script src="{{ asset('public/admin/dist/js/pages/dashboards/dashboard1.js') }}"></script>
+-->
 
-
-
+<!-- COMMENTED BY SR
 <script src="{{ asset('public/admin/dist/js/pages/apex-chart/apex.pie.init.js') }}"></script>
+-->
 
 <script src="{{ asset('public/admin/dist/libs/moment/min/moment.min.js') }}"></script>
 
+<!-- COMMENTED BY SR
 <script src="{{ asset('public/admin/dist/libs/fullcalendar/index.global.min.js') }}"></script>
+-->
 
+<!-- COMMENTED BY SR
 <script src="{{ asset('public/admin/dist/js/pages/calendar/cal-init.js') }}"></script>
+-->
 
 <script src="{{ asset('public/admin/dist/libs/jquery-steps/build/jquery.steps.min.js') }}"></script>
 

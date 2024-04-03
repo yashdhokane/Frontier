@@ -63,7 +63,7 @@
             <div class="card card-body">
                 <div class="row">
                     <div class="col-md-4 col-xl-2">
-                       <form>
+                        <form>
 
                             <input type="text" name="" class="form-control " aria-controls="" id="searchInput"
                                 placeholder="Search Dispatcher..." />
@@ -208,7 +208,7 @@
                                         ->where('user_id', $user->id)
                                         ->first();
                                         $userAddresscity = DB::table('user_address')
-                                        ->leftJoin('location_cities', 'user_address.city', '=',
+                                        ->leftJoin('location_cities', 'user_address.city_id', '=',
                                         'location_cities.city_id')
                                         ->where('user_address.user_id', $user->id)
                                         ->value('location_cities.city');
@@ -217,7 +217,7 @@
                                         @endphp
 
                                         @if($userAddress)
-                                        <span class="user-work text-muted">{{ $userAddresscity }}</span>&nbsp;
+                                        <span class="user-work text-muted">{{ $userAddresscity ?? null }}</span>&nbsp;
 
 
                                         <span class="user-work text-muted">{{ $userAddress->state_name }}</span>
@@ -445,8 +445,8 @@
         </div>
     </div>
     @section('script')
-   <script>
-$(document).ready(function () {
+    <script>
+        $(document).ready(function () {
     var table = $('#zero_config').DataTable();
 
     // Apply search on input change
@@ -471,7 +471,7 @@ $(document).ready(function () {
         });
     });
 });
-</script>
+    </script>
 
     <script>
         function setUserId(userId) {

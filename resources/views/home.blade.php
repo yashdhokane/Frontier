@@ -86,6 +86,17 @@
         ::-webkit-scrollbar-corner {
             background-color: #dfdfdf;
         }
+ 		 
+		.preload_img {
+			top: 20%;
+			position: absolute;
+			left: 40%;
+			width: 20%;
+		}
+		.preload_img img {
+			width: 100%;
+		}
+
     </style>
 
 
@@ -108,6 +119,7 @@
 
 <body>
 
+  
     <!-- -------------------------------------------------------------- -->
 
     <!-- Preloader - style you can find in spinners.css -->
@@ -116,6 +128,7 @@
 
     <div class="preloader">
 
+		<!--
         <svg class="tea lds-ripple" width="37" height="48" viewbox="0 0 37 48" fill="none"
             xmlns="http://www.w3.org/2000/svg">
 
@@ -137,7 +150,9 @@
             <path id="steamR" d="M21 6C21 6 21 8.22727 19 9.5C17 10.7727 17 13 17 13" stroke="#2962FF"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
 
-        </svg>
+        </svg>-->
+		
+		<div class="preload_img"><img src="https://gaffis.in/frontier/website/public/admin/assets/images/loading-loader2.gif" alt="Frontier Tech Services" /></div>
 
     </div>
 

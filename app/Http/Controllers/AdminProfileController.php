@@ -107,8 +107,10 @@ public function activity(){
     $userId = Auth::id();
 $activity = DB::table('job_activity')
     ->join('users', 'job_activity.user_id', '=', 'users.id')
+    ->join('user_login_history', 'job_activity.user_id', '=', 'user_login_history.user_id')
     ->where('job_activity.user_id', $userId)
     ->get();
+
 
   
     return view('adminprofile.myprofile_activity',compact('activity'));
@@ -121,30 +123,49 @@ $activity = DB::table('job_activity')
 }
 
 
-     public function store(Request $request)
-    {
-        $request->validate([
-            // 'image' => 'required|mimes:gif,jpg,png,jpeg',
-            // 'content' => 'required',
-        ]);
+  public function store(Request $request)
+{
+    $request->validate([
+        // 'image' => 'required|mimes:gif,jpg,png,jpeg',
+        // 'content' => 'required',
+    ]);
 
-        $filename = '';
-        if ($request->hasFile('user_image')) {
-            $file = $request->file('user_image');
-            $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('images/superadmin'), $filename);
+    $user = User::findOrFail($request->id);
+
+    // Check if a new image file is uploaded
+    if ($request->hasFile('user_image')) {
+        $directoryName = $user->id;
+        $directoryPath = public_path('images/Uploads/users/' . $directoryName);
+
+        // Create directory if it doesn't exist
+        if (!file_exists($directoryPath)) {
+            mkdir($directoryPath, 0777, true);
         }
 
+        // Get the uploaded image file
+        $image = $request->file('user_image');
+        $imageName = $image->getClientOriginalName();
 
-        User::where('id', $request->id)->update(
-            [
-                'user_image' => $filename,
+        // Move the uploaded image to the user's directory
+        $image->move($directoryPath, $imageName);
 
-            ]
-        );
+        // Delete the previous image if it exists
+        if ($user->user_image) {
+            $previousImagePath = public_path('images/Uploads/users/' . $directoryName . '/' . $user->user_image);
+            if (file_exists($previousImagePath)) {
+                unlink($previousImagePath);
+            }
+        }
 
-        return redirect()->back()->with('success', 'Image Updated successfully.');
+        // Update the user's image
+        $user->user_image = $imageName;
     }
+
+    // Save the user object
+    $user->save();
+
+    return redirect()->back()->with('success', 'Image updated successfully.');
+}
 
 
     public function passstore(Request $request)

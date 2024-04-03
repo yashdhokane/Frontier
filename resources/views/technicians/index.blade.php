@@ -48,7 +48,7 @@
             <div class="card card-body">
                 <div class="row">
                     <div class="col-md-4 col-xl-2">
-                                     <form>
+                        <form>
 
                             <input type="text" name="" class="form-control " aria-controls="" id="searchInput"
                                 placeholder="Search Technicians..." />
@@ -288,8 +288,8 @@
 
 
     @section('script')
-   <script>
-$(document).ready(function () {
+    <script>
+        $(document).ready(function () {
     var table = $('#zero_config').DataTable();
 
     // Apply search on input change
@@ -314,10 +314,10 @@ $(document).ready(function () {
         });
     });
 });
-</script>
+    </script>
 
 
-  
+
 
     <script>
         function setUserId(userId) {

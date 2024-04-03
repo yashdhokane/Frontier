@@ -174,29 +174,40 @@
                                     </div>
                                     <div class="col-md-8 col-xs-6 b-r">
                                         <div>
-                                            @foreach($location as $location)
+                                            @foreach($userAddresscity as $location)
+
                                             <div>
-                                                <small class="text-muted pt-4 db">Address</small>
+                                                <small class="text-muted pt-4 db">Address - {{ $location->address_type
+                                                    }}</small>
                                                 <div style="display:flex;">
-                                                    @if($location)
-                                                    <h6>{{ $userAddresscity}}</h6>&nbsp;
-                                                    <h6>{{ $location->locationStateName->state_name ?? null }}</h6>
+
+                                                    <h6>{{ $location->city}}</h6>&nbsp;
+                                                    <h6>{{ $location->state_name ?? null }}</h6>
                                                     <span>,</span>
                                                     <h6>{{ $location->zipcode }}</h6>
-                                                    @else
-                                                    <h6>null</h6>
-                                                    @endif
+
+
                                                     <br />
                                                 </div>
-                                                <iframe id="map" width="100%" height="150" frameborder="0"
-                                                    style="border: 0" allowfullscreen></iframe>
+                                                <iframe id="map{{ $location->address_id }}" width="100%" height="150"
+                                                    frameborder="0" style="border: 0" allowfullscreen></iframe>
+                                                {{-- <iframe
+                                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6991603.699017098!2d-100.0768425!3d31.168910300000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x864070360b823249%3A0x16eb1c8f1808de3c!2sTexas%2C%20USA!5e0!3m2!1sen!2sin!4v1701086703789!5m2!1sen!2sin"
+                                                    width="100%" height="300" style="border:0;" allowfullscreen=""
+                                                    loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                                --}}
+
                                             </div>
                                             <hr />
                                             @endforeach
+
+
+
+
                                         </div>
+
+
                                     </div>
-
-
                                 </div>
 
                                 <div class="row">
@@ -352,14 +363,15 @@
                             aria-labelledby="pills-timeline-tab">
                             <div class="card-body">
                                 <div class="profiletimeline mt-0">
-                                @foreach ($notename as $notename )
+                                    @foreach ($notename as $notename )
                                     <div class="sl-item">
                                         <div class="sl-left">
                                             @php
-                                        $username = DB::table('users')->where('id',
-                                        $notename->added_by)->first();
-                                        @endphp
-@if($username && $username->user_image)                                            <img src="{{ asset('public/images/Uploads/users/'. $username->id . '/' . $username->user_image) }}"
+                                            $username = DB::table('users')->where('id',
+                                            $notename->added_by)->first();
+                                            @endphp
+                                            @if($username && $username->user_image) <img
+                                                src="{{ asset('public/images/Uploads/users/'. $username->id . '/' . $username->user_image) }}"
                                                 class="rounded-circle" alt="user" />
                                             @else
                                             <img src="{{ asset('public/images/login_img_bydefault.png') }}" alt="user"
@@ -367,7 +379,7 @@
                                             @endif
 
                                         </div>
-                                       
+
                                         <div class="sl-right">
                                             <div>
                                                 <a href="javascript:void(0)" class="link"> {{$username->name ??
@@ -480,16 +492,17 @@
 </div>
 @section('script')
 <script>
-    // Get latitude and longitude values from your data or variables
-        var latitude = {{$latitude}}; // Example latitude
-        var longitude = {{$longitude}}; // Example longitude
+    @foreach($userAddresscity as $location)
+    var latitude = {{ $location->latitude }}; // Example latitude
+    var longitude = {{ $location->longitude }}; // Example longitude
 
-        // Construct the URL with the latitude and longitude values
-        var mapUrl = 'https://www.google.com/maps/embed/v1/view?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&center=' + latitude + ',' + longitude + '&zoom=13';
+    // Construct the URL with the latitude and longitude values
+    var mapUrl = 'https://www.google.com/maps/embed/v1/view?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&center=' + latitude
+    + ',' + longitude + '&zoom=13';
 
-        document.getElementById('map').src = mapUrl;
+    document.getElementById('map{{ $location->address_id }}').src = mapUrl;
+    @endforeach
 </script>
-
 
 
 @endsection

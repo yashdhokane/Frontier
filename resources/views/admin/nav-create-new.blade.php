@@ -5,8 +5,9 @@
 	<span class="d-block d-md-none"><i data-feather="plus" class="feather-sm"></i></span>
 </a>
 <div class="dropdown-menu dropdown-menu-animate-up" aria-labelledby="navbarDropdown">
-	<a class="dropdown-item" href="{{ route('schedule') }}">Job</a>
-	<a class="dropdown-item" href="{{ route('estimate.index') }}">Estimate</a>
-	<a class="dropdown-item" href="{{ route('technicians.create') }}">Technician</a>
 	<a class="dropdown-item" href="{{ route('users.create') }}">Customer</a>
+	<a class="dropdown-item" href="{{ route('technicians.create') }}">Technician</a>
+	<a class="dropdown-item" href="{{ route('schedule') }}">Job</a>
+	<a class="dropdown-item" href="{{ route('schedule') }}">Event</a>
+	<a class="dropdown-item" href="{{ route('schedule') }}">Estimate</a>	
 </div>

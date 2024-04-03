@@ -110,20 +110,89 @@ class DispatcherController extends Controller
 
         CustomerUserMeta::insert($userMeta);
 
-        $customerAddress = new CustomerUserAddress();
-        $customerAddress->user_id = $userId;
-        $customerAddress->address_line1 = $request['address1'];
-        $customerAddress->address_line2 = $request['address_unit'];
-        $customerAddress->address_primary = ($request['address_type'] == 'home') ? 'yes' : 'no';
-        $customerAddress->address_type = $request['address_type'];
-        $customerAddress->city = $request['city'];
-        $customerAddress->state_id = $request['state_id'];
-        $customerAddress->zipcode = $request['zip_code'];
-        $customerAddress->save();
+        if ($request->filled('city')) {
+            $customerAddress = new CustomerUserAddress();
+            $customerAddress->user_id = $userId;
+            $customerAddress->address_line1 = $request['address1'];
+            $customerAddress->address_line2 = $request['address_unit'];
+            $customerAddress->address_primary = ($request['address_type'] == 'home') ? 'yes' : 'no';
+            $customerAddress->city = $request['city'];
+            // $customerAddress->city_id = $request['city_id'];
+            $customerAddress->address_type = $request['address_type'];
+            $customerAddress->state_id = $request['state_id'];
+            $nearestZip = DB::table('location_cities')
+                ->select('zip')
+                ->where('zip', 'like', '%' . $request['zip_code'] . '%')
+
+                ->orderByRaw('ABS(zip - ' . $request['zip_code'] . ')')
+                ->first();
+
+            // If a nearest ZIP code is found, use it; otherwise, use the provided ZIP code
+            $customerAddress->zipcode = $nearestZip ? $nearestZip->zip : $request['zip_code'];
+
+
+
+            $city = DB::table('location_cities')->where('city', $request['city'])->first();
+
+            if ($city) {
+                $matchingCity = DB::table('location_cities')->where('zip', $request['zip_code'])->first();
+
+                if ($matchingCity) {
+                    $customerAddress->city_id = $matchingCity->city_id;
+                } else {
+                    $nearestCity = DB::table('location_cities')
+                        ->select('city_id')
+                        ->where('zip', 'like', '%' . $request['zip_code'] . '%')
+                        ->orderByRaw('ABS(zip - ' . $request['zip_code'] . ')')
+                        ->first();
+
+                    if ($nearestCity) {
+                        $customerAddress->city_id = $nearestCity->city_id;
+                    } else {
+                        $customerAddress->city_id = 0;
+                    }
+                }
+            } else {
+                $customerAddress->city_id = 0;
+            }
+
+
+            // Construct the address string
+            $address = $request['address1'] . ', ' . $request['city'];
+
+
+            // Make a request to the Google Maps Geocoding API  . ', ' . $request['zip_code']
+            $response = file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($address) . '&key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&callback');
+
+            // Decode the JSON response
+            $data = json_decode($response);
+
+            // Check if the response contains results
+            if ($data && $data->status === 'OK') {
+                // Extract latitude and longitude from the response
+                $latitude = $data->results[0]->geometry->location->lat;
+                $longitude = $data->results[0]->geometry->location->lng;
+
+                // Store latitude and longitude in the $customerAddress object
+                $customerAddress->latitude = $latitude;
+                $customerAddress->longitude = $longitude;
+            } else {
+                // Handle error or set default values
+                $customerAddress->latitude = null;
+                $customerAddress->longitude = null;
+            }
+
+            // dd($customerAddress->latitude, $customerAddress->longitude);
+            // dd($request->all());
+
+            $customerAddress->save();
+
+
+        }
 
         $tagIds = $request['tag_id'];
 
-        if (!empty ($tagIds)) {
+        if (!empty($tagIds)) {
             foreach ($tagIds as $tagId) {
                 $userTag = new UserTag();
                 $userTag->user_id = $userId;
@@ -145,8 +214,10 @@ class DispatcherController extends Controller
     {
         $dispatcher = User::find($id);
         // dd($dispatcher);
-          $notename = DB::table('user_notes')->where('user_id',
-                                        $dispatcher->id)->get();
+        $notename = DB::table('user_notes')->where(
+            'user_id',
+            $dispatcher->id
+        )->get();
         $meta = $dispatcher->meta;
         $jobasign = DB::table('jobs')
             ->where('added_by', $dispatcher->id)
@@ -156,17 +227,21 @@ class DispatcherController extends Controller
             ->get();
 
         $home_phone = $dispatcher->meta()->where('meta_key', 'home_phone')->value('meta_value') ?? '';
+        // $userAddresscity = DB::table('user_address')
+        //     ->leftJoin('location_cities', 'user_address.city_id', '=', 'location_cities.city_id')
+        //     ->where('user_address.user_id', $dispatcher->id)
+        //     ->value('location_cities.city');
         $userAddresscity = DB::table('user_address')
-            ->leftJoin('location_cities', 'user_address.city', '=', 'location_cities.city_id')
+            ->leftJoin('location_cities', 'user_address.city_id', '=', 'location_cities.city_id')
+            ->leftJoin('location_states', 'user_address.state_id', '=', 'location_states.state_id')
             ->where('user_address.user_id', $dispatcher->id)
-            ->value('location_cities.city');
-
+            ->get();
         $latitude = DB::table('user_address')
-            ->leftJoin('location_cities', 'user_address.city', '=', 'location_cities.city_id')
+            ->leftJoin('location_cities', 'user_address.city_id', '=', 'location_cities.city_id')
             ->where('user_address.user_id', $dispatcher->id)
             ->value('location_cities.latitude');
         $longitude = DB::table('user_address')
-            ->leftJoin('location_cities', 'user_address.city', '=', 'location_cities.city_id')
+            ->leftJoin('location_cities', 'user_address.city_id', '=', 'location_cities.city_id')
             ->where('user_address.user_id', $dispatcher->id)
             ->value('location_cities.longitude');
 
@@ -175,7 +250,7 @@ class DispatcherController extends Controller
 
 
 
-        return view('dispatcher.show', compact('dispatcher','notename', 'activity', 'jobasign', 'location', 'latitude', 'longitude', 'userAddresscity', 'home_phone'));
+        return view('dispatcher.show', compact('dispatcher', 'notename', 'activity', 'jobasign', 'location', 'latitude', 'longitude', 'userAddresscity', 'home_phone'));
     }
 
 
@@ -301,19 +376,69 @@ class DispatcherController extends Controller
         );
 
         // Update user address
-        $user->location()->updateOrCreate(
-            ['user_id' => $id],
-            [
-                'address_line1' => $request['address1'],
-                'address_line2' => $request['address_unit'],
-                'city' => $request['city'],
-                'state_id' => $request['state_id'],
-                'zipcode' => $request['zip_code'],
-                'address_type' => $request['address_type'],
 
-                'address_primary' => ($request['address_type'] == 'home') ? 'yes' : 'no',
-            ]
-        );
+        if ($request->filled('city')) {
+            // Create or update the customer address
+            $customerAddress = CustomerUserAddress::updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'address_line1' => $request['address1'],
+                    'address_line2' => $request['address_unit'],
+                    'address_primary' => ($request['address_type'] == 'home') ? 'yes' : 'no',
+                    'city' => $request['city'],
+                    'address_type' => $request['address_type'],
+                    'state_id' => $request['state_id'],
+                    // Fetch nearest ZIP code or use requested ZIP code if not found
+                    'zipcode' => DB::table('location_cities')
+                        ->select('zip')
+                        ->where('zip', 'like', '%' . $request['zip_code'] . '%')
+                        ->orderByRaw('ABS(zip - ' . $request['zip_code'] . ')')
+                        ->value('zip') ?? $request['zip_code'],
+                ]
+            );
+
+            // Set city_id based on city and ZIP code
+            $city = DB::table('location_cities')->where('city', $request['city'])->first();
+            if ($city) {
+                $matchingCity = DB::table('location_cities')->where('zip', $customerAddress->zipcode)->first();
+                $customerAddress->city_id = $matchingCity ? $matchingCity->city_id : 0;
+            } else {
+                $nearestCity = DB::table('location_cities')
+                    ->select('city_id')
+                    ->where('zip', 'like', '%' . $customerAddress->zipcode . '%')
+                    ->orderByRaw('ABS(zip - ' . $customerAddress->zipcode . ')')
+                    ->first();
+                $customerAddress->city_id = $nearestCity ? $nearestCity->city_id : 0;
+            }
+
+            // Construct the address string
+            $address = $request['address1'] . ', ' . $request['city'];
+
+            // Make a request to the Google Maps Geocoding API
+            $response = file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($address) . '&key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&callback');
+
+            // Decode the JSON response
+            $data = json_decode($response);
+
+            // Check if the response contains results
+            if ($data && $data->status === 'OK') {
+                // Extract latitude and longitude from the response
+                $latitude = $data->results[0]->geometry->location->lat;
+                $longitude = $data->results[0]->geometry->location->lng;
+
+                // Store latitude and longitude in the $customerAddress object
+                $customerAddress->latitude = $latitude;
+                $customerAddress->longitude = $longitude;
+            } else {
+                // Handle error or set default values
+                $customerAddress->latitude = null;
+                $customerAddress->longitude = null;
+            }
+
+            // Save the updated customer address
+            $customerAddress->save();
+        }
+
 
         $tagIds = $request->input('tag_id', []);
         $user->tags()->detach();

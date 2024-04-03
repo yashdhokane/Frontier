@@ -7,53 +7,124 @@
 <div class="dropdown-menu dropdown-menu-animate-up">
                      
  	<div class="mega-dropdown-menu row">
-		<div class="col-lg-3 mb-4">
-			<h4 class="mb-3">Price Book</h4>
-			<ul class="list-style-none">
-				<li><a href="{{ route('services.index') }}" class="sidebar-link"><i
-							class="mdi mdi-book-multiple"></i><span class="hide-menu"> Services
-						</span></a></li>
-				<li><a href="{{ route('product.index') }}" class="sidebar-link"><i
-							class="mdi mdi-book-multiple"></i><span class="hide-menu"> Materials
-						</span></a></li>
-				<li><a href="{{ route('estimate.index') }}" class="sidebar-link"><i
-							class="mdi mdi-book-multiple"></i><span class="hide-menu"> Estimate
-							Templates </span></a></li>
-			</ul>
-		</div>
-		<div class="col-lg-3 mb-4">
-			<h4 class="mb-3">Settings</h4>
-			<ul class="list-style-none">
-				<li><a href="{{ route('buisnessprofile.index') }}" class="sidebar-link"><i
-							class="mdi mdi-book-multiple"></i><span class="hide-menu"> Profile
-						</span></a></li>
-				<li><a href="{{ route('businessHours.business-hours') }} " class="sidebar-link"><i
-							class="mdi mdi-book-multiple"></i><span class="hide-menu"> Business
-							Hours </span></a></li>
-				<li><a href="{{ route('servicearea.index') }}" class="sidebar-link"><i
-							class="mdi mdi-book-multiple"></i><span class="hide-menu"> Service Area
-						</span></a></li>
-			</ul>
-		</div>
-		<div class="col-lg-3 col-xl-2 mb-4">
+	
+		<div class="col-lg-2 mb-4">
 			<h4 class="mb-3">Profiles</h4>
 			<ul class="list-style-none">
-				<li><a href="{{ route('technicians.index')}}"><i class="fas fa-user"></i>
-						Technicians</a></li>
-				<li><a href="{{ route('users.index') }}"><i class="fas fa-user-plus"></i>
-						Customers</a></li>
-				<li><a href="{{ route('dispatcher.index') }}"><i class="fas fa-user-plus"></i>
-						Dispatchers</a></li>
+				<li>
+					<a href="{{ route('users.index') }}"><i class="ri-group-line"></i> Customers </a>
+				</li>
+				<li>
+					<a href="{{ route('technicians.index') }}"><i class="ri-contacts-line"></i> Technicians </a>
+				</li>
+				<li>
+					<a href="{{ route('dispatcher.index') }}"><i class="ri-admin-line"></i> Dispatchers </a>
+				</li>
+				<li>
+					<a href="{{ route('multiadmin.index') }}"><i class="ri-admin-fill"></i> Admin </a>
+				</li>
 			</ul>
 		</div>
-		<div class="col-lg-3 mb-4">
+		
+		<div class="col-lg-2 mb-4">
+			<h4 class="mb-3">Jobs & Payments</h4>
+			<ul class="list-style-none">		
+				<li>
+					<a href="{{ route('schedule') }}"><i class="fas fa-calendar-check"></i> Schedule </a>
+				</li>            
+				<li>
+					<a href="{{ route('map') }}"><i class="fas fa-calendar-check"></i> Reschedule </a>
+				</li>
+				<li>
+					<a href="{{ route('tickets.index') }}"><i class="mdi mdi-book-multiple"></i>  Jobs List </a>
+				</li>
+				<li>
+					<a href="{{ route('payment-list') }}"><i class="ri-money-dollar-box-line"></i>  Payments </a>
+				</li>
+				<li>
+					<a href="#."><i class="far ri-price-tag-line"></i> Invoices </a>
+				</li>
+				<li>
+					<a href="#."><i class="far ri-price-tag-2-line"></i> Estimates </a>
+				</li>
+			</ul>			
+		</div>
+		
+		<div class="col-lg-2 mb-4">
+			<h4 class="mb-3">Price Book</h4>
+			<ul class="list-style-none">
+				<li>
+					<a href="{{ route('services.index') }}"><i class="ri-book-line"></i> Services </a>
+				</li>
+				<li>
+					<a href="{{ route('product.index') }}"><i class="ri-book-mark-line"></i> Parts </a>
+				</li>
+				<li>
+					<a href="{{route('assign_product')}}"><i class="ri-book-2-line"></i> Assign Parts </a>
+				</li>
+				<li>
+					<a href="{{route('manufacturer.index')}}"><i class="ri-building-3-line"></i> Manufacturers </a>
+				</li>
+				<li>
+					<a href="{{ route('estimate.index') }}"><i class="ri-article-line"></i> Estimate Templates </a>
+				</li>
+			</ul>
+		</div>
+  						
+ 		<div class="col-lg-2 mb-4">
+ 			<h4 class="mb-3">Settings</h4>
+			<ul class="list-style-none">
+ 				<li>
+					<a href="{{ route('buisnessprofile.index') }}"><i class="ri-file-list-line"></i> Business Profile </a>
+				</li>
+				<li>
+					<a href="{{ route('businessHours.business-hours') }}"><i class="ri-24-hours-line"></i> Working Hours </a>
+				</li>
+				<li>
+					<a href="{{ route('servicearea.index') }}"><i class="ri-service-line"></i> Service Area </a>
+				</li>
+				<li>
+					<a href="{{ route('manufacturer.index') }}"><i class="ri-building-2-line"></i> Manufacturer </a>
+				</li>
+				<li>
+					<a href="{{ route('tax.index') }}"><i class="ri-bar-chart-fill"></i> Tax </a>
+				</li>
+ 			</ul>
+		</div>
+ 		
+		<div class="col-lg-2 mb-4">
 			<h4 class="mb-3">Reporting</h4>
 			<ul class="list-style-none">
-				<li><a href="#."><i class="fas fa-list"></i> Technician Earnings</a></li>
-				<li><a href="#."><i class="fas fa-list"></i> Call Monitoring</a></li>
 				<li><a href="{{route('performanncematrix')}}"><i class="fas fa-list"></i> Performance Matrix</a></li>
-			</ul>
+				<li><a href="#"><i class="fas fa-list"></i> Dispatchers Performance</a></li>
+ 				<li><a href="#."><i class="fas fa-list"></i> Activity Log</a></li>
+ 				<li><a href="#."><i class="fas fa-list"></i> Technician Earnings</a></li>
+				<li><a href="#."><i class="fas fa-list"></i> Call Monitoring</a></li>
+ 			</ul>
 		</div>
+		
+		<div class="col-lg-2 mb-4">
+ 			<h4 class="mb-3">Help & Support</h4>
+			<ul class="list-style-none">
+				<li>
+ 					<a href="#."><i class="ri-file-list-line"></i> Contact Support </a>
+				</li>
+  				<li>
+ 					<a href="#."><i class="ri-file-list-line"></i> View Website </a>
+				</li>
+				<li>
+ 					<a href="#."><i class="ri-file-list-line"></i> Download App </a>
+				</li>
+ 				<li>
+ 					<a href="#."><i class="ri-file-list-line"></i> Privacy Policy </a>
+				</li>
+				<li>
+ 					<a href="#."><i class="ri-file-list-line"></i> Documentation </a>
+				</li>
+  			</ul>
+		</div>
+		
+		
 	</div>
 
 </div>

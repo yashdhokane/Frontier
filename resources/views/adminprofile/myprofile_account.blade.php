@@ -63,7 +63,7 @@
 		}, 5000);
 		</script>
 		
-<div class="row mt-12 justify-content-center">		
+<div class="row mt-12 ">		
 	
 		
 		 <div class="col-md-9">

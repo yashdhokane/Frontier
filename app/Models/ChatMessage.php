@@ -23,4 +23,10 @@ class ChatMessage extends Model
     {
         return $this->belongsTo(User::class, 'sender', 'id');
     }
+    public function chating()
+    {
+        return $this->hasOne(ChatFile::class, 'conversation_id', 'conversation_id');
+    }
+    public $timestamps = false;
+
 }
