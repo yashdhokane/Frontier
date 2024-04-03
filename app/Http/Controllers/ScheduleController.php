@@ -585,7 +585,7 @@ class ScheduleController extends Controller
                     $schedule = new Schedule();
 
                     $schedule->schedule_type = $data['scheduleType'];
-                    $schedule->job_id = $jobId;
+                    $schedule->job_id = $data['job_id'];
                     $schedule->start_date_time = $start_date_time;
                     $schedule->end_date_time = $end_date_time;
                     $schedule->technician_id = $data['technician_id'];
