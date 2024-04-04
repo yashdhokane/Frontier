@@ -141,7 +141,9 @@ class ReportsController extends Controller
             $chats[$employee->id] = $activityCount;
         }
         
-
+        $employees = $employees->sortByDesc(function ($employee) use ($jobCountsByEmployee) {
+            return $jobCountsByEmployee[$employee->id] ?? 0;
+        });
     
     
         return view('reports.employees', compact('job','employees', 'jobCountsByEmployee','jobCountsUpdatedBy','jobCountsClosedBy','grossTotalByEmployee','alltotalGross','activity','totalActivity','chats','totalChats'));
