@@ -207,11 +207,12 @@ class ReportsController extends Controller
 
         $monthJobscount = JobModel::join('job_assigned', 'jobs.id', '=', 'job_assigned.job_id')
             ->select(
-                DB::raw('MONTH(job_assigned.start_date_time) as month'),
+                DB::raw('DATE(job_assigned.start_date_time) as date'),
                 DB::raw('COUNT(jobs.id) as job_count')
             )
-            ->groupBy(DB::raw('MONTH(job_assigned.start_date_time)'))
+            ->groupBy(DB::raw('DATE(job_assigned.start_date_time)'))
             ->get();
+
 
         $daily = JobModel::join('job_assigned', 'jobs.id', '=', 'job_assigned.job_id')
             ->select(

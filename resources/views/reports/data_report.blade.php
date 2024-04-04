@@ -105,15 +105,12 @@
                                     <tbody>
                                         @foreach ($monthJobscount as $item)
                                             <tr>
-                                                <td> <?php
-                                                $startOfMonth = date('M 01, Y', mktime(0, 0, 0, $item->month, 1));
-                                                $endOfMonth = date('M t, Y', mktime(0, 0, 0, $item->month, 1));
-                                                ?>
-                                                    {{ $startOfMonth }} - {{ $endOfMonth }}
-                                                </td>
+
+                                                <td>{{ \Carbon\Carbon::parse($item->date)->format('M d, Y') }}</td>
                                                 <td>{{ $item->job_count }}</td>
                                             </tr>
                                         @endforeach
+
 
                                     </tbody>
                                 </table>
