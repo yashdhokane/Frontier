@@ -12,6 +12,7 @@ use App\Models\SiteTags;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ReportsController extends Controller
 {
@@ -156,77 +157,138 @@ class ReportsController extends Controller
     public function jobreport()
     {
 
-        // Get the current date
-        $currentDate = Carbon::today();
-        $currentWeekStartDate = Carbon::now()->startOfWeek()->format('Y-m-d');
-        $currentWeekEndDate = Carbon::now()->endOfWeek()->format('Y-m-d');
-        $currentMonth = Carbon::now()->month;
-        $currentMonthschedule = Carbon::now()->format('Y-m');
 
-        $todayGrossTotalSum = JobAssign::whereDate('start_date_time', $currentDate)
-            ->join('jobs', 'job_assigned.job_id', '=', 'jobs.id')
-            ->sum('jobs.gross_total');
+        return view('reports.job');
+    }
 
-        $monthGrossTotalSum = JobAssign::whereMonth('start_date_time', $currentMonth)
-            ->join('jobs', 'job_assigned.job_id', '=', 'jobs.id')
-            ->sum('jobs.gross_total');
+    public function data_report(Request $request)
+    {
+        $data = $request->type;
 
-        $mothlyjobcount = JobAssign::whereMonth('start_date_time', $currentMonth)
-            ->join('jobs', 'job_assigned.job_id', '=', 'jobs.id')
-            ->count();
+        $customerDetails = JobModel::join('users', 'jobs.customer_id', '=', 'users.id')
+            ->select(
+                DB::raw('COUNT(jobs.id) as total_jobs'),
+                DB::raw('SUM(jobs.gross_total) as total_revenue'),
+                'jobs.customer_id',
+                'users.name'
+            )
+            ->groupBy('jobs.customer_id')
+            ->groupBy('users.name')
+            ->get();
 
-        $todayjobcount = JobAssign::whereDate('start_date_time', $currentDate)
-            ->join('jobs', 'job_assigned.job_id', '=', 'jobs.id')
-            ->count();
+        // Fetch all unique zip codes from the job table
+        $zipCodeDetails = JobModel::select('zipcode')
+            ->selectRaw('COUNT(*) as job_count, SUM(gross_total) as total_gross_total')
+            ->groupBy('zipcode')
+            ->get();
 
-        $daillyjobcount = Schedule::whereDate('start_date_time', $currentDate)->count();
+        $cityDetails = JobModel::select('city')
+            ->selectRaw('COUNT(*) as job_count, SUM(gross_total) as total_gross_total')
+            ->groupBy('city')
+            ->get();
 
-        $weeklyjobcount = Schedule::whereDate('start_date_time', [$currentWeekStartDate, $currentWeekEndDate])->count();
+        $stateDetails = JobModel::select('state')
+            ->selectRaw('COUNT(*) as job_count, SUM(gross_total) as total_gross_total')
+            ->groupBy('state')
+            ->get();
 
-        $monthjobcount = Schedule::where('start_date_time', 'LIKE', "$currentMonthschedule%")->count();
+        $jobs = JobModel::join('job_assigned', 'jobs.id', '=', 'job_assigned.job_id')
+            ->select(DB::raw('DATE(job_assigned.start_date_time) as date'), DB::raw('SUM(jobs.gross_total) as daily_gross_total'))
+            ->groupBy(DB::raw('DATE(job_assigned.start_date_time)'))
+            ->get();
 
-        // Get all site tag IDs
-        $siteTagIds = SiteTags::pluck('tag_id');
+        $monthJobs = JobModel::join('job_assigned', 'jobs.id', '=', 'job_assigned.job_id')
+            ->select(
+                DB::raw('MONTH(job_assigned.start_date_time) as month'),
+                DB::raw('SUM(jobs.gross_total) as monthly_gross_total')
+            )
+            ->groupBy(DB::raw('MONTH(job_assigned.start_date_time)'))
+            ->get();
 
-        // Initialize an array to store the count of jobs for each site tag
-        $siteTagCounts = [];
+        $monthJobscount = JobModel::join('job_assigned', 'jobs.id', '=', 'job_assigned.job_id')
+            ->select(
+                DB::raw('MONTH(job_assigned.start_date_time) as month'),
+                DB::raw('COUNT(jobs.id) as job_count')
+            )
+            ->groupBy(DB::raw('MONTH(job_assigned.start_date_time)'))
+            ->get();
 
-        // Loop through each site tag ID
-        foreach ($siteTagIds as $tagId) {
-            // Get the count of jobs that use the current site tag
-            $count = JobModel::where('tag_ids', 'LIKE', "%$tagId%")->count();
+        $daily = JobModel::join('job_assigned', 'jobs.id', '=', 'job_assigned.job_id')
+            ->select(
+                DB::raw('DATE(job_assigned.start_date_time) as date'),
+                DB::raw('COUNT(jobs.id) as job_count'),
+                DB::raw('SUM(jobs.gross_total) as daily_gross_total')
+            )
+            ->groupBy(DB::raw('DATE(job_assigned.start_date_time)'))
+            ->get();
 
-            // Store the count in the array with the site tag ID as key
-            $siteTagCounts[$tagId] = $count;
-        }
+        $weekly = JobModel::join('job_assigned', 'jobs.id', '=', 'job_assigned.job_id')
+            ->select(
+                DB::raw('YEARWEEK(job_assigned.start_date_time) as week'),
+                DB::raw('SUM(jobs.gross_total) as weekly_gross_total'),
+                DB::raw('COUNT(jobs.id) as job_count')
+            )
+            ->groupBy(DB::raw('YEARWEEK(job_assigned.start_date_time)'))
+            ->get();
 
-        // Total count of jobs using any site tag
-        $totalSiteTagUsage = array_sum($siteTagCounts);
+        $monthly = JobModel::join('job_assigned', 'jobs.id', '=', 'job_assigned.job_id')
+            ->select(
+                DB::raw('MONTH(job_assigned.start_date_time) as month'),
+                DB::raw('SUM(jobs.gross_total) as weekly_gross_total'),
+                DB::raw('COUNT(jobs.id) as job_count')
+            )
+            ->groupBy(DB::raw('MONTH(job_assigned.start_date_time)'))
+            ->get();
 
-        $lowcount = JobModel::where('priority', 'low')->count();
-        $mediumcount = JobModel::where('priority', 'medium')->count();
-        $highcount = JobModel::where('priority', 'high')->count();
+        $tagCounts = JobModel::join('site_tags', 'jobs.tag_ids', 'LIKE', DB::raw('CONCAT("%", site_tags.tag_id, "%")'))
+            ->select(
+                'site_tags.tag_name',
+                DB::raw('SUM(jobs.gross_total) as total_gross_total'),
+                DB::raw('COUNT(jobs.id) as job_count'),
+            )
+            ->groupBy('site_tags.tag_id', 'site_tags.tag_name')
+            ->get();
+        $priorityCounts = JobModel::select(
+            'priority',
+            DB::raw('SUM(gross_total) as total_gross_total'),
+            DB::raw('COUNT(id) as job_count')
+        )
+            ->groupBy('priority')
+            ->get();
 
-        // Get all site tag IDs
-        $lead = SiteLeadSource::pluck('source_id');
+        $leadSourceCounts = DB::table('jobs')
+            ->join('users', 'jobs.customer_id', '=', 'users.id')
+            ->join('site_lead_source', 'users.source_id', '=', 'site_lead_source.source_id')
+            ->select('site_lead_source.source_name as lead_source', DB::raw('COUNT(jobs.id) as job_count'), DB::raw('SUM(jobs.gross_total) as total_gross_total'))
+            ->groupBy('site_lead_source.source_name')
+            ->get();
 
-        // Get the count of jobs that use any of the site tags
-        $sourcelead = User::whereIn('source_id', $lead)->count();
+        $CountsManufacturer = JobModel::join('job_details', 'jobs.id', '=', 'job_details.job_id')
+            ->join('manufacturers', 'job_details.manufacturer_id', '=', 'manufacturers.id')
+            ->select(
+                DB::raw('COUNT(jobs.id) as total_jobs'),
+                DB::raw('SUM(jobs.gross_total) as total_revenue'),
+                'job_details.manufacturer_id as manu_id',
+                'manufacturers.manufacturer_name'
+            )
+            ->groupBy('job_details.manufacturer_id')
+            ->groupBy('manufacturers.manufacturer_name')
+            ->get();
 
-        $customerCount = JobModel::distinct('customer_id')->count('customer_id');
+        $CountsAppliance = JobModel::join('job_details', 'jobs.id', '=', 'job_details.job_id')
+            ->join('appliances', 'job_details.appliance_id', '=', 'appliances.appliance_id')
+            ->select(
+                DB::raw('COUNT(jobs.id) as total_jobs'),
+                DB::raw('SUM(jobs.gross_total) as total_revenue'),
+                'job_details.appliance_id',
+                'appliances.appliance_name'
+            )
+            ->groupBy('job_details.appliance_id')
+            ->groupBy('appliances.appliance_name')
+            ->orderByDesc('total_jobs')
+            ->get();
 
-        $zipcode = JobModel::distinct('zipcode')->count('zipcode');
 
-        $city = JobModel::distinct('city')->count('city');
-
-        $state = JobModel::distinct('state')->count('state');
-
-        $applianaces = JobModel::distinct('appliances_id')->count('appliances_id');
-
-
-
-
-        return view('reports.job', compact('todayGrossTotalSum', 'monthGrossTotalSum', 'mothlyjobcount', 'todayjobcount', 'daillyjobcount', 'weeklyjobcount', 'monthjobcount', 'totalSiteTagUsage', 'lowcount', 'mediumcount', 'highcount','sourcelead',
-    'customerCount','zipcode','city','state','applianaces'));
+        return view('reports.data_report', compact('data', 'customerDetails', 'zipCodeDetails', 'cityDetails', 'stateDetails', 'jobs', 'monthJobs', 'monthJobscount', 'daily', 'weekly', 'monthly', 'tagCounts', 'priorityCounts', 'leadSourceCounts', 'CountsManufacturer', 'CountsAppliance'));
     }
 }

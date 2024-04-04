@@ -527,6 +527,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports/employee', [ReportsController::class, 'employeereport'])->name('employeereport.index');
     Route::get('/reports/jobs', [ReportsController::class, 'jobreport'])->name('jobreport.index');
 
+    Route::get('data_report', [ReportsController::class, 'data_report'])->name('data_report');
+
 
 
     // Lead Source Route here(st)
