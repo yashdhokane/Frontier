@@ -57,8 +57,8 @@ class ProductController extends Controller
             'base_price' => $request->input('base_price'),
             'discount' => $request->input('discount'),
             'product_code' => $request->input('product_code'),
+            'total' => $request->input('total'),
             'stock' => $request->input('stock'),
-            'tax' => $request->input('tax'),
             'product_description' => $request->input('product_description'),
             'created_by' => $adminId,
             'updated_by' => $adminId,
@@ -108,7 +108,7 @@ class ProductController extends Controller
 
 
 
-        return redirect()->route('product.index', ['product_id' => $productCategoryId])
+        return redirect()->route('product.index')
             ->with('success', 'Product & Material created successfully');
     }
 
@@ -154,6 +154,7 @@ class ProductController extends Controller
             'status' => $request->input('status'),
             'base_price' => $request->input('base_price'),
             'discount' => $request->input('discount'),
+            'total' => $request->input('total'),
             'product_code' => $request->input('product_code'),
             'stock' => $request->input('stock'),
             'product_description' => $request->input('product_description'),
@@ -199,7 +200,7 @@ class ProductController extends Controller
 
 
         // Redirect or respond as needed
-        return redirect()->route('product.index', ['product_id' => $request->input('product_category_id')])
+        return redirect()->route('product.index')
             ->with('success', 'Product & Material updated successfully');
     }
 

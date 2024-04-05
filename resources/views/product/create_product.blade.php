@@ -261,12 +261,6 @@
                                             </div>
                                         </div>
                                         <div class="mb-4">
-                                            <label class="control-label required-field bold mb5">Tax (In
-                                                Percentage)</label>
-                                            <input type="number" name="tax" class="form-control"
-                                                 required />
-                                        </div>
-                                        <div class="mb-4">
                                             <label class="required-field bold mb5">Total</label>
                                             <div class="input-group mb-3"><input type="text" class="form-control"
                                                     name="total"  placeholder=""
