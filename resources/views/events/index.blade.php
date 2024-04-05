@@ -8,6 +8,11 @@
         <!-- Start Page Content -->
         <!-- -------------------------------------------------------------- -->
         <!-- basic table -->
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
         <div class="row">
             <div class="col-12">
 
@@ -54,7 +59,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                   
+
                                     <div class="col-md-6">
                                         <div class="d-flex flex-column align-items-baseline">
                                             <!-- Filter by other column (example: Manufacturer) -->
@@ -68,7 +73,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
 
 
@@ -96,9 +101,12 @@
                                             <td>{{ $item->event_name ?? null }} </td>
                                             <td>{{ $item->event_description ?? null }} </td>
                                             <td>{{ $item->event_location ?? null }} </td>
-                                            <td>{{ $item->start_date_time ?? null }} </td>
-                                            <td>{{ $item->end_date_time ?? null }} </td>
-                                            <td></td>
+                                            <td>{{ $item->start_date_time ? \Carbon\Carbon::parse($item->start_date_time)->format('m-d-Y h:i:a') : null }}
+                                            </td>
+                                            <td>{{ $item->end_date_time ? \Carbon\Carbon::parse($item->end_date_time)->format('m-d-Y h:i:a') : null }}
+                                            </td>
+                                            <td><a href="{{ url('event/delete/' . $item->id) }}"><i
+                                                        class="fa fa-trash text-danger"></i></a></td>
 
 
                                         </tr>

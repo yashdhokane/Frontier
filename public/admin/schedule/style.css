@@ -215,11 +215,9 @@ img.calimg2 {
     bottom: 106%;
     left: -50%;
     right: -50%;
-    /* width: fit-content; */
+    width: max-content;
   }
   
-  .popup-content {
-    width: 200px;
-  }
+  
  
   

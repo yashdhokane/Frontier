@@ -740,6 +740,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('events', [EventController::class, 'index'])->name('events');
 
+    Route::get('event/delete/{id}', [EventController::class, 'destroy']);
+
 
 
 
