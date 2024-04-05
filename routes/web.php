@@ -10,6 +10,7 @@ use App\Http\Controllers\MultiAdminController;
 use App\Http\Controllers\ReportsController;
 
 
+use App\Http\Controllers\EventController;
 
 use App\Http\Controllers\BuisnessProfileController;
 
@@ -30,7 +31,6 @@ use App\Http\Controllers\ProductCategoryController;
 
 
 use App\Http\Controllers\ServiceCategoryController;
-use App\Http\Controllers\EventController;
 
 
 
@@ -336,6 +336,7 @@ Route::group(['middleware' => 'role:customer'], function () {
     Route::resource('/technicians', TechnicianController::class,);
 
 
+    Route::POST('/technicians/updatefleet', [TechnicianController::class, 'updatefleet'])->name('updatefleet');
 
     Route::POST('/technicians/store', [TechnicianController::class, 'store'])->name('technicians.store');
 
@@ -358,6 +359,8 @@ Route::group(['middleware' => 'role:customer'], function () {
 
     Route::get('/technicians/show/{id}', [TechnicianController::class, 'show'])->name('technicians.show');
 
+
+    Route::PUT('/technicians/updateservice/{id}', [TechnicianController::class, 'updateservice'])->name('technicians.updateservice');
 
 
     Route::PUT('/technicians/update/{id}', [TechnicianController::class, 'update'])->name('technicians.update');
@@ -529,7 +532,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports/jobs', [ReportsController::class, 'jobreport'])->name('jobreport.index');
 
     Route::get('data_report', [ReportsController::class, 'data_report'])->name('data_report');
-
 
 
     // Lead Source Route here(st)
@@ -735,12 +737,13 @@ Route::middleware('auth')->group(function () {
     Route::get('get/usertax', [ScheduleController::class, 'usertax'])->name('usertax');
 
     Route::get('get/userstate', [ScheduleController::class, 'userstate'])->name('userstate');
-    
+
     // EventController
 
     Route::get('events', [EventController::class, 'index'])->name('events');
 
     Route::get('event/delete/{id}', [EventController::class, 'destroy']);
+
 
 
 
@@ -1004,6 +1007,7 @@ Route::post('/my-profile/account/email-verify', [AdminProfileController::class, 
     //chat
     Route::post('/add-user-to-conversation', [ChatSupportController::class, 'addUserToConversation'])->name('addUserToConversation');
 
+    Route::post('/delete_participant', [ChatSupportController::class, 'deleteParticipant'])->name('delete_participant');
 
     Route::get('/autocompleteUser', [ChatSupportController::class, 'autocompleteUser'])->name('autocomplete.user');
 

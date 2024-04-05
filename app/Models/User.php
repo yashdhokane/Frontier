@@ -58,6 +58,10 @@ public function Locationareaname()
     {
         return $this->belongsToMany(Role::class);
     }
+        public function fleet()
+    {
+        return $this->hasOne(FleetDetails::class, 'user_id', 'id');
+    }
 
     public function isAdmin()
     {

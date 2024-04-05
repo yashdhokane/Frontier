@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\FleetDetails;
 use App\Models\LocationCity;
 use App\Models\UserTag;
 use App\Models\SiteTags;
@@ -44,7 +45,6 @@ class TechnicianController extends Controller
                 }
                 $users[$key]['area_name'] = implode(', ', $areaName);
             }
-
         }
 
         return view('technicians.index', compact('users'));
@@ -218,8 +218,6 @@ class TechnicianController extends Controller
             // dd($request->all());
 
             $customerAddress->save();
-
-
         }
 
 
@@ -307,8 +305,95 @@ class TechnicianController extends Controller
             ->leftJoin('location_cities', 'user_address.city', '=', 'location_cities.city_id')
             ->where('user_address.user_id', $technician->id)
             ->value('location_cities.longitude');
+        $fleets = $technician->fleet;
+        if ($fleets) {
+            $oil_change = $technician->fleet()->where('fleet_key', 'oil_change')->value('fleet_value') ?? '';
+            $tune_up = $technician->fleet()->where('fleet_key', 'tune_up')->value('fleet_value') ?? '';
+            $tire_rotation = $technician->fleet()->where('fleet_key', 'tire_rotation')->value('fleet_value') ?? '';
+            $breaks = $technician->fleet()->where('fleet_key', 'breaks')->value('fleet_value') ?? '';
+            $inspection_codes = $technician->fleet()->where('fleet_key', 'inspection_codes')->value('fleet_value') ?? '';
+            $mileage = $technician->fleet()->where('fleet_key', 'mileage')->value('fleet_value') ?? '';
+            $registration_expiration_date = $technician->fleet()->where('fleet_key', 'registration_expiration_date')->value('fleet_value') ?? '';
+            $vehicle_coverage = $technician->fleet()->where('fleet_key', 'vehicle_coverage')->value('fleet_value') ?? '';
+            $license_plate = $technician->fleet()->where('fleet_key', 'license_plate')->value('fleet_value') ?? '';
+            $vin_number = $technician->fleet()->where('fleet_key', 'vin_number')->value('fleet_value') ?? '';
+            $make = $technician->fleet()->where('fleet_key', 'make')->value('fleet_value') ?? '';
+            $model = $technician->fleet()->where('fleet_key', 'model')->value('fleet_value') ?? '';
+            $year = $technician->fleet()->where('fleet_key', 'year')->value('fleet_value') ?? '';
+            $color = $technician->fleet()->where('fleet_key', 'color')->value('fleet_value') ?? '';
+            $vehicle_weight = $technician->fleet()->where('fleet_key', 'vehicle_weight')->value('fleet_value') ?? '';
+            $vehicle_cost = $technician->fleet()->where('fleet_key', 'vehicle_cost')->value('fleet_value') ?? '';
+            $use_of_vehicle = $technician->fleet()->where('fleet_key', 'use_of_vehicle')->value('fleet_value') ?? '';
+            $repair_services = $technician->fleet()->where('fleet_key', 'repair_services')->value('fleet_value') ?? '';
+            $ezpass = $technician->fleet()->where('fleet_key', 'ezpass')->value('fleet_value') ?? '';
+            $service = $technician->fleet()->where('fleet_key', 'service')->value('fleet_value') ?? '';
+            $additional_service_notes = $technician->fleet()->where('fleet_key', 'additional_service_notes')->value('fleet_value') ?? '';
+            $last_updated = $technician->fleet()->where('fleet_key', 'last_updated')->value('fleet_value') ?? '';
+            $epa_certification = $technician->fleet()->where('fleet_key', 'epa_certification')->value('fleet_value') ?? '';
+        } else {
+            $oil_change = '';
+            $tune_up = '';
+            $tire_rotation = '';
+            $breaks = '';
+            $inspection_codes = '';
+            $mileage = '';
+            $registration_expiration_date = '';
+            $vehicle_coverage = '';
+            $license_plate = '';
+            $vin_number = '';
+            $make = '';
+            $model = '';
+            $year = '';
+            $color = '';
+            $vehicle_weight = '';
+            $vehicle_cost = '';
+            $use_of_vehicle = '';
+            $repair_services = '';
+            $ezpass = '';
+            $service = '';
+            $additional_service_notes = '';
+            $last_updated = '';
+            $epa_certification = '';
+        }
 
-        return view('technicians.show', compact('technician', 'notename', 'payments', 'longitude', 'latitude', 'userAddresscity', 'jobasign', 'customerimage', 'location', 'jobasigndate', 'home_phone'));
+        $meta = $technician->meta;
+        if ($meta) {
+            $first_name_e = $technician->meta()->where('meta_key', 'first_name')->value('meta_value') ?? '';
+            $last_name_e = $technician->meta()->where('meta_key', 'last_name')->value('meta_value') ?? '';
+            $home_phone_e = $technician->meta()->where('meta_key', 'home_phone')->value('meta_value') ?? '';
+            $work_phone_e = $technician->meta()->where('meta_key', 'work_phone')->value('meta_value') ?? '';
+            $ssn_e = $technician->meta()->where('meta_key', 'ssn')->value('meta_value') ?? '';
+            $dob_e = $technician->meta()->where('meta_key', 'dob')->value('meta_value') ?? '';
+            $license_number_e = $technician->meta()->where('meta_key', 'license_number')->value('meta_value') ?? '';
+        }
+        $serviceAreas = LocationServiceArea::all();
+        $locationStates = LocationState::all();
+        $tags = SiteTags::all();
+
+
+
+        // Assuming you have a 'tags' relationship defined in your User model
+        $userTags = $technician->tags;
+
+        // Convert the comma-separated tag_id string to an array
+        $selectedTags = explode(',', $userTags->pluck('tag_id')->implode(','));
+        $location = $technician->location;
+
+
+        // Check if the technician has a location
+        if ($location) {
+            // Fetch cities associated with the technician's state
+            $cities = LocationCity::where('state_id', $location->state_id)->get();
+        } else {
+            $cities = collect(); // No cities if no location is set
+        }
+
+        $Note = $technician->Note;
+        $source = $technician->source;
+
+
+
+        return view('technicians.show', compact('technician', 'oil_change', 'tune_up', 'tire_rotation', 'breaks', 'inspection_codes', 'mileage', 'registration_expiration_date', 'vehicle_coverage', 'license_plate', 'vin_number', 'make', 'model', 'year', 'color', 'vehicle_weight', 'vehicle_cost', 'use_of_vehicle', 'repair_services', 'ezpass', 'service', 'additional_service_notes', 'last_updated', 'epa_certification', 'notename', 'payments', 'longitude', 'latitude', 'userAddresscity', 'jobasign', 'customerimage', 'location', 'jobasigndate', 'home_phone', 'first_name_e', 'last_name_e', 'home_phone_e', 'work_phone_e', 'license_number_e', 'ssn_e', 'dob_e', 'serviceAreas', 'locationStates', 'tags', 'cities', 'selectedTags', 'userTags'));
     }
 
     public function edit($id)
@@ -401,7 +486,7 @@ class TechnicianController extends Controller
         // $user->email = $request['email'];
         $user->mobile = $request['mobile_phone'];
         $user->role = $request['role'];
-        $user->service_areas = $request['service_areas'];
+        // $user->service_areas = $request['service_areas'];
         if ($request->filled('password')) {
             $user->password = Hash::make($request['password']);
         }
@@ -425,14 +510,14 @@ class TechnicianController extends Controller
         }
         $user->save();
 
-        if ($request->has('service_areas') && is_array($request->input('service_areas'))) {
-            // If service areas are provided, implode the array
-            $serviceAreasString = implode(',', $request->input('service_areas'));
-            $user->service_areas = $serviceAreasString;
-        } elseif (!$user->service_areas) {
+        // if ($request->has('service_areas') && is_array($request->input('service_areas'))) {
+        // If service areas are provided, implode the array
+        //    $serviceAreasString = implode(',', $request->input('service_areas'));
+        //  $user->service_areas = $serviceAreasString;
+        //  } elseif (!$user->service_areas) {
 
-            $user->service_areas = '';
-        }
+        // $user->service_areas = '';
+        // }
 
         $user->save();
 
@@ -547,7 +632,41 @@ class TechnicianController extends Controller
 
 
 
-        return redirect()->route('technicians.index')->with('success', 'Technician updated successfully');
+        return redirect()->back();
+    }
+
+    public function updateservice(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), []);
+
+        if ($validator->fails()) {
+            return redirect()
+                ->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $user = User::find($id);
+
+        if (!$user) {
+            return redirect()->route('technicians.index')->with('error', 'Technician not found');
+        }
+
+
+
+        if ($request->has('service_areas') && is_array($request->input('service_areas'))) {
+            // If service areas are provided, implode the array
+            $serviceAreasString = implode(',', $request->input('service_areas'));
+            $user->service_areas = $serviceAreasString;
+        } elseif (!$user->service_areas) {
+
+            $user->service_areas = '';
+        }
+
+        $user->save();
+
+
+        return redirect()->back();
     }
 
 
@@ -605,6 +724,158 @@ class TechnicianController extends Controller
 
         return redirect()->back()->with('success', 'Status updated successfully');
     }
+
+    public function updatefleet(Request $request)
+    {
+        //dd($request->all());
+        $user = User::find($request->id);
+
+
+        $user->fleet()->updateOrCreate(
+            ['fleet_key' => 'oil_change'],
+            ['fleet_value' => $request->input('oil_change')]
+        );
+
+        $user->fleet()->updateOrCreate(
+            ['fleet_key' => 'tune_up'],
+            ['fleet_value' => $request->input('tune_up')]
+        );
+        $user->fleet()->updateOrCreate(
+            ['fleet_key' => 'tire_rotation'],
+            ['fleet_value' => $request->input('tire_rotation')]
+        );
+        $user->fleet()->updateOrCreate(
+            ['fleet_key' => 'breaks'],
+            ['fleet_value' => $request->input('breaks')]
+        );
+        $user->fleet()->updateOrCreate(
+            ['fleet_key' => 'inspection_codes'],
+            ['fleet_value' => $request->input('inspection_codes')]
+        );
+        $user->fleet()->updateOrCreate(
+            ['fleet_key' => 'mileage'],
+            ['fleet_value' => $request->input('mileage')]
+        );
+        $user->fleet()->updateOrCreate(
+            ['fleet_key' => 'registration_expiration_date'],
+            ['fleet_value' => $request->input('registration_expiration_date')]
+        );
+
+        $user->fleet()->updateOrCreate(
+            ['fleet_key' => 'vehicle_coverage'],
+            ['fleet_value' => $request->input('vehicle_coverage')]
+        );
+        $user->fleet()->updateOrCreate(
+            ['fleet_key' => 'license_plate'],
+            ['fleet_value' => $request->input('license_plate')]
+        );
+        $user->fleet()->updateOrCreate(
+            ['fleet_key' => 'vin_number'],
+            ['fleet_value' => $request->input('vin_number')]
+        );
+
+        $user->fleet()->updateOrCreate(
+            ['fleet_key' => 'make'],
+            ['fleet_value' => $request->input('make')]
+        );
+
+        $user->fleet()->updateOrCreate(
+            ['fleet_key' => 'model'],
+            ['fleet_value' => $request->input('model')]
+        );
+
+        $user->fleet()->updateOrCreate(
+            ['fleet_key' => 'year'],
+            ['fleet_value' => $request->input('year')]
+        );
+
+
+        $user->fleet()->updateOrCreate(
+            ['fleet_key' => 'color'],
+            ['fleet_value' => $request->input('color')]
+        );
+
+
+        $user->fleet()->updateOrCreate(
+            ['fleet_key' => 'vehicle_weight'],
+            ['fleet_value' => $request->input('vehicle_weight')]
+        );
+
+        $user->fleet()->updateOrCreate(
+            ['fleet_key' => 'vehicle_cost'],
+            ['fleet_value' => $request->input('vehicle_cost')]
+        );
+
+        $user->fleet()->updateOrCreate(
+            ['fleet_key' => 'use_of_vehicle'],
+            ['fleet_value' => $request->input('use_of_vehicle')]
+        );
+
+        $user->fleet()->updateOrCreate(
+            ['fleet_key' => 'repair_services'],
+            ['fleet_value' => $request->input('repair_services')]
+        );
+        $user->fleet()->updateOrCreate(
+            ['fleet_key' => 'ezpass'],
+            ['fleet_value' => $request->input('ezpass')]
+        );
+
+        $user->fleet()->updateOrCreate(
+            ['fleet_key' => 'service'],
+            ['fleet_value' => $request->input('service')]
+        );
+
+        $user->fleet()->updateOrCreate(
+            ['fleet_key' => 'additional_service_notes'],
+            ['fleet_value' => $request->input('additional_service_notes')]
+        );
+        $user->fleet()->updateOrCreate(
+            ['fleet_key' => 'last_updated'],
+            ['fleet_value' => $request->input('last_updated')]
+        );
+
+        $user->fleet()->updateOrCreate(
+            ['fleet_key' => 'epa_certification'],
+            ['fleet_value' => $request->input('epa_certification')]
+        );
+
+
+
+        return redirect()->back()->with('success', 'Fleet data updated successfully!');
+    }
+    // public function updatefleet(Request $request)
+    // {
+
+    //     // Find the FleetDetails record based on the user ID
+    // $fleetDetails = FleetDetails::where('user_id', $request->id)->first();
+    //  dd($fleetDetails);
+    //     // Update or create each field in the fleet details
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'oil_change'], ['fleet_value' => $request->input('oil_change')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'tune_up'], ['fleet_value' => $request->input('tune_up')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'tire_rotation'], ['fleet_value' => $request->input('tire_rotation')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'breaks'], ['fleet_value' => $request->input('breaks')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'inspection_codes'], ['fleet_value' => $request->input('inspection_codes')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'mileage'], ['fleet_value' => $request->input('mileage')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'registration_expiration_date'], ['fleet_value' => $request->input('registration_expiration_date')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'vehicle_coverage'], ['fleet_value' => $request->input('vehicle_coverage')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'license_plate'], ['fleet_value' => $request->input('license_plate')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'vin_number'], ['fleet_value' => $request->input('vin_number')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'make'], ['fleet_value' => $request->input('make')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'model'], ['fleet_value' => $request->input('model')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'year'], ['fleet_value' => $request->input('year')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'color'], ['fleet_value' => $request->input('color')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'vehicle_weight'], ['fleet_value' => $request->input('vehicle_weight')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'vehicle_cost'], ['fleet_value' => $request->input('vehicle_cost')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'use_of_vehicle'], ['fleet_value' => $request->input('use_of_vehicle')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'repair_services'], ['fleet_value' => $request->input('repair_services')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'ezpass'], ['fleet_value' => $request->input('ezpass')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'service'], ['fleet_value' => $request->input('service')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'additional_service_notes'], ['fleet_value' => $request->input('additional_service_notes')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'last_updated'], ['fleet_value' => $request->input('last_updated')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'epa_certification'], ['fleet_value' => $request->input('epa_certification')]);
+
+    //     return redirect()->back()->with('success', 'Fleet data updated successfully!');
+    // }
 
 
 

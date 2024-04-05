@@ -2,6 +2,57 @@
 
 @section('content')
 <style>
+    #autocomplete-results-users {
+        position: absolute;
+        background-color: #fff;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 1000;
+        width: 100%;
+        /* Change width to 100% */
+    }
+
+    .delete-participant-button {
+        background-color: transparent !important;
+        border: none;
+        padding: 0;
+        color: red;
+    }
+
+    #autocomplete-results-users ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    #autocomplete-results-users li {
+        padding: 8px 12px;
+        cursor: pointer;
+    }
+
+    #autocomplete-results-users li:hover {
+        background-color: #f0f0f0;
+    }
+
+    #autocomplete-results-users li:hover::before {
+        content: "";
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #ffffff;
+        z-index: -1;
+    }
+
+    /* Ensure hover effect covers the entire autocomplete result */
+    #autocomplete-results-users li:hover::after {
+        content: "";
+        display: block;
+        position: absolute;
+    }
+
     #autocomplete-results {
         position: absolute;
         background-color: #fff;
@@ -115,7 +166,7 @@
 </style>
 <!-- Page wrapper  -->
 <!-- -------------------------------------------------------------- -->
-<div class="row">
+<div class="" style="display: inline;">
     <div class="chat-application">
         <!-- -------------------------------------------------------------- -->
         <!-- Left Part  -->
@@ -132,7 +183,7 @@
                 <div class="p-3 border-bottom">
                     <form>
                         <div class="searchbar">
-                            <input class="form-control" type="text" placeholder="Search Messages" />
+                            <input class="form-control" type="text" name="text-search" placeholder="Search Users" />
                         </div>
                     </form>
                 </div>
@@ -198,14 +249,16 @@
         <!-- -------------------------------------------------------------- -->
         <div class="right-part chat-container">
             <div class="chat-box-inner-part">
-                <div style="display:flex; width:100%;">
+                {{-- <div style="display:flex; justify-content:space-between;  width:100%;"> --}}
                     <div class="chat-not-selected">
                         <div class="text-center">
                             <span class="display-5 text-info"><i data-feather="message-square"></i></span>
                             <h5>Open chat from the list</h5>
                         </div>
                     </div>
-                    <div class="card chatting-box mb-0" style="margin-top:10px;">
+
+
+                    <div class="card chatting-box mb-0  support-message-box-show" style="">
                         <div class="card-body">
                             <div class="chat-meta-user-top d-flex pb-3 border-bottom">
                                 <div class="current-chat-user-name">
@@ -259,18 +312,49 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card chatting-box222 mb-0 support-message-box-user scrollable">
 
+
+                    <div class="card chatting-box222 mb-0 support-message-box-user" style="padding: 15px;!important">
+                        <!-- old  add users with model -->
                         <div class="mt-4 px-3">
-                            <div class="d-flex align-items-center  mb-3">
-                                <div><a href="#." id="add_user_to_conversation"><input type="hidden"
-                                            id="add_user_to_conversation_hidden"
+                            <form class="conversation_form" action="{{ route('addUserToConversation') }}" method="post">
+                                @csrf
+                                <div class="searchbar">
+                                    <div style="display:flex;">
+                                        <div class="col-md-9">
+                                            <input class="form-control" type="text" placeholder="Add Users"
+                                                class="form-control" id="users" name="users" required />
+                                            <input class="form-control" type="hidden"
+                                                id="add_user_to_conversation_hidden-new" name="conversation_id">
+                                        </div>
+                                        <div class="col-md-1" style="margin-left: 5px;">
+                                            <button id="autosubmitwithoutmodel" type="submit" class="btn btn-primary"
+                                                id="add_user_to_conversation_button">
+                                                <i class="fas fa-plus"></i> <!-- "Add" icon -->
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div id="autocomplete-results-users">
+
+                                    </div>
+                                    {{-- <a href="#." id=""><input class="form-control" type="text"
+                                            id="add_user_to_conversation_hidden-new" name="conversation_id"><i
+                                            class="ri-group-line"></i>
+                                    </a> --}}
+
+
+
+                                </div>
+                            </form>
+                            <div class="d-flex align-items-center  mb-3" style=" height=100%; ">
+                                <div style="display:none;"><a href="#." id="add_user_to_conversation"><input
+                                            type="hidden" id="add_user_to_conversation_hidden"
                                             name="add_user_to_conversation_hidden"><i class="ri-group-line"></i>
                                         Add to
                                         Conversation</a></div>
                             </div>
                             <!-- model open to add users -->
-                            <div class="modal" id="addUserModal">
+                            <div class="modal" id="addUserModal" style="display:none;">
                                 <div class="modal-dialog">
                                     <form action="{{ route('addUserToConversation') }}" method="post">
                                         @csrf
@@ -314,54 +398,40 @@
                             </div>
                             <!-- end model -->
 
+                            <div class="mt-4  px-3">
+                                <h6>Group Members</h6>
+                                <div class="chat-meta-user">
 
-                            <form class="conversation_form">
-                                <div class="searchbar">
-                                    <input class="form-control" type="text" placeholder="Search Users" />
-                                </div>
-                            </form>
-                        </div>
+                                    <div class="d-flex align-items-center  mb-3">
 
+                                        <div class="ms-2">
 
-                        <div class="mt-4 chat-meta-user px-3">
-                            <div class="d-flex align-items-center  mb-3">
+                                            <div class="user-meta-info">
 
-                                <div class="ms-2">
-
-                                    <div class="user-meta-info">
-
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
+
+                            <div class="mt-4 mb-4  px-3 ">
+                                <h6>Files & Attachments</h6>
+                                <div class="user_attachments"></div>
+
+                            </div>
+
+
                         </div>
 
 
-                        <div class="mt-4 mb-4 user_attachments px-3 ">
-                            <h6>Files & Attachments</h6>
-                            <ul class="list-group list-group-flush">
-                                {{-- <li class="list-group-item"><a href="#."><i class="ri-file-line"></i> Text File
-                                        1</a></li>
-                                <li class="list-group-item"><a href="#."><i class="ri-file-line"></i> Text File
-                                        2</a></li>
-                                <li class="list-group-item"><a href="#."><i class="ri-image-line"></i> Image 1</a>
-                                </li>
-                                <li class="list-group-item"><a href="#."><i class="ri-image-line"></i> Image 2</a>
-                                </li>
-                                <li class="list-group-item"><a href="#."><i class="ri-image-line"></i> Image 3</a>
-                                </li>
-                                <li class="list-group-item"><a href="#."><i class="ri-attachment-line"></i> PDF File
-                                        1</a></li>
-                                <li class="list-group-item"><a href="#."><i class="ri-attachment-line"></i> PDF File
-                                        2</a></li> --}}
-                            </ul>
-                        </div>
+
                     </div>
-                </div>
+                    {{--
+                </div> --}}
             </div>
         </div>
     </div>
-
 
 </div>
 </div>
@@ -380,6 +450,31 @@
 
 // open model
 $(document).ready(function() {
+
+
+
+// Function to handle search input
+$('input[name="text-search"]').on('input', function() {
+var searchTerm = $(this).val().toLowerCase();
+
+// Loop through each list item
+$('.chatlist').each(function() {
+var $listItem = $(this);
+var itemName = $listItem.find('.message-title').text().toLowerCase();
+
+// Check if item name contains the search term
+if (itemName.includes(searchTerm)) {
+// Show the list item if it matches the search term
+$listItem.show();
+} else {
+// Hide the list item if it doesn't match the search term
+$listItem.hide();
+}
+});
+});
+
+
+
 var uniqueFiles = {}; // Initialize the uniqueFiles object
 
 $('.chatlist').click(function() {
@@ -390,7 +485,7 @@ var id = $(this).data('id');
 
 $("#name_support_message_id").val(id);
 $("#add_user_to_conversation_hidden").val(id);
-
+$("#add_user_to_conversation_hidden-new").val(id);
 // Make an AJAX request to fetch data
 $.ajax({
 url: 'get-chat-messages',
@@ -418,10 +513,21 @@ var imageSrc = userImageSrc;
 $('.chat-meta-user').append(
 '<div class="d-flex align-items-center mb-3">' +
     '<img src="' + imageSrc + '" alt="avatar" class="rounded-circle" width="40">' +
-    '<div class="ms-2">' +
-        '<div class="user-meta-info">' +
-            '<span class="name fw-bold ms-2">' + participant.user.name + '</span>' +
-            '<span class="role">' + participant.user.role + '</span>' +
+    '<div class="ms-2 flex-grow-1">' +
+        '<div class="user-meta-info d-flex justify-content-between align-items-center">' +
+            '<div>' +
+                '<span class="name fw-bold ms-2">' + participant.user.name + '</span>' +
+                '<span class="role">' + participant.user.role + '</span>' +
+                '</div>' +
+            '<form action="{{ route('delete_participant') }}" method="post" class="delete-participant-form">' +
+                '@csrf' +
+                '<input type="hidden" name="user_id" value="' + participant.user_id + '">' +
+                '<input type="hidden" name="conversation_id" value="' + participant.conversation_id + '">' +
+                '<button type="button" id="deleteUser_' + participant.user_id + '"class="btn btn-sm btn-danger delete-participant-button" onclick="if(confirm(\'Are you sure you want to delete this user from the conversation?\')) {$(this).closest(\'form\').submit();}">'
+                    +
+                    '<i class="fas fa-times"></i>' +
+                    '</button>' +
+                '</form>' +
             '</div>' +
         '</div>' +
     '</div>'
@@ -439,11 +545,14 @@ $('.chat-meta-user-top').append(
 // Append message data and file data to the chat list
 $.each(combineData, function(index, data) {
 var createdAtDate = new Date(data.time);
-var formattedDate = createdAtDate.toLocaleDateString();
-var formattedTime = createdAtDate.toLocaleTimeString([], {
-hour: '2-digit',
-minute: '2-digit'
-});
+var currentTime = new Date();
+var timeDifference = currentTime - createdAtDate;
+var formattedTimeDifference;
+
+if (timeDifference < 60000) { formattedTimeDifference='just now' ; } else if (timeDifference < 3600000) {
+    formattedTimeDifference=Math.floor(timeDifference / 60000) + ' minutes ago' ; } else if (timeDifference < 86400000)
+    { formattedTimeDifference=Math.floor(timeDifference / 3600000) + ' hours ago' ; } else {
+    formattedTimeDifference=Math.floor(timeDifference / 86400000) + ' days ago' ; }
 
 var userImageSrc = data.user?.user_image ? 'public/images/Uploads/users/' + data.user.id + '/' + data.user.user_image : '{{ asset('public/images/login_img_bydefault.png') }}';
 var imageSrc = userImageSrc;
@@ -456,28 +565,40 @@ var chatItem = '<li class="chat-item">' +
          '<h6 class="font-medium">' + userName + '</h6>';
 
         // Check if the data contains a file path in the message field
-        if (data.message && isFilePath(data.message)) {
-        // It's a file
-        chatItem += '<div class="file">' +
-            '<a href="' + data.message + '" target="_blank">' + data.message + '</a>' +
-            '</div>';
-        } else {
-        // It's a message
-        chatItem += '<div class="box bg-light">' + data.message + '</div>';
-        }
+       // Check if it's a file
+    if (data.message && isFilePath(data.message)) {
+    var fileExtension = data.message.split('.').pop().toLowerCase();
+    // Check if it's an image file
+    if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(fileExtension)) {
+    // It's an image file
+    chatItem += '<div class="file">' +
+        '<a href="public/images/Uploads/chat/' + data.conversation_id + '/' + data.message + '" target="_blank">' +
+            '<img src="public/images/Uploads/chat/' + data.conversation_id + '/' + data.message + '" width="100"height="100" />' +'</a>' +'</div>';
+    } else {
+    // It's another type of file
+    chatItem += '<div class="file">' +
+        '<a href="public/images/Uploads/chat/' + data.conversation_id + '/' + data.message + '" target="_blank">' +
+            data.message + // Display the file name
+            '</a>' +
+        '</div>';
+    }
+    } else {
+    // It's a message
+    chatItem += '<div class="box bg-light">' + data.message + '</div>';
+    }
 
-        chatItem += '</div>' +
-    '<div class="chat-time">' + formattedDate + ' ' + formattedTime + '</div>' +
-    '</li>';
+    // Add formatted date and time
+  chatItem += '<div class="chat-time">' + formattedTimeDifference + '</div>' +
+            '</li>';
 
-$('.chat-list').append(chatItem);
+$('.chat-list').prepend(chatItem);
 });
 $('.user_attachments').empty();
 var uniqueFiles = {};
 $.each(attach, function(index, attachs) {
 // Check if a file attachment exists and belongs to the current conversation_id
 if (attachs.filename && attachs.sender ) {
-var fileSrc = 'public/images/Uploads/chat/' + attachs.sender + '/' + attachs.filename;
+var fileSrc = 'public/images/Uploads/chat/' + attachs.conversation_id + '/' + attachs.filename;
 
 // Append the file link to the user_attachments container
 if (!uniqueFiles[fileSrc]) {
@@ -495,6 +616,8 @@ chatBox.scrollTop(chatBox.prop("scrollHeight"));},
 error: function(xhr, status, error) {
 console.error('Error:', error);
 }
+
+
 });
 
 
@@ -504,6 +627,14 @@ var fileExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt','jfif', 'jpg', 
 'avi', 'mov']; // Add more file extensions if needed
 var extension = message.split('.').pop().toLowerCase(); // Get the file extension from the message
 return fileExtensions.includes(extension); // Check if the extension is in the list of file extensions
+}
+});
+
+$("#autosubmitwithoutmodel").click(function(event) {
+var conversationId = $("#add_user_to_conversation_hidden-new").val();
+if (!conversationId) {
+event.preventDefault(); // Prevent form submission
+alert("Please select a conversation to add users to!"); // Display message
 }
 });
 $('#add_user_to_conversation').click(function() {
@@ -516,7 +647,85 @@ $('#conversation_id').val(conversationId);
 // Show the modal
 $('#addUserModal').modal('show');
 });
-// Retrieve conversation_id when opening the modal
+
+//new without model autosrch on input type
+var appendedUsersnew = [];
+
+function initializeAutocompletenew() {
+$("#users").autocomplete({
+source: function(request, response) {
+$.ajax({
+url: "{{ route('autocomplete.user') }}",
+data: {
+term: request.term
+},
+dataType: "json",
+type: "GET",
+success: function(data) {
+var uniqueUsers = [];
+data.forEach(function(item) {
+if (!appendedUsersnew.includes(item.value)) {
+uniqueUsers.push(item);
+appendedUsersnew.push(item.value);
+}
+});
+response(uniqueUsers);
+
+// Set user_id in the modal to the selected user's id
+$("#user_id").val(ui.item.value);
+},
+error: function(xhr, status, error) {
+console.log("Error fetching user data:", error);
+}
+});
+},
+minLength: 3,
+select: function(event, ui) {
+console.log(ui.item.value); // Log the selected user's id
+$("#users").val(ui.item.label);
+$("#user_id").val(ui.item.value); // Set user_id to the selected user's id
+$("#autocomplete-results-users").empty();
+return false;
+}
+}).data("ui-autocomplete")._renderItem = function(ul, item) {
+return $("<li>").addClass("col-md-8").text(item.label).appendTo("#autocomplete-results-users");
+    };
+
+    $("#autocomplete-results-users").on("click", "li", function() {
+    var userId = $(this).data("user_id");
+    var userName = $(this).text();
+    $("#user_id").val(userId);
+    $("#users").val(userName);
+    $("#autocomplete-results-users").hide();
+    });
+
+    $("#users").click(function() {
+    $("#autocomplete-results-users").show();
+    });
+
+    $("#users").on("input", function() {
+    var inputText = $(this).val().trim();
+    if (inputText === "") {
+    $("#autocomplete-results-users").empty();
+    appendedUsersnew = []; // Clear appended users when input is cleared
+    }
+    });
+    }
+
+    // Call the function to initialize autocomplete
+    initializeAutocompletenew();
+
+    // Listen for input field clearing
+    $("#users").on("input", function() {
+    var inputText = $(this).val().trim();
+    if (inputText === "") {
+    // If input field is cleared, re-initialize autocomplete
+    initializeAutocompletenew();
+    }
+    });
+    });
+    });
+//old Retrieve conversation_id when opening the modal
 var appendedUsers = [];
 
 function initializeAutocomplete() {
@@ -591,8 +800,7 @@ return $("<li>").addClass("col-md-12").text(item.label).appendTo("#autocomplete-
     initializeAutocomplete();
     }
     });
-    });
-    });
+
 //open model
 
            // Send AJAX request to refresh the chat list
@@ -609,8 +817,30 @@ return $("<li>").addClass("col-md-12").text(item.label).appendTo("#autocomplete-
         success: function(response) {
         var chat = response.chat;
         var combineData = response.combineData;
+        var uniqueFiles = {};
+
+
+var attach = response.attachmentfileChatFile;
 
         $('.chat-list').empty();
+$('.user_attachments').empty();
+var uniqueFiles = {};
+$.each(attach, function(index, attachs) {
+// Check if a file attachment exists and belongs to the current conversation_id
+if (attachs.filename && attachs.sender ) {
+var fileSrc = 'public/images/Uploads/chat/' + attachs.conversation_id + '/' + attachs.filename;
+
+// Append the file link to the user_attachments container
+if (!uniqueFiles[fileSrc]) {
+// Append the file link to the user_attachments container
+$('.user_attachments').append('<li><a href="' + fileSrc + '" target="_blank">' + attachs.filename + '</a></li>');
+
+// Record that this file source has been appended for this conversation_id
+uniqueFiles[fileSrc] = true;
+}}
+});
+
+
 
         // Example: Append user data to a container
         $.each(chat, function(index, chats) {
@@ -624,35 +854,50 @@ return $("<li>").addClass("col-md-12").text(item.label).appendTo("#autocomplete-
 
         // Example: Append message data to a container
 $.each(combineData, function(index, data) {
+// Parse the string representation of the date into a Date object
 var createdAtDate = new Date(data.time);
-var formattedDate = createdAtDate.toLocaleDateString();
-var formattedTime = createdAtDate.toLocaleTimeString([], {
-hour: '2-digit',
-minute: '2-digit'
-});
+var currentTime = new Date();
+var timeDifference = currentTime - createdAtDate;
+var formattedTimeDifference;
 
-var userImageSrc = data.user.user_image ? 'public/images/Uploads/users/' + data.user.id + '/' + data.user.user_image :
-'{{ asset('public/images/login_img_bydefault.png') }}';
+if (timeDifference < 60000) { formattedTimeDifference='just now' ; } else if (timeDifference < 3600000) {
+    formattedTimeDifference=Math.floor(timeDifference / 60000) + ' minutes ago' ; } else if (timeDifference < 86400000)
+    { formattedTimeDifference=Math.floor(timeDifference / 3600000) + ' hours ago' ; } else {
+    formattedTimeDifference=Math.floor(timeDifference / 86400000) + ' days ago' ; }
+var userImageSrc = data.user?.user_image ? 'public/images/Uploads/users/' + data.user.id + '/' + data.user.user_image : '{{ asset('public/images/login_img_bydefault.png') }}';
 var imageSrc = userImageSrc;
+
+var userName = (data.user && data.user.name) ? data.user.name : 'Unknown User';
 
 var chatItem = '<li class="chat-item">' +
     '<div class="chat-img"><img src="' + imageSrc + '" alt="user" /></div>' +
     '<div class="chat-content">' +
-        '<h6 class="font-medium">' + data.user.name + '</h6>';
+        '<h6 class="font-medium">' + userName + '</h6>';
 
         // Check if the data contains a file path in the message field
-        if (data.message && isFilePath(data.message)) {
-        // It's a file
-        chatItem += '<div class="file">' +
-            '<a href="' + data.message + '" target="_blank">' + data.message + '</a>' +
-            '</div>';
-        } else {
-        // It's a message
-        chatItem += '<div class="box bg-light">' + data.message + '</div>';
-        }
+      if (data.message && isFilePath(data.message)) {
+    var fileExtension = data.message.split('.').pop().toLowerCase();
+    // Check if it's an image file
+    if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(fileExtension)) {
+    // It's an image file
+    chatItem += '<div class="file">' +
+        '<a href="public/images/Uploads/chat/' + data.conversation_id + '/' + data.message + '" target="_blank">' +
+            '<img src="public/images/Uploads/chat/' + data.conversation_id + '/' + data.message + '" width="100"height="100" />' +'</a>' +'</div>';
+    } else {
+    // It's another type of file
+    chatItem += '<div class="file">' +
+        '<a href="public/images/Uploads/chat/' + data.conversation_id + '/' + data.message + '" target="_blank">' +
+            data.message + // Display the file name
+            '</a>' +
+        '</div>';
+    }
+    } else {
+    // It's a message
+    chatItem += '<div class="box bg-light">' + data.message + '</div>';
+    }
 
-        chatItem += '</div>' +
-    '<div class="chat-time">' + formattedDate + ' ' + formattedTime + '</div>' +
+    // Add formatted date and time
+    chatItem += '<div class="chat-time">' + formattedTimeDifference + '</div>' +
     '</li>';
 
 // Prepend the chat item to the chat list

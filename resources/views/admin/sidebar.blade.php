@@ -21,27 +21,27 @@
 
                 @if ($prefix == 'book-list')
                 <li>
-                    <h4 class="card-title text-center mt-4 mb-2">PRICE BOOK</h4>
+                    <h5 class="card-title text-center mt-4 mb-2">PRICE BOOK</h5>
                 </li>
-                <li class="sidebar-item "><a href="{{ route('services.index') }}" class="sidebar-link"><i
-                            class="mdi mdi-book-multiple"></i><span class="hide-menu"> Services </span></a>
+                <li class="sidebar-item ft1"><a href="{{ route('services.index') }}" class="sidebar-link"><i
+                            class="ri-tools-line fas"></i><span class="hide-menu"> Services </span></a>
                 </li>
-                <li class="sidebar-item"><a href="{{ route('product.index') }}" class="sidebar-link"><i
-                            class="mdi mdi-book-multiple"></i><span class="hide-menu"> Parts
+                <li class="sidebar-item ft2"><a href="{{ route('product.index') }}" class="sidebar-link"><i
+                            class="ri-folder-chart-line fas"></i><span class="hide-menu"> Parts
                         </span></a></li>
-                <li class="sidebar-item"><a href="{{route('assign_product')}}" class="sidebar-link"><i
-                            class="mdi mdi-book-multiple"></i> <span class="hide-menu">Assign Parts </span></a></li>
-                <li class="sidebar-item"><a href="{{ route('estimate.index') }}" class="sidebar-link"><i
-                            class="mdi mdi-book-multiple"></i><span class="hide-menu"> Estimate Templates
+                <li class="sidebar-item ft3"><a href="{{route('assign_product')}}" class="sidebar-link"><i
+                            class="ri-shape-2-line fas"></i> <span class="hide-menu">Assign Parts </span></a></li>
+                <li class="sidebar-item ft4"><a href="{{ route('estimate.index') }}" class="sidebar-link"><i
+                            class="ri-pages-line fas"></i><span class="hide-menu"> Estimate Templates
                         </span></a></li>
                 <li>
-                    <h5 class="card-title text-center mt-4 mb-2">SETTINGS</h5>
+                    <h6 class="card-title text-center mt-4 mb-2">SETTINGS</h6>
                 </li>
-                <li class="sidebar-item"><a href="#." class="sidebar-link"><i class="mdi mdi-book-multiple"></i><span
+                <li class="sidebar-item ft5"><a href="#." class="sidebar-link"><i class="ri-settings-5-line fas"></i><span
                             class="hide-menu"> Inport &
                             Export Services
                         </span></a></li>
-                <li class="sidebar-item"><a href="#." class="sidebar-link"><i class="mdi mdi-book-multiple"></i><span
+                <li class="sidebar-item ft7"><a href="#." class="sidebar-link"><i class="ri-settings-5-fill fas"></i><span
                             class="hide-menu"> Inport &
                             Export Materials
                         </span></a></li>
@@ -82,9 +82,9 @@
                         <li class="sidebar-item">
 							<a href="{{ route('tickets.index') }}" class="sidebar-link"><i class="mdi mdi-book-multiple"></i><span class="hide-menu"> Jobs List </span></a>
                         </li>
-                        <li class="sidebar-item"><a href="{{ route('events') }}" class="sidebar-link"><i
-                            class="mdi mdi-book-multiple"></i><span class="hide-menu"> Event List
-                        </span></a></li>
+                         <li class="sidebar-item"><a href="{{ route('events') }}" class="sidebar-link"><i
+                                    class="mdi mdi-book-multiple"></i><span class="hide-menu"> Event List
+                                </span></a></li>
                     </ul>
                 </li>
 
@@ -153,8 +153,8 @@
  						<li class="sidebar-item">
 							<a href="{{ route('buisnessprofile.index') }}" class="sidebar-link"><i class="ri-file-list-line"></i> <span class="hide-menu">Business Profile </span></a>
 						</li>
-                        <li class="sidebar-item">
-							<a href="{{ route('businessHours.business-hours') }}" class="sidebar-link"><i class="ri-24-hours-line"></i> <span class="hide-menu">Working Hours </span></a>
+                        <li class="sidebar-item ft2">
+							<a href="{{ route('businessHours.business-hours') }}" class="sidebar-link"><i class="ri-24-hours-line fas"></i> <span class="hide-menu">Working Hours </span></a>
 						</li>
                         <li class="sidebar-item">
 							<a href="{{ route('manufacturer.index') }}" class="sidebar-link"><i class="ri-building-2-line"></i> <span class="hide-menu">Manufacturer</span></a>

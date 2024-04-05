@@ -8,29 +8,29 @@
 
             <ul id="sidebarnav">
                 
-				<li class="sidebar-item">
-					<a href="{{ route('buisnessprofile.index') }}" class="sidebar-link"><i class="ri-file-list-line"></i> <span class="hide-menu">Business Profile </span></a>
+				<li class="sidebar-item ft1">
+					<a href="{{ route('buisnessprofile.index') }}" class="sidebar-link"><i class="ri-file-list-line fas"></i> <span class="hide-menu">Business Profile </span></a>
 				</li>
-				<li class="sidebar-item ">
-					<a href="{{ route('businessHours.business-hours') }}" class="sidebar-link ft3"><i class="ri-24-hours-line"></i> <span class="hide-menu">Working Hours </span></a>
+				<li class="sidebar-item ft2">
+					<a href="{{ route('businessHours.business-hours') }}" class="sidebar-link"><i class="ri-24-hours-line fas"></i> <span class="hide-menu">Working Hours </span></a>
 				</li>
-				<li class="sidebar-item">
-					<a href="{{ route('servicearea.index') }}" class="sidebar-link ft4"><i class="ri-service-line"></i> <span class="hide-menu">Service Area </span></a>
+				<li class="sidebar-item ft3">
+					<a href="{{ route('servicearea.index') }}" class="sidebar-link"><i class="ri-service-line fas"></i> <span class="hide-menu">Service Area </span></a>
 				</li>
-				<li class="sidebar-item">
-					<a href="{{ route('manufacturer.index') }}" class="sidebar-link"><i class="ri-building-2-line"></i> <span class="hide-menu">Manufacturer</span></a>
+				<li class="sidebar-item ft4">
+					<a href="{{ route('manufacturer.index') }}" class="sidebar-link"><i class="ri-building-2-line fas"></i> <span class="hide-menu">Manufacturer</span></a>
 				</li>
-				<li class="sidebar-item">
-					<a href="{{ route('tax.index') }}" class="sidebar-link"><i class="ri-bar-chart-fill"></i> <span class="hide-menu"> Tax</span></a>
+				<li class="sidebar-item ft5">
+					<a href="{{ route('tax.index') }}" class="sidebar-link"><i class="ri-bar-chart-fill fas"></i> <span class="hide-menu"> Tax</span></a>
 				</li>
-				<li class="sidebar-item">
-					<a href="{{ route('lead.lead-source') }}" class="sidebar-link"><i class="ri-focus-2-line"></i> <span class="hide-menu"> Lead Source </span></a>
+				<li class="sidebar-item ft6">
+					<a href="{{ route('lead.lead-source') }}" class="sidebar-link"><i class="ri-focus-2-line fas"></i> <span class="hide-menu"> Lead Source </span></a>
 				</li>
-				<li class="sidebar-item">
-					<a href="{{ route('tags.tags-list') }}" class="sidebar-link"><i class="fas fa-tag"></i> <span class="hide-menu"> Tags </span></a>
+				<li class="sidebar-item ft7">
+					<a href="{{ route('tags.tags-list') }}" class="sidebar-link"><i class="fas fa-tags"></i> <span class="hide-menu"> Tags </span></a>
 				</li>
-				<li class="sidebar-item">
-					<a href="{{ route('site_job_fields') }}" class="sidebar-link"><i class="fas fa-tags "></i> <span class="hide-menu"> Job Fields </span></a>
+				<li class="sidebar-item ft8">
+					<a href="{{ route('site_job_fields') }}" class="sidebar-link"><i class="fas ri-command-fill"></i> <span class="hide-menu"> Job Fields </span></a>
 				</li>
  						
             </ul>

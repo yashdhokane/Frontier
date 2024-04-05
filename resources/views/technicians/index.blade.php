@@ -154,9 +154,9 @@
                                             <a class="dropdown-item"
                                                 href="{{ route('technicians.show', $user->id) }}"><i data-feather="eye"
                                                     class="feather-sm me-2"></i> View</a>
-                                            <a class="dropdown-item"
+                                           <!-- <a class="dropdown-item"
                                                 href="{{ route('technicians.edit', $user->id) }}"><i
-                                                    data-feather="edit-2" class="feather-sm me-2"></i> Edit</a>
+                                                    data-feather="edit-2" class="feather-sm me-2"></i> Edit</a> -->
                                             <a class="dropdown-item activity" href="javascript:void(0)"
                                                 data-bs-toggle="modal" data-bs-target="#commentModal1"
                                                 onclick="setUserId({{ $user->id }})">

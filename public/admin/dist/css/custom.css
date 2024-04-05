@@ -100,5 +100,14 @@ li.toplinks a{
 .sidebar-nav ul .sidebar-item .sidebar-link {  opacity: 1;}
 
 
-
+.user_profile_tabs .nav-item {
+	background: #e4eaef;
+	border-right: 1px solid #FFF;
+}
+ .user_profile_tabs .nav-item a {
+	color: #2962ff;
+	font-size: 15px;
+	letter-spacing: 0.5px;
+	font-weight: 500;
+}
 

@@ -1198,6 +1198,22 @@
 
                     <div class="row">
                         <div class="col-sm-12 col-md-4">
+
+                            <div class="mb-3">
+                                <label for="city"
+                                    class="control-label bold mb5 col-form-label required-field">City</label>
+                                {{-- <select class="form-select" id="city" name="city" required>
+                                    <option selected disabled value="">Select City...</option>
+                                </select> --}}
+                                <input type="text" class="form-control" id="city" name="city"
+                                    value="{{ $location->city ?? null }}" oninput="searchCity()" required />
+                                {{-- <input type="hidden" class="form-control" id="city_id" name="city_id"
+                                    oninput="searchCity1()" required /> --}}
+                                <div id="autocomplete-results"></div>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-12 col-md-4">
                             <div class="mb-3">
 
                                 <label for="state_id" class="control-label col-form-label required-field">State</label>
@@ -1222,22 +1238,7 @@
                             </div>
 
                         </div>
-                        <div class="col-sm-12 col-md-4">
-
-                            <div class="mb-3">
-                                <label for="city"
-                                    class="control-label bold mb5 col-form-label required-field">City</label>
-                                {{-- <select class="form-select" id="city" name="city" required>
-                                    <option selected disabled value="">Select City...</option>
-                                </select> --}}
-                                <input type="text" class="form-control" id="city" name="city"
-                                    value="{{ $location->city ?? null }}" oninput="searchCity()" required />
-                                {{-- <input type="hidden" class="form-control" id="city_id" name="city_id"
-                                    oninput="searchCity1()" required /> --}}
-                                <div id="autocomplete-results"></div>
-                            </div>
-
-                        </div>
+                    
 
 
 
@@ -1726,61 +1727,75 @@
 
 
  // Function to get zip code
-    function searchCity() {
-        $("#city").autocomplete({
-            source: function(request, response) {
-                $.ajax({
-                    url: "{{ route('autocomplete.city') }}"
-                    , data: {
-                        term: request.term
-                    }
-                    , dataType: "json"
-                    , type: "GET"
-                    , success: function(data) {
-                        response(data);
-                    }
-                    , error: function(response) {
-                        console.log("Error fetching city data:", response);
-                    }
-                });
-            }
-            , minLength: 2
-            , select: function(event, ui) {
-                $("#city").val(ui.item.city);
-                $("#city_id").val(ui.item.city_id);
-                return false;
-            }
-        }).data("ui-autocomplete")._renderItem = function(ul, item) {
-            var listItem = $("<li>").text(item.city).appendTo("#autocomplete-results");
-            listItem.data("city_id", item.city_id);
-            return listItem;
-        };
+   function searchCity() {
+    // Initialize autocomplete
+    $("#city").autocomplete({
+        source: function(request, response) {
+            // Clear previous autocomplete results
+            $("#autocomplete-results").empty();
 
-        $("#autocomplete-results").on("click", "li", function() {
-            var cityName = $(this).text();
-            var cityId = $(this).data("city_id");
+            $.ajax({
+                url: "{{ route('autocomplete.city') }}",
+                data: {
+                    term: request.term
+                },
+                dataType: "json",
+                type: "GET",
+                success: function(data) {
+                    response(data);
+                },
+                error: function(response) {
+                    console.log("Error fetching city data:", response);
+                }
+            });
+        },
+        minLength: 2,
+        select: function(event, ui) {
+            $("#city").val(ui.item.city);
+            $("#city_id").val(ui.item.city_id);
+            return false;
+        }
+    }).data("ui-autocomplete")._renderItem = function(ul, item) {
+        // Render each item
+        var listItem = $("<li>").text(item.city).appendTo("#autocomplete-results");
+        listItem.data("city_id", item.city_id);
+        return listItem;
+    };
 
-            // Check if cityId is retrieved properly
-            console.log("Selected City ID:", cityId);
+    // Handle click on autocomplete results
+    $("#autocomplete-results").on("click", "li", function() {
+        var cityName = $(this).text();
+        var cityId = $(this).data("city_id");
 
-            // Set the city ID before emptying autocomplete results
-            $("#city_id").val(cityId);
+        // Check if cityId is retrieved properly
+        console.log("Selected City ID:", cityId);
 
-            $("#city").val(cityName);
-            $("#autocomplete-results").hide();
+        // Set the city ID
+        $("#city_id").val(cityId);
 
+        // Set the city name
+        $("#city").val(cityName);
 
-            $("#city").show();
+        // Hide autocomplete results
+        $("#autocomplete-results").hide();
+    });
 
+    // Handle input field click
+    $("#city").click(function() {
+        // Show autocomplete results box
+        $("#autocomplete-results").show();
+    });
 
-        });
-        $("#city").click(function() {
-
-            // Show the autocomplete results box
-            $("#autocomplete-results").show();
-        });
-
-    }
+    // Clear appended city when input is cleared
+    $("#city").on("input", function() {
+        var inputVal = $(this).val();
+        if (inputVal === "") {
+            // If input is cleared, re-initialize autocomplete
+            $("#autocomplete-results").empty(); // Clear appended cities
+            searchCity(); // Re-initialize autocomplete
+        }
+    });
+}
 
 
 // Function to get zip code

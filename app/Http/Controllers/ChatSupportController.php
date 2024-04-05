@@ -5,6 +5,8 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\File;
+
 use App\Models\User;
 use App\Models\ChatFile;
 use App\Models\Jobfields;
@@ -54,7 +56,7 @@ class ChatSupportController extends Controller
             ->where('conversation_id', $id)
             ->orderBy('time', 'desc')
             ->get();
-        $attachmentfileChatFile = ChatFile::select('filename', 'sender')
+        $attachmentfileChatFile = ChatFile::select('filename', 'sender', 'conversation_id')
             ->where('conversation_id', $id)->get();
 
 
@@ -121,6 +123,9 @@ class ChatSupportController extends Controller
         $participant->join_time = now();
         $participant->added_by = auth()->id();
         $participant->is_unread = 0;
+        $participant->is_active = "yes";
+
+
 
         $participant->save();
 
@@ -217,43 +222,52 @@ class ChatSupportController extends Controller
         $request->validate([
             'auth_id' => 'required',
             'support_message_id' => 'required',
+
+
+
+
+            // Validate file presence and size
         ]);
 
-        // Check if a file is present
         if ($request->hasFile('file')) {
             // Handle file upload
             $file = $request->file('file');
 
-            // Validate file
-            $request->validate([
-                'file' => 'file|max:2048', // Example: max file size of 2MB
-            ]);
-
             // Store the file in the specified directory
-       $directory = public_path('images/Uploads/chat/' . $request->support_message_id);
+            $directory = public_path('images/Uploads/chat/' . $request->support_message_id);
 
-// Check if the directory already exists
-if (!File::exists($directory)) {
-    // Create the directory if it doesn't exist
-    File::makeDirectory($directory, $mode = 0777, true, true);
-}
+            // Ensure the directory exists
+            if (!file_exists($directory)) {
+                mkdir($directory, 0777, true);
+            }
 
-$filePath = $file->storeAs($directory, $file->getClientOriginalName());
- if ($request->hasFile('file')) {
-    $file = $request->file('file');
-    
-    // Create a new ChatFile record
-    $chatFile = new ChatFile();
-    $chatFile->sender = $request->auth_id;
-    $chatFile->time = now();
-    $chatFile->conversation_id = $request->support_message_id;
-    $chatFile->filename = $file->getClientOriginalName();
-    $chatFile->type = $file->getClientMimeType();
-    $chatFile->size = $file->getSize();
-    $chatFile->save();
-}
+            // Generate a unique filename to prevent conflicts
+            $filename = uniqid() . '_' . $file->getClientOriginalName();
 
-        
+            // Move the uploaded file to the directory
+            $file->move($directory, $filename);
+
+            // Create a new ChatFile record
+            $chatFile = new ChatFile();
+            $chatFile->sender = $request->auth_id;
+            $chatFile->time = now();
+            $chatFile->conversation_id = $request->support_message_id;
+            $chatFile->filename = $filename; // Store the generated filename
+            $chatFile->type = $file->getClientMimeType();
+
+            // Retrieve the file size if the file exists
+            if (file_exists($directory . '/' . $filename)) {
+                $chatFile->size = filesize($directory . '/' . $filename);
+            } else {
+                // Handle the case where the file doesn't exist
+                // You can set the size to null or a default value here
+                $chatFile->size = null;
+            }
+
+            // Save the ChatFile record
+            $chatFile->save();
+        }
+
         // Check if a message is present and not null
         if ($request->filled('reply')) {
             // Create a new message
@@ -265,7 +279,34 @@ $filePath = $file->storeAs($directory, $file->getClientOriginalName());
             $message->save();
         }
 
-        // Optionally, you can return a success response
+        // Optionally, return a success response
         return response()->json(['message' => 'Reply stored successfully'], 200);
     }
+
+    public function deleteParticipant(Request $request)
+    {
+        // Get the user ID and conversation ID of the participant to be deleted
+        $userId = $request->input('user_id');
+        $conversationId = $request->input('conversation_id');
+
+        // Delete the participant from the ChatParticipants model based on user_id and conversation_id
+        ChatParticipants::where('user_id', $userId)
+            ->where('conversation_id', $conversationId)
+            ->delete();
+
+        // Delete chat messages associated with the user ID and conversation ID
+        ChatMessage::where('sender', $userId)
+            ->where('conversation_id', $conversationId)
+            ->delete();
+
+        // Delete chat files associated with the user ID and conversation ID
+        ChatFile::where('sender', $userId)
+            ->where('conversation_id', $conversationId)
+            ->delete();
+
+        // You can add more models and relationships as needed
+        return back()->with('success', 'User deleted to the conversation successfully');
+    }
+
+
 }

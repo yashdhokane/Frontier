@@ -18,6 +18,7 @@ class ChatParticipants extends Model
         'join_time',
         'added_by',
         'is_unread',
+        'is_active',
     ];
 
     public function user()

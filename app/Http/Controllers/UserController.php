@@ -1161,7 +1161,7 @@ class UserController extends Controller
 
         $cities = DB::table('location_cities')
             ->selectRaw('DISTINCT city')
-            ->distinct()
+          //  ->distinct()
             ->where('city', 'like', '%' . $term . '%')
             ->groupBy('city')
             ->take(10)

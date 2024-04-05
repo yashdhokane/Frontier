@@ -577,60 +577,75 @@
    var appendedCities = []; // Array to store already appended cities
 
 function searchCity() {
-$("#city").autocomplete({
-source: function(request, response) {
-$.ajax({
-url: "{{ route('autocomplete.city') }}",
-data: {
-term: request.term
-},
-dataType: "json",
-type: "GET",
-success: function(data) {
-var uniqueCities = []; // Array to store unique cities from the response
-data.forEach(function(item) {
-if (!appendedCities.includes(item.city)) {
-uniqueCities.push(item);
-appendedCities.push(item.city);
-}
-});
-response(uniqueCities);
-},
-error: function(xhr, status, error) {
-console.log("Error fetching city data:", error);
-}
-});
-},
-minLength: 3,
-select: function(event, ui) {
-$("#city").val(ui.item.city);
-$("#city_id").val(ui.item.city_id);
-$("#autocomplete-results").empty();
-return false;
-}
-}).data("ui-autocomplete")._renderItem = function(ul, item) {
-return $("<li>").text(item.city).appendTo("#autocomplete-results");
+    // Initialize autocomplete
+    $("#city").autocomplete({
+        source: function(request, response) {
+            // Clear previous autocomplete results
+            $("#autocomplete-results").empty();
+
+            $.ajax({
+                url: "{{ route('autocomplete.city') }}",
+                data: {
+                    term: request.term
+                },
+                dataType: "json",
+                type: "GET",
+                success: function(data) {
+                    response(data);
+                },
+                error: function(response) {
+                    console.log("Error fetching city data:", response);
+                }
+            });
+        },
+        minLength: 2,
+        select: function(event, ui) {
+            $("#city").val(ui.item.city);
+            $("#city_id").val(ui.item.city_id);
+            return false;
+        }
+    }).data("ui-autocomplete")._renderItem = function(ul, item) {
+        // Render each item
+        var listItem = $("<li>").text(item.city).appendTo("#autocomplete-results");
+        listItem.data("city_id", item.city_id);
+        return listItem;
     };
 
+    // Handle click on autocomplete results
     $("#autocomplete-results").on("click", "li", function() {
-    var cityName = $(this).text();
-    var cityId = $(this).data("city_id");
-    $("#city_id").val(cityId);
-    $("#city").val(cityName);
-    $("#autocomplete-results").hide();
+        var cityName = $(this).text();
+        var cityId = $(this).data("city_id");
+
+        // Check if cityId is retrieved properly
+        console.log("Selected City ID:", cityId);
+
+        // Set the city ID
+        $("#city_id").val(cityId);
+
+        // Set the city name
+        $("#city").val(cityName);
+
+        // Hide autocomplete results
+        $("#autocomplete-results").hide();
     });
 
+    // Handle input field click
     $("#city").click(function() {
-    $("#autocomplete-results").show();
+        // Show autocomplete results box
+        $("#autocomplete-results").show();
     });
 
+    // Clear appended city when input is cleared
     $("#city").on("input", function() {
-    var inputText = $(this).val().trim();
-    if (inputText === "") {
-    $("#autocomplete-results").empty();
-    }
+        var inputVal = $(this).val();
+        if (inputVal === "") {
+            // If input is cleared, re-initialize autocomplete
+            $("#autocomplete-results").empty(); // Clear appended cities
+            searchCity(); // Re-initialize autocomplete
+        }
     });
-    }
+}
+
 // Function to get zip code
 function getZipCode(cityId, cityName) {
     $.ajax({
