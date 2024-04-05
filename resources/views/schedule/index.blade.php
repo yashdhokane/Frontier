@@ -171,19 +171,32 @@
                                                                                                 </div>
                                                                                             </div>
                                                                                         </a>
-                                                                                        <div class="open_job_details rounded shadow">
+                                                                                        <div class="open_job_details rounded shadow py-3 px-2">
                                                                                             <div class="popup-content">
                                                                                                 <h5><i
-                                                                                                        class="fas fa-id-badge"></i>
+                                                                                                        class="fas fa-id-badge px-2"></i>
                                                                                                     <strong>Job #{{ $value2->JobModel->job_code ?? null }}</strong>
                                                                                                 </h5>
-                                                                                                <p class="ps-3">{{ $value2->start_date_time ? date('M d Y g:i a', strtotime($value2->start_date_time)) : null }} - {{ \Carbon\Carbon::parse($value2->end_date_time)->format('g:i A') }}
+                                                                                                <p class="ps-4 m-0 ms-2">{{ $value2->start_date_time ? date('M d Y g:i a', strtotime($value2->start_date_time)) : null }} - {{ \Carbon\Carbon::parse($value2->end_date_time)->format('g:i A') }}
 
                                                                                                 </p>
-                                                                                                <h5><i
-                                                                                                        class="fas fa-user"></i>
+                                                                                                <div class="py-1"><i
+                                                                                                        class="fas fa-ticket-alt px-2"></i>
+                                                                                                    <strong>{{ $value2->JobModel->job_title ?? null }}</strong>
+                                                                                                </div>
+                                                                                                <div class="py-1"><i
+                                                                                                        class="fas fa-user px-2"></i>
                                                                                                     <strong>{{ $value2->JobModel->user->name ?? null }}</strong>
-                                                                                                </h5>
+                                                                                                    <p class="ps-4 m-0 ms-2">{{ $value2->JobModel->addresscustomer->address_line1 ?? null }} {{ $value2->JobModel->addresscustomer->zipcode ?? null }}</p>
+                                                                                                    <p class="ps-4 m-0 ms-2">{{ $value2->JobModel->user->mobile ?? null }}</p>
+                                                                                                </div>
+                                                                                                <div class="py-1"><i
+                                                                                                    class="fas fa-user-secret px-2"></i>
+                                                                                                <strong>{{ $value2->JobModel->technician->name ?? null }}</strong>
+                                                                                                <div class="py-1"><i
+                                                                                                    class="fas fa-tag px-2"></i>
+                                                                                                <button class="btn btn-primary rounded">{{ $value2->JobModel->status ?? null }}</button>
+                                                                                            </div>
                                                                                             </div>
                                                                                         </div>
                                                                                     @endif

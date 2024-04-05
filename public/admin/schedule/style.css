@@ -211,11 +211,11 @@ img.calimg2 {
     z-index: 1;
     background-color: #5e5d5d;
     color: white;
-    padding: 20px;
     bottom: 106%;
     left: -50%;
     right: -50%;
     width: max-content;
+    font-family: Arial, Helvetica, sans-serif;
   }
   
   
