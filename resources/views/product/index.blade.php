@@ -141,7 +141,7 @@
                                                                 alt="{{ $item->product_name }}" class="rounded-circle"
                                                                 width="45" />
                                                         @else
-                                                            <img src="{{ asset('public/images/1.png') }}"
+                                                            <img src="{{ asset('public/images/default-part-image.png') }}"
                                                                 alt="{{ $item->product_name }}" class="rounded-circle"
                                                                 width="45" />
                                                         @endif

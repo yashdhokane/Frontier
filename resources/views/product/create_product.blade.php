@@ -125,25 +125,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="mb-3">
-                                                <label
-                                                    class="control-label col-form-label required-field bold">Status</label>
-                                                <div class="form-check">
-                                                    <input type="radio" id="customRadioInline1" name="status"
-                                                        value="Publish" class="form-check-input"
-                                                        {{ $product->status == 'Publish' ? 'checked' : '' }} required />
-                                                    <label class="form-check-label "
-                                                        for="customRadioInline1">Publish</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input type="radio" id="customRadioInline2" name="status"
-                                                        value="Draft" class="form-check-input"
-                                                        {{ $product->status == 'Draft' ? 'checked' : '' }} required />
-                                                    <label class="form-check-label" for="customRadioInline2">Draft</label>
-                                                </div>
-                                            </div>
-                                        </div>
+                                       
                                     </div>
 
                                 </div>
@@ -157,7 +139,7 @@
                                                 <span>Upload Another Image</span>
                                                 <input id="file" type="file"
                                                     onchange="showImagePreview()" name="product_image"
-                                                    class="upload" required />
+                                                    class="upload" />
                                             </div>
                                         </div>
                                     </div>
@@ -165,8 +147,8 @@
                                         <div class="el-element-overlay">
                                             <div class="el-card-item">
                                                 <div class="el-card-avatar el-overlay-1">
-                                                    <img src="{{ asset('public/images/1.png') }}"
-                                                    id="imagePreview" alt="user" />
+                                                    <img src="" class="w-50"
+                                                    id="imagePreview"  />
                                                 </div>
                                             </div>
                                         </div>
@@ -265,7 +247,7 @@
                                             <label class="required-field bold mb5">Unit Price</label>
                                             <div class="input-group mb-3">
 
-                                                <input type="number" class="form-control" name="base_price"
+                                                <input type="text" class="form-control" name="base_price"
                                                    placeholder="" aria-label="price"
                                                     aria-describedby="basic-addon1" required />
                                             </div>
@@ -286,7 +268,7 @@
                                         </div>
                                         <div class="mb-4">
                                             <label class="required-field bold mb5">Total</label>
-                                            <div class="input-group mb-3"><input type="number" class="form-control"
+                                            <div class="input-group mb-3"><input type="text" class="form-control"
                                                     name="total"  placeholder=""
                                                     aria-label="price" aria-describedby="basic-addon1" required />
                                             </div>
