@@ -57,12 +57,14 @@
 										<h4 class="card-title">Type</h4>
 										<ul class="list-group list-group-flush" style="margin-left: -20px;">
 											<li class="list-group-item"><i class="ri-bar-chart-line mx-2"></i> <a
-													href="{{ url('data_report?type=job_tags') }}">Job tags</a></li>
+													href="{{ url('data_report?type=Status') }}">Status</a></li>
 											<li class="list-group-item"><i class="ri-bar-chart-line mx-2"></i> <a
-													href="{{ url('data_report?type=job_fields') }}">Job type</a></li>
+													href="{{ url('data_report?type=job_tags') }}">Job tags</a></li>
 											<li class="list-group-item"><i class="ri-bar-chart-line mx-2"></i> <a
 													href="{{ url('data_report?type=job_lead_source') }}">Job lead source</a>
 											</li>
+											<li class="list-group-item"><i class="ri-bar-chart-line mx-2"></i> <a
+													href="{{ url('data_report?type=job_fields') }}">Priority</a></li>
 										</ul>
 									</div>
 								</div>
