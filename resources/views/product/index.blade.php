@@ -50,8 +50,8 @@
                 <!-- Column -->
                 <div class="col-lg-12">
                     <!-- ---------------------
-                                                start Product Orders
-                                            ---------------- -->
+                                                            start Product Orders
+                                                        ---------------- -->
                     <div class="card">
                         <div class="card-body">
                             <div class="table-responsive">
@@ -108,8 +108,8 @@
                                                 <select class="form-select" name="manufacturer" id="status_filter"
                                                     data-placeholder="Choose a Manufacturer" tabindex="1">
                                                     <option value="">All</option>
-                                                    <option value="Publish">Active</option>
-                                                    <option value="Draft">Inactive</option>
+                                                    <option value="Active">Active</option>
+                                                    <option value="Inactive">Inactive</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -122,10 +122,10 @@
                                             <th>Category</th>
                                             <th>Manufacturer</th>
                                             <th>Sold</th>
-                                            <th>Stock</th>
+                                            <th>Quantity</th>
                                             <th>Price</th>
-                                            <th>Stock Status</th>
-                                            <th>Status</th>
+                                            <th>Stock</th>
+                                            <th>status</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -159,8 +159,23 @@
                                                 <td>{{ $item->manufacturername->manufacturer_name ?? null }}</td>
                                                 <td>{{ $item->sold }}</td>
                                                 <td>{{ $item->stock }}</td>
-                                                <td>{{ $item->base_price }}</td>
-                                                <td>{{ $item->stock_status }}</td>
+                                                <td>${{ $item->total }}</td>
+                                                <td>
+                                                    @if ($item->stock_status == 'in_stock')
+                                                        <span class="status_icons status_icon1"><i
+                                                                class="ri-check-fill"></i></span>
+                                                    @elseif($item->stock_status == 'out_of_stock')
+                                                        <span class="status_icons status_icon2"><i
+                                                                class="ri-close-line"></i></span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($item->status == 'Publish')
+                                                        Active
+                                                    @elseif($item->status == 'Draft')
+                                                        Inactive
+                                                    @endif
+                                                </td>
                                                 <td data-status="{{ $item->status }}">
                                                     <div class="btn-group">
                                                         <button type="button"
@@ -181,34 +196,25 @@
                                                                         data-feather="edit-2" class="feather-sm me-2"></i>
                                                                     Active</a>
                                                             @endif
-                                                        </div>
-                                                    </div>
-                                                </td>
-
-                                                <td>
-                                                    <div style="display:flex;">
-                                                        <div>
                                                             <a href="{{ route('product.edit', ['product_id' => $item->product_id]) }}"
-                                                                class="text-dark pe-2">
-                                                                <i data-feather="edit-2"
-                                                                    class="feather-sm fill-white"></i>
+                                                                class="text-dark pe-2 dropdown-item">
+                                                                <i class="fa fa-edit edit-sm fill-white pe-2"></i> Edit
                                                             </a>
-                                                        </div>
-                                                        <div>
                                                             <form method="post"
                                                                 action="{{ route('product.destroy', ['id' => $item->product_id]) }}">
                                                                 @csrf
                                                                 @method('DELETE')
 
                                                                 <a href="{{ route('product.destroy', ['id' => $item->product_id]) }}"
-                                                                    class="text-dark">
+                                                                    class="text-dark dropdown-item">
                                                                     <i data-feather="trash-2"
-                                                                        class="feather-sm fill-white"></i>
+                                                                        class="feather-sm fill-white"></i> Delete
                                                                 </a>
                                                             </form>
                                                         </div>
                                                     </div>
                                                 </td>
+
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -218,8 +224,8 @@
                         </div>
                     </div>
                     <!-- ---------------------
-                                                end Product Orders
-                                            ---------------- -->
+                                                            end Product Orders
+                                                        ---------------- -->
                 </div>
                 <!-- Column -->
             </div>
@@ -237,7 +243,6 @@
         $(document).ready(function() {
             $('#category_name').on('change', function() {
                 var selectedStatus = $(this).val();
-                console.log(selectedStatus);
                 if (selectedStatus) {
                     $('#zero_config').DataTable().column(2).search('^' + selectedStatus + '$', true, false)
                         .draw();
@@ -249,7 +254,6 @@
 
             $('#manufacturer_filter').on('change', function() {
                 var selectedStatus = $(this).val();
-                console.log(selectedStatus);
                 if (selectedStatus) {
                     $('#zero_config').DataTable().column(3).search('^' + selectedStatus + '$', true, false)
                         .draw();
@@ -260,38 +264,46 @@
             });
 
             $('#stock_filter').on('change', function() {
-                var selectedStatus = $(this).val();
-                console.log(selectedStatus);
-                if (selectedStatus) {
-                    $('#zero_config').DataTable().column(7).search('^' + selectedStatus + '$', true, false)
-                        .draw();
-                } else {
-                    // If no status is selected, clear the filter
-                    $('#zero_config').DataTable().column(7).search('').draw();
-                }
-            });
+    var selectedStatus = $(this).val();
+    console.log(selectedStatus);
+    if (selectedStatus) {
+        var table = $('#zero_config').DataTable();
+        table.rows().every(function() {
+            var rowData = this.data();
+            var cellContent = rowData[7]; // Assuming stock status is in column 7
+            var isVisible = false;
+            if (selectedStatus === 'in_stock' && cellContent.includes('ri-check-fill')) {
+                isVisible = true;
+            } else if (selectedStatus === 'out_of_stock' && cellContent.includes('ri-close-line')) {
+                isVisible = true;
+            }
+            if (isVisible) {
+                this.nodes().to$().show();
+            } else {
+                this.nodes().to$().hide();
+            }
+        });
+    } else {
+        // If no status is selected, show all rows
+        $('#zero_config').DataTable().rows().nodes().to$().show();
+    }
+});
+
+
+
+
+
 
             $('#status_filter').on('change', function() {
                 var selectedStatus = $(this).val();
-                var table = $('#zero_config').DataTable();
-                var columnIndex = 8; // Change this to the index of your target column
-
-                table.column(columnIndex).nodes().each(function(cell, index) {
-                    var cellStatus = $(cell).data('status');
-                    console.log('Cell Status:', cellStatus); // Check cell status
-                    if (selectedStatus === 'all' || cellStatus === selectedStatus) {
-                         table.column(8).search('^' + selectedStatus === cellStatus+ '$', true, false).draw();
-                    } else {
-                        table.column(8).search('').draw();
-                    }
-                });
-
+                if (selectedStatus) {
+                    $('#zero_config').DataTable().column(8).search('^' + selectedStatus + '$', true, false)
+                        .draw();
+                } else {
+                    // If no status is selected, clear the filter
+                    $('#zero_config').DataTable().column(8).search('').draw();
+                }
             });
-
-
-
-
-
 
 
             // Function to handle dropdown change event
