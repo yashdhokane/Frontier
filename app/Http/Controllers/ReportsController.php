@@ -192,6 +192,11 @@ class ReportsController extends Controller
             ->groupBy('state')
             ->get();
 
+        $jobstatus = JobModel::select('status')
+            ->selectRaw('COUNT(*) as job_count, SUM(gross_total) as total_gross_total')
+            ->groupBy('status')
+            ->get();
+
         $jobs = JobModel::join('job_assigned', 'jobs.id', '=', 'job_assigned.job_id')
             ->select(DB::raw('DATE(job_assigned.start_date_time) as date'), DB::raw('SUM(jobs.gross_total) as daily_gross_total'))
             ->groupBy(DB::raw('DATE(job_assigned.start_date_time)'))
@@ -290,6 +295,6 @@ class ReportsController extends Controller
             ->get();
 
 
-        return view('reports.data_report', compact('data', 'customerDetails', 'zipCodeDetails', 'cityDetails', 'stateDetails', 'jobs', 'monthJobs', 'monthJobscount', 'daily', 'weekly', 'monthly', 'tagCounts', 'priorityCounts', 'leadSourceCounts', 'CountsManufacturer', 'CountsAppliance'));
+        return view('reports.data_report', compact('data', 'customerDetails', 'zipCodeDetails', 'cityDetails', 'stateDetails', 'jobs', 'monthJobs', 'monthJobscount', 'daily', 'weekly', 'monthly', 'tagCounts', 'priorityCounts', 'leadSourceCounts', 'CountsManufacturer', 'CountsAppliance','jobstatus'));
     }
 }

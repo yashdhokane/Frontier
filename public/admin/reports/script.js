@@ -74,4 +74,9 @@ $(document).ready(function () {
             [2, "desc"]
         ] // Sort by the second column (job count) in descending order
     });
+    $('#status').DataTable({
+        "order": [
+            [2, "desc"]
+        ] // Sort by the second column (job count) in descending order
+    });
 });

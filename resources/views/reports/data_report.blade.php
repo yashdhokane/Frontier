@@ -287,6 +287,34 @@
                                 </table>
                             </div>
                         </div>
+                    @elseif($_REQUEST['type'] == 'Status')
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table customize-table mb-0 v-middle" id="status">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th class="border-bottom border-top">Status </th>
+                                            <th class="border-bottom border-top">Job Revenue</th>
+                                            <th class="border-bottom border-top">Job Count</th>
+                                            <th class="border-bottom border-top">Avg. Job Size</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($jobstatus as $item)
+                                            <tr>
+                                                <td>{{ $item->status }}</td>
+                                                <td>${{ number_format($item->total_gross_total, 2) }}</td>
+                                                <td>{{ $item->job_count }}</td>
+                                                <td>${{ number_format($item->total_gross_total / $item->job_count, 2) }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     @elseif($_REQUEST['type'] == 'job_lead_source')
                         <div class="col-md-12">
                             <div class="table-responsive">
