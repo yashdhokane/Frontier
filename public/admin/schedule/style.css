@@ -208,7 +208,7 @@ img.calimg2 {
 .open_job_details {
     display: none;
     position: absolute;
-    z-index: 1;
+    z-index: 999;
     background-color: #5e5d5d;
     color: white;
     bottom: 106%;

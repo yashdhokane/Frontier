@@ -38,7 +38,7 @@
                                                     class="prevnextarrow ri-arrow-right-line"></i></a>
                                         </div>
                                     </div>
-                                    <div class="table-responsive dat">
+                                    <div class="dat">
                                         <table id="demo-foo-addrow"
                                             class="table table-bordered m-t-30 table-hover contact-list text-nowrap"
                                             data-paging="true" data-paging-size="7">
