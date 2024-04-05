@@ -30,6 +30,7 @@ use App\Http\Controllers\ProductCategoryController;
 
 
 use App\Http\Controllers\ServiceCategoryController;
+use App\Http\Controllers\EventController;
 
 
 
@@ -734,6 +735,10 @@ Route::middleware('auth')->group(function () {
     Route::get('get/usertax', [ScheduleController::class, 'usertax'])->name('usertax');
 
     Route::get('get/userstate', [ScheduleController::class, 'userstate'])->name('userstate');
+    
+    // EventController
+
+    Route::get('events', [EventController::class, 'index'])->name('events');
 
 
 

@@ -171,13 +171,13 @@
                                                                                                 </div>
                                                                                             </div>
                                                                                         </a>
-                                                                                        <div class="open_job_details">
+                                                                                        <div class="open_job_details rounded shadow">
                                                                                             <div class="popup-content">
                                                                                                 <h5><i
                                                                                                         class="fas fa-id-badge"></i>
                                                                                                     <strong>Job #{{ $value2->JobModel->job_code ?? null }}</strong>
                                                                                                 </h5>
-                                                                                                <p>{{ $value2->start_date_time ? date('M d Y g:i a', strtotime($value2->start_date_time)) : null }} - {{ \Carbon\Carbon::parse($value2->end_date_time)->format('g:i A') }}
+                                                                                                <p class="ps-3">{{ $value2->start_date_time ? date('M d Y g:i a', strtotime($value2->start_date_time)) : null }} - {{ \Carbon\Carbon::parse($value2->end_date_time)->format('g:i A') }}
 
                                                                                                 </p>
                                                                                                 <h5><i
