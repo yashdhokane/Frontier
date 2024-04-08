@@ -42,7 +42,55 @@
                                                         <tr>
                                                             <th>Technician Name</th>
                                                             @foreach($fleetKeys as $fleetKey)
-                                                                <th>{{ $fleetKey }}</th>
+                                                                <th>
+                                                                    @if ($fleetKey == 'oil_change')
+                                                                        Oil Change 
+                                                                    @elseif ($fleetKey == 'tune_up')
+                                                                       Tune Up
+                                                                    @elseif ($fleetKey == 'tire_rotation')
+                                                                       Tire Rotation
+                                                                    @elseif ($fleetKey == 'breaks')
+                                                                       Breaks
+                                                                    @elseif ($fleetKey == 'inspection_codes')
+                                                                    Inspection Codes 
+                                                                    @elseif ($fleetKey == 'mileage')
+                                                                    Mileage 
+                                                                    @elseif ($fleetKey == 'registration_expiration_date')
+                                                                    Registration Expiration Date
+                                                                    @elseif ($fleetKey == 'vehicle_coverage')
+                                                                    Vehicle Coverage
+                                                                    @elseif ($fleetKey == 'license_plate')
+                                                                    License Plate
+                                                                    @elseif ($fleetKey == 'vin_number')
+                                                                    Vin Number
+                                                                    @elseif ($fleetKey == 'make')
+                                                                    Make
+                                                                    @elseif ($fleetKey == 'model')
+                                                                    Model  
+                                                                    @elseif ($fleetKey == 'year')
+                                                                    Year  
+                                                                    @elseif ($fleetKey == 'color')
+                                                                    Color 
+                                                                    @elseif ($fleetKey == 'vehicle_weight')
+                                                                    Vehicle Weight 
+                                                                    @elseif ($fleetKey == 'vehicle_cost')
+                                                                    Vehicle Cost 
+                                                                    @elseif ($fleetKey == 'use_of_vehicle')
+                                                                    Use Of Vehicle 
+                                                                    @elseif ($fleetKey == 'repair_services')
+                                                                    Repair Services 
+                                                                    @elseif ($fleetKey == 'ezpass')
+                                                                    Ezpass 
+                                                                    @elseif ($fleetKey == 'service')
+                                                                    Service 
+                                                                    @elseif ($fleetKey == 'additional_service_notes')
+                                                                    Additional Service Notes  
+                                                                    @elseif ($fleetKey == 'last_updated')
+                                                                    Last Updated
+                                                                    @elseif ($fleetKey == 'epa_certification')
+                                                                    Epa Certification 
+                                                                    @endif
+                                                                </th>
                                                             @endforeach
                                                         </tr>
                                                     </thead>
