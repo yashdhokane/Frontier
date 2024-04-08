@@ -139,6 +139,9 @@
                          <li class="sidebar-item">
 							<a href="{{route('performanncematrix')}}" class="sidebar-link"><i class="ri-file-chart-line"></i> <span class="hide-menu">Performance Matrix </span></a>
 						</li>
+                         <li class="sidebar-item">
+							<a href="{{route('fleetreport')}}" class="sidebar-link"><i class="ri-file-chart-line"></i> <span class="hide-menu">Fleet Report </span></a>
+						</li>
                      </ul>
                 </li>
 				

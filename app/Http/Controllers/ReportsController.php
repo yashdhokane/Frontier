@@ -297,4 +297,25 @@ class ReportsController extends Controller
 
         return view('reports.data_report', compact('data', 'customerDetails', 'zipCodeDetails', 'cityDetails', 'stateDetails', 'jobs', 'monthJobs', 'monthJobscount', 'daily', 'weekly', 'monthly', 'tagCounts', 'priorityCounts', 'leadSourceCounts', 'CountsManufacturer', 'CountsAppliance','jobstatus'));
     }
+
+
+    public function fleetreport() {
+        // Fetch users with fleet details where the role is 'technician'
+        $users = User::with('fleetDetails')->where('role', 'technician')->get();
+        
+        // Extract fleet keys if there are fleet details for at least one user
+        $fleetKeys = [];
+        foreach ($users as $user) {
+            if ($user->fleetDetails) {
+                $fleetKeys = array_merge($fleetKeys, $user->fleetDetails->pluck('fleet_key')->toArray());
+            }
+        }
+    
+        // Remove duplicates from the $fleetKeys array
+        $fleetKeys = array_unique($fleetKeys);
+        
+        return view('reports.fleetreport', compact('users', 'fleetKeys'));
+    }
+    
+    
 }

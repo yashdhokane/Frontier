@@ -360,8 +360,6 @@ Route::group(['middleware' => 'role:customer'], function () {
     Route::get('/technicians/show/{id}', [TechnicianController::class, 'show'])->name('technicians.show');
 
 
-    Route::PUT('/technicians/updateservice/{id}', [TechnicianController::class, 'updateservice'])->name('technicians.updateservice');
-
 
     Route::PUT('/technicians/update/{id}', [TechnicianController::class, 'update'])->name('technicians.update');
 });
@@ -532,6 +530,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports/jobs', [ReportsController::class, 'jobreport'])->name('jobreport.index');
 
     Route::get('data_report', [ReportsController::class, 'data_report'])->name('data_report');
+
+    Route::get('fleetreport', [ReportsController::class, 'fleetreport'])->name('fleetreport');
 
 
     // Lead Source Route here(st)
