@@ -576,7 +576,7 @@ class ScheduleController extends Controller
 
                     $activity = new JobActivity();
 
-                    $activity->job_id = $jobId;
+                    $activity->job_id = $data['job_id'];
                     $activity->user_id = auth()->user()->id;
                     $activity->activity = 'Job Re-Scheduled for ' . $formattedDateTime;
 
