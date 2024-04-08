@@ -131,8 +131,12 @@ class TicketController extends Controller
 
         $leadsource = SiteLeadSource::all();
 
+        $activity = JobActivity::with('user')->where('job_id', $id)->latest()->get();
 
-        return view('tickets.show', ['ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source]);
+        $files = JobFile::where('job_id', $id)->latest()->get();
+
+
+        return view('tickets.show', ['ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source, 'activity' => $activity, 'files'=>$files]);
     }
 
     // Show the form for editing the specified ticket 
@@ -352,7 +356,7 @@ class TicketController extends Controller
                 }
 
                 // Move the uploaded file to the unique directory
-                if ($uploadedFile->move($directoryPath, $filename)) {
+                if ($uploadedFile->move($directoryPath, $imageName1)) {
                     // Save file details to the database
                     $file->filename = $imageName1;
                     $file->path = $directoryPath;

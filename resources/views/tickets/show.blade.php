@@ -66,7 +66,7 @@
                         <div class="profile-pic mb-3 mt-3">
                             @isset($technicians->user->user_image)
                             <img src="{{ asset('public/images/customer/' . $technicians->user->user_image) ?? null }}"
-                                width="150" class="rounded-circle" alt="user1" />
+                                width="150" class="rounded-circle" alt="user1"  onerror="this.onerror=null; this.src='{{$defaultImage}}';" />
                             @else
                             <img src="{{ $defaultImage }}" width="150" class="rounded-circle" alt="user" />
                             @endisset
@@ -218,15 +218,21 @@
                                 <i class="fas fa-plus "></i>
                             </div>
                         </div>
-                        <div class="row showAttachment" style="display: none;">
+                        <div class="row">
                             <form action="{{ url('add/attachment/' . $technicians->id) }}" method="POST"
-                                enctype="multipart/form-data">
+                                enctype="multipart/form-data" class="showAttachment"  style="display: none;">
                                 @csrf
                                 <input type="file" name="attachment" id="" class="form-control">
                                 <div class="mb-3 text-end">
                                     <button type="submit" class="btn btn-primary rounded mt-2">Add</button>
                                 </div>
+                               
                             </form>
+                            <div>
+                                @foreach ($files as $item)
+                                   <a href="{{url('public/images/users/'.$item->user_id.'/'.$item->filename)}}" target="_blank"><img src="{{url('public/images/users/'.$item->user_id.'/'.$item->filename)}}" alt="file" width="100px" onerror="this.onerror=null; this.src='{{$defaultImage}}';"></a> 
+                                @endforeach
+                            </div>
                         </div>
 
                     </div>
@@ -573,72 +579,25 @@
                         <div class="table-responsive">
                             <table class="table customize-table mb-0 v-middle">
                                 <tbody>
+                                    @foreach ($activity as $item)
                                     <tr>
                                         <td style="width:20%">
                                             <div class="d-flex align-items-center">
-                                                <img src="../../assets/images/users/1.jpg" class="rounded-circle"
-                                                    width="40">
-                                                <span class="ms-2 fw-normal">John Smith</span>
+                                                <img src="{{url('public/images/Uploads/users/'.$item->user_id.'/'.$item->user->user_image)}}" class="rounded-circle"
+                                                    width="40" onerror="this.onerror=null; this.src='{{$defaultImage}}';" alt="Image">
+                                                <span class="ms-2 fw-normal">{{$item->user->name ?? null}}</span>
                                             </div>
                                         </td>
-                                        <td style="width:60%">Line items updated total = $0.00</td>
-                                        <td style="width:20%">Wed 3/13/24 3:09pm</td>
-                                    </tr>
-                                    <tr>
+                                        <td style="width:60%">{{$item->activity ?? null }}</td>
                                         <td style="width:20%">
-                                            <div class="d-flex align-items-center">
-                                                <img src="../../assets/images/users/1.jpg" class="rounded-circle"
-                                                    width="40">
-                                                <span class="ms-2 fw-normal">John Smith</span>
-                                            </div>
+                                            {{ $item->created_at ? $item->created_at->format('D n/j/y g:ia') : null }}
+
+
                                         </td>
-                                        <td style="width:60%">Job scheduled for Thu, Mar 14 at 10:00am</td>
-                                        <td style="width:20%">Wed 3/13/24 2:30pm</td>
                                     </tr>
-                                    <tr>
-                                        <td style="width:20%">
-                                            <div class="d-flex align-items-center">
-                                                <img src="../../assets/images/users/1.jpg" class="rounded-circle"
-                                                    width="40">
-                                                <span class="ms-2 fw-normal">John Smith</span>
-                                            </div>
-                                        </td>
-                                        <td style="width:60%">Job scheduled for Thu, Mar 14 at 11:00am</td>
-                                        <td style="width:20%">Wed 3/13/24 1:11pm</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width:20%">
-                                            <div class="d-flex align-items-center">
-                                                <img src="../../assets/images/users/1.jpg" class="rounded-circle"
-                                                    width="40">
-                                                <span class="ms-2 fw-normal">John Smith</span>
-                                            </div>
-                                        </td>
-                                        <td style="width:60%">Job scheduled for Thu, Mar 14 at 11:00am</td>
-                                        <td style="width:20%">Wed 3/13/24 1:10pm</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width:20%">
-                                            <div class="d-flex align-items-center">
-                                                <img src="../../assets/images/users/1.jpg" class="rounded-circle"
-                                                    width="40">
-                                                <span class="ms-2 fw-normal">John Smith</span>
-                                            </div>
-                                        </td>
-                                        <td style="width:60%">Dispatched to MARK SIERRA</td>
-                                        <td style="width:20%">Wed 3/13/24 1:10pm</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="width:20%">
-                                            <div class="d-flex align-items-center">
-                                                <img src="../../assets/images/users/1.jpg" class="rounded-circle"
-                                                    width="40">
-                                                <span class="ms-2 fw-normal">John Smith</span>
-                                            </div>
-                                        </td>
-                                        <td style="width:60%">Job created as Invoice #26295 total = $0.00</td>
-                                        <td style="width:20%">Wed 3/13/24 1:10pm</td>
-                                    </tr>
+                                        
+                                    @endforeach
+                                   
                                 </tbody>
                             </table>
                         </div>
