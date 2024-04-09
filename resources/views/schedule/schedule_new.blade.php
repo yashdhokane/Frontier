@@ -38,7 +38,7 @@
                                                     class="fas fa-arrow-right"></i></a>
                                         </div>
                                     </div>
-                                    <div class="table-responsive dat">
+                                    <div class="dat">
                                         <table id="demo-foo-addrow"
                                             class="table table-bordered m-t-30 table-hover contact-list text-nowrap"
                                             data-paging="true" data-paging-size="7">
@@ -69,11 +69,12 @@
                                                     @endif
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody class="slot_time_60_span">
                                                 @for ($i = 7; $i <= 18; $i++)
                                                     @for ($minute = 0; $minute < 60; $minute += 30)
                                                         <tr>
                                                             <td class="timeslot_td">
+                                                                <div class="timeslot_td_time">
                                                                 @php
                                                                     $time = $i >= 12 ? ($i > 12 ? $i - 12 : $i) : $i;
                                                                     $minutes = '00'; // Default minutes
@@ -96,6 +97,7 @@
                                                                     $formattedTime = date('h:i A', strtotime($time));
                                                                 @endphp
                                                                 {{ $time }}
+                                                                </div>
                                                             </td>
                                                             @if (isset($user_array) && !empty($user_array))
                                                                 @foreach ($user_array as $value)
@@ -129,39 +131,70 @@
                                                                                                     ->duration ?? null;
                                                                                             $height_slot =
                                                                                                 $duration / 30;
-                                                                                            $height_slot_px =
-                                                                                                $height_slot * 80 - 10;
-                                                                                            // dd($height_slot_px);
+                                                                                                $height_slot_px =
+                                                                                                $height_slot * 50;
                                                                                         @endphp
-                                                                                        <a
-                                                                                            href="{{ $value2->job_id ? route('tickets.show', $value2->job_id) : '#' }}">
+                                                                                       <a class="show_job_details"
+                                                                                       href="{{ $value2->job_id ? route('tickets.show', $value2->job_id) : '#' }}">
 
-                                                                                            <div class="dts mb-1  flexibleslot"
-                                                                                                {{-- data-bs-toggle="modal" --}}
-                                                                                                {{-- data-bs-target="#edit" --}}
-                                                                                                data-id="{{ $value }}"
-                                                                                                data-job-id="{{ $value2->job_id }}"
-                                                                                                data-time="{{ $timeString }}"
-                                                                                                data-date="{{ $filterDate }}"
-                                                                                                style="cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->JobModel->technician->color_code ?? null }};"
-                                                                                                data-id="{{ $value2->job_id }}">
-                                                                                                <h5
-                                                                                                    style="font-size: 15px; padding-bottom: 0px; margin-bottom: 5px; margin-top: 3px;">
-                                                                                                    {{ $value2->JobModel->user->name ?? null }}
-                                                                                                    &nbsp;&nbsp;
-                                                                                                </h5>
-                                                                                                <p style="font-size: 11px;">
-                                                                                                    <i
-                                                                                                        class="fas fa-clock"></i>
-                                                                                                    {{ $timeString }} --
-                                                                                                    {{ $value2->JobModel->job_code ?? null }}<br>{{ $value2->JobModel->job_title ?? null }}
-                                                                                                </p>
-                                                                                                <p style="font-size: 12px;">
-                                                                                                    {{ $value2->JobModel->city ?? null }},
-                                                                                                    {{ $value2->JobModel->state ?? null }}
-                                                                                                </p>
-                                                                                            </div>
-                                                                                        </a>
+                                                                                       <div class="dts mb-1  flexibleslot"
+                                                                                           {{-- data-bs-toggle="modal" --}}
+                                                                                           {{-- data-bs-target="#edit" --}}
+                                                                                           data-id="{{ $value }}"
+                                                                                           data-job-id="{{ $value2->job_id }}"
+                                                                                           data-time="{{ $timeString }}"
+                                                                                           data-date="{{ $filterDate }}"
+                                                                                           style="cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->JobModel->technician->color_code ?? null }};"
+                                                                                           data-id="{{ $value2->job_id }}">
+                                                                                           <div class="cls_slot_title">
+                                                                                               <i
+                                                                                                   class="ri-tools-line"></i>
+                                                                                               {{ $value2->JobModel->user->name ?? null }}
+                                                                                           </div>
+                                                                                           <div class="cls_slot_time">
+                                                                                               <i
+                                                                                                   class="ri-truck-line"></i>
+                                                                                               {{ $timeString }}
+                                                                                           </div>
+                                                                                           <div
+                                                                                               class="cls_slot_job_card">
+                                                                                               {{ $value2->JobModel->job_title ?? null }}
+                                                                                           </div>
+                                                                                           <div
+                                                                                               class="cls_slot_job_card">
+                                                                                               {{ $value2->JobModel->city ?? null }},
+                                                                                               {{ $value2->JobModel->state ?? null }}
+                                                                                           </div>
+                                                                                       </div>
+                                                                                   </a>
+                                                                                   <div class="open_job_details rounded shadow py-3 px-2">
+                                                                                       <div class="popup-content">
+                                                                                           <h5><i
+                                                                                                   class="fas fa-id-badge px-2"></i>
+                                                                                               <strong>Job #{{ $value2->JobModel->job_code ?? null }}</strong>
+                                                                                           </h5>
+                                                                                           <p class="ps-4 m-0 ms-2">{{ $value2->start_date_time ? date('M d Y g:i a', strtotime($value2->start_date_time)) : null }} - {{ \Carbon\Carbon::parse($value2->end_date_time)->format('g:i A') }}
+
+                                                                                           </p>
+                                                                                           <div class="py-1"><i
+                                                                                                   class="fas fa-ticket-alt px-2"></i>
+                                                                                               <strong>{{ $value2->JobModel->job_title ?? null }}</strong>
+                                                                                           </div>
+                                                                                           <div class="py-1"><i
+                                                                                                   class="fas fa-user px-2"></i>
+                                                                                               <strong>{{ $value2->JobModel->user->name ?? null }}</strong>
+                                                                                               <p class="ps-4 m-0 ms-2">{{ $value2->JobModel->addresscustomer->address_line1 ?? null }} {{ $value2->JobModel->addresscustomer->zipcode ?? null }}</p>
+                                                                                               <p class="ps-4 m-0 ms-2">{{ $value2->JobModel->user->mobile ?? null }}</p>
+                                                                                           </div>
+                                                                                           <div class="py-1"><i
+                                                                                               class="fas fa-user-secret px-2"></i>
+                                                                                           <strong>{{ $value2->JobModel->technician->name ?? null }}</strong>
+                                                                                           <div class="py-1"><i
+                                                                                               class="fas fa-tag px-2"></i>
+                                                                                           <button class="btn btn-primary rounded">{{ $value2->JobModel->status ?? null }}</button>
+                                                                                       </div>
+                                                                                       </div>
+                                                                                   </div>
                                                                                     @endif
 
                                                                                     {{-- for schedule type evnt  --}}
@@ -381,6 +414,42 @@
 
     <!-- Bootstrap Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+    <script>
+        // JavaScript (jQuery)
+        $(document).ready(function() {
+            // Show job details on hover
+            $('.show_job_details').hover(function() {
+                // Show the corresponding popup
+                $(this).next('.open_job_details').fadeIn();
+            }, function() {
+                // Hide the popup when mouse leaves
+                $(this).next('.open_job_details').fadeOut();
+            });
+
+            // Close the popup when mouse leaves
+            $('.open_job_details').mouseleave(function() {
+                $(this).fadeOut();
+            });
+        });
+
+
+        function openPopup(popup) {
+            if (popup) {
+                popup.style.display = 'block';
+            } else {
+                console.error('Popup element is null');
+            }
+        }
+
+        function closePopup(popup) {
+            if (popup) {
+                popup.style.display = 'none';
+            } else {
+                console.error('Popup element is null');
+            }
+        }
+    </script>
 
     <script>
         $(document).ready(function() {

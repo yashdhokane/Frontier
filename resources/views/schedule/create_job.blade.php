@@ -169,8 +169,9 @@
                                                     @endforeach
                                                 @endif
                                             </select>
-                                            <div class="input-link"><a href="#" class="card-link">+ Add New</a>
-                                            </div>
+                                            <input type="text" name="new_appliance" class="form-control my-2 appliancefield" style="display:none;" placeholder="Add Appliances Here">
+                                            <div class="text-primary" style="cursor: pointer;" id="add_appliance">+ Add New</div>
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -190,8 +191,8 @@
                                                     @endforeach
                                                 @endif
                                             </select>
-                                            <div class="input-link"><a href="#" class="card-link">+ Add New</a>
-                                            </div>
+                                            <input type="text" name="new_manufacturer" class="form-control my-2 manufaturerfield" style="display:none;" placeholder="Add Manufaturer Here">
+                                            <div class="text-primary" style="cursor: pointer;" id="add_manufaturer">+ Add New</div>
                                         </div>
                                     </div>
                                 </div>
@@ -356,7 +357,7 @@
                                         </div>
                                     </div>
                                     <div class="mb-2">
-                                        <div class="input-link"><a href="#" class="card-link">+ Add New</a>
+                                        <div class="input-link" id="addnewservice"><a href="#" class="card-link">+ Add New</a>
                                         </div>
                                     </div>
                                 </div>
@@ -385,6 +386,35 @@
                                     <input class="service_total" type="hidden" name="service_total" value="">
                                 </div>
                             </div>
+                            <div class="row" id="new-service" style="display: none;">
+                                <div class="col-md-4">
+                                    <div class="mb-2">
+                                        <div class="form-group">
+                                          <input type="text" name="new_service" id="new_service" class="form-control" placeholder="Add New Part">
+                                          <small id="name" class="form-text text-muted">Add Service</small>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="mb-2">
+                                        <input type="text" class="form-control " id="new_service_cost"
+                                            placeholder="$0.00" name="new_service_cost" value="" />
+                                        <small id="name" class="form-text text-muted">Price</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="mb-2">
+                                        <input class="form-control" id="new_service_discount" type="number"
+                                            name="new_service_discount" value="" placeholder="$0.00">
+                                        <small id="" class="form-text text-muted">Discount(%)</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <input class="form-control" id="new_service_total" type="text" name="new_service_total" value="">
+                                    <small id="name" class="form-text text-muted">Line Total</small>
+                                </div>
+                            </div>
 
                             <div class="row mt-3">
                                 <h6 class="card-title"><i class="fas fa fa-cart-plus"></i> Select Parts</h5>
@@ -409,7 +439,7 @@
                                         </div>
                                     </div>
                                     <div class="mb-2">
-                                        <div class="input-link"><a href="#" class="card-link">+ Add New</a>
+                                        <div class="input-link" id="addnewpart"><a href="#" class="card-link">+ Add New</a>
                                         </div>
                                     </div>
                                 </div>
@@ -437,6 +467,35 @@
                                     </div>
                                     <small id="name" class="form-text text-muted">Line Total</small>
                                     <input class="product_total" type="hidden" name="product_total" value="">
+                                </div>
+                            </div>
+                            <div class="row" id="new-part" style="display: none;">
+                                <div class="col-md-4">
+                                    <div class="mb-2">
+                                        <div class="form-group">
+                                            <input type="text" placeholder="Add New Part" class="form-control" name="new_product" value="">
+                                            <small id="name" class="form-text text-muted">New Part</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="mb-2">
+                                        <input type="text" class="form-control " id="videoUrl1"
+                                            placeholder="$0.00" name="new_product_cost" value="" />
+                                        <small id="name" class="form-text text-muted">Price</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="mb-2">
+                                        <input class="form-control " type="number"
+                                            name="new_product_discount" value="" placeholder="$0.00">
+                                        <small id="name" class="form-text text-muted">Discount(%)</small>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <input class="form-control" type="text" name="new_product_total" value="">
+                                    <small id="name" class="form-text text-muted">Line Total</small>
                                 </div>
                             </div>
                             <div class="row mb-2" style="border-top: 1px solid #343434;">
@@ -664,7 +723,28 @@
 
 <!-- Bootstrap Datepicker JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script>
+   $(document).ready(function(){
+        $(document).on('click', '#add_appliance', function() {
+            $('.appliancefield').show(); 
+            $('#add_appliance').hide(); 
+        });
+        $(document).on('click', '#add_manufaturer', function() {
+            $('.manufaturerfield').show(); 
+            $('#add_manufaturer').hide(); 
+        });
+        $(document).on('click', '#addnewservice', function() {
+            $('#new-service').show(); 
+            $('#addnewservice').hide(); 
+        });
+        $(document).on('click', '#addnewpart', function() {
+            $('#new-part').show(); 
+            $('#addnewpart').hide(); 
+        });
 
+    });
+
+</script>
 <script>
     $(document).ready(function() {
         var ajaxRequestForCustomer;
