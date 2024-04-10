@@ -139,8 +139,8 @@ class ScheduleController extends Controller
 
                 $schedule_arr[$value] = [];
 
-                $schedule = Schedule::with('JobModel','technician')->where('technician_id', $value)
-                            ->where('start_date_time', 'LIKE', "%$filterDate%")->get();
+                $schedule = Schedule::with('JobModel', 'technician')->where('technician_id', $value)
+                    ->where('start_date_time', 'LIKE', "%$filterDate%")->get();
                 if (isset($schedule) && !empty($schedule->count())) {
                     foreach ($schedule as $k => $item) {
                         $datetimeString = $item->start_date_time;
@@ -268,8 +268,8 @@ class ScheduleController extends Controller
 
                 $schedule_arr[$value] = [];
 
-                $schedule = Schedule::with('JobModel','technician')->where('technician_id', $value)
-                            ->where('start_date_time', 'LIKE', "%$filterDate%")->get();
+                $schedule = Schedule::with('JobModel', 'technician')->where('technician_id', $value)
+                    ->where('start_date_time', 'LIKE', "%$filterDate%")->get();
                 if (isset($schedule) && !empty($schedule->count())) {
                     foreach ($schedule as $k => $item) {
                         $datetimeString = $item->start_date_time;
@@ -285,7 +285,7 @@ class ScheduleController extends Controller
         return view('schedule.schedule_new', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate', 'users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', 'cities', 'cities1', 'TodayDate', 'tech', 'schedule_arr'));
     }
 
-    public function create_job(Request $request, $id, $t , $d)
+    public function create_job(Request $request, $id, $t, $d)
     {
         // dd($request);
         // $data = $request->all();
@@ -314,12 +314,11 @@ class ScheduleController extends Controller
             $locationStates = LocationState::all();
 
             $leadSources = SiteLeadSource::all();
-    
+
             $tags = SiteTags::all(); // Fetch all tags
 
-            return view('schedule.create_job', compact('tags','leadSources','locationStates','technician', 'dateTime', 'manufacturers', 'appliances', 'getServices', 'getProduct', 'tags'));
+            return view('schedule.create_job', compact('tags', 'leadSources', 'locationStates', 'technician', 'dateTime', 'manufacturers', 'appliances', 'getServices', 'getProduct', 'tags'));
         }
-
     }
     public function create(Request $request)
     {
@@ -569,18 +568,18 @@ class ScheduleController extends Controller
 
                 $jobId = DB::table('jobs')->where('id', $data['job_id'])->update($jobsData);
 
-                if($data['new_appliance'] && $data['new_manufacturer']){
+                if ($data['new_appliance'] && $data['new_manufacturer']) {
 
                     $appliance = new Appliances();
-                    $appliance->appliance_name = $data['new_appliance'];
+                    $appliance->appliance_name = $data['new_appliance'] ?? null;
                     $appliance->save();
 
                     $new_manufacturer = new Manufacturer();
-                    $new_manufacturer->manufacturer_name = $data['new_manufacturer'];
+                    $new_manufacturer->manufacturer_name = $data['new_manufacturer'] ?? null;
                     $new_manufacturer->added_by = auth()->user()->id;
                     $new_manufacturer->last_updated_by = auth()->user()->id;
                     $new_manufacturer->save();
-                
+
                     $newjobDetails = [
                         'job_id' => $data['job_id'],
                         'appliance_id' => (isset($appliance) && !empty($appliance)) ? $appliance->appliance_id : '',
@@ -656,14 +655,14 @@ class ScheduleController extends Controller
                 if (isset($data['new_service']) && !empty($data['new_service'])) {
 
                     $service = new Service();
-                    $service->service_name = $data['new_service'];
-                    $service->in_warranty = $data['job_type'] == 'in_warranty' ? 'yes':'no';
+                    $service->service_name = $data['new_service'] ?? null;
+                    $service->in_warranty = $data['job_type'] == 'in_warranty' ? 'yes' : 'no';
                     $service->created_by = auth()->user()->id;
                     $service->updated_by = auth()->user()->id;
-                    $service->service_cost = $data['new_service_cost'];
-                    $service->service_discount = $data['new_service_discount'];
-                    $service->service_total	 = $data['new_service_total'];
-                    $service->service_for	 = 'job';
+                    $service->service_cost = $data['new_service_cost'] ?? null;
+                    $service->service_discount = $data['new_service_discount'] ?? null;
+                    $service->service_total     = $data['new_service_total'] ?? null;
+                    $service->service_for     = 'job';
 
                     $service->save();
                     $service->refresh();
@@ -692,12 +691,12 @@ class ScheduleController extends Controller
                 if (isset($data['new_product']) && !empty($data['new_product'])) {
 
                     $addproduct = new Products();
-                    $addproduct->product_name = $data['new_service'];
+                    $addproduct->product_name = $data['new_service'] ?? null;
                     $addproduct->created_by = auth()->user()->id;
                     $addproduct->updated_by = auth()->user()->id;
-                    $addproduct->base_price = $data['new_product_cost'];
-                    $addproduct->discount = $data['new_product_discount'];
-                    $addproduct->total	 = $data['new_product_total'];
+                    $addproduct->base_price = $data['new_product_cost'] ?? null;
+                    $addproduct->discount = $data['new_product_discount'] ?? null;
+                    $addproduct->total     = $data['new_product_total'] ?? null;
 
                     $addproduct->save();
                     $service->refresh();
@@ -876,14 +875,14 @@ class ScheduleController extends Controller
 
                 $jobAssignedID = DB::table('job_assigned')->insertGetId($JobAssignedData);
 
-                if($data['new_appliance']){
+                if ($data['new_appliance']) {
                     $appliance = new Appliances();
-                    $appliance->appliance_name = $data['new_appliance'];
+                    $appliance->appliance_name = $data['new_appliance'] ?? null;
                     $appliance->save();
                 }
-                if($data['new_manufacturer']){
+                if ($data['new_manufacturer']) {
                     $new_manufacturer = new Manufacturer();
-                    $new_manufacturer->manufacturer_name = $data['new_manufacturer'];
+                    $new_manufacturer->manufacturer_name = $data['new_manufacturer'] ?? null;
                     $new_manufacturer->added_by = auth()->user()->id;
                     $new_manufacturer->last_updated_by = auth()->user()->id;
                     $new_manufacturer->save();
@@ -899,7 +898,7 @@ class ScheduleController extends Controller
 
                 $jobDetailsID = DB::table('job_details')->insertGetId($jobDetails);
 
-                if($data['new_appliance'] && $data['new_manufacturer']){
+                if ($data['new_appliance'] && $data['new_manufacturer']) {
                     $newjobDetails = [
                         'job_id' => $jobId,
                         'appliance_id' => (isset($appliance) && !empty($appliance)) ? $appliance->appliance_id : '',
@@ -928,14 +927,14 @@ class ScheduleController extends Controller
                 if (isset($data['new_service']) && !empty($data['new_service'])) {
 
                     $service = new Service();
-                    $service->service_name = $data['new_service'];
-                    $service->in_warranty = $data['job_type'] == 'in_warranty' ? 'yes':'no';
+                    $service->service_name = $data['new_service'] ?? null;
+                    $service->in_warranty = $data['job_type'] == 'in_warranty' ? 'yes' : 'no';
                     $service->created_by = auth()->user()->id;
                     $service->updated_by = auth()->user()->id;
-                    $service->service_cost = $data['new_service_cost'];
-                    $service->service_discount = $data['new_service_discount'];
-                    $service->service_total	 = $data['new_service_total'];
-                    $service->service_for	 = 'job';
+                    $service->service_cost = $data['new_service_cost'] ?? null;
+                    $service->service_discount = $data['new_service_discount'] ?? null;
+                    $service->service_total     = $data['new_service_total'] ?? null;
+                    $service->service_for     = 'job';
 
                     $service->save();
                     $service->refresh();
@@ -969,12 +968,12 @@ class ScheduleController extends Controller
                 if (isset($data['new_product']) && !empty($data['new_product'])) {
 
                     $addproduct = new Products();
-                    $addproduct->product_name = $data['new_service'];
+                    $addproduct->product_name = $data['new_service'] ?? null;
                     $addproduct->created_by = auth()->user()->id;
                     $addproduct->updated_by = auth()->user()->id;
-                    $addproduct->base_price = $data['new_product_cost'];
-                    $addproduct->discount = $data['new_product_discount'];
-                    $addproduct->total	 = $data['new_product_total'];
+                    $addproduct->base_price = $data['new_product_cost'] ?? null;
+                    $addproduct->discount = $data['new_product_discount'] ?? null;
+                    $addproduct->total     = $data['new_product_total'] ?? null;
 
                     $addproduct->save();
                     $service->refresh();

@@ -315,27 +315,6 @@
 
             </div>
 
-
-            <!-- Modal -->
-            <div class="modal fade" id="edit" tabindex="-1" aria-labelledby="scroll-long-inner-modal"
-                aria-hidden="true">
-                <div class="modal-dialog modal-dialog-scrollable2 modal-dialog modal-xl">
-                    <div class="modal-content">
-                        <div class="modal-header d-flex align-items-center" style="padding-bottom: 0px;">
-                            <h4 class="modal-title" id="myLargeModalLabel" style="margin-left: 28px;color: #2962ff;">
-                                UPDATE JOB
-                            </h4>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body editScheduleData">
-                            @include('schedule.edit')
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Modal -->
-
             <!-- Modal -->
 
             <div class="modal fade" id="newCustomer" tabindex="-1" aria-labelledby="scroll-long-inner-modal"
@@ -496,7 +475,7 @@
                     $('.tech_th[data-tech-id="' + id + '"]').hide();
                     $('.timeslot_td[data-technician_id="' + id + '"]').hide();
                 }
-            });
+            });z
 
 
 

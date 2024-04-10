@@ -171,6 +171,7 @@
                                             </select>
                                             <input type="text" name="new_appliance" class="form-control my-2 appliancefield" style="display:none;" placeholder="Add Appliances Here">
                                             <div class="text-primary" style="cursor: pointer;" id="add_appliance">+ Add New</div>
+                                            <div class="text-danger" style="cursor: pointer;display:none;" id="remove_appliance">- remove</div>
                                             
                                         </div>
                                     </div>
@@ -193,6 +194,7 @@
                                             </select>
                                             <input type="text" name="new_manufacturer" class="form-control my-2 manufaturerfield" style="display:none;" placeholder="Add Manufaturer Here">
                                             <div class="text-primary" style="cursor: pointer;" id="add_manufaturer">+ Add New</div>
+                                            <div class="text-danger" style="cursor: pointer;display:none;" id="remove_manufaturer">- remove</div>
                                         </div>
                                     </div>
                                 </div>
@@ -391,7 +393,11 @@
                                     <div class="mb-2">
                                         <div class="form-group">
                                           <input type="text" name="new_service" id="new_service" class="form-control" placeholder="Add New Part">
-                                          <small id="name" class="form-text text-muted">Add Service</small>
+                                          
+                                        </div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <div class="input-link" id="removenewservice"><a href="#" class="card-link text-danger">- Remove</a>
                                         </div>
                                     </div>
                                     
@@ -475,6 +481,10 @@
                                         <div class="form-group">
                                             <input type="text" placeholder="Add New Part" class="form-control" name="new_product" value="">
                                             <small id="name" class="form-text text-muted">New Part</small>
+                                        </div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <div class="input-link" id="removenewpart"><a href="#" class="card-link text-danger">- Remove</a>
                                         </div>
                                     </div>
                                 </div>
@@ -728,18 +738,38 @@
         $(document).on('click', '#add_appliance', function() {
             $('.appliancefield').show(); 
             $('#add_appliance').hide(); 
+            $('#remove_appliance').show(); 
+        });
+        $(document).on('click', '#remove_appliance', function() {
+            $('.appliancefield').hide(); 
+            $('#add_appliance').show(); 
+            $('#remove_appliance').hide(); 
         });
         $(document).on('click', '#add_manufaturer', function() {
             $('.manufaturerfield').show(); 
             $('#add_manufaturer').hide(); 
+            $('#remove_manufaturer').show(); 
+        });
+        $(document).on('click', '#remove_manufaturer', function() {
+            $('.manufaturerfield').hide(); 
+            $('#add_manufaturer').show(); 
+            $('#remove_manufaturer').hide(); 
         });
         $(document).on('click', '#addnewservice', function() {
             $('#new-service').show(); 
             $('#addnewservice').hide(); 
         });
+        $(document).on('click', '#removenewservice', function() {
+            $('#new-service').hide(); 
+            $('#addnewservice').show(); 
+        });
         $(document).on('click', '#addnewpart', function() {
             $('#new-part').show(); 
             $('#addnewpart').hide(); 
+        });
+        $(document).on('click', '#removenewpart', function() {
+            $('#new-part').hide(); 
+            $('#addnewpart').show(); 
         });
 
     });
@@ -1918,6 +1948,8 @@
                         var getTotal = $('.total').val().trim();
                         var total = parseInt(getTotal) + parseInt(data.base_price) -
                             parseInt(data.discount) + parseInt(data.tax);
+                            
+            console.log( total ,getTotal,data.base_price,data.discount,data.tax);
                         $('.total').val(Math.abs(total));
                         $('.totaltext').text('$' + Math.abs(total));
 
