@@ -9,8 +9,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\MultiAdminController;
 use App\Http\Controllers\ReportsController;
 
-use App\Http\Controllers\FleetController;
 
+use App\Http\Controllers\FleetController;
 
 use App\Http\Controllers\EventController;
 
@@ -348,6 +348,7 @@ Route::group(['middleware' => 'role:customer'], function () {
 
     Route::post('/technicianstaus/update', [TechnicianController::class, 'technicianstaus'])->name('technicianstaus.update');
 
+    Route::POST('/technicianstaus/updateservice', [TechnicianController::class, 'updateservice'])->name('technicians.updateservice');
 
     Route::POST('/technicians/edit/{id}', [TechnicianController::class, 'edit'])->name('technicians.edit');
 
@@ -752,16 +753,17 @@ Route::middleware('auth')->group(function () {
     // FleetController
 
     Route::get('fleet', [FleetController::class, 'index'])->name('fleet');
-
+    
     Route::post('fleet/store', [FleetController::class, 'store'])->name('fleet.store');
 
-    Route::put('fleet/edit/{id}', [FleetController::class, 'edit']);
+    Route::get('fleet/edit/{id}', [FleetController::class, 'edit']);
 
     Route::get('inactive/fleet/{id}', [FleetController::class, 'inactive']);
 
     Route::get('active/fleet/{id}', [FleetController::class, 'active']);
 
     Route::get('addvehicle', [FleetController::class, 'addvehicle'])->name('addvehicle');
+
 
 
 

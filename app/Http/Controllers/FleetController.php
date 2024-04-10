@@ -72,4 +72,12 @@ class FleetController extends Controller
 
         return redirect()->back()->with('success', 'Fleet Vehicle created successfully');
     }
+    public function edit(Request $request, $id)
+    {
+     
+        $fleet = FleetVehicle::find($id);
+
+
+       return view('fleet.edit',compact('fleet'));
+    }
 }
