@@ -764,6 +764,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('addvehicle', [FleetController::class, 'addvehicle'])->name('addvehicle');
 
+    Route::post('updatefleetdetails', [FleetController::class, 'updatefleetdetails'])->name('updatefleetdetails');
+
 
 
 
