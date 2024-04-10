@@ -39,12 +39,12 @@
             </div>
         @endif
 
-        <form action="{{ route('fleet.store') }}" method="POST" enctype="multipart/form-data">
-            @csrf
 
-            <div class="card">
-                <div class="card-body">
+        <div class="card">
+            <div class="card-body">
 
+                <form action="{{ route('fleet.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
                     <div class="row">
                         <div class="col-md-6">
                             <input type="text" name="vehicle_description" id="" class="form-control"
@@ -63,10 +63,10 @@
                         </div>
 
                     </div>
+                </form>
 
-                </div>
             </div>
-        </form>
+        </div>
     </div>
 
     <div class="modal fade" id="newTechnician" tabindex="-1" aria-labelledby="scroll-long-inner-modal" aria-hidden="true">
