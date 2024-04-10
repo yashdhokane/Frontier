@@ -85,6 +85,9 @@
                          <li class="sidebar-item"><a href="{{ route('events') }}" class="sidebar-link"><i
                                     class="mdi mdi-book-multiple"></i><span class="hide-menu"> Event List
                                 </span></a></li>
+                         <li class="sidebar-item"><a href="{{ route('fleet') }}" class="sidebar-link"><i
+                                    class="mdi mdi-book-multiple"></i><span class="hide-menu"> Fleet Management
+                                </span></a></li>
                     </ul>
                 </li>
 

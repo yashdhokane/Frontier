@@ -237,6 +237,179 @@ class TechnicianController extends Controller
         // dd("end");
         return redirect()->route('technicians.index')->with('success', 'Technician created successfully');
     }
+    public function fleettechnician(Request $request)
+    {
+        //dd($request->all());
+
+        $validator = Validator::make($request->all(), [
+
+            'first_name' => 'required|max:255',
+            'last_name' => 'required|max:255',
+            'display_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'mobile_phone' => 'required|max:20',
+            'address1' => 'required',
+            'city' => 'required',
+            'state_id' => 'required',
+            'zip_code' => 'max:10',
+            'license_number' => 'required',
+            'dob' => 'required',
+
+        ]);
+        if ($validator->fails()) {
+            return redirect()
+                ->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // If validation passes, create the user and related records
+        $user = new User();
+        $user->name = $request['display_name'];
+        $user->email = $request['email'];
+        $user->mobile = $request['mobile_phone'];
+        $user->role = $request['role'];
+        $user->password = Hash::make($request['password']);
+        // $user->service_areas = implode(',', $request['service_areas']);
+        $user->service_areas = !empty($request['service_areas']) ? implode(',', $request['service_areas']) : null;
+
+        $user->save();
+        $userId = $user->id;
+
+        if ($request->hasFile('image')) {
+            // Generate a unique directory name based on user ID and timestamp
+            $directoryName = $userId;
+
+            // Construct the full path for the directory
+            $directoryPath = public_path('images/Uploads/users/' . $directoryName);
+
+            // Ensure the directory exists; if not, create it
+            if (!file_exists($directoryPath)) {
+                mkdir($directoryPath, 0777, true);
+            }
+
+            // Move the uploaded image to the unique directory
+            $image = $request->file('image');
+            $imageName = $image->getClientOriginalName(); // Or generate a unique name if needed
+            $image->move($directoryPath, $imageName);
+
+            // Save the image path in the user record
+            $user->user_image = $imageName;
+            $user->save();
+        }
+
+        $userId = $user->id;
+        $currentTimestamp = now();
+
+        $userMeta = [
+            ['user_id' => $userId, 'meta_key' => 'first_name', 'meta_value' => $request['first_name']],
+            ['user_id' => $userId, 'meta_key' => 'last_name', 'meta_value' => $request['last_name']],
+            ['user_id' => $userId, 'meta_key' => 'home_phone', 'meta_value' => $request['home_phone']],
+            ['user_id' => $userId, 'meta_key' => 'work_phone', 'meta_value' => $request['work_phone']],
+            ['user_id' => $userId, 'meta_key' => 'license_number', 'meta_value' => $request['license_number']],
+            ['user_id' => $userId, 'meta_key' => 'dob', 'meta_value' => $request['dob']],
+            ['user_id' => $userId, 'meta_key' => 'ssn', 'meta_value' => $request['ssn']],
+            ['user_id' => $userId, 'meta_key' => 'created_at', 'meta_value' => $currentTimestamp],
+            ['user_id' => $userId, 'meta_key' => 'updated_at', 'meta_value' => $currentTimestamp],
+        ];
+        CustomerUserMeta::insert($userMeta);
+
+
+        if ($request->filled('city')) {
+            $customerAddress = new CustomerUserAddress();
+            $customerAddress->user_id = $userId;
+            $customerAddress->address_line1 = $request['address1'];
+            $customerAddress->address_line2 = $request['address_unit'];
+            $customerAddress->address_primary = ($request['address_type'] == 'home') ? 'yes' : 'no';
+            $customerAddress->city = $request['city'];
+            // $customerAddress->city_id = $request['city_id'];
+            $customerAddress->address_type = $request['address_type'];
+            $customerAddress->state_id = $request['state_id'];
+            $nearestZip = DB::table('location_cities')
+                ->select('zip')
+                ->where('zip', 'like', '%' . $request['zip_code'] . '%')
+
+                ->orderByRaw('ABS(zip - ' . $request['zip_code'] . ')')
+                ->first();
+
+            // If a nearest ZIP code is found, use it; otherwise, use the provided ZIP code
+            $customerAddress->zipcode = $nearestZip ? $nearestZip->zip : $request['zip_code'];
+
+
+
+            $city = DB::table('location_cities')->where('city', $request['city'])->first();
+
+            if ($city) {
+                $matchingCity = DB::table('location_cities')->where('zip', $request['zip_code'])->first();
+
+                if ($matchingCity) {
+                    $customerAddress->city_id = $matchingCity->city_id;
+                } else {
+                    $nearestCity = DB::table('location_cities')
+                        ->select('city_id')
+                        ->where('zip', 'like', '%' . $request['zip_code'] . '%')
+                        ->orderByRaw('ABS(zip - ' . $request['zip_code'] . ')')
+                        ->first();
+
+                    if ($nearestCity) {
+                        $customerAddress->city_id = $nearestCity->city_id;
+                    } else {
+                        $customerAddress->city_id = 0;
+                    }
+                }
+            } else {
+                $customerAddress->city_id = 0;
+            }
+
+
+            // Construct the address string
+            $address = $request['address1'] . ', ' . $request['city'];
+
+
+            // Make a request to the Google Maps Geocoding API  . ', ' . $request['zip_code']
+            $response = file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($address) . '&key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&callback');
+
+            // Decode the JSON response
+            $data = json_decode($response);
+
+            // Check if the response contains results
+            if ($data && $data->status === 'OK') {
+                // Extract latitude and longitude from the response
+                $latitude = $data->results[0]->geometry->location->lat;
+                $longitude = $data->results[0]->geometry->location->lng;
+
+                // Store latitude and longitude in the $customerAddress object
+                $customerAddress->latitude = $latitude;
+                $customerAddress->longitude = $longitude;
+            } else {
+                // Handle error or set default values
+                $customerAddress->latitude = null;
+                $customerAddress->longitude = null;
+            }
+
+            // dd($customerAddress->latitude, $customerAddress->longitude);
+            // dd($request->all());
+
+            $customerAddress->save();
+        }
+
+
+        $tagIds = $request['tag_id'];
+
+        if (!empty($tagIds)) {
+            foreach ($tagIds as $tagId) {
+                $userTag = new UserTag();
+                $userTag->user_id = $userId;
+                $userTag->tag_id = $tagId;
+                $userTag->save();
+            }
+        }
+
+
+
+        // dd("end");
+        return redirect()->back()->with('success', 'Technician created successfully');
+    }
 
 
 
