@@ -159,7 +159,7 @@
                                             <h6 class="card-title required-field"><i class="fas fa fa-television"></i>
                                                 Appliances </h6>
                                             <div class="form-group">
-                                                <select class="form-control appliances" id="exampleFormControlSelect1"
+                                                <select class="form-control appliances" id="appliances"
                                                     name="appliances">
                                                     <option disabled>-- Select Appliances -- </option>
                                                     @if (isset($appliances) && !empty($appliances))
@@ -169,14 +169,18 @@
                                                         @endforeach
                                                     @endif
                                                 </select>
-                                                <input type="text" name="new_appliance"
-                                                    class="form-control my-2 appliancefield" style="display:none;"
-                                                    placeholder="Add Appliances Here">
+                                                <small class="text-success" id="resp_text"></small>
                                                 <div class="text-primary" style="cursor: pointer;" id="add_appliance">+
                                                     Add New</div>
-                                                <div class="text-danger" style="cursor: pointer;display:none;"
-                                                    id="remove_appliance">- remove</div>
-
+                                                <div class="my-2 appliancefield" style="display:none;">
+                                                    <div class="d-flex ">
+                                                        <input type="text" name="new_appliance"
+                                                            class="form-control rounded-0 " id="new_appliance"
+                                                            placeholder="Add Appliances Here">
+                                                        <button type="button" class="btn btn-cyan p-0 px-2 rounded-0"
+                                                            style="cursor: pointer;" id="addAppl">Add</button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -185,7 +189,7 @@
                                             <h6 class="card-title required-field"><i class="fas fa fa-industry"></i>
                                                 Manufacturer </h6>
                                             <div class="form-group">
-                                                <select class="form-control manufaturer" id="exampleFormControlSelect1"
+                                                <select class="form-control manufaturer" id="manufacturer"
                                                     name="manufacturer">
                                                     <option disabled>-- Select Manufacturer -- </option>
                                                     @if (isset($manufacturers) && !empty($manufacturers))
@@ -196,13 +200,18 @@
                                                         @endforeach
                                                     @endif
                                                 </select>
-                                                <input type="text" name="new_manufacturer"
-                                                    class="form-control my-2 manufaturerfield" style="display:none;"
-                                                    placeholder="Add Manufaturer Here">
+                                                <small class="text-success" id="resp_texts"></small>
                                                 <div class="text-primary" style="cursor: pointer;" id="add_manufaturer">+
                                                     Add New</div>
-                                                <div class="text-danger" style="cursor: pointer;display:none;"
-                                                    id="remove_manufaturer">- remove</div>
+                                                <div class="my-2 manufaturerfield" style="display:none;">
+                                                    <div class="d-flex ">
+                                                        <input type="text" name="new_manufacturer"
+                                                            class="form-control rounded-0 " id="new_manufacturer"
+                                                            placeholder="Add Manufaturer Here">
+                                                        <button type="button" class="btn btn-cyan p-0 px-2 rounded-0"
+                                                            style="cursor: pointer;" id="addManu">Add</button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -401,8 +410,18 @@
                                     <div class="col-md-4">
                                         <div class="mb-2">
                                             <div class="form-group">
-                                                <input type="text" name="new_service" id="new_service"
-                                                    class="form-control" placeholder="Add New Part">
+                                                <select class="form-control new_service" id="new_service"
+                                                    name="new_service">
+                                                    <option value="" selected>-- Select Services --</option>
+                                                    @if (isset($getServices) && !empty($getServices))
+                                                        @foreach ($getServices as $value)
+                                                            <option value="{{ $value->service_id }}"
+                                                                data-code="{{ $value->service_code }}">
+                                                                {{ $value->service_name }}
+                                                            </option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
 
                                             </div>
                                         </div>
@@ -494,9 +513,18 @@
                                     <div class="col-md-4">
                                         <div class="mb-2">
                                             <div class="form-group">
-                                                <input type="text" placeholder="Add New Part" class="form-control"
-                                                    name="new_product" value="">
-                                                <small id="name" class="form-text text-muted">New Part</small>
+                                                <select class="form-control new_product" id="new_product"
+                                                    name="new_product">
+                                                    <option value="" selected>-- Select Parts --</option>
+                                                    @if (isset($getProduct) && !empty($getProduct))
+                                                        @foreach ($getProduct as $value)
+                                                            <option value="{{ $value->product_id }}"
+                                                                data-code="{{ $value->product_code }}">
+                                                                {{ $value->product_name }}
+                                                            </option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="mb-2">
@@ -507,22 +535,24 @@
                                     </div>
                                     <div class="col-md-2">
                                         <div class="mb-2">
-                                            <input type="text" class="form-control new_product_cost" id="new_product_cost"
-                                                placeholder="$0.00" name="new_product_cost" value="" />
+                                            <input type="text" class="form-control new_product_cost"
+                                                id="new_product_cost" placeholder="$0.00" name="new_product_cost"
+                                                value="" />
                                             <small id="name" class="form-text text-muted">Price</small>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="mb-2">
-                                            <input class="form-control new_product_discount" type="number" id="new_product_discount"
-                                                name="new_product_discount" value="" placeholder="$0.00">
+                                            <input class="form-control new_product_discount" type="number"
+                                                id="new_product_discount" name="new_product_discount" value=""
+                                                placeholder="$0.00">
                                             <small id="name" class="form-text text-muted">Discount(%)</small>
                                         </div>
                                     </div>
 
                                     <div class="col-md-2">
-                                        <input class="form-control new_product_total" type="text" id="new_product_total"
-                                            name="new_product_total" value="">
+                                        <input class="form-control new_product_total" type="text"
+                                            id="new_product_total" name="new_product_total" value="">
                                         <small id="name" class="form-text text-muted">Line Total</small>
                                     </div>
                                 </div>
@@ -794,23 +824,74 @@
             $(document).on('click', '#add_appliance', function() {
                 $('.appliancefield').show();
                 $('#add_appliance').hide();
-                $('#remove_appliance').show();
-            });
-            $(document).on('click', '#remove_appliance', function() {
-                $('.appliancefield').hide();
-                $('#add_appliance').show();
-                $('#remove_appliance').hide();
             });
             $(document).on('click', '#add_manufaturer', function() {
                 $('.manufaturerfield').show();
                 $('#add_manufaturer').hide();
-                $('#remove_manufaturer').show();
             });
-            $(document).on('click', '#remove_manufaturer', function() {
-                $('.manufaturerfield').hide();
-                $('#add_manufaturer').show();
-                $('#remove_manufaturer').hide();
+
+            $(document).on('click', '#addAppl', function() {
+                var appliance = $('#new_appliance').val();
+                $.ajax({
+                    url: "{{ url('add/new/appliance') }}",
+                    data: {
+                        appliance: appliance,
+                    },
+                    method: 'get',
+                    success: function(data) {
+                        // Clear existing options
+                        $('#appliances').empty();
+                        // Check if data is not empty and has appliances array
+                        if (data && data && data.length > 0) {
+                            // Append new options
+                            $.each(data, function(index, value) {
+                                $('#appliances').append($('<option value="' + value
+                                    .appliance_id + '">' + value
+                                    .appliance_name + '</option>'));
+                            });
+                        }
+                        $('.appliancefield').hide();
+                        $('#add_appliance').show();
+                        $('#resp_text').text('Appliance added successfully');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
             });
+
+            $(document).on('click', '#addManu', function() {
+                var manufacturer = $('#new_manufacturer').val();
+                $.ajax({
+                    url: "{{ url('add/new/manufacturer') }}",
+                    data: {
+                        manufacturer: manufacturer,
+                    },
+                    method: 'get',
+                    success: function(data) {
+                        // Clear existing options
+                        $('#manufacturer').empty();
+                        // Check if data is not empty and has appliances array
+                        if (data && data && data.length > 0) {
+                            // Append new options
+                            $.each(data, function(index, value) {
+                                $('#manufacturer').append($('<option value="' + value
+                                    .id + '">' + value.manufacturer_name +
+                                    '</option>'));
+                            });
+                        }
+                        $('.manufaturerfield').hide();
+                        $('#add_manufaturer').show();
+                        $('#resp_texts').text('Manufacturer added successfully');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+            });
+
+
+
             $(document).on('click', '#addnewservice', function() {
                 $('#new-service').show();
                 $('#new_service_list').show();
@@ -1845,8 +1926,8 @@
                                 $('.service_tax_text').text('$' + data.service_tax);
                                 $('.service_tax').val(data.service_tax);
 
-                                $('.service_total_text').text('$' + data.service_cost);
-                                $('.service_total').val(data.service_cost);
+                                $('.service_total_text').text('$' + data.service_total);
+                                $('.service_total').val(data.service_total);
 
                                 var getSubTotalVal = $('.subtotal').val().trim();
                                 var subTotal = parseInt(getSubTotalVal) + parseInt(data
@@ -1861,9 +1942,7 @@
                                 $('.discounttext').text('$' + Math.abs(discount));
 
                                 var getTotal = $('.total').val().trim();
-                                var total = parseInt(getTotal) + parseInt(data.service_cost) -
-                                    parseInt(data
-                                        .service_discount) + parseInt(data.service_tax);
+                                var total = parseInt(getTotal) + parseInt(data.service_total);
                                 $('.total').val(Math.abs(total));
                                 $('.totaltext').text('$' + Math.abs(total));
 
@@ -1887,6 +1966,56 @@
                             .state_code + '');
                     },
                 });
+
+            });
+            $(document).on('change', '.new_service', function(event) {
+
+
+                var id = $(this).val().trim();
+
+                
+
+                if (id.length != 0) {
+
+                 
+                   $.ajax({
+                        url: "{{ route('services.details') }}",
+                        data: {
+                            id: id,
+                        },
+                        type: 'GET',
+                        success: function(data) {
+
+                            if (data) {
+
+                                $('.new_service_cost').val(data.service_cost);
+
+                                $('.new_service_discount').val(data.service_discount);
+
+                                $('.new_service_total').val(data.service_total);
+
+                                var getSubTotalVal = $('.subtotal').val().trim();
+                                var subTotal = parseInt(getSubTotalVal) + parseInt(data
+                                    .service_cost);
+                                $('.subtotal').val(Math.abs(subTotal));
+                                $('.subtotaltext').text('$' + Math.abs(subTotal));
+
+                                var getDiscount = $('.discount').val().trim();
+                                var discount = parseInt(getDiscount) + parseInt(data.service_discount);
+                                $('.discount').val(Math.abs(discount));
+                                $('.discounttext').text('$' + Math.abs(discount));
+
+                                var getTotal = $('.total').val().trim();
+                                var total = parseInt(getTotal) + parseInt(data.service_total);
+
+                                $('.total').val(Math.abs(total));
+                                $('.totaltext').text('$' + Math.abs(total));
+
+                            }
+
+                        }
+                    });
+                }
 
             });
 
@@ -1928,7 +2057,7 @@
                 var pre_service_discount = parseInt($('.pre_service_discount').val());
 
                 if ((/-/.test(service_discount) || /\./.test(service_discount) || isNaN(
-                    service_discount))) {
+                        service_discount))) {
                     $(this).val(pre_service_discount);
                     return true;
                 }
@@ -2019,8 +2148,8 @@
                                 $('.product_tax_text').text('$' + data.tax);
                                 $('.product_tax').val(data.tax);
 
-                                $('.product_total_text').text('$' + data.base_price);
-                                $('.product_total').val(data.base_price);
+                                $('.product_total_text').text('$' + data.total);
+                                $('.product_total').val(data.total);
 
                                 var getSubTotalVal = $('.subtotal').val().trim();
                                 var subTotal = parseInt(getSubTotalVal) + parseInt(data
@@ -2034,11 +2163,8 @@
                                 $('.discounttext').text('$' + Math.abs(discount));
 
                                 var getTotal = $('.total').val().trim();
-                                var total = parseInt(getTotal) + parseInt(data.base_price) -
-                                    parseInt(data.discount) + parseInt(data.tax);
+                                var total = parseInt(getTotal) + parseInt(data.total);
 
-                                console.log(total, getTotal, data.base_price, data.discount,
-                                    data.tax);
                                 $('.total').val(Math.abs(total));
                                 $('.totaltext').text('$' + Math.abs(total));
 
@@ -2060,6 +2186,56 @@
                             .state_code + '');
                     },
                 });
+
+            });
+
+            $(document).on('change', '.new_product', function(event) {
+
+                
+                var id = $(this).val().trim();
+
+              
+                if (id.length != 0) {
+
+                   $.ajax({
+                        url: "{{ route('product.details') }}",
+                        data: {
+                            id: id,
+                        },
+                        type: 'GET',
+                        success: function(data) {
+
+                            if (data) {
+
+
+                                $('.new_product_cost').val(data.base_price);
+
+                                $('.new_product_discount').val(data.discount);
+
+                                $('.new_product_total').val(data.total);
+
+                                var getSubTotalVal = $('.subtotal').val().trim();
+                                var subTotal = parseInt(getSubTotalVal) + parseInt(data
+                                    .base_price);
+                                $('.subtotal').val(Math.abs(subTotal));
+                                $('.subtotaltext').text('$' + Math.abs(subTotal));
+
+                                var getDiscount = $('.discount').val().trim();
+                                var discount = parseInt(getDiscount) + parseInt(data.discount);
+                                $('.discount').val(Math.abs(discount));
+                                $('.discounttext').text('$' + Math.abs(discount));
+
+                                var getTotal = $('.total').val().trim();
+                                var total = parseInt(getTotal) + parseInt(data.total);
+                                $('.total').val(Math.abs(total));
+                                $('.totaltext').text('$' + Math.abs(total));
+
+                            }
+
+                        }
+                    });
+                }
+                
 
             });
 
@@ -2102,7 +2278,7 @@
                 var pre_product_discount = parseInt($('.pre_product_discount').val());
 
                 if ((/-/.test(product_discount) || /\./.test(product_discount) || isNaN(
-                    product_discount))) {
+                        product_discount))) {
                     $(this).val(pre_product_discount);
                     return true;
                 }
@@ -2123,122 +2299,7 @@
 
             });
 
-            var previousServiceCost = 0; // Variable to store the previous service cost
-
-            $('#new_service_cost').change(function() {
-                var newServiceCost = parseInt($(this).val().trim()) || 0;
-
-                var subtotal = parseInt($('.subtotal').val().trim()) || 0;
-                var updatedSubtotal = subtotal - previousServiceCost;
-
-                // Add the new service cost to the existing subtotal
-                var updatedSubtotal1 = updatedSubtotal + newServiceCost;
-
-                $('.subtotal').val(updatedSubtotal1); // Update the subtotal value displayed in the UI
-                $('.subtotaltext').text('$' +
-                updatedSubtotal1); // Update the subtotal text displayed in the UI with a dollar sign
-
-                // Store the current service cost as the previous service cost for the next change event
-                previousServiceCost = newServiceCost;
-            });
-
-            var previousdiscount = 0; // Variable to store the previous service cost
-
-            $('#new_service_discount').change(function() {
-                var new_service_discount = parseInt($(this).val().trim()) || 0;
-
-                var discount = parseInt($('.discount').val().trim()) || 0;
-                var updateddiscount = discount - previousdiscount;
-
-                // Add the new service cost to the existing subtotal
-                var updateddiscount1 = updateddiscount + new_service_discount;
-
-                $('.discount').val(updateddiscount1); // Update the subtotal value displayed in the UI
-                $('.discounttext').text('$' +
-                updateddiscount1); // Update the subtotal text displayed in the UI with a dollar sign
-
-                // Store the current service cost as the previous service cost for the next change event
-                previousdiscount = new_service_discount;
-            });
-
-            var previoustotal = 0; // Variable to store the previous service cost
-
-            $('#new_service_total').change(function() {
-                var new_service_total = parseInt($(this).val().trim()) || 0;
-
-                var total = parseInt($('.total').val().trim()) || 0;
-                var updatedtotal = total - previoustotal;
-
-                // Add the new service cost to the existing subtotal
-               var updatedtotal1 = updatedtotal + new_service_total;
-
-                $('.total').val(updatedtotal1); // Update the subtotal value displayed in the UI
-                $('.totaltext').text('$' +
-                updatedtotal1); // Update the subtotal text displayed in the UI with a dollar sign
-
-                // Store the current service cost as the previous service cost for the next change event
-                previoustotal = new_service_total;
-            });
-
-            var previousProductCost = 0; // Variable to store the previous service cost
-
-            $('#new_product_cost').change(function() {
-                var newProductCost = parseInt($(this).val().trim()) || 0;
-
-                var subtotal = parseInt($('.subtotal').val().trim()) || 0;
-                var updatedSubtotal = subtotal - previousProductCost;
-
-                // Add the new service cost to the existing subtotal
-                var updatedSubtotal1 = updatedSubtotal + newProductCost;
-
-                $('.subtotal').val(updatedSubtotal1); // Update the subtotal value displayed in the UI
-                $('.subtotaltext').text('$' +
-                updatedSubtotal1); // Update the subtotal text displayed in the UI with a dollar sign
-
-                // Store the current service cost as the previous service cost for the next change event
-                previousProductCost = newProductCost;
-            });
-
-            var Productpreviousdiscount = 0; // Variable to store the previous service cost
-
-            $('#new_product_discount').change(function() {
-                var new_Product_discount = parseInt($(this).val().trim()) || 0;
-
-                var discount = parseInt($('.discount').val().trim()) || 0;
-                var updateddiscount = discount - Productpreviousdiscount;
-
-                // Add the new service cost to the existing subtotal
-                var updateddiscount1 = updateddiscount + new_Product_discount;
-
-                $('.discount').val(updateddiscount1); // Update the subtotal value displayed in the UI
-                $('.discounttext').text('$' +
-                updateddiscount1); // Update the subtotal text displayed in the UI with a dollar sign
-
-                // Store the current service cost as the previous service cost for the next change event
-                Productpreviousdiscount = new_Product_discount;
-            });
-
-            var Productprevioustotal = 0; // Variable to store the previous service cost
-
-            $('#new_product_total').change(function() {
-                var new_Product_total = parseInt($(this).val().trim()) || 0;
-
-                var total = parseInt($('.total').val().trim()) || 0;
-                var updatedtotal = total - Productprevioustotal;
-
-                // Add the new service cost to the existing subtotal
-                var updatedtotal1 = updatedtotal + new_Product_total;
-
-                $('.total').val(updatedtotal1); // Update the subtotal value displayed in the UI
-                $('.totaltext').text('$' +
-                updatedtotal1); // Update the subtotal text displayed in the UI with a dollar sign
-
-                // Store the current service cost as the previous service cost for the next change event
-                Productprevioustotal = new_Product_total;
-            });
-
-
-
+           
 
         });
 

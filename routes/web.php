@@ -297,6 +297,8 @@ Route::group(['middleware' => 'role:customer'], function () {
 
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
+    Route::get('users/search', [UserController::class, 'search'])->name('users.search');
+
 
 
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
@@ -742,6 +744,10 @@ Route::middleware('auth')->group(function () {
     Route::get('get/usertax', [ScheduleController::class, 'usertax'])->name('usertax');
 
     Route::get('get/userstate', [ScheduleController::class, 'userstate'])->name('userstate');
+
+    Route::get('add/new/appliance', [ScheduleController::class, 'new_appliance']);
+
+    Route::get('add/new/manufacturer', [ScheduleController::class, 'new_manufacturer']);
 
     // EventController
 

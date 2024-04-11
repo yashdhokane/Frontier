@@ -653,30 +653,11 @@ class ScheduleController extends Controller
                     $serviceDataInsert = DB::table('job_service_items')->where('job_id', $data['job_id'])->update($serviceData);
                 }
                 if (isset($data['new_service']) && !empty($data['new_service'])) {
-
-                    $service = new Service();
-                    $service->service_name = $data['new_service'] ?? null;
-                    $service->in_warranty = $data['job_type'] == 'in_warranty' ? 'yes' : 'no';
-                    $service->created_by = auth()->user()->id;
-                    $service->updated_by = auth()->user()->id;
-                    $service->service_cost = $data['new_service_cost'] ?? null;
-                    $service->service_discount = $data['new_service_discount'] ?? null;
-                    $service->service_total     = $data['new_service_total'] ?? null;
-                    $service->service_for     = 'job';
-
-                    $service->save();
-                    $service->refresh();
-
-                    $newserviceData = [
-                        'service_id' => $service->service_id,
-                        'job_id' => $data['job_id'],
-                        'base_price' => (isset($data['new_service_cost']) && !empty($data['new_service_cost'])) ? $data['new_service_cost'] : '',
-                        'tax' => $service_tax,
-                        'discount' => (isset($data['new_service_discount']) && !empty($data['new_service_discount'])) ? $data['new_service_discount'] : '',
-                        'sub_total' => (isset($data['new_service_total']) && !empty($data['new_service_total'])) ? $data['new_service_total'] : '',
+                    $serviceData = [
+                        'service_id' => (isset($data['new_service']) && !empty($data['new_service'])) ? $data['new_service'] : '',
                     ];
 
-                    $newserviceDataInsert = DB::table('job_service_items')->insertGetId($newserviceData);
+                    $serviceDataInsert = DB::table('job_service_items')->where('job_id', $data['job_id'])->update($serviceData);
                 }
 
                 if (isset($data['product_id']) && !empty($data['product_id'])) {
@@ -688,29 +669,13 @@ class ScheduleController extends Controller
                     $productDataInsert = DB::table('job_product_items')->where('job_id', $data['job_id'])->update($productData);
                 }
 
-                if (isset($data['new_product']) && !empty($data['new_product'])) {
-
-                    $addproduct = new Products();
-                    $addproduct->product_name = $data['new_service'] ?? null;
-                    $addproduct->created_by = auth()->user()->id;
-                    $addproduct->updated_by = auth()->user()->id;
-                    $addproduct->base_price = $data['new_product_cost'] ?? null;
-                    $addproduct->discount = $data['new_product_discount'] ?? null;
-                    $addproduct->total     = $data['new_product_total'] ?? null;
-
-                    $addproduct->save();
-                    $service->refresh();
-
-                    $newproductData = [
-                        'product_id' => (isset($addproduct) && !empty($addproduct)) ? $addproduct->product_id  : '',
-                        'job_id' => $data['job_id'],
-                        'base_price' => (isset($data['new_product_cost']) && !empty($data['new_product_cost'])) ? $data['new_product_cost'] : '',
-                        'tax' => $service_tax,
-                        'discount' => (isset($data['new_product_discount']) && !empty($data['new_product_discount'])) ? $data['new_product_discount'] : '',
-                        'sub_total' => (isset($data['new_product_total']) && !empty($data['new_product_total'])) ? $data['new_product_total'] : '',
-                    ];
-                    $newproductDataInsert = DB::table('job_product_items')->insertGetId($newproductData);
-                }
+                    if (isset($data['new_product']) && !empty($data['new_product'])) {
+                        $productData = [
+                            'product_id' => (isset($data['new_product']) && !empty($data['new_product'])) ? $data['new_product'] : '',
+                        ];
+    
+                        $productDataInsert = DB::table('job_product_items')->where('job_id', $data['job_id'])->update($productData);
+                    }
 
                 if ($request->hasFile('photos')) {
                     $fileData = [];
@@ -875,18 +840,6 @@ class ScheduleController extends Controller
 
                 $jobAssignedID = DB::table('job_assigned')->insertGetId($JobAssignedData);
 
-                if ($data['new_appliance']) {
-                    $appliance = new Appliances();
-                    $appliance->appliance_name = $data['new_appliance'] ?? null;
-                    $appliance->save();
-                }
-                if ($data['new_manufacturer']) {
-                    $new_manufacturer = new Manufacturer();
-                    $new_manufacturer->manufacturer_name = $data['new_manufacturer'] ?? null;
-                    $new_manufacturer->added_by = auth()->user()->id;
-                    $new_manufacturer->last_updated_by = auth()->user()->id;
-                    $new_manufacturer->save();
-                }
 
                 $jobDetails = [
                     'job_id' => $jobId,
@@ -898,17 +851,7 @@ class ScheduleController extends Controller
 
                 $jobDetailsID = DB::table('job_details')->insertGetId($jobDetails);
 
-                if ($data['new_appliance'] && $data['new_manufacturer']) {
-                    $newjobDetails = [
-                        'job_id' => $jobId,
-                        'appliance_id' => (isset($appliance) && !empty($appliance)) ? $appliance->appliance_id : '',
-                        'model_number' => (isset($data['model_number']) && !empty($data['model_number'])) ? $data['model_number'] : '',
-                        'serial_number' => (isset($data['serial_number']) && !empty($data['serial_number'])) ? $data['serial_number'] : '',
-                        'manufacturer_id' => (isset($new_manufacturer) && !empty($new_manufacturer)) ? $new_manufacturer->id : '',
-                    ];
-
-                    $newjobDetailsID = DB::table('job_details')->insertGetId($newjobDetails);
-                }
+               
 
                 if (isset($data['services']) && !empty($data['services'])) {
 
@@ -926,21 +869,8 @@ class ScheduleController extends Controller
 
                 if (isset($data['new_service']) && !empty($data['new_service'])) {
 
-                    $service = new Service();
-                    $service->service_name = $data['new_service'] ?? null;
-                    $service->in_warranty = $data['job_type'] == 'in_warranty' ? 'yes' : 'no';
-                    $service->created_by = auth()->user()->id;
-                    $service->updated_by = auth()->user()->id;
-                    $service->service_cost = $data['new_service_cost'] ?? null;
-                    $service->service_discount = $data['new_service_discount'] ?? null;
-                    $service->service_total     = $data['new_service_total'] ?? null;
-                    $service->service_for     = 'job';
-
-                    $service->save();
-                    $service->refresh();
-
-                    $newserviceData = [
-                        'service_id' => $service->service_id,
+                    $serviceData = [
+                        'service_id' => (isset($data['new_service']) && !empty($data['new_service'])) ? $data['new_service'] : '',
                         'job_id' => $jobId,
                         'base_price' => (isset($data['new_service_cost']) && !empty($data['new_service_cost'])) ? $data['new_service_cost'] : '',
                         'tax' => $service_tax,
@@ -948,8 +878,10 @@ class ScheduleController extends Controller
                         'sub_total' => (isset($data['new_service_total']) && !empty($data['new_service_total'])) ? $data['new_service_total'] : '',
                     ];
 
-                    $newserviceDataInsert = DB::table('job_service_items')->insertGetId($newserviceData);
+                    $serviceDataInsert = DB::table('job_service_items')->insertGetId($serviceData);
                 }
+
+                
 
                 if (isset($data['products']) && !empty($data['products'])) {
 
@@ -967,19 +899,9 @@ class ScheduleController extends Controller
 
                 if (isset($data['new_product']) && !empty($data['new_product'])) {
 
-                    $addproduct = new Products();
-                    $addproduct->product_name = $data['new_service'] ?? null;
-                    $addproduct->created_by = auth()->user()->id;
-                    $addproduct->updated_by = auth()->user()->id;
-                    $addproduct->base_price = $data['new_product_cost'] ?? null;
-                    $addproduct->discount = $data['new_product_discount'] ?? null;
-                    $addproduct->total     = $data['new_product_total'] ?? null;
-
-                    $addproduct->save();
-                    $service->refresh();
 
                     $newproductData = [
-                        'product_id' => (isset($addproduct) && !empty($addproduct)) ? $addproduct->product_id  : '',
+                        'product_id' => (isset($data['new_product']) && !empty($data['new_product'])) ? $data['new_product'] : '',
                         'job_id' => $jobId,
                         'base_price' => (isset($data['new_product_cost']) && !empty($data['new_product_cost'])) ? $data['new_product_cost'] : '',
                         'tax' => $service_tax,
@@ -1544,5 +1466,26 @@ class ScheduleController extends Controller
         $address = $a->locationStateName;
 
         return response()->json($address);
+    }
+    public function new_appliance(Request $request)
+    {
+        $appliance = new Appliances();
+        $appliance->appliance_name = $request->appliance;
+        $appliance->save();
+    
+        // Retrieve all appliances and return them as JSON
+        $appliances = Appliances::all();
+        return response()->json($appliances);
+    }
+
+    public function new_manufacturer(Request $request)
+    {
+        $manufacturer = new Manufacturer();
+        $manufacturer->manufacturer_name = $request->manufacturer;
+        $manufacturer->save();
+    
+        // Retrieve all appliances and return them as JSON
+        $manufacturer = Manufacturer::all();
+        return response()->json($manufacturer);
     }
 }

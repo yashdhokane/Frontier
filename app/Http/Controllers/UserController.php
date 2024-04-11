@@ -44,10 +44,28 @@ class UserController extends Controller
 
         $users = User::where('role', 'customer')
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(10);
         // Pass users and user addresses to the view
         return view('users.index', ['users' => $users]);
     }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('search');
+    
+        $users = User::where('role', 'customer')
+            ->where(function ($queryBuilder) use ($query) {
+                $queryBuilder->where('name', 'like', '%' . $query . '%')
+                    ->orWhere('email', 'like', '%' . $query . '%');
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+    
+        $tbodyHtml = view('users.search_content', compact('users'))->render();
+    
+        return response()->json(['tbody' => $tbodyHtml]);
+    }
+    
 
 
 
