@@ -936,7 +936,7 @@
                                         .DismissReason.backdrop
                                     ) {
                                         window.location.href =
-                                            "{{ route('schedule_new') }}";
+                                            "{{ route('schedule') }}";
                                     }
                                 });
 
@@ -976,7 +976,7 @@
                                     if (result.isConfirmed ||
                                         result.isDismissed) {
                                         window.location.href =
-                                            "{{ route('schedule_new') }}";
+                                            "{{ route('schedule') }}";
                                     }
                                 });
 
