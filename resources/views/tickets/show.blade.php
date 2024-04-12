@@ -85,10 +85,10 @@
                 <div class="card" style="border: 1px solid #D8D8D8;">
                     <div class="card-body">
                         <div class="">
-                            <h5 class="todo-desc mb-0 fs-3 font-weight-medium">
+                            {{-- <h5 class="todo-desc mb-0 fs-3 font-weight-medium">
                                 {{ $technicians->address ?? null }},{{ $technicians->city ?? null }},{{
                                 $technicians->state ?? null }},{{ $technicians->zipcode ?? null }}
-                            </h5>
+                            </h5> --}}
 
                             <iframe id="map238" width="100%" height="150" frameborder="0" style="border: 0"
                                 allowfullscreen=""></iframe>
@@ -103,8 +103,7 @@
                     <div class="card-body">
                         <div class=""><span>Technician address</span>
                             <h5 class="todo-desc mb-0 fs-3 font-weight-medium">
-                                {{ $technicianlocation->address ?? null }},{{ $technicianlocation->city ?? null }},{{
-                                $technicianlocation->state ?? null }},{{ $technicianlocation->zipcode ?? null }}
+                                {{ $technicians->addresstechnician->address_line1 }},{{ $technicians->addresstechnician->address_line2 ?? null }},{{$technicians->addresstechnician->city ?? null }},{{$technicians->addresstechnician->state_name ?? null }},{{ $technicians->addresstechnician->zipcode ?? null }}
                             </h5>
 
                             <iframe id="map" width="100%" height="150" frameborder="0" style="border: 0"
