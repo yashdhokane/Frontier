@@ -14,7 +14,7 @@ class FleetDetails extends Model
 
         protected $primaryKey = 'fleet_id';
 
-    protected $fillable = ['fleet_id', 'user_id', 'fleet_key', 'fleet_value'];
+    protected $fillable = ['fleet_id','vehicle_id', 'user_id', 'fleet_key', 'fleet_value'];
 
   public $timestamps = false;
 

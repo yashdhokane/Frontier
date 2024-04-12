@@ -79,7 +79,6 @@
 
                                 <thead>
                                     <tr>
-                                        <th>Sr. No.</th>
                                         <th>Technician</th>
                                         <th>Event</th>
                                         <th>Description</th>
@@ -91,12 +90,8 @@
                                 </thead>
 
                                 <tbody>
-                                    @php
-                                        $a = 0;
-                                    @endphp
                                     @foreach ($event as $item)
                                         <tr>
-                                            <td>{{ $a++ }}</td>
                                             <td>{{ $item->technician->name ?? null }} </td>
                                             <td>{{ $item->event_name ?? null }} </td>
                                             <td>{{ $item->event_description ?? null }} </td>
@@ -151,17 +146,17 @@
                     var Month = moment(selectedMonth, 'MMMM YYYY').format('MM'); // Extract the month
                     var Year = moment(selectedMonth, 'MMMM YYYY').format('YYYY'); // Extract the year
                     // Perform filtering on the table to include all dates within the selected month and year
-                    table.column(5).search('^' + Month + '-' + '\\d{2}-' + Year, true, false).draw();
+                    table.column(4).search('^' + Month + '-' + '\\d{2}-' + Year, true, false).draw();
                 } else {
                     // If no month is selected, clear the filter
-                    table.column(5).search('').draw();
+                    table.column(4).search('').draw();
                 }
             });
 
 
             $('#technician-filter').on('change', function() {
                 var technician = $(this).val();
-                table.column(1).search(technician)
+                table.column(0).search(technician)
                     .draw(); // Assuming technician names are in column index 3
             });
 

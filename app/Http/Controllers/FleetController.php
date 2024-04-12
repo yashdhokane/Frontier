@@ -75,8 +75,8 @@ class FleetController extends Controller
     }
     public function edit(Request $request, $id)
     {
-     
-        $fleet = FleetDetails::where('vehicle_id',$id)->first();
+       $vehicle_id = $id;
+        $fleet = FleetDetails::where('vehicle_id',$vehicle_id)->first();
 
         if ($fleet) {
             $oil_change = $fleet->where('fleet_key', 'oil_change')->value('fleet_value') ?? '';
@@ -132,23 +132,38 @@ class FleetController extends Controller
         
 
 
-       return view('fleet.edit',compact('fleet','oil_change', 'tune_up', 'tire_rotation', 'breaks', 'inspection_codes', 'mileage', 'registration_expiration_date', 'vehicle_coverage', 'license_plate', 'vin_number', 'make', 'model', 'year', 'color', 'vehicle_weight', 'vehicle_cost', 'use_of_vehicle', 'repair_services', 'ezpass', 'service', 'additional_service_notes', 'last_updated', 'epa_certification'));
+       return view('fleet.edit',compact('fleet','vehicle_id','oil_change', 'tune_up', 'tire_rotation', 'breaks', 'inspection_codes', 'mileage', 'registration_expiration_date', 'vehicle_coverage', 'license_plate', 'vin_number', 'make', 'model', 'year', 'color', 'vehicle_weight', 'vehicle_cost', 'use_of_vehicle', 'repair_services', 'ezpass', 'service', 'additional_service_notes', 'last_updated', 'epa_certification'));
     }
 
     public function updatefleetdetails(Request $request)
     {
+        // Retrieve the vehicle_id from the request
         $vehicleId = $request->input('vehicle_id');
-    
+    $auth = auth()->user()->id;
         // Loop through each input and update or create the corresponding FleetDetails record
         $inputs = $request->except('_token', 'vehicle_id');
         foreach ($inputs as $key => $value) {
-            FleetDetails::updateOrCreate(
-                ['vehicle_id' => $vehicleId, 'fleet_key' => $key],
-                ['fleet_value' => $value]
-            );
+            // Attempt to find the FleetDetails record for the given vehicle_id and fleet_key
+            $fleetDetail = FleetDetails::where('vehicle_id', $vehicleId)
+                                        ->where('fleet_key', $key)
+                                        ->first();
+    
+            // If record not found, create a new one
+            if (!$fleetDetail) {
+                FleetDetails::create([
+                    'vehicle_id' => $request->vehicle_id,
+                    'fleet_key' => $key,
+                    'fleet_value' => $value,
+                    'user_id' => $auth,
+                ]);
+            } else {
+                // Otherwise, update the existing record
+                $fleetDetail->update(['fleet_value' => $value]);
+            }
         }
     
         return redirect()->back()->with('success', 'Fleet data updated successfully!');
     }
+
     
 }

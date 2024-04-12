@@ -13,9 +13,8 @@
                     <div class="d-flex align-items-center">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{ route('fleet') }}" class="fs-5">Fleet </a></li>
-                                <li class="breadcrumb-item"><a href="#" class="fs-5"> Edit Fleet
-                                        Vehicle</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('vehicles') }}" class="fs-5">Vehicles </a></li>
+                                <li class="breadcrumb-item"><a href="#" class="fs-5">Vehicle Details</a></li>
 
                             </ol>
                         </nav>
@@ -45,7 +44,7 @@
 
                             <form class="form" method="post" action="{{route('updatefleetdetails')}}">
                                 @csrf
-                                <input class="form-control" type="hidden" value="{{$fleet->vehicle_id}}"
+                                <input class="form-control" type="hidden" value="{{$fleet->vehicle_id ?? $vehicle_id}}"
                                     name="vehicle_id">
 
                                 <div class="mb-3 row">

@@ -13,7 +13,7 @@
                     <div class="d-flex align-items-center">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{ route('fleet') }}" class="fs-5">Fleet </a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('vehicles') }}" class="fs-5">Vehicles </a></li>
 
                             </ol>
                         </nav>
@@ -41,13 +41,12 @@
 
                 <div class="card">
                     <div class="card-body">
-                            <table id="zero_config" class="table table-bordered text-nowrap" data-paging="true"
+                            <table id="zero_config00" class="table table-bordered text-nowrap" data-paging="true"
                                 data-paging-size="7">
 
 
                                 <thead>
                                     <tr>
-                                        <th>Sr. No.</th>
                                         <th>Vehicle</th>
                                         <th>Technician</th>
                                         <th>Last Modified</th>
@@ -56,12 +55,8 @@
                                 </thead>
 
                                 <tbody>
-                                    @php
-                                        $a = 1;
-                                    @endphp
                                     @foreach ($vehicle as $item)
                                         <tr>
-                                            <td>{{ $a++ }}</td>
                                             <td>{{ $item->vehicle_description ?? null }} </td>
                                             <td>{{ $item->technician->name ?? null }} </td>
                                             <td>{{ $item->updated_at ? \Carbon\Carbon::parse($item->updated_at)->format('m-d-Y h:i:a') : null }}
@@ -86,7 +81,7 @@
                                                                     data-feather="edit-2" class="feather-sm me-2"></i>
                                                                 Active</a>
                                                         @endif
-                                                        <a href="{{ url('fleet/edit/' . $item->vehicle_id) }}"
+                                                        <a href="{{ url('vehicle/details/' . $item->vehicle_id) }}"
                                                             class="text-dark pe-2 dropdown-item">
                                                             <i class="fa fa-edit edit-sm fill-white pe-2"></i> Edit
                                                         </a>
@@ -108,9 +103,8 @@
         </div>
     </div>
 @section('script')
-
     <script>
-        $('#zero_config').DataTable();
+        $('#zero_config00').DataTable();
     </script>
 
 @endsection

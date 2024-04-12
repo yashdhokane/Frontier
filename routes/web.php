@@ -760,11 +760,11 @@ Route::middleware('auth')->group(function () {
 
     // FleetController
 
-    Route::get('fleet', [FleetController::class, 'index'])->name('fleet');
+    Route::get('vehicles', [FleetController::class, 'index'])->name('vehicles');
     
     Route::post('fleet/store', [FleetController::class, 'store'])->name('fleet.store');
 
-    Route::get('fleet/edit/{id}', [FleetController::class, 'edit']);
+    Route::get('vehicle/details/{id}', [FleetController::class, 'edit']);
 
     Route::get('inactive/fleet/{id}', [FleetController::class, 'inactive']);
 
