@@ -1531,7 +1531,6 @@
             $('.show_job_duration').text('Duration: ' + $('.duration option:selected').text());
 
             var services = $('.services').find(':selected');
-            var newservices = $('#new_service').val();
             var services_code = services.data('code');
             var servicesText = services.text();
             var service_cost = $('.service_cost').val();
@@ -1543,7 +1542,6 @@
             var newservice_total = $('.new_service_total').val();
 
             $('.show_service_code_name').text(services_code + ' - ' + servicesText);
-            $('.show_service_code_new').text('CODE' + ' - ' + newservices);
             $('.show_warranty').text($('.job_type option:selected').text());
             $('.show_service_cost').text('$' + service_cost);
             $('.show_service_cost_new').text('$' + newservice_cost);
@@ -1554,7 +1552,6 @@
             $('.show_service_total_new').text('$' + newservice_total);
 
             var products = $('.products').find(':selected');
-            var newproducts = $('#new_products').val();
             var products_code = products.data('code');
             var productsText = products.text();
             var product_cost = $('.product_cost').val();
@@ -1566,7 +1563,6 @@
             var newproduct_total = $('.new_product_total').val();
 
             $('.show_product_code_name').text(products_code + ' - ' + productsText);
-            $('.show_product_code_new').text('CODE' + ' - ' + newproducts);
             $('.show_product_cost').text('$' + product_cost);
             $('.show_product_cost_new').text('$' + newproduct_cost);
             $('.show_product_discount').text('$' + product_discount);
@@ -1574,6 +1570,25 @@
             $('.show_product_tax').text('$' + product_tax);
             $('.show_product_total').text('$' + product_total);
             $('.show_product_total_new').text('$' + newproduct_total);
+
+            var newservices = $('#new_service').val();
+            var newproducts = $('#new_product').val();
+
+            $.ajax({
+                url: "{{ url('get/service/product') }}",
+                data: {
+                    newservices: newservices,
+                    newproducts: newproducts,
+                },
+                type: 'GET',
+                success: function(data) {
+
+                    $('.show_service_code_new').text(data.newservices.service_code + ' - ' + data.newservices
+                        .service_name);
+                    $('.show_product_code_new').text(data.newproducts.product_code + ' - ' + data.newproducts
+                        .product_name);
+                },
+            });
 
             var getDiscount = $('.discount').val().trim();
             var getTax = parseInt(service_tax) - parseInt(product_tax);
@@ -1973,12 +1988,12 @@
 
                 var id = $(this).val().trim();
 
-                
+
 
                 if (id.length != 0) {
 
-                 
-                   $.ajax({
+
+                    $.ajax({
                         url: "{{ route('services.details') }}",
                         data: {
                             id: id,
@@ -2001,7 +2016,8 @@
                                 $('.subtotaltext').text('$' + Math.abs(subTotal));
 
                                 var getDiscount = $('.discount').val().trim();
-                                var discount = parseInt(getDiscount) + parseInt(data.service_discount);
+                                var discount = parseInt(getDiscount) + parseInt(data
+                                    .service_discount);
                                 $('.discount').val(Math.abs(discount));
                                 $('.discounttext').text('$' + Math.abs(discount));
 
@@ -2191,13 +2207,13 @@
 
             $(document).on('change', '.new_product', function(event) {
 
-                
+
                 var id = $(this).val().trim();
 
-              
+
                 if (id.length != 0) {
 
-                   $.ajax({
+                    $.ajax({
                         url: "{{ route('product.details') }}",
                         data: {
                             id: id,
@@ -2235,7 +2251,7 @@
                         }
                     });
                 }
-                
+
 
             });
 
@@ -2299,7 +2315,7 @@
 
             });
 
-           
+
 
         });
 

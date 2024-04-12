@@ -749,6 +749,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('add/new/manufacturer', [ScheduleController::class, 'new_manufacturer']);
 
+    Route::get('get/service/product', [ScheduleController::class, 'service_product']);
+
     // EventController
 
     Route::get('events', [EventController::class, 'index'])->name('events');

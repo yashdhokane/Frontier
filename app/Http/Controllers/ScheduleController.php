@@ -1488,4 +1488,15 @@ class ScheduleController extends Controller
         $manufacturer = Manufacturer::all();
         return response()->json($manufacturer);
     }
+
+    public function service_product(Request $request)
+    {
+        $newservices = Service::find($request->newservices);
+        $newproducts = Products::find($request->newproducts);
+
+        return response()->json([
+            'newservices' => $newservices,
+            'newproducts' => $newproducts,
+        ]);
+    }
 }
