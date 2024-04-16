@@ -751,7 +751,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('get/service/product', [ScheduleController::class, 'service_product']);
 
-    // EventController
+    Route::get('travel_time', [ScheduleController::class, 'travel_time'])->name('travel_time');
+
+    // EventController  
 
     Route::get('events', [EventController::class, 'index'])->name('events');
 

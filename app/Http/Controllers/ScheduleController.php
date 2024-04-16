@@ -19,6 +19,8 @@ use App\Models\SiteLeadSource;
 use App\Models\SiteTags;
 use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Storage;
@@ -1499,4 +1501,31 @@ class ScheduleController extends Controller
             'newproducts' => $newproducts,
         ]);
     }
+    
+    public function travel_time(Request $request)
+    {
+        // dd();
+        $tech_add = CustomerUserAddress::where('user_id' , $request->tech_id)->first();
+        $address = $tech_add->latitude .','. $tech_add->longitude;
+        $origin = $address;
+        $destination = $request->customer_add;
+
+        $response = Http::get('https://maps.googleapis.com/maps/api/distancematrix/json', [
+            'destinations' => $destination,
+            'origins' => $origin,
+            'key' => 'AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo', 
+        ]);
+
+        $data = $response->json();
+        if ($response->successful()) {
+            if ($data['status'] === 'OK' && isset($data['rows'][0]['elements'][0]['duration'])) {
+                // Extract duration
+            $travelTime = $data['rows'][0]['elements'][0]['duration']['text'];
+            return response()->json(['travel_time' => $travelTime]);
+            }
+        } else {
+            return response()->json(['travel_time' => 'Unable to calculate travel time.']);
+        }
+    }
 }
+    

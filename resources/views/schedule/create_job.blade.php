@@ -6,6 +6,7 @@
     <link href="{{ asset('public/admin/dist/css/style.min.css') }}" rel="stylesheet" />
     <div class="createScheduleData">
 
+        <input type="hidden" class="travel_input" id="travel_input" name="travel_input" value="">       
         @if (isset($technician) && !empty($technician))
 
             <div class="container-fluid">
@@ -258,7 +259,7 @@
                                         <h6 class="card-title required-field"><i class="fas fa fa-calendar-check-o"></i>
                                             Duration</h6>
                                         <div class="form-group">
-                                            <select class="form-control duration" id="exampleFormControlSelect1"
+                                            <select class="form-control duration" id="duration"
                                                 name="duration">
                                                 <option value="240">4 Hours</option>
                                                 <option value="180">3 Hours</option>
@@ -266,6 +267,7 @@
                                                 <option value="60">1 Hours</option>
                                                 <option value="30">30 min</option>
                                             </select>
+                                            <small id="result_travel" class="text-success" style="display: none;"></small>
                                         </div>
                                     </div>
                                 </div>
@@ -819,6 +821,67 @@
 
     <!-- Bootstrap Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script>
+        
+        $(document).ready(function() { 
+            $(document).on('change', '.customer_address', function(event) {
+                var customer_add = $(this).val();
+                var tech_id = $('.technician_id').val();
+
+                $.ajax({
+                    url: '{{ route("travel_time") }}',
+                    type: 'GET', // Use GET instead of get
+                    dataType: 'json',
+                    data: {
+                        tech_id: tech_id,
+                        customer_add: customer_add,
+                    },
+                    success: function (response) {
+                        // Check if the travel_time key exists in the response
+                        if (response.hasOwnProperty('travel_time')) {
+                            // Display the travel time
+                            $('#travel_input').val(response.travel_time);
+                        } else {
+                            // Handle the case where travel_time is not present in the response
+                            $('#travel_input').val('Travel time not available.');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+
+            $(document).on('change', '#duration', function(event) {
+                var duration = parseInt($(this).val()); // Parse the first value to an integer
+                var time = $('#travel_input').val(); // Get the second value
+
+                var days = 0;
+                var hours = 0;
+                if (time.includes('day') && time.includes('hour')) {
+                    var parts = time.split(' ');
+                    days = parseInt(parts[0]); // Parse the days part to an integer
+                    hours = parseInt(parts[2]); // Parse the hours part to an integer
+                } else if (time.includes('day')) {
+                    var parts = time.split(' ');
+                    days = parseInt(parts[0]); // Parse the days part to an integer
+                } else if (time.includes('hour')) {
+                    var parts = time.split(' ');
+                    hours = parseInt(parts[0]); // Parse the hours part to an integer
+                }
+
+                // Calculate the total time in hours
+                var totalTime = (duration / 60) + (days * 24) + hours;
+                console.log(totalTime); // Display the total time in hours
+
+                $('#result_travel').show();
+                $('#result_travel').text('Travel time :'+ totalTime +' hours');
+                
+            });
+
+        });
+
+    </script>
     <script>
         $(document).ready(function() {
             $(document).on('click', '#add_appliance', function() {
@@ -1462,7 +1525,7 @@
                                     ', ' + element.state_name + ', ' + element
                                     .zipcode;
                                 var option = $('<option>', {
-                                    value: element.address_type,
+                                    value: addressString,
                                     text: addressString
                                 });
 
@@ -1857,7 +1920,7 @@
                                     ', ' + element.state_name + ', ' + element
                                     .zipcode;
                                 var option = $('<option>', {
-                                    value: element.address_type,
+                                    value: element.latitude + ',' + element.longitude,
                                     text: addressString
                                 });
 
