@@ -56,7 +56,7 @@
 
         <div style="text-align: center; font-size: 12px; color: #b2b2b5; margin-top: 20px">
           <p>
-            Powered by Wrappixel
+            Powered by Frontier
             <br />
             <a href="javascript: void(0);" style="color: #b2b2b5; text-decoration: underline"
               >Unsubscribe</a

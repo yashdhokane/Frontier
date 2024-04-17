@@ -40,7 +40,7 @@ class ResheduleTechnician extends Mailable
      */
      public function build()
     {
-        return $this->view('mail.reschedule.ResheduleTechnician') 
+        return $this->view('mail.reschedule.reshedule_technician') 
             ->with('maildata', $this->maildata); 
     }
 

@@ -6,31 +6,13 @@
         <!-- start row -->
         <tr>
           <td>
-            <b>Dear Sir/Madam/Customer,</b>
+            <b>Hello {{ $maildata[1]->name ?? null }},</b>
             <p>
-              This is to inform you that, Your account with AdminX has been created
-              successfully. Log it for more details.
-            </p>
-            <a
-              href="javascript: void(0);"
-              style="
-                display: inline-block;
-                padding: 11px 30px;
-                margin: 20px 0px 30px;
-                font-size: 15px;
-                color: #fff;
-                background: #4fc3f7;
-                border-radius: 60px;
-                text-decoration: none;
-              "
-            >
-              Call to action button
-            </a>
-            <p>
-              This email template can be used for Create Account, Change Password, Login
-              Information and other informational things.
-            </p>
-            <b>- Thanks (Wrappixel team)</b>
+              We have scheduled your service request. Our technician {{ $maildata[0]->name ?? null}} will come on {{ \Carbon\Carbon::parse($maildata[2]->start_date_time)->format('F j, Y, g:i a') }}.
+          </p>
+          
+          
+            <b>- Thanks (Frontier team)</b>
           </td>
         </tr>
         <!-- end row -->
