@@ -1074,6 +1074,7 @@
                                         url: "{{ url('get/mail/schedule') }}",
                                         data: {
                                             schedule_id: schedule_id,
+                                            type: 'reschedule',
                                         },
                                         type: 'GET',
                                         success: function(data) {
@@ -1112,6 +1113,18 @@
 
                                 $('.btn-close').trigger(
                                     'click');
+                                     var schedule_id = data.schedule_id;
+                                    $.ajax({
+                                        url: "{{ url('get/mail/schedule') }}",
+                                        data: {
+                                            schedule_id: schedule_id,
+                                            type: 'schedule',
+                                        },
+                                        type: 'GET',
+                                        success: function(data) {
+                                          console.log(data);                                          
+                                        },
+                                    });
 
                                 Swal.fire({
                                     icon: "error",

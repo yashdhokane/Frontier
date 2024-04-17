@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ResheduleCustomer extends Mailable
+class ScheduleTechnician extends Mailable
 {
     use Queueable, SerializesModels;
     
@@ -40,7 +40,7 @@ class ResheduleCustomer extends Mailable
      */
      public function build()
     {
-        return $this->view('mail.reschedule.reshedule_customer') 
+        return $this->view('mail.schedule.schedule_technician') 
             ->with('maildata', $this->maildata); 
     }
 

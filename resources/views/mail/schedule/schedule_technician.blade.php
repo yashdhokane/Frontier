@@ -8,7 +8,7 @@
           <td>
             <b>Hello {{ $maildata[0]->name }},</b>
             <p>
-              We have rescheduled your service request.
+              We have @if($maildata[3] == 'schedule') @else rescheduled @endif your service request.
             </p>
             <b>- Thanks (Frontier team)</b>
           </td>

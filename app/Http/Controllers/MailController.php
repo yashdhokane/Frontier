@@ -5,10 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Schedule;
 use App\Models\User;
-use Mail;
-use App\Mail\ResheduleTechnician;
-use App\Mail\ResheduleCustomer;
-use Illuminate\Support\Facades\Mail as FacadesMail;
+use App\Mail\ScheduleTechnician;
+use App\Mail\ScheduleCustomer;
+use Illuminate\Support\Facades\Mail;
 
 class MailController extends Controller
 {
@@ -16,6 +15,7 @@ class MailController extends Controller
     public function index(Request $request)
     {
         try {
+            $type = $request->type;
             // Find the schedule with related models
             $schedule = Schedule::with('jobModel', 'technician')->findOrFail($request->schedule_id);
     
@@ -27,15 +27,15 @@ class MailController extends Controller
 
             $customer = User::where('id', $customer_id)->first();
             // Prepare data for email
-            $maildata = [$technician, $customer,$schedule]; 
+            $maildata = [$technician, $customer,$schedule,$type]; 
     
             // Recipient email addresses
             $recipients = ['bawanesumit01@gmail.com'];
             $recipients2 = ['bawanesumit01@gmail.com'];
     
             // Send email
-            Mail::to($recipients)->send(new ResheduleTechnician($maildata));
-            Mail::to($recipients2)->send(new ResheduleCustomer($maildata));
+            Mail::to($recipients)->send(new ScheduleTechnician($maildata));
+            Mail::to($recipients2)->send(new ScheduleCustomer($maildata));
     
             // If execution reaches here, email was sent successfully
             $message = 'Email sent successfully';

@@ -8,7 +8,7 @@
           <td>
             <b>Hello {{ $maildata[1]->name ?? null }},</b>
             <p>
-              We have scheduled your service request. Our technician {{ $maildata[0]->name ?? null}} will come on {{ \Carbon\Carbon::parse($maildata[2]->start_date_time)->format('F j, Y, g:i a') }}.
+              We have @if($maildata[3] == 'schedule') @else rescheduled @endif your service request. Our technician {{ $maildata[0]->name ?? null}} will come on {{ \Carbon\Carbon::parse($maildata[2]->start_date_time)->format('F j, Y, g:i a') }}.
           </p>
           
           
