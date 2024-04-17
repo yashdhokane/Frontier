@@ -11,6 +11,7 @@ use App\Http\Controllers\ReportsController;
 
 
 use App\Http\Controllers\FleetController;
+use App\Http\Controllers\MailController;
 
 use App\Http\Controllers\EventController;
 
@@ -752,6 +753,11 @@ Route::middleware('auth')->group(function () {
     Route::get('get/service/product', [ScheduleController::class, 'service_product']);
 
     Route::get('travel_time', [ScheduleController::class, 'travel_time'])->name('travel_time');
+
+    // MailController  
+
+    Route::get('get/mail/schedule', [MailController::class, 'index']);
+    
 
     // EventController  
 

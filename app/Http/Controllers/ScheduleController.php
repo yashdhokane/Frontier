@@ -593,34 +593,7 @@ class ScheduleController extends Controller
                     $newjobDetailsID = DB::table('job_details')->insertGetId($newjobDetails);
                 }
 
-                if ($jobId && $data['scheduleType']) {
-
-                    $now = Carbon::now();
-
-                    // Format the date and time
-                    $formattedDateTime = $now->format('D, M j \a\t g:ia');
-
-                    $activity = new JobActivity();
-
-                    $activity->job_id = $data['job_id'];
-                    $activity->user_id = auth()->user()->id;
-                    $activity->activity = 'Job Re-Scheduled for ' . $formattedDateTime;
-
-                    $activity->save();
-
-                    $schedule = new Schedule();
-
-                    $schedule->schedule_type = $data['scheduleType'];
-                    $schedule->job_id = $data['job_id'];
-                    $schedule->start_date_time = $start_date_time;
-                    $schedule->end_date_time = $end_date_time;
-                    $schedule->technician_id = $data['technician_id'];
-                    $schedule->added_by = auth()->user()->id;
-                    $schedule->updated_by = auth()->user()->id;
-
-                    $schedule->save();
-                }
-
+               
                 $jobNotes = [
                     'note' => (isset($data['technician_notes']) && !empty($data['technician_notes'])) ? $data['technician_notes'] : '',
                     'updated_by' => auth()->id(),
@@ -717,6 +690,35 @@ class ScheduleController extends Controller
                     $fileDataInsert = DB::table('job_files')->insert($fileData);
                 }
 
+                if ($jobId && $data['scheduleType']) {
+
+                    $now = Carbon::now();
+
+                    // Format the date and time
+                    $formattedDateTime = $now->format('D, M j \a\t g:ia');
+
+                    $activity = new JobActivity();
+
+                    $activity->job_id = $data['job_id'];
+                    $activity->user_id = auth()->user()->id;
+                    $activity->activity = 'Job Re-Scheduled for ' . $formattedDateTime;
+
+                    $activity->save();
+
+                    $schedule = new Schedule();
+
+                    $schedule->schedule_type = $data['scheduleType'];
+                    $schedule->job_id = $data['job_id'];
+                    $schedule->start_date_time = $start_date_time;
+                    $schedule->end_date_time = $end_date_time;
+                    $schedule->technician_id = $data['technician_id'];
+                    $schedule->added_by = auth()->user()->id;
+                    $schedule->updated_by = auth()->user()->id;
+
+                    $schedule->save();
+
+                    $scheduleId = $schedule->id;
+                }
 
 
                 $height_slot = $duration / 60;
@@ -727,7 +729,7 @@ class ScheduleController extends Controller
                     <p style="font-size: 11px;"><i class="fas fa-clock"></i>' . $start_date_time->format('h:i:s') . ' -- ' . $data['job_code'] . ' <br>' . $data['job_title'] . '</p>
                     <p style="font-size: 12px;">' . $getCustomerDetails->userAddress->city . ',' . $getCustomerDetails->userAddress->state_name . '</p></div>';
 
-                return ['html' => $returnDate, 'start_date' => $start_date_time->copy()->format('g'), 'technician_id' => $data['technician_id']];
+                return ['html' => $returnDate, 'start_date' => $start_date_time->copy()->format('g'), 'technician_id' => $data['technician_id'], 'schedule_id' => $scheduleId];
             } else {
 
                 $technician = User::where('id', $data['technician_id'])->first();
@@ -781,35 +783,7 @@ class ScheduleController extends Controller
 
                 $jobId = DB::table('jobs')->insertGetId($jobsData);
 
-                // for job activity 
-
-                if ($jobId && $data['scheduleType']) {
-
-                    $now = Carbon::now();
-
-                    // Format the date and time
-                    $formattedDateTime = $now->format('D, M j \a\t g:ia');
-
-                    $activity = new JobActivity();
-
-                    $activity->job_id = $jobId;
-                    $activity->user_id = auth()->user()->id;
-                    $activity->activity = 'Job scheduled for' . $formattedDateTime;
-
-                    $activity->save();
-
-                    $schedule = new Schedule();
-
-                    $schedule->schedule_type = $data['scheduleType'];
-                    $schedule->job_id = $jobId;
-                    $schedule->start_date_time = $start_date_time;
-                    $schedule->end_date_time = $end_date_time;
-                    $schedule->technician_id = $data['technician_id'];
-                    $schedule->added_by = auth()->user()->id;
-                    $schedule->updated_by = auth()->user()->id;
-
-                    $schedule->save();
-                }
+                
 
                 $jobNotes = [
                     'job_id' => $jobId,
@@ -952,7 +926,36 @@ class ScheduleController extends Controller
                     // Insert file data into the database
                     $fileDataInsert = DB::table('job_files')->insert($fileData);
                 }
+                     // for job activity 
 
+                if ($jobId && $data['scheduleType']) {
+
+                    $now = Carbon::now();
+
+                    // Format the date and time
+                    $formattedDateTime = $now->format('D, M j \a\t g:ia');
+
+                    $activity = new JobActivity();
+
+                    $activity->job_id = $jobId;
+                    $activity->user_id = auth()->user()->id;
+                    $activity->activity = 'Job scheduled for' . $formattedDateTime;
+
+                    $activity->save();
+
+                    $schedule = new Schedule();
+
+                    $schedule->schedule_type = $data['scheduleType'];
+                    $schedule->job_id = $jobId;
+                    $schedule->start_date_time = $start_date_time;
+                    $schedule->end_date_time = $end_date_time;
+                    $schedule->technician_id = $data['technician_id'];
+                    $schedule->added_by = auth()->user()->id;
+                    $schedule->updated_by = auth()->user()->id;
+
+                    $schedule->save();
+                    $scheduleId = $schedule->id;
+                }
 
                 $height_slot = $duration / 60;
                 $height_slot_px = $height_slot * 80 - 10;
@@ -962,7 +965,10 @@ class ScheduleController extends Controller
                     <p style="font-size: 11px;"><i class="fas fa-clock"></i>' . $start_date_time->format('h a') . ' -- ' . $data['job_code'] . ' <br>' . $data['job_title'] . '</p>
                     <p style="font-size: 12px;">' . $getCustomerDetails->city . ',' . $getCustomerDetails->state_name . '</p></div>';
 
-                return ['html' => $returnDate];
+                return [
+                    'html' => $returnDate,
+                    'schedule_id' => $scheduleId,
+            ];
             }
         }
 

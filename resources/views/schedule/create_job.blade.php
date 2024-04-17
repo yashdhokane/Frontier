@@ -115,6 +115,7 @@
                                                 Customer
                                                 Address </h6>
                                             <div class="form-group">
+                                                <input type="hidden" name="addres_lat" id="addres_lat" value="">
                                                 <select class="form-control customer_address" name="customer_address"
                                                     id="exampleFormControlSelect1">
                                                 </select>
@@ -825,7 +826,7 @@
         
         $(document).ready(function() { 
             $(document).on('change', '.customer_address', function(event) {
-                var customer_add = $(this).val();
+                var customer_add = $('#addres_lat').val();
                 var tech_id = $('.technician_id').val();
 
                 $.ajax({
@@ -1068,6 +1069,18 @@
 
                                 $('.btn-close').trigger(
                                     'click');
+                                    var schedule_id = data.schedule_id;
+                                    $.ajax({
+                                        url: "{{ url('get/mail/schedule') }}",
+                                        data: {
+                                            schedule_id: schedule_id,
+                                        },
+                                        type: 'GET',
+                                        success: function(data) {
+                                          console.log(data);                                          
+                                        },
+                                    });
+                                    
 
                                 Swal.fire({
                                     title: "Success!",
@@ -1110,6 +1123,7 @@
 
                                 $('.btn-close').trigger(
                                     'click');
+                                    var schedule_id = data.schedule_id;
 
                                 Swal.fire({
                                     title: "Success!",
@@ -1920,9 +1934,10 @@
                                     ', ' + element.state_name + ', ' + element
                                     .zipcode;
                                 var option = $('<option>', {
-                                    value: element.latitude + ',' + element.longitude,
+                                    value: element.address_type,
                                     text: addressString
                                 });
+                                $('#addres_lat').val(element.latitude + ',' + element.longitude)
 
                                 option.attr('data-city', element.city);
 
