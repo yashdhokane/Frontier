@@ -77,61 +77,17 @@
         <!-- Bread crumb and right sidebar toggle -->
 
         <!-- -------------------------------------------------------------- -->
-
-        <div class="page-breadcrumb">
-
+ 
+		<div class="page-breadcrumb" style="padding-top: 0px;">
             <div class="row">
-
-                <div class="col-5 align-self-center">
-
-                    <h4 class="page-title">NEW DISPATCHER</h4>
-
-                    <div class="d-flex align-items-center">
-
-                        <nav aria-label="breadcrumb">
-
-                            <ol class="breadcrumb">
-
-                                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-
-                                <li class="breadcrumb-item"><a href="{{ route('dispatcher.index') }}">Dispatcher</a>
-
-                                </li>
-
-                                <li class="breadcrumb-item active" aria-current="page">Add New </li>
-
-                            </ol>
-
-                        </nav>
-
-                    </div>
-
-                </div>
-
-                <div class="col-7 align-self-center">
-
-                    <div class="d-flex no-block justify-content-end align-items-center">
-
-                        <div class="me-2">
-
-                            <div class="lastmonth"></div>
-
-                        </div>
-
-                        <div class="">
-
-                            <small>LAST MONTH</small>
-
-                            <h4 class="text-info mb-0 font-medium">$58,256</h4>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
+                <div class="col-9 align-self-center">
+                    <h4 class="page-title">NEW DISPATCHERS</h4>
+				</div>
+                <div class="col-3 text-end px-4">
+                <a href="{{ route('dispatcher.index') }}"
+                    class="justify-content-center d-flex align-items-center"><i class="ri-contacts-line" style="margin-right: 8px;"></i> Back to Dispatchers List </a>
+				</div>
             </div>
-
         </div>
 
         <!-- -------------------------------------------------------------- -->
@@ -212,410 +168,7 @@
 
 
 
-        <div class="row">
-
-
-
-            <div class="col-lg-6 d-flex align-items-stretch">
-
-                <div class="card w-100">
-
-                    <div class="card-body border-top">
-
-                        <div id="passwordMatchMessage" class="alert" style="display:none; margin-bottom:5px;"></div>
-
-
-
-                        <h4 class="card-title">Account Info</h4>
-
-
-
-                        <div class="row">
-
-                            <div class="col-sm-12 col-md-12">
-
-                                <div class="mb-3">
-
-                                    <label for="email" class="control-label col-form-label required-field">Email</label>
-
-                                    <input type="email" class="form-control" id="email" name="email" placeholder=""
-                                        required />
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="row">
-
-                            <div class="col-sm-12 col-md-6">
-
-                                <div class="mb-3">
-
-                                    <label for="password"
-                                        class="control-label col-form-label required-field">Password</label>
-
-                                    <input type="password" class="form-control" id="password" name="password"
-                                        placeholder="" required />
-
-
-
-
-
-                                </div>
-
-                            </div>
-
-                            <div class="col-sm-12 col-md-6">
-
-                                <div class="mb-3">
-
-                                    <label for="confirm_password"
-                                        class="control-label col-form-label required-field">Confirm Password</label>
-
-                                    <input type="password" class="form-control" id="confirm_password"
-                                        name="confirm_password" placeholder="" required />
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-
-                        {{-- --}}
-
-                        <h4 class="card-title">Contact Info</h4>
-
-                        <div class="row">
-
-                            <div class="col-sm-12 col-md-6">
-
-                                <div class="mb-3">
-
-                                    <label for="first_name" class="control-label col-form-label required-field">First
-
-                                        Name</label>
-
-                                    <input type="text" class="form-control" id="first_name" name="first_name"
-                                        placeholder="" required />
-
-
-
-
-
-                                </div>
-
-                            </div>
-
-                            <div class="col-sm-12 col-md-6">
-
-                                <div class="mb-3">
-
-                                    <label for="last_name" class="control-label col-form-label required-field">Last
-
-                                        Name</label>
-
-                                    <input type="text" class="form-control" id="last_name" name="last_name"
-                                        placeholder="" required />
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="row">
-
-                            <div class="col-sm-12 col-md-12">
-
-                                <div class="mb-3">
-
-                                    <label for="display_name"
-                                        class="control-label col-form-label required-field">Display Name (shown
-
-                                        on invoice)</label>
-
-                                    <input type="text" class="form-control" id="display_name" name="display_name"
-                                        placeholder="" required />
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <div class="row">
-
-                            <div class="col-sm-12 col-md-12">
-
-                                <div class="mb-3">
-
-                                    <label for="image" class="control-label col-form-label">Image Upload</label>
-
-                                    <input type="file" class="form-control" id="image" name="image" accept="image/*" />
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-
-                </div>
-
-            </div>
-
-
-
-            <div class="col-lg-3 d-flex align-items-stretch">
-
-                <div class="card w-100">
-
-                    <div class="card-body border-top">
-
-                        <h4 class="card-title mb-3">&nbsp;</h4>
-
-                        <div class="row">
-
-                            <div class="col-sm-12 col-md-12">
-
-                                <div class="mb-3">
-
-                                    <label for="mobile_phone" class="control-label col-form-label required-field">Mobile
-
-                                        Phone</label>
-
-                                    <input type="text" class="form-control" id="mobile_phone" name="mobile_phone"
-                                        placeholder="" required />
-                                    <small id="name" class="form-text text-muted">Don’t add +1. Only add mobile number
-                                        without space.</small>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="row">
-
-                            <div class="col-sm-12 col-md-12">
-
-                                <div class="mb-3">
-
-                                    <label for="home_phone" class="control-label col-form-label">Home Phone</label>
-
-                                    <input type="text" class="form-control" id="home_phone" name="home_phone"
-                                        placeholder="" />
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <div class="row">
-
-                            <div class="col-sm-12 col-md-12">
-
-                                <div class="mb-3">
-
-                                    <label for="work_phone" class="control-label col-form-label">Work Phone</label>
-
-                                    <input type="text" class="form-control" id="work_phone" name="work_phone"
-                                        placeholder="" />
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-
-            <div class="col-lg-3 d-flex align-items-stretch">
-
-                <div class="card w-100">
-
-                    <div class="card-body border-top">
-
-                        <h4 class="card-title mb-3">&nbsp;</h4>
-
-                        <div class="row">
-
-                            <div class="row">
-
-                                <div class="col-sm-12 col-md-12">
-
-                                    <div class="mb-3">
-
-                                        <label for="tag_id" class="control-label col-form-label">User Tags</label>
-
-                                        <select class="form-control select2-hidden-accessible" id="select2-with-tags"
-                                            name="tag_id[]" multiple="multiple" data-bgcolor="light"
-                                            data-select2-id="select2-data-select2-with-tags" tabindex="-1"
-                                            aria-hidden="true" style="width: 100%">
-                                            @foreach($tags as $tag)
-                                            <option value="{{ $tag->tag_id }}">{{ $tag->tag_name }}</option>
-                                            @endforeach
-                                        </select>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-
-                        {{--<div class="row">
-
-                            <div class="row">
-
-                                <div class="col-sm-12 col-md-12">
-
-                                    <div class="mb-3">
-
-                                        @foreach($permissions as $permission)
-
-                                        <input type="checkbox" id="{{ $permission }}_permission" name="permissions[]"
-                                            value="{{ $permission }}">
-
-                                        <label for="{{ $permission }}_permission">{{ ucfirst($permission) }}</label><br>
-
-                                        @endforeach
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div> --}}
-
-                        <div class="row" style="display:none;">
-
-                            <h5 class="card-title mb-3"> Permission to user view</h5>
-
-                            <div class="row">
-
-                                <div class="col-sm-12 col-md-12">
-
-                                    <div class="mb-6">
-
-
-
-                                        <input type="checkbox" id="permission" name="permissions[]"
-                                            value="multiadmin.index">
-
-                                        <label for="permission">Profiles(Admin)</label><br>
-
-                                        <input type="checkbox" id="permission" name="permissions[]" value="home">
-
-                                        <label for="permission">Dashboard</label><br>
-
-                                        <input type="checkbox" id="permission" name="permissions[]"
-                                            value="dispatcher.index">
-
-                                        <label for="permission">Dispatcher</label><br>
-
-                                        <input type="checkbox" id="permission" name="permissions[]"
-                                            value="tickets.index">
-
-                                        <label for="permission">Jobs</label><br>
-
-                                        <input type="checkbox" id="permission" name="permissions[]"
-                                            value="payment-list">
-
-
-
-                                        <label for="permission">Payments</label><br>
-
-                                        <input type="checkbox" id="permission" name="permissions[]"
-                                            value="services.index">
-
-                                        <label for="permission">Pricebook(services)</label><br>
-
-                                        <input type="checkbox" id="permission" name="permissions[]"
-                                            value="dispatcher.index">
-
-                                        <label for="permission">Profiles(dispatcher)</label><br>
-
-                                        <input type="checkbox" id="permission" name="permissions[]"
-                                            value="performanncematrix">
-
-                                        <label for="permission">Reports(performannce Mx)</label><br>
-
-                                        <input type="checkbox" id="permission" name="permissions[]"
-                                            value="servicearea.index">
-
-                                        <label for="permission">Settings(service area)</label><br>
-
-
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <div class="row" style="display:none;">
-
-                            <div class="col-sm-12 col-md-12">
-
-                                <div class="mb-3">
-
-                                    <label for="role" class="control-label col-form-label">Role</label>
-
-                                    <input type="text" class="form-control" id="role" name="role" placeholder=""
-                                        value="dispatcher" />
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-
-        </div>
-
-        <!-- End row -->
-
-
-
-
-
-        <!-- row -->
-
-        <div class="row">
+        <div class="row mt-3">
 
 
 
@@ -623,49 +176,111 @@
 
                 <div class="card w-100">
 
+                    <div class="card-body">
 
+                        <div id="passwordMatchMessage" class="alert" style="display:none; margin-bottom:5px;"></div>
+						<input type="hidden" class="form-control" id="role" name="role" placeholder="" value="dispatcher" />
 
-                    <div class="card-body border-top">
-
-                        <h4 class="card-title">Address</h4>
-
+						<h4 class="card-title">Account Info</h4>
+ 
                         <div class="row">
-
-                            <div class="col-sm-12 col-md-12">
-
-                                <div class="mb-3">
-
-                                    <label for="address1" class="control-label col-form-label required-field">Address
-
-                                        Line 1
-
-                                        (Street)</label>
-
-                                    <input type="text" class="form-control" id="address1" name="address1" placeholder=""
+                             <div class="col-sm-12 col-md-4">
+                                 <div class="mb-3">
+                                     <label for="email" class="control-label bold mb5 col-form-label required-field">Email</label>
+                                     <input type="email" class="form-control" id="email" name="email" placeholder=""
                                         required />
+                                 </div>
+							</div>
+                            <div class="col-sm-12 col-md-4">
+                                 <div class="mb-3">
+                                     <label for="password"
+                                        class="control-label bold mb5 col-form-label required-field">Password</label>
+                                     <input type="password" class="form-control" id="password" name="password"
+                                        placeholder="" required />
+                                 </div>
+							</div>
+                            <div class="col-sm-12 col-md-4">
+                                 <div class="mb-3">
+                                     <label for="confirm_password"
+                                        class="control-label bold mb5 col-form-label required-field">Confirm Password</label>
 
-                                </div>
-
-                            </div>
-
-
-
-                        </div>
-
-                        <div class="col-sm-12 col-md-12">
-
-                            <div class="mb-3">
-
-                                <label for="address_unit" class="control-label col-form-label">Address Line 2</label>
-
-                                <input type="text" class="form-control" id="address_unit" name="address_unit"
+                                    <input type="password" class="form-control" id="confirm_password"
+                                        name="confirm_password" placeholder="" required />
+                                 </div>
+							</div>
+						</div>
+						
+						<h4 class="card-title mt-4">Dispatchers Details</h4>
+ 						<div class="row">
+                             <div class="col-sm-12 col-md-4">
+                                 <div class="mb-3">
+                                     <label for="first_name" class="control-label bold mb5 col-form-label required-field">First Name</label>
+                                     <input type="text" class="form-control" id="first_name" name="first_name"
+                                        placeholder="" required />
+                                 </div>
+                             </div>
+                             <div class="col-sm-12 col-md-4">
+                                 <div class="mb-3">
+                                     <label for="last_name" class="control-label bold mb5 col-form-label required-field">Last Name</label>
+                                     <input type="text" class="form-control" id="last_name" name="last_name"
+                                        placeholder="" required />
+                                 </div>
+                             </div>
+                             <div class="col-sm-12 col-md-4">
+                                 <div class="mb-3">
+                                     <label for="display_name"
+                                        class="control-label bold mb5 col-form-label required-field">Display Name (shown on invoice)</label>
+                                     <input type="text" class="form-control" id="display_name" name="display_name"
+                                        placeholder="" required />
+                                 </div>
+                             </div>
+                         </div>
+						 <div class="row">
+							<div class="col-sm-12 col-md-4">
+                                 <div class="mb-3">
+                                     <label for="mobile_phone" class="control-label bold mb5 col-form-label required-field">Mobile Phone</label>
+                                     <input type="text" class="form-control" id="mobile_phone" name="mobile_phone"
+                                        placeholder="" required />
+                                    <small id="name" class="form-text text-muted">Don’t add +1. Only add mobile number
+                                        without space.</small>
+                                 </div>
+							</div>
+							<div class="col-sm-12 col-md-4">
+                                 <div class="mb-3">
+                                     <label for="home_phone" class="control-label bold mb5 col-form-label">Home Phone</label>
+                                     <input type="text" class="form-control" id="home_phone" name="home_phone"
+                                        placeholder="" />
+                                 </div>
+							</div>
+							<div class="col-sm-12 col-md-4">
+                                 <div class="mb-3">
+                                     <label for="work_phone" class="control-label bold mb5 col-form-label">Work Phone</label>
+                                     <input type="text" class="form-control" id="work_phone" name="work_phone"
+                                        placeholder="" />
+                                 </div>
+							</div>
+						</div>
+						
+						<h4 class="card-title mt-4">Address Details</h4>						
+						<div class="row">
+                             <div class="col-sm-12 col-md-12">
+                                 <div class="mb-3">
+                                     <label for="address1" class="control-label bold mb5 col-form-label required-field">Address Line 1 (Street)</label>
+                                     <input type="text" class="form-control" id="address1" name="address1" placeholder=""
+                                        required />
+                                 </div>
+                             </div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12 col-md-12">
+								<div class="mb-3">
+									<label for="address_unit" class="control-label bold mb5 col-form-label">Address Line 2</label>
+									<input type="text" class="form-control" id="address_unit" name="address_unit"
                                     placeholder="" />
-
-                            </div>
-
-                        </div>
-
-                        <div class="row">
+								</div>
+							</div>
+						</div>
+						<div class="row">
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
                                     <label for="city"
@@ -696,83 +311,55 @@
                                 </div>
                             </div>
                             <div class="col-sm-12 col-md-4">
-
-                                <div class="mb-3">
-
-                                    <label for="zip_code"
-                                        class="control-label col-form-label required-field">Zip</label>
-
-                                    <input type="text" class="form-control" id="zip_code" name="zip_code" placeholder=""
+                                 <div class="mb-3">
+                                     <label for="zip_code"
+                                        class="control-label bold mb5 col-form-label required-field">Zip</label>
+                                     <input type="text" class="form-control" id="zip_code" name="zip_code" placeholder=""
                                         required />
-
+                                 </div>
+                             </div>
+                         </div>
+						 
+						<h4 class="card-title mt-4">Other Details</h4>	
+						<div class="row">
+                             <div class="col-sm-12 col-md-4">
+                                 <div class="mb-3">
+                                     <label for="image" class="control-label bold mb5 col-form-label">Display Picture</label>
+                                    <input type="file" class="form-control" id="image" name="image" accept="image/*" />
                                 </div>
-
                             </div>
-
+							<div class="col-sm-12 col-md-4">
+								 <div class="mb-3">
+									 <label for="tag_id" class="control-label bold mb5 col-form-label">User Tags</label>
+									 <select class="form-control select2-hidden-accessible" id="select2-with-tags"
+										name="tag_id[]" multiple="multiple" data-bgcolor="light"
+										data-select2-id="select2-data-select2-with-tags" tabindex="-1"
+										aria-hidden="true" style="width: 100%">
+										@foreach($tags as $tag)
+										<option value="{{ $tag->tag_id }}">{{ $tag->tag_name }}</option>
+										@endforeach
+									</select>
+								 </div>
+							 </div>
                         </div>
+						
+					</div>
+ 
+				</div>
+  
+			</div>
+  
+            <div class="col-lg-3 d-flex align-items-stretch">
 
-                        <div class="row">
-
-                            <div class="col-sm-12 col-md-12">
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-
-                </div>
-
+                 
             </div>
-
-
-
-            {{-- <div class="col-lg-3 d-flex align-items-stretch">
-
-                <div class="card w-100">
-
-                    <div class="card-body border-top">
-
-                        <h4 class="card-title mb-3">&nbsp;</h4>
-
-                        <div class="row">
-
-                            <div class="col-sm-12 col-md-12">
-
-                                <iframe
-                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6991603.699017098!2d-100.0768425!3d31.168910300000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x864070360b823249%3A0x16eb1c8f1808de3c!2sTexas%2C%20USA!5e0!3m2!1sen!2sin!4v1701086703789!5m2!1sen!2sin"
-                                    width="100%" height="auto" style="border:0;" allowfullscreen="" loading="lazy"
-                                    referrerpolicy="no-referrer-when-downgrade"></iframe>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            --}}
 
 
 
         </div>
 
         <!-- End row -->
-
-
-
-        <!-- row -->
-
-
-
-        <!-- End row -->
-
-
+ 
 
         <!-- row -->
 

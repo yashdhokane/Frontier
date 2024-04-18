@@ -20,9 +20,8 @@
                 @endphp
 
                 @if ($prefix == 'book-list')
-                <li>
-                    <h5 class="card-title text-center mt-4 mb-2">PRICE BOOK</h5>
-                </li>
+               
+		   
                 <li class="sidebar-item ft1"><a href="{{ route('services.index') }}" class="sidebar-link"><i
                             class="ri-tools-line fas"></i><span class="hide-menu"> Services </span></a>
                 </li>
@@ -34,17 +33,8 @@
                 <li class="sidebar-item ft4"><a href="{{ route('estimate.index') }}" class="sidebar-link"><i
                             class="ri-pages-line fas"></i><span class="hide-menu"> Estimate Templates
                         </span></a></li>
-                <li>
-                    <h6 class="card-title text-center mt-4 mb-2">SETTINGS</h6>
-                </li>
-                <li class="sidebar-item ft5"><a href="#." class="sidebar-link"><i class="ri-settings-5-line fas"></i><span
-                            class="hide-menu"> Inport &
-                            Export Services
-                        </span></a></li>
-                <li class="sidebar-item ft7"><a href="#." class="sidebar-link"><i class="ri-settings-5-fill fas"></i><span
-                            class="hide-menu"> Inport &
-                            Export Materials
-                        </span></a></li>
+                
+              
                 @else
 					
                 <li class="sidebar-item">
@@ -82,13 +72,7 @@
                         <li class="sidebar-item">
 							<a href="{{ route('tickets.index') }}" class="sidebar-link"><i class="mdi mdi-book-multiple"></i><span class="hide-menu"> Jobs List </span></a>
                         </li>
-                         <li class="sidebar-item"><a href="{{ route('events') }}" class="sidebar-link"><i
-                                    class="mdi mdi-book-multiple"></i><span class="hide-menu"> Event List
-                                </span></a></li>
-                         <li class="sidebar-item"><a href="{{ route('vehicles') }}" class="sidebar-link"><i
-                                    class="mdi mdi-book-multiple"></i><span class="hide-menu"> Fleet Management
-                                </span></a></li>
-                    </ul>
+                     </ul>
                 </li>
 
                 <li class="sidebar-item">
@@ -103,10 +87,7 @@
                         <li class="sidebar-item">
 							<a href="{{route('assign_product')}}" class="sidebar-link"><i class="ri-book-2-line"></i> <span class="hide-menu">Assign Parts </span></a>
                         </li>
-						<li class="sidebar-item">
-							<a href="{{route('manufacturer.index')}}" class="sidebar-link"><i class="ri-building-3-line"></i> <span class="hide-menu"> Manufacturers</span></a>
-						</li>
-                        <li class="sidebar-item">
+                         <li class="sidebar-item">
 							<a href="{{ route('estimate.index') }}" class="sidebar-link"><i class="ri-article-line"></i> <span class="hide-menu">Estimate Templates </span></a>
 						</li>
                      </ul>
@@ -152,7 +133,22 @@
 					<a class="sidebar-link waves-effect waves-dark sidebar-link ft1" href="{{ route('app_chats') }}"  aria-expanded="false">
 					<i class="ri-message-2-line"></i><span class="hide-menu">Messages</span></a>
                  </li>
-
+				 
+				 
+				 <li class="sidebar-item">
+                    <a class="sidebar-link has-arrow waves-effect waves-dark ft2" href="#" aria-expanded="false"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu">Other</span></a>
+                    <ul aria-expanded="false" class="collapse first-level">
+						<li class="sidebar-item"><a href="{{ route('events') }}" class="sidebar-link"><i class="fas fa-calendar-check"></i> <span class="hide-menu"> Event List</span></a></li>
+						<li class="sidebar-item"><a href="{{ route('vehicles') }}" class="sidebar-link"><i
+						class="ri-truck-line"></i><span class="hide-menu"> Vehicle & Fleet
+						</span></a></li>
+						<li class="sidebar-item">
+							<a href="{{route('manufacturer.index')}}" class="sidebar-link"><i class="ri-building-3-line"></i> <span class="hide-menu"> Manufacturers</span></a>
+						</li>
+                    </ul>
+                </li>
+				
+ 
                 <li class="sidebar-item">
                     <a class="sidebar-link has-arrow waves-effect waves-dark ft7" href="#" aria-expanded="false"><i class="fas ri-settings-2-line"></i><span class="hide-menu">Settings</span></a>
                     <ul aria-expanded="false" class="collapse first-level">
@@ -162,10 +158,7 @@
                         <li class="sidebar-item ft2">
 							<a href="{{ route('businessHours.business-hours') }}" class="sidebar-link"><i class="ri-24-hours-line fas"></i> <span class="hide-menu">Working Hours </span></a>
 						</li>
-                        <li class="sidebar-item">
-							<a href="{{ route('manufacturer.index') }}" class="sidebar-link"><i class="ri-building-2-line"></i> <span class="hide-menu">Manufacturer</span></a>
-						</li>
-                        <li class="sidebar-item">
+						<li class="sidebar-item">
 							<a href="{{ route('tax.index') }}" class="sidebar-link"><i class="ri-bar-chart-fill"></i> <span class="hide-menu"> Tax</span></a>
                         </li>
 						<li class="sidebar-item">

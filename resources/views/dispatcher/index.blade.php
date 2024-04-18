@@ -6,7 +6,7 @@
     <!-- -------------------------------------------------------------- -->
     <!-- Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
-    <div class="page-breadcrumb">
+    <div class="page-breadcrumb" style="padding-top: 0px;">
         <div class="row">
             <div class="col-5 align-self-center">
                 <h4 class="page-title">Dispatcher</h4>
@@ -20,16 +20,7 @@
                 </div>
             </div>
             <div class="col-7 align-self-center">
-                <div class="d-flex no-block justify-content-end align-items-center">
-                    <div class="me-2">
-                        <div class="lastmonth"></div>
-                    </div>
-                    <div class="">
-                        <small>LAST MONTH</small>
-                        <h4 class="text-info mb-0 font-medium">$58,256</h4>
-                    </div>
-                </div>
-            </div>
+			</div>
         </div>
     </div>
     <!-- -------------------------------------------------------------- -->
@@ -156,10 +147,7 @@
                                                 <a href="{{ route('users.show', $user->id) }}">
                                                     <h5 class="user-name mb-0" data-name="name"> {{ $user->name }}</h5>
                                                 </a>
-                                                {{-- <span class="user-work text-muted">{{ $user->email }}</span><br />
-                                                <span class="user-work text-muted">{{ $user->mobile }}</span><br /> --}}
-                                                <span class="badge bg-dark">{{ $user->status }}</span>
-                                            </div>
+                                             </div>
                                         </div>
                                     </div>
                                 </td>
@@ -236,9 +224,7 @@
 
                                     </div>
                                 </td>
-                                <td><span
-                                        class="mb-1 badge @if($user->status == 'deactive' ) { bg-danger } @else { bg-success } @endif">{{
-                                        $user->status }}</span>
+                                <td><span class="mb-1 ucfirst badge @if($user->status == 'deactive' ) { bg-danger } @else { bg-success } @endif">{{ $user->status }}</span>
                                 </td>
                                 <td class="action footable-last-visible" style="display: table-cell;">
                                     <div class="action-btn" style="display:flex">
@@ -250,7 +236,7 @@
                                         <div class="dropdown-menu">
                                             <a class="dropdown-item" href="{{ route('dispatcher.show', $user->id) }}"><i
                                                     data-feather="eye" class="feather-sm me-2"></i> View</a>
-                                            <a class="dropdown-item" href="{{ route('dispatcher.edit', $user->id) }}"><i
+                                            <a class="dropdown-item" href="{{ route('dispatcher.show', $user->id) }}"><i
                                                     data-feather="edit-2" class="feather-sm me-2"></i> Edit</a>
                                             <a class="dropdown-item activity" href="javascript:void(0)"
                                                 data-bs-toggle="modal" data-bs-target="#commentModal1"

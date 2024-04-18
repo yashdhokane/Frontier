@@ -20,20 +20,8 @@
     <!-- -------------------------------------------------------------- -->
     <!-- End Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
-    <div style="width:98%; margin-left:5px;">
-        @if(Session::has('success'))
-        <div class="alert alert-success">
-            {{ Session::get('success') }}
-        </div>
-        @endif
-
-        @if(Session::has('error'))
-        <div class="alert alert-danger">
-            {{ Session::get('error') }}
-        </div>
-        @endif
-
-    </div>
+	
+ 	 
     <!-- -------------------------------------------------------------- -->
     <!-- Container fluid  -->
     <!-- -------------------------------------------------------------- -->
@@ -45,7 +33,29 @@
             <!-- ---------------------
                         start Contact
                     ---------------- -->
-            <div class="card card-body">
+ 		
+			@if(Session::has('success'))
+			<div class="row">
+				<div class="col-md-10 col-xl-12 mt-3 mb-1 mx-4">
+					<div class="alert alert-success">
+						{{ Session::get('success') }}
+					</div>
+				</div>
+			</div>
+			@endif
+
+			@if(Session::has('error'))
+			<div class="row">
+				<div class="col-md-10 col-xl-12 mt-3 mb-1 mx-4">
+					<div class="alert alert-danger">
+						{{ Session::get('error') }}
+					</div>
+				</div>
+			</div>
+			@endif
+ 
+	
+            <div class="card card-body ">
                 <div class="row">
                     <div class="col-md-4 col-xl-2">
                         <form>
@@ -54,10 +64,8 @@
                                 placeholder="Search Technicians..." />
                         </form>
                     </div>
-                    <div
-                        class="col-md-8 col-xl-10 text-end d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
-                        <a href="{{route('technicians.create')}}" id="" class="btn btn-info"><i
-                                class=" fas fa-user-plus "></i> New Technicians</a>
+                    <div class="col-md-8 col-xl-10 text-end d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
+                        <a href="{{route('technicians.create')}}" id="" class="btn btn-info"><i class=" fas fa-user-plus "></i> New Technicians</a>
                     </div>
                 </div>
             </div>
@@ -136,13 +144,9 @@
                                     {{ $user->area_name }}
                                     @endif
                                 </td>
-                                <td><span
-                                        class="mb-1 badge @if($user->status == 'deactive' ) { bg-danger } @else { bg-success } @endif">{{
-                                        $user->status }}</span>
+                                <td><span class="ucfirst mb-1 badge @if($user->status == 'deactive' ) { bg-danger } @else { bg-success } @endif">{{ $user->status }}</span>
                                 </td>
-
-
-
+  
                                 <td class="action footable-last-visible" style="display: table-cell;">
 
                                     <div class="btn-group">
@@ -154,7 +158,7 @@
                                             <a class="dropdown-item"
                                                 href="{{ route('technicians.show', $user->id) }}"><i data-feather="eye"
                                                     class="feather-sm me-2"></i> View</a>
-                                           <!-- <a class="dropdown-item"
+                                            <!-- <a class="dropdown-item"
                                                 href="{{ route('technicians.edit', $user->id) }}"><i
                                                     data-feather="edit-2" class="feather-sm me-2"></i> Edit</a> -->
                                             <a class="dropdown-item activity" href="javascript:void(0)"
@@ -275,7 +279,7 @@
                     </div>
                     <div class="modal-footer">
 
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" id="submitButton" class="btn btn-primary">Submit</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     </div>
                 </form>
@@ -350,6 +354,15 @@
     function setUserIdForCommentModal(userId) {
         document.getElementById('userIdForCommentModal').value = userId;
     }
+    </script>
+    <script>
+        document.getElementById("submitButton").addEventListener("click", function(event) {
+            var comment = document.getElementById("comment").value.trim();
+            if (comment === "") {
+                event.preventDefault(); // Prevent form submission
+                alert("Please add a comment before submitting.");
+            }
+        });
     </script>
     @endsection
     @endsection

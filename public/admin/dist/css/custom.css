@@ -110,4 +110,56 @@ li.toplinks a{
 	letter-spacing: 0.5px;
 	font-weight: 500;
 }
+.status_icons {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #343434;
+    border-radius: 50%;
+    display: block;
+    font-size: 15px;
+    text-align: center;
+} 
+.status_icon1 {
+    color: green;
+    border: 1px solid green;
+} 
+.status_icon2 {
+    color: red;
+    border: 1px solid red;;
+} 
+.ucfirst {
+    text-transform: capitalize;
+}
+.paginate_button {
+    cursor: pointer;
+}
+.ft11 {
+    font-size: 11px;
+}
+.ft12 {
+    font-size: 12px;
+}
+.ft13 {
+    font-size: 13px;
+}
+.ft14 {
+    font-size: 14px;
+}
+.ft15 {
+    font-size: 15px;
+}
+.ft16 {
+    font-size: 16px;
+}
+.ft17 {
+    font-size: 17px;
+}
+.ft18 {
+    font-size: 18px;
+}
+
+
+
+
+
 

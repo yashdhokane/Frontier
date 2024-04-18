@@ -46,7 +46,6 @@
                                 @csrf
                                 <input class="form-control" type="hidden" value="{{$fleet->vehicle_id ?? $vehicle_id}}"
                                     name="vehicle_id">
-
                                 <div class="mb-3 row">
                                     <label for="oil_change" class="col-md-3 col-form-label">OIL
                                         CHANGE</label>

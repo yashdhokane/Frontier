@@ -1,20 +1,41 @@
 @extends('home')
 @section('content')
     <link rel="stylesheet" href="{{ url('public/admin/schedule/style.css') }}">
+ 
+ <style>
+ .dts2 {
+  min-height: 36px;
+}
+.timeslot_td_time {
+  padding: 0px;
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+.timeslot_td {
+  height: 36px;
+}
+.container-schedule {
+  padding: 0px !important;
+}
+.schedule_section_box {
+  overflow-x: scroll;
+}
+ </style>
 
     <div class="page-wrapper p-0 ms-2" style="display:flex;">
         <!-- Container fluid  -->
         <!-- -------------------------------------------------------------- -->
 
-        <div class="container-fluid">
+        <div class="container-fluid container-schedule">
 
             <div class="row">
 
                 <div class="card">
                     <div>
-                        <div class="row gx-0">
+                        <div class="row gx-0 px-3">
                             <div class="col-lg-12">
-                                <div class="p-4 calender-sidebar app-calendar">
+                                <div class="mt-3 mb-4 calender-sidebar app-calendar">
                                     <div class="row">
                                         <div class="col-md-2"><a href="schedule?date={{ $previousDate }}"><i
                                                     class="fas fa-arrow-left"></i></a></div>
@@ -38,7 +59,7 @@
                                                     class="fas fa-arrow-right"></i></a>
                                         </div>
                                     </div>
-                                    <div class="dat">
+                                    <div class="dat schedule_section_box">
                                         <table id="demo-foo-addrow"
                                             class="table table-bordered m-t-30 table-hover contact-list text-nowrap"
                                             data-paging="true" data-paging-size="7">
@@ -132,7 +153,7 @@
                                                                                             $height_slot =
                                                                                                 $duration / 30;
                                                                                                 $height_slot_px =
-                                                                                                $height_slot * 50;
+                                                                                                $height_slot * 36 + $height_slot - 1;
                                                                                         @endphp
                                                                                        <a class="show_job_details"
                                                                                        href="{{ $value2->job_id ? route('tickets.show', $value2->job_id) : '#' }}">
@@ -475,7 +496,7 @@
                     $('.tech_th[data-tech-id="' + id + '"]').hide();
                     $('.timeslot_td[data-technician_id="' + id + '"]').hide();
                 }
-            });z
+            });
 
 
 

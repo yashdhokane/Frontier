@@ -87,59 +87,17 @@
 
         <!-- -------------------------------------------------------------- -->
 
-        <div class="page-breadcrumb">
-
-            <div class="row">
-
-                <div class="col-5 align-self-center">
-
-                    <h4 class="page-title">Add New Customer</h4>
-
-                    <div class="d-flex align-items-center">
-
-                        <nav aria-label="breadcrumb">
-
-                            <ol class="breadcrumb">
-
-                                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-
-                                <li class="breadcrumb-item"><a href="{{ route('users.index') }}">Customers</a></li>
-
-                                <li class="breadcrumb-item active" aria-current="page">Add New Customer</li>
-
-                            </ol>
-
-                        </nav>
-
-                    </div>
-
-                </div>
-
-                <div class="col-7 align-self-center">
-
-                    <div class="d-flex no-block justify-content-end align-items-center">
-
-                        <div class="me-2">
-
-                            <div class="lastmonth"></div>
-
-                        </div>
-
-                        <div class="">
-
-                            <small>LAST MONTH</small>
-
-                            <h4 class="text-info mb-0 font-medium">$58,256</h4>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
+        <div class="page-breadcrumb" style="padding-top: 0px;">
+             <div class="row">
+				<div class="col-9 align-self-center">
+                     <h4 class="page-title">Add New Customer</h4>
+				</div>
+				<div class="col-3 text-end px-4">
+					<a href="https://dispatchannel.com/portal/users"
+						class="justify-content-center d-flex align-items-center"><i class="ri-contacts-line" style="margin-right: 8px;"></i> Back to Customers List </a>
+				</div>
+             </div>
+		</div>
 
         <!-- -------------------------------------------------------------- -->
 
@@ -219,17 +177,15 @@
 
 
 
-        <div class="row">
-
-
-
+        <div class="row mt-4">
+ 
             <div class="col-lg-9 d-flex align-items-stretch">
 
                 <div class="card w-100">
 
                     <div class="card-body border-top">
 
-                        <h4 class="card-title">Customer Information</h4>
+                        <h4 class="card-title">Customer Details</h4>
                         <div class="row">
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
@@ -264,6 +220,14 @@
                                     <input type="email" class="form-control" id="email" name="email" placeholder="" />
                                 </div>
                             </div>
+							<div class="col-sm-12 col-md-4">
+                                <div class="mb-3">
+                                    <label for="email" class="control-label bold mb5 col-form-label ">Additional Email</label>
+                                    <input type="email" class="form-control" id="additional_email" name="additional_email" placeholder="" />
+                                </div>
+                            </div>
+						</div>
+						<div class="row">
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
                                     <label for="mobile_phone"
@@ -271,15 +235,29 @@
                                         Phone</label>
                                     <input type="number" class="form-control" id="mobile_phone" name="mobile_phone"
                                         placeholder="" maxlength="10" required />
-                                    <small id="name" class="form-text text-muted">Don’t add +1. Only add mobile number
+                                    <small id="name" class="form-text text-muted">Don’t add +1. Only add number
                                         without space.</small>
                                 </div>
                             </div>
                             <div class="col-sm-12 col-md-4">
+                                <div class="mb-3">
+                                    <label for="home_phone" class="control-label bold mb5 col-form-label">Home
+                                        Phone</label>
+                                    <input type="number" maxlength="10" class="form-control" id="home_phone"
+                                        name="home_phone" placeholder="" />
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4">
+                                <div class="mb-3">
+                                    <label for="work_phone" class="control-label bold mb5 col-form-label">Work
+                                        Phone</label>
+                                    <input type="number" maxlength="10" class="form-control" id="work_phone"
+                                        name="work_phone" placeholder="" />
+                                </div>
                             </div>
                         </div>
 
-                        <h4 class="card-title">Address</h4>
+                        <h4 class="card-title mt-4">Address Details</h4>
                         <div class="row">
                             <div class="col-sm-12 col-md-12">
                                 <div class="mb-3">
@@ -306,10 +284,11 @@
                                         class="control-label bold mb5 col-form-label required-field">Type</label>
                                     <select class="form-select me-sm-2" id="address_type" name="address_type">
                                         <option value="">Select address..</option>
-                                        <option value="home">Home Address</option>
-                                        <option value="work">Work Address</option>
-                                        <option value="other">Other Address</option>
-                                    </select>
+										<option value="general" selected>General</option>
+                                        <option value="home">Home</option>
+                                        <option value="work">Work</option>
+                                        <option value="other">Other</option>
+                                     </select>
                                 </div>
                             </div>
                         </div>
@@ -353,37 +332,7 @@
                         </div>
 
                         <h4 class="card-title mt-4">Other Details</h4>
-                        <div class="row mt-2">
-                            <div class="col-sm-12 col-md-4">
-                                <div class="mb-3">
-                                    <label for="home_phone" class="control-label bold mb5 col-form-label">Home
-                                        Phone</label>
-                                    <input type="number" maxlength="10" class="form-control" id="home_phone"
-                                        name="home_phone" placeholder="" />
-                                </div>
-                            </div>
-                            <div class="col-sm-12 col-md-4">
-                                <div class="mb-3">
-                                    <label for="work_phone" class="control-label bold mb5 col-form-label">Work
-                                        Phone</label>
-                                    <input type="number" maxlength="10" class="form-control" id="work_phone"
-                                        name="work_phone" placeholder="" />
-                                </div>
-                            </div>
-                            <div class="col-sm-12 col-md-4">
-                                <div class="mb-3">
-                                    <label for="source_id" class="control-label bold mb5 col-form-label">Lead
-                                        Source</label>
-                                    <select class="form-select me-sm-2" id="source_id" name="source_id">
-                                        <option value="">Select Lead Source</option>
-                                        @foreach($leadSources as $leadSource)
-                                        <option value="{{ $leadSource->source_id }}">{{ $leadSource->source_name }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
+                        
                         <div class="row mt-2">
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
@@ -400,29 +349,48 @@
                             </div>
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
-                                    <label for="inputcontact" class="control-label bold mb5 col-form-label">Type</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="user_type"
-                                            id="exampleRadios1" value="Homeowner">
-                                        <label class="form-check-label" for="exampleRadios1">Homeowner</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="user_type"
-                                            id="exampleRadios2" value="Business">
-                                        <label class="form-check-label" for="exampleRadios2">Business</label>
+                                    <label for="inputcontact" class="control-label bold mb5 col-form-label">Customer Type</label>
+									<div class="row">
+										<div class="col-sm-12 col-md-6">
+											<div class="form-check">
+												<input class="form-check-input" type="radio" name="user_type"
+													id="exampleRadios1" value="Homeowner">
+												<label class="form-check-label" for="exampleRadios1">Homeowner</label>
+											</div>
+										</div>
+										<div class="col-sm-12 col-md-6">
+											<div class="form-check">
+												<input class="form-check-input" type="radio" name="user_type"
+													id="exampleRadios2" value="Business">
+												<label class="form-check-label" for="exampleRadios2">Business</label>
+											</div>
+										</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row mt-2">
-                            <div class="col-sm-12 col-md-8">
+						<div class="row mt-2">
+							<div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
                                     <label for="image" class="control-label bold mb5 col-form-label">Image
                                         Upload</label>
                                     <input type="file" class="form-control" id="image" name="image" accept="image/*" />
                                 </div>
                             </div>
-                            <div class="col-sm-12 col-md-4">
+							<div class="col-sm-12 col-md-4">
+                                <div class="mb-3">
+                                    <label for="source_id" class="control-label bold mb5 col-form-label">Lead
+                                        Source</label>
+                                    <select class="form-select me-sm-2" id="source_id" name="source_id">
+                                        <option value="">Select Lead Source</option>
+                                        @foreach($leadSources as $leadSource)
+                                        <option value="{{ $leadSource->source_id }}">{{ $leadSource->source_name }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+							<div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
                                     <label for="tag_id" class="control-label bold mb5 col-form-label">Customer
                                         Tags</label>
@@ -437,12 +405,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row mt-2">
+                         <div class="row mt-2">
                             <div class="col-sm-12 col-md-12">
                                 <div class="mb-3">
                                     <label class="control-label bold mb5 col-form-label">Customer Notes</label>
                                     <textarea type="text" class="form-control" id="customer_notes" name="customer_notes"
-                                        rows="1" placeholder=""> </textarea>
+                                        rows="3" placeholder=""> </textarea>
                                 </div>
                             </div>
                         </div>
@@ -456,9 +424,7 @@
             <div class=" col-lg-3 d-flex align-items-stretch">
                 <div class="card w-100">
                     <div class="card-body border-top">
-
-
-                        <div class="customersSuggetions2" style="display: none;height: 200px;
+                         <div class="customersSuggetions2" style="display: none;height: 200px;
                                                             overflow-y: scroll;">
                             <div class="card">
                                 <div class="card-body px-0">

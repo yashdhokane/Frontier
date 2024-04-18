@@ -98,15 +98,7 @@
                                     <tr class="search-items">
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                @if ($user->user_image)
-                                                    <img src="{{ asset('public/images/Uploads/users/' . $user->id . '/' . $user->user_image) }}"
-                                                        alt="avatar" class="rounded-circle" width="45" />
-                                                @else
-                                                    <img src="{{ asset('public/images/login_img_bydefault.png') }}"
-                                                        alt="avatar" class="rounded-circle" width="45" />
-                                                @endif
-
-                                                <div class="ms-2">
+                                                  <div class="ms-2">
                                                     <div class="user-meta-info">
                                                         <a href="{{ route('users.show', $user->id) }}">
                                                             <h6 class="user-name mb-0" data-name="name"> {{ $user->name }}
@@ -117,8 +109,8 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="user-work text-muted">{{ $user->email }}</span><br />
-                                            <span class="user-work text-muted">{{ $user->mobile }}</span><br />
+                                            <span class="user-work">{{ $user->email }}</span><br />
+                                            <span class="user-work">{{ $user->mobile }}</span><br />
                                         </td>
                                         <td>
                                             <div style="display:flex;">
@@ -146,14 +138,14 @@
                                                     @endphp
 
                                                     @if ($userAddress)
-                                                        <span class="user-work text-muted">{{ $userAddresscity ?? null }},
+                                                        <span class="user-work">{{ $userAddresscity ?? null }},
                                                             {{ $userAddress->state_name }},
                                                             {{ $userAddress->zipcode }}</span>
                                                     @else
-                                                        <span class="user-work text-muted">N/A</span>
+                                                        <span class="user-work">N/A</span>
                                                     @endif
                                                 @else
-                                                    <span class="user-work text-muted">N/A</span>
+                                                    <span class="user-work">N/A</span>
                                                 @endif
                                                 <br />
 
@@ -163,8 +155,7 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <span
-                                                class="mb-1 badge @if ($user->status == 'deactive') { bg-danger } @else { bg-success } @endif">{{ $user->status }}</span>
+                                            <span class="mb-1 ucfirst badge @if ($user->status == 'deactive') { bg-danger } @else { bg-success } @endif">{{ $user->status }}</span>
                                         </td>
                                         <td class="action footable-last-visible" style="display: table-cell;">
                                             <div class="btn-group">
@@ -176,8 +167,8 @@
                                                 <div class="dropdown-menu">
                                                     <a class="dropdown-item" href="{{ route('users.show', $user->id) }}"><i
                                                             data-feather="eye" class="feather-sm me-2"></i> View</a>
-                                                    <a class="dropdown-item" href="{{ route('users.edit', $user->id) }}"><i
-                                                            data-feather="edit-2" class="feather-sm me-2"></i> Edit</a>
+                                                 <!--   <a class="dropdown-item" href="{{ route('users.show', $user->id) }}"><i
+                                                            data-feather="edit-2" class="feather-sm me-2"></i> Edit</a> -->
                                                     <a class="dropdown-item activity" href="javascript:void(0)"
                                                         data-bs-toggle="modal" data-bs-target="#commentModal1"
                                                         onclick="setUserId({{ $user->id }})">
@@ -237,7 +228,7 @@
                         </table>
                         <!-- Pagination Links -->
                         <div class="justify-content-center mt-3 paginate_laravel">
-                            {{ $users->links() }}
+                            {{$users->withQueryString()->links('pagination::bootstrap-5')}}
                         </div>
                     </div>
                 </div>
@@ -283,66 +274,7 @@
 
 
 
-        <!-- Share Modal -->
-        <div class="modal fade" id="Sharemodel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <form>
-                        <div class="modal-header d-flex align-items-center">
-                            <h5 class="modal-title" id="exampleModalLabel">
-                                <i class="ri-share-fill me-2 align-middle"></i> Share With
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="input-group mb-3">
-                                <button type="button" class="btn btn-info">
-                                    <i class="ti-user text-white"></i>
-                                </button>
-                                <input type="text" class="form-control" placeholder="Enter Name Here"
-                                    aria-label="Username" />
-                            </div>
-                            <div class="row">
-                                <div class="col-3 text-center">
-                                    <a href="#Whatsapp" class="text-success">
-                                        <i class="display-6 ri-whatsapp-fill"></i><br /><span
-                                            class="text-muted">Whatsapp</span>
-                                    </a>
-                                </div>
-                                <div class="col-3 text-center">
-                                    <a href="#Facebook" class="text-info">
-                                        <i class="display-6 ri-facebook-fill"></i><br /><span
-                                            class="text-muted">Facebook</span>
-                                    </a>
-                                </div>
-                                <div class="col-3 text-center">
-                                    <a href="#Instagram" class="text-danger">
-                                        <i class="display-6 ri-instagram-fill"></i><br /><span
-                                            class="text-muted">Instagram</span>
-                                    </a>
-                                </div>
-                                <div class="col-3 text-center">
-                                    <a href="#Skype" class="text-cyan">
-                                        <i class="display-6 ri-skype-fill"></i><br /><span class="text-muted">Skype</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                Close
-                            </button>
-                            <button type="submit" class="btn btn-success">
-                                <i class="ri-send-plane-fill align-middle"></i> Send
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
+        
     @section('script')
         <script>
             $(document).ready(function() {

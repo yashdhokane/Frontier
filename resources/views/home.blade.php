@@ -18,7 +18,7 @@
 
     <meta name="robots" content="noindex,nofollow" />
 
-    <title>Frontier Tech Services - Web Application to manage technicians</title>
+    <title>{{$siteSettings->business_name ?? null}} - Web Application to manage technicians</title>
 
     <link rel="canonical" href="{{route('home')}}" />
 

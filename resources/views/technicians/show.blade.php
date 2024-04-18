@@ -9,15 +9,17 @@
     <div class="page-breadcrumb" style="padding-top: 0px;">
         <div class="row">
             <div class="col-9 align-self-center">
-                <h4 class="page-title">{{ $technician->name }}</h4>
+                <h4 class="page-title">{{ $technician->name }} <small class="text-muted"
+                        style="font-size: 10px;">Technician</small></h4>
             </div>
             <div class="col-3 text-end px-4">
                 <a href="https://dispatchannel.com/portal/technicians"
-                    class="justify-content-center btn btn-info d-flex align-items-center"><i class="ri-contacts-line"
-                        style="margin-right: 8px;"></i> Technicians </a>
+                    class="justify-content-center d-flex align-items-center"><i class="ri-contacts-line"
+                        style="margin-right: 8px;"></i> Back to Technicians List </a>
             </div>
         </div>
     </div>
+
     <!-- -------------------------------------------------------------- -->
     <!-- End Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
@@ -25,6 +27,11 @@
     <!-- Container fluid  -->
     <!-- -------------------------------------------------------------- -->
     <div class="container-fluid">
+        @if(Session::has('success'))
+        <div class="alert alert-success">
+            {{ Session::get('success') }}
+        </div>
+        @endif
         <!-- -------------------------------------------------------------- -->
         <!-- Start Page Content -->
         <!-- -------------------------------------------------------------- -->
@@ -57,11 +64,11 @@
                                 role="tab" aria-controls="pills-payments" aria-selected="false"><i
                                     class="ri-money-dollar-box-line"></i> Payments</a>
                         </li>
-                        <li class="nav-item">
+                        <!--<li class="nav-item">
                             <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#estimate_tab"
                                 role="tab" aria-controls="pills-timeline" aria-selected="false"><i
                                     class="far ri-price-tag-2-line"></i> Estimates</a>
-                        </li>
+                        </li>-->
                         <li class="nav-item">
                             <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#fleet_tab"
                                 role="tab" aria-controls="pills-timeline" aria-selected="false"><i
@@ -70,19 +77,46 @@
                         <li class="nav-item">
                             <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#edit_profile_tab"
                                 role="tab" aria-controls="pills-timeline" aria-selected="false"><i
-                                    class="ri-edit-fill"></i> Edit Profile</a>
+                                    class="ri-edit-fill"></i> Edit Details</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#others_tab"
                                 role="tab" aria-controls="pills-timeline" aria-selected="false"><i
                                     class="ri-draft-line"></i> Notes</a>
                         </li>
-                         <li class="nav-item">
+                        <li class="nav-item">
                             <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#edit_service_tab"
                                 role="tab" aria-controls="pills-timeline" aria-selected="false"><i
-                                    class="ri-edit-fill"></i> Service Area</a>
+                                    class="ri-service-line fas"></i> Service Area</a>
+                        </li>
+
+                        <li class="nav-item">
+
+                            <div class="btn-group mb-2">
+                                <button type="button" class="btn btn-light-secondary text-secondary"> More </button>
+                                <button type="button"
+                                    class="btn btn-light-secondary text-secondary dropdown-toggle dropdown-toggle-split"
+                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" data-bs-toggle="pill" href="#estimate_tab" role="tab"
+                                            aria-controls="pills-timeline" aria-selected="false">Estimates</a></li>
+                                    <li><a class="dropdown-item" data-bs-toggle="pill" href="#parts_tab" role="tab"
+                                            aria-controls="pills-timeline" aria-selected="false">Parts</a></li>
+                                    <li><a class="dropdown-item" data-bs-toggle="pill" href="#settings_tab" role="tab"
+                                            aria-controls="pills-timeline" aria-selected="false">Settings</a></li>
+                                    <li><a class="dropdown-item" data-bs-toggle="pill" href="#activity_tab" role="tab"
+                                            aria-controls="pills-timeline" aria-selected="false">Activity</a></li>
+                                </ul>
+                            </div>
+
+
                         </li>
                     </ul>
+
+
+
                     <!-- Tabs -->
                     <div class="tab-content" id="pills-tabContent">
 
@@ -91,170 +125,141 @@
                             <div class="card-body">
 
                                 <div class="row">
+
                                     <div class="col-lg-3 col-xlg-9">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <div class="row text-left justify-content-md-left">
-                                                    <h4 class="card-title mt-2">Summary</h4>
-                                                    <div class="col-6">
-                                                        <small class="text-muted pt-1 db">Last service</small>
 
-                                                        <h6>
-                                                            {{ $jobasigndate && $jobasigndate->start_date_time ?
-                                                            \Carbon\Carbon::parse($jobasigndate->start_date_time)->format('m-d-Y')
-                                                            :
-                                                            null }}
-                                                        </h6>
+                                        <div class="row text-left justify-content-md-left">
 
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <small class="text-muted pt-1 db">Profile Created</small>
-                                                        <h6>{{ $technician->created_at ?
-                                                            \Carbon\Carbon::parse($technician->created_at)->format('m-d-Y')
-                                                            : null }}</h6>
+                                            <div class="col-12">
+                                                <center class="mt-1">
+                                                    @if($technician->user_image)
+                                                    <img src="{{ asset('public/images/Uploads/users/'. $technician->id . '/' . $technician->user_image) }}"
+                                                        class="rounded-circle" width="150" />
+                                                    @else
+                                                    <img src="{{ asset('public/images/login_img_bydefault.png') }}"
+                                                        alt="avatar" class="rounded-circle" width="150" />
+                                                    @endif
+                                                    <h4 class="card-title mt-1">{{ $technician->name }}</h4>
+                                                    <h6 class="card-subtitle">Technician</h6>
+                                                </center>
+                                            </div>
 
 
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <small class="text-muted pt-1 db">Lifetime value</small>
-                                                        <h6>$0.00</h6>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <small class="text-muted pt-1 db">Outstanding balance</small>
-                                                        <h6>$0.00</h6>
-                                                    </div>
-                                                    <div class="col-12">
-                                                        <h4 class="card-title mt-4">Contact info</h4>
-
-                                                        <h6 style="font-weight: normal;">
-                                                            <i class="fas fa-home"></i>{{ old('home_phone', $home_phone)
-                                                            }}
-                                                        </h6>
-                                                        <h6 style="font-weight: normal;"><i
-                                                                class="fas fa-mobile-alt"></i>
-                                                            {{$technician->mobile}}
-                                                        </h6>
-                                                        {{-- <h6 style="font-weight: normal;"><i
-                                                                class="fas fa-mobile-alt"></i> +1 123 456 7890
-                                                        </h6> --}}
-                                                        <h6 style="font-weight: normal;"><i class="fas fa-envelope"></i>
-                                                            {{$technician->email}}
-                                                        </h6>
-                                                    </div>
-                                                    <div class="col-12">
-                                                        <h4 class="card-title mt-4">Notifications</h4>
-                                                        <h6 style="font-weight: normal;margin-bottom: 0px;"><i
-                                                                class="fas fa-check"></i> Yes
-                                                        </h6>
-                                                    </div>
-                                                    <div class="col-12">
-                                                        <h4 class="card-title mt-4">Tags</h4>
-                                                        <div class="mt-0">
-                                                            @if($technician->tags->isNotEmpty())
-                                                            @foreach($technician->tags as $tag)
-                                                            <span class="badge bg-dark">{{ $tag->tag_name }}</span>
-                                                            @endforeach
-                                                            @else
-                                                            <span class="badge bg-dark">No tags available</span>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-12" style="display:none;">
-                                                        <h4 class="card-title mt-4">Lead Source</h4>
-                                                        <div class="mt-0">
-                                                            <span
-                                                                class="mb-1 badge bg-primary">{{$technician->leadsourcename->source_name
-                                                                ??
-                                                                null }}</span>
-                                                        </div>
-                                                    </div>
-
+                                            <div class="col-12">
+                                                <h4 class="card-title mt-4">Tags</h4>
+                                                <div class="mt-0">
+                                                    @if($technician->tags->isNotEmpty())
+                                                    @foreach($technician->tags as $tag)
+                                                    <span class="badge bg-dark">{{ $tag->tag_name }}</span>
+                                                    @endforeach
+                                                    @else
+                                                    <span class="badge bg-dark">No tags available</span>
+                                                    @endif
                                                 </div>
                                             </div>
+
+                                            <div class="col-md-12">
+                                                <h4 class="card-title mt-4">Files & Attachments</h4>
+                                                <div class="mt-0">
+                                                    @foreach($customerimage as $image)
+                                                    @if($image->filename)
+                                                    <a href="{{ asset('storage/app/' . $image->filename) }}" download>
+                                                        <p><i class="fas fa-file-alt"></i></p>
+                                                        <img src="{{ asset('storage/app/' . $image->filename) }}"
+                                                            alt="Customer Image" style="width: 50px; height: 50px;">
+                                                    </a>
+                                                    @else
+                                                    <!-- Default image if no image available -->
+                                                    <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}"
+                                                        alt="Default Image" style="width: 50px; height: 50px;">
+                                                    @endif
+                                                    @endforeach
+                                                </div>
+                                            </div>
+
                                         </div>
+
                                     </div>
+
+
                                     <div class="col-lg-9 col-xlg-9">
                                         <div class="row">
+
                                             <div class="col-md-3 col-xs-6 b-r">
-                                                <div class="card">
-                                                    <div class="card-body">
-                                                        <center class="mt-1">
-                                                            @if($technician->user_image)
-                                                            <img src="{{ asset('public/images/Uploads/users/'. $technician->id . '/' . $technician->user_image) }}"
-                                                                class="rounded-circle" width="150" />
-                                                            @else
-                                                            <img src="{{ asset('public/images/login_img_bydefault.png') }}"
-                                                                alt="avatar" class="rounded-circle" width="150" />
-                                                            @endif
-                                                            <h4 class="card-title mt-1">{{ $technician->name }}</h4>
-                                                            {{-- <h6 class="card-subtitle">{{ $technician->company ??
-                                                                null }}
-                                                            </h6> --}}
-                                                        </center>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-1 col-xs-6 b-r">&nbsp;</div>
-                                            <div class="col-md-8 col-xs-6 b-r">
-                                                <div>
+                                                <div class="col-12">
+                                                    <h4 class="card-title mt-4">Contact info</h4>
+                                                    <h6 style="font-weight: normal;"><i class="fas fa-mobile-alt"></i>
+                                                        {{$technician->mobile}}</h6>
+                                                    <h6 style="font-weight: normal;"><i class="fas fa-envelope"></i>
+                                                        {{$technician->email}}</h6>
+
                                                     @foreach($userAddresscity as $location)
-
-                                                    <div>
-                                                        <small class="text-muted pt-4 db">Address - {{
-                                                            $location->address_type
-                                                            }}</small>
-                                                        <div style="display:flex;">
-
-                                                            <h6>{{ $location->city}}</h6>&nbsp;
-                                                            <h6>{{ $location->state_name ?? null }}</h6>
-                                                            <span>,</span>
-                                                            <h6>{{ $location->zipcode }}</h6>
-
-
-                                                            <br />
-                                                        </div>
-                                                        <iframe id="map{{ $location->address_id }}" width="100%"
-                                                            height="150" frameborder="0" style="border: 0"
-                                                            allowfullscreen></iframe>
-                                                        {{-- <iframe
-                                                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6991603.699017098!2d-100.0768425!3d31.168910300000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x864070360b823249%3A0x16eb1c8f1808de3c!2sTexas%2C%20USA!5e0!3m2!1sen!2sin!4v1701086703789!5m2!1sen!2sin"
-                                                            width="100%" height="300" style="border:0;"
-                                                            allowfullscreen="" loading="lazy"
-                                                            referrerpolicy="no-referrer-when-downgrade"></iframe>
-                                                        --}}
-
-                                                    </div>
-                                                    <hr />
+                                                    <h4 class="card-title mt-5">Address</h4>
+                                                    <h6 style="font-weight: normal;"><i class="ri-map-pin-line"></i> {{
+                                                        $location->address_line1}}, {{ $location->address_line2}}, {{
+                                                        $technician->Location->city}}, {{ $location->state_name ?? null
+                                                        }}, {{ $location->zipcode }} </h6>
                                                     @endforeach
 
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <h4 class="card-title mt-4">Summary</h4>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <small class="text-muted pt-1 db">Jobs Completed</small>
+                                                            <h6>0</h6>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <small class="text-muted pt-1 db">Jobs Open</small>
+                                                            <h6>0</h6>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <small class="text-muted pt-1 db">Revenue Earned</small>
+                                                            <h6>$0.00</h6>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <small class="text-muted pt-1 db">Profile Created</small>
+                                                            <h6>{{ $technician->created_at ?
+                                                                \Carbon\Carbon::parse($technician->created_at)->format('m-d-Y')
+                                                                : null }}</h6>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <small class="text-muted pt-1 db">Last service</small>
+                                                            <h6>
+                                                                {{ $jobasigndate && $jobasigndate->start_date_time ?
+                                                                \Carbon\Carbon::parse($jobasigndate->start_date_time)->format('m-d-Y')
+                                                                :
+                                                                null }}
+                                                            </h6>
+                                                        </div>
+														<div class="col-12">
+                                                            <small class="text-muted pt-1 db">Status</small>
+                                                            <h6 class="ucfirst">{{ $technician->status ?? null}}</h6>
+                                                        </div>
+                                                    </div>
+
                                                 </div>
                                             </div>
-                                            <div class="col-md-12">
-                                                <div class="row" style="margin-left:12px;">
 
-                                                    <h4 class="card-title mt-4">Files & Attachments</h4>
-                                                    <div class="row">
-                                                        @foreach($customerimage as $image)
-                                                        <div class="col-md-4 col-xs-6">
-
-                                                            @if($image->filename)
-                                                            <a href="{{ asset('storage/app/' . $image->filename) }}"
-                                                                download>
-                                                                <p><i class="fas fa-file-alt"></i></p>
-                                                                <img src="{{ asset('storage/app/' . $image->filename) }}"
-                                                                    alt="Customer Image"
-                                                                    style="width: 50px; height: 50px;">
-                                                            </a>
-                                                            @else
-                                                            <!-- Default image if no image available -->
-                                                            <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}"
-                                                                alt="Default Image" style="width: 50px; height: 50px;">
-                                                            @endif
-                                                        </div>
-                                                        @endforeach
+                                            <div class="col-md-1 col-xs-6 b-r">&nbsp;</div>
+                                            <div class="col-md-8 col-xs-6 b-r">
+                                                @foreach($userAddresscity as $location)
+                                                <div class="mt-4">
+                                                    <iframe id="map{{ $location->address_id }}" width="100%"
+                                                        height="300" frameborder="0" style="border: 0"
+                                                        allowfullscreen></iframe>
+                                                    <div style="display:flex;">
+                                                        <h6>{{ $location->address_line1}}, {{
+                                                            $location->address_line2}}, {{ $location->city}}, {{
+                                                            $location->state_name ?? null }}, {{ $location->zipcode }}
+                                                        </h6>
                                                     </div>
                                                 </div>
+                                                @endforeach
                                             </div>
+
+
+
                                         </div>
 
                                     </div>
@@ -267,74 +272,102 @@
 
 
                         <div class="tab-pane fade" id="calls_tab" role="tabpanel" aria-labelledby="pills-setting-tab">
+
                             <div class="card-body">
-                                <h4>Calls / Tickets</h4>
-                                <div class="table-responsive mt-4 table-custom2">
-                                    <table id="zero_config" class="table table-bordered text-nowrap">
-                                        <thead>
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Job Name </th>
-                                                <th>Date</th>
-                                                <th>Technician</th>
-                                                <th>Status</th>
+                                <div class="table-responsive" style="overflow-x: auto;">
+                                    <table id="zero_config" class="table table-bordered text-nowrap" data-paging="true"
+                                        data-paging-size="7">
+                                        <div class="d-flex flex-wrap">
+                                            <div class="col-md-12 row" style="margin-bottom:7px;">
 
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($jobasign as $customercall)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td><a href="{{ route('tickets.show', $customercall->id) }}"
-                                                        class="font-medium link">{{$customercall->job_title
-                                                        ?? null}}</a><br />
-                                                </td>
-                                                {{-- <td><a href="#" class="fw-bold link">{{$customercall->job_code ??
-                                                        null}}</a>
-                                                </td> --}}
-                                                @php
-                                                $jobassign = DB::table('job_assigned')->where('job_id',
-                                                $customercall->id)->first();
-                                                $created_at = $jobassign ? $jobassign->created_at : null;
-                                                @endphp
-
-                                                <td>
-                                                    @if ($created_at)
-                                                    <div class="font-medium link">{{
-                                                        \Carbon\Carbon::parse($created_at)->format('m-d-y') }}
-                                                    </div>
-                                                    <div style="font-size:12px;">
-                                                        {{
-                                                        \Carbon\Carbon::parse($jobassign->start_date_time)->format('g:ia')
-                                                        }}
-                                                        to {{
-                                                        \Carbon\Carbon::parse($jobassign->end_date_time)->format('g:ia')
-                                                        }}
-                                                    </div>
-                                                    @else
-                                                    <div>N/A</div>
-                                                    @endif
-                                                </td>
-
-                                                <td>
-                                                    @php
-                                                    $technician = DB::table('users')->where('id',
-                                                    $customercall->technician_id)->first();
-                                                    @endphp
-
-                                                    {{ $technician ? $technician->name : 'N/A' }}
-                                                </td>
-                                                <td><span
-                                                        class="badge bg-light-warning text-warning font-medium">{{$customercall->status
-                                                        ?? null}}</span></td>
+                                            </div>
 
 
-                                            </tr>
-                                            @endforeach
 
+                                            <thead>
+                                                <tr>
+                                                    <th>Ticket ID</th>
+                                                    <th>Ticket Details</th>
+                                                    <th>Customer</th>
+                                                    <th>Technician</th>
+                                                    <th>Date & Time</th>
 
-                                        </tbody>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($tickets->where('technician_id', $technician->id) as $ticket)
+                                                <tr>
+                                                    <td>
+                                                        <a href="{{ route('tickets.show', $ticket->id) }}"
+                                                            class="fw-bold link"><span class="mb-1 badge bg-primary">{{
+                                                                $ticket->job_code }}</span></a>
+                                                    </td>
+                                                    <td>
+                                                        <div class="text-wrap2">
+                                                            <a href="{{ route('tickets.show', $ticket->id) }}"
+                                                                class="font-medium link">{{ $ticket->job_title ??
+                                                                null }}</a> <span
+                                                                class="badge bg-light-warning text-warning font-medium">{{
+                                                                $ticket->status
+                                                                }}</span>
+                                                        </div>
+                                                        <div style="font-size:12px;">
+                                                            @if ($ticket->jobdetailsinfo &&
+                                                            $ticket->jobdetailsinfo->apliencename)
+                                                            {{ $ticket->jobdetailsinfo->apliencename->appliance_name }}/
+                                                            @endif
+                                                            @if ($ticket->jobdetailsinfo &&
+                                                            $ticket->jobdetailsinfo->manufacturername)
+                                                            {{
+                                                            $ticket->jobdetailsinfo->manufacturername->manufacturer_name
+                                                            }}/
+                                                            @endif
+                                                            @if ($ticket->jobdetailsinfo &&
+                                                            $ticket->jobdetailsinfo->model_number)
+                                                            {{ $ticket->jobdetailsinfo->model_number }}/
+                                                            @endif
+                                                            @if ($ticket->jobdetailsinfo &&
+                                                            $ticket->jobdetailsinfo->serial_number)
+                                                            {{ $ticket->jobdetailsinfo->serial_number }}
+                                                            @endif
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        @if ($ticket->user)
+                                                        {{ $ticket->user->name }}
+                                                        @else
+                                                        Unassigned
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if ($ticket->technician)
+                                                        {{ $ticket->technician->name }}
+                                                        @else
+                                                        Unassigned
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if ($ticket->jobassignname &&
+                                                        $ticket->jobassignname->start_date_time)
+                                                        <div class="font-medium link">{{
+                                                            $convertDateToTimezone($ticket->jobassignname->start_date_time)
+                                                            }}</div>
+                                                        @else
+                                                        <div></div>
+                                                        @endif
+                                                        <div style="font-size:12px;">
+                                                            {{
+                                                            $convertTimeToTimezone($ticket->JobAssign->start_date_time
+                                                            ?? null, 'H:i:a') }} to {{
+                                                            $convertTimeToTimezone($ticket->JobAssign->end_date_time ??
+                                                            null, 'H:i:a') }}
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
                                     </table>
+
                                 </div>
                             </div>
                         </div>
@@ -347,10 +380,18 @@
                                             <thead>
                                                 <tr>
 
-                                                    <th>Ticket</th>
-                                                    <th>Date</th>
+                                                    <th>Job Details</th>
+                                                    <th>Inv. Date</th>
                                                     <th>Amount</th>
                                                     <th>Technician</th>
+
+                                                    <th>Manufacturer</th>
+
+                                                    <th>Customer</th>
+
+
+
+
 
                                                 </tr>
                                             </thead>
@@ -389,6 +430,24 @@
                                                         @endphp
                                                         {{$technician1->name ?? null}} </td>
 
+                                                    <td>
+                                                        @php
+                                                        $jobId = $payment->job_id;
+                                                        $jobDetails = DB::table('job_details')->where('job_id',
+                                                        $jobId)->first();
+                                                        if ($jobDetails) {
+                                                        $manufacturerId = $jobDetails->manufacturer_id;
+                                                        $manufacturer = DB::table('manufacturers')->where('id',
+                                                        $manufacturerId)->value('manufacturer_name');
+                                                        }
+                                                        @endphp
+                                                        {{ $manufacturer ?? "Manufacturer not found" }}
+                                                    </td>
+                                                    <td>@php
+                                                        $customer = DB::table('users')->where('id',
+                                                        $payment->customer_id)->first();
+                                                        @endphp {{ $customer->name ?? null }} </td>
+
                                                 </tr>
                                                 @endforeach
                                             </tbody>
@@ -396,24 +455,24 @@
                                     </div>
                                     <br />
 
+
                             </div>
                         </div>
 
                         <div class="tab-pane fade show " id="edit_profile_tab" role="tabpanel"
                             aria-labelledby="pills-timeline-tab">
                             <div class="card-body">
-  
-                                @include('technicians.edit_profile')
+                                 @include('technicians.edit_profile')
                             </div>
                         </div>
 
 
                         <div class="tab-pane fade show " id="others_tab" role="tabpanel"
                             aria-labelledby="pills-timeline-tab">
-                            <div class="card-body">
+							<div class="card card-body">
                                 <div class="profiletimeline mt-0">
                                     @foreach ($notename as $notename )
-                                    <div class="sl-item">
+                                    <div class="sl-item mb-4">
                                         <div class="sl-left">
                                             @php
                                             $username = DB::table('users')->where('id',
@@ -431,75 +490,39 @@
 
                                         <div class="sl-right">
                                             <div>
-                                                <a href="javascript:void(0)" class="link"> {{$username->name ??
+                                                <a href="javascript:void(0)" class="link ucfirst ft17"> {{$username->name ??
                                                     null}}</a>
-                                                <span class="sl-date">
-                                                    {{ \Carbon\Carbon::parse($notename->created_at)->diffForHumans() }}
-                                                </span>
-                                                <p><strong> </strong><a href="javascript:void(0)">
-                                                    </a></p>
-                                                <div class="row">
-                                                    <div class="col-lg-12 col-md-12">
+												<span class="sl-date">
+													{{ \Carbon\Carbon::parse($notename->created_at)->diffForHumans() }}
+												</span>
+												<div class="row">
+                                                    <div class="col-lg-12 col-md-12 ft15">
                                                         {{ $notename->note }}
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+									@endforeach
+									
+                                    <div class="row">
+                                         <div class="col-lg-8 col-xlg-9">
+											<h4 class="card-title mt-1">Add New Comment</h4>	
+											 <form id="commentForm" action="{{ route('techniciancomment.store') }}"
+												method="POST">
+												@csrf
+ 												<div class="mb-3 d-flex align-items-center">
+													<input type="hidden" name="id" value="{{ $technician->id }}">
+													<textarea class="form-control" id="comment" name="note" rows="3"></textarea>
+ 												</div>
+												<div class="mb-3 d-flex align-items-center">
+													<button type="submit" id="submitButton" class="btn btn-primary ms-2">Submit</button>
+												</div>
+ 											</form>
+                                         </div>
+                                     </div>
 
-                                    <hr />
-                                    @endforeach
-                                    {{-- <div class="sl-item">
-                                        <div class="sl-left">
-                                            <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}" alt="user"
-                                                class="rounded-circle" />
-                                        </div>
-                                        <div class="sl-right">
-                                            <div>
-                                                <span class="sl-date">2 days ago</span>
-                                                <a href="javascript:void(0)" class="link">John Smith</a>
-                                                <p><strong>LG AC REPAIR </strong><a href="javascript:void(0)">
-                                                        View
-                                                        Ticket</a></p>
-                                                <div class="row">
-                                                    <div class="col-lg-12 col-md-12">Lorem ipsum dolor sit amet,
-                                                        consectetur adipiscing elit, sed do eiusmod tempor
-                                                        incididunt ut
-                                                        labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                                        quis
-                                                        nostrud exercitation ullamco laboris nisi ut aliquip ex
-                                                        ea
-                                                        commodo consequat</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <hr />
-                                    <div class="sl-item">
-                                        <div class="sl-left">
-                                            <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}" alt="user"
-                                                class="rounded-circle" />
-                                        </div>
-                                        <div class="sl-right">
-                                            <div>
-                                                <a href="javascript:void(0)" class="link">James Nelson</a>
-                                                <span class="sl-date">4 days ago</span>
-                                                <p><strong>LG AC REPAIR </strong><a href="javascript:void(0)">
-                                                        View
-                                                        Ticket</a></p>
-                                                <div class="row">
-                                                    <div class="col-lg-12 col-md-12">Lorem ipsum dolor sit amet,
-                                                        consectetur adipiscing elit, sed do eiusmod tempor
-                                                        incididunt ut
-                                                        labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                                        quis
-                                                        nostrud exercitation ullamco laboris nisi ut aliquip ex
-                                                        ea
-                                                        commodo consequat</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> --}}
+
                                 </div>
                             </div>
                         </div>
@@ -746,13 +769,35 @@
                             </div>
                         </div>
 
-                                          <div class="tab-pane fade show " id="edit_service_tab" role="tabpanel"
+                        <div class="tab-pane fade show " id="edit_service_tab" role="tabpanel"
                             aria-labelledby="pills-timeline-tab">
                             <div class="card-body">
-  
+
                                 @include('technicians.service_area')
                             </div>
                         </div>
+
+                        <div class="tab-pane fade show " id="parts_tab" role="tabpanel"
+                            aria-labelledby="pills-timeline-tab">
+                            <div class="card-body">
+                                 @include('technicians.parts_view_and_assign')
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade show " id="settings_tab" role="tabpanel"
+                            aria-labelledby="pills-timeline-tab">
+                            <div class="card-body">
+                                @include('technicians.myprofile_account_technician')
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade show " id="activity_tab" role="tabpanel"
+                            aria-labelledby="pills-timeline-tab">
+                            <div class="card-body">
+                                @include('technicians.myprofile_activity_technician')
+                            </div>
+                        </div>
+
 
 
 
@@ -1024,7 +1069,15 @@ function getZipCode(cityId, cityName) {
 
 
 </script>
-
+<script>
+    document.getElementById("submitButton").addEventListener("click", function(event) {
+        var comment = document.getElementById("comment").value.trim();
+        if (comment === "") {
+            event.preventDefault(); // Prevent form submission
+            alert("Please add a comment before submitting.");
+        }
+    });
+</script>
 @endsection
 
 @endsection

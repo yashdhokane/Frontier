@@ -6,32 +6,86 @@
 <!-- -------------------------------------------------------------- -->
 <!-- Bread crumb and right sidebar toggle -->
 <!-- -------------------------------------------------------------- -->
+
+<style>	
+.flowchart {
+  text-align: center;
+}
+.flowchart button {
+  background: transparent;
+  outline: none;
+  border: 0px;
+  text-transform: uppercase;
+  color: #f64e60;
+  font-weight: 600;
+  height: 15px;
+}
+.ictop {
+  background: #0E6FBE;
+  width: 43px;
+  height: 43px;
+  border-radius: 50%;
+  line-height: 43px;
+  margin: 5px auto;
+  color: #fff;
+  border: 1px solid #0E6FBE;
+}
+.ictop i {
+  font-size: 25px;
+}
+.cht {
+  text-transform: uppercase;
+  color: #0E6FBE;
+  font-weight: 600;
+}
+.dtwrap {
+  font-size: 12px;
+}
+.icblank {
+  background: #fff;
+}
+.icblank i {
+  color: #0E6FBE;
+}
+.icblank:hover {
+  background: #0E6FBE;
+}
+.icblank:hover i {
+  color: #ffffff;
+}
+.icwrap {
+  position: relative;
+  z-index: 2;
+}
+.brwrap {
+  position: relative;
+  padding: 2px;
+}
+.flborder {
+  border-bottom: 2px solid #3699ff;
+  width: 85%;
+  left: 7%;
+  position: absolute;
+  top: 52px;
+  z-index: 1;
+}
+</style>
+
 <div class="page-breadcrumb">
-    <div class="row">
-        <div class="col-5 align-self-center">
-            <h4 class="page-title">Jobs / Ticket Details</h4>
-            <div class="d-flex align-items-center">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="#">Jobs List</a></li>
-                        <li class="breadcrumb-item"><a href="#">Jobs / Ticket</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Information</li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-        <div class="col-7 align-self-center">
-            <div class="d-flex no-block justify-content-end align-items-center">
-                <div class="me-2">
-                    <div class="lastmonth"></div>
-                </div>
-                <div class="">
-                    <small>LAST MONTH</small>
-                    <h4 class="text-info mb-0 font-medium">$58,256</h4>
-                </div>
-            </div>
-        </div>
-    </div>
+     
+		
+		<div class="row">
+			<div class="col-md-12">
+ 				<h4 class="page-title">{{ $technicians->job_title ?? null }}
+                                        ({{ $technicians->job_code ?? null }}) <span class="mb-1 badge bg-warning"
+                                            style="font-size: 15px;">{{ $technicians->status ?? null }}
+                                        </span> </h4>
+			</div>
+			<div class="col-md-8">
+				</div>
+		</div>
+			 
+			 
 </div>
 @if (session('success'))
 <div class="alert alert-success">
@@ -59,27 +113,7 @@
 
         <div class="col-md-4">
 
-            <div class="mb-4">
-                <div class="card" style="border: 1px solid #D8D8D8;">
-                    <div class="card-body text-center">
-                        <h4 class="card-title">Customer</h4>
-                        <div class="profile-pic mb-3 mt-3">
-                            @isset($technicians->user->user_image)
-                            <img src="{{ asset('public/images/customer/' . $technicians->user->user_image) ?? null }}"
-                                width="150" class="rounded-circle" alt="user1"  onerror="this.onerror=null; this.src='{{$defaultImage}}';" />
-                            @else
-                            <img src="{{ $defaultImage }}" width="150" class="rounded-circle" alt="user" />
-                            @endisset
-                            <h4 class="mt-3 mb-0">{{ $technicians->user->name ?? null }}</h4>
-                            <a href="mailto:{{ $technicians->user->email ?? '' }}">{{ $technicians->user->email ?? null
-                                }}</a><br>
-                            <small class="text-muted">{{ $technicians->user->mobile ?? null }}<br />{{
-                                $technicians->address ?? null }},{{ $technicians->city ?? null }},{{ $technicians->state
-                                ?? null }},{{ $technicians->zipcode ?? null }}</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
 
             <div class="mb-4">
                 <div class="card" style="border: 1px solid #D8D8D8;">
@@ -92,12 +126,27 @@
 
                             <iframe id="map238" width="100%" height="150" frameborder="0" style="border: 0"
                                 allowfullscreen=""></iframe>
-                            <!-- <h5 class="todo-desc mb-0 fs-3 font-weight-medium">Service Area:
-                                {{ $technicians->serviceareaname->area_name ?? null }} </h5> -->
+                             
                         </div>
                     </div>
                 </div>
             </div>
+			
+			<div class="mb-4">
+                <div class="card" style="border: 1px solid #D8D8D8;">
+                    <div class="card-body text-center">
+                         <div class="profile-pic mb-3 mt-3">
+                             <h4 class="mt-3 mb-0">{{ $technicians->user->name ?? null }}</h4>
+                            <a href="mailto:{{ $technicians->user->email ?? '' }}">{{ $technicians->user->email ?? null
+                                }}</a><br>
+                            <small class="text-muted">{{ $technicians->user->mobile ?? null }}<br />{{
+                                $technicians->address ?? null }},{{ $technicians->city ?? null }},{{ $technicians->state
+                                ?? null }},{{ $technicians->zipcode ?? null }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+			
             <div class="mb-4">
                 <div class="card" style="border: 1px solid #D8D8D8;">
                     <div class="card-body">
@@ -327,6 +376,158 @@
         </div>
 
         <div class="col-md-8">
+		
+			<div class="mb-4 flwrap">
+					<div class="card">
+						<div class="card-body">
+						    <div class="brwrap">
+							    <div class="flborder">
+							
+							    </div>
+							</div>
+						
+						    <div class="row">
+							    <div class="col-sm-2">
+								    <div class="flowchart">
+								       <button>Undo</button>
+									   <div class="icwrap">
+									        <div class="ictop">
+									            <i class="ri-calendar-event-line"></i>
+							                </div>
+											<span class="cht">Schedule</span>
+							           </div>
+									   <div class="dtwrap">
+									        <div class="date">
+									            Mon, Apr 8 '24
+							                </div>
+											<div class="time">
+									            2:00 pm-4:00 pm
+							                </div>
+											<div class="sec">
+									            CDT
+							                </div>
+							           </div>
+							        </div>
+							    </div>
+								
+								<div class="col-sm-2">
+								    <div class="flowchart">
+								       <button>Undo</button>
+									   <div class="icwrap">
+									        <div class="ictop">
+									            <i class="ri-truck-line"></i>
+							                </div>
+											<span class="cht">OMW</span>
+							           </div>
+									   <div class="dtwrap">
+									        <div class="date">
+									            Mon, Apr 8 '24
+							                </div>
+											<div class="time">
+									            3:15 pm
+							                </div>
+											<div class="sec">
+									           
+							                </div>
+							           </div>
+							        </div>
+							    </div>
+								
+								<div class="col-sm-2">
+								    <div class="flowchart">
+								       <button>Undo</button>
+									   <div class="icwrap">
+									        <div class="ictop">
+									            <i class="ri-play-line"></i>
+							                </div>
+											<span class="cht">Start</span>
+							           </div>
+									   <div class="dtwrap">
+									        <div class="date">
+									            Mon, Apr 8 '24
+							                </div>
+											<div class="time">
+									            4:01 pm
+							                </div>
+											<div class="sec">
+									           
+							                </div>
+							           </div>
+							        </div>
+							    </div>
+								
+								<div class="col-sm-2">
+								    <div class="flowchart">
+								       <button>Undo</button>
+									   <div class="icwrap">
+									        <div class="ictop">
+									            <i class="ri-stop-circle-line"></i>
+							                </div>
+											<span class="cht">Finish</span>
+							           </div>
+									   <div class="dtwrap">
+									        <div class="date">
+									            Mon, Apr 8 '24
+							                </div>
+											<div class="time">
+									            4:37 pm
+							                </div>
+											<div class="sec">
+									           
+							                </div>
+							           </div>
+							        </div>
+							    </div>
+								<div class="col-sm-2">
+								    <div class="flowchart">
+								       <button class="bl"></button>
+									   <div class="icwrap">
+									        <div class="ictop icblank">
+									            <i class="ri-bill-line"></i>
+							                </div>
+											<span class="cht">Invoice</span>
+							           </div>
+									   <div class="dtwrap">
+									        <div class="date">
+									           
+							                </div>
+											<div class="time">
+									           
+							                </div>
+											<div class="sec">
+									           
+							                </div>
+							           </div>
+							        </div>
+							    </div>
+								
+								<div class="col-sm-2">
+								    <div class="flowchart">
+								       <button class="bl"></button>
+									   <div class="icwrap">
+									        <div class="ictop icblank">
+									            <i class="ri-currency-line"></i>
+							                </div>
+											<span class="cht">Pay</span>
+							           </div>
+									   <div class="dtwrap">
+									        <div class="date">
+									            
+							                </div>
+											<div class="time">
+									        
+							                </div>
+											<div class="sec">
+									           
+							                </div>
+							           </div>
+							        </div>
+							    </div>
+							</div>
+					    </div>
+					</div>
+			    </div>
+			
 
             <div class="mb-4">
                 <div class="card" style="border: 1px solid #D8D8D8;">
