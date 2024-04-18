@@ -1,27 +1,77 @@
 @extends('home')
 @section('content')
     <link rel="stylesheet" href="{{ url('public/admin/schedule/style.css') }}">
- 
- <style>
- .dts2 {
-  min-height: 36px;
-}
-.timeslot_td_time {
-  padding: 0px;
-  font-weight: 600;
-  font-size: 10px;
-  letter-spacing: 0.5px;
-}
-.timeslot_td {
-  height: 36px;
-}
-.container-schedule {
-  padding: 0px !important;
-}
-.schedule_section_box {
-  overflow-x: scroll;
-}
- </style>
+
+    <style>
+        .dts2 {
+            min-height: 36px;
+        }
+
+        .timeslot_td_time {
+            padding: 0px;
+            font-weight: 600;
+            font-size: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .timeslot_td {
+            height: 36px;
+        }
+
+        .container-schedule {
+            padding: 0px !important;
+        }
+
+        .schedule_section_box {
+            overflow-x: scroll;
+        }
+
+        .popupContainer {
+            position: absolute;
+            z-index: 999;
+            background-color: #444445;
+            color: white;
+            border: 1px solid #cccccc;
+            padding: 10px;
+            display: none;
+        }
+
+        .popup-option {
+            display: block;
+            margin-bottom: 5px;
+            color: white;
+            font-family: 'Font Awesome 5 Free';
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        .tech_th {
+            position: relative;
+        }
+
+        .user_head_link {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .user_head_link img {
+            width: 48px;
+            border-radius: 50%;
+            margin-bottom: 5px;
+        }
+       .popupContainer::after {
+            content: "";
+            position: absolute;
+            bottom: 100%; /* Change top to bottom */
+            left: 50%;
+            margin-left: -5px;
+            border-width: 6px;
+            border-style: solid;
+            border-color: transparent transparent #444445 transparent; /* Change border-color */
+        }
+
+        /* Add more styles as needed */
+    </style>
 
     <div class="page-wrapper p-0 ms-2" style="display:flex;">
         <!-- Container fluid  -->
@@ -68,8 +118,8 @@
                                                     <th></th>
                                                     @if (isset($user_array) && !empty($user_array))
                                                         @foreach ($user_array as $value)
-                                                            <th class="tech_th" data-tech-id="{{ $value }}"><a
-                                                                    href="#" class="link user_head_link"
+                                                            <th class="tech_th" data-tech-id="{{ $value }}">
+                                                                <a href="#" class="link user_head_link tech_profile"
                                                                     style="color: {{ $user_data_array[$value]['color_code'] }} !important;">
                                                                     @if (isset($user_data_array[$value]['user_image']) && !empty($user_data_array[$value]['user_image']))
                                                                         <img src="{{ asset('public/images/technician/' . $user_data_array[$value]['user_image']) }}"
@@ -85,6 +135,15 @@
                                                                         {{ $user_data_array[$value]['name'] }}
                                                                     @endif
                                                                 </a>
+                                                                <div class="popupContainer text-start" style="display: none;">
+                                                                    <!-- Popup content for profile link -->
+                                                                    <a href="{{ url('technicians/show/'.$value) }}" class="popup-option"><i class="fa fa-user pe-2"></i>View Profile</a></hr>
+                                                                    <!-- Popup content for message option -->
+                                                                    <a href="#" class="popup-option message-popup"><i class="fa fa-list-alt pe-2"></i>Message</a></hr>
+                                                                    <a href="#" class="popup-option"><i class="fa fa-wrench pe-2"></i>Settings</a>
+                                                                </div>
+                                                                
+
                                                             </th>
                                                         @endforeach
                                                     @endif
@@ -96,28 +155,32 @@
                                                         <tr>
                                                             <td class="timeslot_td">
                                                                 <div class="timeslot_td_time">
-                                                                @php
-                                                                    $time = $i >= 12 ? ($i > 12 ? $i - 12 : $i) : $i;
-                                                                    $minutes = '00'; // Default minutes
-                                                                    if ($i % 1 !== 0) {
-                                                                        $minutes = '30'; // Adjust minutes for half-hour intervals
-                                                                    }
-                                                                    $date = $i >= 12 ? 'pm' : 'am';
+                                                                    @php
+                                                                        $time =
+                                                                            $i >= 12 ? ($i > 12 ? $i - 12 : $i) : $i;
+                                                                        $minutes = '00'; // Default minutes
+                                                                        if ($i % 1 !== 0) {
+                                                                            $minutes = '30'; // Adjust minutes for half-hour intervals
+                                                                        }
+                                                                        $date = $i >= 12 ? 'pm' : 'am';
 
-                                                                    $display_hour = $i > 12 ? $i - 12 : $i;
-                                                                    $display_minute = $minute == 0 ? '00' : $minute;
-                                                                    $time =
-                                                                        $display_hour .
-                                                                        ':' .
-                                                                        $display_minute .
-                                                                        ' ' .
-                                                                        $date;
-                                                                    $timeString =
-                                                                        $time . ($minutes == '00' ? '' : ':30');
-                                                                    // Format $time for comparison
-                                                                    $formattedTime = date('h:i A', strtotime($time));
-                                                                @endphp
-                                                                {{ $time }}
+                                                                        $display_hour = $i > 12 ? $i - 12 : $i;
+                                                                        $display_minute = $minute == 0 ? '00' : $minute;
+                                                                        $time =
+                                                                            $display_hour .
+                                                                            ':' .
+                                                                            $display_minute .
+                                                                            ' ' .
+                                                                            $date;
+                                                                        $timeString =
+                                                                            $time . ($minutes == '00' ? '' : ':30');
+                                                                        // Format $time for comparison
+                                                                        $formattedTime = date(
+                                                                            'h:i A',
+                                                                            strtotime($time),
+                                                                        );
+                                                                    @endphp
+                                                                    {{ $time }}
                                                                 </div>
                                                             </td>
                                                             @if (isset($user_array) && !empty($user_array))
@@ -152,70 +215,85 @@
                                                                                                     ->duration ?? null;
                                                                                             $height_slot =
                                                                                                 $duration / 30;
-                                                                                                $height_slot_px =
-                                                                                                $height_slot * 36 + $height_slot - 1;
+                                                                                            $height_slot_px =
+                                                                                                $height_slot * 36 +
+                                                                                                $height_slot -
+                                                                                                1;
                                                                                         @endphp
-                                                                                       <a class="show_job_details"
-                                                                                       href="{{ $value2->job_id ? route('tickets.show', $value2->job_id) : '#' }}">
+                                                                                        <a class="show_job_details"
+                                                                                            href="{{ $value2->job_id ? route('tickets.show', $value2->job_id) : '#' }}">
 
-                                                                                       <div class="dts mb-1  flexibleslot"
-                                                                                           {{-- data-bs-toggle="modal" --}}
-                                                                                           {{-- data-bs-target="#edit" --}}
-                                                                                           data-id="{{ $value }}"
-                                                                                           data-job-id="{{ $value2->job_id }}"
-                                                                                           data-time="{{ $timeString }}"
-                                                                                           data-date="{{ $filterDate }}"
-                                                                                           style="cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->JobModel->technician->color_code ?? null }};"
-                                                                                           data-id="{{ $value2->job_id }}">
-                                                                                           <div class="cls_slot_title">
-                                                                                               <i
-                                                                                                   class="ri-tools-line"></i>
-                                                                                               {{ $value2->JobModel->user->name ?? null }}
-                                                                                           </div>
-                                                                                           <div class="cls_slot_time">
-                                                                                               <i
-                                                                                                   class="ri-truck-line"></i>
-                                                                                               {{ $timeString }}
-                                                                                           </div>
-                                                                                           <div
-                                                                                               class="cls_slot_job_card">
-                                                                                               {{ $value2->JobModel->job_title ?? null }}
-                                                                                           </div>
-                                                                                           <div
-                                                                                               class="cls_slot_job_card">
-                                                                                               {{ $value2->JobModel->city ?? null }},
-                                                                                               {{ $value2->JobModel->state ?? null }}
-                                                                                           </div>
-                                                                                       </div>
-                                                                                   </a>
-                                                                                   <div class="open_job_details rounded shadow py-3 px-2">
-                                                                                       <div class="popup-content">
-                                                                                           <h5><i
-                                                                                                   class="fas fa-id-badge px-2"></i>
-                                                                                               <strong>Job #{{ $value2->JobModel->job_code ?? null }}</strong>
-                                                                                           </h5>
-                                                                                           <p class="ps-4 m-0 ms-2">{{ $value2->start_date_time ? date('M d Y g:i a', strtotime($value2->start_date_time)) : null }} - {{ \Carbon\Carbon::parse($value2->end_date_time)->format('g:i A') }}
+                                                                                            <div class="dts mb-1  flexibleslot"
+                                                                                                {{-- data-bs-toggle="modal" --}}
+                                                                                                {{-- data-bs-target="#edit" --}}
+                                                                                                data-id="{{ $value }}"
+                                                                                                data-job-id="{{ $value2->job_id }}"
+                                                                                                data-time="{{ $timeString }}"
+                                                                                                data-date="{{ $filterDate }}"
+                                                                                                style="cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->JobModel->technician->color_code ?? null }};"
+                                                                                                data-id="{{ $value2->job_id }}">
+                                                                                                <div class="cls_slot_title">
+                                                                                                    <i
+                                                                                                        class="ri-tools-line"></i>
+                                                                                                    {{ $value2->JobModel->user->name ?? null }}
+                                                                                                </div>
+                                                                                                <div class="cls_slot_time">
+                                                                                                    <i
+                                                                                                        class="ri-truck-line"></i>
+                                                                                                    {{ $timeString }}
+                                                                                                </div>
+                                                                                                <div
+                                                                                                    class="cls_slot_job_card">
+                                                                                                    {{ $value2->JobModel->job_title ?? null }}
+                                                                                                </div>
+                                                                                                <div
+                                                                                                    class="cls_slot_job_card">
+                                                                                                    {{ $value2->JobModel->city ?? null }},
+                                                                                                    {{ $value2->JobModel->state ?? null }}
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </a>
+                                                                                        <div
+                                                                                            class="open_job_details rounded shadow py-3 px-2">
+                                                                                            <div class="popup-content">
+                                                                                                <h5><i
+                                                                                                        class="fas fa-id-badge px-2"></i>
+                                                                                                    <strong>Job
+                                                                                                        #{{ $value2->JobModel->job_code ?? null }}</strong>
+                                                                                                </h5>
+                                                                                                <p class="ps-4 m-0 ms-2">
+                                                                                                    {{ $value2->start_date_time ? date('M d Y g:i a', strtotime($value2->start_date_time)) : null }}
+                                                                                                    -
+                                                                                                    {{ \Carbon\Carbon::parse($value2->end_date_time)->format('g:i A') }}
 
-                                                                                           </p>
-                                                                                           <div class="py-1"><i
-                                                                                                   class="fas fa-ticket-alt px-2"></i>
-                                                                                               <strong>{{ $value2->JobModel->job_title ?? null }}</strong>
-                                                                                           </div>
-                                                                                           <div class="py-1"><i
-                                                                                                   class="fas fa-user px-2"></i>
-                                                                                               <strong>{{ $value2->JobModel->user->name ?? null }}</strong>
-                                                                                               <p class="ps-4 m-0 ms-2">{{ $value2->JobModel->addresscustomer->address_line1 ?? null }} {{ $value2->JobModel->addresscustomer->zipcode ?? null }}</p>
-                                                                                               <p class="ps-4 m-0 ms-2">{{ $value2->JobModel->user->mobile ?? null }}</p>
-                                                                                           </div>
-                                                                                           <div class="py-1"><i
-                                                                                               class="fas fa-user-secret px-2"></i>
-                                                                                           <strong>{{ $value2->JobModel->technician->name ?? null }}</strong>
-                                                                                           <div class="py-1"><i
-                                                                                               class="fas fa-tag px-2"></i>
-                                                                                           <button class="btn btn-primary rounded">{{ $value2->JobModel->status ?? null }}</button>
-                                                                                       </div>
-                                                                                       </div>
-                                                                                   </div>
+                                                                                                </p>
+                                                                                                <div class="py-1"><i
+                                                                                                        class="fas fa-ticket-alt px-2"></i>
+                                                                                                    <strong>{{ $value2->JobModel->job_title ?? null }}</strong>
+                                                                                                </div>
+                                                                                                <div class="py-1"><i
+                                                                                                        class="fas fa-user px-2"></i>
+                                                                                                    <strong>{{ $value2->JobModel->user->name ?? null }}</strong>
+                                                                                                    <p
+                                                                                                        class="ps-4 m-0 ms-2">
+                                                                                                        {{ $value2->JobModel->addresscustomer->address_line1 ?? null }}
+                                                                                                        {{ $value2->JobModel->addresscustomer->zipcode ?? null }}
+                                                                                                    </p>
+                                                                                                    <p
+                                                                                                        class="ps-4 m-0 ms-2">
+                                                                                                        {{ $value2->JobModel->user->mobile ?? null }}
+                                                                                                    </p>
+                                                                                                </div>
+                                                                                                <div class="py-1"><i
+                                                                                                        class="fas fa-user-secret px-2"></i>
+                                                                                                    <strong>{{ $value2->JobModel->technician->name ?? null }}</strong>
+                                                                                                    <div class="py-1"><i
+                                                                                                            class="fas fa-tag px-2"></i>
+                                                                                                        <button
+                                                                                                            class="btn btn-primary rounded">{{ $value2->JobModel->status ?? null }}</button>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
                                                                                     @endif
 
                                                                                     {{-- for schedule type evnt  --}}
@@ -292,7 +370,8 @@
                                                                             </div>
                                                                             <div class="popupDiv fs-4"
                                                                                 style="display: none;">
-                                                                                <a href="{{ url('create_job', [$value, $timeString, $filterDate]) }}">
+                                                                                <a
+                                                                                    href="{{ url('create_job', [$value, $timeString, $filterDate]) }}">
                                                                                     <div class="createSchedule align-items-sm-center d-flex gap-3 fw-semibold"
                                                                                         style="cursor: pointer;"
                                                                                         data-id="{{ $value }}"
@@ -416,6 +495,53 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
     <script>
+        $(document).ready(function() {
+                // Click event handler for tech_profile links
+                $('.tech_profile').click(function(event) {
+                    event.preventDefault(); // Prevent default link behavior
+
+                    var profileLink = $(this);
+                    var popupContainer = profileLink.next('.popupContainer');
+
+                    // Hide all other open popups
+                    $('.popupContainer').not(popupContainer).fadeOut();
+
+                    // Calculate position of the popup relative to the clicked element
+                    var position = profileLink.offset();
+                    var topPosition = position.top + profileLink.outerHeight() + 10; // Adjust 10 pixels for spacing
+                    var leftPosition = position.left;
+
+                    // Set position of the popup
+                    popupContainer.css({
+                        'top': 56 + 'px',
+                        'left': 16 + 'px'
+                    });
+
+                    // Show the popup
+                    popupContainer.fadeIn();
+                });
+
+                // Click event handler for profile link images
+                $('.tech_profile img').click(function(event) {
+                    event.stopPropagation(); // Stop event propagation to prevent the click from reaching the parent link
+                });
+
+                // Click event listener for the document
+                $(document).click(function(event) {
+                    var target = $(event.target);
+
+                    // Check if the clicked element is not within any popup container or profile link
+                    if (!target.closest('.popupContainer').length && !target.is('.tech_profile')) {
+                        // Hide all popup containers if any are currently visible
+                        $('.popupContainer').fadeOut();
+                    }
+                });
+        });
+
+
+
+
+
         // JavaScript (jQuery)
         $(document).ready(function() {
             // Show job details on hover
@@ -425,6 +551,7 @@
             }, function() {
                 // Hide the popup when mouse leaves
                 $(this).next('.open_job_details').fadeOut();
+
             });
 
             // Close the popup when mouse leaves
@@ -598,8 +725,8 @@
         });
     </script>
 
-   
-{{-- this for the schedule page --}}
+
+    {{-- this for the schedule page --}}
     <script>
         $(document).ready(function() {
 
@@ -662,8 +789,8 @@
             });
         });
     </script>
-{{-- end this  --}}
-   
+    {{-- end this  --}}
+
 
 
     <script>
