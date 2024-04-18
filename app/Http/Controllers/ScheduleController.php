@@ -1242,7 +1242,7 @@ class ScheduleController extends Controller
 
         if (isset($phone) && !empty($phone)) {
 
-            $filterCustomer = User::where('mobile', 'LIKE', '%' . $phone . '%')
+            $filterCustomer = User::where('mobile',  $phone)
                 ->where('role', 'customer')
                 ->get();
 
@@ -1265,7 +1265,8 @@ class ScheduleController extends Controller
                         $imageSrc = asset('public/images/login_img_bydefault.png');
                     }
 
-                    $customers .= '<div class="customer_sr_box selectCustomer2 px-0" data-id="' . $value->id . '" data-name="' . $value->name . '"><div class="row justify-content-around"><div class="col-md-2 d-flex align-items-center"><span>';
+                    $customers .= '<h5 class="font-weight-medium mb-2">Select Customer
+                                    </h5><div class="customer_sr_box selectCustomer2 px-0" data-id="' . $value->id . '" data-name="' . $value->name . '"><div class="row justify-content-around"><div class="col-md-2 d-flex align-items-center"><span>';
                     $customers .= '<img src="' . $imageSrc . '" alt="user" class="rounded-circle" width="50">';
                     $customers .= '</span></div><div class="col-md-8"><h6 class="font-weight-medium mb-0">' . $value->name . ' ';
                     if (isset($getCustomerAddress->city) && !empty($getCustomerAddress->city)) {

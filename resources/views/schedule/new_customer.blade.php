@@ -268,8 +268,6 @@ enctype="multipart/form-data">
                         <div class="card">
                             <div class="card-body px-0">
                                 <div class="">
-                                    <h5 class="font-weight-medium mb-2">Select Customer
-                                    </h5>
                                     <div class="customers2">
                                     </div>
                                 </div>

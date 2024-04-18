@@ -1496,11 +1496,7 @@
 
                         if (data.customers) {
                             $('.customers2').append(data.customers);
-                        } else {
-                            $('.customers2').html(
-                                '<div class="customer_sr_box"><div class="row"><div class="col-md-12" style="text-align: center;"><h6 class="font-weight-medium mb-0">No Data Found</h6></div></div></div>'
-                            );
-                        }
+                        } 
                     },
                     error: function(xhr, status, error) {
                         // Handle errors here

@@ -943,59 +943,22 @@ $leadsourcename=Leadsource::where('user_id', $user->id)
 
         try {
 
-            // Validate the request
+            
+        $validator = Validator::make($request->all(), [
 
-            $validator = Validator::make($request->all(), [
+            'first_name' => 'required|max:255',
+            'last_name' => 'required|max:255',
+            'display_name' => 'required|string|max:255',
+            //'email' => 'required|email|unique:users,email',
+            'mobile_phone' => 'required|max:20',
+            'address1' => 'required',
+            'city' => 'required',
+            'state_id' => 'required',
+            'zip_code' => 'max:10',
+        ]);
 
-
-
-                'first_name' => 'required|max:255',
-
-                'last_name' => 'required|max:255',
-
-                'display_name' => 'required|string|max:255',
-
-                'email' => 'required|email|unique:users,email',
-
-                'mobile_phone' => 'required|max:20',
-
-                // 'home_phone' => 'required|max:20',
-
-                // 'work_phone' => 'required|max:20',
-
-
-
-
-
-                'address1' => 'required',
-
-                // 'address_unit' => 'required',
-
-
-
-                'city' => 'required',
-
-                'state_id' => 'required',
-
-                'zip_code' => 'max:10',
-
-                // 'customer_notes' => 'required',
-
-                // 'customer_tags' => 'required', // Update the maximum length as needed
-
-                // 'source_id' => 'required',
-
-                // 'image' => 'required',
-
-                // 'user_type' => 'required',
-
-                // 'company' => 'required',
-
-                // 'role' => 'required',
-
-            ]);
-
-
+       
+        
 
             if ($validator->fails()) {
 
@@ -1007,157 +970,151 @@ $leadsourcename=Leadsource::where('user_id', $user->id)
 
 
 
-            // If validation passes, create the user and related records
 
-            $user = new User();
+        $user = new User();
+        $user->name = $request['display_name'];
+        $user->email = $request['email'];
+        $user->mobile = $request['mobile_phone'];
+        // $user->company = $request['company'];
+        // $user->user_type = $request['user_type'];
+        //  $user->position = $request['role'];
+        $user->source_id = $request['source_id'];
+        $user->customer_id = 0;
+        $user->password = Hash::make($request['password']);
 
-            $user->name = $request['display_name'];
+        $user->save();
+        $userId = $user->id;
 
-            $user->email = $request['email'];
+        if ($request->hasFile('image')) {
+            $directoryName = $userId;
+            $directoryPath = public_path('images/Uploads/users/' . $directoryName);
 
-            $user->mobile = $request['mobile_phone'];
+            // Ensure the directory exists; if not, create it
+            if (!file_exists($directoryPath)) {
+                mkdir($directoryPath, 0777, true);
+            }
 
-            $user->company = $request['company'];
+            $image = $request->file('image');
+            $imageName = $image->getClientOriginalName();
+            $image->move($directoryPath, $imageName);
 
-            $user->user_type = $request['user_type'];
-
-            $user->position = $request['role'];
-
-            $user->source_id = $request['source_id'];
-
-            $user->password = Hash::make($request['password']);
-
-
-
-
+            $user->user_image = $imageName;
             $user->save();
-            $userId = $user->id;
+        }
 
-            if ($request->hasFile('image')) {
-                // Generate a unique directory name based on user ID and timestamp
-                $directoryName = $userId;
+        $userId = $user->id;
 
-                // Construct the full path for the directory
-                $directoryPath = public_path('images/customer/' . $directoryName);
-
-                // Ensure the directory exists; if not, create it
-                if (!file_exists($directoryPath)) {
-                    mkdir($directoryPath, 0777, true);
-                }
-
-                // Move the uploaded image to the unique directory
-                $image = $request->file('image');
-                $imageName = $image->getClientOriginalName(); // Or generate a unique name if needed
-                $image->move($directoryPath, $imageName);
-
-                // Save the image path in the user record
-                $user->user_image = $imageName;
-                $user->save();
-            }
+        $usersDetails = new UsersDetails();
+        $usersDetails->user_id = $userId;
+        $usersDetails->unique_number = 0;
+        $usersDetails->lifetime_value = 0;
+        $usersDetails->license_number = 0;
+        // $usersDetails->dob = 0;
+        $usersDetails->ssn = 0;
+        $usersDetails->update_done = 'no';
 
 
+        $usersDetails->first_name = $request->input('first_name');
+        $usersDetails->last_name = $request->input('last_name');
+        $usersDetails->home_phone = $request->input('home_phone');
+        $usersDetails->work_phone = $request->input('work_phone');
+        $usersDetails->customer_position = $request->input('role');
 
-            $currentTimestamp = now();
+        $usersDetails->additional_email = $request->input('additional_email');
 
+        $usersDetails->customer_company = $request->input('company');
 
+        $usersDetails->customer_type = $request->input('user_type');
 
-            $user->meta()->createMany([
+        $usersDetails->save();
 
-                ['user_id' => $userId, 'meta_key' => 'first_name', 'meta_value' => $request['first_name']],
+        $customerAddress = new CustomerUserAddress();
+        $customerAddress->user_id = $userId;
+        $customerAddress->address_line1 = $request['address1'];
+        $customerAddress->address_line2 = $request['address_unit'];
+        $customerAddress->address_primary = ($request['address_type'] == 'home') ? 'yes' : 'no';
+        $customerAddress->city = $request['city'];
+        // $customerAddress->city_id = $request['city_id'];
+        $customerAddress->address_type = $request['address_type'];
+        $customerAddress->state_id = $request['state_id'];
+        $nearestZip = DB::table('location_cities')
+            ->select('zip')
+            ->where('zip', 'like', '%' . $request['zip_code'] . '%')
 
-                ['user_id' => $userId, 'meta_key' => 'last_name', 'meta_value' => $request['last_name']],
+            ->orderByRaw('ABS(zip - ' . $request['zip_code'] . ')')
+            ->first();
 
-                ['user_id' => $userId, 'meta_key' => 'home_phone', 'meta_value' => $request['home_phone']],
+        // If a nearest ZIP code is found, use it; otherwise, use the provided ZIP code
+        $customerAddress->zipcode = $nearestZip ? $nearestZip->zip : $request['zip_code'];
 
-                ['user_id' => $userId, 'meta_key' => 'work_phone', 'meta_value' => $request['work_phone']],
+        $city = DB::table('location_cities')->where('city', $request['city'])->first();
 
-                ['user_id' => $userId, 'meta_key' => 'created_at', 'meta_value' => $currentTimestamp],
+        if ($city) {
+            $matchingCity = DB::table('location_cities')->where('zip', $request['zip_code'])->first();
 
-                ['user_id' => $userId, 'meta_key' => 'updated_at', 'meta_value' => $currentTimestamp],
+            if ($matchingCity) {
+                $customerAddress->city_id = $matchingCity->city_id;
+            } else {
+                $nearestCity = DB::table('location_cities')
+                    ->select('city_id')
+                    ->where('zip', 'like', '%' . $request['zip_code'] . '%')
+                    ->orderByRaw('ABS(zip - ' . $request['zip_code'] . ')')
+                    ->first();
 
-            ]);
-
-
-
-            // For the first address
-
-            if ($request->filled('address_type') && $request->filled('city')) {
-
-                $customerAddress = new CustomerUserAddress();
-
-                $customerAddress->user_id = $userId;
-
-                $customerAddress->address_line1 = $request['address1'];
-
-                $customerAddress->address_line2 = $request['address_unit'];
-
-                $customerAddress->city = $request['city'];
-
-                $customerAddress->address_type = $request['address_type'];
-
-                $customerAddress->state_id = $request['state_id'];
-
-                $customerAddress->zipcode = $request['zip_code'];
-
-                $customerAddress->save();
-            }
-
-
-
-            // For the second address
-
-            // if ($request->filled('anotheraddress_type') && $request->filled('anothercity')) {
-
-            //     $customerAddress = new CustomerUserAddress();
-
-            //     $customerAddress->user_id = $userId;
-
-            //     $customerAddress->address_line1 = $request['anotheraddress1'];
-
-            //     $customerAddress->address_line2 = $request['anotheraddress_unit'];
-
-            //     $customerAddress->city = $request['anothercity'];
-
-            //     $customerAddress->address_type = $request['anotheraddress_type'];
-
-            //     $customerAddress->state_id = $request['anotherstate_id'];
-
-            //     $customerAddress->zipcode = $request['anotherzip_code'];
-
-            //     $customerAddress->save();
-            // }
-
-
-
-
-
-            $userNotes = new UserNotesCustomer();
-
-            $userNotes->user_id = $userId;
-
-            $userNotes->note = $request['customer_notes'];
-
-            $userNotes->save();
-
-
-
-            $tagIds = $request['tag_id'];
-
-
-
-            if (!empty($tagIds)) {
-
-                foreach ($tagIds as $tagId) {
-
-                    $userTag = new UserTag();
-
-                    $userTag->user_id = $userId;
-
-                    $userTag->tag_id = $tagId;
-
-                    $userTag->save();
+                if ($nearestCity) {
+                    $customerAddress->city_id = $nearestCity->city_id;
+                } else {
+                    $customerAddress->city_id = 0;
                 }
             }
+        } else {
+            $customerAddress->city_id = 0;
+        }
+
+        $address = $request['address1'] . ', ' . $request['city'];
+
+        // Make a request to the Google Maps Geocoding API  . ', ' . $request['zip_code']
+        $response = file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($address) . '&key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&callback');
+
+        // Decode the JSON response
+        $data = json_decode($response);
+
+        // Check if the response contains results
+        if ($data && $data->status === 'OK') {
+            // Extract latitude and longitude from the response
+            $latitude = $data->results[0]->geometry->location->lat;
+            $longitude = $data->results[0]->geometry->location->lng;
+
+            // Store latitude and longitude in the $customerAddress object
+            $customerAddress->latitude = $latitude;
+            $customerAddress->longitude = $longitude;
+        } else {
+            // Handle error or set default values
+            $customerAddress->latitude = null;
+            $customerAddress->longitude = null;
+        }
+
+        $customerAddress->save();
+
+        $userNotes = new UserNotesCustomer();
+        $userNotes->user_id = $userId;
+        $userNotes->added_by = auth()->user()->id;
+        $userNotes->last_updated_by = auth()->user()->id;
+        $userNotes->note = $request->input('customer_notes');
+        $userNotes->save();
+
+
+        $tagIds = $request['tag_id'];
+
+        if (!empty($tagIds)) {
+            foreach ($tagIds as $tagId) {
+                $userTag = new UserTag();
+                $userTag->user_id = $userId;
+                $userTag->tag_id = $tagId;
+                $userTag->save();
+            }
+        }
+
 
 
 
