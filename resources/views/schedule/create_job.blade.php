@@ -6,7 +6,7 @@
     <link href="{{ asset('public/admin/dist/css/style.min.css') }}" rel="stylesheet" />
     <div class="createScheduleData">
 
-        <input type="hidden" class="travel_input" id="travel_input" name="travel_input" value="">       
+        <input type="hidden" class="travel_input" id="travel_input" name="travel_input" value="">
         @if (isset($technician) && !empty($technician))
 
             <div class="container-fluid">
@@ -260,15 +260,15 @@
                                         <h6 class="card-title required-field"><i class="fas fa fa-calendar-check-o"></i>
                                             Duration</h6>
                                         <div class="form-group">
-                                            <select class="form-control duration" id="duration"
-                                                name="duration">
+                                            <select class="form-control duration" id="duration" name="duration">
                                                 <option value="240">4 Hours</option>
                                                 <option value="180">3 Hours</option>
                                                 <option value="120" selected>2 Hours</option>
                                                 <option value="60">1 Hours</option>
                                                 <option value="30">30 min</option>
                                             </select>
-                                            <small id="result_travel" class="text-success" style="display: none;"></small>
+                                            <small id="result_travel" class="text-success"
+                                                style="display: none;"></small>
                                         </div>
                                     </div>
                                 </div>
@@ -823,21 +823,20 @@
     <!-- Bootstrap Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script>
-        
-        $(document).ready(function() { 
+        $(document).ready(function() {
             $(document).on('change', '.customer_address', function(event) {
                 var customer_add = $('#addres_lat').val();
                 var tech_id = $('.technician_id').val();
 
                 $.ajax({
-                    url: '{{ route("travel_time") }}',
+                    url: '{{ route('travel_time') }}',
                     type: 'GET', // Use GET instead of get
                     dataType: 'json',
                     data: {
                         tech_id: tech_id,
                         customer_add: customer_add,
                     },
-                    success: function (response) {
+                    success: function(response) {
                         // Check if the travel_time key exists in the response
                         if (response.hasOwnProperty('travel_time')) {
                             // Display the travel time
@@ -847,7 +846,7 @@
                             $('#travel_input').val('Travel time not available.');
                         }
                     },
-                    error: function (xhr, status, error) {
+                    error: function(xhr, status, error) {
                         console.error(xhr.responseText);
                     }
                 });
@@ -876,12 +875,11 @@
                 console.log(totalTime); // Display the total time in hours
 
                 $('#result_travel').show();
-                $('#result_travel').text('Travel time :'+ totalTime +' hours');
-                
+                $('#result_travel').text('Travel time :' + totalTime + ' hours');
+
             });
 
         });
-
     </script>
     <script>
         $(document).ready(function() {
@@ -1069,19 +1067,19 @@
 
                                 $('.btn-close').trigger(
                                     'click');
-                                    var schedule_id = data.schedule_id;
-                                    $.ajax({
-                                        url: "{{ url('get/mail/schedule') }}",
-                                        data: {
-                                            schedule_id: schedule_id,
-                                            type: 'reschedule',
-                                        },
-                                        type: 'GET',
-                                        success: function(data) {
-                                          console.log(data);                                          
-                                        },
-                                    });
-                                    
+                                var schedule_id = data.schedule_id;
+                                $.ajax({
+                                    url: "{{ url('get/mail/schedule') }}",
+                                    data: {
+                                        schedule_id: schedule_id,
+                                        type: 'reschedule',
+                                    },
+                                    type: 'GET',
+                                    success: function(data) {
+                                        console.log(data);
+                                    },
+                                });
+
 
                                 Swal.fire({
                                     title: "Success!",
@@ -1113,18 +1111,18 @@
 
                                 $('.btn-close').trigger(
                                     'click');
-                                     var schedule_id = data.schedule_id;
-                                    $.ajax({
-                                        url: "{{ url('get/mail/schedule') }}",
-                                        data: {
-                                            schedule_id: schedule_id,
-                                            type: 'schedule',
-                                        },
-                                        type: 'GET',
-                                        success: function(data) {
-                                          console.log(data);                                          
-                                        },
-                                    });
+                                var schedule_id = data.schedule_id;
+                                $.ajax({
+                                    url: "{{ url('get/mail/schedule') }}",
+                                    data: {
+                                        schedule_id: schedule_id,
+                                        type: 'schedule',
+                                    },
+                                    type: 'GET',
+                                    success: function(data) {
+                                        console.log(data);
+                                    },
+                                });
 
                                 Swal.fire({
                                     icon: "error",
@@ -1136,7 +1134,7 @@
 
                                 $('.btn-close').trigger(
                                     'click');
-                                    var schedule_id = data.schedule_id;
+                                var schedule_id = data.schedule_id;
 
                                 Swal.fire({
                                     title: "Success!",
@@ -1484,7 +1482,7 @@
                 }
 
                 $.ajax({
-                    url: 'get/user/by_number',
+                    url: '{{ url('get/user/by_number') }}',
                     method: 'GET',
                     data: {
                         phone: phone
@@ -1950,7 +1948,8 @@
                                     value: element.address_type,
                                     text: addressString
                                 });
-                                $('#addres_lat').val(element.latitude + ',' + element.longitude)
+                                $('#addres_lat').val(element.latitude + ',' + element
+                                    .longitude)
 
                                 option.attr('data-city', element.city);
 
@@ -2489,5 +2488,203 @@
         }
         //  end new changes 
     </script>
+
+    <script>
+        const firstNameInput = document.getElementById('first_name');
+        const lastNameInput = document.getElementById('last_name');
+        const displayNameInput = document.getElementById('display_name');
+
+        // Function to update the display name field
+        function updateDisplayName() {
+            const firstName = firstNameInput.value.trim();
+            const lastName = lastNameInput.value.trim();
+
+            // Concatenate first and last name
+            const displayName = firstName + ' ' + lastName;
+
+            // Set the display name input value
+            displayNameInput.value = displayName;
+        }
+
+        // Listen for input changes on first and last name fields
+        firstNameInput.addEventListener('input', updateDisplayName);
+        lastNameInput.addEventListener('input', updateDisplayName);
+    </script>
+
+    <script>
+        $(document).ready(function() {
+
+            $('#state_id').change(function() {
+
+                var stateId = $(this).val();
+
+                var citySelect = $('#city');
+
+                citySelect.html('<option selected disabled value="">Loading...</option>');
+
+
+
+                // Make an AJAX request to fetch the cities based on the selected state
+
+                $.ajax({
+
+                    url: "{{ route('getcities') }}", // Correct route URL
+
+                    type: 'GET',
+
+                    data: {
+
+                        state_id: stateId
+
+                    },
+
+                    dataType: 'json',
+
+                    success: function(data) {
+
+                        citySelect.html(
+                            '<option selected disabled value="">Select City...</option>');
+
+                        $.each(data, function(index, city) {
+
+                            citySelect.append('<option value="' + city.city_id + '">' +
+                                city.city + ' - ' + city.zip + '</option>');
+
+                        });
+
+                    },
+
+                    error: function(xhr, status, error) {
+
+                        console.error('Error fetching cities:', error);
+
+                    }
+
+                });
+
+            });
+
+
+
+            // Trigger another function to get zip code after selecting a city
+
+            $('#city').change(function() {
+
+                var cityId = $(this).val();
+
+                var cityName = $(this).find(':selected').text().split(' - ')[
+                0]; // Extract city name from option text
+
+                getZipCode(cityId, cityName); // Call the function to get the zip code
+
+            });
+
+        });
+
+        // Function to get zip code
+        var appendedCities = []; // Array to store already appended cities
+
+        function searchCity() {
+            // Initialize autocomplete
+            $("#city").autocomplete({
+                source: function(request, response) {
+                    // Clear previous autocomplete results
+                    $("#autocomplete-results").empty();
+
+                    $.ajax({
+                        url: "{{ route('autocomplete.city') }}",
+                        data: {
+                            term: request.term
+                        },
+                        dataType: "json",
+                        type: "GET",
+                        success: function(data) {
+                            response(data);
+                        },
+                        error: function(response) {
+                            console.log("Error fetching city data:", response);
+                        }
+                    });
+                },
+                minLength: 2,
+                select: function(event, ui) {
+                    $("#city").val(ui.item.city);
+                    $("#city_id").val(ui.item.city_id);
+                    return false;
+                }
+            }).data("ui-autocomplete")._renderItem = function(ul, item) {
+                // Render each item
+                var listItem = $("<li>").text(item.city).appendTo("#autocomplete-results");
+                listItem.data("city_id", item.city_id);
+                return listItem;
+            };
+
+            // Handle click on autocomplete results
+            $("#autocomplete-results").on("click", "li", function() {
+                var cityName = $(this).text();
+                var cityId = $(this).data("city_id");
+
+                // Check if cityId is retrieved properly
+                console.log("Selected City ID:", cityId);
+
+                // Set the city ID
+                $("#city_id").val(cityId);
+
+                // Set the city name
+                $("#city").val(cityName);
+
+                // Hide autocomplete results
+                $("#autocomplete-results").hide();
+            });
+
+            // Handle input field click
+            $("#city").click(function() {
+                // Show autocomplete results box
+                $("#autocomplete-results").show();
+            });
+
+            // Clear appended city when input is cleared
+            $("#city").on("input", function() {
+                var inputVal = $(this).val();
+                if (inputVal === "") {
+                    // If input is cleared, re-initialize autocomplete
+                    $("#autocomplete-results").empty(); // Clear appended cities
+                    searchCity(); // Re-initialize autocomplete
+                }
+            });
+        }
+    </script>
+    
+<script>
+    function addNewAddress() {
+
+        var addressCardTwo = document.getElementById("adresscardtwo");
+
+        if (addressCardTwo.style.display === "none") {
+
+            addressCardTwo.style.display = "block";
+
+        } else {
+
+            addressCardTwo.style.display = "none";
+
+        }
+
+        var addressCardTwoone = document.getElementById("adresscardtwo1");
+
+        if (addressCardTwoone.style.display === "none") {
+
+            addressCardTwoone.style.display = "block";
+
+        } else {
+
+            addressCardTwoone.style.display = "none";
+
+        }
+
+    }
+
+</script>
+
 @endsection
 @endsection
