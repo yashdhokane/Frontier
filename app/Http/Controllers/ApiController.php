@@ -77,7 +77,7 @@ public function reset_password(Request $request)
         $currentDate = Carbon::now()->toDateString();
        // dd($currentDate);
         // Check if there are any jobs for the specified technician (user_id) with the current date
-        $jobs = JobModel::where('technician_id', $userId)
+        $jobs = JobModel::with('user','addresscustomer')->where('technician_id', $userId)
                     ->whereDate('created_at', $currentDate)
                     
                     ->get();
@@ -92,6 +92,7 @@ public function reset_password(Request $request)
 
 public function getTechnicianJobsHistory(Request $request)
 {
+    // Get user_id and date from the request
     $userId = $request->input('user_id');
     $date = $request->input('date');
 
@@ -102,12 +103,16 @@ public function getTechnicianJobsHistory(Request $request)
     }
 
     // Parse and format the date using Carbon
-    $formattedDate = Carbon::createFromFormat('m-d-Y', $date)->format('Y-m-d');
+    try {
+        $formattedDate = Carbon::createFromFormat('m-d-Y', $date)->format('Y-m-d');
+    } catch (\Exception $e) {
+        return response()->json(['message' => 'Invalid date format'], 400);
+    }
 
     // Filter the jobs by technician_id and the specified date
-    $jobs = JobModel::where('technician_id', $userId)
-                ->whereDate('created_at', $formattedDate)
-                ->get();
+    $jobs = JobModel::with('user','addresscustomer')->where('technician_id', $userId)
+                    ->whereDate('created_at', $formattedDate)
+                    ->get();
 
     if ($jobs->isEmpty()) {
         return response()->json(['message' => 'No jobs available for the specified date'], 404);
@@ -115,5 +120,22 @@ public function getTechnicianJobsHistory(Request $request)
 
     return response()->json($jobs);
 }
+
+public function getcustomerJobsHistory(Request $request)
+    {
+        $userId = $request->input('user_id');
+        
+       // dd($currentDate);
+        // Check if there are any jobs for the specified technician (user_id) with the current date
+        $jobs = JobModel::with('user')->where('customer_id', $userId)
+                    ->get();
+
+        if ($jobs->isEmpty()) {
+            return response()->json(['message' => 'Today no  jobs are available '], 404);
+        }
+
+        return response()->json($jobs);
+    }
+
 
 }

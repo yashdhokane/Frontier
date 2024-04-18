@@ -128,10 +128,8 @@ public function userAddress()
 {
     return $this->hasOne(CustomerUserAddress::class, 'user_id', 'id');
 }
-
 public function fleetDetails()
 {
     return $this->hasOne(FleetDetails::class, 'user_id', 'id');
 }
-
 }

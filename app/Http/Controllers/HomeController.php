@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\JobModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use function App\Helpers\getSiteSettings;
 
 class HomeController extends Controller
 {
@@ -20,7 +21,7 @@ class HomeController extends Controller
         $complete = JobModel::where('status', 'closed')->count();
 
         $users = User::where('role','technician')->latest()->limit(5)->get();
-        $siteSettings = $this->getSiteSettings();
+      //  $siteSettings =$this->getSiteSettings();
 		$adminCount = User::where('role', 'admin')->count();
 		$dispatcherCount = User::where('role', 'dispatcher')->count();
 		$technicianCount = User::where('role', 'technician')->count();
@@ -51,7 +52,7 @@ foreach ($customeruser as $user) {
     // Merge user addresses and jobs data into user object
     $user->user_addresses = $userAddresses;
     // dd($user->user_addresses );
-    $user->jobs = $jobs;
+     $user->jobs = $jobs;
      $user->gross_total = $grossTotal ? $grossTotal->grosstotal : 0;
 
 }
@@ -93,13 +94,13 @@ foreach ($customeruser as $user) {
             $role = Auth()->user()->role;
 
             if ($role == 'technician') {
-                return view('admin.main',compact('job','customeruser','technicianuser','customerCount','dispatcherCount','technicianCount','adminCount','siteSettings','users','totalCalls','inProgress','opened','complete'));
+                return view('admin.main',compact('job','customeruser','technicianuser','customerCount','dispatcherCount','technicianCount','adminCount','users','totalCalls','inProgress','opened','complete'));
             } else if ($role == 'dispatcher') {
-                return view('admin.main',compact('job','customeruser','technicianuser','customerCount','dispatcherCount','technicianCount','adminCount','siteSettings','users','totalCalls','inProgress','opened','complete'));
+                return view('admin.main',compact('job','customeruser','technicianuser','customerCount','dispatcherCount','technicianCount','adminCount','users','totalCalls','inProgress','opened','complete'));
             } else if ($role == 'admin') {
-                return view('admin.main',compact('job','customeruser','technicianuser','customerCount','dispatcherCount','technicianCount','adminCount','siteSettings','users','totalCalls','inProgress','opened','complete'));
+                return view('admin.main',compact('job','customeruser','technicianuser','customerCount','dispatcherCount','technicianCount','adminCount','users','totalCalls','inProgress','opened','complete'));
             }else if ($role == 'superadmin') {
-                return view('admin.main',compact('job','customeruser','technicianuser','customerCount','dispatcherCount','technicianCount','adminCount','siteSettings','users','totalCalls','inProgress','opened','complete'));
+                return view('admin.main',compact('job','customeruser','technicianuser','customerCount','dispatcherCount','technicianCount','adminCount','users','totalCalls','inProgress','opened','complete'));
             }
 
 
@@ -109,11 +110,11 @@ foreach ($customeruser as $user) {
 
     }
 
-     public function getSiteSettings($id = 1)
-    {
-        $siteSettings = DB::table('site_settings')->where('id', $id)->first();
+    //  public function getSiteSettings($id = 1)
+    // {
+    //     $siteSettings = DB::table('site_settings')->where('id', $id)->first();
 
-        return $siteSettings;
-    }
+    //     return $siteSettings;
+    // }
 
 }

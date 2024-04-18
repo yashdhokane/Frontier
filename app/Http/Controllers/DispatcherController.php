@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\User;
+use App\Models\UsersDetails;
+
+
 use App\Models\UserTag;
 use App\Models\SiteTags;
 use App\Models\Technician;
@@ -29,7 +32,7 @@ class DispatcherController extends Controller
 
     public function create()
     {
-        $permissions = DB::table('permissions')->pluck('name')->toArray();
+        $permissions = DB::table('user_permissions')->pluck('permission_id')->toArray();
 
         $users = User::all();
         //    $roles = Role::all();
@@ -96,21 +99,36 @@ class DispatcherController extends Controller
         }
 
         $userId = $user->id;
+      $usersDetails = new UsersDetails();
+        $usersDetails->user_id = $userId;
+        $usersDetails->unique_number = 0;
+        $usersDetails->lifetime_value = 0;
+        $usersDetails->license_number = 0;
+        // $usersDetails->dob = 0;
+        $usersDetails->ssn = 0;
+        $usersDetails->update_done = 'no';
 
-        $currentTimestamp = now();
 
-        $userMeta = [
-            ['user_id' => $userId, 'meta_key' => 'first_name', 'meta_value' => $request['first_name']],
-            ['user_id' => $userId, 'meta_key' => 'last_name', 'meta_value' => $request['last_name']],
-            ['user_id' => $userId, 'meta_key' => 'home_phone', 'meta_value' => $request['home_phone']],
-            ['user_id' => $userId, 'meta_key' => 'work_phone', 'meta_value' => $request['work_phone']],
-            ['user_id' => $userId, 'meta_key' => 'created_at', 'meta_value' => $currentTimestamp],
-            ['user_id' => $userId, 'meta_key' => 'updated_at', 'meta_value' => $currentTimestamp],
-        ];
+        $usersDetails->first_name = $request->input('first_name');
+        $usersDetails->last_name = $request->input('last_name');
+        $usersDetails->home_phone = $request->input('home_phone');
+        $usersDetails->work_phone = $request->input('work_phone');
 
-        CustomerUserMeta::insert($userMeta);
 
-        if ($request->filled('city')) {
+        $usersDetails->save();
+        // $currentTimestamp = now();
+
+        // $userMeta = [
+        //     ['user_id' => $userId, 'meta_key' => 'first_name', 'meta_value' => $request['first_name']],
+        //     ['user_id' => $userId, 'meta_key' => 'last_name', 'meta_value' => $request['last_name']],
+        //     ['user_id' => $userId, 'meta_key' => 'home_phone', 'meta_value' => $request['home_phone']],
+        //     ['user_id' => $userId, 'meta_key' => 'work_phone', 'meta_value' => $request['work_phone']],
+        //     ['user_id' => $userId, 'meta_key' => 'created_at', 'meta_value' => $currentTimestamp],
+        //     ['user_id' => $userId, 'meta_key' => 'updated_at', 'meta_value' => $currentTimestamp],
+        // ];
+
+        // CustomerUserMeta::insert($userMeta);
+
             $customerAddress = new CustomerUserAddress();
             $customerAddress->user_id = $userId;
             $customerAddress->address_line1 = $request['address1'];
@@ -188,7 +206,7 @@ class DispatcherController extends Controller
             $customerAddress->save();
 
 
-        }
+        
 
         $tagIds = $request['tag_id'];
 
@@ -355,29 +373,46 @@ class DispatcherController extends Controller
 
 
         // Update user meta
-        $user->meta()->updateOrCreate(
-            ['meta_key' => 'first_name'],
-            ['meta_value' => $request['first_name']]
-        );
+        // $user->meta()->updateOrCreate(
+        //     ['meta_key' => 'first_name'],
+        //     ['meta_value' => $request['first_name']]
+        // );
 
-        $user->meta()->updateOrCreate(
-            ['meta_key' => 'last_name'],
-            ['meta_value' => $request['last_name']]
-        );
+        // $user->meta()->updateOrCreate(
+        //     ['meta_key' => 'last_name'],
+        //     ['meta_value' => $request['last_name']]
+        // );
 
-        $user->meta()->updateOrCreate(
-            ['meta_key' => 'home_phone'],
-            ['meta_value' => $request['home_phone']]
-        );
+        // $user->meta()->updateOrCreate(
+        //     ['meta_key' => 'home_phone'],
+        //     ['meta_value' => $request['home_phone']]
+        // );
 
-        $user->meta()->updateOrCreate(
-            ['meta_key' => 'work_phone'],
-            ['meta_value' => $request['work_phone']]
+        // $user->meta()->updateOrCreate(
+        //     ['meta_key' => 'work_phone'],
+        //     ['meta_value' => $request['work_phone']]
+        // );
+         $userDetails = UsersDetails::updateOrCreate(
+            ['user_id' => $id],
+            [
+                'first_name' => $request->input('first_name'),
+                'last_name' => $request->input('last_name'),
+                'home_phone' => $request->input('home_phone'),
+                'work_phone' => $request->input('work_phone'),
+
+                'lifetime_value' => '$0.00',
+                'license_number' => 0,
+                // 'dob' => $request->input('dob'),
+                'ssn' => 0,
+                'update_done' => 'no'
+            ]
         );
+        $userDetails->save();
+
 
         // Update user address
 
-        if ($request->filled('city')) {
+        
             // Create or update the customer address
             $customerAddress = CustomerUserAddress::updateOrCreate(
                 ['user_id' => $user->id],
@@ -437,7 +472,7 @@ class DispatcherController extends Controller
 
             // Save the updated customer address
             $customerAddress->save();
-        }
+      
 
 
         $tagIds = $request->input('tag_id', []);

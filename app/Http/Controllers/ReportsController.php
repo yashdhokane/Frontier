@@ -297,8 +297,6 @@ class ReportsController extends Controller
 
         return view('reports.data_report', compact('data', 'customerDetails', 'zipCodeDetails', 'cityDetails', 'stateDetails', 'jobs', 'monthJobs', 'monthJobscount', 'daily', 'weekly', 'monthly', 'tagCounts', 'priorityCounts', 'leadSourceCounts', 'CountsManufacturer', 'CountsAppliance','jobstatus'));
     }
-
-
     public function fleetreport() {
         // Fetch users with fleet details where the role is 'technician'
         $users = User::with('fleetDetails')->where('role', 'technician')->get();
@@ -316,6 +314,4 @@ class ReportsController extends Controller
         
         return view('reports.fleetreport', compact('users', 'fleetKeys'));
     }
-    
-    
 }

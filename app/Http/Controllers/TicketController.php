@@ -129,7 +129,7 @@ class TicketController extends Controller
 
         $source = SiteLeadSource::whereIn('source_id', $leadone)->get();
 
-        $leadsource = SiteLeadSource::all();
+         $leadsource = SiteLeadSource::all();
 
         $activity = JobActivity::with('user')->where('job_id', $id)->latest()->get();
 
@@ -331,7 +331,7 @@ class TicketController extends Controller
     }
 
 
-    public function attachment(Request $request, $id)
+  public function attachment(Request $request, $id)
     {
         $file = new JobFile();
         $file->job_id = $id;
@@ -384,6 +384,7 @@ class TicketController extends Controller
 
        
     }
+
 
     public function leadSource(Request $request, $id)
     {
