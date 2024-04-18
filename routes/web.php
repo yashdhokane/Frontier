@@ -11,7 +11,6 @@ use App\Http\Controllers\ReportsController;
 
 
 use App\Http\Controllers\FleetController;
-use App\Http\Controllers\MailController;
 
 use App\Http\Controllers\EventController;
 
@@ -50,6 +49,7 @@ use App\Http\Controllers\EstimateCategoryController;
 use App\Http\Controllers\CrmController;
 
 
+use App\Http\Controllers\MailController;
 
 use App\Http\Controllers\HomeController;
 
@@ -342,6 +342,10 @@ Route::group(['middleware' => 'role:customer'], function () {
 
 
     Route::POST('/technicians/updatefleet', [TechnicianController::class, 'updatefleet'])->name('updatefleet');
+    Route::post('/technicians/sms/', [TechnicianController::class, 'smstechnician'])->name('smstechnician');
+    Route::post('/technicians/customer_tags_store/', [UserController::class, 'customer_tags_store'])->name('customer_tags_store');
+    Route::post('/technicians/customer_file_store/', [UserController::class, 'customer_file_store'])->name('customer_file_store');
+    Route::post('/technicians/customer_leadsource_store/', [UserController::class, 'customer_leadsource_store'])->name('customer_leadsource_store');
 
     Route::POST('/technicians/store', [TechnicianController::class, 'store'])->name('technicians.store');
 
@@ -759,7 +763,8 @@ Route::middleware('auth')->group(function () {
     Route::get('get/mail/schedule', [MailController::class, 'index']);
     
 
-    // EventController  
+
+    // EventController
 
     Route::get('events', [EventController::class, 'index'])->name('events');
 
