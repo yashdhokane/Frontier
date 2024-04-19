@@ -21,4 +21,8 @@ class JobProduct extends Model
         'discount',
         'sub_total',
     ];
+    public function product()
+    {
+        return $this->hasOne(Products::class, 'product_id', 'product_id');
+    }
 }

@@ -22,4 +22,10 @@ class JobServices extends Model
         'discount',
         'sub_total',
     ];
+
+    public function service()
+    {
+        return $this->hasOne(Services::class, 'service_id', 'service_id');
+    }
+
 }

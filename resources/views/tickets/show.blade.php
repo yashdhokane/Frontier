@@ -130,9 +130,24 @@
                     <div class="card" style="border: 1px solid #D8D8D8;">
                         <div class="card-body">
                             <div class="">
-                                <h5 class="todo-desc mb-0 fs-3 font-weight-medium">
-                                    {{ $technicians->address ?? null }},{{ $technicians->city ?? null }},{{ $technicians->state ?? null }},{{ $technicians->zipcode ?? null }}
+                               <h5 class="todo-desc mb-0 fs-3 font-weight-medium">
+                                    @if(isset($technicians->address) && $technicians->address !== '')
+                                    {{ $technicians->address }}, 
+                                @endif
+
+                                @if(isset($technicians->city) && $technicians->city !== '')
+                                    {{ $technicians->city }}, 
+                                @endif
+
+                                @if(isset($technicians->state) && $technicians->state !== '')
+                                    {{ $technicians->state }}, 
+                                @endif
+
+                                @if(isset($technicians->zipcode) && $technicians->zipcode !== '')
+                                    {{ $technicians->zipcode }}
+                                @endif
                                 </h5>
+
 
                                 <iframe id="map238" width="100%" height="150" frameborder="0" style="border: 0"
                                     allowfullscreen=""></iframe>
@@ -154,7 +169,22 @@
                                 @if (!empty($technicians->user->mobile))
                                     <small class="text-muted">{{ $technicians->user->mobile ?? null }}<br />
                                 @endif
-                                {{ $technicians->address ?? null }},{{ $technicians->city ?? null }},{{ $technicians->state ?? null }},{{ $technicians->zipcode ?? null }}</small>
+                               @if(isset($technicians->address) && $technicians->address !== '')
+                                    {{ $technicians->address }}, 
+                                @endif
+
+                                @if(isset($technicians->city) && $technicians->city !== '')
+                                    {{ $technicians->city }}, 
+                                @endif
+
+                                @if(isset($technicians->state) && $technicians->state !== '')
+                                    {{ $technicians->state }}, 
+                                @endif
+
+                                @if(isset($technicians->zipcode) && $technicians->zipcode !== '')
+                                    {{ $technicians->zipcode }}
+                                @endif
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -164,9 +194,28 @@
                     <div class="card" style="border: 1px solid #D8D8D8;">
                         <div class="card-body">
                             <div class=""><span>Customer address</span>
-                                <h5 class="todo-desc mb-0 fs-3 font-weight-medium">
-                                    {{ $technicians->addresscustomer->address_line1 ?? null }},{{ $technicians->addresscustomer->address_line2 ?? null }},{{ $technicians->addresscustomer->city ?? null }},{{ $technicians->addresscustomer->state_name ?? null }},{{ $technicians->addresscustomer->zipcode ?? null }}
-                                </h5>
+                               <h5 class="todo-desc mb-0 fs-3 font-weight-medium">
+                                @if(isset($technicians->addresscustomer->address_line1) && $technicians->addresscustomer->address_line1 !== '')
+                                    {{ $technicians->addresscustomer->address_line1 }}, 
+                                @endif
+
+                                @if(isset($technicians->addresscustomer->address_line2) && $technicians->addresscustomer->address_line2 !== '')
+                                    {{ $technicians->addresscustomer->address_line2 }}, 
+                                @endif
+
+                                @if(isset($technicians->addresscustomer->city) && $technicians->addresscustomer->city !== '')
+                                    {{ $technicians->addresscustomer->city }}, 
+                                @endif
+
+                                @if(isset($technicians->addresscustomer->state_name) && $technicians->addresscustomer->state_name !== '')
+                                    {{ $technicians->addresscustomer->state_name }}, 
+                                @endif
+
+                                @if(isset($technicians->addresscustomer->zipcode) && $technicians->addresscustomer->zipcode !== '')
+                                    {{ $technicians->addresscustomer->zipcode }}
+                                @endif
+                            </h5>
+
 
                                 <iframe id="map" width="100%" height="150" frameborder="0" style="border: 0"
                                     allowfullscreen=""></iframe>
@@ -354,7 +403,7 @@
                             <h4 class="card-title">Technician Assigned</h4>
                             <div class="profile-pic mb-3 mt-3">
                                 @isset($technicians->usertechnician->user_image)
-                                    <img src="{{ asset('public/images/technician/' . $technicians->usertechnician->user_image) ?? null }}"
+                                    <img src="{{ asset('public/images/Uploads/users/' . $technicians->usertechnician->id . '/'. $technicians->usertechnician->user_image) ?? null }}"
                                         width="150" class="rounded-circle" alt="user"  onerror="this.onerror=null; this.src='{{ $defaultImage }}';"/>
                                 @else
                                     <img src="{{ $defaultImage }}" width="150" class="rounded-circle" alt="user" />
@@ -373,7 +422,7 @@
                             <h4 class="card-title">Ticket Creator</h4>
                             <div class="profile-pic mb-3 mt-3">
                                 @isset($technicians->addedby->user_image)
-                                    <img src="{{ asset('public/images/technician/' . $technicians->addedby->user_image) ?? null }}"
+                                    <img src="{{ asset('public/images/Uploads/users/' . $technicians->addedby->id . '/'  . $technicians->addedby->user_image) ?? null }}"
                                         width="150" class="rounded-circle" alt="user"  onerror="this.onerror=null; this.src='{{ $defaultImage }}';" />
                                 @else
                                     <img src="{{ $defaultImage }}" width="150" class="rounded-circle" alt="user" />
@@ -629,13 +678,13 @@
                                         <tr>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    @if ($technicians->usertechnician->user_image)
-                                                        <img src="{{ url('/images/technician/' . $technicians->usertechnician->user_image) }}"
+                                                    @isset ($technicians->usertechnician->user_image)
+                                                        <img src="{{ asset('public/images/Uploads/users/' . $technicians->usertechnician->id . '/'. $technicians->usertechnician->user_image) }}"
                                                             class="rounded-circle" width="40"  onerror="this.onerror=null; this.src='{{ $defaultImage }}';">
                                                     @else
                                                         <img src="{{ $defaultImage }}" class="rounded-circle"
                                                             width="40">
-                                                    @endif
+                                                    @endisset
                                                     <span
                                                         class="ms-3 fw-normal">{{ $technicians->usertechnician->name ?? null }}</span>
                                                 </div>
@@ -671,7 +720,7 @@
                                     <tbody>
                                         <tr>
                                             <td>{{ $technicians->job_code ?? null }} -
-                                                {{ $technicians->jobserviceinfo->service_name ?? null }} <small
+                                                {{ $technicians->jobserviceinfo->service->service_name ?? null }} <small
                                                     class="text-muted">{{ $technicians->warranty_type ?? null }}</small>
                                             </td>
                                             <td>${{ $technicians->jobserviceinfo->base_price ?? null }}</td>
@@ -681,7 +730,7 @@
                                         </tr>
                                         <tr>
                                             <td>{{ $technicians->job_code ?? null }} -
-                                                {{ $technicians->jobproductinfo->product_name ?? null }}
+                                                {{ $technicians->jobproductinfo->product->product_name ?? null }}
                                                 {{-- <small class="text-muted">LG Washing Machine Stand</small> --}}
                                             </td>
                                             <td>${{ $technicians->jobproductinfo->base_price ?? null }}</td>
@@ -722,7 +771,7 @@
                                         <li class="d-flex align-items-start">
                                             @isset($item->user_image)
                                                 <img class="me-3 rounded"
-                                                    src="{{ asset('public/images/admin/' . $item->user_image) ?? null }}"
+                                                    src="{{ asset('public/images/Uploads/users/' . $item->added_by . '/'. $item->user_image) ?? null }}"
                                                     width="60" alt="image"  onerror="this.onerror=null; this.src='{{ $defaultImage }}';" />
                                             @else
                                                 <img class="me-3 rounded" src="{{ $defaultImage }}" width="60"
