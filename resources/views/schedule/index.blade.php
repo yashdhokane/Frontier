@@ -59,15 +59,68 @@
             border-radius: 50%;
             margin-bottom: 5px;
         }
-       .popupContainer::after {
+
+        .popupContainer::after {
             content: "";
             position: absolute;
-            bottom: 100%; /* Change top to bottom */
+            bottom: 100%;
+            /* Change top to bottom */
             left: 50%;
             margin-left: -5px;
             border-width: 6px;
             border-style: solid;
-            border-color: transparent transparent #444445 transparent; /* Change border-color */
+            border-color: transparent transparent #444445 transparent;
+            /* Change border-color */
+        }
+
+        .smscontainer {
+            position: absolute;
+            z-index: 999;
+            background-color: #444445;
+            color: white;
+            border: 1px solid #cccccc;
+            padding: 10px;
+            display: none;
+            width: 300px;
+        }
+
+        .smscontainer::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            /* Adjust top position as needed */
+            right: 100%;
+            /* Change left to right */
+            margin-top: -5px;
+            /* Adjust margin-top as needed */
+            border-width: 6px;
+            border-style: solid;
+            border-color: transparent #444445 transparent transparent;
+            /* Change border-color */
+        }
+        .settingcontainer {
+            position: absolute;
+            z-index: 999;
+            background-color: #444445;
+            color: white;
+            border: 1px solid #cccccc;
+            padding: 10px;
+            display: none;
+        }
+
+        .settingcontainer::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            /* Adjust top position as needed */
+            right: 100%;
+            /* Change left to right */
+            margin-top: -5px;
+            /* Adjust margin-top as needed */
+            border-width: 6px;
+            border-style: solid;
+            border-color: transparent #444445 transparent transparent;
+            /* Change border-color */
         }
 
         /* Add more styles as needed */
@@ -135,14 +188,33 @@
                                                                         {{ $user_data_array[$value]['name'] }}
                                                                     @endif
                                                                 </a>
-                                                                <div class="popupContainer text-start" style="display: none;">
+                                                                <div class="popupContainer text-start"
+                                                                    style="display: none;">
                                                                     <!-- Popup content for profile link -->
-                                                                    <a href="{{ url('technicians/show/'.$value) }}" class="popup-option"><i class="fa fa-user pe-2"></i>View Profile</a></hr>
+                                                                    <a href="{{ url('technicians/show/' . $value) }}"
+                                                                        class="popup-option"><i
+                                                                            class="fa fa-user pe-2"></i>View Profile</a>
+                                                                    </hr>
                                                                     <!-- Popup content for message option -->
-                                                                    <a href="#" class="popup-option message-popup"><i class="fa fa-list-alt pe-2"></i>Message</a></hr>
-                                                                    <a href="#" class="popup-option"><i class="fa fa-wrench pe-2"></i>Settings</a>
+                                                                    <a href="#" class="popup-option message-popup"><i
+                                                                            class="fa fa-list-alt pe-2"></i>Message</a></hr>
+                                                                    <a href="#" class="popup-option setting-popup"><i
+                                                                            class="fa fa-wrench pe-2"></i>Settings</a>
                                                                 </div>
-                                                                
+
+                                                                <div class="smscontainer">
+
+                                                                    <input type="text"
+                                                                        class="message_content form-control p-1 my-1"
+                                                                        placeholder="Type Something....">
+                                                                    <button
+                                                                        class="btn btn-info p-0 px-1 my-1 float-end">Send</button>
+
+                                                                </div>
+                                                                <div class="settingcontainer">
+
+
+                                                                </div>
 
                                                             </th>
                                                         @endforeach
@@ -347,7 +419,8 @@
                                                                                                 &nbsp;&nbsp;
                                                                                             </h5>
                                                                                             <p style="font-size: 11px;">
-                                                                                                <i class="fas fa-clock"></i>
+                                                                                                <i
+                                                                                                    class="fas fa-clock"></i>
                                                                                                 {{ $timeString }} --
                                                                                                 {{ $value2->JobModel->job_code ?? null }}<br>{{ $value2->JobModel->job_title ?? null }}
                                                                                             </p>
@@ -494,89 +567,8 @@
     <!-- Bootstrap Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
-    <script>
-        $(document).ready(function() {
-                // Click event handler for tech_profile links
-                $('.tech_profile').click(function(event) {
-                    event.preventDefault(); // Prevent default link behavior
+    <script src="{{ url('public/admin/schedule/script.js') }}"></script>
 
-                    var profileLink = $(this);
-                    var popupContainer = profileLink.next('.popupContainer');
-
-                    // Hide all other open popups
-                    $('.popupContainer').not(popupContainer).fadeOut();
-
-                    // Calculate position of the popup relative to the clicked element
-                    var position = profileLink.offset();
-                    var topPosition = position.top + profileLink.outerHeight() + 10; // Adjust 10 pixels for spacing
-                    var leftPosition = position.left;
-
-                    // Set position of the popup
-                    popupContainer.css({
-                        'top': 56 + 'px',
-                        'left': 16 + 'px'
-                    });
-
-                    // Show the popup
-                    popupContainer.fadeIn();
-                });
-
-                // Click event handler for profile link images
-                $('.tech_profile img').click(function(event) {
-                    event.stopPropagation(); // Stop event propagation to prevent the click from reaching the parent link
-                });
-
-                // Click event listener for the document
-                $(document).click(function(event) {
-                    var target = $(event.target);
-
-                    // Check if the clicked element is not within any popup container or profile link
-                    if (!target.closest('.popupContainer').length && !target.is('.tech_profile')) {
-                        // Hide all popup containers if any are currently visible
-                        $('.popupContainer').fadeOut();
-                    }
-                });
-        });
-
-
-
-
-
-        // JavaScript (jQuery)
-        $(document).ready(function() {
-            // Show job details on hover
-            $('.show_job_details').hover(function() {
-                // Show the corresponding popup
-                $(this).next('.open_job_details').fadeIn();
-            }, function() {
-                // Hide the popup when mouse leaves
-                $(this).next('.open_job_details').fadeOut();
-
-            });
-
-            // Close the popup when mouse leaves
-            $('.open_job_details').mouseleave(function() {
-                $(this).fadeOut();
-            });
-        });
-
-
-        function openPopup(popup) {
-            if (popup) {
-                popup.style.display = 'block';
-            } else {
-                console.error('Popup element is null');
-            }
-        }
-
-        function closePopup(popup) {
-            if (popup) {
-                popup.style.display = 'none';
-            } else {
-                console.error('Popup element is null');
-            }
-        }
-    </script>
 
     <script>
         $(document).ready(function() {
