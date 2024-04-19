@@ -939,7 +939,7 @@ class ScheduleController extends Controller
 
                     $activity->job_id = $jobId;
                     $activity->user_id = auth()->user()->id;
-                    $activity->activity = 'Job scheduled for' . $formattedDateTime;
+                    $activity->activity = 'Job scheduled for ' . $formattedDateTime;
 
                     $activity->save();
 
