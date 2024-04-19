@@ -981,8 +981,9 @@
     </script>
     <script>
         // Get latitude and longitude values from your data or variables
-        var latitude = {{ $technicians->addresscustomer->latitude ?? null }}; // Example latitude
-        var longitude = {{ $technicians->addresscustomer->longitude ?? null }}; // Example longitude
+        var latitude = {!! isset($technicians->addresscustomer->latitude) ? $technicians->addresscustomer->latitude : 'null' !!}; // Example latitude
+        var longitude = {!! isset($technicians->addresscustomer->longitude) ? $technicians->addresscustomer->longitude : 'null' !!}; // Example longitude
+
 
         // Construct the URL with the latitude and longitude values
         // var mapUrl = 'https://www.google.com/maps/embed/v1/view?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&center=' +
