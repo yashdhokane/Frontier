@@ -1082,8 +1082,8 @@
 
 
                                 Swal.fire({
-                                    title: "Success!",
-                                    text: "Job Has Been Reschedule",
+                                    title: "Done",
+                                    text: "A job has been reschedule and assigned to technician.",
                                     icon: "success"
                                 }).then((
                                     result) => {
@@ -1137,8 +1137,8 @@
                                 var schedule_id = data.schedule_id;
 
                                 Swal.fire({
-                                    title: "Success!",
-                                    text: "Job Has Been Created",
+                                    title: "Done",
+                                    text: "A new job has been created and assigned to technician.",
                                     icon: "success"
                                 }).then((result) => {
                                     // Reload the page after the user clicks the 'OK' button on the success message
@@ -1374,8 +1374,8 @@
                             // Display a success message using SweetAlert
                             Swal.fire({
                                 icon: 'success',
-                                title: 'Success',
-                                text: 'Operation completed successfully.'
+                                title: 'Done',
+                                text: 'New Customer Added Successfully.'
                             }).then(function() {
                                 // Reset form fields
                                 $('#myForm')[0].reset();
