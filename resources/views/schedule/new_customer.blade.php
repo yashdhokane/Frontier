@@ -135,10 +135,8 @@ enctype="multipart/form-data">
                                     {{-- <select class="form-select" id="city" name="city" required>
                                         <option selected disabled value="">Select City...</option>
                                     </select> --}}
-                                    <input type="text" class="form-control" id="city" name="city" oninput="searchCity()"
+                                    <input type="text" class="form-control" id="city" name="city"
                                         required />
-                                    {{-- <input type="text" class="form-control" id="city_id" name="city_id"
-                                        oninput="searchCity1()" required /> --}}
                                     <div id="autocomplete-results"></div>
                                 </div>
                             </div>

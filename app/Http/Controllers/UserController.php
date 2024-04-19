@@ -1028,13 +1028,15 @@ $leadsourcename=Leadsource::where('user_id', $user->id)
 
         $usersDetails->save();
 
+        $stateName = LocationCity::where('state_id',$request['state_id'])->first();
+
         $customerAddress = new CustomerUserAddress();
         $customerAddress->user_id = $userId;
         $customerAddress->address_line1 = $request['address1'];
         $customerAddress->address_line2 = $request['address_unit'];
         $customerAddress->address_primary = ($request['address_type'] == 'home') ? 'yes' : 'no';
         $customerAddress->city = $request['city'];
-        // $customerAddress->city_id = $request['city_id'];
+        $customerAddress->state_name = $stateName->state_code;
         $customerAddress->address_type = $request['address_type'];
         $customerAddress->state_id = $request['state_id'];
         $nearestZip = DB::table('location_cities')
