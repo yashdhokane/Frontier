@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\JobActivity;
+use App\Models\JobAssign;
 use App\Models\JobFile;
 use Illuminate\Support\Facades\Auth;
 
@@ -135,8 +136,10 @@ class TicketController extends Controller
 
         $files = JobFile::where('job_id', $id)->latest()->get();
 
+        $schedule = JobAssign::where('job_id', $id)->first();
 
-        return view('tickets.show', ['ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source, 'activity' => $activity, 'files'=>$files]);
+
+        return view('tickets.show', ['ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source, 'activity' => $activity, 'files'=>$files, 'schedule' => $schedule]);
     }
 
     // Show the form for editing the specified ticket 
