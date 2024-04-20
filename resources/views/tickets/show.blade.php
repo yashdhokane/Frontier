@@ -161,7 +161,7 @@
                     <div class="card" style="border: 1px solid #D8D8D8;">
                         <div class="card-body text-center">
                             <div class="profile-pic mb-3 mt-3">
-                                <h4 class="mt-3 mb-0">{{ $technicians->user->name ?? null }}</h4>
+                                <h4 class="mt-3 mb-0"><a class="text-dark" href="{{url('users/show/'. $technicians->user->id)}}">{{ $technicians->user->name ?? null }}</a></h4>
                                 @if (!empty($technicians->user->email))
                                     <a
                                         href="mailto:{{ $technicians->user->email ?? '' }}">{{ $technicians->user->email ?? null }}</a><br>
