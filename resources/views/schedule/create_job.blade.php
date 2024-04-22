@@ -668,9 +668,6 @@
                                                 <div class="col-md-1 service_css">
                                                     <div class="mt-0"><label>Discount</label></div>
                                                 </div>
-                                                <div class="col-md-1 service_css">
-                                                    <div class="mt-0"><label>Tax</label></div>
-                                                </div>
                                                 <div class="col-md-2 service_css">
                                                     <div class="mt-0"><label>Total</label></div>
                                                 </div>
@@ -689,9 +686,6 @@
                                                 <div class="col-md-1 service_css">
                                                     <div class="mt-1 show_service_discount"></div>
                                                 </div>
-                                                <div class="col-md-1 service_css">
-                                                    <div class="mt-1 show_service_tax"></div>
-                                                </div>
                                                 <div class="col-md-2 service_css">
                                                     <div class="mt-1 show_service_total"></div>
                                                 </div>
@@ -707,9 +701,6 @@
                                                 </div>
                                                 <div class="col-md-1 service_css">
                                                     <div class="mt-1 show_service_discount_new"></div>
-                                                </div>
-                                                <div class="col-md-1 service_css">
-                                                    <div class="mt-1 show_service_tax_new">$0</div>
                                                 </div>
                                                 <div class="col-md-2 service_css">
                                                     <div class="mt-1 show_service_total_new"></div>
@@ -727,9 +718,6 @@
                                                 <div class="col-md-1 service_css">
                                                     <div class="mt-1 show_product_discount"></div>
                                                 </div>
-                                                <div class="col-md-1 service_css">
-                                                    <div class="mt-1 show_product_tax"></div>
-                                                </div>
                                                 <div class="col-md-2 service_css">
                                                     <div class="mt-1 show_product_total"></div>
                                                 </div>
@@ -746,9 +734,6 @@
                                                 <div class="col-md-1 service_css">
                                                     <div class="mt-1 show_product_discount_new"></div>
                                                 </div>
-                                                <div class="col-md-1 service_css">
-                                                    <div class="mt-1 show_product_tax_new">$0</div>
-                                                </div>
                                                 <div class="col-md-2 service_css">
                                                     <div class="mt-1 show_product_total_new"></div>
                                                 </div>
@@ -758,32 +743,36 @@
                                                 <div class="col-md-1">
                                                     <div class="mt-2">&nbsp;</div>
                                                 </div>
-                                                <div class="col-md-1 total_css">
-                                                    <div class="mt-2">
-                                                        <p><strong class="show_total_discount"></strong></p>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-1 total_css">
-                                                    <div class="mt-2">
-                                                        <p><strong class="show_total_tax"></strong></p>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-2 total_css">
-                                                    <div class="mt-2">
-                                                        <h4><strong class="show_total"></strong></h4>
-                                                    </div>
+                                                <div class="col-md-4 mt-2 text-right"
+                                                    style="text-align: right;padding-right: 36px;">
+                                                    <h5 style="display: inline-flex;">Sub Total:&nbsp;&nbsp;<div
+                                                            class="subtotaltext">
+                                                            $0
+                                                        </div>
+                                                    </h5><br>
+                                                    <h5 style="display: inline-flex;">Discount:&nbsp;<div
+                                                            class="discounttext">$0
+                                                        </div>
+                                                    </h5><br>
+                                                    <h5 style="display: inline-flex;">Tax:&nbsp;<div class="taxcodetext">
+                                                            $0</div>
+                                                    </h5><br>
+                                                    <h4 style="display: inline-flex;">Total:&nbsp;<div class="totaltext">
+                                                            $0</div>
+                                                    </h4>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </section>
-
-                        </form>
                     </div>
+                    </section>
+
+                    </form>
                 </div>
             </div>
-        @endif
+    </div>
+    @endif
 
     </div>
     <!-- Modal -->
@@ -1496,7 +1485,7 @@
 
                         if (data.customers) {
                             $('.customers2').append(data.customers);
-                        } 
+                        }
                     },
                     error: function(xhr, status, error) {
                         // Handle errors here
@@ -2507,38 +2496,36 @@
         lastNameInput.addEventListener('input', updateDisplayName);
     </script>
 
-  
-    
-<script>
-    function addNewAddress() {
 
-        var addressCardTwo = document.getElementById("adresscardtwo");
 
-        if (addressCardTwo.style.display === "none") {
+    <script>
+        function addNewAddress() {
 
-            addressCardTwo.style.display = "block";
+            var addressCardTwo = document.getElementById("adresscardtwo");
 
-        } else {
+            if (addressCardTwo.style.display === "none") {
 
-            addressCardTwo.style.display = "none";
+                addressCardTwo.style.display = "block";
+
+            } else {
+
+                addressCardTwo.style.display = "none";
+
+            }
+
+            var addressCardTwoone = document.getElementById("adresscardtwo1");
+
+            if (addressCardTwoone.style.display === "none") {
+
+                addressCardTwoone.style.display = "block";
+
+            } else {
+
+                addressCardTwoone.style.display = "none";
+
+            }
 
         }
-
-        var addressCardTwoone = document.getElementById("adresscardtwo1");
-
-        if (addressCardTwoone.style.display === "none") {
-
-            addressCardTwoone.style.display = "block";
-
-        } else {
-
-            addressCardTwoone.style.display = "none";
-
-        }
-
-    }
-
-</script>
-
+    </script>
 @endsection
 @endsection
