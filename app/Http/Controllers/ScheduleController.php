@@ -751,7 +751,11 @@ class ScheduleController extends Controller
                     ->where('users.id', $data['customer_id'])->where('user_address.address_type', $data['customer_address'])
                     ->first();
 
-                $tagIds = implode(',', $request->tags);
+                if (is_array($request->tags)){  
+                  $tagIds = implode(',', $request->tags);
+                }else {
+                    $tagIds = '';
+                }
 
                 $jobsData = [
                     'job_code' => (isset($data['job_code']) && !empty($data['job_code'])) ? $data['job_code'] : '',
