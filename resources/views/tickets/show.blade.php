@@ -130,22 +130,22 @@
                     <div class="card" style="border: 1px solid #D8D8D8;">
                         <div class="card-body">
                             <div class="">
-                               <h5 class="todo-desc mb-0 fs-3 font-weight-medium">
-                                    @if(isset($technicians->address) && $technicians->address !== '')
-                                    {{ $technicians->address }}, 
-                                @endif
+                                <h5 class="todo-desc mb-0 fs-3 font-weight-medium">
+                                    @if (isset($technicians->address) && $technicians->address !== '')
+                                        {{ $technicians->address }},
+                                    @endif
 
-                                @if(isset($technicians->city) && $technicians->city !== '')
-                                    {{ $technicians->city }}, 
-                                @endif
+                                    @if (isset($technicians->city) && $technicians->city !== '')
+                                        {{ $technicians->city }},
+                                    @endif
 
-                                @if(isset($technicians->state) && $technicians->state !== '')
-                                    {{ $technicians->state }}, 
-                                @endif
+                                    @if (isset($technicians->state) && $technicians->state !== '')
+                                        {{ $technicians->state }},
+                                    @endif
 
-                                @if(isset($technicians->zipcode) && $technicians->zipcode !== '')
-                                    {{ $technicians->zipcode }}
-                                @endif
+                                    @if (isset($technicians->zipcode) && $technicians->zipcode !== '')
+                                        {{ $technicians->zipcode }}
+                                    @endif
                                 </h5>
 
 
@@ -161,7 +161,9 @@
                     <div class="card" style="border: 1px solid #D8D8D8;">
                         <div class="card-body text-center">
                             <div class="profile-pic mb-3 mt-3">
-                                <h4 class="mt-3 mb-0"><a class="text-dark" href="{{url('users/show/'. $technicians->user->id)}}">{{ $technicians->user->name ?? null }}</a></h4>
+                                <h4 class="mt-3 mb-0"><a class="text-dark"
+                                        href="{{ url('users/show/' . $technicians->user->id) }}">{{ $technicians->user->name ?? null }}</a>
+                                </h4>
                                 @if (!empty($technicians->user->email))
                                     <a
                                         href="mailto:{{ $technicians->user->email ?? '' }}">{{ $technicians->user->email ?? null }}</a><br>
@@ -169,19 +171,19 @@
                                 @if (!empty($technicians->user->mobile))
                                     <small class="text-muted">{{ $technicians->user->mobile ?? null }}<br />
                                 @endif
-                               @if(isset($technicians->address) && $technicians->address !== '')
-                                    {{ $technicians->address }}, 
+                                @if (isset($technicians->address) && $technicians->address !== '')
+                                    {{ $technicians->address }},
                                 @endif
 
-                                @if(isset($technicians->city) && $technicians->city !== '')
-                                    {{ $technicians->city }}, 
+                                @if (isset($technicians->city) && $technicians->city !== '')
+                                    {{ $technicians->city }},
                                 @endif
 
-                                @if(isset($technicians->state) && $technicians->state !== '')
-                                    {{ $technicians->state }}, 
+                                @if (isset($technicians->state) && $technicians->state !== '')
+                                    {{ $technicians->state }},
                                 @endif
 
-                                @if(isset($technicians->zipcode) && $technicians->zipcode !== '')
+                                @if (isset($technicians->zipcode) && $technicians->zipcode !== '')
                                     {{ $technicians->zipcode }}
                                 @endif
                                 </small>
@@ -194,27 +196,27 @@
                     <div class="card" style="border: 1px solid #D8D8D8;">
                         <div class="card-body">
                             <div class=""><span>Customer address</span>
-                               <h5 class="todo-desc mb-0 fs-3 font-weight-medium">
-                                @if(isset($technicians->addresscustomer->address_line1) && $technicians->addresscustomer->address_line1 !== '')
-                                    {{ $technicians->addresscustomer->address_line1 }}, 
-                                @endif
+                                <h5 class="todo-desc mb-0 fs-3 font-weight-medium">
+                                    @if (isset($technicians->addresscustomer->address_line1) && $technicians->addresscustomer->address_line1 !== '')
+                                        {{ $technicians->addresscustomer->address_line1 }},
+                                    @endif
 
-                                @if(isset($technicians->addresscustomer->address_line2) && $technicians->addresscustomer->address_line2 !== '')
-                                    {{ $technicians->addresscustomer->address_line2 }}, 
-                                @endif
+                                    @if (isset($technicians->addresscustomer->address_line2) && $technicians->addresscustomer->address_line2 !== '')
+                                        {{ $technicians->addresscustomer->address_line2 }},
+                                    @endif
 
-                                @if(isset($technicians->addresscustomer->city) && $technicians->addresscustomer->city !== '')
-                                    {{ $technicians->addresscustomer->city }}, 
-                                @endif
+                                    @if (isset($technicians->addresscustomer->city) && $technicians->addresscustomer->city !== '')
+                                        {{ $technicians->addresscustomer->city }},
+                                    @endif
 
-                                @if(isset($technicians->addresscustomer->state_name) && $technicians->addresscustomer->state_name !== '')
-                                    {{ $technicians->addresscustomer->state_name }}, 
-                                @endif
+                                    @if (isset($technicians->addresscustomer->state_name) && $technicians->addresscustomer->state_name !== '')
+                                        {{ $technicians->addresscustomer->state_name }},
+                                    @endif
 
-                                @if(isset($technicians->addresscustomer->zipcode) && $technicians->addresscustomer->zipcode !== '')
-                                    {{ $technicians->addresscustomer->zipcode }}
-                                @endif
-                            </h5>
+                                    @if (isset($technicians->addresscustomer->zipcode) && $technicians->addresscustomer->zipcode !== '')
+                                        {{ $technicians->addresscustomer->zipcode }}
+                                    @endif
+                                </h5>
 
 
                                 <iframe id="map" width="100%" height="150" frameborder="0" style="border: 0"
@@ -403,8 +405,9 @@
                             <h4 class="card-title">Technician Assigned</h4>
                             <div class="profile-pic mb-3 mt-3">
                                 @isset($technicians->usertechnician->user_image)
-                                    <img src="{{ asset('public/images/Uploads/users/' . $technicians->usertechnician->id . '/'. $technicians->usertechnician->user_image) ?? null }}"
-                                        width="150" class="rounded-circle" alt="user"  onerror="this.onerror=null; this.src='{{ $defaultImage }}';"/>
+                                    <img src="{{ asset('public/images/Uploads/users/' . $technicians->usertechnician->id . '/' . $technicians->usertechnician->user_image) ?? null }}"
+                                        width="150" class="rounded-circle" alt="user"
+                                        onerror="this.onerror=null; this.src='{{ $defaultImage }}';" />
                                 @else
                                     <img src="{{ $defaultImage }}" width="150" class="rounded-circle" alt="user" />
                                 @endisset
@@ -422,8 +425,9 @@
                             <h4 class="card-title">Ticket Creator</h4>
                             <div class="profile-pic mb-3 mt-3">
                                 @isset($technicians->addedby->user_image)
-                                    <img src="{{ asset('public/images/Uploads/users/' . $technicians->addedby->id . '/'  . $technicians->addedby->user_image) ?? null }}"
-                                        width="150" class="rounded-circle" alt="user"  onerror="this.onerror=null; this.src='{{ $defaultImage }}';" />
+                                    <img src="{{ asset('public/images/Uploads/users/' . $technicians->addedby->id . '/' . $technicians->addedby->user_image) ?? null }}"
+                                        width="150" class="rounded-circle" alt="user"
+                                        onerror="this.onerror=null; this.src='{{ $defaultImage }}';" />
                                 @else
                                     <img src="{{ $defaultImage }}" width="150" class="rounded-circle" alt="user" />
                                 @endisset
@@ -678,9 +682,10 @@
                                         <tr>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    @isset ($technicians->usertechnician->user_image)
-                                                        <img src="{{ asset('public/images/Uploads/users/' . $technicians->usertechnician->id . '/'. $technicians->usertechnician->user_image) }}"
-                                                            class="rounded-circle" width="40"  onerror="this.onerror=null; this.src='{{ $defaultImage }}';">
+                                                    @isset($technicians->usertechnician->user_image)
+                                                        <img src="{{ asset('public/images/Uploads/users/' . $technicians->usertechnician->id . '/' . $technicians->usertechnician->user_image) }}"
+                                                            class="rounded-circle" width="40"
+                                                            onerror="this.onerror=null; this.src='{{ $defaultImage }}';">
                                                     @else
                                                         <img src="{{ $defaultImage }}" class="rounded-circle"
                                                             width="40">
@@ -713,7 +718,6 @@
                                             <th class="border-bottom border-top">Line Item</th>
                                             <th class="border-bottom border-top">Unit Price</th>
                                             <th class="border-bottom border-top">Discount</th>
-                                            <th class="border-bottom border-top">Tax</th>
                                             <th class="border-bottom border-top">Total</th>
                                         </tr>
                                     </thead>
@@ -725,7 +729,6 @@
                                             </td>
                                             <td>${{ $technicians->jobserviceinfo->base_price ?? null }}</td>
                                             <td>${{ $technicians->jobserviceinfo->discount ?? null }}</td>
-                                            <td>${{ $technicians->jobserviceinfo->tax ?? null }}</td>
                                             <td>${{ $technicians->jobserviceinfo->sub_total ?? null }}</td>
                                         </tr>
                                         <tr>
@@ -735,316 +738,325 @@
                                             </td>
                                             <td>${{ $technicians->jobproductinfo->base_price ?? null }}</td>
                                             <td>${{ $technicians->jobproductinfo->discount ?? null }}</td>
-                                            <td>${{ $technicians->jobproductinfo->tax ?? null }}</td>
                                             <td>${{ $technicians->jobproductinfo->sub_total ?? null }}</td>
                                         </tr>
-                                        <tr>
-                                            <th class="border-bottom border-top">&nbsp;</th>
-                                            <th class="border-bottom border-top">&nbsp;</th>
-                                            <th class="border-bottom border-top">${{ $technicians->discount ?? null }}
-                                            </th>
-                                            <th class="border-bottom border-top">${{ $technicians->tax ?? null }}</th>
-                                            <th class="border-bottom border-top">${{ $technicians->gross_total ?? null }}
-                                            </th>
-                                        </tr>
+
+
                                     </tbody>
                                 </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                                <div class="row mb-2 justify-content-end" style="border-top: 1px solid #343434;">
+                                    <div class="col-md-4 mt-2 text-right" style="text-align: right;padding-right: 36px;">
+                                        
+                                        <h5 style="display: inline-flex;">Discount:&nbsp;<div class="discounttext">
+                                                ${{ $technicians->discount ?? null }}
+                                            
+                                        </h5><br>
+                                        <h5 style="display: inline-flex;">Tax:&nbsp;<div class="taxcodetext">{{ $technicians->addresscustomer->locationStateName->state_tax ?? null }}% for {{ $technicians->addresscustomer->locationStateName->state_code ?? null }}
 
-                <div class="mb-4">
-                    <div class="card" style="border: 1px solid #D8D8D8;">
-                        <div class="card-body ">
-                            <div class="row open_items">
-                                <div class="col-md-10">
-                                    <h4><i class="fas fa-sticky-note px-1"></i> Job Note</h4>
-                                </div>
-                                <div class="col-md-2 text-center addnotes" style="cursor: pointer;">
-                                    <i class="fas fa-plus "></i>
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                @foreach ($techniciansnotes as $item)
-                                    <ul class="list-unstyled mt-3">
-                                        <li class="d-flex align-items-start">
-                                            @isset($item->user_image)
-                                                <img class="me-3 rounded"
-                                                    src="{{ asset('public/images/Uploads/users/' . $item->added_by . '/'. $item->user_image) ?? null }}"
-                                                    width="60" alt="image"  onerror="this.onerror=null; this.src='{{ $defaultImage }}';" />
-                                            @else
-                                                <img class="me-3 rounded" src="{{ $defaultImage }}" width="60"
-                                                    alt="image" />
-                                            @endisset
-                                            <div class="media-body">
-                                                <h5 class="mt-0 mb-1">{{ $item->name ?? 'Unknown' }}</h5>
-                                                {!! $item->note ?? null !!}
-                                            </div>
-                                        </li>
-                                    </ul>
-                                @endforeach
-                            </div>
+                                        </h5><br>
+                                        <h4 style="display: inline-flex;">Total:&nbsp;<div class="totaltext">
+                                                ${{ $technicians->gross_total ?? null }}
+                                        </h4>
 
-                            <div class="shownotes" style="display: none;">
-                                <h4 class="mb-3">Add a Note</h4>
-
-
-                                <form class="row g-2" method="post" action="{{ route('techniciannote') }}"
-                                    enctype="multipart/form-data">
-                                    @csrf
-                                    @if (session('success'))
-                                        <div id="successMessage" class="alert alert-success" role="alert">
-                                            {{ session('success') }}
-                                        </div>
-                                    @endif
-                                    <input type="hidden" name="id" value={{ $technicians->id }}>
-                                    <input type="hidden" name="technician_id" value={{ $technicians->technician_id }}>
-                                    <textarea id="mymce" name="note"></textarea>
-
-                                    <div class="col-md-2">
-                                        <button type="submit" id="submitBtn"
-                                            class="mt-3 btn waves-effect waves-light btn-success">
-                                            Send
-                                        </button>
                                     </div>
-
-
-                                </form>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <div class="card" style="border: 1px solid #D8D8D8;">
-                        <div class="card-body ">
-                            <div class="row mb-3 open_items">
-                                <div class="col-md-7">
-                                    <h4><i class="fas fas fa-dollar-sign px-1"></i> Invoice</h4>
-                                </div>
-                                <div class="col-md-5 text-center">
-                                    <button type="button" class="btn waves-effect waves-light btn-primary">View &
-                                        Send Invoice</button>
                                 </div>
                             </div>
-                            <div class="row mb-3">
-                                <div class="col-md-12">
-                                    <i class="fas fa-pencil-alt px-1"></i> By accessing, viewing and/or using this
-                                    site, you, the user...
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="card" style="border: 1px solid #D8D8D8;">
+                            <div class="card-body ">
+                                <div class="row open_items">
+                                    <div class="col-md-10">
+                                        <h4><i class="fas fa-sticky-note px-1"></i> Job Note</h4>
+                                    </div>
+                                    <div class="col-md-2 text-center addnotes" style="cursor: pointer;">
+                                        <i class="fas fa-plus "></i>
+                                    </div>
                                 </div>
-                            </div>
+                                <div class="row mt-2">
+                                    @foreach ($techniciansnotes as $item)
+                                        <ul class="list-unstyled mt-3">
+                                            <li class="d-flex align-items-start">
+                                                @isset($item->user_image)
+                                                    <img class="me-3 rounded"
+                                                        src="{{ asset('public/images/Uploads/users/' . $item->added_by . '/' . $item->user_image) ?? null }}"
+                                                        width="60" alt="image"
+                                                        onerror="this.onerror=null; this.src='{{ $defaultImage }}';" />
+                                                @else
+                                                    <img class="me-3 rounded" src="{{ $defaultImage }}" width="60"
+                                                        alt="image" />
+                                                @endisset
+                                                <div class="media-body">
+                                                    <h5 class="mt-0 mb-1">{{ $item->name ?? 'Unknown' }}</h5>
+                                                    {!! $item->note ?? null !!}
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    @endforeach
+                                </div>
 
+                                <div class="shownotes" style="display: none;">
+                                    <h4 class="mb-3">Add a Note</h4>
+
+
+                                    <form class="row g-2" method="post" action="{{ route('techniciannote') }}"
+                                        enctype="multipart/form-data">
+                                        @csrf
+                                        @if (session('success'))
+                                            <div id="successMessage" class="alert alert-success" role="alert">
+                                                {{ session('success') }}
+                                            </div>
+                                        @endif
+                                        <input type="hidden" name="id" value={{ $technicians->id }}>
+                                        <input type="hidden" name="technician_id"
+                                            value={{ $technicians->technician_id }}>
+                                        <textarea id="mymce" name="note"></textarea>
+
+                                        <div class="col-md-2">
+                                            <button type="submit" id="submitBtn"
+                                                class="mt-3 btn waves-effect waves-light btn-success">
+                                                Send
+                                            </button>
+                                        </div>
+
+
+                                    </form>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="mb-4">
-                    <div class="card" style="border: 1px solid #D8D8D8;">
-                        <div class="card-body">
-                            <h4 class="card-title">ACTIVITY FEED</h4>
+                    <div class="mb-4">
+                        <div class="card" style="border: 1px solid #D8D8D8;">
+                            <div class="card-body ">
+                                <div class="row mb-3 open_items">
+                                    <div class="col-md-7">
+                                        <h4><i class="fas fas fa-dollar-sign px-1"></i> Invoice</h4>
+                                    </div>
+                                    <div class="col-md-5 text-center">
+                                        <button type="button" class="btn waves-effect waves-light btn-primary">View &
+                                            Send Invoice</button>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <i class="fas fa-pencil-alt px-1"></i> By accessing, viewing and/or using this
+                                        site, you, the user...
+                                    </div>
+                                </div>
 
-                            <div class="table-responsive">
-                                <table class="table customize-table mb-0 v-middle">
-                                    <tbody>
-                                        @foreach ($activity as $item)
-                                            <tr>
-                                                <td style="width:20%">
-                                                    <div class="d-flex align-items-center">
-                                                        <img src="{{ url('public/images/Uploads/users/' . $item->user_id . '/' . $item->user->user_image) }}"
-                                                            class="rounded-circle" width="40"
-                                                            onerror="this.onerror=null; this.src='{{ $defaultImage }}';"
-                                                            alt="Image">
-                                                        <span
-                                                            class="ms-2 fw-normal">{{ $item->user->name ?? null }}</span>
-                                                    </div>
-                                                </td>
-                                                <td style="width:60%">{{ $item->activity ?? null }}</td>
-                                                <td style="width:20%">
-                                                    {{ $item->created_at ? $item->created_at->format('D n/j/y g:ia') : null }}
-
-
-                                                </td>
-                                            </tr>
-                                        @endforeach
-
-                                    </tbody>
-                                </table>
                             </div>
-
-
-
-
-
-
-
-
                         </div>
                     </div>
+
+                    <div class="mb-4">
+                        <div class="card" style="border: 1px solid #D8D8D8;">
+                            <div class="card-body">
+                                <h4 class="card-title">ACTIVITY FEED</h4>
+
+                                <div class="table-responsive">
+                                    <table class="table customize-table mb-0 v-middle">
+                                        <tbody>
+                                            @foreach ($activity as $item)
+                                                <tr>
+                                                    <td style="width:20%">
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="{{ url('public/images/Uploads/users/' . $item->user_id . '/' . $item->user->user_image) }}"
+                                                                class="rounded-circle" width="40"
+                                                                onerror="this.onerror=null; this.src='{{ $defaultImage }}';"
+                                                                alt="Image">
+                                                            <span
+                                                                class="ms-2 fw-normal">{{ $item->user->name ?? null }}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td style="width:60%">{{ $item->activity ?? null }}</td>
+                                                    <td style="width:20%">
+                                                        {{ $item->created_at ? $item->created_at->format('D n/j/y g:ia') : null }}
+
+
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+
+
+
+
+
+
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
 
         </div>
-
-    </div>
-    <!-- -------------------------------------------------------------- -->
-    <!-- End Container fluid  -->
+        <!-- -------------------------------------------------------------- -->
+        <!-- End Container fluid  -->
 
 
-@section('script')
-    <!-- This page JavaScript -->
-    <!-- --------------------------------------------------------------- -->
-    <script src="https://gaffis.in/frontier/website/public/admin/dist/libs/tinymce/tinymce.min.js"></script>
-    <!--c3 charts -->
-    <script src="https://gaffis.in/frontier/website/public/admin/dist/libs/c3/htdocs/js/d3-3.5.6.js"></script>
+    @section('script')
+        <!-- This page JavaScript -->
+        <!-- --------------------------------------------------------------- -->
+        <script src="https://gaffis.in/frontier/website/public/admin/dist/libs/tinymce/tinymce.min.js"></script>
+        <!--c3 charts -->
+        <script src="https://gaffis.in/frontier/website/public/admin/dist/libs/c3/htdocs/js/d3-3.5.6.js"></script>
 
 
-    <script src="https://gaffis.in/frontier/website/public/admin/dist/libs/c3/htdocs/js/c3-0.4.9.min.js"></script>
+        <script src="https://gaffis.in/frontier/website/public/admin/dist/libs/c3/htdocs/js/c3-0.4.9.min.js"></script>
 
-    <script>
-        $(document).ready(function() {
+        <script>
+            $(document).ready(function() {
 
-            $('#manufacturer_ids').select2();
+                $('#manufacturer_ids').select2();
 
 
-            $('.addnotes').click(function() {
-                $('.shownotes').toggle('fade', function() {
-                    if ($(this).is(':visible')) { // Check if the element is visible after toggle
-                        $('html, body').animate({
-                            scrollTop: $(this).offset()
-                                .top // Scroll to the top position of the element
-                        }, 'fast');
-                    }
+                $('.addnotes').click(function() {
+                    $('.shownotes').toggle('fade', function() {
+                        if ($(this).is(':visible')) { // Check if the element is visible after toggle
+                            $('html, body').animate({
+                                scrollTop: $(this).offset()
+                                    .top // Scroll to the top position of the element
+                            }, 'fast');
+                        }
+                    });
+                });
+                $('.addCustomerTags').click(function() {
+                    $('.showCustomerTags').toggle('fade');
+
+                });
+                $('.addJobTags').click(function() {
+                    $('.showJobTags').toggle('fade');
+
+                });
+                $('.addAttachment').click(function() {
+                    $('.showAttachment').toggle('fade');
+
+                });
+                $('.addSource').click(function() {
+                    $('.showSource').toggle('fade');
+
                 });
             });
-            $('.addCustomerTags').click(function() {
-                $('.showCustomerTags').toggle('fade');
+        </script>
 
-            });
-            $('.addJobTags').click(function() {
-                $('.showJobTags').toggle('fade');
+        <script>
+            $(function() {
+                tinymce.init({
+                    selector: 'textarea#mymce'
+                });
+                $('#submitBtn').click(function() {
+                    // Check if the TinyMCE textarea is empty
+                    if (tinymce.activeEditor.getContent().trim() === '') {
+                        // If textarea is empty, prevent form submission
+                        alert('Please enter a Job note.');
+                        return false;
+                    }
+                });
+                // ==============================================================
+                // Our Visitor
+                // ==============================================================
 
-            });
-            $('.addAttachment').click(function() {
-                $('.showAttachment').toggle('fade');
+                var chart = c3.generate({
+                    bindto: '#visitor',
+                    data: {
+                        columns: [
+                            ['Open', 4],
+                            ['Closed', 2],
+                            ['In progress', 2],
+                            ['Other', 0],
+                        ],
 
-            });
-            $('.addSource').click(function() {
-                $('.showSource').toggle('fade');
-
-            });
-        });
-    </script>
-
-    <script>
-        $(function() {
-            tinymce.init({
-                selector: 'textarea#mymce'
-            });
-            $('#submitBtn').click(function() {
-                // Check if the TinyMCE textarea is empty
-                if (tinymce.activeEditor.getContent().trim() === '') {
-                    // If textarea is empty, prevent form submission
-                    alert('Please enter a Job note.');
-                    return false;
-                }
-            });
-            // ==============================================================
-            // Our Visitor
-            // ==============================================================
-
-            var chart = c3.generate({
-                bindto: '#visitor',
-                data: {
-                    columns: [
-                        ['Open', 4],
-                        ['Closed', 2],
-                        ['In progress', 2],
-                        ['Other', 0],
-                    ],
-
-                    type: 'donut',
-                    tooltip: {
-                        show: true,
+                        type: 'donut',
+                        tooltip: {
+                            show: true,
+                        },
                     },
-                },
-                donut: {
-                    label: {
-                        show: false,
+                    donut: {
+                        label: {
+                            show: false,
+                        },
+                        title: 'Tickets',
+                        width: 35,
                     },
-                    title: 'Tickets',
-                    width: 35,
-                },
 
-                legend: {
-                    hide: true,
-                    //or hide: 'data1'
-                    //or hide: ['data1', 'data2']
-                },
-                color: {
-                    pattern: ['#40c4ff', '#2961ff', '#ff821c', '#7e74fb'],
-                },
+                    legend: {
+                        hide: true,
+                        //or hide: 'data1'
+                        //or hide: ['data1', 'data2']
+                    },
+                    color: {
+                        pattern: ['#40c4ff', '#2961ff', '#ff821c', '#7e74fb'],
+                    },
+                });
             });
-        });
-    </script>
-    <script>
-        // Get latitude and longitude values from your data or variables
-        var latitude = {{ $technicianlocation->latitude ?? null }}; // Example latitude
-        var longitude = {{ $technicianlocation->longitude ?? null }}; // Example longitude
+        </script>
+        <script>
+            // Get latitude and longitude values from your data or variables
+            var latitude = {{ $technicianlocation->latitude ?? null }}; // Example latitude
+            var longitude = {{ $technicianlocation->longitude ?? null }}; // Example longitude
 
-        // Construct the URL with the latitude and longitude values
-        var mapUrl = 'https://www.google.com/maps/embed/v1/view?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&center=' +
-            latitude + ',' + longitude + '&zoom=13';
+            // Construct the URL with the latitude and longitude values
+            var mapUrl = 'https://www.google.com/maps/embed/v1/view?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&center=' +
+                latitude + ',' + longitude + '&zoom=13';
 
-        document.getElementById('map').src = mapUrl;
-        // var streetViewUrl =
-        //   'https://www.google.com/maps/embed/v1/streetview?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&location=' +
-        //   latitude + ',' + longitude + '&heading=210&pitch=10&fov=35';
+            document.getElementById('map').src = mapUrl;
+            // var streetViewUrl =
+            //   'https://www.google.com/maps/embed/v1/streetview?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&location=' +
+            //   latitude + ',' + longitude + '&heading=210&pitch=10&fov=35';
 
-        // Set the source of the iframe to the Street View URL
-        //  document.getElementById('map').src = streetViewUrl;
-    </script>
-    <script>
-        setTimeout(function() {
-            $('#successMessage').fadeOut('fast');
-        }, 5000); // 5000 milliseconds = 5 seconds
-    </script>
-    <script>
-        // Get latitude and longitude values from your data or variables
-        var latitude = {{ $technicians->latitude ?? null }}; // Example latitude
-        var longitude = {{ $technicians->longitude ?? null }}; // Example longitude
+            // Set the source of the iframe to the Street View URL
+            //  document.getElementById('map').src = streetViewUrl;
+        </script>
+        <script>
+            setTimeout(function() {
+                $('#successMessage').fadeOut('fast');
+            }, 5000); // 5000 milliseconds = 5 seconds
+        </script>
+        <script>
+            // Get latitude and longitude values from your data or variables
+            var latitude = {{ $technicians->latitude ?? null }}; // Example latitude
+            var longitude = {{ $technicians->longitude ?? null }}; // Example longitude
 
-        // Construct the URL with the latitude and longitude values
-        // var mapUrl = 'https://www.google.com/maps/embed/v1/view?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&center=' +
-        //     latitude + ',' + longitude + '&zoom=18';
-        var streetViewUrl =
-            'https://www.google.com/maps/embed/v1/streetview?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&location=' +
-            latitude + ',' + longitude + '&heading=210&pitch=10&fov=35';
+            // Construct the URL with the latitude and longitude values
+            // var mapUrl = 'https://www.google.com/maps/embed/v1/view?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&center=' +
+            //     latitude + ',' + longitude + '&zoom=18';
+            var streetViewUrl =
+                'https://www.google.com/maps/embed/v1/streetview?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&location=' +
+                latitude + ',' + longitude + '&heading=210&pitch=10&fov=35';
 
-        // Set the source of the iframe to the Street View URL
-        document.getElementById('map238').src = streetViewUrl;
+            // Set the source of the iframe to the Street View URL
+            document.getElementById('map238').src = streetViewUrl;
 
-        // document.getElementById('map238').src = mapUrl;
-    </script>
-    <script>
-        // Get latitude and longitude values from your data or variables
-        var latitude = {!! isset($technicians->addresscustomer->latitude) ? $technicians->addresscustomer->latitude : 'null' !!}; // Example latitude
-        var longitude = {!! isset($technicians->addresscustomer->longitude) ? $technicians->addresscustomer->longitude : 'null' !!}; // Example longitude
+            // document.getElementById('map238').src = mapUrl;
+        </script>
+        <script>
+            // Get latitude and longitude values from your data or variables
+            var latitude = {!! isset($technicians->addresscustomer->latitude) ? $technicians->addresscustomer->latitude : 'null' !!}; // Example latitude
+            var longitude = {!! isset($technicians->addresscustomer->longitude) ? $technicians->addresscustomer->longitude : 'null' !!}; // Example longitude
 
 
-        // Construct the URL with the latitude and longitude values
-        // var mapUrl = 'https://www.google.com/maps/embed/v1/view?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&center=' +
-        //     latitude + ',' + longitude + '&zoom=18';
-        var streetViewUrl =
-            'https://www.google.com/maps/embed/v1/streetview?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&location=' +
-            latitude + ',' + longitude + '&heading=210&pitch=10&fov=35';
+            // Construct the URL with the latitude and longitude values
+            // var mapUrl = 'https://www.google.com/maps/embed/v1/view?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&center=' +
+            //     latitude + ',' + longitude + '&zoom=18';
+            var streetViewUrl =
+                'https://www.google.com/maps/embed/v1/streetview?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&location=' +
+                latitude + ',' + longitude + '&heading=210&pitch=10&fov=35';
 
-        // Set the source of the iframe to the Street View URL
-        document.getElementById('map').src = streetViewUrl;
+            // Set the source of the iframe to the Street View URL
+            document.getElementById('map').src = streetViewUrl;
 
-        // document.getElementById('map238').src = mapUrl;
-    </script>
-@endsection
+            // document.getElementById('map238').src = mapUrl;
+        </script>
+    @endsection
 @endsection
