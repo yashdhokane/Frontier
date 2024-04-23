@@ -131,7 +131,7 @@
                             <h6>Job Information</h6>
                             <section>
                                 <div class="row">
-                                    <div class="col-md-8">
+                                    <div class="col-md-6">
                                         <div class="mt-0 mb-3">
                                             <h6 class="card-title required-field"><i class="fas fa fa-sticky-note"></i>
                                                 Job Title </h6>
@@ -142,21 +142,77 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="mt-0 mb-3">
-                                            <h6 class="card-title required-field"><i class="fas fa fa-ticket"></i> Ticket
-                                                Number </h6>
+                                            <h6 class="card-title required-field"><i class="fas fa-user"></i> Priority
+                                            </h6>
                                             <div class="form-group">
-                                                <input type="text" class="form-control job_code"
-                                                    placeholder="Job Code here" name="job_code" aria-label=""
-                                                    aria-describedby="basic-addon1">
+                                                <select class="form-control priority" id="exampleFormControlSelect1"
+                                                    name="priority">
+                                                    <option value="high">High</option>
+                                                    <option value="low">Low</option>
+                                                    <option value="medium">Medium</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
+									<div class="col-md-3">
+                                        <h6 class="card-title required-field"><i class="fas fa fa-calendar-check-o"></i>
+                                            Duration</h6>
+                                        <div class="form-group">
+                                            <select class="form-control duration" id="duration" name="duration">
+                                                <option value="240">4 Hours</option>
+                                                <option value="180">3 Hours</option>
+                                                <option value="120" selected>2 Hours</option>
+                                                <option value="60">1 Hours</option>
+                                                <option value="30">30 min</option>
+                                            </select>
+                                            <small id="result_travel" class="text-success"
+                                                style="display: none;"></small>
+                                        </div>
+                                    </div>
                                 </div>
+								
+								<div class="row">
+									<div class="col-md-6">
+                                        <div class="mt-0 mb-3">
+                                            <h6 class="card-title required-field"><i class="fas fa fa-pencil-square-o"></i> Job Description
+                                            </h6>
+                                            <div class="form-group">
+                                                <textarea class="form-control job_description" rows="2" placeholder="Add Description  Here..." name="job_description"></textarea>
+                                                <small id="textHelp" class="form-text text-muted">All all details of the job goes here</small>
+                                            </div>
+                                        </div>
+                                    </div>
+									<div class="col-md-6">
+                                        <div class="mt-0 mb-3">
+                                            <h6 class="card-title required-field"><i class="fas fa fa-pencil-square-o"></i> Notes to Technician </h6>
+                                            <div class="form-group">
+                                                <textarea class="form-control technician_notes" rows="2" placeholder="Add Technician Notes  Here..." name="technician_notes"></textarea>
+                                                <small id="textHelp" class="form-text text-muted">Technician will see the notes before starting the job.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+									
+                                </div>
+								
+								<div class="row">
+                                    <div class="col-md-6">
+										<h6 class="card-title required-field"><i class="fas fa fa-television"></i>Select Existing Appliances </h6>
+										<div class="form-group">
+											<select class="form-control appl_id" id="appl_id" name="appl_id">
+												<option value=" Refrigerator/ LG/ LMXS/ LVRM "> Refrigerator/ LG/ LMXS/ LVRM </option>
+												<option value="  Air Conditioner/ LG/ 879564/ 897521  ">  Air Conditioner/ LG/ 879564/ 897521  </option>
+											</select>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="mt-4"><a href="#." id="add_new_appl">Add New</a></div>
+									</div>
+								</div>
 
-                                <div class="row">
-                                    <div class="col-md-4">
+                                <div class="row" style="display: none;" id="show_new_appl">
+                                    <div class="col-md-3">
                                         <div class="mt-0 mb-3">
                                             <h6 class="card-title required-field"><i class="fas fa fa-television"></i>
                                                 Appliances </h6>
@@ -166,7 +222,7 @@
                                                     <option disabled>-- Select Appliances -- </option>
                                                     @if (isset($appliances) && !empty($appliances))
                                                         @foreach ($appliances as $value)
-                                                            <option value="{{ $value->appliance_id }}">
+                                                            <option value="{{ $value->appliance_type_id }}">
                                                                 {{ $value->appliance_name }}</option>
                                                         @endforeach
                                                     @endif
@@ -186,7 +242,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="mt-0 mb-3">
                                             <h6 class="card-title required-field"><i class="fas fa fa-industry"></i>
                                                 Manufacturer </h6>
@@ -217,24 +273,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="mt-0 mb-3">
-                                            <h6 class="card-title required-field"><i class="fas fa-user"></i> Priority
-                                            </h6>
-                                            <div class="form-group">
-                                                <select class="form-control priority" id="exampleFormControlSelect1"
-                                                    name="priority">
-                                                    <option value="high">High</option>
-                                                    <option value="low">Low</option>
-                                                    <option value="medium">Medium</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-4">
+									<div class="col-md-3">
                                         <div class="mt-0 mb-3">
                                             <h6 class="card-title required-field"><i class="fas fa fa-hashtag"></i> Model
                                                 Number </h6>
@@ -245,7 +284,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="mt-0 mb-3">
                                             <h6 class="card-title required-field required-field"><i
                                                     class="fas fa fa-hashtag"></i> Serial Number </h6>
@@ -256,54 +295,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <h6 class="card-title required-field"><i class="fas fa fa-calendar-check-o"></i>
-                                            Duration</h6>
-                                        <div class="form-group">
-                                            <select class="form-control duration" id="duration" name="duration">
-                                                <option value="240">4 Hours</option>
-                                                <option value="180">3 Hours</option>
-                                                <option value="120" selected>2 Hours</option>
-                                                <option value="60">1 Hours</option>
-                                                <option value="30">30 min</option>
-                                            </select>
-                                            <small id="result_travel" class="text-success"
-                                                style="display: none;"></small>
-                                        </div>
-                                    </div>
-                                </div>
+								</div>
 
                                 <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="mt-0 mb-3">
-                                            <h6 class="card-title required-field"><i
-                                                    class="fas fa fa-pencil-square-o"></i> Job Description
-                                            </h6>
-                                            <div class="form-group">
-                                                <textarea class="form-control job_description" rows="1" placeholder="Text Here..." name="job_description"></textarea>
-                                                <small id="textHelp" class="form-text text-muted">All all details of the
-                                                    job
-                                                    Here</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mt-0 mb-3">
-                                            <h6 class="card-title required-field"><i
-                                                    class="fas fa fa-pencil-square-o"></i> Notes to
-                                                Technician </h6>
-                                            <div class="form-group">
-                                                <textarea class="form-control technician_notes" rows="1" placeholder="Text Here..." name="technician_notes"></textarea>
-                                                <small id="textHelp" class="form-text text-muted">Technician must read
-                                                    this
-                                                    note before start of the job.</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-7">
-                                        <div class="mt-0 mb-3">
+ 									<div class="col-md-6">
+                                        <div class="mt-3 mb-3">
                                             <h6 class="card-title"><i class="far fa fa-photo"></i> Photos / Attachments
                                             </h6>
                                             <div class="input-group">
@@ -312,16 +308,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-5">
-                                        <div class="mt-0 mb-3">
+									<div class="col-md-6">
+                                        <div class="mt-3 mb-3">
                                             <h6 class="card-title"><i class="fas fa fa-tags"></i> Tags </h6>
                                             <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                    <button class="btn btn-light-info text-info" type="button">
-                                                        <i class="far fa-edit fill-white" style="font-size: 17px;"></i>
-                                                    </button>
-                                                </div>
-                                                <select class="form-control me-sm-2 tags" id="" name="tags[]"
+                                                 <select class="form-control me-sm-2 tags" id="" name="tags[]"
                                                     multiple="multiple" required>
                                                     @foreach ($tags as $tag)
                                                         <option value="{{ $tag->tag_id }}">
@@ -811,6 +802,14 @@
 
     <!-- Bootstrap Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script>
+      $(document).ready(function() {
+            $(document).on('click','#add_new_appl',function() {
+                console.log("Button clicked");
+                $('#show_new_appl').toggle();
+            });
+      });
+    </script>
     <script>
         $(document).ready(function() {
             $(document).on('change', '.customer_address', function(event) {
@@ -1421,12 +1420,7 @@
                                                     .state_name +
                                                     ', ' + element
                                                     .zipcode;
-                                                var option = $(
-                                                    '<option>', {
-                                                        value: element
-                                                            .address_type,
-                                                        text: addressString
-                                                    });
+                                                var option = $('<option value="'+element.address_type+' " selected>'+addressString+'</option>');
 
                                                 option.attr(
                                                     'data-city',
@@ -1437,6 +1431,9 @@
                                                     .append(option);
                                             });
                                         }
+                                         var nextAnchor = $('a[href="#next"]')
+                                            
+                                                nextAnchor.trigger('click');
                                     }
                                 });
                             });
@@ -2407,10 +2404,7 @@
             }
 
             // Check if ticket number is filled
-            var ticketNumber = $('.job_code').val().trim();
-            if (ticketNumber === '') {
-                isValid = false;
-            }
+           
 
             // Check if appliances is selected
             var appliances = $('.appliances').val();

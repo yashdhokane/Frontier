@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appliances;
+use App\Models\AppliancesType;
 use App\Models\CustomerUserAddress;
 use App\Models\Event;
 use App\Models\JobActivity;
@@ -289,14 +290,12 @@ class ScheduleController extends Controller
 
     public function create_job(Request $request, $id, $t, $d)
     {
-        // dd($request);
-        // $data = $request->all();
 
         if (isset($id) && !empty($id)) {
 
             $time = str_replace(" ", ":00 ", $t);
 
-            $appliances = DB::table('appliances')->get();
+            $appliances = DB::table('appliance_type')->get();
 
             $manufacturers = DB::table('manufacturers')->get();
 
@@ -392,16 +391,43 @@ class ScheduleController extends Controller
                         $imageSrc = asset('public/images/login_img_bydefault.png');
                     }
 
-                    $customers .= '<div class="customer_sr_box selectCustomer" data-customer-id="' . $value->id . '" data-id="' . $value->id . '" data-name="' . $value->name . '"><div class="row"><div class="col-md-2 d-flex align-items-center"><span>';
-                    $customers .= '<img src="' . $imageSrc . '" alt="user" class="rounded-circle" width="50">';
-                    $customers .= '</span></div><div class="col-md-8"><h6 class="font-weight-medium mb-0">' . $value->name . ' ';
+                    $customers .= '<div class="customer_sr_box selectCustomer" data-customer-id="' . $value->id . '" data-id="' . $value->id . '" data-name="' . $value->name . '"><div class="row">';
+                    $customers .= '<div class="col-md-12"><h6 class="font-weight-medium mb-0">' . $value->name . ' ';
                     if (isset($getCustomerAddress->city) && !empty($getCustomerAddress->city)) {
-                        $customers .= '<small class="text-muted">' . $getCustomerAddress->city . ' Area</small>';
+                        $customers .= '<small class="text-muted">' . $getCustomerAddress->city . ' ' . $getCustomerAddress->state_name . ' </small>';
                     }
-                    $customers .= '</h6><p class="text-muted test">' . $value->mobile . ' / ' . $value->email . '';
-                    if (isset($getCustomerAddress->city) && !empty($getCustomerAddress->city) && isset($getCustomerAddress->state_name) && !empty($getCustomerAddress->state_name) && isset($getCustomerAddress->zipcode) && !empty($getCustomerAddress->zipcode)) {
-                        $customers .= '<br />' . $getCustomerAddress->city . ', ' . $getCustomerAddress->state_name . ', ' . $getCustomerAddress->zipcode . '';
+                    $customers .= '</h6><p class="text-muted test">';
+                    if (isset($value->mobile) && !empty($value->mobile)) {
+                       $customers .= $value->mobile . ' / ' ;
+                    }else{
+                       $customers .= '66984698 / ' ;
                     }
+                    if (isset($value->email) && !empty($value->email)) {
+                       $customers .= $value->email   ;
+                    }else{
+                       $customers .= ' test@test.com' ;
+                    }
+                    $customers .= '<br />'   ;
+                    if (isset($getCustomerAddress->address_line1) && !empty($getCustomerAddress->address_line1)){
+                     $customers .=  $getCustomerAddress->address_line1 . ', ';
+                    }
+                    if (isset($getCustomerAddress->address_line2) && !empty($getCustomerAddress->address_line2)){
+                     $customers .= $getCustomerAddress->address_line2 . ', ';
+                    }
+                    if (isset($getCustomerAddress->address_line2) && !empty($getCustomerAddress->address_line2)){
+                     $customers .= $getCustomerAddress->address_line2 . ', ';
+                    }
+                    if (isset($getCustomerAddress->city) && !empty($getCustomerAddress->city)){
+                     $customers .= $getCustomerAddress->city . ', ';
+                    }
+                    if (isset($getCustomerAddress->state_name) && !empty($getCustomerAddress->state_name)){
+                     $customers .= $getCustomerAddress->state_name . ', ';
+                    }
+                    if (isset($getCustomerAddress->zipcode) && !empty($getCustomerAddress->zipcode)){
+                     $customers .= $getCustomerAddress->zipcode ;
+                    }
+                    
+                     
                     $customers .= '</p></div></div></div>';
                 }
             }
@@ -554,8 +580,15 @@ class ScheduleController extends Controller
                     ->first();
                 // dd($getCustomerDetails);
 
+                do {
+                    $randomSixDigit = mt_rand(100000, 999999);
+                    $exists = DB::table('jobs')->where('job_code', $randomSixDigit)->exists();
+                } while ($exists); 
+    
+    
+
                 $jobsData = [
-                    'job_code' => (isset($data['job_code']) && !empty($data['job_code'])) ? $data['job_code'] : '',
+                    'job_code' => (isset($randomSixDigit) && !empty($randomSixDigit)) ? $randomSixDigit : '',
                     'job_title' => (isset($data['job_title']) && !empty($data['job_title'])) ? $data['job_title'] : '',
                     'appliances_id' => (isset($data['appliances']) && !empty($data['appliances'])) ? $data['appliances'] : '',
                     'description' => (isset($data['job_description']) && !empty($data['job_description'])) ? $data['job_description'] : '',
@@ -572,7 +605,7 @@ class ScheduleController extends Controller
 
                 if ($data['new_appliance'] && $data['new_manufacturer']) {
 
-                    $appliance = new Appliances();
+                    $appliance = new AppliancesType();
                     $appliance->appliance_name = $data['new_appliance'] ?? null;
                     $appliance->save();
 
@@ -583,14 +616,20 @@ class ScheduleController extends Controller
                     $new_manufacturer->save();
 
                     $newjobDetails = [
-                        'job_id' => $data['job_id'],
-                        'appliance_id' => (isset($appliance) && !empty($appliance)) ? $appliance->appliance_id : '',
+                        'user_id' => $data['customer_id'],
+                        'appliance_type_id' => (isset($appliance) && !empty($appliance)) ? $appliance->appliance_id : '',
                         'model_number' => (isset($data['model_number']) && !empty($data['model_number'])) ? $data['model_number'] : '',
                         'serial_number' => (isset($data['serial_number']) && !empty($data['serial_number'])) ? $data['serial_number'] : '',
                         'manufacturer_id' => (isset($new_manufacturer) && !empty($new_manufacturer)) ? $new_manufacturer->id : '',
                     ];
 
-                    $newjobDetailsID = DB::table('job_details')->insertGetId($newjobDetails);
+                    $newjobDetailsID = DB::table('user_appliances')->insertGetId($newjobDetails);
+                    $userappl = [
+                        'job_id' => $data['job_id'],
+                        'appliance_id' => $newjobDetailsID ,
+                    ];
+                    $addAppliancesUser = DB::table('job_appliance')->insertGetId($userappl);
+               
                 }
 
                
@@ -725,8 +764,7 @@ class ScheduleController extends Controller
                 $height_slot_px = $height_slot * 80 - 10;
 
                 $returnDate = '<div class="dts mb-1 edit_schedule flexibleslot" data-bs-toggle="modal" data-bs-target="#edit" style="cursor: pointer;height:' . $height_slot_px . 'px;background:' . $technician->color_code . ';" data-id="' . $jobId . '">
-                    <h5 style="font-size: 15px; padding-bottom: 0px; margin-bottom: 5px; margin-top: 3px;">' . $data['customer_name'] . '</h5>
-                    <p style="font-size: 11px;"><i class="fas fa-clock"></i>' . $start_date_time->format('h:i:s') . ' -- ' . $data['job_code'] . ' <br>' . $data['job_title'] . '</p>
+                    <h5 style="font-size: 15px; padding-bottom: 0px; margin-bottom: 5px; margin-top: 3px;">' . $randomSixDigit . ' <br>' . $data['job_title'] . '</p>
                     <p style="font-size: 12px;">' . $getCustomerDetails->userAddress->city . ',' . $getCustomerDetails->userAddress->state_name . '</p></div>';
 
                 return ['html' => $returnDate, 'start_date' => $start_date_time->copy()->format('g'), 'technician_id' => $data['technician_id'], 'schedule_id' => $scheduleId];
@@ -757,8 +795,14 @@ class ScheduleController extends Controller
                     $tagIds = '';
                 }
 
+                do {
+                    $randomSixDigit = mt_rand(100000, 999999);
+                    $exists = DB::table('jobs')->where('job_code', $randomSixDigit)->exists();
+                } while ($exists); 
+    
+
                 $jobsData = [
-                    'job_code' => (isset($data['job_code']) && !empty($data['job_code'])) ? $data['job_code'] : '',
+                    'job_code' => (isset($randomSixDigit) && !empty($randomSixDigit)) ? $randomSixDigit : '',
                     'customer_id' => (isset($data['customer_id']) && !empty($data['customer_id'])) ? $data['customer_id'] : '',
                     'technician_id' => (isset($data['technician_id']) && !empty($data['technician_id'])) ? $data['technician_id'] : '',
                     'appliances_id' => (isset($data['appliances']) && !empty($data['appliances'])) ? $data['appliances'] : '',
@@ -822,15 +866,20 @@ class ScheduleController extends Controller
 
 
                 $jobDetails = [
-                    'job_id' => $jobId,
-                    'appliance_id' => (isset($data['appliances']) && !empty($data['appliances'])) ? $data['appliances'] : '',
+                    'user_id' => $data['customer_id'],
+                    'appliance_type_id' => (isset($data['appliances']) && !empty($data['appliances'])) ? $data['appliances'] : '',
                     'model_number' => (isset($data['model_number']) && !empty($data['model_number'])) ? $data['model_number'] : '',
                     'serial_number' => (isset($data['serial_number']) && !empty($data['serial_number'])) ? $data['serial_number'] : '',
                     'manufacturer_id' => (isset($data['manufacturer']) && !empty($data['manufacturer'])) ? $data['manufacturer'] : '',
                 ];
 
-                $jobDetailsID = DB::table('job_details')->insertGetId($jobDetails);
-
+                $userappliances = DB::table('user_appliances')->insertGetId($jobDetails);
+                
+                $userappl = [
+                     'job_id' => $jobId,
+                     'appliance_id' => $userappliances ,
+                ];
+                $addAppliancesUser = DB::table('job_appliance')->insertGetId($userappl);
                
 
                 if (isset($data['services']) && !empty($data['services'])) {
@@ -966,7 +1015,7 @@ class ScheduleController extends Controller
 
                 $returnDate = '<div class="dts mb-1 edit_schedule flexibleslot" data-bs-toggle="modal" data-bs-target="#edit" style="cursor: pointer;height:' . $height_slot_px . 'px;background:' . $technician->color_code . ';" data-id="' . $jobId . '">
                     <h5 style="font-size: 15px; padding-bottom: 0px; margin-bottom: 5px; margin-top: 3px;">' . $customer->name . '</h5>
-                    <p style="font-size: 11px;"><i class="fas fa-clock"></i>' . $start_date_time->format('h a') . ' -- ' . $data['job_code'] . ' <br>' . $data['job_title'] . '</p>
+                    <p style="font-size: 11px;"><i class="fas fa-clock"></i>' . $start_date_time->format('h a') . ' -- ' . $randomSixDigit . ' <br>' . $data['job_title'] . '</p>
                     <p style="font-size: 12px;">' . $getCustomerDetails->city . ',' . $getCustomerDetails->state_name . '</p></div>';
 
                 return [
@@ -1482,12 +1531,12 @@ class ScheduleController extends Controller
     }
     public function new_appliance(Request $request)
     {
-        $appliance = new Appliances();
+        $appliance = new AppliancesType();
         $appliance->appliance_name = $request->appliance;
         $appliance->save();
     
         // Retrieve all appliances and return them as JSON
-        $appliances = Appliances::all();
+        $appliances = AppliancesType::all();
         return response()->json($appliances);
     }
 
