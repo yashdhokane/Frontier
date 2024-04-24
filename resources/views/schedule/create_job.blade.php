@@ -7,6 +7,7 @@
     <div class="createScheduleData">
 
         <input type="hidden" class="travel_input" id="travel_input" name="travel_input" value="">
+         <input type="hidden" class="technician_name"  value="{{ $technician->name }}">
         @if (isset($technician) && !empty($technician))
 
             <div class="container-fluid">
@@ -89,8 +90,10 @@
                                             <div class="table-responsive">
                                                 <div class="row">
                                                     <div class="col-md-9">
-                                                        <h5 class="font-weight-medium mb-2" style="position: relative;">
-                                                            Reschedule Pending Jobs </h5>
+                                                        <h5 class="font-weight-medium mb-2 d-flex" style="position: relative;">
+                                                            Reschedule Pending Jobs <input
+                                                            class="mx-1" type="radio" name="teritory"
+                                                            id="techall"></h5>
                                                     </div>
                                                     <div class="col-md-3" id="makedescending" style="cursor: pointer;"><i
                                                             class="ri-sort-asc"></i></div>
@@ -101,7 +104,7 @@
                                                             data-state="NY" checked> Show Open jobs in New York</div>
                                                     <div class="col-md-6 d-flex align-items-baseline"><input
                                                             class="mx-1" type="radio" name="teritory"
-                                                            id="techall"> Show Open jobs of Technician</div>
+                                                            id="techonly" class="techonly"> Show Open jobs of {{$technician->name}}</div>
                                                 </div>
                                                 <div class="rescheduleJobs">
                                                 </div>
@@ -222,7 +225,7 @@
                                                     <option disabled>-- Select Appliances -- </option>
                                                     @if (isset($appliances) && !empty($appliances))
                                                         @foreach ($appliances as $value)
-                                                            <option value="{{ $value->appliance_type_id }}">
+                                                            <option value="{{ $value->appliance_type_id }}" data-name="{{ $value->appliance_name }}">
                                                                 {{ $value->appliance_name }}</option>
                                                         @endforeach
                                                     @endif
@@ -247,12 +250,12 @@
                                             <h6 class="card-title required-field"><i class="fas fa fa-industry"></i>
                                                 Manufacturer </h6>
                                             <div class="form-group">
-                                                <select class="form-control manufaturer" id="manufacturer"
+                                                <select class="form-control manufacturer" id="manufacturer"
                                                     name="manufacturer">
                                                     <option disabled>-- Select Manufacturer -- </option>
                                                     @if (isset($manufacturers) && !empty($manufacturers))
                                                         @foreach ($manufacturers as $value)
-                                                            <option value="{{ $value->id }}">
+                                                            <option value="{{ $value->id }}" data-name="{{ $value->manufacturer_name }}">
                                                                 {{ $value->manufacturer_name }}
                                                             </option>
                                                         @endforeach
@@ -578,14 +581,13 @@
 
                                 <div class="row mt-2">
                                     <div class="col-md-6">
-                                        <h4 class="font-weight-medium mb-2">CUSTOMER DETAILS</h4>
+                                        <h4 class="font-weight-medium mb-2">CUSTOMER </h4>
                                         <div class="confirm_job_box">
                                             <div class="row">
                                                 <div class="col-md-12" style="display: inline-flex;">
                                                     <h6 class="font-weight-medium mb-0 show_customer_name">
 
                                                     </h6>&nbsp;
-                                                    <small class="text-muted show_customer_area"> </small>
                                                 </div>
                                             </div>
                                             <div class="row" style="margin-bottom: -13px">
@@ -601,7 +603,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <h4 class="font-weight-medium mb-2">TECHNICIAN DETAILS</h4>
+                                        <h4 class="font-weight-medium mb-2">TECHNICIAN </h4>
                                         <div class="confirm_job_box">
                                             <div class="row">
                                                 <div class="col-md-12">
@@ -620,8 +622,8 @@
                                 </div>
 
                                 <div class="row mt-2">
-                                    <div class="col-md-9">
-                                        <h4 class="font-weight-medium mb-2">JOB DETAILS</h4>
+                                    <div class="col-md-6">
+                                        <h4 class="font-weight-medium mb-2">JOB</h4>
                                         <div class="confirm_job_box">
                                             <div class="row">
                                                 <div class="col-md-12" style="display: inline-flex;">
@@ -632,9 +634,6 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-12 reschedule_job show_job_information"></div>
-                                            </div>
-                                            <div class="row">
                                                 <div class="col-md-12 reschedule_job ">
                                                     <p class="show_job_description"></p>
                                                     <p class="show_job_duration" style="margin-top: -16px;">
@@ -642,6 +641,13 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h4 class="font-weight-medium mb-2">APPLIANCES</h4>
+                                        <div class="show_appliance"></div>
+                                        <div class="show_manufacturer"></div>
+                                        <div class="show_model_number"></div>
+                                        <div class="show_serial_number"></div>
                                     </div>
                                 </div>
 
@@ -730,7 +736,13 @@
                                                 </div>
                                             </div>
                                             <div class="row" style="border-top: 2px dotted #343434">
-                                                <div class="col-md-7">&nbsp;</div>
+                                                <div class="col-md-7 align-self-end d-flex">
+                                                    <h4> Do you want to Confirm the job ?</h4>
+
+                                                        <div class="form-check form-switch ms-4">
+                                                            <input class="form-check-input" name="is_confirmed" type="checkbox" value="yes" id="flexSwitchCheckChecked">
+                                                        </div>
+                                                </div>
                                                 <div class="col-md-1">
                                                     <div class="mt-2">&nbsp;</div>
                                                 </div>
@@ -809,6 +821,33 @@
                 $('#show_new_appl').toggle();
             });
       });
+
+      $(document).ready(function() {
+        $(document).on('change','.appliances', function() {
+            var selectedOption = $(this).find('option:selected');
+            var applianceName = selectedOption.data('name');
+            $('.show_appliance').text('Appliance: ' + applianceName);
+        });
+
+        // Debugging when changing the manufacturer dropdown
+        $(document).on('change','.manufacturer', function() {
+        console.log('Manufact');
+            var selectedOption = $(this).find('option:selected');
+            var manufacturerName = selectedOption.data('name');
+
+            $('.show_manufacturer').text('Manufacturer: ' + manufacturerName);
+        });
+        $(document).on('input', '.model_number', function() {
+            var model_number = $(this).val();
+            $('.show_model_number').text('Model Number: ' + model_number);
+        });
+
+        $(document).on('input', '.serial_number', function() {
+            var serial_number = $(this).val();
+            $('.show_serial_number').text('Serial Number: ' + serial_number);
+        });
+    });
+
     </script>
     <script>
         $(document).ready(function() {
@@ -962,6 +1001,7 @@
                 $('#new_product_list').hide();
                 $('#addnewpart').show();
             });
+
 
         });
     </script>
@@ -1195,6 +1235,7 @@
 
                                 var newyork = $('#newyork');
                                 var techAll = $('#techall');
+                                var technicianOnly = $('#techonly');
 
                                 // Initial check if 'newyork' checkbox is checked
                                 if (newyork.prop('checked')) {
@@ -1203,9 +1244,7 @@
 
                                 // Function to toggle the order of elements
                                 function toggleOrder() {
-                                    var ascendingOrder =
-                                        true; // Flag to track sorting order
-                                    // Get the list of .pending_jobs2 elements
+                                    var ascendingOrder =  true; // Flag to track sorting order
                                     var $pendingJobs = $('.pending_jobs2');
                                     // Toggle the sorting order flag
                                     ascendingOrder = !ascendingOrder;
@@ -1222,83 +1261,54 @@
                                     });
 
                                     // Append the sorted elements to their parent
-                                    $pendingJobs.appendTo($pendingJobs
-                                        .parent());
+                                    $pendingJobs.appendTo($pendingJobs.parent());
                                 }
 
                                 // Event handler for clicking on #makedescending
-                                $('#makedescending').on('click',
-                                    toggleOrder);
+                                $('#makedescending').on('click',toggleOrder);
 
                                 // Iterate over each .pending_jobs2 element
                                 $('.pending_jobs2').each(function() {
-                                    var $element = $(
-                                        this
-                                    ); // Store reference to the element
-                                    var technicianId = $element
-                                        .data('technician-id');
+                                    var $element = $( this ); // Store reference to the element
+                                    var technicianId = $element.data('technician-id');
+                                    var technicianName = $element.data('technician-name');
+                                    var customerName = $element.data('customer-name');
+                                    var technician_name = $('.technician_name').val();
                                     $.ajax({
                                         method: 'get',
                                         url: "{{ route('userstate') }}",
                                         data: {
                                             technicianId: technicianId
                                         },
-                                        success: function(
-                                            values) {
-                                            var code =
-                                                values
-                                                .state_code;
+                                        success: function( values) {
+                                            var code = values.state_code;
 
                                             // Function to update visibility based on checkboxes
                                             function updateVisibility() {
-                                                if (newyork
-                                                    .prop(
-                                                        'checked'
-                                                    ) &&
-                                                    code ===
-                                                    'NY'
-                                                ) {
-                                                    $element
-                                                        .removeClass(
-                                                            'd-none'
-                                                        );
-                                                } else if (
-                                                    techAll
-                                                    .prop(
-                                                        'checked'
-                                                    )
-                                                ) {
-                                                    $element
-                                                        .removeClass(
-                                                            'd-none'
-                                                        );
+                                                if (newyork.prop('checked') && code === 'NY') {
+                                                    $element.removeClass('d-none');
+                                                } else if (techAll.prop('checked') && customerName.includes(name)) {
+                                                    $element.removeClass('d-none');
+                                               } else if (technicianOnly.prop('checked') && technicianName.toLowerCase().includes   (technician_name.toLowerCase())) {
+                                                    $element.removeClass('d-none');
                                                 } else {
-                                                    $element
-                                                        .addClass(
-                                                            'd-none'
-                                                        );
+                                                    $element.addClass('d-none');
                                                 }
+
                                             }
 
                                             // Update visibility initially
-                                            updateVisibility
-                                                ();
+                                            updateVisibility();
 
                                             // Event handler for 'newyork' checkbox change
-                                            $('#newyork')
-                                                .change(
-                                                    function() {
-                                                        updateVisibility
-                                                            ();
-                                                    });
+                                            $('#newyork').change( function() {
+                                                updateVisibility();
+                                            });
 
                                             // Event handler for 'techall' checkbox change
-                                            $('#techall')
-                                                .change(
-                                                    function() {
-                                                        updateVisibility
-                                                            ();
-                                                    });
+                                            $('#techall').change(function() {
+                                                updateVisibility();
+                                            });
                                         },
                                         error: function(xhr,
                                             status,
@@ -1715,7 +1725,7 @@
                         var manufaturer_id = data.job_details.manufacturer_id;
 
                         // Iterate through each option in the select element
-                        $('.manufaturer option').each(function() {
+                        $('.manufacturer option').each(function() {
                             // Check if the value of the current option matches the manufaturer_id
                             if ($(this).val() == manufaturer_id) {
                                 // Set the selected attribute for the matching option

@@ -370,7 +370,7 @@ class ScheduleController extends Controller
                 ->join('appliances', 'appliances.appliance_id', 'jobs.appliances_id')
                 ->join('users', 'users.id', 'jobs.customer_id')
                 ->join('users as technician', 'technician.id', 'jobs.technician_id')
-                ->where('users.name', 'LIKE', '%' . $data['name'] . '%')
+                // ->where('users.name', 'LIKE', '%' . $data['name'] . '%')
                 ->get();
 
             if (isset($filterCustomer) && !empty($filterCustomer->count())) {
@@ -378,7 +378,7 @@ class ScheduleController extends Controller
                 foreach ($filterCustomer as $key => $value) {
 
                     $getCustomerAddress = DB::table('user_address')
-                        ->select('user_address.city', 'location_states.state_name', 'user_address.zipcode')
+                        ->select('user_address.address_line1','user_address.address_line2','user_address.city', 'location_states.state_name',  'location_states.state_code', 'user_address.zipcode')
                         ->join('location_states', 'location_states.state_id', 'user_address.state_id')
                         ->where('user_id', $value->id)
                         ->first();
@@ -394,20 +394,18 @@ class ScheduleController extends Controller
                     $customers .= '<div class="customer_sr_box selectCustomer" data-customer-id="' . $value->id . '" data-id="' . $value->id . '" data-name="' . $value->name . '"><div class="row">';
                     $customers .= '<div class="col-md-12"><h6 class="font-weight-medium mb-0">' . $value->name . ' ';
                     if (isset($getCustomerAddress->city) && !empty($getCustomerAddress->city)) {
-                        $customers .= '<small class="text-muted">' . $getCustomerAddress->city . ' ' . $getCustomerAddress->state_name . ' </small>';
+                        $customers .= '<small class="text-muted">' . $getCustomerAddress->city . ' ' . $getCustomerAddress->state_code . ' </small>';
                     }
                     $customers .= '</h6><p class="text-muted test">';
                     if (isset($value->mobile) && !empty($value->mobile)) {
                        $customers .= $value->mobile . ' / ' ;
-                    }else{
-                       $customers .= '66984698 / ' ;
                     }
                     if (isset($value->email) && !empty($value->email)) {
                        $customers .= $value->email   ;
-                    }else{
-                       $customers .= ' test@test.com' ;
                     }
+                    if (isset($value->email) && !empty($value->email) && isset($value->email) && !empty($value->email)) {
                     $customers .= '<br />'   ;
+                    }
                     if (isset($getCustomerAddress->address_line1) && !empty($getCustomerAddress->address_line1)){
                      $customers .=  $getCustomerAddress->address_line1 . ', ';
                     }
@@ -437,7 +435,7 @@ class ScheduleController extends Controller
 
                     $createdDate = Carbon::parse($value->created_at);
 
-                    $pendingJobs .= '<div class="pending_jobs2" data-customer-id="' . $value->customer_id . '" data-technician-id="' . $value->technician_id . '" data-id="' . $value->id . '" data-address="' . $value->address . '"><div class="row"><div class="col-md-12">';
+                    $pendingJobs .= '<div class="pending_jobs2" data-technician-name="' . $value->technician_name . '" data-customer-name="' . $value->customer_name . '" data-customer-id="' . $value->customer_id . '" data-technician-id="' . $value->technician_id . '" data-id="' . $value->id . '" data-address="' . $value->address . '"><div class="row"><div class="col-md-12">';
                     $pendingJobs .= '<h6 class="font-weight-medium mb-0">' . $value->job_title . '</h6></div>';
                     $pendingJobs .= '<div class="col-md-6 reschedule_job">Customer: ' . $value->customer_name . '</div>';
                     $pendingJobs .= '<div class="col-md-6 reschedule_job" style="display: contents;">Technician: ' . $value->technician_name . '</div>';
@@ -598,6 +596,7 @@ class ScheduleController extends Controller
                     'discount' => (isset($data['discount']) && !empty($data['discount'])) ? $data['discount'] : 0,
                     'gross_total' => (isset($data['total']) && !empty($data['total'])) ? $data['total'] : 0,
                     'commission_total' => (isset($data['subtotal']) && !empty($data['subtotal'])) ? $data['subtotal'] : 0,
+                    'is_confirmed' => (isset($data['is_confirmed']) && !empty($data['is_confirmed'])) ? $data['is_confirmed'] : 'no',
                     'updated_at' => date('Y-m-d H:i:s')
                 ];
 
@@ -821,6 +820,7 @@ class ScheduleController extends Controller
                     'zipcode' => (isset($getCustomerDetails->zipcode) && !empty($getCustomerDetails->zipcode)) ? $getCustomerDetails->zipcode : '',
                     'latitude' => (isset($getCustomerDetails->latitude) && !empty($getCustomerDetails->latitude)) ? $getCustomerDetails->latitude : 0,
                     'longitude' => (isset($getCustomerDetails->longitude) && !empty($getCustomerDetails->longitude)) ? $getCustomerDetails->longitude : 0,
+                    'is_confirmed' => (isset($data['is_confirmed']) && !empty($data['is_confirmed'])) ? $data['is_confirmed'] : 'no',
                     'added_by' => auth()->id(),
                     'updated_by' => auth()->id(),
                     'job_field_ids' => 0,
