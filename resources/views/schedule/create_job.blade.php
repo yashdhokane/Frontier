@@ -102,8 +102,8 @@
                                                     <div class="col-md-6 d-flex align-items-baseline"><input
                                                             class="mx-1" type="radio" name="teritory" id="newyork"
                                                             data-state="NY" checked> Show Open jobs in New York</div>
-                                                    <div class="col-md-6 d-flex align-items-baseline"><input
-                                                            class="mx-1" type="radio" name="teritory"
+                                                    <div class="col-md-6 d-flex align-items-baseline">
+                                                        <input class="mx-1 techName" type="radio" name="teritory"
                                                             id="techonly" class="techonly"> Show Open jobs of {{$technician->name}}</div>
                                                 </div>
                                                 <div class="rescheduleJobs">
@@ -1235,10 +1235,14 @@
 
                                 var newyork = $('#newyork');
                                 var techAll = $('#techall');
-                                var technicianOnly = $('#techonly');
-
+                                var technicianOnly = $('.techName');
+                                
+                               
                                 // Initial check if 'newyork' checkbox is checked
                                 if (newyork.prop('checked')) {
+                                    $('.pending_jobs2').addClass('d-none');
+                                }
+                                if (technicianOnly.prop('checked')) {
                                     $('.pending_jobs2').addClass('d-none');
                                 }
 
@@ -1274,6 +1278,7 @@
                                     var technicianName = $element.data('technician-name');
                                     var customerName = $element.data('customer-name');
                                     var technician_name = $('.technician_name').val();
+                                    console.log('TechnicianName:', technicianName, 'TechnicianInput:', technician_name); // Debugging
                                     $.ajax({
                                         method: 'get',
                                         url: "{{ route('userstate') }}",
@@ -1281,20 +1286,24 @@
                                             technicianId: technicianId
                                         },
                                         success: function( values) {
+                                         $('#techonly').change(function() {
+                                            updateVisibility(); // Make sure this function is accessible and defined properly
+                                        });
                                             var code = values.state_code;
 
-                                            // Function to update visibility based on checkboxes
+                                           // Function to update visibility based on checkboxes
                                             function updateVisibility() {
+
+                                                // Checkboxes and visibility logic
                                                 if (newyork.prop('checked') && code === 'NY') {
                                                     $element.removeClass('d-none');
                                                 } else if (techAll.prop('checked') && customerName.includes(name)) {
                                                     $element.removeClass('d-none');
-                                               } else if (technicianOnly.prop('checked') && technicianName.toLowerCase().includes   (technician_name.toLowerCase())) {
+                                                } else if (technicianOnly.prop('checked') && technicianName.toLowerCase().includes(technician_name.toLowerCase())) {
                                                     $element.removeClass('d-none');
                                                 } else {
                                                     $element.addClass('d-none');
                                                 }
-
                                             }
 
                                             // Update visibility initially
