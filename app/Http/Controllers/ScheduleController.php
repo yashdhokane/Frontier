@@ -19,6 +19,7 @@ use App\Models\Role;
 use App\Models\Schedule;
 use App\Models\SiteLeadSource;
 use App\Models\SiteTags;
+use App\Models\UserAppliances;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -806,7 +807,7 @@ class ScheduleController extends Controller
                     'job_code' => (isset($randomSixDigit) && !empty($randomSixDigit)) ? $randomSixDigit : '',
                     'customer_id' => (isset($data['customer_id']) && !empty($data['customer_id'])) ? $data['customer_id'] : '',
                     'technician_id' => (isset($data['technician_id']) && !empty($data['technician_id'])) ? $data['technician_id'] : '',
-                    'appliances_id' => (isset($data['appliances']) && !empty($data['appliances'])) ? $data['appliances'] : '',
+                    'appliances_id' => (isset($data['appliances']) && !empty($data['appliances'])) ? $data['appliances'] : $data['exist_appl_id'],
                     'job_title' => (isset($data['job_title']) && !empty($data['job_title'])) ? $data['job_title'] : '',
                     'warranty_type' => (isset($data['job_type']) && !empty($data['job_type'])) ? $data['job_type'] : '',
                     'description' => (isset($data['job_description']) && !empty($data['job_description'])) ? trim($data['job_description']) : '',
@@ -866,7 +867,15 @@ class ScheduleController extends Controller
 
                 $jobAssignedID = DB::table('job_assigned')->insertGetId($JobAssignedData);
 
+            if(isset($data['exist_appl_id']) && !empty($data['exist_appl_id'])){
+              
+                 $userappl = [
+                     'job_id' => $jobId,
+                     'appliance_id' =>(isset($data['exist_appl_id']) && !empty($data['exist_appl_id'])) ? $data['exist_appl_id'] : '',
+                ];
+                $addAppliancesUser = DB::table('job_appliance')->insertGetId($userappl);
 
+            }else{
                 $jobDetails = [
                     'user_id' => $data['customer_id'],
                     'appliance_type_id' => (isset($data['appliances']) && !empty($data['appliances'])) ? $data['appliances'] : '',
@@ -882,7 +891,7 @@ class ScheduleController extends Controller
                      'appliance_id' => $userappliances ,
                 ];
                 $addAppliancesUser = DB::table('job_appliance')->insertGetId($userappl);
-               
+            }
 
                 if (isset($data['services']) && !empty($data['services'])) {
 
@@ -1644,6 +1653,13 @@ class ScheduleController extends Controller
         $result_string = implode(', ', $state_names->toArray());
 
         return response()->json($result_string);
+    }
+
+   public function customer_appliances(Request $request)
+    {
+       $appliance = UserAppliances::with('appliance','manufacturer')->where('user_id',$request->id)->get();
+
+        return response()->json($appliance);
     }
 
 }

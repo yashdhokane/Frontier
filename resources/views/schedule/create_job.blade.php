@@ -203,9 +203,8 @@
                                     <div class="col-md-6">
 										<h6 class="card-title required-field"><i class="fas fa fa-television"></i>Select Existing Appliances </h6>
 										<div class="form-group">
-											<select class="form-control appl_id" id="appl_id" name="appl_id">
+											<select class="form-control appl_id exist_appl_id" id="appl_id" name="exist_appl_id">
 												<option value=" Refrigerator/ LG/ LMXS/ LVRM "> Refrigerator/ LG/ LMXS/ LVRM </option>
-												<option value="  Air Conditioner/ LG/ 879564/ 897521  ">  Air Conditioner/ LG/ 879564/ 897521  </option>
 											</select>
 										</div>
 									</div>
@@ -222,7 +221,7 @@
                                             <div class="form-group">
                                                 <select class="form-control appliances" id="appliances"
                                                     name="appliances">
-                                                    <option disabled>-- Select Appliances -- </option>
+                                                    <option value="">-- Select Appliances -- </option>
                                                     @if (isset($appliances) && !empty($appliances))
                                                         @foreach ($appliances as $value)
                                                             <option value="{{ $value->appliance_type_id }}" data-name="{{ $value->appliance_name }}">
@@ -252,7 +251,7 @@
                                             <div class="form-group">
                                                 <select class="form-control manufacturer" id="manufacturer"
                                                     name="manufacturer">
-                                                    <option disabled>-- Select Manufacturer -- </option>
+                                                    <option value="">-- Select Manufacturer -- </option>
                                                     @if (isset($manufacturers) && !empty($manufacturers))
                                                         @foreach ($manufacturers as $value)
                                                             <option value="{{ $value->id }}" data-name="{{ $value->manufacturer_name }}">
@@ -845,6 +844,19 @@
         $(document).on('input', '.serial_number', function() {
             var serial_number = $(this).val();
             $('.show_serial_number').text('Serial Number: ' + serial_number);
+        });
+
+        $(document).on('change','.exist_appl_id', function() {
+            var selectedOption = $(this).find('option:selected');
+            var appName = selectedOption.data('appname');
+            var manuName = selectedOption.data('manuname');
+            var model = selectedOption.data('model');
+            var serial = selectedOption.data('serial');
+
+            $('.show_appliance').text('Appliance: ' + appName);
+            $('.show_manufacturer').text('Manufacturer: ' + manuName);
+            $('.show_model_number').text('Model Number: ' + model);
+            $('.show_serial_number').text('Serial Number: ' + serial);
         });
     });
 
@@ -1973,6 +1985,33 @@
                         }
                     }
                 });
+
+                $.ajax({
+                    url: "{{ route('customer_appliances') }}",
+                    data: {
+                        id: id,  // Ensure 'id' is defined and valid
+                    },
+                    type: 'GET',  // If it's an API, 'GET' is generally correct
+                    success: function(data) {
+                        if (Array.isArray(data)) {
+                            console.log(data);  // To inspect the data
+                            $('.exist_appl_id').empty();  // Clear existing options
+                             $('.exist_appl_id').append('<option value=""> -- Select existing appliances -- </option>');
+                            // Loop over the array to create new options
+                            $.each(data, function(index, value) {  // 'index' is needed to reference current item
+                                var optionText = `${value.appliance.appliance_name} / ${value.manufacturer.manufacturer_name} / ${value.model_number} / ${value.serial_number}`;
+                                $('.exist_appl_id').append('<option value="' + value.appliance_id + '" data-appName="' + value.appliance.appliance_name + '" data-manuName="' + value.manufacturer.manufacturer_name + '" data-model="' + value.model_number + '" data-serial="' + value.serial_number + '">' + optionText + '</option>');
+                            });
+                        } else {
+                            console.error("Unexpected data format:", data);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("AJAX request failed:", error);  // Handle errors
+                        alert("An error occurred while fetching the data. Please try again later.");  // Notify user
+                    }
+                });
+
             });
 
             $(document).on('change', '.services', function(event) {
@@ -2437,38 +2476,40 @@
             }
 
             // Check if ticket number is filled
-           
+                    
+            // Get existing appliance ID
+            var exist_appl_id = $('.exist_appl_id').val();
 
-            // Check if appliances is selected
+            // Get other required fields
             var appliances = $('.appliances').val();
-            if (!appliances) {
-                isValid = false;
+            var manufacturer = $('select[name="manufacturer"]').val();
+            var modelNumber = $('.model_number').val().trim();
+            var serialNumber = $('.serial_number').val().trim();
+
+            // Condition 1: If exist_appl_id is filled
+            if (!exist_appl_id) {
+                  if (appliances && manufacturer && modelNumber !== '' && serialNumber !== '') {
+                    isValid = true; // It's valid if all other fields are filled
+                } else {
+                    isValid = false; // If neither condition is met, it's invalid
+                }
+            } else {
+                
+               isValid = true;
             }
 
-            // Check if manufacturer is selected
-            var manufacturer = $('select[name="manufacturer"]').val();
-            if (!manufacturer) {
-                isValid = false;
-            }
+
+
+
+               
+
+            
 
             // Check if priority is selected
             var priority = $('select[name="priority"]').val();
             if (!priority) {
                 isValid = false;
             }
-
-            // Check if model number is filled
-            var modelNumber = $('.model_number').val().trim();
-            if (modelNumber === '') {
-                isValid = false;
-            }
-
-            // Check if serial number is filled
-            var serialNumber = $('.serial_number').val().trim();
-            if (serialNumber === '') {
-                isValid = false;
-            }
-
             // Check if job description is filled
             var jobDescription = $('.job_description').val().trim();
             if (jobDescription === '') {
