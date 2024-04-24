@@ -177,15 +177,22 @@
                                                                     @if (isset($user_data_array[$value]['user_image']) && !empty($user_data_array[$value]['user_image']))
                                                                         <img src="{{ asset('public/images/technician/' . $user_data_array[$value]['user_image']) }}"
                                                                             alt="user" width="48"
-                                                                            class="rounded-circle" /><br>
+                                                                            class="rounded-circle"  /><br>
                                                                     @else
                                                                         <img src="{{ asset('public/images/login_img_bydefault.png') }}"
                                                                             alt="user" width="48"
                                                                             class="rounded-circle " /><br>
                                                                     @endif
                                                                     {{ 'EMP' . $value }} <br>
-                                                                    @if (isset($user_data_array[$value]) && !empty($user_data_array[$value]))
-                                                                        {{ $user_data_array[$value]['name'] }}
+                                                                   @if (isset($user_data_array[$value]) && !empty($user_data_array[$value]))
+                                                                        @php
+                                                                            $name = $user_data_array[$value]['name'];
+                                                                            $nameParts = explode(' ', $name);
+                                                                            $firstName = $nameParts[0];
+                                                                            $lastInitial = count($nameParts) > 1 ? strtoupper($nameParts[count($nameParts) - 1][0]) : '';
+                                                                            $formattedName = $firstName . ' ' . $lastInitial;
+                                                                        @endphp
+                                                                        {{ $formattedName }}
                                                                     @endif
                                                                 </a>
                                                                 <div class="popupContainer text-start"
@@ -304,32 +311,31 @@
                                                                                                 data-date="{{ $filterDate }}"
                                                                                                 style="cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->JobModel->technician->color_code ?? null }};"
                                                                                                 data-id="{{ $value2->job_id }}">
-                                                                                                <div class="cls_slot_title">
-                                                                                                    <i
-                                                                                                        class="ri-tools-line"></i>
+																								
+																								<div class="cls_is_confirmed">
+																									<i class="ri-thumb-up-fill"></i>
+                                                                                                </div>
+																								
+                                                                                                 <div class="cls_slot_title">
+                                                                                                    <i class="ri-tools-line"></i>
                                                                                                     {{ $value2->JobModel->user->name ?? null }}
                                                                                                 </div>
-                                                                                                <div class="cls_slot_time">
-                                                                                                    <i
-                                                                                                        class="ri-truck-line"></i>
-                                                                                                    {{ $timeString }}
+                                                                                                <div class="cls_slot_time"><i class="ri-truck-line"></i> {{ $timeString }}
                                                                                                 </div>
-                                                                                                <div
-                                                                                                    class="cls_slot_job_card">
-                                                                                                    {{ $value2->JobModel->job_title ?? null }}
+                                                                                                <div class="cls_slot_job_card">{{ $value2->JobModel->job_title ?? null }}
                                                                                                 </div>
-                                                                                                <div
-                                                                                                    class="cls_slot_job_card">
+                                                                                                <div class="cls_slot_job_card">
                                                                                                     {{ $value2->JobModel->city ?? null }},
                                                                                                     {{ $value2->JobModel->state ?? null }}
                                                                                                 </div>
+																								
+																								
                                                                                             </div>
                                                                                         </a>
                                                                                         <div
                                                                                             class="open_job_details rounded shadow py-3 px-2">
                                                                                             <div class="popup-content">
-                                                                                                <h5><i
-                                                                                                        class="fas fa-id-badge px-2"></i>
+                                                                                                <h5><i class="fas fa-id-badge px-2"></i>
                                                                                                     <strong>Job
                                                                                                         #{{ $value2->JobModel->job_code ?? null }}</strong>
                                                                                                 </h5>
@@ -337,32 +343,26 @@
                                                                                                     {{ $value2->start_date_time ? date('M d Y g:i a', strtotime($value2->start_date_time)) : null }}
                                                                                                     -
                                                                                                     {{ \Carbon\Carbon::parse($value2->end_date_time)->format('g:i A') }}
-
-                                                                                                </p>
-                                                                                                <div class="py-1"><i
-                                                                                                        class="fas fa-ticket-alt px-2"></i>
+																								</p>
+                                                                                                <div class="py-1">
+																									<i class="fas fa-ticket-alt px-2"></i>
                                                                                                     <strong>{{ $value2->JobModel->job_title ?? null }}</strong>
                                                                                                 </div>
-                                                                                                <div class="py-1"><i
-                                                                                                        class="fas fa-user px-2"></i>
+                                                                                                <div class="py-1">
+																									<i class="fas fa-user px-2"></i>
                                                                                                     <strong>{{ $value2->JobModel->user->name ?? null }}</strong>
-                                                                                                    <p
-                                                                                                        class="ps-4 m-0 ms-2">
+                                                                                                    <p class="ps-4 m-0 ms-2">
                                                                                                         {{ $value2->JobModel->addresscustomer->address_line1 ?? null }}
                                                                                                         {{ $value2->JobModel->addresscustomer->zipcode ?? null }}
                                                                                                     </p>
-                                                                                                    <p
-                                                                                                        class="ps-4 m-0 ms-2">
+                                                                                                    <p class="ps-4 m-0 ms-2">
                                                                                                         {{ $value2->JobModel->user->mobile ?? null }}
                                                                                                     </p>
                                                                                                 </div>
-                                                                                                <div class="py-1"><i
-                                                                                                        class="fas fa-user-secret px-2"></i>
+                                                                                                <div class="py-1"><i class="fas fa-user-secret px-2"></i>
                                                                                                     <strong>{{ $value2->JobModel->technician->name ?? null }}</strong>
-                                                                                                    <div class="py-1"><i
-                                                                                                            class="fas fa-tag px-2"></i>
-                                                                                                        <button
-                                                                                                            class="btn btn-primary rounded">{{ $value2->JobModel->status ?? null }}</button>
+                                                                                                    <div class="py-1"><i class="fas fa-tag px-2"></i>
+                                                                                                        <button class="btn btn-primary rounded">{{ $value2->JobModel->status ?? null }}</button>
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>

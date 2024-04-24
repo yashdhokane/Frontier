@@ -9,6 +9,7 @@ use App\Models\Event;
 use App\Models\JobActivity;
 use App\Models\JobModel;
 use App\Models\LocationCity;
+use App\Models\LocationServiceArea;
 use App\Models\LocationState;
 use App\Models\Manufacturer;
 use App\Models\User;
@@ -366,8 +367,9 @@ class ScheduleController extends Controller
                 ->where('role', 'customer')
                 ->get();
 
-            $filterJobs = DB::table('jobs')->select('jobs.job_title', 'jobs.id', 'jobs.customer_id', 'jobs.address', 'jobs.technician_id', 'users.name as customer_name', 'technician.name as technician_name', 'jobs.created_at', 'appliances.appliance_name')
+            $filterJobs = DB::table('jobs')->select('jobs.job_title', 'jobs.id', 'jobs.customer_id', 'jobs.address', 'jobs.technician_id', 'users.name as customer_name', 'technician.name as technician_name', 'jobs.created_at', 'appliances.appliance_name', 'user_address.state_id as state_id')
                 ->join('appliances', 'appliances.appliance_id', 'jobs.appliances_id')
+                ->join('user_address', 'user_address.user_id', 'jobs.customer_id')
                 ->join('users', 'users.id', 'jobs.customer_id')
                 ->join('users as technician', 'technician.id', 'jobs.technician_id')
                 // ->where('users.name', 'LIKE', '%' . $data['name'] . '%')
@@ -435,7 +437,7 @@ class ScheduleController extends Controller
 
                     $createdDate = Carbon::parse($value->created_at);
 
-                    $pendingJobs .= '<div class="pending_jobs2" data-technician-name="' . $value->technician_name . '" data-customer-name="' . $value->customer_name . '" data-customer-id="' . $value->customer_id . '" data-technician-id="' . $value->technician_id . '" data-id="' . $value->id . '" data-address="' . $value->address . '"><div class="row"><div class="col-md-12">';
+                    $pendingJobs .= '<div class="pending_jobs2" data-technician-name="' . $value->technician_name . '" data-customer-name="' . $value->customer_name . '" data-customer-id="' . $value->customer_id . '" data-technician-id="' . $value->technician_id . '" data-id="' . $value->id . '" data-address="' . $value->address . '" data-state-id="' . $value->state_id . '"><div class="row"><div class="col-md-12">';
                     $pendingJobs .= '<h6 class="font-weight-medium mb-0">' . $value->job_title . '</h6></div>';
                     $pendingJobs .= '<div class="col-md-6 reschedule_job">Customer: ' . $value->customer_name . '</div>';
                     $pendingJobs .= '<div class="col-md-6 reschedule_job" style="display: contents;">Technician: ' . $value->technician_name . '</div>';
@@ -1527,7 +1529,47 @@ class ScheduleController extends Controller
         $a = CustomerUserAddress::where('user_id', $request->technicianId)->with('locationStateName')->first();
         $address = $a->locationStateName;
 
-        return response()->json($address);
+        $job = User::where('name', $request->technician_name)->first();
+
+        $service_area_ids = explode(',', $job->service_areas);
+    
+        $area_locations = LocationServiceArea::whereIn('area_id', $service_area_ids)->get();
+
+        $results = [];
+
+        $area_locations->each(function($location) use (&$results) {
+            $areaName = strtolower(trim($location->area_name)); // Normalize the area name
+
+            switch ($areaName) {
+                case 'dallas':
+                    $results[] = 44;
+                    break;
+                case 'new york':
+                    $results[] = 35;
+                    break;
+                case 'atlanta':
+                    $results[] = 11;
+                    break;
+                case 'los angeles':
+                    $results[] = 5;
+                    break;
+                case 'las vegas':
+                    $results[] = 34;
+                    break;
+                case 'miami':
+                    $results[] = 10;
+                    break;
+            }
+        });
+
+        $result_string = implode(', ', $results);
+
+
+
+        return response()->json([
+        'address' => $address,
+        'result' => $result_string,
+        ]);
     }
     public function new_appliance(Request $request)
     {

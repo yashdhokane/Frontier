@@ -1277,25 +1277,28 @@
                                     var technicianId = $element.data('technician-id');
                                     var technicianName = $element.data('technician-name');
                                     var customerName = $element.data('customer-name');
+                                    var customerState_id = $element.data('state-id');
                                     var technician_name = $('.technician_name').val();
-                                    console.log('TechnicianName:', technicianName, 'TechnicianInput:', technician_name); // Debugging
                                     $.ajax({
                                         method: 'get',
                                         url: "{{ route('userstate') }}",
                                         data: {
-                                            technicianId: technicianId
+                                            technicianId: technicianId,
+                                            technician_name: technician_name
                                         },
-                                        success: function( values) {
+                                        success: function(values) {
                                          $('#techonly').change(function() {
                                             updateVisibility(); // Make sure this function is accessible and defined properly
                                         });
-                                            var code = values.state_code;
+                                            var code = values.address.state_code;
+                                            var stateIds = values.result;
+                                            console.log(stateIds , customerState_id);
 
                                            // Function to update visibility based on checkboxes
                                             function updateVisibility() {
 
                                                 // Checkboxes and visibility logic
-                                                if (newyork.prop('checked') && code === 'NY') {
+                                                if (newyork.prop('checked') && stateIds.includes(customerState_id)) {
                                                     $element.removeClass('d-none');
                                                 } else if (techAll.prop('checked') && customerName.includes(name)) {
                                                     $element.removeClass('d-none');
