@@ -750,6 +750,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('get/userstate', [ScheduleController::class, 'userstate'])->name('userstate');
 
+    Route::get('get_tech_state', [ScheduleController::class, 'get_tech_state'])->name('get_tech_state');
+
     Route::get('add/new/appliance', [ScheduleController::class, 'new_appliance']);
 
     Route::get('add/new/manufacturer', [ScheduleController::class, 'new_manufacturer']);

@@ -1629,5 +1629,22 @@ class ScheduleController extends Controller
             return response()->json(['travel_time' => 'Unable to calculate travel time.']);
         }
     }
+
+   public function get_tech_state(Request $request)
+    {
+        $state_ids = explode(',', $request->stateIds);
+
+        $state_ids = array_map('trim', $state_ids); // Trim any extra spaces
+        $state_ids = array_map('intval', $state_ids); // Convert to integers
+
+        // Use whereIn with the properly formatted array
+        $state_names = LocationState::whereIn('state_id', $state_ids)->pluck('state_name');
+
+        // Join state names into a single string separated by commas
+        $result_string = implode(', ', $state_names->toArray());
+
+        return response()->json($result_string);
+    }
+
 }
     

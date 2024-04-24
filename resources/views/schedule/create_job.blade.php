@@ -99,9 +99,9 @@
                                                             class="ri-sort-asc"></i></div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-md-6 d-flex align-items-baseline"><input
-                                                            class="mx-1" type="radio" name="teritory" id="newyork"
-                                                            data-state="NY" checked> Show Open jobs in New York</div>
+                                                    <div class="col-md-6 d-flex align-items-baseline">
+                                                        <input class="mx-1" type="radio" name="teritory" id="newyork"
+                                                            data-state="NY" checked>  <span id="stateNameArea">Show Open jobs in </span></div>
                                                     <div class="col-md-6 d-flex align-items-baseline">
                                                         <input class="mx-1 techName" type="radio" name="teritory"
                                                             id="techonly" class="techonly"> Show Open jobs of {{$technician->name}}</div>
@@ -1287,12 +1287,23 @@
                                             technician_name: technician_name
                                         },
                                         success: function(values) {
-                                         $('#techonly').change(function() {
-                                            updateVisibility(); // Make sure this function is accessible and defined properly
-                                        });
+                                            $('#techonly').change(function() {
+                                                updateVisibility(); // Make sure this function is accessible and defined properly
+                                            });
                                             var code = values.address.state_code;
                                             var stateIds = values.result;
-                                            console.log(stateIds , customerState_id);
+
+                                            $.ajax({
+                                                method: 'get',
+                                                url: "{{ route('get_tech_state') }}",
+                                                data: {
+                                                    stateIds: stateIds,
+                                                },
+                                                success: function(data) {
+                                                  $('#stateNameArea').text('Show Open jobs in '+data);
+                                                }
+                                             });
+
 
                                            // Function to update visibility based on checkboxes
                                             function updateVisibility() {
