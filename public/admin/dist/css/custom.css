@@ -73,7 +73,7 @@ li.toplinks a{
 }
 
 .form-control, .form-select {
-	border: 1px solid #CDCDCD;
+	border: 1px solid #CDCDCD !important;
 }
 .card-border {
 	border: 1px solid #D8D8D8;
@@ -158,8 +158,31 @@ li.toplinks a{
     font-size: 18px;
 }
 
+.alert_wrap {
+    margin: 10px 20px;
+}
+.alert_wrap .alert-success {
+    padding: 10px;
+    margin-bottom: 0px;
+    border: 1px solid #55a630;
+    background-color: #55a630;
+    opacity: 0.9;
+    color: #FFF;
+}
+.pointer {
+	cursor: pointer;
+}
+.uppercase {
+	text-transform: uppercase;
+}
+.is_updated {
 
-
+}
+.is_updated_time {
+	font-size: 11px;
+	display: block;
+	line-height: 12px;
+}
 
 
 
