@@ -642,22 +642,23 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-2"><strong>Appliances:</strong>
-                                        {{ $technicians->jobdetailsinfo->apliencename->appliance_name ?? null }}</div>
+                                        {{ $technicians->JobAppliances->Appliances->appliance->appliance_name ??
+                                                    null }}</div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-2"><strong>Manufacturer:</strong>
-                                        {{ $technicians->jobdetailsinfo->manufacturername->manufacturer_name ?? null }}
+                                        {{ $technicians->JobAppliances->Appliances->manufacturer->manufacturer_name ?? null }}
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-2"><strong>Model Number :</strong>
-                                        {{ $technicians->jobdetailsinfo->model_number ?? null }}</div>
+                                        {{ $technicians->JobAppliances->Appliances->model_number ?? null }}</div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-2"><strong>Serial Number :</strong>
-                                        {{ $technicians->jobdetailsinfo->serial_number ?? null }} </div>
+                                        {{ $technicians->JobAppliances->Appliances->serial_number ?? null }} </div>
                                 </div>
                             </div>
                         </div>

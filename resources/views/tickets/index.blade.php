@@ -199,31 +199,36 @@
                                                     }}</span>
                                             </div>
                                             <div style="font-size:12px;">
-                                                @if ($ticket->jobdetailsinfo && $ticket->jobdetailsinfo->apliencename)
-                                                {{ $ticket->jobdetailsinfo->apliencename->appliance_name }}/
+                                                @if ($ticket->JobAppliances && $ticket->JobAppliances->Appliances)
+                                                {{ $ticket->JobAppliances->Appliances->appliance->appliance_name ??
+                                                    null }}/
                                                 @endif
-                                                @if ($ticket->jobdetailsinfo &&
-                                                $ticket->jobdetailsinfo->manufacturername)
-                                                {{ $ticket->jobdetailsinfo->manufacturername->manufacturer_name }}/
+                                                @if ($ticket->JobAppliances &&
+                                                $ticket->JobAppliances->Appliances)
+                                                {{ $ticket->JobAppliances->Appliances->manufacturer->manufacturer_name ??
+                                                    null }}/
                                                 @endif
-                                                @if ($ticket->jobdetailsinfo && $ticket->jobdetailsinfo->model_number)
-                                                {{ $ticket->jobdetailsinfo->model_number }}/
+                                                @if ($ticket->JobAppliances && $ticket->JobAppliances->Appliances->model_number)
+                                                {{ $ticket->JobAppliances->Appliances->model_number ??
+                                                    null }}/
                                                 @endif
-                                                @if ($ticket->jobdetailsinfo && $ticket->jobdetailsinfo->serial_number)
-                                                {{ $ticket->jobdetailsinfo->serial_number }}
+                                                @if ($ticket->JobAppliances && $ticket->JobAppliances->Appliances->serial_number)
+                                                {{ $ticket->JobAppliances->Appliances->serial_number  ??
+                                                    null}}
                                                 @endif
                                             </div>
                                         </td>
                                         <td>
                                             @if ($ticket->user)
-                                            {{ $ticket->user->name }}
+                                            {{ $ticket->user->name  ??  null}}
                                             @else
                                             Unassigned
                                             @endif
                                         </td>
                                         <td>
                                             @if ($ticket->technician)
-                                            {{ $ticket->technician->name }}
+                                            {{ $ticket->technician->name  ??
+                                                    null}}
                                             @else
                                             Unassigned
                                             @endif
