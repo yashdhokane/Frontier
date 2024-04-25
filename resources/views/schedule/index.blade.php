@@ -156,23 +156,23 @@
                                     <div class="dat schedule_section_box">
                                         <table id="demo-foo-addrow"
                                             class="table table-bordered m-t-30 table-hover contact-list text-nowrap"
-                                            data-paging="true" data-paging-size="7" style="width: -webkit-fill-available;">
+                                            data-paging="true" data-paging-size="7" style="width: max-content;">
                                             <thead>
                                                 <tr>
                                                     <th></th>
                                                     @if (isset($user_array) && !empty($user_array))
                                                         @foreach ($user_array as $value)
-                                                            <th class="tech_th" data-tech-id="{{ $value }}" style="width:102px">
+                                                            <th class="tech_th" data-tech-id="{{ $value }}" style="width:100px">
                                                                 <a href="#" class="link user_head_link tech_profile"
                                                                     style="color: {{ $user_data_array[$value]['color_code'] }} !important;">
                                                                     @if (isset($user_data_array[$value]['user_image']) && !empty($user_data_array[$value]['user_image']))
                                                                         <img src="{{ asset('public/images/technician/' . $user_data_array[$value]['user_image']) }}"
                                                                             alt="user" width="48"
-                                                                            class="rounded-circle"  /><br>
+                                                                            class="rounded-circle tech_profile" onerror="this.onerror=null; this.src='{{ $defaultImage }}';" /><br>
                                                                     @else
-                                                                        <img src="{{ asset('public/images/login_img_bydefault.png') }}"
+                                                                        <img src="{{ $defaultImage }}"
                                                                             alt="user" width="48"
-                                                                            class="rounded-circle " /><br>
+                                                                            class="rounded-circle tech_profile" /><br>
                                                                     @endif
                                                                      
                                                                    @if (isset($user_data_array[$value]) && !empty($user_data_array[$value]))
@@ -302,11 +302,13 @@
                                                                                                 data-date="{{ $filterDate }}"
                                                                                                 style="cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->JobModel->technician->color_code ?? null }};"
                                                                                                 data-id="{{ $value2->job_id }}">
-																								
+																								@if($value2->JobModel->is_confirmed == 'yes')
+                                                                                                    
 																								<div class="cls_is_confirmed">
 																									<i class="ri-thumb-up-fill"></i>
                                                                                                 </div>
 																								
+                                                                                                @endif
                                                                                                  <div class="cls_slot_title">
                                                                                                     <i class="ri-tools-line"></i>
                                                                                                     {{ $value2->JobModel->user->name ?? null }}

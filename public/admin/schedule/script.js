@@ -26,7 +26,8 @@ $(document).ready(function () {
 
     // Click event handler for profile link images
     $(".tech_profile img").click(function (event) {
-        event.stopPropagation(); // Stop event propagation to prevent the click from reaching the parent link
+        event.preventDefault(); 
+        
     });
 
     // Click event listener for the document

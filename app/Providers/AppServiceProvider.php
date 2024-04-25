@@ -115,7 +115,7 @@ class AppServiceProvider extends ServiceProvider
             });
 
             // Function to default image
-            $defaultImage = '../public/images/login_img_bydefault.png';
+            $defaultImage = url('/public/images/login_img_bydefault.png');
             $view->with('defaultImage', $defaultImage);
 
             //useraddress function
