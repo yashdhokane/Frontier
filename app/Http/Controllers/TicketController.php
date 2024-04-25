@@ -124,7 +124,16 @@ class TicketController extends Controller
         $job_tag = SiteJobFields::all();
 
         $lead = User::where('id', $technicians->customer_id)->first();
-        $lead_id = $lead->source_id;
+
+        if ($lead) {
+            $lead_id = $lead->source_id;
+                    $lead_id = $lead->source_id;
+
+        } else {
+            
+            $lead_id = null;
+        }
+      
 
         $leadone = explode(',', $lead_id);
 
@@ -248,12 +257,9 @@ class TicketController extends Controller
     
         // Check if the job note was successfully saved
         if ($jobNote) {
-            // Create a new job activity
-            $activity = new JobActivity();
-            $activity->job_id = $request->id;
-            $activity->user_id = Auth::id();
-            $activity->activity = 'Job Note added';
-            $activity->save();
+            $activity = 'Job Note added';
+            $jobActivityManager = app('JobActivityManager');
+            $jobActivityManager->addJobActivity($request->id, $activity);
         }
     
         // Redirect back with success message
@@ -285,13 +291,9 @@ class TicketController extends Controller
         // Save the changes
         $job->save();
         
-        $activity = new JobActivity();
-
-        $activity->job_id = $id;
-        $activity->user_id = auth()->user()->id;
-        $activity->activity = 'Customer Tags Updated';
-
-        $activity->save();
+        $activity = 'Customer Tags Updated';
+        $jobActivityManager = app('JobActivityManager');
+        $jobActivityManager->addJobActivity($id, $activity);
 
 
         return redirect()->back()->with('success', 'Cusomer tags added successfully');
@@ -321,13 +323,9 @@ class TicketController extends Controller
         // Save the changes
         $job->save();
 
-        $activity = new JobActivity();
-
-        $activity->job_id = $id;
-        $activity->user_id = auth()->user()->id;
-        $activity->activity = 'Job Tags Updated';
-
-        $activity->save();
+        $activity = 'Job Tags Updated';
+        $jobActivityManager = app('JobActivityManager');
+        $jobActivityManager->addJobActivity($id, $activity);
 
 
         return redirect()->back()->with('success', 'Job tags added successfully');
@@ -366,13 +364,9 @@ class TicketController extends Controller
                     $file->type = $uploadedFile->getClientMimeType();
                     $file->save();
 
-                    $activity = new JobActivity();
-
-                    $activity->job_id = $id;
-                    $activity->user_id = auth()->user()->id;
-                    $activity->activity = 'Attachments Uploaded';
-            
-                    $activity->save();
+                    $activity = 'Attachments Uploaded';
+                    $jobActivityManager = app('JobActivityManager');
+                    $jobActivityManager->addJobActivity($id, $activity);
 
                     return redirect()->back()->with('success', 'Attachment added successfully');
                 } else {
@@ -412,13 +406,9 @@ class TicketController extends Controller
         // Save the changes
         $job->save();
 
-        $activity = new JobActivity();
-
-        $activity->job_id = $id;
-        $activity->user_id = auth()->user()->id;
-        $activity->activity = 'Lead Source Updated';
-
-        $activity->save();
+        $activity = 'Lead Source Updated';
+        $jobActivityManager = app('JobActivityManager');
+        $jobActivityManager->addJobActivity($id, $activity);
 
 
 

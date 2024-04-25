@@ -207,13 +207,6 @@ class MapController extends Controller
                     // Format the date and time
                     $formattedDateTime = $now->format('D, M j \a\t g:ia');
 
-                    $activity = new JobActivity();
-
-                    $activity->job_id = $jobAssignedID;
-                    $activity->user_id = auth()->user()->id;
-                    $activity->activity = 'Job Re-Scheduled for ' . $formattedDateTime;
-
-                    $activity->save();
 
                     $schedule = new Schedule();
 
@@ -226,6 +219,11 @@ class MapController extends Controller
                     $schedule->updated_by = auth()->user()->id;
 
                     $schedule->save();
+
+                    $activity = 'Job Re-Scheduled for ' . $formattedDateTime;
+
+                    $jobActivityManager = app('JobActivityManager');
+                    $jobActivityManager->addJobActivity($jobAssignedID, $activity);
                 
                 
                 }
