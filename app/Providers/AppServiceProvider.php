@@ -1,24 +1,41 @@
 <?php
 
-namespace App\Providers;
+    namespace App\Providers;
 
-use Carbon\Carbon;
+    use App\Models\JobActivity;
+    use Carbon\Carbon;
 
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\View;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\DB;
+    use Illuminate\Support\Facades\Log;
+    use Illuminate\Support\Facades\View;
+    use Illuminate\Support\ServiceProvider;
+    use Illuminate\Support\Facades\DB;
 
 
-class AppServiceProvider extends ServiceProvider
-{
-    /**
-     * Register any application services.
-     */
-    public function register(): void
+    class AppServiceProvider extends ServiceProvider
     {
-        //
-    }
+        /**
+        * Register any application services.
+        */
+        public function register(): void
+        {
+            // Bind a singleton with a common function
+            $this->app->singleton('JobActivityManager', function () {
+                return new class {
+                    public function addJobActivity($jobId, $activityDescription)
+                    {
+                    
+
+                        $jobActivity = new JobActivity();
+                        $jobActivity->job_id = $jobId;
+                        $jobActivity->user_id = auth()->user()->id;
+                        $jobActivity->activity = $activityDescription;
+                        $jobActivity->save();
+
+                        return $jobActivity;
+                    }
+                };
+            });
+        }
 
     /**
      * Bootstrap any application services.

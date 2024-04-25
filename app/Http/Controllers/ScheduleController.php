@@ -553,7 +553,6 @@ class ScheduleController extends Controller
 
         return response()->json($serives);
     }
-
     public function createSchedule(Request $request)
     {
 
@@ -737,19 +736,6 @@ class ScheduleController extends Controller
 
                 if ($jobId && $data['scheduleType']) {
 
-                    $now = Carbon::now();
-
-                    // Format the date and time
-                    $formattedDateTime = $now->format('D, M j \a\t g:ia');
-
-                    $activity = new JobActivity();
-
-                    $activity->job_id = $data['job_id'];
-                    $activity->user_id = auth()->user()->id;
-                    $activity->activity = 'Job Re-Scheduled for ' . $formattedDateTime;
-
-                    $activity->save();
-
                     $schedule = new Schedule();
 
                     $schedule->schedule_type = $data['scheduleType'];
@@ -764,6 +750,13 @@ class ScheduleController extends Controller
 
                     $scheduleId = $schedule->id;
                 }
+                 $now = Carbon::now();
+                    $formattedDateTime = $now->format('D, M j \a\t g:ia');
+                $activity ='Job Re-Scheduled for '. $formattedDateTime;
+                 // Use the common function from the singleton
+               $jobActivityManager = app('JobActivityManager');
+               $jobActivityManager->addJobActivity($data['job_id'], $activity);
+
 
 
                 $height_slot = $duration / 60;
@@ -998,19 +991,6 @@ class ScheduleController extends Controller
 
                 if ($jobId && $data['scheduleType']) {
 
-                    $now = Carbon::now();
-
-                    // Format the date and time
-                    $formattedDateTime = $now->format('D, M j \a\t g:ia');
-
-                    $activity = new JobActivity();
-
-                    $activity->job_id = $jobId;
-                    $activity->user_id = auth()->user()->id;
-                    $activity->activity = 'Job scheduled for ' . $formattedDateTime;
-
-                    $activity->save();
-
                     $schedule = new Schedule();
 
                     $schedule->schedule_type = $data['scheduleType'];
@@ -1024,6 +1004,13 @@ class ScheduleController extends Controller
                     $schedule->save();
                     $scheduleId = $schedule->id;
                 }
+                 $now = Carbon::now();
+                    $formattedDateTime = $now->format('D, M j \a\t g:ia');
+
+                $activity ='Job scheduled for '. $formattedDateTime;
+                 // Use the common function from the singleton
+               $jobActivityManager = app('JobActivityManager');
+               $jobActivityManager->addJobActivity($jobId, $activity);
 
                 $height_slot = $duration / 60;
                 $height_slot_px = $height_slot * 80 - 10;
@@ -1665,6 +1652,7 @@ class ScheduleController extends Controller
 
         return response()->json($appliance);
     }
+
 
 }
     
