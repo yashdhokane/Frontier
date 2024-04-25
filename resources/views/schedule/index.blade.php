@@ -13,10 +13,7 @@
             font-size: 10px;
             letter-spacing: 0.5px;
         }
-
-        .timeslot_td {
-            height: 36px;
-        }
+ 
 
         .container-schedule {
             padding: 0px !important;
@@ -140,27 +137,21 @@
                             <div class="col-lg-12">
                                 <div class="mt-3 mb-4 calender-sidebar app-calendar">
                                     <div class="row">
-                                        <div class="col-md-2"><a href="schedule?date={{ $previousDate }}"><i
-                                                    class="fas fa-arrow-left"></i></a></div>
-                                        <div class="col-md-4">
-                                            <h4 class="fc-toolbar-title text-center" id="fc-dom-1">
-                                                {{ $formattedDate }}
-                                            </h4>
+										<div class="col-md-4">
+ 											<div class="cal_title_left text-start"><a href="schedule?date={{ $previousDate }}"><i class="fas fa-arrow-left"></i></a></div>
+                                            <div class="cal_title_center text-center"><h4 class="fc-toolbar-title" id="fc-dom-1">{{ $formattedDate }}</h4></div>
+											<div class="cal_title_right text-end"><a href="schedule?date={{ $tomorrowDate }}"><i class="fas fa-arrow-right"></i></a></div>
                                         </div>
-                                        <div class="col-md-4 text-end">
-                                            <a id="selectDates"
-                                                style="margin-right: 10px; font-size: 13px;cursor: pointer;"><i
-                                                    class="fas fa-calendar-alt"></i>
-                                                Select Dates</a>
+										<div class="col-md-4"></div>
+										<div class="col-md-4 text-start">
+                                            <a id="selectDates" style="margin-right: 10px; font-size: 13px;cursor: pointer;"><i
+                                                    class="fas fa-calendar-alt"></i>Select Dates</a>
 
                                             <a href="schedule?date={{ $TodayDate }}"
                                                 style=" margin-right: 10px;font-size: 13px;color: #ee9d01;font-weight: bold;"><i
                                                     class="fas fa-calendar-check"></i> Today</a>
                                         </div>
-                                        <div class="col-md-2" style="text-align: right;"><a
-                                                href="schedule?date={{ $tomorrowDate }}"><i
-                                                    class="fas fa-arrow-right"></i></a>
-                                        </div>
+                                        
                                     </div>
                                     <div class="dat schedule_section_box">
                                         <table id="demo-foo-addrow"
@@ -183,7 +174,7 @@
                                                                             alt="user" width="48"
                                                                             class="rounded-circle " /><br>
                                                                     @endif
-                                                                    {{ 'EMP' . $value }} <br>
+                                                                     
                                                                    @if (isset($user_data_array[$value]) && !empty($user_data_array[$value]))
                                                                         @php
                                                                             $name = $user_data_array[$value]['name'];
@@ -219,8 +210,8 @@
 
                                                                 </div>
                                                                 <div class="settingcontainer">
-
-
+																	<div style="width:150px; height:150px;">
+																	</div>
                                                                 </div>
 
                                                             </th>
@@ -333,7 +324,7 @@
                                                                                             </div>
                                                                                         </a>
                                                                                         <div
-                                                                                            class="open_job_details rounded shadow py-3 px-2">
+                                                                                            class="open_job_details rounded shadow py-3 px-2" style="background: {{ $value2->JobModel->technician->color_code ?? null }};">
                                                                                             <div class="popup-content">
                                                                                                 <h5><i class="fas fa-id-badge px-2"></i>
                                                                                                     <strong>Job
@@ -362,8 +353,8 @@
                                                                                                 <div class="py-1"><i class="fas fa-user-secret px-2"></i>
                                                                                                     <strong>{{ $value2->JobModel->technician->name ?? null }}</strong>
                                                                                                     <div class="py-1"><i class="fas fa-tag px-2"></i>
-                                                                                                        <button class="btn btn-primary rounded">{{ $value2->JobModel->status ?? null }}</button>
-                                                                                                    </div>
+                                                                                                        <span class="mb-1 badge bg-primary">{{ $value2->JobModel->status ?? null }}</span>
+                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
                                                                                     @endif

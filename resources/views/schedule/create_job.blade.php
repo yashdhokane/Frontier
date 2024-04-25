@@ -52,15 +52,7 @@
                                         <div class="mt-0">
                                             <a href="#." id="btn-add-contact1" class="btn btn-info"
                                                 data-bs-toggle="modal" data-bs-target="#newCustomer">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                    class="feather feather-users feather-sm fill-white me-1">
-                                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                                                    <circle cx="9" cy="7" r="4"></circle>
-                                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                                                </svg>Add New Customer
+                                                <i class="ri-user-add-line"></i> Add New Customer
                                             </a>
                                         </div>
 
@@ -75,7 +67,7 @@
 
                                     <div class="col-md-6 customersSuggetions" style="display: none">
                                         <div class="card">
-                                            <div class="card-body">
+                                            <div class="mt-4">
                                                 <div class="">
                                                     <h5 class="font-weight-medium mb-2">Select Customer</h5>
                                                     <div class="customers">
@@ -89,22 +81,22 @@
                                         <div class="card-body">
                                             <div class="table-responsive">
                                                 <div class="row">
-                                                    <div class="col-md-9">
-                                                        <h5 class="font-weight-medium mb-2 d-flex" style="position: relative;">
-                                                            Reschedule Pending Jobs <input
-                                                            class="mx-1" type="radio" name="teritory"
-                                                            id="techall"></h5>
-                                                    </div>
-                                                    <div class="col-md-3" id="makedescending" style="cursor: pointer;"><i
-                                                            class="ri-sort-asc"></i></div>
+                                                    
+                                                    <div class="col-md-3" id="makedescending" style="cursor: pointer;"><i class="ri-sort-asc"></i></div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-md-6 d-flex align-items-baseline">
-                                                        <input class="mx-1" type="radio" name="teritory" id="newyork"
-                                                            data-state="NY" checked>  <span id="stateNameArea">Show Open jobs in </span></div>
-                                                    <div class="col-md-6 d-flex align-items-baseline">
-                                                        <input class="mx-1 techName" type="radio" name="teritory"
-                                                            id="techonly" class="techonly"> Show Open jobs of {{$technician->name}}</div>
+													<div class="col-md-12 d-flex align-items-baseline">
+                                                        <h5 class="font-weight-medium mb-2 d-flex" style="position: relative;">
+														<input class="mx-1" type="radio" name="teritory" id="techall" checked> Reschedule Pending Jobs </h5>
+                                                    </div>
+                                                    <div class="col-md-12 d-flex align-items-baseline">
+														<h5 class="font-weight-medium mb-2 d-flex" style="position: relative;"><input class="mx-1" type="radio" name="teritory" id="newyork"
+                                                            data-state="NY" >  <span id="stateNameArea">Show Open jobs in </span> </h5>
+ 													</div>
+													<div class="col-md-12 d-flex align-items-baseline">
+														<h5 class="font-weight-medium mb-2 d-flex" style="position: relative;">
+                                                        <input class="mx-1 techName" type="radio" name="teritory" id="techonly" class="techonly"> Show Open jobs of {{$technician->name}} (Technician)</h5>
+													</div>
                                                 </div>
                                                 <div class="rescheduleJobs">
                                                 </div>
@@ -204,8 +196,8 @@
 										<h6 class="card-title required-field"><i class="fas fa fa-television"></i>Select Existing Appliances </h6>
 										<div class="form-group">
 											<select class="form-control appl_id exist_appl_id" id="appl_id" name="exist_appl_id">
-												<option value=" Refrigerator/ LG/ LMXS/ LVRM "> Refrigerator/ LG/ LMXS/ LVRM </option>
-											</select>
+											    <option value=""> -- Select existig appliances -- </option>
+                                            </select>
 										</div>
 									</div>
 									<div class="col-md-6">
@@ -317,8 +309,8 @@
                                                  <select class="form-control me-sm-2 tags" id="" name="tags[]"
                                                     multiple="multiple" required>
                                                     @foreach ($tags as $tag)
-                                                        <option value="{{ $tag->tag_id }}">
-                                                            {{ $tag->tag_name }}</option>
+                                                        <option value="{{ $tag->field_id }}">
+                                                            {{ $tag->field_name }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -816,7 +808,6 @@
     <script>
       $(document).ready(function() {
             $(document).on('click','#add_new_appl',function() {
-                console.log("Button clicked");
                 $('#show_new_appl').toggle();
             });
       });
@@ -830,7 +821,6 @@
 
         // Debugging when changing the manufacturer dropdown
         $(document).on('change','.manufacturer', function() {
-        console.log('Manufact');
             var selectedOption = $(this).find('option:selected');
             var manufacturerName = selectedOption.data('name');
 
@@ -911,7 +901,6 @@
 
                 // Calculate the total time in hours
                 var totalTime = (duration / 60) + (days * 24) + hours;
-                console.log(totalTime); // Display the total time in hours
 
                 $('#result_travel').show();
                 $('#result_travel').text('Travel time :' + totalTime + ' hours');
@@ -1398,8 +1387,6 @@
                     processData: false,
                     dataType: 'json',
                     success: function(data) {
-                        // Handle success response here
-                        console.log(data.success); // Logging the value of data.success
 
                         if (data.success === true) {
                             // If success is true, close the current modal
@@ -1519,8 +1506,6 @@
                         phone: phone
                     }, // send the phone number to the server
                     success: function(data) {
-                        // Handle the response from the server here
-                        console.log(data);
                         $('.rescheduleJobs').empty();
 
                         $('.customers2').empty();
@@ -1729,6 +1714,31 @@
                 // Append the address value as a selected option to the select element
                 $('.customer_address').append('<option value="' + address + '" selected>' + address +
                     '</option>');
+                
+                 $.ajax({
+                    url: "{{ route('customer_appliances') }}",
+                    data: {
+                        id: customerId,  // Ensure 'id' is defined and valid
+                    },
+                    type: 'GET',  // If it's an API, 'GET' is generally correct
+                    success: function(data) {
+                        if (Array.isArray(data)) {
+                            $('.exist_appl_id').empty();  // Clear existing options
+                             $('.exist_appl_id').append('<option value=""> -- Select existing appliances -- </option>');
+                            // Loop over the array to create new options
+                            $.each(data, function(index, value) {  // 'index' is needed to reference current item
+                                var optionText = `${value.appliance.appliance_name} / ${value.manufacturer.manufacturer_name} / ${value.model_number} / ${value.serial_number}`;
+                                $('.exist_appl_id').append('<option value="' + value.appliance_id + '" data-appName="' + value.appliance.appliance_name + '" data-manuName="' + value.manufacturer.manufacturer_name + '" data-model="' + value.model_number + '" data-serial="' + value.serial_number + '">' + optionText + '</option>');
+                            });
+                        } else {
+                            console.error("Unexpected data format:", data);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("AJAX request failed:", error);  // Handle errors
+                        alert("An error occurred while fetching the data. Please try again later.");  // Notify user
+                    }
+                });
 
 
                 $.ajax({
@@ -1749,20 +1759,9 @@
                         var appliances_id = data.appliances_id;
 
                         // Iterate through each option in the select element
-                        $('.appliances option').each(function() {
+                        $('.exist_appl_id option').each(function() {
                             // Check if the value of the current option matches the appliances_id
                             if ($(this).val() == appliances_id) {
-                                // Set the selected attribute for the matching option
-                                $(this).prop('selected', true);
-                            }
-                        });
-
-                        var manufaturer_id = data.job_details.manufacturer_id;
-
-                        // Iterate through each option in the select element
-                        $('.manufacturer option').each(function() {
-                            // Check if the value of the current option matches the manufaturer_id
-                            if ($(this).val() == manufaturer_id) {
                                 // Set the selected attribute for the matching option
                                 $(this).prop('selected', true);
                             }
@@ -1779,23 +1778,31 @@
                             }
                         });
 
-                        $('.model_number').val(data.job_details.model_number);
-                        $('.serial_number').val(data.job_details.serial_number);
+                       
 
-                        var duration = data.job_assign.duration;
+                        $('.job_description').val(data.description);
+                         const note = data.job_note?.note;
+                        $('.technician_notes').val(note || '');
+                        
+                        var tags_ids = data.tag_ids;
+                        var tagsArray = tags_ids.split(',');
+                        $('.tags option').each(function() {
+                            if (tagsArray.includes($(this).val())) {
+                                $(this).prop('selected', true);
+                            }
+                        });
+                        $('.tags').trigger('change');
+
+                         const duration = data.job_assign?.duration;
 
                         // Iterate through each option in the select element
                         $('.duration option').each(function() {
                             // Check if the value of the current option matches the manufaturer_id
-                            if ($(this).val() == duration) {
+                            if ($(this).val() == duration || '') {
                                 // Set the selected attribute for the matching option
                                 $(this).prop('selected', true);
                             }
                         });
-
-                        $('.job_description').val(data.description);
-                        $('.technician_notes').val(data.job_note.note);
-                        $('.tags').val(data.tag_ids);
 
                         // step 3 
 
@@ -1994,7 +2001,6 @@
                     type: 'GET',  // If it's an API, 'GET' is generally correct
                     success: function(data) {
                         if (Array.isArray(data)) {
-                            console.log(data);  // To inspect the data
                             $('.exist_appl_id').empty();  // Clear existing options
                              $('.exist_appl_id').append('<option value=""> -- Select existing appliances -- </option>');
                             // Loop over the array to create new options
@@ -2018,7 +2024,6 @@
 
                 event.stopPropagation();
                 var customerId = $('.selectCustomer').data('customer-id');
-                console.log(customerId);
 
                 var id = $(this).val().trim();
 
@@ -2118,9 +2123,7 @@
                     },
                     type: 'GET',
                     success: function(data) {
-                        console.log(data);
                         $('.taxcodetext').empty();
-                        console.log(data);
                         $('.taxcodetext').append('' + data.state_tax + '% for ' + data
                             .state_code + '');
                     },
