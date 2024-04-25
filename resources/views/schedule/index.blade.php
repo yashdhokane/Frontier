@@ -156,13 +156,13 @@
                                     <div class="dat schedule_section_box">
                                         <table id="demo-foo-addrow"
                                             class="table table-bordered m-t-30 table-hover contact-list text-nowrap"
-                                            data-paging="true" data-paging-size="7">
+                                            data-paging="true" data-paging-size="7" style="width: -webkit-fill-available;">
                                             <thead>
                                                 <tr>
                                                     <th></th>
                                                     @if (isset($user_array) && !empty($user_array))
                                                         @foreach ($user_array as $value)
-                                                            <th class="tech_th" data-tech-id="{{ $value }}">
+                                                            <th class="tech_th" data-tech-id="{{ $value }}" style="width:102px">
                                                                 <a href="#" class="link user_head_link tech_profile"
                                                                     style="color: {{ $user_data_array[$value]['color_code'] }} !important;">
                                                                     @if (isset($user_data_array[$value]['user_image']) && !empty($user_data_array[$value]['user_image']))

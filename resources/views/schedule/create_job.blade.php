@@ -1022,17 +1022,17 @@
                     if (newIndex > currentIndex) {
                         // Assuming the user address step index is 3 (adjust if necessary)
                         if (currentIndex === 0) {
-                            // Check if user address is selected
-                            var selectedAddress = $('.customer_address').val();
-                            if (!selectedAddress) {
-                                // User address is not selected, prevent navigation
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: 'Please select a user address before proceeding.'
-                                });
-                                return false; // Prevent navigation to the next step
-                            }
+                            // // Check if user address is selected
+                            // var selectedAddress = $('.customer_address').val();
+                            // if (!selectedAddress) {
+                            //     // User address is not selected, prevent navigation
+                            //     Swal.fire({
+                            //         icon: 'error',
+                            //         title: 'Error',
+                            //         text: 'Please select a user address before proceeding.'
+                            //     });
+                            //     return true; // Prevent navigation to the next step
+                            // }
                         } else if (currentIndex === 1) {
                             // Check if all required fields are filled for step 2
                             var isValid = validateStep2Fields();
@@ -1941,6 +1941,9 @@
 
             $(document).on('click', '.selectCustomer', function() {
 
+                var nextAnchor = $('a[href="#next"]')
+                    nextAnchor.trigger('click');
+
                 var id = $(this).attr('data-id');
                 var name = $(this).attr('data-name');
                 $('.customer_id').val(id);
@@ -1971,6 +1974,8 @@
                             $('.customer_number_email').text(data.mobile + ' / ' + data.email);
                             $('.show_customer_name').text(data.name);
                         }
+                        
+
                         if (data.address && $.isArray(data.address)) {
                             $.each(data.address, function(index, element) {
                                 var addressString = $.ucfirst(element.address_type) +
@@ -1978,10 +1983,7 @@
                                     element.address_line1 + ', ' + element.city +
                                     ', ' + element.state_name + ', ' + element
                                     .zipcode;
-                                var option = $('<option>', {
-                                    value: element.address_type,
-                                    text: addressString
-                                });
+                                var option = $('<option value="'+element.address_type+'" selected>'+addressString+'</option>');
                                 $('#addres_lat').val(element.latitude + ',' + element
                                     .longitude)
 

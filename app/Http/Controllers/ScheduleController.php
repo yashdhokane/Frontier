@@ -597,7 +597,7 @@ class ScheduleController extends Controller
                 $jobsData = [
                     'job_code' => (isset($randomSixDigit) && !empty($randomSixDigit)) ? $randomSixDigit : '',
                     'job_title' => (isset($data['job_title']) && !empty($data['job_title'])) ? $data['job_title'] : '',
-                    'appliances_id' => (isset($data['appliances']) && !empty($data['appliances'])) ? $data['appliances'] : '',
+                    'appliances_id' => (isset($data['appliances']) && !empty($data['appliances'])) ? $data['appliances'] : $data['exist_appl_id'],
                     'description' => (isset($data['job_description']) && !empty($data['job_description'])) ? $data['job_description'] : '',
                     'priority' => (isset($data['priority']) && !empty($data['priority'])) ? $data['priority'] : '',
                     'warranty_type' => (isset($data['job_type']) && !empty($data['job_type'])) ? $data['job_type'] : '',
@@ -1483,8 +1483,8 @@ class ScheduleController extends Controller
 
         $event->technician_id = $request->event_technician_id;
         $event->event_name = $request->event_name;
-        $event->event_description = $request->event_description;
-        $event->event_location = $request->event_location;
+        $event->event_description = $request->event_description ?? null;
+        $event->event_location = $request->event_location ?? null;
 
         // Concatenate date and time values and format them properly
         $startDateTime = date('Y-m-d H:i:s', strtotime($request->start_date . ' ' . $request->start_time));
