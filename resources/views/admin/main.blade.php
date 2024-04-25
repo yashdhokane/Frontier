@@ -98,10 +98,10 @@
 												<td>
 												<a href="{{ url('tickets/' . $item->id) }}"
 												class="font-medium link">{{ $item->job_title }}</a><br />
-												@if ($item->jobDetails)
+												@if ($item->JobAppliances)
 												<span style="font-size:12px;">
-												Model: {{ $item->jobDetails->model_number ?? 'N/A' }} /
-												Serial Number: {{ $item->jobDetails->serial_number ?? 'N/A' }}
+												Model: {{ $item->JobAppliances->Appliances->model_number ?? 'N/A' }} /
+												Serial Number: {{ $item->JobAppliances->Appliances->serial_number ?? 'N/A' }}
 												</span>
 												@else
 												<span style="font-size:12px;">

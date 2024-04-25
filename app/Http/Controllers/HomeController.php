@@ -14,7 +14,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $job = JobModel::with('user','technician','jobassignname','JobAssign','jobDetails')->latest()->limit(5)->get();
+        $job = JobModel::with('JobAppliances','user','technician','jobassignname','JobAssign','jobDetails')->latest()->limit(5)->get();
         $totalCalls = JobModel::count();
         $inProgress = JobModel::where('status', 'in_progress')->count();
         $opened = JobModel::where('status', 'open')->count();

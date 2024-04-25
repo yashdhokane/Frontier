@@ -169,4 +169,8 @@ class JobModel extends Model
     {
         return $this->belongsTo(JobNoteModel::class, 'id', 'job_id');
     }
+    public function JobAppliances()
+    {
+        return $this->belongsTo(JobAppliances::class, 'id', 'job_id');
+    }
 }
