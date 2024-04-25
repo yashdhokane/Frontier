@@ -258,8 +258,7 @@ class TicketController extends Controller
         // Check if the job note was successfully saved
         if ($jobNote) {
             $activity = 'Job Note added';
-            $jobActivityManager = app('JobActivityManager');
-            $jobActivityManager->addJobActivity($request->id, $activity);
+        app('JobActivityManager')->addJobActivity($request->id, $activity);
         }
     
         // Redirect back with success message
@@ -292,8 +291,7 @@ class TicketController extends Controller
         $job->save();
         
         $activity = 'Customer Tags Updated';
-        $jobActivityManager = app('JobActivityManager');
-        $jobActivityManager->addJobActivity($id, $activity);
+        app('JobActivityManager')->addJobActivity($id, $activity);
 
 
         return redirect()->back()->with('success', 'Cusomer tags added successfully');
@@ -324,8 +322,7 @@ class TicketController extends Controller
         $job->save();
 
         $activity = 'Job Tags Updated';
-        $jobActivityManager = app('JobActivityManager');
-        $jobActivityManager->addJobActivity($id, $activity);
+        app('JobActivityManager')->addJobActivity($id, $activity);
 
 
         return redirect()->back()->with('success', 'Job tags added successfully');
@@ -365,8 +362,7 @@ class TicketController extends Controller
                     $file->save();
 
                     $activity = 'Attachments Uploaded';
-                    $jobActivityManager = app('JobActivityManager');
-                    $jobActivityManager->addJobActivity($id, $activity);
+                   app('JobActivityManager')->addJobActivity($id, $activity);
 
                     return redirect()->back()->with('success', 'Attachment added successfully');
                 } else {
@@ -407,8 +403,7 @@ class TicketController extends Controller
         $job->save();
 
         $activity = 'Lead Source Updated';
-        $jobActivityManager = app('JobActivityManager');
-        $jobActivityManager->addJobActivity($id, $activity);
+        app('JobActivityManager')->addJobActivity($id, $activity);
 
 
 

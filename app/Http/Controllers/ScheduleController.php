@@ -753,9 +753,7 @@ class ScheduleController extends Controller
                  $now = Carbon::now();
                     $formattedDateTime = $now->format('D, M j \a\t g:ia');
                 $activity ='Job Re-Scheduled for '. $formattedDateTime;
-                 // Use the common function from the singleton
-               $jobActivityManager = app('JobActivityManager');
-               $jobActivityManager->addJobActivity($data['job_id'], $activity);
+               app('JobActivityManager')->addJobActivity($data['job_id'], $activity);
 
 
 
@@ -1008,9 +1006,7 @@ class ScheduleController extends Controller
                     $formattedDateTime = $now->format('D, M j \a\t g:ia');
 
                 $activity ='Job scheduled for '. $formattedDateTime;
-                 // Use the common function from the singleton
-               $jobActivityManager = app('JobActivityManager');
-               $jobActivityManager->addJobActivity($jobId, $activity);
+               app('JobActivityManager')->addJobActivity($jobId, $activity);
 
                 $height_slot = $duration / 60;
                 $height_slot_px = $height_slot * 80 - 10;

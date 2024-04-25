@@ -222,8 +222,7 @@ class MapController extends Controller
 
                     $activity = 'Job Re-Scheduled for ' . $formattedDateTime;
 
-                    $jobActivityManager = app('JobActivityManager');
-                    $jobActivityManager->addJobActivity($jobAssignedID, $activity);
+                   app('JobActivityManager')->addJobActivity($jobAssignedID, $activity);
                 
                 
                 }
