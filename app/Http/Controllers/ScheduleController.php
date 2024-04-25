@@ -754,7 +754,7 @@ class ScheduleController extends Controller
                     $formattedDateTime = $now->format('D, M j \a\t g:ia');
                 $activity ='Job Re-Scheduled for '. $formattedDateTime;
                app('JobActivityManager')->addJobActivity($data['job_id'], $activity);
-
+               app('sendNotices')('Job has been reschedule at ' . now(), url()->current(), 'job');
 
 
                 $height_slot = $duration / 60;
@@ -1007,6 +1007,7 @@ class ScheduleController extends Controller
 
                 $activity ='Job scheduled for '. $formattedDateTime;
                app('JobActivityManager')->addJobActivity($jobId, $activity);
+               app('sendNotices')('New job created at ' . now(), url()->current(), 'job');
 
                 $height_slot = $duration / 60;
                 $height_slot_px = $height_slot * 80 - 10;
