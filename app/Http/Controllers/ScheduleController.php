@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Appliances;
 use App\Models\AppliancesType;
+use App\Models\BusinessHours;
 use App\Models\CustomerUserAddress;
 use App\Models\Event;
 use App\Models\JobActivity;
@@ -64,6 +65,11 @@ class ScheduleController extends Controller
         } else {
             $currentDate = Carbon::now();
         }
+
+        $currentDay = $currentDate->format('l'); 
+        $currentDayLower = strtolower($currentDay); 
+        // Query the business hours for the given day
+        $hours = BusinessHours::where('day', $currentDayLower)->first();
 
         $formattedDate = $currentDate->format('l, F j, Y');
 
@@ -159,7 +165,7 @@ class ScheduleController extends Controller
         }
 
 
-        return view('schedule.index', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate', 'users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', 'cities', 'cities1', 'TodayDate', 'tech', 'schedule_arr'));
+        return view('schedule.index', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate', 'users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', 'cities', 'cities1', 'TodayDate', 'tech', 'schedule_arr','hours'));
     }
 
     public function schedule_new(Request $request)

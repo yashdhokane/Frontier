@@ -220,7 +220,11 @@
                                                 </tr>
                                             </thead>
                                             <tbody class="slot_time_60_span">
-                                                @for ($i = 7; $i <= 18; $i++)
+                                            @php
+                                                $start_time = (int) $hours->start_time; 
+                                                $end_time = (int) $hours->end_time;
+                                            @endphp
+                                                @for ($i = $start_time; $i <= $end_time; $i++)
                                                     @for ($minute = 0; $minute < 60; $minute += 30)
                                                         <tr>
                                                             <td class="timeslot_td">
@@ -302,7 +306,7 @@
                                                                                                 data-date="{{ $filterDate }}"
                                                                                                 style="cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->JobModel->technician->color_code ?? null }};"
                                                                                                 data-id="{{ $value2->job_id }}">
-																								@if($value2->JobModel->is_confirmed == 'yes')
+																								@if($value2->JobModel && $value2->JobModel->is_confirmed == 'yes')
                                                                                                     
 																								<div class="cls_is_confirmed">
 																									<i class="ri-thumb-up-fill"></i>
