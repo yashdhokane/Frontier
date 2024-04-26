@@ -592,6 +592,8 @@ class ScheduleController extends Controller
                     $tagIds = '';
                 }
                 
+                $customer_name = User::where('id',$data['customer_id'])->first();
+                $technician_name = User::where('id',$data['technician_id'])->first();
 
                 $jobsData = [
                     'job_code' => (isset($randomSixDigit) && !empty($randomSixDigit)) ? $randomSixDigit : '',
@@ -754,8 +756,11 @@ class ScheduleController extends Controller
                     $formattedDateTime = $now->format('D, M j \a\t g:ia');
                 $activity ='Job Re-Scheduled for '. $formattedDateTime;
                app('JobActivityManager')->addJobActivity($data['job_id'], $activity);
-               app('sendNotices')('Job has been reschedule at ' . now(), url()->current(), 'job');
-
+               app('sendNotices')(
+                    "Reschedule Job","Reschedule Job (#{$jobId} - {$customer_name->name}) added by {$technician_name->name}",
+                    url()->current(), 
+                    'job'
+                );
 
                 $height_slot = $duration / 60;
                 $height_slot_px = $height_slot * 80 - 10;
@@ -796,6 +801,8 @@ class ScheduleController extends Controller
                     $randomSixDigit = mt_rand(100000, 999999);
                     $exists = DB::table('jobs')->where('job_code', $randomSixDigit)->exists();
                 } while ($exists); 
+                $customer_name = User::where('id',$data['customer_id'])->first();
+                $technician_name = User::where('id',$data['technician_id'])->first();
     
 
                 $jobsData = [
@@ -1007,8 +1014,11 @@ class ScheduleController extends Controller
 
                 $activity ='Job scheduled for '. $formattedDateTime;
                app('JobActivityManager')->addJobActivity($jobId, $activity);
-               app('sendNotices')('New job created at ' . now(), url()->current(), 'job');
-
+               app('sendNotices')(
+                     "New Job","New Job (#{$jobId} - {$customer_name->name}) added by {$technician_name->name}",
+                    url()->current(), 
+                    'job'
+                );
                 $height_slot = $duration / 60;
                 $height_slot_px = $height_slot * 80 - 10;
 
