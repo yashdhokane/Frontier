@@ -1690,15 +1690,6 @@
                 },
             });
 
-            var getDiscount = $('.discount').val().trim();
-            var getTax = parseInt(service_tax) - parseInt(product_tax);
-            var getTotal = $('.total').val().trim();
-
-
-            $('.show_total_discount').text(getDiscount >= 0 ? '$' + getDiscount : '$' + Math.abs(getDiscount));
-            $('.show_total_tax').text(getTax >= 0 ? '$' + getTax : '$' + Math.abs(getTax));
-            $('.show_total').text(getTotal >= 0 ? '$' + getTotal : '$' + Math.abs(getTotal));
-
         }
 
         //   new changes  
@@ -1862,29 +1853,38 @@
                         // for total section  services and products
                         var product_tax = $('.product_tax').val();
                         var service_tax = $('.service_tax').val();
+
                         var service_cost = $('.service_cost').val();
                         var product_cost = $('.product_cost').val();
+                        
+                        var serviceCost = parseInt(service_cost) || 0; 
+                        var productCost = parseInt(product_cost) || 0;
 
                         var getSubTotalVal = $('.subtotal').val().trim();
-                        var subTotal = parseInt(service_cost) + parseInt(product_cost);
+                        var subTotal = serviceCost + productCost;
                         $('.subtotal').val(Math.abs(subTotal));
                         $('.subtotaltext').text('$' + Math.abs(subTotal));
 
 
                         var service_discount = $('.service_discount').val();
                         var product_discount = $('.product_discount').val();
+                        var serviceDiscount = parseInt(service_discount) || 0; 
+                        var productDiscount = parseInt(product_discount) || 0;
+                        // Calculate the total discount
+                        var discount = serviceDiscount + productDiscount;
 
                         var getDiscount = $('.discount').val().trim();
-                        var discount = parseInt(service_discount) + parseInt(product_discount);
                         $('.discount').val(Math.abs(discount));
                         $('.discounttext').text('$' + Math.abs(discount));
 
                         var service_total = $('.service_total').val();
                         var product_total = $('.product_total').val();
 
+                        var serviceTotal = parseInt(service_total) || 0; 
+                        var productTotal = parseInt(product_total) || 0;
+
                         var getTotal = $('.total').val().trim();
-                        var total =  parseInt(service_total) + parseInt(
-                            product_total) ;
+                        var total = serviceTotal + productTotal ;
                         $('.total').val(Math.abs(total));
                         $('.totaltext').text('$' + Math.abs(total));
 
