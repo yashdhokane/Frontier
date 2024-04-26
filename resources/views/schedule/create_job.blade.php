@@ -7,7 +7,7 @@
     <div class="createScheduleData">
 
         <input type="hidden" class="travel_input" id="travel_input" name="travel_input" value="">
-         <input type="hidden" class="technician_name"  value="{{ $technician->name }}">
+        <input type="hidden" class="technician_name" value="{{ $technician->name }}">
         @if (isset($technician) && !empty($technician))
 
             <div class="container-fluid">
@@ -19,7 +19,8 @@
                             @csrf
 
                             <input type="hidden" class="technician_id" name="technician_id" value="{{ $technician->id }}">
-                            <input type="hidden" class="datetime" name="datetime" value="{{ $dateTime }}">
+                            <input type="hidden" class="datetime" name="datetime" id="datetime"
+                                value="{{ $dateTime }}">
                             <input type="hidden" class="customer_id" id="" name="customer_id" value="">
                             <input type="hidden" class="job_id" id="" name="job_id" value="">
                             <input type="hidden" class="scheduleType" id="" name="scheduleType" value="job">
@@ -81,22 +82,33 @@
                                         <div class="card-body">
                                             <div class="table-responsive">
                                                 <div class="row">
-                                                    
-                                                    <div class="col-md-3" id="makedescending" style="cursor: pointer;"><i class="ri-sort-asc"></i></div>
+
+                                                    <div class="col-md-3" id="makedescending" style="cursor: pointer;"><i
+                                                            class="ri-sort-asc"></i></div>
                                                 </div>
                                                 <div class="row">
-													<div class="col-md-12 d-flex align-items-baseline">
-                                                        <h5 class="font-weight-medium mb-2 d-flex" style="position: relative;">
-														<input class="mx-1" type="radio" name="teritory" id="techall" checked> Reschedule Pending Jobs </h5>
+                                                    <div class="col-md-12 d-flex align-items-baseline">
+                                                        <h5 class="font-weight-medium mb-2 d-flex"
+                                                            style="position: relative;">
+                                                            <input class="mx-1" type="radio" name="teritory"
+                                                                id="techall" checked> Reschedule Pending Jobs
+                                                        </h5>
                                                     </div>
                                                     <div class="col-md-12 d-flex align-items-baseline">
-														<h5 class="font-weight-medium mb-2 d-flex" style="position: relative;"><input class="mx-1" type="radio" name="teritory" id="newyork"
-                                                            data-state="NY" >  <span id="stateNameArea">Show Open jobs in </span> </h5>
- 													</div>
-													<div class="col-md-12 d-flex align-items-baseline">
-														<h5 class="font-weight-medium mb-2 d-flex" style="position: relative;">
-                                                        <input class="mx-1 techName" type="radio" name="teritory" id="techonly" class="techonly"> Show Open jobs of {{$technician->name}} (Technician)</h5>
-													</div>
+                                                        <h5 class="font-weight-medium mb-2 d-flex"
+                                                            style="position: relative;"><input class="mx-1"
+                                                                type="radio" name="teritory" id="newyork"
+                                                                data-state="NY"> <span id="stateNameArea">Show Open jobs
+                                                                in </span> </h5>
+                                                    </div>
+                                                    <div class="col-md-12 d-flex align-items-baseline">
+                                                        <h5 class="font-weight-medium mb-2 d-flex"
+                                                            style="position: relative;">
+                                                            <input class="mx-1 techName" type="radio" name="teritory"
+                                                                id="techonly" class="techonly"> Show Open jobs of
+                                                            {{ $technician->name }} (Technician)
+                                                        </h5>
+                                                    </div>
                                                 </div>
                                                 <div class="rescheduleJobs">
                                                 </div>
@@ -151,7 +163,7 @@
                                             </div>
                                         </div>
                                     </div>
-									<div class="col-md-3">
+                                    <div class="col-md-3">
                                         <h6 class="card-title required-field"><i class="fas fa fa-calendar-check-o"></i>
                                             Duration</h6>
                                         <div class="form-group">
@@ -167,43 +179,51 @@
                                         </div>
                                     </div>
                                 </div>
-								
-								<div class="row">
-									<div class="col-md-6">
+
+                                <div class="row">
+                                    <div class="col-md-6">
                                         <div class="mt-0 mb-3">
-                                            <h6 class="card-title required-field"><i class="fas fa fa-pencil-square-o"></i> Job Description
+                                            <h6 class="card-title required-field"><i
+                                                    class="fas fa fa-pencil-square-o"></i> Job Description
                                             </h6>
                                             <div class="form-group">
-                                                <textarea class="form-control job_description" rows="2" placeholder="Add Description  Here..." name="job_description"></textarea>
-                                                <small id="textHelp" class="form-text text-muted">All all details of the job goes here</small>
+                                                <textarea class="form-control job_description" rows="2" placeholder="Add Description  Here..."
+                                                    name="job_description"></textarea>
+                                                <small id="textHelp" class="form-text text-muted">All all details of the
+                                                    job goes here</small>
                                             </div>
                                         </div>
                                     </div>
-									<div class="col-md-6">
-                                        <div class="mt-0 mb-3">
-                                            <h6 class="card-title required-field"><i class="fas fa fa-pencil-square-o"></i> Notes to Technician </h6>
-                                            <div class="form-group">
-                                                <textarea class="form-control technician_notes" rows="2" placeholder="Add Technician Notes  Here..." name="technician_notes"></textarea>
-                                                <small id="textHelp" class="form-text text-muted">Technician will see the notes before starting the job.</small>
-                                            </div>
-                                        </div>
-                                    </div>
-									
-                                </div>
-								
-								<div class="row">
                                     <div class="col-md-6">
-										<h6 class="card-title required-field"><i class="fas fa fa-television"></i>Select Existing Appliances </h6>
-										<div class="form-group">
-											<select class="form-control appl_id exist_appl_id" id="appl_id" name="exist_appl_id">
-											    <option value=""> -- Select existig appliances -- </option>
+                                        <div class="mt-0 mb-3">
+                                            <h6 class="card-title required-field"><i
+                                                    class="fas fa fa-pencil-square-o"></i> Notes to Technician </h6>
+                                            <div class="form-group">
+                                                <textarea class="form-control technician_notes" rows="2" placeholder="Add Technician Notes  Here..."
+                                                    name="technician_notes"></textarea>
+                                                <small id="textHelp" class="form-text text-muted">Technician will see the
+                                                    notes before starting the job.</small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6 class="card-title required-field"><i class="fas fa fa-television"></i>Select
+                                            Existing Appliances </h6>
+                                        <div class="form-group">
+                                            <select class="form-control appl_id exist_appl_id" id="appl_id"
+                                                name="exist_appl_id">
+                                                <option value=""> -- Select existig appliances -- </option>
                                             </select>
-										</div>
-									</div>
-									<div class="col-md-6">
-										<div class="mt-4"><a href="#." id="add_new_appl">Add New</a></div>
-									</div>
-								</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mt-4"><a href="#." id="add_new_appl">Add New</a></div>
+                                    </div>
+                                </div>
 
                                 <div class="row" style="display: none;" id="show_new_appl">
                                     <div class="col-md-3">
@@ -216,7 +236,8 @@
                                                     <option value="">-- Select Appliances -- </option>
                                                     @if (isset($appliances) && !empty($appliances))
                                                         @foreach ($appliances as $value)
-                                                            <option value="{{ $value->appliance_type_id }}" data-name="{{ $value->appliance_name }}">
+                                                            <option value="{{ $value->appliance_type_id }}"
+                                                                data-name="{{ $value->appliance_name }}">
                                                                 {{ $value->appliance_name }}</option>
                                                         @endforeach
                                                     @endif
@@ -246,7 +267,8 @@
                                                     <option value="">-- Select Manufacturer -- </option>
                                                     @if (isset($manufacturers) && !empty($manufacturers))
                                                         @foreach ($manufacturers as $value)
-                                                            <option value="{{ $value->id }}" data-name="{{ $value->manufacturer_name }}">
+                                                            <option value="{{ $value->id }}"
+                                                                data-name="{{ $value->manufacturer_name }}">
                                                                 {{ $value->manufacturer_name }}
                                                             </option>
                                                         @endforeach
@@ -267,7 +289,7 @@
                                             </div>
                                         </div>
                                     </div>
-									<div class="col-md-3">
+                                    <div class="col-md-3">
                                         <div class="mt-0 mb-3">
                                             <h6 class="card-title required-field"><i class="fas fa fa-hashtag"></i> Model
                                                 Number </h6>
@@ -289,10 +311,10 @@
                                             </div>
                                         </div>
                                     </div>
-								</div>
+                                </div>
 
                                 <div class="row">
- 									<div class="col-md-6">
+                                    <div class="col-md-6">
                                         <div class="mt-3 mb-3">
                                             <h6 class="card-title"><i class="far fa fa-photo"></i> Photos / Attachments
                                             </h6>
@@ -302,11 +324,11 @@
                                             </div>
                                         </div>
                                     </div>
-									<div class="col-md-6">
+                                    <div class="col-md-6">
                                         <div class="mt-3 mb-3">
                                             <h6 class="card-title"><i class="fas fa fa-tags"></i> Tags </h6>
                                             <div class="input-group">
-                                                 <select class="form-control me-sm-2 tags" id="" name="tags[]"
+                                                <select class="form-control me-sm-2 tags" id="" name="tags[]"
                                                     multiple="multiple" required>
                                                     @foreach ($tags as $tag)
                                                         <option value="{{ $tag->field_id }}">
@@ -626,9 +648,9 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col-md-12 reschedule_job ">
-                                                    <p class="show_job_description"></p>
-                                                    <p class="show_job_duration" style="margin-top: -16px;">
-                                                    </p>
+                                                    <p class="show_job_description m-0"></p>
+                                                    <p class="show_job_duration m-0"></p>
+                                                    <p class="schedule_date m-0"></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -730,9 +752,10 @@
                                                 <div class="col-md-7 align-self-end d-flex">
                                                     <h4> Do you want to Confirm the job ?</h4>
 
-                                                        <div class="form-check form-switch ms-4">
-                                                            <input class="form-check-input" name="is_confirmed" type="checkbox" value="yes" id="flexSwitchCheckChecked">
-                                                        </div>
+                                                    <div class="form-check form-switch ms-4">
+                                                        <input class="form-check-input" name="is_confirmed"
+                                                            type="checkbox" value="yes" id="flexSwitchCheckChecked">
+                                                    </div>
                                                 </div>
                                                 <div class="col-md-1">
                                                     <div class="mt-2">&nbsp;</div>
@@ -806,50 +829,98 @@
     <!-- Bootstrap Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script>
-      $(document).ready(function() {
-            $(document).on('click','#add_new_appl',function() {
+        $(document).ready(function() {
+            var minute = parseInt($('.duration').val(), 10);
+            var rawDate = $('#datetime').val();
+
+            if (rawDate) {
+                var startMoment = moment(rawDate);
+                if (startMoment.isValid()) {
+                    var startdate = startMoment.format("Do MMMM YYYY, h:mm A");
+
+                    var newMoment = startMoment.add(minute, 'minutes');
+
+                    var enddate = newMoment.format("h:mm A");
+
+                    $('.schedule_date').text(`${startdate} - ${enddate}`);
+                } else {
+                    console.error("Invalid date provided.");
+                }
+            } else {
+                console.error("Start date is empty or invalid.");
+            }
+
+        });
+        $(document).ready(function() {
+
+
+            $(document).on('click', '#add_new_appl', function() {
                 $('#show_new_appl').toggle();
             });
-      });
 
-      $(document).ready(function() {
-        $(document).on('change','.appliances', function() {
-            var selectedOption = $(this).find('option:selected');
-            var applianceName = selectedOption.data('name');
-            $('.show_appliance').text('Appliance: ' + applianceName);
+
+            $(document).on('change', '.duration', function() {
+                var minute = parseInt($(this).val(), 10);
+                var rawDate = $('#datetime').val();
+
+                if (rawDate) {
+                    var startMoment = moment(rawDate);
+                    if (startMoment.isValid()) {
+                        var startdate = startMoment.format("Do MMMM YYYY, h:mm A");
+
+                        var newMoment = startMoment.add(minute, 'minutes');
+
+                        var enddate = newMoment.format("h:mm A");
+
+                        $('.schedule_date').text(`${startdate} - ${enddate}`);
+                    } else {
+                        console.error("Invalid date provided.");
+                    }
+                } else {
+                    console.error("Start date is empty or invalid.");
+                }
+            });
+
+
         });
 
-        // Debugging when changing the manufacturer dropdown
-        $(document).on('change','.manufacturer', function() {
-            var selectedOption = $(this).find('option:selected');
-            var manufacturerName = selectedOption.data('name');
+        $(document).ready(function() {
+            $(document).on('change', '.appliances', function() {
+                var selectedOption = $(this).find('option:selected');
+                var applianceName = selectedOption.data('name');
+                $('.show_appliance').text('Appliance: ' + applianceName);
+            });
 
-            $('.show_manufacturer').text('Manufacturer: ' + manufacturerName);
+            // Debugging when changing the manufacturer dropdown
+            $(document).on('change', '.manufacturer', function() {
+                var selectedOption = $(this).find('option:selected');
+                var manufacturerName = selectedOption.data('name');
+
+                $('.show_manufacturer').text('Manufacturer: ' + manufacturerName);
+            });
+            $(document).on('input', '.model_number', function() {
+                var model_number = $(this).val();
+                $('.show_model_number').text('Model Number: ' + model_number);
+            });
+
+            $(document).on('input', '.serial_number', function() {
+                var serial_number = $(this).val();
+                $('.show_serial_number').text('Serial Number: ' + serial_number);
+            });
+
+            $(document).on('change', '.exist_appl_id', function() {
+                var selectedOption = $(this).find('option:selected');
+                var appName = selectedOption.data('appname');
+                var manuName = selectedOption.data('manuname');
+                var model = selectedOption.data('model');
+                var serial = selectedOption.data('serial');
+
+                $('.show_appliance').text('Appliance: ' + appName);
+                $('.show_manufacturer').text('Manufacturer: ' + manuName);
+                $('.show_model_number').text('Model Number: ' + model);
+                $('.show_serial_number').text('Serial Number: ' + serial);
+            });
         });
-        $(document).on('input', '.model_number', function() {
-            var model_number = $(this).val();
-            $('.show_model_number').text('Model Number: ' + model_number);
-        });
-
-        $(document).on('input', '.serial_number', function() {
-            var serial_number = $(this).val();
-            $('.show_serial_number').text('Serial Number: ' + serial_number);
-        });
-
-        $(document).on('change','.exist_appl_id', function() {
-            var selectedOption = $(this).find('option:selected');
-            var appName = selectedOption.data('appname');
-            var manuName = selectedOption.data('manuname');
-            var model = selectedOption.data('model');
-            var serial = selectedOption.data('serial');
-
-            $('.show_appliance').text('Appliance: ' + appName);
-            $('.show_manufacturer').text('Manufacturer: ' + manuName);
-            $('.show_model_number').text('Model Number: ' + model);
-            $('.show_serial_number').text('Serial Number: ' + serial);
-        });
-    });
-
     </script>
     <script>
         $(document).ready(function() {
@@ -1237,8 +1308,8 @@
                                 var newyork = $('#newyork');
                                 var techAll = $('#techall');
                                 var technicianOnly = $('.techName');
-                                
-                               
+
+
                                 // Initial check if 'newyork' checkbox is checked
                                 if (newyork.prop('checked')) {
                                     $('.pending_jobs2').addClass('d-none');
@@ -1249,7 +1320,7 @@
 
                                 // Function to toggle the order of elements
                                 function toggleOrder() {
-                                    var ascendingOrder =  true; // Flag to track sorting order
+                                    var ascendingOrder = true; // Flag to track sorting order
                                     var $pendingJobs = $('.pending_jobs2');
                                     // Toggle the sorting order flag
                                     ascendingOrder = !ascendingOrder;
@@ -1270,13 +1341,15 @@
                                 }
 
                                 // Event handler for clicking on #makedescending
-                                $('#makedescending').on('click',toggleOrder);
+                                $('#makedescending').on('click', toggleOrder);
 
                                 // Iterate over each .pending_jobs2 element
                                 $('.pending_jobs2').each(function() {
-                                    var $element = $( this ); // Store reference to the element
+                                    var $element = $(
+                                    this); // Store reference to the element
                                     var technicianId = $element.data('technician-id');
-                                    var technicianName = $element.data('technician-name');
+                                    var technicianName = $element.data(
+                                        'technician-name');
                                     var customerName = $element.data('customer-name');
                                     var customerState_id = $element.data('state-id');
                                     var technician_name = $('.technician_name').val();
@@ -1288,10 +1361,12 @@
                                             technician_name: technician_name
                                         },
                                         success: function(values) {
-                                            $('#techonly').change(function() {
-                                                updateVisibility(); 
+                                            $('#techonly').change(
+                                        function() {
+                                                updateVisibility();
                                             });
-                                            var code = values.address.state_code;
+                                            var code = values.address
+                                                .state_code;
                                             var stateIds = values.result;
 
                                             $.ajax({
@@ -1300,24 +1375,44 @@
                                                 data: {
                                                     stateIds: stateIds,
                                                 },
-                                                success: function(data) {
-                                                  $('#stateNameArea').text('Show Open jobs in '+data);
+                                                success: function(
+                                                    data) {
+                                                    $('#stateNameArea')
+                                                        .text(
+                                                            'Show Open jobs in ' +
+                                                            data
+                                                            );
                                                 }
-                                             });
+                                            });
 
 
-                                           // Function to update visibility based on checkboxes
+                                            // Function to update visibility based on checkboxes
                                             function updateVisibility() {
 
                                                 // Checkboxes and visibility logic
-                                                if (newyork.prop('checked') && stateIds.includes(customerState_id)) {
-                                                    $element.removeClass('d-none');
-                                                } else if (techAll.prop('checked') && customerName.includes(name)) {
-                                                    $element.removeClass('d-none');
-                                                } else if (technicianOnly.prop('checked') && technicianName.toLowerCase().includes(technician_name.toLowerCase())) {
-                                                    $element.removeClass('d-none');
+                                                if (newyork.prop(
+                                                    'checked') && stateIds
+                                                    .includes(
+                                                        customerState_id)) {
+                                                    $element.removeClass(
+                                                        'd-none');
+                                                } else if (techAll.prop(
+                                                        'checked') &&
+                                                    customerName.includes(
+                                                        name)) {
+                                                    $element.removeClass(
+                                                        'd-none');
+                                                } else if (technicianOnly
+                                                    .prop('checked') &&
+                                                    technicianName
+                                                    .toLowerCase().includes(
+                                                        technician_name
+                                                        .toLowerCase())) {
+                                                    $element.removeClass(
+                                                        'd-none');
                                                 } else {
-                                                    $element.addClass('d-none');
+                                                    $element.addClass(
+                                                        'd-none');
                                                 }
                                             }
 
@@ -1325,12 +1420,14 @@
                                             updateVisibility();
 
                                             // Event handler for 'newyork' checkbox change
-                                            $('#newyork').change( function() {
+                                            $('#newyork').change(
+                                        function() {
                                                 updateVisibility();
                                             });
 
                                             // Event handler for 'techall' checkbox change
-                                            $('#techall').change(function() {
+                                            $('#techall').change(
+                                        function() {
                                                 updateVisibility();
                                             });
                                         },
@@ -1452,7 +1549,13 @@
                                                     .state_name +
                                                     ', ' + element
                                                     .zipcode;
-                                                var option = $('<option value="'+element.address_type+' " selected>'+addressString+'</option>');
+                                                var option = $(
+                                                    '<option value="' +
+                                                    element
+                                                    .address_type +
+                                                    ' " selected>' +
+                                                    addressString +
+                                                    '</option>');
 
                                                 option.attr(
                                                     'data-city',
@@ -1463,9 +1566,10 @@
                                                     .append(option);
                                             });
                                         }
-                                         var nextAnchor = $('a[href="#next"]')
-                                            
-                                                nextAnchor.trigger('click');
+                                        var nextAnchor = $(
+                                            'a[href="#next"]')
+
+                                        nextAnchor.trigger('click');
                                     }
                                 });
                             });
@@ -1705,29 +1809,41 @@
                 // Append the address value as a selected option to the select element
                 $('.customer_address').append('<option value="' + address + '" selected>' + address +
                     '</option>');
-                
-                 $.ajax({
+
+                $.ajax({
                     url: "{{ route('customer_appliances') }}",
                     data: {
-                        id: customerId,  // Ensure 'id' is defined and valid
+                        id: customerId, // Ensure 'id' is defined and valid
                     },
-                    type: 'GET',  // If it's an API, 'GET' is generally correct
+                    type: 'GET', // If it's an API, 'GET' is generally correct
                     success: function(data) {
                         if (Array.isArray(data)) {
-                            $('.exist_appl_id').empty();  // Clear existing options
-                             $('.exist_appl_id').append('<option value=""> -- Select existing appliances -- </option>');
+                            $('.exist_appl_id').empty(); // Clear existing options
+                            $('.exist_appl_id').append(
+                                '<option value=""> -- Select existing appliances -- </option>'
+                                );
                             // Loop over the array to create new options
-                            $.each(data, function(index, value) {  // 'index' is needed to reference current item
-                                var optionText = `${value.appliance.appliance_name} / ${value.manufacturer.manufacturer_name} / ${value.model_number} / ${value.serial_number}`;
-                                $('.exist_appl_id').append('<option value="' + value.appliance_id + '" data-appName="' + value.appliance.appliance_name + '" data-manuName="' + value.manufacturer.manufacturer_name + '" data-model="' + value.model_number + '" data-serial="' + value.serial_number + '">' + optionText + '</option>');
+                            $.each(data, function(index,
+                            value) { // 'index' is needed to reference current item
+                                var optionText =
+                                    `${value.appliance.appliance_name} / ${value.manufacturer.manufacturer_name} / ${value.model_number} / ${value.serial_number}`;
+                                $('.exist_appl_id').append('<option value="' + value
+                                    .appliance_id + '" data-appName="' + value
+                                    .appliance.appliance_name +
+                                    '" data-manuName="' + value.manufacturer
+                                    .manufacturer_name + '" data-model="' + value
+                                    .model_number + '" data-serial="' + value
+                                    .serial_number + '">' + optionText + '</option>'
+                                    );
                             });
                         } else {
                             console.error("Unexpected data format:", data);
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.error("AJAX request failed:", error);  // Handle errors
-                        alert("An error occurred while fetching the data. Please try again later.");  // Notify user
+                        console.error("AJAX request failed:", error); // Handle errors
+                        alert(
+                            "An error occurred while fetching the data. Please try again later."); // Notify user
                     }
                 });
 
@@ -1769,12 +1885,12 @@
                             }
                         });
 
-                       
+
 
                         $('.job_description').val(data.description);
-                         const note = data.job_note?.note;
+                        const note = data.job_note?.note;
                         $('.technician_notes').val(note || '');
-                        
+
                         var tags_ids = data.tag_ids;
                         var tagsArray = tags_ids.split(',');
                         $('.tags option').each(function() {
@@ -1784,7 +1900,7 @@
                         });
                         $('.tags').trigger('change');
 
-                         const duration = data.job_assign?.duration;
+                        const duration = data.job_assign?.duration;
 
                         // Iterate through each option in the select element
                         $('.duration option').each(function() {
@@ -1856,8 +1972,8 @@
 
                         var service_cost = $('.service_cost').val();
                         var product_cost = $('.product_cost').val();
-                        
-                        var serviceCost = parseInt(service_cost) || 0; 
+
+                        var serviceCost = parseInt(service_cost) || 0;
                         var productCost = parseInt(product_cost) || 0;
 
                         var getSubTotalVal = $('.subtotal').val().trim();
@@ -1868,7 +1984,7 @@
 
                         var service_discount = $('.service_discount').val();
                         var product_discount = $('.product_discount').val();
-                        var serviceDiscount = parseInt(service_discount) || 0; 
+                        var serviceDiscount = parseInt(service_discount) || 0;
                         var productDiscount = parseInt(product_discount) || 0;
                         // Calculate the total discount
                         var discount = serviceDiscount + productDiscount;
@@ -1880,11 +1996,11 @@
                         var service_total = $('.service_total').val();
                         var product_total = $('.product_total').val();
 
-                        var serviceTotal = parseInt(service_total) || 0; 
+                        var serviceTotal = parseInt(service_total) || 0;
                         var productTotal = parseInt(product_total) || 0;
 
                         var getTotal = $('.total').val().trim();
-                        var total = serviceTotal + productTotal ;
+                        var total = serviceTotal + productTotal;
                         $('.total').val(Math.abs(total));
                         $('.totaltext').text('$' + Math.abs(total));
 
@@ -1922,7 +2038,7 @@
             $(document).on('click', '.selectCustomer', function() {
 
                 var nextAnchor = $('a[href="#next"]')
-                    nextAnchor.trigger('click');
+                nextAnchor.trigger('click');
 
                 var id = $(this).attr('data-id');
                 var name = $(this).attr('data-name');
@@ -1954,7 +2070,7 @@
                             $('.customer_number_email').text(data.mobile + ' / ' + data.email);
                             $('.show_customer_name').text(data.name);
                         }
-                        
+
 
                         if (data.address && $.isArray(data.address)) {
                             $.each(data.address, function(index, element) {
@@ -1963,7 +2079,9 @@
                                     element.address_line1 + ', ' + element.city +
                                     ', ' + element.state_name + ', ' + element
                                     .zipcode;
-                                var option = $('<option value="'+element.address_type+'" selected>'+addressString+'</option>');
+                                var option = $('<option value="' + element
+                                    .address_type + '" selected>' + addressString +
+                                    '</option>');
                                 $('#addres_lat').val(element.latitude + ',' + element
                                     .longitude)
 
@@ -1978,25 +2096,37 @@
                 $.ajax({
                     url: "{{ route('customer_appliances') }}",
                     data: {
-                        id: id,  // Ensure 'id' is defined and valid
+                        id: id, // Ensure 'id' is defined and valid
                     },
-                    type: 'GET',  // If it's an API, 'GET' is generally correct
+                    type: 'GET', // If it's an API, 'GET' is generally correct
                     success: function(data) {
                         if (Array.isArray(data)) {
-                            $('.exist_appl_id').empty();  // Clear existing options
-                             $('.exist_appl_id').append('<option value=""> -- Select existing appliances -- </option>');
+                            $('.exist_appl_id').empty(); // Clear existing options
+                            $('.exist_appl_id').append(
+                                '<option value=""> -- Select existing appliances -- </option>'
+                                );
                             // Loop over the array to create new options
-                            $.each(data, function(index, value) {  // 'index' is needed to reference current item
-                                var optionText = `${value.appliance.appliance_name} / ${value.manufacturer.manufacturer_name} / ${value.model_number} / ${value.serial_number}`;
-                                $('.exist_appl_id').append('<option value="' + value.appliance_id + '" data-appName="' + value.appliance.appliance_name + '" data-manuName="' + value.manufacturer.manufacturer_name + '" data-model="' + value.model_number + '" data-serial="' + value.serial_number + '">' + optionText + '</option>');
+                            $.each(data, function(index,
+                            value) { // 'index' is needed to reference current item
+                                var optionText =
+                                    `${value.appliance.appliance_name} / ${value.manufacturer.manufacturer_name} / ${value.model_number} / ${value.serial_number}`;
+                                $('.exist_appl_id').append('<option value="' + value
+                                    .appliance_id + '" data-appName="' + value
+                                    .appliance.appliance_name +
+                                    '" data-manuName="' + value.manufacturer
+                                    .manufacturer_name + '" data-model="' + value
+                                    .model_number + '" data-serial="' + value
+                                    .serial_number + '">' + optionText + '</option>'
+                                    );
                             });
                         } else {
                             console.error("Unexpected data format:", data);
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.error("AJAX request failed:", error);  // Handle errors
-                        alert("An error occurred while fetching the data. Please try again later.");  // Notify user
+                        console.error("AJAX request failed:", error); // Handle errors
+                        alert(
+                            "An error occurred while fetching the data. Please try again later."); // Notify user
                     }
                 });
 
@@ -2461,7 +2591,7 @@
             }
 
             // Check if ticket number is filled
-                    
+
             // Get existing appliance ID
             var exist_appl_id = $('.exist_appl_id').val();
 
@@ -2473,22 +2603,22 @@
 
             // Condition 1: If exist_appl_id is filled
             if (!exist_appl_id) {
-                  if (appliances && manufacturer && modelNumber !== '' && serialNumber !== '') {
+                if (appliances && manufacturer && modelNumber !== '' && serialNumber !== '') {
                     isValid = true; // It's valid if all other fields are filled
                 } else {
                     isValid = false; // If neither condition is met, it's invalid
                 }
             } else {
-                
-               isValid = true;
+
+                isValid = true;
             }
 
 
 
 
-               
 
-            
+
+
 
             // Check if priority is selected
             var priority = $('select[name="priority"]').val();
