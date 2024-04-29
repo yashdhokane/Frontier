@@ -311,6 +311,11 @@ class ScheduleController extends Controller
             $date = $d;
 
             $dateTime = Carbon::parse("$date $time");
+             $datenew = Carbon::parse($date);
+                $currentDay = $datenew->format('l'); 
+            $currentDayLower = strtolower($currentDay); 
+            // Query the business hours for the given day
+            $hours = BusinessHours::where('day', $currentDayLower)->first();
 
             $tags = SiteTags::all();
 
@@ -327,7 +332,7 @@ class ScheduleController extends Controller
 
             $tags = SiteJobFields::all(); // Fetch all tags
 
-            return view('schedule.create_job', compact('tags', 'leadSources', 'locationStates', 'technician', 'dateTime', 'manufacturers', 'appliances', 'getServices', 'getProduct', 'tags'));
+            return view('schedule.create_job', compact('tags', 'leadSources', 'locationStates', 'technician', 'dateTime', 'manufacturers', 'appliances', 'getServices', 'getProduct', 'tags','hours','time'));
         }
     }
     public function create(Request $request)
@@ -1665,6 +1670,44 @@ class ScheduleController extends Controller
 
         return response()->json($appliance);
     }
+  public function technician_schedule(Request $request)
+{
+    $tech_id = $request->input('tech_id'); // Technician ID
+    $date = $request->input('date'); // Date part (e.g., '2024-04-26')
+    $start_time = $request->input('start_time'); // Time part (e.g., '09:00:00 AM')
+    $duration = (int) $request->input('duration'); // Duration in minutes
+    $parsedDate = Carbon::parse($date)->format('Y-m-d');
+
+    try {
+        $startDateTime = Carbon::parse("$parsedDate $start_time"); // Start time with date
+    } catch (Carbon\Exceptions\InvalidFormatException $e) {
+        return response()->json(['error' => 'Invalid date-time format'], 400);
+    }
+    
+    // Add duration to get end time
+    $endDateTime = $startDateTime->copy()->addMinutes($duration); // End time after adding duration
+    
+    // Query to check for overlapping schedules
+    $overlapCheck = Schedule::where('technician_id', $tech_id)
+        ->where(function ($query) use ($startDateTime, $endDateTime) {
+            // Check if any existing schedule overlaps with the new slot
+            $query->whereBetween('start_date_time', [$startDateTime, $endDateTime])
+                  ->orWhereBetween('end_date_time', [$startDateTime, $endDateTime])
+                  ->orWhere(function ($query) use ($startDateTime, $endDateTime) {
+                      $query->where('start_date_time', '<=', $startDateTime)
+                            ->where('end_date_time', '>=', $endDateTime);
+                  });
+        })
+        ->get();
+    
+    if ($overlapCheck->isNotEmpty()) {
+        return response()->json(['available' => false, 'message' => 'Time slot is not available due to overlap.']);
+    }
+    
+    return response()->json(['available' => true, 'message' => 'Time slot is available.']);
+}
+
+
 
 
 }

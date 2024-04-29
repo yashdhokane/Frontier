@@ -762,6 +762,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('travel_time', [ScheduleController::class, 'travel_time'])->name('travel_time');
 
+    Route::get('technician_schedule', [ScheduleController::class, 'technician_schedule'])->name('technician_schedule');
+
     // MailController  
 
     Route::get('get/mail/schedule', [MailController::class, 'index']);

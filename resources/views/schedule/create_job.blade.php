@@ -18,7 +18,8 @@
                             enctype="multipart/form-data">
                             @csrf
 
-                            <input type="hidden" class="technician_id" name="technician_id" value="{{ $technician->id }}">
+                            <input type="hidden" class="technician_id" name="technician_id" value="{{ $technician->id }}" data-start-hours="{{ (int) $hours->start_time }}" 
+                            data-end-hours="{{ (int) $hours->end_time }}" data-start-time="{{  $time }}">
                             <input type="hidden" class="datetime" name="datetime" id="datetime"
                                 value="{{ $dateTime }}">
                             <input type="hidden" class="customer_id" id="" name="customer_id" value="">
@@ -174,6 +175,7 @@
                                                 <option value="60">1 Hours</option>
                                                 <option value="30">30 min</option>
                                             </select>
+                                            <small id="schedule_slot" class="text-danger"></small><br>
                                             <small id="result_travel" class="text-success"
                                                 style="display: none;"></small>
                                         </div>
@@ -328,8 +330,8 @@
                                         <div class="mt-3 mb-3">
                                             <h6 class="card-title"><i class="fas fa fa-tags"></i> Tags </h6>
                                             <div class="input-group">
-                                                <select class="form-control me-sm-2 tags" id="" name="tags[]"
-                                                    multiple="multiple" required>
+                                                <select class="form-control me-sm-2 tags  "name="tags[]"
+                                                    multiple="multiple" style="width: 100%">
                                                     @foreach ($tags as $tag)
                                                         <option value="{{ $tag->field_id }}">
                                                             {{ $tag->field_name }}</option>
@@ -829,6 +831,36 @@
     <!-- Bootstrap Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script>
+      $(document).ready(function() {
+        var tech_id = $('.technician_id').val();
+        var date = $('.datetime').val();
+        var duration = $('.duration').val();
+        var start_time = $('.technician_id').data('start-time'); 
+        var start_hours = $('.technician_id').data('start-hours'); 
+        var end_hours = $('.technician_id').data('end-hours');
+        
+            $.ajax({
+                url: '{{ route('technician_schedule') }}',
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                    tech_id: tech_id,
+                    date: date,
+                    duration: duration,
+                    start_time: start_time,
+                },
+                success: function(response) {
+                    console.log("AJAX Response:", response);
+                        if(response.available == false) {
+                           $('#schedule_slot').text(response.message);
+                        }
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX Error:", error);
+                }
+            });
+    });
+
         $(document).ready(function() {
             var minute = parseInt($('.duration').val(), 10);
             var rawDate = $('#datetime').val();
@@ -879,6 +911,36 @@
                 } else {
                     console.error("Start date is empty or invalid.");
                 }
+
+                 var tech_id = $('.technician_id').val();
+                var date = $('.datetime').val();
+                var duration = $('.duration').val();
+                var start_time = $('.technician_id').data('start-time'); 
+                var start_hours = $('.technician_id').data('start-hours'); 
+                var end_hours = $('.technician_id').data('end-hours');
+                
+                $.ajax({
+                    url: '{{ route('technician_schedule') }}',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {
+                        tech_id: tech_id,
+                        date: date,
+                        duration: duration,
+                        start_time: start_time,
+                    },
+                    success: function(response) {
+                        console.log("AJAX Response:", response);
+                        if(response.available == false) {
+                           $('#schedule_slot').text(response.message);
+                        }else{
+                        $('#schedule_slot').text(response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("AJAX Error:", error);
+                    }
+                });
             });
 
 
