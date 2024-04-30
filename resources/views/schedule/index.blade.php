@@ -399,7 +399,7 @@
                                                                                             $height_slot =
                                                                                                 $duration / 30;
                                                                                             $height_slot_px =
-                                                                                                $height_slot * 44 - 7;
+                                                                                                $height_slot * 40.5 - 7;
                                                                                         @endphp
 
 
