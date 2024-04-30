@@ -26,6 +26,7 @@
                             <input type="hidden" class="job_id" id="" name="job_id" value="">
                             <input type="hidden" class="scheduleType" id="" name="scheduleType" value="job">
                             <input type="hidden" class="address_type" id="" name="address_type" value="">
+                            <input type="hidden" class="status_slot"  value="">
                             <!-- Step 1 -->
                             <h6>Customer Information </h6>
                             <section>
@@ -175,7 +176,6 @@
                                                 <option value="60">1 Hours</option>
                                                 <option value="30">30 min</option>
                                             </select>
-                                            <small id="schedule_slot" class="text-danger"></small><br>
                                             <small id="result_travel" class="text-success"
                                                 style="display: none;"></small>
                                         </div>
@@ -831,35 +831,6 @@
     <!-- Bootstrap Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script>
-      $(document).ready(function() {
-        var tech_id = $('.technician_id').val();
-        var date = $('.datetime').val();
-        var duration = $('.duration').val();
-        var start_time = $('.technician_id').data('start-time'); 
-        var start_hours = $('.technician_id').data('start-hours'); 
-        var end_hours = $('.technician_id').data('end-hours');
-        
-            $.ajax({
-                url: '{{ route('technician_schedule') }}',
-                type: 'GET',
-                dataType: 'json',
-                data: {
-                    tech_id: tech_id,
-                    date: date,
-                    duration: duration,
-                    start_time: start_time,
-                },
-                success: function(response) {
-                    console.log("AJAX Response:", response);
-                        if(response.available == false) {
-                           $('#schedule_slot').text(response.message);
-                        }
-                },
-                error: function(xhr, status, error) {
-                    console.error("AJAX Error:", error);
-                }
-            });
-    });
 
         $(document).ready(function() {
             var minute = parseInt($('.duration').val(), 10);
@@ -912,35 +883,7 @@
                     console.error("Start date is empty or invalid.");
                 }
 
-                 var tech_id = $('.technician_id').val();
-                var date = $('.datetime').val();
-                var duration = $('.duration').val();
-                var start_time = $('.technician_id').data('start-time'); 
-                var start_hours = $('.technician_id').data('start-hours'); 
-                var end_hours = $('.technician_id').data('end-hours');
                 
-                $.ajax({
-                    url: '{{ route('technician_schedule') }}',
-                    type: 'GET',
-                    dataType: 'json',
-                    data: {
-                        tech_id: tech_id,
-                        date: date,
-                        duration: duration,
-                        start_time: start_time,
-                    },
-                    success: function(response) {
-                        console.log("AJAX Response:", response);
-                        if(response.available == false) {
-                           $('#schedule_slot').text(response.message);
-                        }else{
-                        $('#schedule_slot').text(response.message);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("AJAX Error:", error);
-                    }
-                });
             });
 
 
@@ -1152,33 +1095,59 @@
                 },
                 onStepChanging: function(event, currentIndex, newIndex) {
                     // Check if navigating forward to the next step
-                    if (newIndex > currentIndex) {
-                        // Assuming the user address step index is 3 (adjust if necessary)
-                        if (currentIndex === 0) {
-                            // // Check if user address is selected
-                            // var selectedAddress = $('.customer_address').val();
-                            // if (!selectedAddress) {
-                            //     // User address is not selected, prevent navigation
-                            //     Swal.fire({
-                            //         icon: 'error',
-                            //         title: 'Error',
-                            //         text: 'Please select a user address before proceeding.'
-                            //     });
-                            //     return true; // Prevent navigation to the next step
-                            // }
-                        } else if (currentIndex === 1) {
+                         if (currentIndex === 1) {
                             // Check if all required fields are filled for step 2
                             var isValid = validateStep2Fields();
+
                             if (!isValid) {
                                 // Required fields are not filled, prevent navigation
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Error',
-                                    text: 'Please fill in all required fields before proceeding.'
+                                    text: 'Please fill in all required fields before proceeding.',
                                 });
                                 return false; // Prevent navigation to the next step
                             }
-                        } else if (currentIndex === 2) {
+
+                            // If validation passed, proceed with AJAX check
+                            var tech_id = $('.technician_id').val();
+                            var date = $('.datetime').val();
+                            var duration = $('.duration').val();
+                            var start_time = $('.technician_id').data('start-time'); 
+                            var start_hours = $('.technician_id').data('start-hours'); 
+                            var end_hours = $('.technician_id').data('end-hours');
+                            var status_slot = $('.status_slot').val();
+                            $.ajax({
+                                url: '{{ route("technician_schedule") }}',
+                                type: 'GET',
+                                dataType: 'json',
+                                data: {
+                                    tech_id: tech_id,
+                                    date: date,
+                                    duration: duration,
+                                    start_time: start_time,
+                                    start_hours: start_hours,
+                                    end_hours: end_hours,
+                                },
+                                success: function(response) {
+                                    console.log("AJAX Response:", response);
+                                    if (response.available === false) {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error',
+                                            text: response.message,
+                                        });
+                                    $('.status_slot').val(response.message); // Display message
+                                    } else {
+                                    $('.status_slot').val(response.message); // Display message
+                                    }
+                                }
+                            });
+
+                            if(status_slot == false) {
+                                return false;
+                            }
+                        }else if (currentIndex === 2) {
                             // Check if all required fields are filled for step 3
                             var isValid = validateStep3Fields();
                             if (!isValid) {
@@ -1191,7 +1160,7 @@
                                 return false; // Prevent navigation to the next step
                             }
                         }
-                    }
+                    
                     if (newIndex < currentIndex) {
                         return true;
                     }
