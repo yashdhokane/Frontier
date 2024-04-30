@@ -1483,39 +1483,110 @@ class ScheduleController extends Controller
     public function store_event(Request $request)
     {
         $auth = Auth::user()->id;
+        $date1 = new \DateTime($request->start_date);
+        $date2 = new \DateTime($request->end_date);
 
-        $event = new Event();
+        $dayOfWeek1 = $date1->format('l');
+        $dayOfWeek2 = $date2->format('l');
 
-        $event->technician_id = $request->event_technician_id;
-        $event->event_name = $request->event_name;
-        $event->event_description = $request->event_description ?? null;
-        $event->event_location = $request->event_location ?? null;
+        $starthours = BusinessHours::where('day', $dayOfWeek1)->first();
+        $endhours = BusinessHours::where('day', $dayOfWeek2)->first();
 
-        // Concatenate date and time values and format them properly
-        $startDateTime = date('Y-m-d H:i:s', strtotime($request->start_date . ' ' . $request->start_time));
-        $endDateTime = date('Y-m-d H:i:s', strtotime($request->end_date . ' ' . $request->end_time));
+        if($request->event_type == 'full'){
 
-        // Assign concatenated values to the start_date_time and end_date_time fields
-        $event->start_date_time = $startDateTime;
-        $event->end_date_time = $endDateTime;
+            $event = new Event();
 
-        $event->added_by = $auth;
-        $event->updated_by = $auth;
+            $event->technician_id = $request->event_technician_id;
+            $event->event_name = $request->event_name;
+            $event->event_description = $request->event_description ?? null;
+            $event->event_location = $request->event_location ?? null;
 
-        $event->save();
+            // Concatenate date and time values and format them properly
+            $startDateTime = date('Y-m-d H:i:s', strtotime($request->start_date . ' ' . $starthours->start_time));
+            $endDateTime = date('Y-m-d H:i:s', strtotime($request->end_date . ' ' . $endhours->end_time));
 
-        if ($request->scheduleType) {
-            $schedule = new Schedule();
+            // Assign concatenated values to the start_date_time and end_date_time fields
+            $event->start_date_time = $startDateTime;
+            $event->end_date_time = $endDateTime;
 
-            $schedule->schedule_type = $request->scheduleType;
-            $schedule->event_id = $event->id;
-            $schedule->start_date_time = $startDateTime;
-            $schedule->end_date_time = $endDateTime;
-            $schedule->technician_id = $request->event_technician_id;
-            $schedule->added_by = auth()->user()->id;
-            $schedule->updated_by = auth()->user()->id;
+            $event->added_by = $auth;
+            $event->updated_by = $auth;
 
-            $schedule->save();
+            $event->save();
+
+            $start_date = Carbon::parse($request->start_date);
+            $end_date = Carbon::parse($request->end_date);
+
+            // Loop through the date range
+            $current_date = $start_date->copy();
+            while ($current_date->lte($end_date)) {
+                // Get the day of the week
+                $day_of_week = $current_date->format('l');
+
+                // Retrieve the business hours for the current day
+                $business_hours = BusinessHours::where('day', $day_of_week)->first();
+
+                if ($business_hours) {
+                    // Create a new schedule entry for this day
+                    $schedule = new Schedule();
+                    $schedule->event_id = $event->id;
+                    $schedule->schedule_type = $request->scheduleType ?? 'default';
+
+                    // Set start and end times based on business hours
+                    $schedule_start_time = $current_date->toDateString() . ' ' . $business_hours->start_time;
+                    $schedule_end_time = $current_date->toDateString() . ' ' . $business_hours->end_time;
+
+                    $schedule->start_date_time = Carbon::parse($schedule_start_time)->toDateTimeString();
+                    $schedule->end_date_time = Carbon::parse($schedule_end_time)->toDateTimeString();
+
+                    // Assign other details
+                    $schedule->technician_id = $request->event_technician_id;
+                    $schedule->added_by = Auth::user()->id;
+                    $schedule->updated_by = Auth::user()->id;
+
+                    // Save the schedule
+                    $schedule->save();
+                }
+
+                // Move to the next day
+                $current_date->addDay();
+            }
+        
+        }else{
+
+             $event = new Event();
+
+            $event->technician_id = $request->event_technician_id;
+            $event->event_name = $request->event_name;
+            $event->event_description = $request->event_description ?? null;
+            $event->event_location = $request->event_location ?? null;
+
+            // Concatenate date and time values and format them properly
+            $startDateTime = date('Y-m-d H:i:s', strtotime($request->start_date . ' ' . $request->start_time));
+            $endDateTime = date('Y-m-d H:i:s', strtotime($request->start_date . ' ' . $request->end_time));
+
+            // Assign concatenated values to the start_date_time and end_date_time fields
+            $event->start_date_time = $startDateTime;
+            $event->end_date_time = $endDateTime;
+
+            $event->added_by = $auth;
+            $event->updated_by = $auth;
+
+            $event->save();
+
+            if ($request->scheduleType) {
+                $schedule = new Schedule();
+
+                $schedule->schedule_type = $request->scheduleType;
+                $schedule->event_id = $event->id;
+                $schedule->start_date_time = $startDateTime;
+                $schedule->end_date_time = $endDateTime;
+                $schedule->technician_id = $request->event_technician_id;
+                $schedule->added_by = auth()->user()->id;
+                $schedule->updated_by = auth()->user()->id;
+
+                $schedule->save();
+            }
         }
 
 

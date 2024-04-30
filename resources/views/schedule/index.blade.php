@@ -399,7 +399,7 @@
                                                                                             $height_slot =
                                                                                                 $duration / 30;
                                                                                             $height_slot_px =
-                                                                                                $height_slot * 80 - 10;
+                                                                                                $height_slot * 44 - 7;
                                                                                         @endphp
 
 
@@ -409,7 +409,7 @@
                                                                                             data-id="{{ $value }}"
                                                                                             data-time="{{ $timeString }}"
                                                                                             data-date="{{ $filterDate }}"
-                                                                                            style="cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->technician->color_code ?? null }};">
+                                                                                            style="cursor: pointer; height: {{ $height_slot_px }}px; background: #dadad6;">
                                                                                             <h5
                                                                                                 style="font-size: 15px; padding-bottom: 0px; margin-bottom: 5px; margin-top: 3px;">
                                                                                                 {{ $value2->event->event_name ?? null }}
@@ -568,6 +568,28 @@
 
 
     <script>
+        $(document).ready(function() {
+            $('.event_start_date').hide();
+            $('.event_start_time').hide();
+            $('.event_end_date').hide();
+            $('.event_end_time').hide();
+
+            $(document).on('change', '.event_type', function() {
+                 var event_type = $(this).val();
+                if (event_type == 'full') {
+                    $('.event_start_date').show();
+                    $('.event_end_date').show();
+                    $('.event_start_time').hide();
+                    $('.event_end_time').hide();
+                }else{
+                 $('.event_start_date').show();
+                $('.event_start_time').show();
+                $('.event_end_date').hide();
+                $('.event_end_time').show();
+                }
+            });
+        });
+
         $(document).ready(function() {
 
             $('#datepicker').hide(); // Hide the input field initially
