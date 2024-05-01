@@ -38,7 +38,10 @@ public function jobDetails()
     {
         return $this->belongsTo(JobDetails::class, 'job_id','job_id'); // Assuming 'assigned_job_id' is the foreign key
     }
-
+    public function JobAppliances()
+    {
+        return $this->belongsTo(JobAppliances::class, 'job_id', 'job_id');
+    }
     
 
 }

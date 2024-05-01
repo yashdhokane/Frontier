@@ -18,7 +18,7 @@ class PaymentController extends Controller
 {
     public function index()
     {
-        $payment = Payment::with('user', 'JobModel')->latest()->get();
+        $payment = Payment::with('JobAppliances','user', 'JobModel')->latest()->get();
 
         $manufacturer = Manufacturer::where('is_active','yes')->get();
 
