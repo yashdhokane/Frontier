@@ -861,6 +861,7 @@
         });
         $(document).ready(function() {
 
+            checkTechnicianSchedule();
 
             $(document).on('click', '#add_new_appl', function() {
                 $('#show_new_appl').toggle();
@@ -888,7 +889,7 @@
                     console.error("Start date is empty or invalid.");
                 }
 
-                
+                  checkTechnicianSchedule();                
             });
 
 
@@ -1101,56 +1102,41 @@
                 onStepChanging: function(event, currentIndex, newIndex) {
                     // Check if navigating forward to the next step
                          if (currentIndex === 1) {
-                            // Check if all required fields are filled for step 2
-                            var isValid = validateStep2Fields();
+                           checkTechnicianSchedule();
+                            
+                            function checkAllConditions() {
+                                    var isValid = validateStep2Fields();  // Validate required fields in step 2
+                                    var isStatusSlotAvailable = $('.status_slot').val();  // Get the value from the input field
 
-                            if (!isValid) {
-                                // Required fields are not filled, prevent navigation
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: 'Please fill in all required fields before proceeding.',
-                                });
-                                return false; // Prevent navigation to the next step
-                            }
+                                    // Convert to a boolean to handle potential falsy values
+                                    var isStatusSlotBool = isStatusSlotAvailable === "true" || isStatusSlotAvailable === true;
 
-                            // If validation passed, proceed with AJAX check
-                            var tech_id = $('.technician_id').val();
-                            var date = $('.datetime').val();
-                            var duration = $('.duration').val();
-                            var start_time = $('.technician_id').data('start-time'); 
-                            var start_hours = $('.technician_id').data('start-hours'); 
-                            var end_hours = $('.technician_id').data('end-hours');
-                            var status_slot = $('.status_slot').val();
-                            $.ajax({
-                                url: '{{ route("technician_schedule") }}',
-                                type: 'GET',
-                                dataType: 'json',
-                                data: {
-                                    tech_id: tech_id,
-                                    date: date,
-                                    duration: duration,
-                                    start_time: start_time,
-                                    start_hours: start_hours,
-                                    end_hours: end_hours,
-                                },
-                                success: function(response) {
-                                    console.log("AJAX Response:", response);
-                                    if (response.available === false) {
+                                    // If any condition is false, show an appropriate error message
+                                    if (!isValid) {
                                         Swal.fire({
                                             icon: 'error',
-                                            title: 'Error',
-                                            text: response.message,
+                                            title: 'Validation Error',
+                                            text: 'Please ensure all required fields are filled before proceeding.',
                                         });
-                                    $('.status_slot').val(response.message); // Display message
-                                    } else {
-                                    $('.status_slot').val(response.message); // Display message
+                                        return false;  // Prevent further action
                                     }
-                                }
-                            });
 
-                            if(status_slot == false) {
-                                return false;
+                                    if (!isStatusSlotBool) {  // If status slot is false or not "true"
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Slot Error',
+                                            text: 'Please ensure the status slot is available before proceeding.',
+                                        });
+                                        return false;  // Prevent further action
+                                    }
+
+                                    return true;  // All conditions are met
+                                }
+                              // Validate the conditions
+                            if (!checkAllConditions()) {
+                                // If false, do not proceed to the next step and show an error
+                                console.log("Validation failed. Staying on the same step.");
+                                return;  // Stop further action to prevent navigation
                             }
                         }else if (currentIndex === 2) {
                             // Check if all required fields are filled for step 3
@@ -2856,7 +2842,43 @@
 
         });
 
+        function checkTechnicianSchedule() {
+            // Gather the necessary data for the AJAX request
+            var tech_id = $('.technician_id').val();
+            var date = $('.datetime').val();
+            var duration = $('.duration').val();
+            var start_time = $('.technician_id').data('start-time');
+            var start_hours = $('.technician_id').data('start-hours');
+            var end_hours = $('.technician_id').data('end-hours');
 
+            // Perform the AJAX request
+            $.ajax({
+                url: '{{ route("technician_schedule") }}',  // Adjust this as needed
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                    tech_id: tech_id,
+                    date: date,
+                    duration: duration,
+                    start_time: start_time,
+                    start_hours: start_hours,
+                    end_hours: end_hours,
+                },
+                success: function (response) {
+                    console.log("AJAX Response:", response);
+
+                    // Check the response and set the status slot accordingly
+                    if (response.available === false) {
+                        $('.status_slot').val('false'); // Set to 'false'
+                    } else {
+                        $('.status_slot').val('true'); // Set to 'true'
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX error:", textStatus, errorThrown);  // Log any errors
+                }
+            });
+        }
         // new changes 
         function validateStep2Fields() {
             // Validate all fields in Step 2
