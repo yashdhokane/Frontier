@@ -543,8 +543,13 @@ class ScheduleController extends Controller
                 $product = $getProductDetails->toArray();
             }
         }
+        $customer = CustomerUserAddress::with('locationStateName')->where('user_id', $request->customerId)->first();
+        $statecode = $customer->locationStateName;
 
-        return response()->json($product);
+          return response()->json([
+           'product' => $product,
+           'statecode' => $statecode
+        ]);
     }
 
     public function getServicesDetails(Request $request)
@@ -561,8 +566,13 @@ class ScheduleController extends Controller
                 $serives = $getServicesDetails->toArray();
             }
         }
+        $customer = CustomerUserAddress::with('locationStateName')->where('user_id', $request->customerId)->first();
+        $statecode = $customer->locationStateName;
 
-        return response()->json($serives);
+        return response()->json([
+           'serives' => $serives,
+           'statecode' => $statecode
+        ]);
     }
     public function createSchedule(Request $request)
     {
@@ -613,7 +623,7 @@ class ScheduleController extends Controller
                     'description' => (isset($data['job_description']) && !empty($data['job_description'])) ? $data['job_description'] : '',
                     'priority' => (isset($data['priority']) && !empty($data['priority'])) ? $data['priority'] : '',
                     'warranty_type' => (isset($data['job_type']) && !empty($data['job_type'])) ? $data['job_type'] : '',
-                    'tax' => $service_tax + $product_tax,
+                    'tax' => (isset($data['tax_total']) && !empty($data['tax_total'])) ? $data['tax_total'] : '',
                     'discount' => (isset($data['discount']) && !empty($data['discount'])) ? $data['discount'] : 0,
                     'gross_total' => (isset($data['total']) && !empty($data['total'])) ? $data['total'] : 0,
                     'subtotal' => (isset($data['subtotal']) && !empty($data['subtotal'])) ? $data['subtotal'] : 0,
@@ -825,7 +835,7 @@ class ScheduleController extends Controller
                     'warranty_type' => (isset($data['job_type']) && !empty($data['job_type'])) ? $data['job_type'] : '',
                     'description' => (isset($data['job_description']) && !empty($data['job_description'])) ? trim($data['job_description']) : '',
                     'priority' => (isset($data['priority']) && !empty($data['priority'])) ? $data['priority'] : '',
-                    'tax' => $service_tax + $product_tax,
+                    'tax' => (isset($data['tax_total']) && !empty($data['tax_total'])) ? $data['tax_total'] : '',
                     'discount' => (isset($data['discount']) && !empty($data['discount'])) ? $data['discount'] : 0,
                     'gross_total' => (isset($data['total']) && !empty($data['total'])) ? $data['total'] : 0,
                     'subtotal' => (isset($data['subtotal']) && !empty($data['subtotal'])) ? $data['subtotal'] : 0,
