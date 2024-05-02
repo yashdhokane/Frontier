@@ -25,6 +25,7 @@ class JobModel extends Model
         'status',
         'description',
         'priority',
+        'service_area_id',
         'type_id',
         'close_date',
         'country_id',

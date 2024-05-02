@@ -2248,6 +2248,7 @@
                                 var service_discount_amount = s_cost * (s_discount / 100);
                                 var s_total = s_cost - service_discount_amount;
 
+                                $('.service_discount').val(service_discount_amount);
                                 $('.service_total_text').text('$' + s_total);
                                 $('.service_total').val(s_total);
                                 $('.service_discount_amount').val(service_discount_amount
@@ -2386,6 +2387,7 @@
                                 var s_discount = data.serives.service_discount;
 
                                 var new_service_discount_amount = s_cost * (s_discount / 100);
+                                $('.new_service_discount').val(new_service_discount_amount);
                                 var new_s_total = s_cost - new_service_discount_amount;
 
                                 $('.new_service_total_text').text('$' + new_s_total);
@@ -2629,6 +2631,7 @@
                                 var p_discount = data.product.discount;
 
                                 var product_discount_amount = p_cost * (p_discount / 100);
+                                $('.product_discount').val(product_discount_amount);
                                 var p_total = p_cost - product_discount_amount;
 
                                 $('.product_total_text').text('$' + p_total);
@@ -2761,6 +2764,7 @@
                                 var p_discount = data.product.discount;
 
                                 var new_product_discount_amount = p_cost * (p_discount / 100);
+                                $('.new_product_discount').val(new_product_discount_amount);
                                 var new_p_total = p_cost - new_product_discount_amount;
 
                                 $('.new_product_total_text').text('$' + new_p_total);
