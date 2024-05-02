@@ -569,10 +569,10 @@
 
     <script>
         $(document).ready(function() {
-            $('.event_start_date').hide();
             $('.event_start_time').hide();
-            $('.event_end_date').hide();
             $('.event_end_time').hide();
+            $('.f_start').hide();
+            $('.s_to').hide();
 
             $(document).on('change', '.event_type', function() {
                  var event_type = $(this).val();
@@ -581,11 +581,15 @@
                     $('.event_end_date').show();
                     $('.event_start_time').hide();
                     $('.event_end_time').hide();
+                    $('.f_start').hide();
+                    $('.s_to').hide();
                 }else{
                  $('.event_start_date').show();
                 $('.event_start_time').show();
                 $('.event_end_date').hide();
                 $('.event_end_time').show();
+                    $('.f_start').show();
+                    $('.s_to').show();
                 }
             });
         });

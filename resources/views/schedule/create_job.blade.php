@@ -18,15 +18,16 @@
                             enctype="multipart/form-data">
                             @csrf
 
-                            <input type="hidden" class="technician_id" name="technician_id" value="{{ $technician->id }}" data-start-hours="{{ (int) $hours->start_time }}" 
-                            data-end-hours="{{ (int) $hours->end_time }}" data-start-time="{{  $time }}">
+                            <input type="hidden" class="technician_id" name="technician_id" value="{{ $technician->id }}"
+                                data-start-hours="{{ (int) $hours->start_time }}"
+                                data-end-hours="{{ (int) $hours->end_time }}" data-start-time="{{ $time }}">
                             <input type="hidden" class="datetime" name="datetime" id="datetime"
                                 value="{{ $dateTime }}">
                             <input type="hidden" class="customer_id" id="" name="customer_id" value="">
                             <input type="hidden" class="job_id" id="" name="job_id" value="">
                             <input type="hidden" class="scheduleType" id="" name="scheduleType" value="job">
                             <input type="hidden" class="address_type" id="" name="address_type" value="">
-                            <input type="hidden" class="status_slot"  value="">
+                            <input type="hidden" class="status_slot" value="">
                             <!-- Step 1 -->
                             <h6>Customer Information </h6>
                             <section>
@@ -777,7 +778,8 @@
                                                             class="discounttext">$0
                                                         </div>
                                                     </h5>
-                                                    <input type="hidden" class="tax_total" name="tax_total" value=""><br>
+                                                    <input type="hidden" class="tax_total" name="tax_total"
+                                                        value=""><br>
                                                     <h5 style="display: inline-flex;">Tax:&nbsp;<div class="taxcodetext">
                                                             $0</div>
                                                     </h5><br>
@@ -836,7 +838,6 @@
     <!-- Bootstrap Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script>
-
         $(document).ready(function() {
             var minute = parseInt($('.duration').val(), 10);
             var rawDate = $('#datetime').val();
@@ -889,7 +890,7 @@
                     console.error("Start date is empty or invalid.");
                 }
 
-                  checkTechnicianSchedule();                
+                checkTechnicianSchedule();
             });
 
 
@@ -1101,57 +1102,59 @@
                 },
                 onStepChanging: function(event, currentIndex, newIndex) {
                     // Check if navigating forward to the next step
-                         if (currentIndex === 1) {
-                           checkTechnicianSchedule();
-                            
-                            function checkAllConditions() {
-                                    var isValid = validateStep2Fields();  // Validate required fields in step 2
-                                    var isStatusSlotAvailable = $('.status_slot').val();  // Get the value from the input field
+                    if (currentIndex === 1) {
+                        checkTechnicianSchedule();
 
-                                    // Convert to a boolean to handle potential falsy values
-                                    var isStatusSlotBool = isStatusSlotAvailable === "true" || isStatusSlotAvailable === true;
+                        function checkAllConditions() {
+                            var isValid = validateStep2Fields(); // Validate required fields in step 2
+                            var isStatusSlotAvailable = $('.status_slot')
+                        .val(); // Get the value from the input field
 
-                                    // If any condition is false, show an appropriate error message
-                                    if (!isValid) {
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Validation Error',
-                                            text: 'Please ensure all required fields are filled before proceeding.',
-                                        });
-                                        return false;  // Prevent further action
-                                    }
+                            // Convert to a boolean to handle potential falsy values
+                            var isStatusSlotBool = isStatusSlotAvailable === "true" ||
+                                isStatusSlotAvailable === true;
 
-                                    if (!isStatusSlotBool) {  // If status slot is false or not "true"
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Slot Error',
-                                            text: 'Please ensure the status slot is available before proceeding.',
-                                        });
-                                        return false;  // Prevent further action
-                                    }
-
-                                    return true;  // All conditions are met
-                                }
-                              // Validate the conditions
-                            if (!checkAllConditions()) {
-                                // If false, do not proceed to the next step and show an error
-                                console.log("Validation failed. Staying on the same step.");
-                                return;  // Stop further action to prevent navigation
-                            }
-                        }else if (currentIndex === 2) {
-                            // Check if all required fields are filled for step 3
-                            var isValid = validateStep3Fields();
+                            // If any condition is false, show an appropriate error message
                             if (!isValid) {
-                                // Required fields are not filled, prevent navigation
                                 Swal.fire({
                                     icon: 'error',
-                                    title: 'Error',
-                                    text: 'Please fill in warranty fields before proceeding.'
+                                    title: 'Validation Error',
+                                    text: 'Please ensure all required fields are filled before proceeding.',
                                 });
-                                return false; // Prevent navigation to the next step
+                                return false; // Prevent further action
                             }
+
+                            if (!isStatusSlotBool) { // If status slot is false or not "true"
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Slot Error',
+                                    text: 'Please ensure the status slot is available before proceeding.',
+                                });
+                                return false; // Prevent further action
+                            }
+
+                            return true; // All conditions are met
                         }
-                    
+                        // Validate the conditions
+                        if (!checkAllConditions()) {
+                            // If false, do not proceed to the next step and show an error
+                            console.log("Validation failed. Staying on the same step.");
+                            return; // Stop further action to prevent navigation
+                        }
+                    } else if (currentIndex === 2) {
+                        // Check if all required fields are filled for step 3
+                        var isValid = validateStep3Fields();
+                        if (!isValid) {
+                            // Required fields are not filled, prevent navigation
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Please fill in warranty fields before proceeding.'
+                            });
+                            return false; // Prevent navigation to the next step
+                        }
+                    }
+
                     if (newIndex < currentIndex) {
                         return true;
                     }
@@ -1368,7 +1371,7 @@
                                 // Iterate over each .pending_jobs2 element
                                 $('.pending_jobs2').each(function() {
                                     var $element = $(
-                                    this); // Store reference to the element
+                                        this); // Store reference to the element
                                     var technicianId = $element.data('technician-id');
                                     var technicianName = $element.data(
                                         'technician-name');
@@ -1384,9 +1387,9 @@
                                         },
                                         success: function(values) {
                                             $('#techonly').change(
-                                        function() {
-                                                updateVisibility();
-                                            });
+                                                function() {
+                                                    updateVisibility();
+                                                });
                                             var code = values.address
                                                 .state_code;
                                             var stateIds = values.result;
@@ -1403,7 +1406,7 @@
                                                         .text(
                                                             'Show Open jobs in ' +
                                                             data
-                                                            );
+                                                        );
                                                 }
                                             });
 
@@ -1413,7 +1416,8 @@
 
                                                 // Checkboxes and visibility logic
                                                 if (newyork.prop(
-                                                    'checked') && stateIds
+                                                        'checked') &&
+                                                    stateIds
                                                     .includes(
                                                         customerState_id)) {
                                                     $element.removeClass(
@@ -1443,15 +1447,15 @@
 
                                             // Event handler for 'newyork' checkbox change
                                             $('#newyork').change(
-                                        function() {
-                                                updateVisibility();
-                                            });
+                                                function() {
+                                                    updateVisibility();
+                                                });
 
                                             // Event handler for 'techall' checkbox change
                                             $('#techall').change(
-                                        function() {
-                                                updateVisibility();
-                                            });
+                                                function() {
+                                                    updateVisibility();
+                                                });
                                         },
                                         error: function(xhr,
                                             status,
@@ -1843,10 +1847,10 @@
                             $('.exist_appl_id').empty(); // Clear existing options
                             $('.exist_appl_id').append(
                                 '<option value=""> -- Select existing appliances -- </option>'
-                                );
+                            );
                             // Loop over the array to create new options
                             $.each(data, function(index,
-                            value) { // 'index' is needed to reference current item
+                                value) { // 'index' is needed to reference current item
                                 var optionText =
                                     `${value.appliance.appliance_name} / ${value.manufacturer.manufacturer_name} / ${value.model_number} / ${value.serial_number}`;
                                 $('.exist_appl_id').append('<option value="' + value
@@ -1856,7 +1860,7 @@
                                     .manufacturer_name + '" data-model="' + value
                                     .model_number + '" data-serial="' + value
                                     .serial_number + '">' + optionText + '</option>'
-                                    );
+                                );
                             });
                         } else {
                             console.error("Unexpected data format:", data);
@@ -1865,7 +1869,8 @@
                     error: function(xhr, status, error) {
                         console.error("AJAX request failed:", error); // Handle errors
                         alert(
-                            "An error occurred while fetching the data. Please try again later."); // Notify user
+                            "An error occurred while fetching the data. Please try again later."
+                            ); // Notify user
                     }
                 });
 
@@ -2044,6 +2049,9 @@
                             data.city +
                             ' ' + data.state + ' ' + data.zipcode);
 
+                        var tax_value = parseFloat($('.tax_total').val()) || 0;
+                        var tax_amount = tax_value.toFixed(2);
+
                         $.ajax({
                             url: "{{ route('usertax') }}",
                             data: {
@@ -2055,7 +2063,7 @@
 
                                 $('.taxcodetext').append('' + data.state_tax +
                                     '% for ' + data
-                                    .state_code + '');
+                                    .state_code + ': $' + tax_amount);
                             },
                         });
 
@@ -2134,10 +2142,10 @@
                             $('.exist_appl_id').empty(); // Clear existing options
                             $('.exist_appl_id').append(
                                 '<option value=""> -- Select existing appliances -- </option>'
-                                );
+                            );
                             // Loop over the array to create new options
                             $.each(data, function(index,
-                            value) { // 'index' is needed to reference current item
+                                value) { // 'index' is needed to reference current item
                                 var optionText =
                                     `${value.appliance.appliance_name} / ${value.manufacturer.manufacturer_name} / ${value.model_number} / ${value.serial_number}`;
                                 $('.exist_appl_id').append('<option value="' + value
@@ -2147,7 +2155,7 @@
                                     .manufacturer_name + '" data-model="' + value
                                     .model_number + '" data-serial="' + value
                                     .serial_number + '">' + optionText + '</option>'
-                                    );
+                                );
                             });
                         } else {
                             console.error("Unexpected data format:", data);
@@ -2156,7 +2164,8 @@
                     error: function(xhr, status, error) {
                         console.error("AJAX request failed:", error); // Handle errors
                         alert(
-                            "An error occurred while fetching the data. Please try again later."); // Notify user
+                            "An error occurred while fetching the data. Please try again later."
+                            ); // Notify user
                     }
                 });
 
@@ -2232,7 +2241,7 @@
 
                                 $('.service_tax_text').text('$' + data.serives.service_tax);
                                 $('.service_tax').val(data.serives.service_tax);
-                                
+
                                 var s_cost = data.serives.service_cost;
                                 var s_discount = data.serives.service_discount;
 
@@ -2241,7 +2250,8 @@
 
                                 $('.service_total_text').text('$' + s_total);
                                 $('.service_total').val(s_total);
-                                $('.service_discount_amount').val(service_discount_amount.toFixed(2));
+                                $('.service_discount_amount').val(service_discount_amount
+                                    .toFixed(2));
 
                                 var getSubTotalVal = $('.subtotal').val().trim();
                                 var getDiscount = $('.discount').val().trim();
@@ -2275,20 +2285,24 @@
                                 var newProductTotalVal = parseSafe(newProductTotalVal);
 
                                 // Calculate discount
-                                var discount = serviceAmmount + newServiceAmmount + productAmmount + newProductAmmount;
+                                var discount = serviceAmmount + newServiceAmmount +
+                                    productAmmount + newProductAmmount;
 
                                 // Update the discount field
-                                $('.discount').val(Math.abs(discount).toFixed(2)); // Ensure consistent decimal representation
+                                $('.discount').val(Math.abs(discount).toFixed(
+                                2)); // Ensure consistent decimal representation
                                 $('.discounttext').text('$' + Math.abs(discount).toFixed(2));
 
                                 // Calculate subtotal
-                                var subTotal = serviceTotalVal + newServiceTotalVal + productTotalVal + newProductTotalVal;
+                                var subTotal = serviceTotalVal + newServiceTotalVal +
+                                    productTotalVal + newProductTotalVal;
 
                                 // Calculate allSubTotal
                                 var allSubTotal = subTotal + discount;
 
                                 // Ensure correct decimal representation and avoid NaN
-                                $('.subtotal').val(Math.abs(allSubTotal).toFixed(2)); // Fix to 2 decimal places
+                                $('.subtotal').val(Math.abs(allSubTotal).toFixed(
+                                2)); // Fix to 2 decimal places
                                 $('.subtotaltext').text('$' + Math.abs(allSubTotal).toFixed(2));
 
                                 var taxpercent = data.statecode.state_tax;
@@ -2306,6 +2320,9 @@
                     });
                 }
 
+                var tax_value = parseFloat($('.tax_total').val()) || 0;
+                var tax_amount = tax_value.toFixed(2);
+
                 $.ajax({
                     url: "{{ route('usertax') }}",
                     data: {
@@ -2314,8 +2331,9 @@
                     type: 'GET',
                     success: function(data) {
                         $('.taxcodetext').empty();
+
                         $('.taxcodetext').append('' + data.state_tax + '% for ' + data
-                            .state_code + '');
+                            .state_code + ': $' + tax_amount);
                     },
                 });
 
@@ -2346,16 +2364,17 @@
 
                                 $('.new_service_discount').val(data.serives.service_discount);
 
-                                
+
                                 var s_cost = data.serives.service_cost;
                                 var s_discount = data.serives.service_discount;
 
                                 var new_service_discount_amount = s_cost * (s_discount / 100);
                                 var new_s_total = s_cost - new_service_discount_amount;
-                                
+
                                 $('.new_service_total_text').text('$' + new_s_total);
                                 $('.new_service_total').val(new_s_total);
-                                $('.new_service_discount_amount').val(new_service_discount_amount.toFixed(2));
+                                $('.new_service_discount_amount').val(
+                                    new_service_discount_amount.toFixed(2));
 
 
 
@@ -2393,20 +2412,24 @@
                                 var newProductTotalVal = parseSafe(newProductTotalVal);
 
                                 // Calculate discount
-                                var discount = serviceAmmount + newServiceAmmount + productAmmount + newProductAmmount;
+                                var discount = serviceAmmount + newServiceAmmount +
+                                    productAmmount + newProductAmmount;
 
                                 // Update the discount field
-                                $('.discount').val(Math.abs(discount).toFixed(2)); // Ensure consistent decimal representation
+                                $('.discount').val(Math.abs(discount).toFixed(
+                                2)); // Ensure consistent decimal representation
                                 $('.discounttext').text('$' + Math.abs(discount).toFixed(2));
 
                                 // Calculate subtotal
-                                var subTotal = serviceTotalVal + newServiceTotalVal + productTotalVal + newProductTotalVal;
+                                var subTotal = serviceTotalVal + newServiceTotalVal +
+                                    productTotalVal + newProductTotalVal;
 
                                 // Calculate allSubTotal
                                 var allSubTotal = subTotal + discount;
 
                                 // Ensure correct decimal representation and avoid NaN
-                                $('.subtotal').val(Math.abs(allSubTotal).toFixed(2)); // Fix to 2 decimal places
+                                $('.subtotal').val(Math.abs(allSubTotal).toFixed(
+                                2)); // Fix to 2 decimal places
                                 $('.subtotaltext').text('$' + Math.abs(allSubTotal).toFixed(2));
 
                                 var taxpercent = data.statecode.state_tax;
@@ -2440,7 +2463,7 @@
 
                 $('.service_cost').val(service_cost);
                 $('.pre_service_cost').val(service_cost);
-    
+
 
                 var discount_amount = service_cost * (service_discount / 100);
                 var s_total = service_cost - discount_amount;
@@ -2564,7 +2587,7 @@
 
                                 $('.product_total_text').text('$' + data.product.total);
 
-                                 
+
                                 var p_cost = data.product.base_price;
                                 var p_discount = data.product.discount;
 
@@ -2573,7 +2596,8 @@
 
                                 $('.product_total_text').text('$' + p_total);
                                 $('.product_total').val(p_total);
-                                $('.product_discount_amount').val(product_discount_amount.toFixed(2));
+                                $('.product_discount_amount').val(product_discount_amount
+                                    .toFixed(2));
 
 
 
@@ -2611,20 +2635,24 @@
                                 var newProductTotalVal = parseSafe(newProductTotalVal);
 
                                 // Calculate discount
-                                var discount = serviceAmmount + newServiceAmmount + productAmmount + newProductAmmount;
+                                var discount = serviceAmmount + newServiceAmmount +
+                                    productAmmount + newProductAmmount;
 
                                 // Update the discount field
-                                $('.discount').val(Math.abs(discount).toFixed(2)); // Ensure consistent decimal representation
+                                $('.discount').val(Math.abs(discount).toFixed(
+                                2)); // Ensure consistent decimal representation
                                 $('.discounttext').text('$' + Math.abs(discount).toFixed(2));
 
                                 // Calculate subtotal
-                                var subTotal = serviceTotalVal + newServiceTotalVal + productTotalVal + newProductTotalVal;
+                                var subTotal = serviceTotalVal + newServiceTotalVal +
+                                    productTotalVal + newProductTotalVal;
 
                                 // Calculate allSubTotal
                                 var allSubTotal = subTotal + discount;
 
                                 // Ensure correct decimal representation and avoid NaN
-                                $('.subtotal').val(Math.abs(allSubTotal).toFixed(2)); // Fix to 2 decimal places
+                                $('.subtotal').val(Math.abs(allSubTotal).toFixed(
+                                2)); // Fix to 2 decimal places
                                 $('.subtotaltext').text('$' + Math.abs(allSubTotal).toFixed(2));
 
                                 var taxpercent = data.statecode.state_tax;
@@ -2642,6 +2670,10 @@
                         }
                     });
                 }
+
+                var tax_value = parseFloat($('.tax_total').val()) || 0;
+                var tax_amount = tax_value.toFixed(2);
+
                 $.ajax({
                     url: "{{ route('usertax') }}",
                     data: {
@@ -2652,7 +2684,7 @@
                         $('.taxcodetext').empty();
 
                         $('.taxcodetext').append('' + data.state_tax + '% for ' + data
-                            .state_code + '');
+                            .state_code + ': $' + tax_amount);
                     },
                 });
 
@@ -2684,7 +2716,7 @@
                                 $('.new_product_discount').val(data.product.discount);
 
 
-                                 
+
                                 var p_cost = data.product.base_price;
                                 var p_discount = data.product.discount;
 
@@ -2693,7 +2725,8 @@
 
                                 $('.new_product_total_text').text('$' + new_p_total);
                                 $('.new_product_total').val(new_p_total);
-                                $('.new_product_discount_amount').val(new_product_discount_amount.toFixed(2));
+                                $('.new_product_discount_amount').val(
+                                    new_product_discount_amount.toFixed(2));
 
 
 
@@ -2731,20 +2764,24 @@
                                 var newProductTotalVal = parseSafe(newProductTotalVal);
 
                                 // Calculate discount
-                                var discount = serviceAmmount + newServiceAmmount + productAmmount + newProductAmmount;
+                                var discount = serviceAmmount + newServiceAmmount +
+                                    productAmmount + newProductAmmount;
 
                                 // Update the discount field
-                                $('.discount').val(Math.abs(discount).toFixed(2)); // Ensure consistent decimal representation
+                                $('.discount').val(Math.abs(discount).toFixed(
+                                2)); // Ensure consistent decimal representation
                                 $('.discounttext').text('$' + Math.abs(discount).toFixed(2));
 
                                 // Calculate subtotal
-                                var subTotal = serviceTotalVal + newServiceTotalVal + productTotalVal + newProductTotalVal;
+                                var subTotal = serviceTotalVal + newServiceTotalVal +
+                                    productTotalVal + newProductTotalVal;
 
                                 // Calculate allSubTotal
                                 var allSubTotal = subTotal + discount;
 
                                 // Ensure correct decimal representation and avoid NaN
-                                $('.subtotal').val(Math.abs(allSubTotal).toFixed(2)); // Fix to 2 decimal places
+                                $('.subtotal').val(Math.abs(allSubTotal).toFixed(
+                                2)); // Fix to 2 decimal places
                                 $('.subtotaltext').text('$' + Math.abs(allSubTotal).toFixed(2));
 
                                 var taxpercent = data.statecode.state_tax;
@@ -2762,7 +2799,11 @@
                         }
                     });
                 }
-               $.ajax({
+
+                var tax_value = parseFloat($('.tax_total').val()) || 0;
+                var tax_amount = tax_value.toFixed(2);
+
+                $.ajax({
                     url: "{{ route('usertax') }}",
                     data: {
                         customerId: customerId,
@@ -2772,7 +2813,7 @@
                         $('.taxcodetext').empty();
 
                         $('.taxcodetext').append('' + data.state_tax + '% for ' + data
-                            .state_code + '');
+                            .state_code + ': $' + tax_amount);
                     },
                 });
 
@@ -2853,7 +2894,7 @@
 
             // Perform the AJAX request
             $.ajax({
-                url: '{{ route("technician_schedule") }}',  // Adjust this as needed
+                url: '{{ route('technician_schedule') }}', // Adjust this as needed
                 type: 'GET',
                 dataType: 'json',
                 data: {
@@ -2864,7 +2905,7 @@
                     start_hours: start_hours,
                     end_hours: end_hours,
                 },
-                success: function (response) {
+                success: function(response) {
                     console.log("AJAX Response:", response);
 
                     // Check the response and set the status slot accordingly
@@ -2874,8 +2915,8 @@
                         $('.status_slot').val('true'); // Set to 'true'
                     }
                 },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.error("AJAX error:", textStatus, errorThrown);  // Log any errors
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX error:", textStatus, errorThrown); // Log any errors
                 }
             });
         }
