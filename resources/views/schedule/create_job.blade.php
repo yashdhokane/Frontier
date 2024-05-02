@@ -28,6 +28,8 @@
                             <input type="hidden" class="scheduleType" id="" name="scheduleType" value="job">
                             <input type="hidden" class="address_type" id="" name="address_type" value="">
                             <input type="hidden" class="status_slot" value="">
+                            <input type="hidden" class="tax_total" name="tax_total" value="">
+                            
                             <!-- Step 1 -->
                             <h6>Customer Information </h6>
                             <section>
@@ -777,9 +779,7 @@
                                                     <h5 style="display: inline-flex;">Discount:&nbsp;<div
                                                             class="discounttext">$0
                                                         </div>
-                                                    </h5>
-                                                    <input type="hidden" class="tax_total" name="tax_total"
-                                                        value=""><br>
+                                                    </h5><br>
                                                     <h5 style="display: inline-flex;">Tax:&nbsp;<div class="taxcodetext">
                                                             $0</div>
                                                     </h5><br>
@@ -2049,8 +2049,8 @@
                             data.city +
                             ' ' + data.state + ' ' + data.zipcode);
 
-                        var tax_value = parseFloat($('.tax_total').val()) || 0;
-                        var tax_amount = tax_value.toFixed(2);
+                        var tax_value = $('.tax_total').val() || 0;
+                        var tax_amount = tax_value;
 
                         $.ajax({
                             url: "{{ route('usertax') }}",
@@ -2307,21 +2307,37 @@
 
                                 var taxpercent = data.statecode.state_tax;
                                 var total_amount = allSubTotal * (taxpercent / 100);
-                                $('.tax_total').val(total_amount);
+                                $('.tax_total').val(total_amount.toFixed(2));  // Update the value
+        
+                                // Actions depending on updated tax_total
+                                var tax_value = parseFloat($('.tax_total').val()) || 0;
+                                var tax_amount = tax_value.toFixed(2);
 
                                 var getTotal = $('.total').val().trim();
-                                var total = parseSafe(allSubTotal) - parseSafe(total_amount);
+                                var total = parseSafe(subTotal) + parseSafe(total_amount);
                                 $('.total').val(Math.abs(total).toFixed(2));
                                 $('.totaltext').text('$' + Math.abs(total).toFixed(2));
 
                             }
 
+                            $.ajax({
+                                url: "{{ route('usertax') }}",
+                                data: {
+                                    customerId: customerId,
+                                },
+                                type: 'GET',
+                                success: function(data) {
+                                    $('.taxcodetext').empty();
+
+                                    $('.taxcodetext').append('' + data.state_tax + '% for ' + data
+                                        .state_code + ': $' + tax_amount);
+                                },
+                            });
+
                         }
                     });
                 }
 
-                var tax_value = parseFloat($('.tax_total').val()) || 0;
-                var tax_amount = tax_value.toFixed(2);
 
                 $.ajax({
                     url: "{{ route('usertax') }}",
@@ -2338,6 +2354,7 @@
                 });
 
             });
+
             $(document).on('change', '.new_service', function(event) {
 
 
@@ -2434,18 +2451,38 @@
 
                                 var taxpercent = data.statecode.state_tax;
                                 var total_amount = allSubTotal * (taxpercent / 100);
-                                $('.tax_total').val(total_amount);
+                                $('.tax_total').val(total_amount.toFixed(2));  // Update the value
+        
+                                // Actions depending on updated tax_total
+                                var tax_value = parseFloat($('.tax_total').val()) || 0;
+                                var tax_amount = tax_value.toFixed(2);
 
                                 var getTotal = $('.total').val().trim();
-                                var total = parseSafe(allSubTotal) - parseSafe(total_amount);
+                                var total = parseSafe(subTotal) + parseSafe(total_amount);
                                 $('.total').val(Math.abs(total).toFixed(2));
                                 $('.totaltext').text('$' + Math.abs(total).toFixed(2));
 
                             }
+                            
+                            $.ajax({
+                                url: "{{ route('usertax') }}",
+                                data: {
+                                    customerId: customerId,
+                                },
+                                type: 'GET',
+                                success: function(data) {
+                                    $('.taxcodetext').empty();
+
+                                    $('.taxcodetext').append('' + data.state_tax + '% for ' + data
+                                        .state_code + ': $' + tax_amount);
+                                },
+                            });
 
                         }
                     });
                 }
+
+
 
             });
 
@@ -2657,36 +2694,39 @@
 
                                 var taxpercent = data.statecode.state_tax;
                                 var total_amount = allSubTotal * (taxpercent / 100);
-                                $('.tax_total').val(total_amount);
+                                $('.tax_total').val(total_amount.toFixed(2));  // Update the value
+        
+                                // Actions depending on updated tax_total
+                                var tax_value = parseFloat($('.tax_total').val()) || 0;
+                                var tax_amount = tax_value.toFixed(2);
 
                                 var getTotal = $('.total').val().trim();
-                                var total = parseSafe(allSubTotal) - parseSafe(total_amount);
+                                var total = parseSafe(subTotal) + parseSafe(total_amount);
                                 $('.total').val(Math.abs(total).toFixed(2));
                                 $('.totaltext').text('$' + Math.abs(total).toFixed(2));
 
 
                             }
+                            
+                            $.ajax({
+                                url: "{{ route('usertax') }}",
+                                data: {
+                                    customerId: customerId,
+                                },
+                                type: 'GET',
+                                success: function(data) {
+                                    $('.taxcodetext').empty();
+
+                                    $('.taxcodetext').append('' + data.state_tax + '% for ' + data
+                                        .state_code + ': $' + tax_amount);
+                                },
+                            });
 
                         }
                     });
                 }
 
-                var tax_value = parseFloat($('.tax_total').val()) || 0;
-                var tax_amount = tax_value.toFixed(2);
 
-                $.ajax({
-                    url: "{{ route('usertax') }}",
-                    data: {
-                        customerId: customerId,
-                    },
-                    type: 'GET',
-                    success: function(data) {
-                        $('.taxcodetext').empty();
-
-                        $('.taxcodetext').append('' + data.state_tax + '% for ' + data
-                            .state_code + ': $' + tax_amount);
-                    },
-                });
 
             });
 
@@ -2786,36 +2826,40 @@
 
                                 var taxpercent = data.statecode.state_tax;
                                 var total_amount = allSubTotal * (taxpercent / 100);
-                                $('.tax_total').val(total_amount);
+                                $('.tax_total').val(total_amount.toFixed(2));  // Update the value
+        
+                                // Actions depending on updated tax_total
+                                var tax_value = parseFloat($('.tax_total').val()) || 0;
+                                var tax_amount = tax_value.toFixed(2);
 
                                 var getTotal = $('.total').val().trim();
-                                var total = parseSafe(allSubTotal) - parseSafe(total_amount);
+                                var total = parseSafe(subTotal) + parseSafe(total_amount);
                                 $('.total').val(Math.abs(total).toFixed(2));
                                 $('.totaltext').text('$' + Math.abs(total).toFixed(2));
 
 
                             }
 
+
+                                $.ajax({
+                                    url: "{{ route('usertax') }}",
+                                    data: {
+                                        customerId: customerId,
+                                    },
+                                    type: 'GET',
+                                    success: function(data) {
+                                        $('.taxcodetext').empty();
+
+                                        $('.taxcodetext').append('' + data.state_tax + '% for ' + data
+                                            .state_code + ': $' + tax_amount);
+                                    },
+                                });
+
                         }
                     });
                 }
 
-                var tax_value = parseFloat($('.tax_total').val()) || 0;
-                var tax_amount = tax_value.toFixed(2);
-
-                $.ajax({
-                    url: "{{ route('usertax') }}",
-                    data: {
-                        customerId: customerId,
-                    },
-                    type: 'GET',
-                    success: function(data) {
-                        $('.taxcodetext').empty();
-
-                        $('.taxcodetext').append('' + data.state_tax + '% for ' + data
-                            .state_code + ': $' + tax_amount);
-                    },
-                });
+               
 
             });
 
