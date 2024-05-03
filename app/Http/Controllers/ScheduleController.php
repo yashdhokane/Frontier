@@ -18,6 +18,7 @@ use App\Models\Service;
 use App\Models\Products;
 use App\Models\Role;
 use App\Models\Schedule;
+use App\Models\ServiceCategory;
 use App\Models\SiteJobFields;
 use App\Models\SiteLeadSource;
 use App\Models\SiteTags;
@@ -324,6 +325,7 @@ class ScheduleController extends Controller
             $technician = User::join('user_address', 'user_address.user_id', 'users.id')->where('id', $id)->first();
 
             $getServices = Service::all();
+            $serviceCat =ServiceCategory::with('Services')->get();
 
             $getProduct = Products::whereNotNull('base_price')->where('status', 'Publish')->get();
             $locationStates = LocationState::all();
@@ -332,7 +334,7 @@ class ScheduleController extends Controller
 
             $tags = SiteJobFields::all(); // Fetch all tags
 
-            return view('schedule.create_job', compact('tags', 'leadSources', 'locationStates', 'technician', 'dateTime', 'manufacturers', 'appliances', 'getServices', 'getProduct', 'tags','hours','time'));
+            return view('schedule.create_job', compact('tags', 'leadSources', 'locationStates', 'technician', 'dateTime', 'manufacturers', 'appliances', 'getServices', 'getProduct', 'tags','hours','time','serviceCat'));
         }
     }
     public function create(Request $request)
@@ -932,7 +934,7 @@ class ScheduleController extends Controller
                         'job_id' => $jobId,
                         'base_price' => (isset($data['service_cost']) && !empty($data['service_cost'])) ? $data['service_cost'] : 0,
                         'tax' => $service_tax,
-                        'discount' => (isset($data['service_discount']) && !empty($data['service_discount'])) ? $data['service_discount'] : 0,
+                        'discount' => (isset($data['service_discount_amount']) && !empty($data['service_discount_amount'])) ? $data['service_discount_amount'] : 0,
                         'sub_total' => (isset($data['service_total']) && !empty($data['service_total'])) ? $data['service_total'] : 0,
                     ];
 
@@ -946,7 +948,7 @@ class ScheduleController extends Controller
                         'job_id' => $jobId,
                         'base_price' => (isset($data['new_service_cost']) && !empty($data['new_service_cost'])) ? $data['new_service_cost'] : 0,
                         'tax' => $service_tax,
-                        'discount' => (isset($data['new_service_discount']) && !empty($data['new_service_discount'])) ? $data['new_service_discount'] : 0,
+                        'discount' => (isset($data['new_service_discount_amount']) && !empty($data['new_service_discount_amount'])) ? $data['new_service_discount_amount'] : 0,
                         'sub_total' => (isset($data['new_service_total']) && !empty($data['new_service_total'])) ? $data['new_service_total'] : 0,
                     ];
 
@@ -962,7 +964,7 @@ class ScheduleController extends Controller
                         'job_id' => $jobId,
                         'base_price' => (isset($data['product_cost']) && !empty($data['product_cost'])) ? $data['product_cost'] : 0,
                         'tax' => $product_tax,
-                        'discount' => (isset($data['product_discount']) && !empty($data['product_discount'])) ? $data['product_discount'] : 0,
+                        'discount' => (isset($data['product_discount_amount']) && !empty($data['product_discount_amount'])) ? $data['product_discount_amount'] : 0,
                         'sub_total' => (isset($data['product_total']) && !empty($data['product_total'])) ? $data['product_total'] : 0,
                     ];
 
@@ -977,7 +979,7 @@ class ScheduleController extends Controller
                         'job_id' => $jobId,
                         'base_price' => (isset($data['new_product_cost']) && !empty($data['new_product_cost'])) ? $data['new_product_cost'] : 0,
                         'tax' => $service_tax,
-                        'discount' => (isset($data['new_product_discount']) && !empty($data['new_product_discount'])) ? $data['new_product_discount'] : 0,
+                        'discount' => (isset($data['new_product_discount_amount']) && !empty($data['new_product_discount_amount'])) ? $data['new_product_discount_amount'] : 0,
                         'sub_total' => (isset($data['new_product_total']) && !empty($data['new_product_total'])) ? $data['new_product_total'] : 0,
                     ];
                     $newproductDataInsert = DB::table('job_product_items')->insertGetId($newproductData);
