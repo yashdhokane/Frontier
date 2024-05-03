@@ -81,10 +81,8 @@
                                     <tr>
                                         <th>Technician</th>
                                         <th>Event</th>
-                                        <th>Description</th>
-                                        <th>Location</th>
-                                        <th>Start Date</th>
-                                        <th>End Date</th>
+                                        <th>Event Type</th>
+                                        <th>Dates</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -94,14 +92,38 @@
                                         <tr>
                                             <td>{{ $item->technician->name ?? null }} </td>
                                             <td>{{ $item->event_name ?? null }} </td>
-                                            <td>{{ $item->event_description ?? null }} </td>
-                                            <td>{{ $item->event_location ?? null }} </td>
-                                            <td>{{ $item->start_date_time ? \Carbon\Carbon::parse($item->start_date_time)->format('m-d-Y h:i:a') : null }}
+                                            <td>{{ $item->event_type ?? null }} </td>
+                                            <td>
+                                                @if ($item->event_type == 'full')
+                                                    {{ $item->start_date_time ? \Carbon\Carbon::parse($item->start_date_time)->format('m-d-Y') : null }}
+                                                    to
+                                                    {{ $item->end_date_time ? \Carbon\Carbon::parse($item->end_date_time)->format('m-d-Y') : null }}
+                                                @else
+                                                    {{ $item->start_date_time ? \Carbon\Carbon::parse($item->start_date_time)->format('m-d-Y ') : null }}
+                                                    ,
+                                                    {{ $item->start_date_time ? \Carbon\Carbon::parse($item->start_date_time)->format('h:i:a') : null }}
+                                                    to
+                                                    {{ $item->end_date_time ? \Carbon\Carbon::parse($item->end_date_time)->format('h:i:a') : null }}
+                                                @endif
                                             </td>
-                                            <td>{{ $item->end_date_time ? \Carbon\Carbon::parse($item->end_date_time)->format('m-d-Y h:i:a') : null }}
+                                            <td class="action footable-last-visible" style="display: table-cell;">
+                                                <div class="btn-group">
+                                                    <button type="button"
+                                                        class="btn btn-light-primary text-primary dropdown-toggle"
+                                                        data-bs-toggle="dropdown" aria-haspopup="true"
+                                                        aria-expanded="false">
+                                                        <i class="ri-settings-3-fill align-middle fs-5"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item" href="#"><i
+                                                                data-feather="eye" class="feather-sm me-2"></i> View</a>
+                                                        <a class="dropdown-item" href="{{ url('event/delete/' . $item->id) }}"><i
+                                                                data-feather="trash" class="feather-sm me-2"></i> Delete</a>
+
+                                                    </div>
+                                                </div>
+
                                             </td>
-                                            <td><a href="{{ url('event/delete/' . $item->id) }}"><i
-                                                        class="fa fa-trash text-danger"></i></a></td>
 
 
                                         </tr>
