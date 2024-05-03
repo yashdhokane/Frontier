@@ -323,7 +323,7 @@ class ScheduleController extends Controller
 
             $technician = User::join('user_address', 'user_address.user_id', 'users.id')->where('id', $id)->first();
 
-            $getServices = Service::where('service_cost', '!=', 0)->get();
+            $getServices = Service::all();
 
             $getProduct = Products::whereNotNull('base_price')->where('status', 'Publish')->get();
             $locationStates = LocationState::all();
