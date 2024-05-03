@@ -415,13 +415,6 @@
                                                                                                 {{ $value2->event->event_name ?? null }}
                                                                                                 &nbsp;&nbsp;
                                                                                             </h5>
-                                                                                            <p style="font-size: 11px;">
-                                                                                                {{ $value2->JobModel->job_code ?? null }}<br>{{ $value2->JobModel->job_title ?? null }}
-                                                                                            </p>
-                                                                                            <p style="font-size: 12px;">
-                                                                                                {{ $value2->JobModel->city ?? null }},
-                                                                                                {{ $value2->JobModel->state ?? null }}
-                                                                                            </p>
                                                                                         </div>
                                                                                     @endif
                                                                                 @endforeach

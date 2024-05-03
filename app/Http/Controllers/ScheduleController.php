@@ -1530,6 +1530,7 @@ class ScheduleController extends Controller
 
             $event->added_by = $auth;
             $event->updated_by = $auth;
+            $event->event_type = $request->event_type;
 
             $event->save();
 
@@ -1590,6 +1591,7 @@ class ScheduleController extends Controller
 
             $event->added_by = $auth;
             $event->updated_by = $auth;
+            $event->event_type = $request->event_type;
 
             $event->save();
 
