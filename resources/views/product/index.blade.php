@@ -6,11 +6,10 @@
         <!-- -------------------------------------------------------------- -->
         <!-- Bread crumb and right sidebar toggle -->
         <!-- -------------------------------------------------------------- -->
-        <div class="page-breadcrumb">
+        <div class="page-breadcrumb" style="padding-top: 0px;">
             <div class="row">
                 <div class="col-5 align-self-center">
-
-                    </h4>
+					<h4 class="page-title">Parts and Accessories</h4>
                     <div class="d-flex align-items-center">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
@@ -53,7 +52,7 @@
                                                             start Product Orders
                                                         ---------------- -->
                     <div class="card">
-                        <div class="card-body">
+                        <div class="card-body card-border shadow">
                             <div class="table-responsive">
 
                                 <table class="table product-overview" id="zero_config">
@@ -61,7 +60,7 @@
                                         <div class="col-md-3">
                                             <div class="mb-3">
                                                 <label for="service"
-                                                    class="control-label col-form-label required-field">Category</label>
+                                                    class="control-label bold md5 col-form-label required-field">Category</label>
                                                 <select class="form-select me-sm-2" id="category_name"
                                                     name="product_category_id" required>
                                                     <option value="">All
@@ -77,7 +76,7 @@
                                         <div class="col-md-3">
                                             <div class="mb-3">
                                                 <label for="service"
-                                                    class="control-label col-form-label required-field">Manufacturer</label>
+                                                    class="control-label bold md5  col-form-label required-field">Manufacturer</label>
                                                 <select class="form-select" name="manufacturer" id="manufacturer_filter"
                                                     data-placeholder="Choose a Manufacturer" tabindex="1">
                                                     <option value="">All</option>
@@ -92,7 +91,7 @@
                                         <div class="col-md-3">
                                             <div class="mb-3">
                                                 <label for="service"
-                                                    class="control-label col-form-label required-field">Stock</label>
+                                                    class="control-label bold md5  col-form-label required-field">Stock</label>
                                                 <select class="form-select" name="manufacturer" id="stock_filter"
                                                     data-placeholder="Choose a Manufacturer" tabindex="1">
                                                     <option value="">All</option>
@@ -104,7 +103,7 @@
                                         <div class="col-md-3">
                                             <div class="mb-3">
                                                 <label for="service"
-                                                    class="control-label col-form-label required-field">Status</label>
+                                                    class="control-label bold md5  col-form-label required-field">Status</label>
                                                 <select class="form-select" name="manufacturer" id="status_filter"
                                                     data-placeholder="Choose a Manufacturer" tabindex="1">
                                                     <option value="">All</option>

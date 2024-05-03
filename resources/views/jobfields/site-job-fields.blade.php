@@ -1,16 +1,16 @@
 
 @extends('home')
-<meta name="csrf-token" content="{{ csrf_token() }}">
+<!--<meta name="csrf-token" content="{{ csrf_token() }}">-->
 
 @section('content')
 
-<div class="page-wrapper" style="display:inline;">
+
         <!-- -------------------------------------------------------------- -->
         <!-- Bread crumb and right sidebar toggle -->
         <!-- -------------------------------------------------------------- -->
         <div class="page-breadcrumb">
           <div class="row">
-            <div class="col-5 align-self-center">
+            <div class="col-9 align-self-center">
               <h4 class="page-title">Job Fields</h4>
               <div class="d-flex align-items-center">
                 <nav aria-label="breadcrumb">
@@ -21,16 +21,30 @@
                 </nav>
               </div>
             </div>
-            <div class="col-7 align-self-center">
-              <div class="d-flex no-block justify-content-end align-items-center">
-                <div class="me-2">
-                  <div class="lastmonth"></div>
-                </div>
-                <div class="">
-                  <small>LAST MONTH</small>
-                  <h4 class="text-info mb-0 font-medium">$58,256</h4>
-                </div>
-              </div>
+            <div class="col-3 align-self-center">
+                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#samedata-modal" data-bs-whatever="@mdo"><i class="ri-file-add-line"></i> Add New</button>
+ 					<div class="modal fade" id="samedata-modal" tabindex="-1" aria-labelledby="exampleModalLabel1">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header d-flex align-items-center">
+									<h4 class="modal-title" id="exampleModalLabel1">Add Job Field</h4>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									<form>
+										<div class="mb-3">
+										<label for="jobfields" class="control-label bold mb5">Job Field:</label>
+										<input type="text" class="form-control" id="jobfields" name="jobfields" />
+										</div>
+									</form>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-light-danger text-danger font-medium" data-bs-dismiss="modal">Close</button>
+									<button type="button" class="btn btn-success" id="saveJobfieldsBtn">Save</button>
+								</div>
+							</div>
+						</div>
+					</div>
             </div>
           </div>
         </div>
@@ -44,7 +58,7 @@
 		
 			<div class="row">
 				<div class="col-9"> 
-					<div class="card">
+					<div class="card card-border shadow">
  						<div class="card-body">
 							<div class="table-responsive">
 								<table id="default_order" class="table table-striped table-bordered display text-nowrap" style="width: 100%" >
@@ -128,32 +142,9 @@
 
 				<div class="col-3"> 
 					
-					<button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#samedata-modal" data-bs-whatever="@mdo"><i class="fas fa-tag"></i> Add New</button>
- 					<div class="modal fade" id="samedata-modal" tabindex="-1" aria-labelledby="exampleModalLabel1">
-						<div class="modal-dialog" role="document">
-							<div class="modal-content">
-								<div class="modal-header d-flex align-items-center">
-									<h4 class="modal-title" id="exampleModalLabel1">Add Job Field</h4>
-									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-								</div>
-								<div class="modal-body">
-									<form>
-										<div class="mb-3">
-										<label for="jobfields" class="control-label bold mb5">Job Field:</label>
-										<input type="text" class="form-control" id="jobfields" name="jobfields" />
-										</div>
-									</form>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-light-danger text-danger font-medium" data-bs-dismiss="modal">Close</button>
-									<button type="button" class="btn btn-success" id="saveJobfieldsBtn">Save</button>
-								</div>
-							</div>
-						</div>
-					</div>
-					<hr/>
+					
  					<div class="col-md-12 ">
-						<div class="card-body">
+						<div class="card-body card card-border shadow">
 						<h4 class="card-title">Why use job fields?</h4>
 						<p class="card-text pt-2">Fields allow you to consistently capture and report on details about the work you're doing.</p>
  						<p class="card-text pt-2">These fields are visible on your jobs and estimates. You can customize the field values from this page so they make sense for your business needs.</p>
@@ -198,11 +189,11 @@
         <!-- -------------------------------------------------------------- -->
         <!-- End footer -->
         <!-- -------------------------------------------------------------- -->
-      </div>
+  
       <!-- -------------------------------------------------------------- -->
       <!-- End Page wrapper  -->
       <!-- -------------------------------------------------------------- -->
-    </div>
+
     <!-- -------------------------------------------------------------- -->
     <!-- End Wrapper -->
     <!-- -------------------------------------------------------------- -->

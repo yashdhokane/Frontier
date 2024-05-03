@@ -26,17 +26,7 @@
                     </nav>
                 </div>
             </div>
-            <div class="col-7 align-self-center">
-                <div class="d-flex no-block justify-content-end align-items-center">
-                    <div class="me-2">
-                        <div class="lastmonth"></div>
-                    </div>
-                    <div class="">
-                        <small>LAST MONTH</small>
-                        <h4 class="text-info mb-0 font-medium">$58,256</h4>
-                    </div>
-                </div>
-            </div>
+           
         </div>
     </div>
     @if(session('success'))

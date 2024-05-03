@@ -55,7 +55,7 @@
 			@endif
  
 	
-            <div class="card card-body ">
+            <div class="card card-body shadow">
                 <div class="row">
                     <div class="col-md-4 col-xl-2">
                         <form>
@@ -65,7 +65,15 @@
                         </form>
                     </div>
                     <div class="col-md-8 col-xl-10 text-end d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
-                        <a href="{{route('technicians.create')}}" id="" class="btn btn-info"><i class=" fas fa-user-plus "></i> New Technicians</a>
+					
+					<a href="{{route('technicians.create')}}" id="" class="btn btn-info"><i class=" fas fa-user-plus "></i> Add New Technicians</a>
+					
+                       @if(request()->routeIs('technicians.index'))
+    <a href="{{ route('technicians.status', ['status' => 'deactive']) }}" class="btn btn-danger mx-3"><i class="ri-user-unfollow-fill"></i> View Inactive Technicians</a>
+@elseif(request()->routeIs('technicians.status'))
+    <a href="{{ route('technicians.index') }}" class="btn btn-success mx-3"><i class="ri-user-follow-line"></i> View Active Technicians</a>
+@endif
+                        
                     </div>
                 </div>
             </div>
@@ -75,10 +83,10 @@
             <!-- Modal style="overflow-x: auto;" -->
 
 
-            <div class="card card-body">
+            <div class="card card-body shadow">
                 <div class="table-responsive table-custom">
-                    <table id="zero_config" class="table table-striped search-table v-middle " data-paging="true">
-                        <thead class="header-item ft16">
+                    <table id="zero_config" class="table table-hover table-striped search-table v-middle " data-paging="true">
+                        <thead class="header-item">
 
                             {{-- <th>
                                 <div class="n-chk align-self-center text-center">
@@ -125,7 +133,7 @@
                                         <div class="ms-2">
                                             <div class="user-meta-info">
                                                 <a href="{{ route('technicians.show', $user->id) }}">
-                                                    <h5 class="user-name mb-0" data-name="name"> {{ $user->name }}</h5>
+                                                    <h6 class="user-name mb-0" data-name="name"> {{ $user->name }}</h6>
                                                 </a>
                                             </div>
                                         </div>

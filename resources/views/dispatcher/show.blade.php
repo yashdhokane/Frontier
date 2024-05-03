@@ -6,31 +6,14 @@
     <!-- -------------------------------------------------------------- -->
     <!-- Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
-    <div class="page-breadcrumb">
+    <div class="page-breadcrumb" style="padding-top: 0px;">
         <div class="row">
-            <div class="col-5 align-self-center">
-                <h4 class="page-title">{{ $dispatcher->name }}</h4>
-                <div class="d-flex align-items-center">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('dispatcher.index') }}">Dispatcher</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Profile</li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-            <div class="col-7 align-self-center">
-                <div class="d-flex no-block justify-content-end align-items-center">
-                    <div class="me-2">
-                        <div class="lastmonth"></div>
-                    </div>
-                    <div class="">
-                        <small>LAST MONTH</small>
-                        <h4 class="text-info mb-0 font-medium">$58,256</h4>
-                    </div>
-                </div>
-            </div>
+            <div class="col-9 align-self-center">
+                <h4 class="page-title">{{ $dispatcher->name }} <small class="text-muted" style="font-size: 10px;">Dispatcher</small></h4>
+             </div>
+            <div class="col-3 text-end px-4">
+				<a href="https://dispatchannel.com/portal/dispatcher-index" class="justify-content-center d-flex align-items-center"><i class="ri-contacts-line" style="margin-right: 8px;"></i> Back to Dispatcher List </a>
+             </div>
         </div>
     </div>
     <!-- -------------------------------------------------------------- -->

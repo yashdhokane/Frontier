@@ -13,7 +13,7 @@
         <!-- -------------------------------------------------------------- -->
         <!-- Bread crumb and right sidebar toggle -->
         <!-- -------------------------------------------------------------- -->
-        <div class="page-breadcrumb">
+        <div class="page-breadcrumb" style="padding-top: 0px;">
             <div class="row">
                 <div class="col-5 align-self-center">
                     <h4 class="page-title">{{ \App\Models\ServiceCategory::find($category_id)->category_name ?? null }}</h4>
@@ -35,17 +35,7 @@
                         </nav>
                     </div>
                 </div>
-                <div class="col-7 align-self-center">
-                    <div class="d-flex no-block justify-content-end align-items-center">
-                        <div class="me-2">
-                            <div class="lastmonth"></div>
-                        </div>
-                        <div class="">
-                            <small>LAST MONTH</small>
-                            <h4 class="text-info mb-0 font-medium">$58,256</h4>
-                        </div>
-                    </div>
-                </div>
+            
             </div>
         </div>
         @if (session('success'))
@@ -68,7 +58,7 @@
                 <!-- ---------------------
                             start Contact
                         ---------------- -->
-                <div class="card card-body">
+                <div class="card card-body card-border shadow">
                     <div class="row">
                         <div class="col-md-4 col-xl-2">
                             <form>
@@ -108,17 +98,18 @@
                             end Contact
                         ---------------- -->
 
-                <div class="card card-body">
-                    <div class="table-responsive" style="overflow-x: auto;">
-                        <table class="table search-table v-middle text-nowrap">
+                <div class="card card-body  card-border shadow">
+                    <div class="table-responsive table-custom">
+                        <table class="table table-hover table-striped search-table v-middle text-nowrap">
                             <thead class="header-item">
-
-                                <th>Services</th>
-                                <th>Description</th>
-                                <th>Service Code</th>
-                                <th>Base Pricing</th>
-                                <th>status</th>
-                                <th>Action</th>
+								<tr>
+									<th>Services</th>
+									<th>Description</th>
+									<th>Service Code</th>
+									<th>Base Pricing</th>
+									<th>Status</th>
+									<th>Action</th>
+								</tr>
                             </thead>
 
                             <tbody>
@@ -127,15 +118,11 @@
                                     <tr class="search-items">
 
                                         <td>
-                                            <div class="d-flex align-items-center">
-
-                                                <h6 class="user-name mb-0" data-name="Emma Adams">
-                                                    <a href="{{ route('services.edit', ['service_id' => $service->service_id]) }}"
+ 
+                                                     <a href="{{ route('services.edit', ['service_id' => $service->service_id]) }}"
                                                         class="text-dark edit ms-2">  {{ $service->service_name ?? null }}</a>
-                                                </h6>
-
-                                            </div>
-                                        </td>
+ 
+                                         </td>
                                         <td class="description-column">{{ $service->service_description ?? null }}</td>
                                         <td>{{ $service->service_code ?? null }}
 
@@ -143,7 +130,14 @@
                                         <td>
                                             {{ $service->service_cost ?? null }}
                                         </td>
-                                        
+										<td>
+											@if ($service->service_active == 'yes')
+												<span class="mb-1 ucfirst badge bg-success">Active</span>
+											@else
+												<span class="mb-1 ucfirst badge bg-danger">Inactive</span>
+											@endif
+ 										</td>
+                                         
                                         <td>
                                             <div class="btn-group">
                                                 <button type="button"
@@ -166,33 +160,24 @@
                                                                 class="feather-sm me-2"></i>
                                                             Active</a>
                                                     @endif
+
+                                                     <a class="dropdown-item" href="{{ route('services.edit', ['service_id' => $service->service_id]) }}"><i
+                                                            data-feather="edit-2" class="feather-sm me-2"></i> Edit</a>
+                                                          <form method="POST" action="{{ route('services.delete', ['service_id' => $service->service_id]) }}">
+    @csrf
+    @method('DELETE')
+
+    <button type="submit" class="dropdown-item">
+        <i data-feather="trash-2" class="feather-sm me-2"></i>Delete
+    </button>
+</form>
+ 
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="action footable-last-visible" style="display: table-cell;">
-                                            <div class="action-btn" style="display:flex;">
+                                       
 
-                                                <a href="{{ route('services.edit', ['service_id' => $service->service_id]) }}"
-                                                    class="text-info edit ms-2"><span class="badge bg-success"><i
-                                                            data-feather="eye" class="feather-sm fill-white"></i>
-                                                        Edit</span></a>
-                                                <form method="POST"
-                                                    action="{{ route('services.delete', ['service_id' => $service->service_id]) }}">
-                                                    @csrf
-                                                    @method('DELETE')
-
-                                                    <button type="submit" class="text-dark  ms-2"
-                                                        style="border: none; background: none; cursor: pointer;">
-                                                        <span class="badge bg-danger">
-                                                            <i data-feather="trash-2" class="feather-sm fill-white"></i>
-                                                            Delete
-                                                        </span>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-
-                                    </tr>
+                                    </tr> 
                                 @endforeach
 
                             </tbody>
@@ -268,14 +253,7 @@
 
 @section('script')
     <script src="{{ asset('public/admin/dist/js/pages/contact.js') }}"></script>
-    <script>
-        $(document).ready(function() {
-            setTimeout(function() {
-                // Trigger click event on the element with class .sidebartoggler
-                $('.sidebartoggler').click();
-            }); // Adjust the delay time as needed
-        });
-    </script>
+    
 
 @stop
 @stop

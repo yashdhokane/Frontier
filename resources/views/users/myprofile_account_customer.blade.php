@@ -1,8 +1,8 @@
-<div class="row mt-12 ">
+
+<div class="row">
 
     <div class="col-md-9">
-        <div class="card">
-            <div class="card-body">
+        
  				<h4 class="card-title">Settings</h4>  
                 <div class="row mt-2">
 
@@ -62,12 +62,10 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <script>
+   
+ <script>
         function updateFormValues(checkboxId, hiddenInputName, checked) {
         // Update the value of the hidden input field
         document.getElementsByName(hiddenInputName)[0].value = checked ? 1 : 0;
     }
     </script>
-</div>

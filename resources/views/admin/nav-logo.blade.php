@@ -23,7 +23,7 @@
 
 				<!-- Dark Logo icon -->
 
-				<img src="{{ asset('public/admin/assets/images/logo-icon.png') }}" alt="homepage"
+				<img src="{{ asset('public/admin/assets/images/dispatch-icon.png') }}" alt="homepage"
 					class="dark-logo" />
 
 				<!-- Light Logo icon -->
@@ -41,7 +41,7 @@
 
 				<!-- dark Logo text -->
 
-				<img src="{{ asset('public/admin/assets/images/logo-text.png') }}" alt="homepage"
+				<img src="{{ asset('public/admin/assets/images/dispatch-logo.png') }}" alt="homepage"
 					class="dark-logo" />
 
 				<!-- Light Logo text -->

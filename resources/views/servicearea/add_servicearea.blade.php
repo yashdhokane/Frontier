@@ -1,7 +1,7 @@
 @extends('home')
 @section('content')
     <!-- -------------------------------------------------------------- -->
-    <div class="page-wrapper" style="display: inline;">
+
         <!-- -------------------------------------------------------------- -->
         <!-- Bread crumb and right sidebar toggle -->
         <!-- -------------------------------------------------------------- -->
@@ -9,27 +9,9 @@
             <div class="row">
                 <div class="col-5 align-self-center">
                     <h4 class="page-title">Add Service Area</h4>
-                    <div class="d-flex align-items-center">
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{ route('buisnessprofile.index') }}">Setting</a></li>
-                                <li class="breadcrumb-item"><a href="{{ route('servicearea.index') }}">Service Area</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Add Service Area </li>
-                            </ol>
-                        </nav>
-                    </div>
-                </div>
+				</div>
                 <div class="col-7 align-self-center">
-                    <div class="d-flex no-block justify-content-end align-items-center">
-                        <div class="me-2">
-                            <div class="lastmonth"></div>
-                        </div>
-                        <div class="">
-                            <small>LAST MONTH</small>
-                            <h4 class="text-info mb-0 font-medium">$58,256</h4>
-                        </div>
-                    </div>
-                </div>
+                 </div>
             </div>
         </div>
         <!-- -------------------------------------------------------------- -->
@@ -52,14 +34,15 @@
             <!-- popup model -->
 
 
-
+         <div class="card card-border shadow">
+            <div class="card-body">
 
 
             <!-- Row -->
             <form action="{{ route('servicearea.store') }}" method="post" enctype="multipart/form-data">
                 @csrf
 
-                <div class="row mt-4 mb-3">
+                <div class="row mt-3 mb-4">
 
                     {{--  <div class="col-md-6 mb-3">
                     <div class="mparea">
@@ -120,7 +103,8 @@
                 </div>
             </form>
         </div>
+        </div>
+        </div>
 
 
-    </div>
 @endsection

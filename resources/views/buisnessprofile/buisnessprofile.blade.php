@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <div class="page-wrapper" style="display:inline;">
+   
         <!-- -------------------------------------------------------------- -->
         <!-- Bread crumb and right sidebar toggle -->
 
@@ -12,26 +12,17 @@
             <div class="row">
                 <div class="col-5 align-self-center">
                     <h4 class="page-title">Business Profile & Settings</h4>
-                    <div class="d-flex align-items-center">
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{ route('buisnessprofile.index') }}">Settings</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Business Profile </li>
-                            </ol>
-                        </nav>
-                    </div>
-                </div>
+					<div class="d-flex align-items-center">
+						<nav aria-label="breadcrumb">
+						  <ol class="breadcrumb">
+							<li class="breadcrumb-item"><a href="{{ route('buisnessprofile.index') }}">Settings</a></li>
+							<li class="breadcrumb-item active" aria-current="page">Business Profile</li>
+						  </ol>
+						</nav>
+					  </div>
+				</div>
                 <div class="col-7 align-self-center">
-                    <div class="d-flex no-block justify-content-end align-items-center">
-                        <div class="me-2">
-                            <div class="lastmonth"></div>
-                        </div>
-                        <div class="">
-                            <small>LAST MONTH</small>
-                            <h4 class="text-info mb-0 font-medium">$58,256</h4>
-                        </div>
-                    </div>
-                </div>
+                 </div>
             </div>
         </div>
         <!-- -------------------------------------------------------------- -->
@@ -41,16 +32,18 @@
         <!-- Container fluid  -->
         <!-- -------------------------------------------------------------- -->
         <div class="container-fluid">
+          <div class="card card-border shadow">
+          <div class="card-body">
 
-            <div class="row pb-4">
+            <div class="row">
                 <div class="col-md-12 col-xl-2">
-                    <div class="row ">
+                    
+					<div class="row mt-4">
                         <div class="col-md-9 col-xl-2">
-                            <h3 class="card-title">Business Information</h3>
+                            <h5 class="card-title uppercase text-info">Business Information</h5>
                         </div>
                         <div class="col-md-3 col-xl-2 justify-content-md-end">
-                            <button type="button" onclick="toggleForm()"
-                                class="btn waves-effect waves-light btn-outline-info">EDIT</button>
+                            <button type="button" onclick="toggleForm()" class="btn btn-xs waves-effect waves-light btn-outline-info">EDIT</button>
                         </div>
 
                         @foreach ($businessProfiles as $businessProfile)
@@ -163,11 +156,11 @@
 
                         <div class="row ">
                             <div class="col-md-9 col-xl-2">
-                                <h3 class="card-title">Company Description</h3>
+                                <h5 class="card-title uppercase text-info">Company Description</h5>
                             </div>
                             <div class="col-md-3 col-xl-2 justify-content-md-end">
                                 <button type="button" onclick="companydescription()"
-                                    class="btn waves-effect waves-light btn-outline-info">EDIT</button>
+                                    class="btn btn-xs waves-effect waves-light btn-outline-info">EDIT</button>
                             </div>
 
                             <div>
@@ -205,11 +198,11 @@
                             <div class="col-md-12 col-xl-2">
                                 <div class="row ">
                                     <div class="col-md-9 col-xl-2">
-                                        <h3 class="card-title">Message on invoice, receipt, and estimate</h3>
+                                        <h5 class="card-title uppercase text-info">Message on invoice, receipt, and estimate</h5>
                                     </div>
                                     <div class="col-md-3 col-xl-2 justify-content-md-end">
                                         <button type="button" onclick="messageondocs()"
-                                            class="btn waves-effect waves-light btn-outline-info">EDIT</button>
+                                            class="btn btn-xs waves-effect waves-light btn-outline-info">EDIT</button>
                                     </div>
                                 </div>
                                 <div id="businessInfo-two">
@@ -241,11 +234,11 @@
 
                                 <div class="row ">
                                     <div class="col-md-9 col-xl-2">
-                                        <h3 class="card-title">Terms and Conditions</h3>
+                                        <h5 class="card-title uppercase text-info">Terms and Conditions</h5>
                                     </div>
                                     <div class="col-md-3 col-xl-2 justify-content-md-end">
                                         <button type="button" onclick="termsandcondition()"
-                                            class="btn waves-effect waves-light btn-outline-info">EDIT</button>
+                                            class="btn btn-xs waves-effect waves-light btn-outline-info">EDIT</button>
                                     </div>
                                 </div>
                                 <div id="businessInfo-three">
@@ -300,6 +293,10 @@
                     </div>
                 </div>
             </div>
+        </div>
+        </div>
+        </div>
+   
 
         <!-- --------------------------------------------------------------- -->
 

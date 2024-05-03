@@ -18,23 +18,13 @@
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                                <li class="breadcrumb-item"><a href="#.">Calls / Ticket</a></li>
+                                <li class="breadcrumb-item"><a href="https://dispatchannel.com/portal/parts">Parts</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">Assign Parts to Technician</li>
                             </ol>
                         </nav>
                     </div>
                 </div>
-                <div class="col-7 align-self-center">
-                    <div class="d-flex no-block justify-content-end align-items-center">
-                        <div class="me-2">
-                            <div class="lastmonth"></div>
-                        </div>
-                        <div class="">
-                            <small>LAST MONTH</small>
-                            <h4 class="text-info mb-0 font-medium">$58,256</h4>
-                        </div>
-                    </div>
-                </div>
+             
             </div>
         </div>
         @if (session('success'))
@@ -54,13 +44,13 @@
             <!-- -------------------------------------------------------------- -->
             <!-- basic table -->
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-md-12">
 
                     <div class="row">
                         <div class="col-md-12">
                             <div class="mb-2">
                                 <div class="card">
-                                    <div class="card-body">
+                                    <div class="card-body card-border shadow">
 
                                         <form action="{{ url('store/assign-product') }}" method="POST">
                                             @csrf
@@ -110,7 +100,7 @@
                             <div class="col-md-3">
                                 <div class="mb-2">
                                     <div class="card">
-                                        <div class="card-body text-left">
+                                        <div class="card-body card-border shadow text-left">
                                             <h4 class="card-title mb-2">{{ $item->name }}</h4>
                                             <h6 class="mb-2">Assigned to </h6>
                                             <ul class="list-group list-group-horizontal-xl">

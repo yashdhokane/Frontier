@@ -327,23 +327,28 @@
 
                     </div>
 
-                    <div class="card card text-center">
-                        <div class="card-body card-border">
-                            <div class="row">
-                                <div class="form-actions">
-                                    <button type="submit" class="btn btn-success rounded-pill px-4">Save</button>
-                                    <button type="button" class="btn btn-dark rounded-pill px-4"
-                                        onclick="cancelRedirect()">Cancel</button>
 
-                                    <script>
-                                        function cancelRedirect() {
-                                            window.location.href = "{{ route('product.index') }}";
-                                        }
-                                    </script>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="card card text-center">
+								<div class="card-body card-border">
+									<div class="row">
+										<div class="form-actions">
+											<button type="submit" class="btn btn-success rounded-pill px-4">Save</button>
+											<button type="button" class="btn btn-dark rounded-pill px-4"
+												onclick="cancelRedirect()">Cancel</button>
+
+											<script>
+												function cancelRedirect() {
+													window.location.href = "{{ route('product.index') }}";
+												}
+											</script>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 
                     <!-- ---------------------
                                         end About Product

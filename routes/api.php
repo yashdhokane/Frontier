@@ -25,3 +25,13 @@ Route::post('reset_password', [ApiController::class, 'reset_password']);
 Route::post('getTechnicianJobs', [ApiController::class, 'getTechnicianJobs']);
 
 Route::post('getTechnicianJobsHistory', [ApiController::class, 'getTechnicianJobsHistory']);
+ Route::post('getCustomerHistory', [ApiController::class, 'getCustomerHistory']);
+Route::post('jobfileUploadByTechnician', [ApiController::class, 'jobfileUploadByTechnician']);
+
+ Route::post('getPartsByTechnicianId', [ApiController::class, 'getPartsByTechnicianId']);
+
+ Route::post('technicianLogout', [ApiController::class, 'technicianLogout']);
+
+ Route::post('updateTechnicianProfile', [ApiController::class, 'updateTechnicianProfile']);
+
+ Route::post('calculateJobStatusPercentage', [ApiController::class, 'calculateJobStatusPercentage']);

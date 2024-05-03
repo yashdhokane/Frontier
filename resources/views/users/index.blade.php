@@ -15,12 +15,12 @@
         }
     </style>
 
-    <div class="page-wrapper" style="display:inline;">
+    
 
         <!-- -------------------------------------------------------------- -->
         <!-- Bread crumb and right sidebar toggle -->
         <!-- -------------------------------------------------------------- -->
-        <div class="page-breadcrumb" style="padding-top: 0px;">
+        <div class="page-breadcrumb">
             <div class="row">
                 <div class="col-6 align-self-center">
                     <h4 class="page-title">Customers</h4>
@@ -35,20 +35,26 @@
         <!-- End Bread crumb and right sidebar toggle -->
         <!-- -------------------------------------------------------------- -->
 
-        <div style="width:98%; margin-left:5px;">
+        
             @if (Session::has('success'))
-                <div class="alert alert-success">
-                    {{ Session::get('success') }}
+                <div class="alert_wrap">
+					<div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
+						<strong>Done.</strong> {{ Session::get('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+					</div>
                 </div>
             @endif
 
             @if (Session::has('error'))
-                <div class="alert alert-danger">
-                    {{ Session::get('error') }}
+				<div class="alert_wrap">
+					<div class="alert alert-danger">
+						{{ Session::get('error') }}
+					</div>
                 </div>
             @endif
 
-        </div>
+        
+	 
+  
         <!-- -------------------------------------------------------------- -->
         <!-- Container fluid  -->
         <!-- -------------------------------------------------------------- -->
@@ -60,7 +66,7 @@
                 <!-- ---------------------
                                         start Contact
                                     ---------------- -->
-                <div class="card card-body">
+                <div class="card card-body shadow">
                     <div class="row">
                         <div class="col-md-4 col-xl-2">
                             <form>
@@ -69,11 +75,18 @@
                                     placeholder="Search Customers..." />
                             </form>
                         </div>
-                        <div
-                            class="col-md-8 col-xl-10 text-end d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
-                            <a href="{{ route('users.create') }}" id="" class="btn btn-info"><i
-                                    class=" fas fa-user-plus "></i> New Customer</a>
-                        </div>
+                        <div class="col-md-8 col-xl-10 text-end d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
+	
+							<a href="{{ route('users.create') }}" id="newCustomerBtn" class="btn btn-info"><i class="ri-user-add-line"></i> Add New Customer</a>
+
+							@if(request()->routeIs('users.index'))
+							<a href="{{ route('users.status', ['status' => 'deactive']) }}" class="btn btn-danger mx-3"><i class="ri-user-unfollow-fill"></i> View Inactive Customers</a>
+							@elseif(request()->routeIs('users.status'))
+							<a href="{{ route('users.index') }}" class="btn btn-success mx-3"><i class="ri-user-follow-line"></i> View Active Customers</a>
+							@endif
+
+
+						</div>
                     </div>
                 </div>
                 <!-- ---------------------
@@ -82,14 +95,16 @@
                 <!-- Modal -->
 
 
-                <div class="card card-body">
+                <div class="card card-body shadow">
                     <div class="table-responsive table-custom">
-                        <table id="usersTable" class="table table-striped search-table v-middle" data-paging="true">
-                            <thead class="header-item ft16">
+
+                        <table id="usersTable" class="table table-hover table-striped search-table v-middle" data-paging="true">
+                            <thead class="header-item">
                                 <th>Name</th>
                                 <th>Contacts</th>
                                 <th>Address</th>
                                 <th>Status</th>
+                                <th>Work Details</th>
                                 <th>Action</th>
                             </thead>
                             <tbody>
@@ -109,11 +124,12 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="user-work">{{ $user->email }}</span><br />
                                             <span class="user-work">{{ $user->mobile }}</span><br />
+                                            <span class="user-work">{{ $user->email }}</span> 
                                         </td>
                                         <td>
                                             <div style="display:flex;">
+
                                                 @if ($user)
                                                     @php
                                                         $userAddress = DB::table('user_address')
@@ -138,9 +154,7 @@
                                                     @endphp
 
                                                     @if ($userAddress)
-                                                        <span class="user-work">{{ $userAddresscity ?? null }},
-                                                            {{ $userAddress->state_name }},
-                                                            {{ $userAddress->zipcode }}</span>
+                                                        <span class="user-work">{{ $userAddress->city }}, {{ $userAddress->state_code }}, {{ $userAddress->zipcode }}</span>
                                                     @else
                                                         <span class="user-work">N/A</span>
                                                     @endif
@@ -148,15 +162,23 @@
                                                     <span class="user-work">N/A</span>
                                                 @endif
                                                 <br />
-
-
-
-
-                                            </div>
+                                             </div>
                                         </td>
                                         <td>
                                             <span class="mb-1 ucfirst badge @if ($user->status == 'deactive') { bg-danger } @else { bg-success } @endif">{{ $user->status }}</span>
-                                        </td>
+										</td>
+										<td>
+											<div style="display:flex;" data-bs-toggle="modal" data-bs-target="#commentModal2" onclick="setUserIdModal2({{ $user->id }}, '{{ $user->is_updated }}')">
+												@if ($user->is_updated == 'no')
+ 													<span class="status_icons status_icon2"><i class="ri-close-line"></i></span> <span class="px-2 mt-1 pointer">Not Updated</span>
+												@elseif($user->is_updated == 'yes')
+ 													<span class="status_icons status_icon1"><i class="ri-check-fill"></i></span> 
+													<span class="px-2 mt-1 pointer">Updated <span class="is_updated_time">{{ $isEnd($user->updated_at)}}</span></span>
+  												@endif
+											</div>
+												  
+
+										</td>
                                         <td class="action footable-last-visible" style="display: table-cell;">
                                             <div class="btn-group">
                                                 <button type="button"
@@ -221,6 +243,46 @@
 
 
                                     </div>
+                                    {{-- end model --}}
+
+
+                                    {{-- open model is_update --}}
+                                    <div class="modal fade" id="commentModal2" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+  
+            <!-- Comment form -->
+            <form id="commentForm" action="{{ route('customercomment') }}" method="POST">
+                @csrf
+               <div class="modal-body">
+    <h5 class="modal-title" id="commentModalLabel">Update Work Details</h5>
+
+    <div class="mb-3">
+        <input type="hidden" name="user_id" id="userIdModal2">
+    </div>
+<div class="mb-3 form-check">
+    <input type="checkbox" class="form-check-input contact-chkbox primary" id="statusCheckboxModal2" name="is_updated"  onchange="updateIsUpdated(this)" {{ $user->is_updated == "yes" ? 'checked' : '' }}>
+    <label class="form-check-label" for="statusCheckboxModal2">Mark as Updated</label>
+</div>
+<input type="hidden" name="is_updated" id="isUpdatedHidden" >
+
+
+
+
+    <div class="mb-3">
+        <label for="comment">Add Comment:</label>
+        <textarea class="form-control" id="comment" name="note" rows="3"></textarea>
+    </div>
+</div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" id="confirmButtonModal2">Yes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
                                     {{-- end model --}}
                                 @endforeach
                             </tbody>
@@ -352,6 +414,26 @@
                 document.getElementById('userIdForCommentModal').value = userId;
             }
         </script>
+
+<script>
+    function setUserIdModal2(userId, isUpdated) {
+    // Set the user ID
+    document.getElementById('userIdModal2').value = userId;
+
+    // Set the checkbox state based on is_updated status
+    var checkbox = document.getElementById('statusCheckboxModal2');
+    checkbox.checked = isUpdated === 'yes';
+}
+    function updateIsUpdated(checkbox) {
+        // Get the hidden input field
+        var hiddenInput = document.getElementById('isUpdatedHidden');
+        
+        // Update the value based on checkbox state
+        hiddenInput.value = checkbox.checked ? 'yes' : 'no';
+    }
+</script>
+ 
+
     @endsection
 
 @endsection

@@ -1,30 +1,20 @@
 @extends('home')
 
 @section('content')
-    <style>
-        #main-wrapper[data-layout=vertical][data-header-position=fixed] .page-wrapper {
-            padding-top: 35px;
-        }
+    
 
-        #main-wrapper[data-layout=vertical][data-sidebartype=full] .page-wrapper {
-            margin-left: 130px;
-        }
-    </style>
-
-    <div id="main-wrapper">
-        <div class="page-wrapper">
-            <!-- -------------------------------------------------------------- -->
+             <!-- -------------------------------------------------------------- -->
             <!-- Bread crumb and right sidebar toggle -->
             <!-- -------------------------------------------------------------- -->
             <div class="page-breadcrumb">
                 <div class="row">
                     <div class="col-5 align-self-center">
-                        <h4 class="page-title">Payments</h4>
+                        <h4 class="page-title">Payments & Invoices</h4>
                         <div class="d-flex align-items-center">
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Payments</li>
+                                    <li class="breadcrumb-item active" aria-current="page">Payments & Invoices</li>
                                 </ol>
                             </nav>
                         </div>
@@ -119,9 +109,9 @@
 
                                 </div>
 
-                                <div class="table-responsive">
+                                <div class="table-responsive table-custom">
 
-                                    <table id="file_export" class="table table-bordered">
+                                    <table id="file_export" class="table table-hover table-striped">
                                         <thead>
                                             <!-- start row -->
                                             <tr>
@@ -221,22 +211,7 @@
                                             @endforeach
 
                                         </tbody>
-                                        <tfoot>
-                                            <!-- start row -->
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Manufacturer</th>
-                                                <th>Job Details</th>
-                                                <th>Customer</th>
-                                                <th>Technician</th>
-                                                <th>Inv. Date</th>
-                                                <th>Amount</th>
-                                                <th>Status</th>
-                                                <th>Action</th>
-                                            </tr>
-                                            <!-- end row -->
-                                        </tfoot>
-                                    </table>
+                                     </table>
                                 </div>
                             </div>
                         </div>
@@ -254,8 +229,8 @@
                 <!-- -------------------------------------------------------------- -->
             </div>
 
-        </div>
-    </div>
+       
+     
 
 
 

@@ -243,6 +243,7 @@ Route::group(['middleware' => 'role:admin'], function () {
 
     Route::get('/admins/create', [AdminController::class, 'create'])->name('admins.create');
 
+Route::post('/update-notification', [AdminController::class, 'updateNotification'])->name('update.notification');
 
 
     // Store - Save a new admin to the database
@@ -296,36 +297,37 @@ Route::group(['middleware' => 'role:customer'], function () {
 
 
 
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/customers', [UserController::class, 'index'])->name('users.index');
+    Route::get('/customers/{status?}', [UserController::class, 'index'])->name('users.status');
 
     Route::get('users/search', [UserController::class, 'search'])->name('users.search');
 
 
 
-    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::get('/customer/create', [UserController::class, 'create'])->name('users.create');
 
 Route::post('/get-user-status', [UserController::class, 'getUserStatus'])->name('get.user.status');
     Route::get('/autocomplete/city', [UserController::class, 'autocomplete'])->name('autocomplete.city');
 
-    Route::POST('/users/store', [UserController::class, 'store'])->name('users.store');
+    Route::POST('/customers/store', [UserController::class, 'store'])->name('users.store');
 
     Route::POST('/new/customer/schedule', [UserController::class, 'customer_schedule']);
 
 
 
-    Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::get('/customers/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
 
 
 
-    Route::get('/users/show/{id}', [UserController::class, 'show'])->name('users.show');
+    Route::get('/customers/show/{id}', [UserController::class, 'show'])->name('users.show');
 
 
 
-    Route::PUT('/users/{id}/update', [UserController::class, 'update'])->name('users.update');
+    Route::PUT('/customers/{id}/update', [UserController::class, 'update'])->name('users.update');
 
 
 
-    Route::delete('/users/{id}/delete', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::delete('/customers/{id}/delete', [UserController::class, 'destroy'])->name('users.destroy');
 });
 
 
@@ -338,7 +340,10 @@ Route::group(['middleware' => 'role:customer'], function () {
 
 
 
-    Route::resource('/technicians', TechnicianController::class,);
+    // Route::resource('/technicians', TechnicianController::class,);
+        Route::get('/technicians', [TechnicianController::class, 'index'])->name('technicians.index');
+
+    Route::get('/technicians/{status?}', [TechnicianController::class, 'index'])->name('technicians.status');
 
 
     Route::POST('/technicians/updatefleet', [TechnicianController::class, 'updatefleet'])->name('updatefleet');
@@ -361,7 +366,7 @@ Route::group(['middleware' => 'role:customer'], function () {
 
 
 
-    Route::get('/technicians/create/', [TechnicianController::class, 'create'])->name('technicians.create');
+    Route::get('/technician/create/', [TechnicianController::class, 'create'])->name('technicians.create');
 
 
 
@@ -784,6 +789,9 @@ Route::middleware('auth')->group(function () {
     Route::post('fleet/store', [FleetController::class, 'store'])->name('fleet.store');
 
     Route::get('vehicle/details/{id}', [FleetController::class, 'edit']);
+    Route::get('vehicle/fleetedit/{id}', [FleetController::class, 'fleetedit'])->name('fleet.fleetedit');
+
+
 
     Route::get('inactive/fleet/{id}', [FleetController::class, 'inactive']);
 
@@ -792,6 +800,7 @@ Route::middleware('auth')->group(function () {
     Route::get('addvehicle', [FleetController::class, 'addvehicle'])->name('addvehicle');
 
     Route::post('updatefleetdetails', [FleetController::class, 'updatefleetdetails'])->name('updatefleetdetails');
+Route::post('fleet-update/{id}', [FleetController::class, 'update'])->name('fleetupdate');
 
 
 
@@ -985,6 +994,7 @@ Route::middleware('auth')->group(function () {
     //adminprofile
 
 Route::get('/my-profile', [AdminProfileController::class, 'index'])->name('myprofile.index')->middleware('auth');
+Route::get('/my-profile/notification', [AdminProfileController::class, 'notification'])->name('myprofile.notification')->middleware('auth');
 
 Route::get('/my-profile/activity', [AdminProfileController::class, 'activity'])->name('myprofile.activity')->middleware('auth');
 
@@ -1068,6 +1078,9 @@ Route::post('/my-profile/account/email-verify', [AdminProfileController::class, 
 
     Route::post('/store_reply', [ChatSupportController::class, 'store'])->name('store_reply');
     // payments
+    Route::post('/update-payment-status', [PaymentController::class, 'updatePaymentStatus'])->name('update.payment.status');
+
+Route::post('/create-payment-invoice', [PaymentController::class, 'createPaymentInvoice'])->name('create.payment.invoice');
 
     Route::get('/payment-list', [PaymentController::class, 'index'])->name('payment-list');
 
@@ -1116,3 +1129,5 @@ Route::get('/permission-index',  [AdminController::class, 'permissionindex'])->n
 Route::post('/permission-store',  [AdminController::class, 'permissionstore'])->name('permissions.store');
 
 Route::post('/permission-delete',  [AdminController::class, 'permissiondelete'])->name('permissions.delete');
+
+Route::post('/customercomment',  [UserController::class, 'customercomment'])->name('customercomment');

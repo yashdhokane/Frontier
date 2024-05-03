@@ -7,8 +7,7 @@
     }
 </style>
     <!-- -------------------------------------------------------------- -->
-    <div class="page-wrapper" style="display: inline;">
-        <div class="page-wrapper" style="display: inline;">
+   
             <!-- -------------------------------------------------------------- -->
             <!-- Bread crumb and right sidebar toggle -->
 
@@ -16,20 +15,8 @@
                 <div class="row">
                     <div class="col-5 align-self-center">
                         <h4 class="page-title">{{ $manufacture->manufacturer_name }}</h4>
-                        <div class="d-flex align-items-center">
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="{{ route('buisnessprofile.index') }}">Setting</a>
-                                    </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('manufacturer.index') }}">Manufacturers
-                                            List</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">{{ $manufacture->manufacturer_name }}</li>
-                                </ol>
-                            </nav>
-                        </div>
-                    </div>
-
-                </div>
+                     </div>
+                 </div>
             </div>
             <!-- -------------------------------------------------------------- -->
             <!-- End Bread crumb and right sidebar toggle -->
@@ -48,7 +35,7 @@
                     <div class="col-lg-6 col-md-12">
 
                         <!-- Card -->
-                        <div class="card card-body">
+                        <div class="card card-body card-border shadow">
                              <form action="{{ route('manufacture.update', ['id' => $manufacture->id]) }}" method="post"
                                 enctype="multipart/form-data">
                                 @csrf
@@ -79,27 +66,23 @@
                                         <small id="textHelp" class="form-text text-muted"></small>
                                     </div>
                                 </div>
+								<div class="mb-3 mt-3 pb-3">
+									<button type="submit" class="justify-content-center btn btn-primary align-items-center">Update</button>
+								</div>
+							
                         </div>
                         <!-- Card -->
 
 
 
-                        <div class="mb-3 pb-3" style="margin-top: 1%"><button type="submit"
-                                class="
-                                                                          justify-content-center
-                                                                          btn btn-primary
-                                                                          align-items-center
-                                                                        "
-                                style="margin-left:90%">
-                                Update
-                            </button></div>
+                        
 
                         </form>
                     </div>
                     <!-- Card -->
 					
 					<div class="col-lg-6 col-md-12">
-						<div class="card card-body">
+						<div class="card card-body card-border shadow">
 							<div class="row">
 								<div class="col-lg-6 col-md-12">
 									<div class="mb-3">
@@ -116,7 +99,7 @@
 								</div>
 								<div class="col-lg-12 col-md-12">
 									<div class="mb-3">
-										<h6 class="card-title">{{ $manufacture->manufacturer_name }}</h6>
+										<h5 class="card-title uppercase text-info">{{ $manufacture->manufacturer_name }}</h5>
 										<p>{{ $manufacture->manufacturer_description }}</p>
 									</div>
 								</div>
@@ -151,7 +134,5 @@
             <!-- -------------------------------------------------------------- -->
             <!-- Recent comment and chats -->
             <!-- -------------------------------------------------------------- -->
-        </div>
-        <!-- -------------------------------------------------------------- -->
-    </div>
+      
 @endsection

@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\JobActivity;
 use App\Models\JobAssign;
+use App\Models\Jobfields;
 use App\Models\JobFile;
+use App\Models\Payment;
+
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
@@ -21,6 +24,10 @@ use App\Models\SiteJobFields;
 use App\Models\SiteLeadSource;
 use App\Models\Ticket;
 use App\Models\Technician;
+use App\Models\JobProduct;
+
+use App\Models\JobServices;
+
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -99,7 +106,17 @@ class TicketController extends Controller
     // Display the specified ticket
     public function show($id)
     {
-        $technicians = JobModel::with('jobassignname', 'usertechnician','addedby')->find($id);
+        $technicians = JobModel::with('jobassignname','JobAssign', 'usertechnician','addedby','jobfieldname')->find($id);
+        $fieldIds = explode(',', $technicians->job_field_ids); 
+        $jobFields = Jobfields::whereIn('field_id', $fieldIds)->get();
+         $Payment = Payment::where('job_id', $id)->first();
+       //  dd($Payment);
+
+       $jobproduct = JobProduct::where('job_id', $id)->get();
+        $jobservice = JobServices::where('job_id', $id)->get();
+
+
+        //dd($jobFields);
         $ticket = JobModel::with('user', 'jobactivity')->findOrFail($id);
         $techniciansnotes = JobNoteModel::where('job_id', '=', $id)
             ->Leftjoin('users', 'users.id', '=', 'job_notes.added_by')
@@ -148,7 +165,7 @@ class TicketController extends Controller
         $schedule = JobAssign::where('job_id', $id)->first();
 
 
-        return view('tickets.show', ['ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source, 'activity' => $activity, 'files'=>$files, 'schedule' => $schedule]);
+        return view('tickets.show', ['Payment'=>$Payment,'jobservice'=>$jobservice,'jobproduct'=>$jobproduct,'jobFields'=>$jobFields,'ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source, 'activity' => $activity, 'files'=>$files, 'schedule' => $schedule]);
     }
 
     // Show the form for editing the specified ticket 

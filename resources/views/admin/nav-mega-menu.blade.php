@@ -39,15 +39,9 @@
 					<a href="{{ route('tickets.index') }}"><i class="mdi mdi-book-multiple"></i>  Jobs List </a>
 				</li>
 				<li>
-					<a href="{{ route('payment-list') }}"><i class="ri-money-dollar-box-line"></i>  Payments </a>
+					<a href="{{ route('payment-list') }}"><i class="ri-money-dollar-box-line"></i>  Payments & Invoices </a>
 				</li>
-				<li>
-					<a href="#."><i class="far ri-price-tag-line"></i> Invoices </a>
-				</li>
-				<li>
-					<a href="#."><i class="far ri-price-tag-2-line"></i> Estimates </a>
-				</li>
-			</ul>			
+ 			</ul>			
 		</div>
 		
 		<div class="col-lg-2 mb-4">
@@ -95,11 +89,11 @@
 		<div class="col-lg-2 mb-4">
 			<h4 class="mb-3">Reporting</h4>
 			<ul class="list-style-none">
-				<li><a href="{{route('performanncematrix')}}"><i class="fas fa-list"></i> Performance Matrix</a></li>
-				<li><a href="#"><i class="fas fa-list"></i> Dispatchers Performance</a></li>
- 				<li><a href="#."><i class="fas fa-list"></i> Activity Log</a></li>
- 				<li><a href="#."><i class="fas fa-list"></i> Technician Earnings</a></li>
-				<li><a href="#."><i class="fas fa-list"></i> Call Monitoring</a></li>
+				<li><a href="{{route('jobreport.index')}}"><i class="ri-file-chart-line"></i> Jobs Report</a></li>
+				<li><a href="{{route('technicianreport.index')}}"><i class="ri-file-chart-line"></i> Technicians Report</a></li>
+				<li><a href="{{route('employeereport.index')}}"><i class="ri-file-chart-line"></i> Employees Report</a></li>
+				<li><a href="{{route('performanncematrix')}}"><i class="ri-file-chart-line"></i> Performance Matrix </a></li>
+				<li><a href="{{route('fleetreport')}}"><i class="ri-file-chart-line"></i> Fleet Report </a></li>
  			</ul>
 		</div>
 		

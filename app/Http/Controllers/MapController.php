@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\JobActivity;
-use App\Models\Schedule;
 use App\Models\User;
 use DB;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Storage;
 
 class MapController extends Controller
 {
 
     public function index(Request $request)
     {
+
+        $locationServiceAreaDallas = DB::table('location_service_area')->where('area_name','Dallas')->first();
 
         $query = DB::table('job_assigned')
             ->select(
@@ -47,6 +48,8 @@ class MapController extends Controller
 
         if (isset($request->area_id) && !empty($request->area_id)) {
             $query->where('jobs.service_area_id', $request->area_id);
+        }elseif (isset($locationServiceAreaDallas->area_id) && !empty($locationServiceAreaDallas->area_id)) {
+            $query->where('jobs.service_area_id', $locationServiceAreaDallas->area_id);
         }
 
         $data = $query->get();
@@ -55,11 +58,13 @@ class MapController extends Controller
 
         if (isset($request->area_id) && !empty($request->area_id)) {
             $technician = User::select('id', 'name')->where('role', 'technician')->where('service_areas', 'LIKE', '%' . $request->area_id . '%')->get();
+        }elseif (isset($locationServiceAreaDallas->area_id) && !empty($locationServiceAreaDallas->area_id)) {
+            $technician = User::select('id', 'name')->where('role', 'technician')->where('service_areas', 'LIKE', '%' . $locationServiceAreaDallas->area_id . '%')->get();
         }
 
         $locationServiceArea = DB::table('location_service_area')->get();
 
-        return view('maps.index', compact('data', 'locationServiceArea','technician'));
+        return view('maps.index', compact('data', 'locationServiceArea','technician','locationServiceAreaDallas'));
     }
 
     public function getMarkerDetails(Request $request)
@@ -169,7 +174,7 @@ class MapController extends Controller
 
         $data = $request->all();
 
-        // try {
+        try {
 
         if (isset($data['technician_id']) && !empty($data['technician_id'])) {
 
@@ -201,30 +206,18 @@ class MapController extends Controller
                     ];
 
                     $jobAssignedID = DB::table('job_assigned')->where('job_id', $value['job_id'])->update($JobAssignedData);
-                
-                     $now = Carbon::now();
 
-                    // Format the date and time
-                    $formattedDateTime = $now->format('D, M j \a\t g:ia');
+                    $scheduleData = [
+                        'technician_id' => $technician_id,
+                        'start_date_time' => $start_date_time->format('Y-m-d h:i:s'),
+                        'end_date_time' => $end_date_time->format('Y-m-d h:i:s'),
+                        'updated_by' => auth()->id(),
+                        'updated_at' => date('Y-m-d H:i:s'),
+                        'start_slot' => $start_date_time->format('H'),
+                        'end_slot' => $end_date_time->format('H'),
+                    ];
 
-
-                    $schedule = new Schedule();
-
-                    $schedule->schedule_type = 'job';
-                    $schedule->job_id = $jobAssignedID;
-                    $schedule->start_date_time = $start_date_time;
-                    $schedule->end_date_time = $end_date_time;
-                    $schedule->technician_id = $technician_id;
-                    $schedule->added_by = auth()->user()->id;
-                    $schedule->updated_by = auth()->user()->id;
-
-                    $schedule->save();
-
-                    $activity = 'Job Re-Scheduled for ' . $formattedDateTime;
-
-                   app('JobActivityManager')->addJobActivity($jobAssignedID, $activity);
-                
-                
+                    $schedule = DB::table('schedule')->where('job_id', $value['job_id'])->update($scheduleData);
                 }
 
             }
@@ -233,12 +226,12 @@ class MapController extends Controller
 
         return 'true';
 
-        // } catch (\Exception $e) {
+        } catch (\Exception $e) {
 
-        //     Storage::append('Reschedule.log', ' error_msg -- ' . json_encode($e->getMessage()) . ' line number: ' . json_encode($e->getLine()) . ' File: ' . json_encode($e->getFile()) . ' - ' . date('Y-m-d H:i:s') . PHP_EOL);
+            Storage::append('Reschedule.log', ' error_msg -- ' . json_encode($e->getMessage()) . ' line number: ' . json_encode($e->getLine()) . ' File: ' . json_encode($e->getFile()) . ' - ' . date('Y-m-d H:i:s') . PHP_EOL);
 
-        //     return 'false';
-        // }
+            return 'false';
+        }
 
     }
 

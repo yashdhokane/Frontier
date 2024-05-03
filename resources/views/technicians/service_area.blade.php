@@ -54,54 +54,20 @@
     @csrf
     <input type="hidden" name="technician_id" value="{{ $technician->id }}">
 
-    <!-- End Left Sidebar - style you can find in sidebar.scss  -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- Page wrapper  -->
-    <!-- -------------------------------------------------------------- -->
-    <div class="page-wrapper" style="display:inline;">
-        <!-- -------------------------------------------------------------- -->
-        <!-- Bread crumb and right sidebar toggle -->
-        <!-- -------------------------------------------------------------- -->
-       
-        <!-- -------------------------------------------------------------- -->
-        <!-- End Bread crumb and right sidebar toggle -->
-        <!-- -------------------------------------------------------------- -->
-        <style>
-            .custom-alert {
-                width: 98%;
-                /* Adjust the width as needed */
-                margin: 0 auto;
-                /* Center the alert horizontally */
-            }
-        </style>
-        <div class="custom-alert">
-            @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-            @endif
-        </div>
-
-
-    </div>
+    
   
     <!-- Container fluid  -->
     <!-- -------------------------------------------------------------- -->
     
 	<div class="container-custom">
          
-		<h4 class="card-title">Service Area</h4>
+		<h5 class="card-title uppercase ">Service Area</h5>
         <div class="row">
 
 			<div class="col-lg-6 d-flex align-items-stretch px-3">
 				
 				 
-				<div class="row">
+				<div class="row mt-2">
 					<div class="col-sm-12 col-md-12">
 						<div class="mb-3">
  							@php
@@ -131,7 +97,7 @@
 				
              </div>
 
-         </div>
+		</div>
     
 
 		<div class="row">

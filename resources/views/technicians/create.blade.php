@@ -9,6 +9,7 @@
         color: red;
 
     }
+    
 
     #autocomplete-results {
         position: absolute;
@@ -370,7 +371,7 @@
 						<h4 class="card-title mt-4">Color Codes</h4>
 						<div class="row mt-3">
     <div class="col-sm-12 col-md-12">
-        <div class="row">
+  <!--  <div class="row">
             <?php 
             $colors = array("8f25aa", "5d4037", "880d4f", "d91b60", "34691f", "c0370c", "1777d3", "b71d1b", "378f3c", "8f25aa", "d91b60", "4a158c", "e65100", "03579b", "837717");
             foreach ($colors as $val_color_code) {
@@ -382,7 +383,23 @@
                 </div>';
             }
             ?>
+        </div>  -->
+     <div class="row">
+    @foreach ($colorcode as $colorCode)
+        <div class="col-sm-12 col-md-4">
+            <div class="form-check">
+                <input class="form-check-input success check-outline outline-success" type="radio" name="color_code" id="{{ $colorCode->color_code }}" value="{{ $colorCode->color_code }}">
+                <label class="form-check-label" for="{{ $colorCode->color_code }}">
+                    <div class="color_box" style="background-color: {{ $colorCode->color_code }};"></div>
+                </label>
+            </div>
         </div>
+    @endforeach
+</div>
+
+
+
+
     </div>
 </div>
 

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Jobfields extends Model
 {
     use HasFactory;
-    protected $table = 'job_fields';
+    protected $table = 'site_job_fields';
     protected $primaryKey = 'field_id';
 
     protected $fillable = [

@@ -132,4 +132,15 @@ public function fleetDetails()
 {
     return $this->hasOne(FleetDetails::class, 'user_id', 'id');
 }
+
+public function schedule_data()
+{
+    return $this->hasOne(Schedule::class, 'technician_id', 'id');
+}
+
+ public function LoginHistory()
+    {
+        return $this->hasOne(UserLoginHistory::class, 'user_id', 'id');
+    }
+
 }

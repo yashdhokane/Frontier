@@ -66,13 +66,10 @@
 
                         </div>
 
-                      <a class="dropdown-item" href="{{ route('myprofile.index') }}">
-                       <i data-feather="user" class="feather-sm text-info me-1 ms-1"></i> My Profile
-                        </a>
-
-
-                        <a class="dropdown-item" href="{{ route('app_chats') }}"><i data-feather="mail"
-                                class="feather-sm text-success me-1 ms-1"></i> Messages</a>
+						  <a class="dropdown-item" href="{{ route('myprofile.index') }}"><i class="far fa-user text-info me-1 ms-1"></i> My Profile </a>
+						  <a class="dropdown-item" href="{{ route('app_chats') }}"><i class="ri-mail-line text-success me-1 ms-1"></i> Messages</a>
+						  <a class="dropdown-item" href="{{route('myprofile.account')}}"><i class="ri-settings-2-line text-success me-1 ms-1"></i> Settings </a>
+						  <a class="dropdown-item" href="{{route('myprofile.activity')}}"><i class="ri-list-check text-success me-1 ms-1"></i> Activity </a>
 
                          
 
@@ -88,11 +85,7 @@
 
                         <div class="dropdown-divider"></div>
 
-                        <div class="pl-4 p-2">
-
-                            <a href="{{route('myprofile.index')}}" class="btn d-block w-100 btn-primary rounded-pill">View Profile</a>
-
-                        </div>
+                       
 
                     </div>
  

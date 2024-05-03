@@ -6,7 +6,7 @@ enctype="multipart/form-data">
 
 <div class="container-fluid">
 
-       <div class="row mt-4">
+       <div class="row">
  
             <div class="col-lg-9 d-flex align-items-stretch">
 
@@ -19,7 +19,7 @@ enctype="multipart/form-data">
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
                                     <label for="first_name"
-                                        class="control-label   mb5 col-form-label required-field">First Name</label>
+                                        class="control-label bold mb5 col-form-label required-field">First Name</label>
                                     <input type="text" class="form-control" id="first_name" name="first_name"
                                         placeholder="" required />
                                 </div>
@@ -27,7 +27,7 @@ enctype="multipart/form-data">
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
                                     <label for="last_name"
-                                        class="control-label   mb5 col-form-label required-field">Last Name</label>
+                                        class="control-label bold mb5 col-form-label required-field">Last Name</label>
                                     <input type="text" class="form-control" id="last_name" name="last_name"
                                         placeholder="" required />
                                 </div>
@@ -35,7 +35,7 @@ enctype="multipart/form-data">
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
                                     <label for="display_name"
-                                        class="control-label   mb5 col-form-label required-field">Display Name (shown
+                                        class="control-label bold mb5 col-form-label required-field">Display Name (shown
                                         on invoice)</label>
                                     <input type="text" class="form-control" id="display_name" name="display_name"
                                         placeholder="" required />
@@ -45,13 +45,13 @@ enctype="multipart/form-data">
                         <div class="row">
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
-                                    <label for="email" class="control-label   mb5 col-form-label ">Email</label>
+                                    <label for="email" class="control-label bold mb5 col-form-label ">Email</label>
                                     <input type="email" class="form-control" id="email" name="email" placeholder="" />
                                 </div>
                             </div>
 							<div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
-                                    <label for="email" class="control-label   mb5 col-form-label ">Additional Email</label>
+                                    <label for="email" class="control-label bold mb5 col-form-label ">Additional Email</label>
                                     <input type="email" class="form-control" id="additional_email" name="additional_email" placeholder="" />
                                 </div>
                             </div>
@@ -61,22 +61,20 @@ enctype="multipart/form-data">
 
                                 <div class="mb-3">
 
-                                    <label for="mobile_phone"
-                                        class="control-label col-form-label required-field">Mobile
-                                        Phone</label>
+                                    <label for="mobile_phone" class="control-label bold mb5 col-form-label required-field">Mobile Phone</label>
 
                                     <input type="text" class="form-control"
                                         id="mobile_phone" name="mobile_phone" placeholder=""
                                         required />
                                     <small id="name" class="form-text text-muted">Don’t
-                                        add +1. Only add mobile number without space.</small>
+                                        add +1. Only add mobile without space.</small>
 
                                 </div>
 
                             </div>
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
-                                    <label for="home_phone" class="control-label   mb5 col-form-label">Home
+                                    <label for="home_phone" class="control-label bold mb5 col-form-label">Home
                                         Phone</label>
                                     <input type="number" maxlength="10" class="form-control" id="home_phone"
                                         name="home_phone" placeholder="" />
@@ -84,7 +82,7 @@ enctype="multipart/form-data">
                             </div>
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
-                                    <label for="work_phone" class="control-label   mb5 col-form-label">Work
+                                    <label for="work_phone" class="control-label bold mb5 col-form-label">Work
                                         Phone</label>
                                     <input type="number" maxlength="10" class="form-control" id="work_phone"
                                         name="work_phone" placeholder="" />
@@ -97,7 +95,7 @@ enctype="multipart/form-data">
                             <div class="col-sm-12 col-md-12">
                                 <div class="mb-3">
                                     <label for="address1"
-                                        class="control-label   mb5 col-form-label required-field">Address Line 1
+                                        class="control-label bold mb5 col-form-label required-field">Address Line 1
                                         (Street)</label>
                                     <input type="text" class="form-control" id="address1" name="address1" placeholder=""
                                         required />
@@ -105,18 +103,20 @@ enctype="multipart/form-data">
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-12 col-md-8">
+                            <div class="col-sm-12 col-md-12">
                                 <div class="mb-3">
-                                    <label for="address_unit" class="control-label   mb5 col-form-label ">Address
-                                        Line 2</label>
-                                    <input type="text" class="form-control" id="address_unit" name="address_unit"
-                                        placeholder="" />
+                                    <label for="address_unit" class="control-label bold mb5 col-form-label ">Address Line 2</label>
+                                    <input type="text" class="form-control" id="address_unit" name="address_unit" placeholder="" />
+									<input type="hidden" class="form-control" id="address_type" name="address_type" value="general"  />
                                 </div>
                             </div>
+							
+							<?php 
+							/*
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
                                     <label for="display_name"
-                                        class="control-label   mb5 col-form-label required-field">Type</label>
+                                        class="control-label bold mb5 col-form-label required-field">Type</label>
                                     <select class="form-select me-sm-2" id="address_type" name="address_type">
                                         <option value="">Select address..</option>
 										<option value="general" selected>General</option>
@@ -126,12 +126,15 @@ enctype="multipart/form-data">
                                      </select>
                                 </div>
                             </div>
+							*/
+							?>
+							
                         </div>
                         <div class="row">
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
                                     <label for="city"
-                                        class="control-label   mb5 col-form-label required-field">City</label>
+                                        class="control-label bold mb5 col-form-label required-field">City</label>
                                     {{-- <select class="form-select" id="city" name="city" required>
                                         <option selected disabled value="">Select City...</option>
                                     </select> --}}
@@ -143,7 +146,7 @@ enctype="multipart/form-data">
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
                                     <label for="state_id"
-                                        class="control-label   mb5 col-form-label required-field">State</label>
+                                        class="control-label bold mb5 col-form-label required-field">State</label>
                                     <select class="form-select me-sm-2" id="state_id" name="state_id" required>
                                         <option selected disabled value="">Select State...</option>
                                         @foreach($locationStates as $locationState)
@@ -157,7 +160,7 @@ enctype="multipart/form-data">
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
                                     <label for="zip_code"
-                                        class="control-label   mb5 col-form-label required-field">Zip</label>
+                                        class="control-label bold mb5 col-form-label required-field">Zip</label>
                                     <input type="text" class="form-control" id="zip_code" name="zip_code" placeholder=""
                                         required />
                                 </div>
@@ -169,20 +172,20 @@ enctype="multipart/form-data">
                         <div class="row mt-2">
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
-                                    <label for="company" class="control-label   mb5 col-form-label">Company</label>
+                                    <label for="company" class="control-label bold mb5 col-form-label">Company</label>
                                     <input type="text" class="form-control" id="company" name="company"
                                         placeholder="" />
                                 </div>
                             </div>
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
-                                    <label for="role" class="control-label   mb5 col-form-label">Role</label>
+                                    <label for="role" class="control-label bold mb5 col-form-label">Role</label>
                                     <input type="text" class="form-control" id="role" name="role" placeholder="" />
                                 </div>
                             </div>
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
-                                    <label for="inputcontact" class="control-label   mb5 col-form-label">Customer Type</label>
+                                    <label for="inputcontact" class="control-label bold mb5 col-form-label">Customer Type</label>
 									<div class="row">
 										<div class="col-sm-12 col-md-6">
 											<div class="form-check">
@@ -205,15 +208,13 @@ enctype="multipart/form-data">
 						<div class="row mt-2">
 							<div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
-                                    <label for="image" class="control-label   mb5 col-form-label">Image
-                                        Upload</label>
+                                    <label for="image" class="control-label bold mb5 col-form-label">Profile Image</label>
                                     <input type="file" class="form-control" id="image" name="image" accept="image/*" />
                                 </div>
                             </div>
 							<div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
-                                    <label for="source_id" class="control-label   mb5 col-form-label">Lead
-                                        Source</label>
+                                    <label for="source_id" class="control-label bold mb5 col-form-label">Lead Source</label>
                                     <select class="form-select me-sm-2" id="source_id" name="source_id">
                                         <option value="">Select Lead Source</option>
                                         @foreach($leadSources as $leadSource)
@@ -226,7 +227,7 @@ enctype="multipart/form-data">
 							 <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
                                     <label for="tag_id"
-                                        class="control-label   mb5 col-form-label">Customer
+                                        class="control-label bold mb5 col-form-label">Customer
                                         Tags</label>
                                     <select class="form-control  me-sm-2" id="" name="tag_id[]"
                                         multiple="multiple" style="width: 100%">
@@ -244,7 +245,7 @@ enctype="multipart/form-data">
                          <div class="row mt-2">
                             <div class="col-sm-12 col-md-12">
                                 <div class="mb-3">
-                                    <label class="control-label   mb5 col-form-label">Customer Notes</label>
+                                    <label class="control-label bold mb5 col-form-label">Customer Notes</label>
                                     <textarea type="text" class="form-control" id="customer_notes" name="customer_notes"
                                         rows="3" placeholder=""> </textarea>
                                 </div>

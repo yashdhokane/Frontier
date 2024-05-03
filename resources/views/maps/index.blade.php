@@ -25,7 +25,7 @@
                                     @if (isset($locationServiceArea) && !empty($locationServiceArea->count()))
                                         @foreach ($locationServiceArea as $value)
                                             <option data-lat="{{ $value->area_latitude }}" value="{{ $value->area_id }}"
-                                                @if (app('request')->input('area_id') == $value->area_id) selected @endif
+                                                @if (app('request')->input('area_id') == $value->area_id) selected @elseif (isset($locationServiceAreaDallas->area_id) && !empty($locationServiceAreaDallas->area_id) && $locationServiceAreaDallas->area_id == $value->area_id) selected @endif
                                                 data-lag="{{ $value->area_longitude }}"
                                                 data-radius="{{ $value->area_radius }}">{{ $value->area_name }}</option>
                                         @endforeach
@@ -363,7 +363,6 @@
 
             var selectedOption = $('#territory').find('option:selected');
             var area_id = selectedOption.val();
-            console.log(area_id);
 
             if (area_id == '') {
                 initMap(40.73061, -73.935242, 4);
@@ -371,8 +370,6 @@
                 var lat = parseFloat(selectedOption.data('lat'));
                 var lag = parseFloat(selectedOption.data('lag'));
                 var radius = parseFloat(selectedOption.data('radius'));
-
-                console.log(lat, lag, radius);
                 initMap(lat, lag, radius);
             }
         });
@@ -383,6 +380,9 @@
 
             if (selectedValue) {
                 var url = "{{ route('map') }}" + "?area_id=" + selectedValue;
+                window.location.href = url;
+            }else{
+                var url = "{{ route('map') }}";
                 window.location.href = url;
             }
         }

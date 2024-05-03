@@ -297,7 +297,7 @@ class DispatcherController extends Controller
             $source = $dispatcher->source;
 
             $tags = SiteTags::all();
-            $permissions = DB::table('permissions')->pluck('name')->toArray();
+           $permissions = DB::table('user_permissions')->pluck('permission_id')->toArray();
 
 
 
@@ -307,7 +307,7 @@ class DispatcherController extends Controller
             // Convert the comma-separated tag_id string to an array
             $selectedTags = explode(',', $userTags->pluck('tag_id')->implode(','));
 
-            return view('dispatcher.edit', compact('dispatcher', 'permissions', 'locationStates', 'userTags', 'selectedTags', 'meta', 'location', 'Note', 'tags', 'source', 'first_name', 'last_name', 'home_phone', 'work_phone'));
+            return view('dispatcher.edit', compact('dispatcher',  'permissions','locationStates', 'userTags', 'selectedTags', 'meta', 'location', 'Note', 'tags', 'source', 'first_name', 'last_name', 'home_phone', 'work_phone'));
         } else {
             // Handle the case where meta is not found, perhaps redirect to an error page
             return redirect()->route('dispatcher.index');

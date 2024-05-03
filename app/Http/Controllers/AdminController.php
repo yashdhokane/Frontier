@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 
 use Illuminate\Support\Facades\DB;
 use App\Models\Admin;
+use App\Models\UserNotification;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -64,7 +65,7 @@ class AdminController extends Controller
 
 public function permissionindex()
 {
-    $permissions = DB::table('permissions')->orderByDesc('id')->get();
+    $permissions = DB::table('user_permissions')->orderByDesc('permission_id')->get();
     return view('permission.permissionindex', compact('permissions'));
 }
 
@@ -103,6 +104,25 @@ public function permissionstore(Request $request)
     return redirect()->route('permissionindex')->with('success', 'Permission created successfully');
 }
 
+public function updateNotification(Request $request)
+    {
+        // Get user_id and notice_id from the request
+        $userId = $request->input('user_id');
+        $noticeId = $request->input('notice_id');
 
+        // Update UserNotification model if user_id and notice_id matched
+        $notification = UserNotification::where('user_id', $userId)
+            ->where('notice_id', $noticeId)
+            ->first();
+
+        if ($notification) {
+            $notification->is_read = 1;
+            $notification->read_at = Carbon::now();
+            $notification->save();
+        }
+
+        // Return response
+        return response()->json(['message' => 'Notification updated successfully']);
+    }
 }
 

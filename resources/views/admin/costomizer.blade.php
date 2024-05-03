@@ -4,8 +4,11 @@
 	<div class="customizer-body">
 	
         <ul class="nav customizer-tab" role="tablist">
-			<li class="nav-item"><a class="nav-link active" id="timezone-tab" data-bs-toggle="pill" href="#timezone" role="tab" aria-controls="timezone" aria-selected="true" ><i class="ri-tools-fill fs-6"></i></a></li>
- 			<li class="nav-item"><a class="nav-link" id="tab-activity-tab" data-bs-toggle="pill" href="#tab-activity" role="tab" aria-controls="tab-activity" aria-selected="false" ><i class="ri-timer-line fs-6"></i></a></li>
+			
+			<li class="nav-item"><a class="nav-link active" id="tab-activity-tab" data-bs-toggle="pill" href="#tab-activity" role="tab" aria-controls="tab-activity" aria-selected="false" ><i class="ri-timer-line fs-6"></i></a></li>
+			
+			<li class="nav-item"><a class="nav-link " id="timezone-tab" data-bs-toggle="pill" href="#timezone" role="tab" aria-controls="timezone" aria-selected="true" ><i class="ri-tools-fill fs-6"></i></a></li>
+ 			
 			<li class="nav-item"><a class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" href="#chat" role="tab" aria-controls="chat" aria-selected="false" ><i class="ri-information-line fs-6"></i></a></li>
         </ul>
 		
@@ -24,7 +27,7 @@
             @endphp
 			
             <!-- Tab Timezone -->
-            <div class="tab-pane fade show active" id="timezone" role="tabpanel" aria-labelledby="timezone-tab">
+            <div class="tab-pane fade" id="timezone" role="tabpanel" aria-labelledby="timezone-tab">
                 <div class="p-3 border-bottom">
                     <h4 class="mb-2 mt-2">Current Time</h4>
                     <div class="mt-2">
@@ -83,40 +86,52 @@
             </div>
             <!-- End Tab Timezone -->
 			
+			   @php
+            $today = now()->toDateString(); // Get today's date
+            $technicians = App\Models\JobModel::with('user', 'usertechnician')
+            ->whereDate('created_at', $today) // Filter by today's date
+            ->orderBy('created_at', 'desc')
+            ->get();
+            @endphp
+
+																							
 			<!-- Tab Activity -->
-			<div class="tab-pane fade p-3" id="tab-activity" role="tabpanel" aria-labelledby="tab-activity-tab" >
-				<h4 class="mt-3 mb-3">Activity Timeline</h4>
-				<div class="steamline">
-					<div class="sl-item">
-						<div class="sl-left bg-light-success text-success"><i data-feather="user" class="feather-sm fill-white"></i></div>
-						<div class="sl-right">
-							<div class="font-medium">New Customer <span class="sl-date" style="display: block;"> just now</span></div>
-							<div class="desc">you have new customer</div>
-						</div>
-					</div>
-					<div class="sl-item">
-						<div class="sl-left bg-light-success text-success"><i data-feather="user" class="feather-sm fill-white"></i></div>
-						<div class="sl-right">
-							<div class="font-medium">Job Complete <span class="sl-date" style="display: block;"> 5 minutes ago</span></div>
-							<div class="desc">ABC Completed the job</div>
-						</div>
- 					</div>
-					<div class="sl-item">
-						<div class="sl-left bg-light-success text-success"><i data-feather="user" class="feather-sm fill-white"></i></div>
-						<div class="sl-right">
-							<div class="font-medium">Job Complete <span class="sl-date" style="display: block;"> 1 hour ago</span></div>
-							<div class="desc">ABC Completed the job</div>
-						</div>
- 					</div>
-					<div class="sl-item">
-						<div class="sl-left bg-light-success text-success"><i data-feather="user" class="feather-sm fill-white"></i></div>
-						<div class="sl-right">
-							<div class="font-medium">Job waiting for feedback <span class="sl-date" style="display: block;"> 1 day ago</span></div>
-							<div class="desc">ABC waiting for your response on the job</div>
-						</div>
- 					</div>
- 				</div>
-			</div>
+		 <div class="tab-pane fade p-3 show active" id="tab-activity" role="tabpanel"
+                aria-labelledby="tab-activity-tab">
+                <h4 class="mt-3 mb-3">Job Timeline</h4>
+                <div class="steamline">
+                    @foreach ($technicians as $technician)
+                    <div class="sl-item">
+                        <div class="sl-left bg-light-success text-success"><i class="ri-calendar-check-fill"></i></div>
+                        <div class="sl-right">
+                            <div class="font-medium">
+                                Ticket: {{ $technician->job_title ?? '' }}
+                                Customer: {{ $technician->user->name ?? '' }}
+                                <span class="sl-date" style="display: block;">
+                                    ADDRESS:
+                                    @if (isset($technician->address) && $technician->address !== '')
+                                    {{ $technician->address }},
+                                    @endif
+
+                                    @if (isset($technician->city) && $technician->city !== '')
+                                    {{ $technician->city }},
+                                    @endif
+
+                                    @if (isset($technician->state) && $technician->state !== '')
+                                    {{ $technician->state }},
+                                    @endif
+
+                                    @if (isset($technician->zipcode) && $technician->zipcode !== '')
+                                    {{ $technician->zipcode }}
+                                    @endif
+                                </span>
+                            </div>
+                            <div class="desc">Technician: {{ $technician->usertechnician->name ?? '' }}</div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
 			<!-- End Tab Activity -->
 			
 			<!-- Tab Information -->

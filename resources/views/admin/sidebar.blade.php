@@ -7,35 +7,8 @@
             <div style="height: 10px;"></div>
             <ul id="sidebarnav">
 
-                @php
-
-                $currentRoute = Route::current();
-
-                $routeUri = $currentRoute->uri();
-
-                $routeSegments = explode('/', $routeUri);
-
-                $prefix = isset($routeSegments[0]) && !empty($routeSegments[0]) ? $routeSegments[0] : '';
-
-                @endphp
-
-                @if ($prefix == 'book-list')
-               
-		   
-                <li class="sidebar-item ft1"><a href="{{ route('services.index') }}" class="sidebar-link"><i
-                            class="ri-tools-line fas"></i><span class="hide-menu"> Services </span></a>
-                </li>
-                <li class="sidebar-item ft2"><a href="{{ route('product.index') }}" class="sidebar-link"><i
-                            class="ri-folder-chart-line fas"></i><span class="hide-menu"> Parts
-                        </span></a></li>
-                <li class="sidebar-item ft3"><a href="{{route('assign_product')}}" class="sidebar-link"><i
-                            class="ri-shape-2-line fas"></i> <span class="hide-menu">Assign Parts </span></a></li>
-                <li class="sidebar-item ft4"><a href="{{ route('estimate.index') }}" class="sidebar-link"><i
-                            class="ri-pages-line fas"></i><span class="hide-menu"> Estimate Templates
-                        </span></a></li>
                 
-              
-                @else
+           
 					
                 <li class="sidebar-item">
 					<a class="sidebar-link waves-effect waves-dark sidebar-link ft1" href="{{ route('home') }}"  aria-expanded="false">
@@ -72,6 +45,9 @@
                         <li class="sidebar-item">
 							<a href="{{ route('tickets.index') }}" class="sidebar-link"><i class="mdi mdi-book-multiple"></i><span class="hide-menu"> Jobs List </span></a>
                         </li>
+						<li class="sidebar-item">
+							<a href="{{ route('payment-list') }}" class="sidebar-link"><i class="ri-money-dollar-box-line"></i><span class="hide-menu"> Payments & Invoices</span></a>
+						</li>
                      </ul>
                 </li>
 
@@ -87,27 +63,16 @@
                         <li class="sidebar-item">
 							<a href="{{route('assign_product')}}" class="sidebar-link"><i class="ri-book-2-line"></i> <span class="hide-menu">Assign Parts </span></a>
                         </li>
+						<li class="sidebar-item">
+							<a href="#." class="sidebar-link"><i class="far ri-price-tag-2-line"></i><span class="hide-menu">Estimates</span></a>
+						</li>
                          <li class="sidebar-item">
 							<a href="{{ route('estimate.index') }}" class="sidebar-link"><i class="ri-article-line"></i> <span class="hide-menu">Estimate Templates </span></a>
 						</li>
                      </ul>
                 </li>
 
-                <li class="sidebar-item">
-                    <a class="sidebar-link has-arrow waves-effect waves-dark ft5" href="#" aria-expanded="false"><i class="fas fa-clipboard-list "></i><span class="hide-menu">Payments</span></a>
-                    <ul aria-expanded="false" class="collapse first-level">
-                        <li class="sidebar-item">
-							<a href="{{ route('payment-list') }}" class="sidebar-link"><i class="ri-money-dollar-box-line"></i><span class="hide-menu"> Payments</span></a>
-						</li>
-                        <li class="sidebar-item">
-							<a href="#." class="sidebar-link"><i class="far ri-price-tag-line"></i><span class="hide-menu">Invoices</span></a>
-						</li>
-                        <li class="sidebar-item">
-							<a href="#." class="sidebar-link"><i class="far ri-price-tag-2-line"></i><span class="hide-menu">Estimates</span></a>
-						</li>
-                    </ul>
-                </li>
-
+ 
                 <li class="sidebar-item">
                     <a class="sidebar-link has-arrow waves-effect waves-dark ft6" href="#" aria-expanded="false"><i class="fas fa-chart-line" style="font-size: 16px;"></i><span class="hide-menu">Reports</span></a>
                     <ul aria-expanded="false" class="collapse first-level">
@@ -136,7 +101,7 @@
 				 
 				 
 				 <li class="sidebar-item">
-                    <a class="sidebar-link has-arrow waves-effect waves-dark ft2" href="#" aria-expanded="false"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu">Other</span></a>
+                    <a class="sidebar-link has-arrow waves-effect waves-dark ft7" href="#" aria-expanded="false"><i class="mdi mdi-book-multiple"></i> <span class="hide-menu">Other</span></a>
                     <ul aria-expanded="false" class="collapse first-level">
 						<li class="sidebar-item"><a href="{{ route('events') }}" class="sidebar-link"><i class="fas fa-calendar-check"></i> <span class="hide-menu"> Event List</span></a></li>
 						<li class="sidebar-item"><a href="{{ route('vehicles') }}" class="sidebar-link"><i
@@ -179,7 +144,7 @@
 				<li class="sidebar-item">
                     <a class="sidebar-link waves-effect waves-dark sidebar-link ft8" href="#." aria-expanded="false"><i class="fas fa-power-off "></i><span class="hide-menu">Log Out</span></a>
                 </li>
-                @endif
+               
 
             </ul>
 

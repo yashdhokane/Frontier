@@ -5,109 +5,22 @@
     <!-- -------------------------------------------------------------- -->
     <!-- Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
-
-    <style>
-        .flowchart {
-            text-align: center;
-        }
-
-        .flowchart button {
-            background: transparent;
-            outline: none;
-            border: 0px;
-            text-transform: uppercase;
-            color: #f64e60;
-            font-weight: 600;
-            height: 15px;
-        }
-
-        .ictop {
-            background: #0E6FBE;
-            width: 43px;
-            height: 43px;
-            border-radius: 50%;
-            line-height: 43px;
-            margin: 5px auto;
-            color: #fff;
-            border: 1px solid #0E6FBE;
-        }
-
-        .ictop i {
-            font-size: 25px;
-        }
-
-        .cht {
-            text-transform: uppercase;
-            color: #0E6FBE;
-            font-weight: 600;
-        }
-
-        .dtwrap {
-            font-size: 12px;
-        }
-
-        .icblank {
-            background: #fff;
-        }
-
-        .icblank i {
-            color: #0E6FBE;
-        }
-
-        .icblank:hover {
-            background: #0E6FBE;
-        }
-
-        .icblank:hover i {
-            color: #ffffff;
-        }
-
-        .icwrap {
-            position: relative;
-            z-index: 2;
-        }
-
-        .brwrap {
-            position: relative;
-            padding: 2px;
-        }
-
-        .flborder {
-            border-bottom: 2px solid #3699ff;
-            width: 85%;
-            left: 7%;
-            position: absolute;
-            top: 52px;
-            z-index: 1;
-        }
-    </style>
-
+     
     <div class="page-breadcrumb">
-
-
-        <div class="row">
+         <div class="row">
             <div class="col-md-12">
-                <h4 class="page-title">{{ $technicians->job_title ?? null }}
-                    ({{ $technicians->job_code ?? null }}) <span class="mb-1 badge bg-warning"
-                        style="font-size: 15px;">{{ $technicians->status ?? null }}
-                    </span> </h4>
+                <h4 class="page-title">#{{ $technicians->id ?? null }} - {{ $technicians->job_title ?? null }} 
+ 					@foreach($jobFields as $jobField)
+					<span class="mb-1 badge bg-warning">{{ $jobField->field_name }}</span> 
+					@endforeach
+ 				</h4>
             </div>
             <div class="col-md-8">
             </div>
         </div>
-
-
-    </div>
-    @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-    @if (session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
-    @endif
+     </div>
+	
+    
     <!-- -------------------------------------------------------------- -->
     <!-- End Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
@@ -115,6 +28,23 @@
     <!-- Container fluid  -->
     <!-- -------------------------------------------------------------- -->
     <div class="container-fluid">
+	
+		
+		@if (session('success'))
+			<div class="alert_wrap">
+				<div class="alert alert-success">
+					{{ session('success') }}
+				</div>
+			</div>
+		@endif
+		@if (session('error'))
+			<div class="alert_wrap">
+				<div class="alert alert-danger">
+					{{ session('error') }}
+				</div>
+			</div>
+		@endif
+		
         <!-- -------------------------------------------------------------- -->
         <!-- Start Page Content -->
         <!-- -------------------------------------------------------------- -->
@@ -127,10 +57,14 @@
 
 
                 <div class="mb-4">
-                    <div class="card" style="border: 1px solid #D8D8D8;">
-                        <div class="card-body">
+                    <div class="card">
+                        <div class="card-body card-border shadow">
                             <div class="">
-                                <h5 class="todo-desc mb-0 fs-3 font-weight-medium">
+								<h5 class="card-title uppercase mt-1 mb-2"><a class="text-dark"
+                                        href="{{ url('users/show/' . $technicians->user->id) }}">{{ $technicians->user->name ?? null }}</a>
+                                </h5>
+								<div>Address</div>
+                                <h5 class="todo-desc mb-2 fs-3 font-weight-medium">
                                     @if (isset($technicians->address) && $technicians->address !== '')
                                         {{ $technicians->address }},
                                     @endif
@@ -148,8 +82,7 @@
                                     @endif
                                 </h5>
 
-
-                                <iframe id="map238" width="100%" height="150" frameborder="0" style="border: 0"
+                                 <iframe id="map238" width="100%" height="150" frameborder="0" style="border: 0"
                                     allowfullscreen=""></iframe>
 
                             </div>
@@ -158,83 +91,36 @@
                 </div>
 
                 <div class="mb-4">
-                    <div class="card" style="border: 1px solid #D8D8D8;">
-                        <div class="card-body text-center">
+                    <div class="card">
+                        <div class="card-body card-border shadow text-center">
                             <div class="profile-pic mb-3 mt-3">
-                                <h4 class="mt-3 mb-0"><a class="text-dark"
-                                        href="{{ url('users/show/' . $technicians->user->id) }}">{{ $technicians->user->name ?? null }}</a>
-                                </h4>
+                                <h5 class="card-title uppercase mt-3 mb-0">Contact Details</h5>
                                 @if (!empty($technicians->user->email))
-                                    <a
-                                        href="mailto:{{ $technicians->user->email ?? '' }}">{{ $technicians->user->email ?? null }}</a><br>
+                                    <a href="mailto:{{ $technicians->user->email ?? '' }}">{{ $technicians->user->email ?? null }}</a><br>
                                 @endif
                                 @if (!empty($technicians->user->mobile))
-                                    <small class="text-muted">{{ $technicians->user->mobile ?? null }}<br />
+                                    {{ $technicians->user->mobile ?? null }}<br /> 
                                 @endif
-                                @if (isset($technicians->address) && $technicians->address !== '')
-                                    {{ $technicians->address }},
-                                @endif
-
-                                @if (isset($technicians->city) && $technicians->city !== '')
-                                    {{ $technicians->city }},
-                                @endif
-
-                                @if (isset($technicians->state) && $technicians->state !== '')
-                                    {{ $technicians->state }},
-                                @endif
-
-                                @if (isset($technicians->zipcode) && $technicians->zipcode !== '')
-                                    {{ $technicians->zipcode }}
-                                @endif
-                                </small>
+ 								
                             </div>
+							<div>Address</div>
+							<div class="">
+								<iframe id="map" width="100%" height="150" frameborder="0" style="border: 0" allowfullscreen=""></iframe>
+							</div>
                         </div>
                     </div>
                 </div>
 
+                 
                 <div class="mb-4">
-                    <div class="card" style="border: 1px solid #D8D8D8;">
-                        <div class="card-body">
-                            <div class=""><span>Customer address</span>
-                                <h5 class="todo-desc mb-0 fs-3 font-weight-medium">
-                                    @if (isset($technicians->addresscustomer->address_line1) && $technicians->addresscustomer->address_line1 !== '')
-                                        {{ $technicians->addresscustomer->address_line1 }},
-                                    @endif
-
-                                    @if (isset($technicians->addresscustomer->address_line2) && $technicians->addresscustomer->address_line2 !== '')
-                                        {{ $technicians->addresscustomer->address_line2 }},
-                                    @endif
-
-                                    @if (isset($technicians->addresscustomer->city) && $technicians->addresscustomer->city !== '')
-                                        {{ $technicians->addresscustomer->city }},
-                                    @endif
-
-                                    @if (isset($technicians->addresscustomer->state_name) && $technicians->addresscustomer->state_name !== '')
-                                        {{ $technicians->addresscustomer->state_name }},
-                                    @endif
-
-                                    @if (isset($technicians->addresscustomer->zipcode) && $technicians->addresscustomer->zipcode !== '')
-                                        {{ $technicians->addresscustomer->zipcode }}
-                                    @endif
-                                </h5>
-
-
-                                <iframe id="map" width="100%" height="150" frameborder="0" style="border: 0"
-                                    allowfullscreen=""></iframe>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <div class="card" style="border: 1px solid #D8D8D8;">
-                        <div class="card-body">
+                    <div class="card">
+                        <div class="card-body card-border shadow">
                             <div class="row open_items">
                                 <div class="col-md-1 ">
                                     <i class="fas fas fa-tag "></i>
                                 </div>
                                 <div class="col-md-9">
-                                    <h4>Customer Tags</h4>
+                                   <h5 class="card-title uppercase">Customer Tags</h5>
                                 </div>
                                 <div class="col-md-2 addCustomerTags" style="cursor: pointer;">
                                     <i class="fas fa-plus "></i>
@@ -272,14 +158,14 @@
                     </div>
                 </div>
                 <div class="mb-4">
-                    <div class="card" style="border: 1px solid #D8D8D8;">
-                        <div class="card-body">
+                    <div class="card">
+                        <div class="card-body card-border shadow">
                             <div class="row open_items">
                                 <div class="col-md-1">
                                     <i class="fas fas fa-tag "></i>
                                 </div>
                                 <div class="col-md-9">
-                                    <h4>Job Tags</h4>
+                                   <h5 class="card-title uppercase">Job Tags</h5>
                                 </div>
                                 <div class="col-md-1 addJobTags" style="cursor: pointer;">
                                     <i class="fas fa-plus "></i>
@@ -317,14 +203,14 @@
                     </div>
                 </div>
                 <div class="mb-4">
-                    <div class="card" style="border: 1px solid #D8D8D8;">
-                        <div class="card-body">
+                    <div class="card">
+                        <div class="card-body card-border shadow">
                             <div class="row open_items">
                                 <div class="col-md-1">
                                     <i class="fas fa-paperclip"></i>
                                 </div>
                                 <div class="col-md-9">
-                                    <h4>Attachments</h4>
+                                   <h5 class="card-title uppercase">Attachments</h5>
                                 </div>
                                 <div class="col-md-1 addAttachment" style="cursor: pointer;">
                                     <i class="fas fa-plus "></i>
@@ -355,14 +241,14 @@
                     </div>
                 </div>
                 <div class="mb-4">
-                    <div class="card" style="border: 1px solid #D8D8D8;">
-                        <div class="card-body">
+                    <div class="card">
+                        <div class="card-body card-border shadow">
                             <div class="row open_items">
                                 <div class="col-md-1">
                                     <i class="fas fa-bullseye "></i>
                                 </div>
                                 <div class="col-md-9">
-                                    <h4>Lead Source</h4>
+                                   <h5 class="card-title uppercase">Lead Source</h5>
                                 </div>
                                 <div class="col-md-1 addSource" style="cursor: pointer;">
                                     <i class="fas fa-plus "></i>
@@ -400,9 +286,9 @@
                     </div>
                 </div>
                 <div class="mb-4">
-                    <div class="card" style="border: 1px solid #D8D8D8;">
-                        <div class="card-body text-center">
-                            <h4 class="card-title">Technician Assigned</h4>
+                    <div class="card">
+                        <div class="card-body card-border shadow text-center">
+                           <h5 class="card-title uppercase">Technician Assigned</h5>
                             <div class="profile-pic mb-3 mt-3">
                                 @isset($technicians->usertechnician->user_image)
                                     <img src="{{ asset('public/images/Uploads/users/' . $technicians->usertechnician->id . '/' . $technicians->usertechnician->user_image) ?? null }}"
@@ -411,7 +297,7 @@
                                 @else
                                     <img src="{{ $defaultImage }}" width="150" class="rounded-circle" alt="user" />
                                 @endisset
-                                <h4 class="mt-3 mb-0">{{ $technicians->usertechnician->name ?? null }}</h4>
+                               <h5 class="card-title uppercase mt-3 mb-0">{{ $technicians->usertechnician->name ?? null }}</h5>
                                 <a
                                     href="mailto:{{ $technicians->usertechnician->email ?? '' }}">{{ $technicians->usertechnician->email ?? null }}</a><br><small
                                     class="text-muted">{{ $technicians->usertechnician->mobile ?? null }}<br />{{ $technicians->usertechnician->Locationareaname->area_name ?? null }}</small>
@@ -420,9 +306,9 @@
                     </div>
                 </div>
                 <div class="mb-4">
-                    <div class="card" style="border: 1px solid #D8D8D8;">
-                        <div class="card-body text-center">
-                            <h4 class="card-title">Ticket Creator</h4>
+                    <div class="card">
+                        <div class="card-body card-border shadow text-center">
+                           <h5 class="card-title uppercase">Ticket Creator</h5>
                             <div class="profile-pic mb-3 mt-3">
                                 @isset($technicians->addedby->user_image)
                                     <img src="{{ asset('public/images/Uploads/users/' . $technicians->addedby->id . '/' . $technicians->addedby->user_image) ?? null }}"
@@ -431,7 +317,7 @@
                                 @else
                                     <img src="{{ $defaultImage }}" width="150" class="rounded-circle" alt="user" />
                                 @endisset
-                                <h4 class="mt-3 mb-0">{{ $technicians->addedby->name ?? null }}</h4>
+                                <h5 class="card-title mt-3 mb-0">{{ $technicians->addedby->name ?? null }}</h5>
                                 <a
                                     href="mailto:{{ $technicians->addedby->email ?? '' }}">{{ $technicians->addedby->email ?? null }}</a><br><small
                                     class="text-muted">{{ $technicians->addedby->mobile ?? null }}<br>Frontier Support
@@ -448,7 +334,7 @@
 
                 <div class="mb-4 flwrap">
                     <div class="card">
-                        <div class="card-body">
+                        <div class="card-body card-border shadow">
                             <div class="brwrap">
                                 <div class="flborder">
 
@@ -458,7 +344,7 @@
                             <div class="row">
                                 <div class="col-sm-2">
                                     <div class="flowchart">
-                                        <button>Undo</button>
+                                        
                                         <div class="icwrap">
                                             <div class="ictop">
                                                 <i class="ri-calendar-event-line"></i>
@@ -482,7 +368,7 @@
 
                                 <div class="col-sm-2">
                                     <div class="flowchart">
-                                        <button>Undo</button>
+                                        
                                         <div class="icwrap">
                                             <div class="ictop">
                                                 <i class="ri-truck-line"></i>
@@ -505,7 +391,7 @@
 
                                 <div class="col-sm-2">
                                     <div class="flowchart">
-                                        <button>Undo</button>
+                                        
                                         <div class="icwrap">
                                             <div class="ictop">
                                                 <i class="ri-play-line"></i>
@@ -529,7 +415,7 @@
 
                                 <div class="col-sm-2">
                                     <div class="flowchart">
-                                        <button>Undo</button>
+                                        
                                         <div class="icwrap">
                                             <div class="ictop">
                                                 <i class="ri-stop-circle-line"></i>
@@ -601,21 +487,18 @@
 
 
                 <div class="mb-4">
-                    <div class="card" style="border: 1px solid #D8D8D8;">
-                        <div class="card-body">
+                    <div class="card">
+                        <div class="card-body card-border shadow">
 
                             <div class="row">
-                                <div class="col-md-8">
+                                <div class="col-md-7">
                                     <div class="mb-2">
-                                        <h4 class="card-title">{{ $technicians->job_title ?? null }}
-                                            ({{ $technicians->job_code ?? null }}) <span class="mb-1 badge bg-warning"
-                                                style="font-size: 15px;">{{ $technicians->status ?? null }}
-                                            </span> </h4>
+                                        <h5 class="card-title uppercase">#{{ $technicians->id ?? null }} - {{ $technicians->job_title ?? null }} <span class="mb-1 badge bg-warning">{{ $technicians->status ?? null }} </span> </h5>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-5">
                                     <div class="mb-2">
-                                        <h5 class="card-title"><i class="fa fa-calendar" aria-hidden="true"></i>
+                                        <h5 class="card-title uppercase"><i class="fa fa-calendar" aria-hidden="true"></i>
                                             {{ \Carbon\Carbon::parse($technicians->jobassignname->start_date_time ?? null)->format('jS F Y, h:i A') }}
                                         </h5>
                                     </div>
@@ -624,7 +507,8 @@
                             <p>{{ $technicians->description ?? null }}</p>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="mb-2"><strong>Duration:</strong>
+                                    <div class="mb-2">
+										<strong>Duration:</strong>
                                         @if ($technicians->jobassignname->duration ?? null)
                                             <?php
                                             $durationInMinutes = $technicians->jobassignname->duration ?? null;
@@ -633,42 +517,32 @@
                                             {{ $durationInHours ?? null }} Hours
                                         @endif
                                     </div>
+									<div class="mb-2"><strong>Priority:</strong> {{ $technicians->priority ?? null }}</div>
+									<div class="mb-2"><strong>Date: </strong>{{ \Carbon\Carbon::parse($technicians->jobassignname->start_date_time ?? null)->format('jS F Y') }}</div>
+									<div class="mb-2"><strong>From: </strong>{{ $convertTimeToTimezone($technicians->JobAssign->start_date_time ?? null, 'H:i:a')
+									}}</div>
+									<div class="mb-2"><strong>To: </strong>{{ $convertTimeToTimezone($technicians->JobAssign->end_date_time ?? null, 'H:i:a')
+									}}</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="mb-2"><strong>Priority:</strong> {{ $technicians->priority ?? null }}
-                                    </div>
+									<div class="mb-2"><strong>Appliances: </strong> {{ $technicians->JobAppliances->Appliances->appliance->appliance_name ??
+									null }}</div>
+									<div class="mb-2"><strong>Manufacturer:</strong> {{ $technicians->JobAppliances->Appliances->manufacturer->manufacturer_name ?? null }}
+									</div>
+									<div class="mb-2"><strong>Model Number: </strong>{{ $technicians->JobAppliances->Appliances->model_number ?? null }}</div>
+									<div class="mb-2"><strong>Serial Number: </strong> {{ $technicians->JobAppliances->Appliances->serial_number ?? null }} </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-2"><strong>Appliances:</strong>
-                                        {{ $technicians->JobAppliances->Appliances->appliance->appliance_name ??
-                                                    null }}</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-2"><strong>Manufacturer:</strong>
-                                        {{ $technicians->JobAppliances->Appliances->manufacturer->manufacturer_name ?? null }}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-2"><strong>Model Number :</strong>
-                                        {{ $technicians->JobAppliances->Appliances->model_number ?? null }}</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-2"><strong>Serial Number :</strong>
-                                        {{ $technicians->JobAppliances->Appliances->serial_number ?? null }} </div>
-                                </div>
-                            </div>
+  
+                               
                         </div>
                     </div>
                 </div>
 
                 <div class="mb-4">
-                    <div class="card" style="border: 1px solid #D8D8D8;">
-                        <div class="card-body">
-                            <h4 class="card-title">FIELD TECH STATUS</h4>
+                    <div class="card">
+                        <div class="card-body card-border shadow">
+                            <h5 class="card-title uppercase">Field Tech Status</h5>
                             <div class="table-responsive">
                                 <table class="table customize-table mb-0 v-middle">
                                     <thead class="table-light">
@@ -698,8 +572,9 @@
                                             <td><span
                                                     class="badge bg-light-success text-success fw-normal">{{ $technicians->usertechnician->status ?? null }}</span>
                                             </td>
-                                            <td>&nbsp;</td>
-                                            <td>&nbsp;</td>
+                                            <td>&nbsp;{{ $technicians->JobAssign->driving_hours ?? null }} minutes</td>
+<td>&nbsp;{{ number_format((($technicians->JobAssign->driving_hours ?? 0) + ($technicians->JobAssign->duration ?? 0)) / 60, 2) }} hours</td>
+</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -709,9 +584,9 @@
                 </div>
 
                 <div class="mb-4">
-                    <div class="card" style="border: 1px solid #D8D8D8;">
-                        <div class="card-body">
-                            <h4 class="card-title">SERVICES & PARTS (LINE ITEMS)</h4>
+                    <div class="card">
+                        <div class="card-body card-border shadow">
+                            <h5 class="card-title uppercase">Services & Parts (Line Items)</h5>
                             <div class="table-responsive">
                                 <table class="table customize-table mb-0 v-middle">
                                     <thead class="table-light">
@@ -723,42 +598,37 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>{{ $technicians->job_code ?? null }} -
-                                                {{ $technicians->jobserviceinfo->service->service_name ?? null }} <small
-                                                    class="text-muted">{{ $technicians->warranty_type ?? null }}</small>
-                                            </td>
-                                            <td>${{ $technicians->jobserviceinfo->base_price ?? null }}</td>
-                                            <td>${{ $technicians->jobserviceinfo->discount ?? null }}</td>
-                                            <td>${{ $technicians->jobserviceinfo->sub_total ?? null }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ $technicians->job_code ?? null }} -
-                                                {{ $technicians->jobproductinfo->product->product_name ?? null }}
-                                                {{-- <small class="text-muted">LG Washing Machine Stand</small> --}}
-                                            </td>
-                                            <td>${{ $technicians->jobproductinfo->base_price ?? null }}</td>
-                                            <td>${{ $technicians->jobproductinfo->discount ?? null }}</td>
-                                            <td>${{ $technicians->jobproductinfo->sub_total ?? null }}</td>
-                                        </tr>
+                                        
+                                            @foreach($jobproduct as $product)
+<tr>
+    <td>{{ $product->product->product_name ?? null }}</td>
+    <td>${{ $product->base_price ?? null }}</td>
+    <td>${{ $product->discount ?? null }}</td>
+    <td>${{ $product->sub_total ?? null }}</td>
+</tr>
+@endforeach
+
+@foreach($jobservice as $service)
+<tr>
+    <td>{{ $service->service->service_name ?? null }} </td>
+    <td>${{ $service->base_price ?? null }}</td>
+    <td>${{ $service->discount ?? null }}</td>
+    <td>${{ $service->sub_total ?? null }}</td>
+</tr>
+@endforeach
+
 
 
                                     </tbody>
                                 </table>
                                 <div class="row mb-2 justify-content-end" style="border-top: 1px solid #343434;">
-                                    <div class="col-md-4 mt-2 text-right" style="text-align: right;padding-right: 36px;">
+                                    <div class="col-md-5 mt-2 text-right" style="text-align: right;padding-right: 36px;">
                                         
-                                        <h5 style="display: inline-flex;">Discount:&nbsp;<div class="discounttext">
-                                                ${{ $technicians->discount ?? null }}
-                                            
-                                        </h5><br>
-                                        <h5 style="display: inline-flex;">Tax:&nbsp;<div class="taxcodetext">{{ $technicians->addresscustomer->locationStateName->state_tax ?? null }}% for {{ $technicians->addresscustomer->locationStateName->state_code ?? null }}
-
-                                        </h5><br>
-                                        <h4 style="display: inline-flex;">Total:&nbsp;<div class="totaltext">
-                                                ${{ $technicians->gross_total ?? null }}
-                                        </h4>
-
+										<div class="price_h5">Subtotal: <span>${{ $technicians->subtotal ?? null }}</span></div>
+										<div class="price_h5">Discount: <span>${{ $technicians->discount ?? null }}</span></div>
+										<div class="price_h5">Tax ({{ $technicians->tax_details ?? null }}): <span>${{ $technicians->tax ?? null }}</span> </div>
+										<div class="price_h5">Total: <span>${{ $technicians->gross_total ?? null }}</span></div>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -766,11 +636,11 @@
                     </div>
 
                     <div class="mb-4">
-                        <div class="card" style="border: 1px solid #D8D8D8;">
-                            <div class="card-body ">
+                        <div class="card">
+                            <div class="card-body card-border shadow">
                                 <div class="row open_items">
                                     <div class="col-md-10">
-                                        <h4><i class="fas fa-sticky-note px-1"></i> Job Note</h4>
+                                       <h5 class="card-title uppercase"><i class="fas fa-sticky-note px-1"></i> Job Note</h5>
                                     </div>
                                     <div class="col-md-2 text-center addnotes" style="cursor: pointer;">
                                         <i class="fas fa-plus "></i>
@@ -799,7 +669,7 @@
                                 </div>
 
                                 <div class="shownotes" style="display: none;">
-                                    <h4 class="mb-3">Add a Note</h4>
+                                    <h5 class="card-title uppercase mb-3">Add a Note</h5>
 
 
                                     <form class="row g-2" method="post" action="{{ route('techniciannote') }}"
@@ -831,21 +701,58 @@
                     </div>
 
                     <div class="mb-4">
-                        <div class="card" style="border: 1px solid #D8D8D8;">
-                            <div class="card-body ">
+                        <div class="card">
+                            <div class="card-body card-border shadow">
                                 <div class="row mb-3 open_items">
                                     <div class="col-md-7">
-                                        <h4><i class="fas fas fa-dollar-sign px-1"></i> Invoice</h4>
+                                       <h5 class="card-title uppercase"><i class="fas fas fa-dollar-sign px-1"></i> Payment & Invoice</h5>
                                     </div>
-                                    <div class="col-md-5 text-center">
-                                        <button type="button" class="btn waves-effect waves-light btn-primary">View &
-                                            Send Invoice</button>
-                                    </div>
+                                   @if ($technicians->invoice_status == 'created')
+    <div class="col-md-5 text-center">
+        @php
+            $payment = \App\Models\Payment::where('job_id', $technicians->id)->first();
+        @endphp
+        @if ($payment)
+            <a href="{{ route('invoicedetail', ['id' => $payment->id]) }}" class="btn waves-effect waves-light btn-primary">View & Send Invoice</a>
+        @endif
+    </div>
+@else
+    <div class="col-md-5 text-center">
+        <form action="{{ route('create.payment.invoice') }}" method="POST">
+            @csrf
+            <input type="hidden" name="job_id" value="{{ $technicians->id }}">
+            <button type="submit" class="btn waves-effect waves-light btn-primary">View & Send Invoice</button>
+        </form>
+    </div>
+@endif
+
                                 </div>
                                 <div class="row mb-3">
-                                    <div class="col-md-12">
-                                        <i class="fas fa-pencil-alt px-1"></i> By accessing, viewing and/or using this
-                                        site, you, the user...
+                                   @if ($technicians->invoice_status == 'created')
+<div class="col-md-12">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Invoice Number</th>
+                <th>Total Payment</th>
+                <th>Status</th>
+                <th>Due Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ $Payment->invoice_number ?? null }}</td>
+                <td>${{ $Payment->total ?? null }}</td>
+                <td>{{ $Payment->status ?? null }}</td>
+                <td>{{ $convertDateToTimezone($Payment->due_date ?? null) }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+@endif
+
+
+                                        
                                     </div>
                                 </div>
 
@@ -854,9 +761,9 @@
                     </div>
 
                     <div class="mb-4">
-                        <div class="card" style="border: 1px solid #D8D8D8;">
-                            <div class="card-body">
-                                <h4 class="card-title">ACTIVITY FEED</h4>
+                        <div class="card">
+                            <div class="card-body card-border shadow">
+                                <h5 class="card-title uppercase">ACTIVITY FEED</h5>
 
                                 <div class="table-responsive">
                                     <table class="table customize-table mb-0 v-middle">
@@ -1048,14 +955,15 @@
 
 
             // Construct the URL with the latitude and longitude values
-            // var mapUrl = 'https://www.google.com/maps/embed/v1/view?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&center=' +
-            //     latitude + ',' + longitude + '&zoom=18';
-            var streetViewUrl =
-                'https://www.google.com/maps/embed/v1/streetview?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&location=' +
-                latitude + ',' + longitude + '&heading=210&pitch=10&fov=35';
+             var mapUrl = 'https://www.google.com/maps/embed/v1/view?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&center=' +
+                latitude + ',' + longitude + '&zoom=18';
+           //  var streetViewUrl =
+             //    'https://www.google.com/maps/embed/v1/streetview?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&location=' +
+             //    latitude + ',' + longitude + '&heading=210&pitch=10&fov=35';
 
             // Set the source of the iframe to the Street View URL
-            document.getElementById('map').src = streetViewUrl;
+            //document.getElementById('map').src = streetViewUrl;
+             document.getElementById('map').src = mapUrl;
 
             // document.getElementById('map238').src = mapUrl;
         </script>

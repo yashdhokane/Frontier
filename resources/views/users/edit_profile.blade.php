@@ -137,81 +137,14 @@
     <!-- Page wrapper  -->
 
     <!-- -------------------------------------------------------------- -->
-
-    <div class="page-wrapper" style="display:inline;">
-
-        <!-- -------------------------------------------------------------- -->
-
-        <!-- Bread crumb and right sidebar toggle -->
-
-        <!-- -------------------------------------------------------------- -->
-
-
-
-        <!-- -------------------------------------------------------------- -->
-
-        <!-- End Bread crumb and right sidebar toggle -->
-
-        <!-- -------------------------------------------------------------- -->
-
-        <style>
-            .custom-alert {
-
-                width: 98%;
-
-                /* Adjust the width as needed */
-
-                margin: 0 auto;
-
-                /* Center the alert horizontally */
-
-            }
-        </style>
-
-        <div class="custom-alert">
-
-            @if ($errors->any())
-
-            <div class="alert alert-danger">
-
-                <ul>
-
-                    @foreach ($errors->all() as $error)
-
-                    <li>{{ $error }}</li>
-
-                    @endforeach
-
-                </ul>
-
-            </div>
-
-            @endif
-
-        </div>
-
-
-
-
-
-    </div>
-
+ 
 
     <!-- Container fluid  -->
 
     <!-- -------------------------------------------------------------- -->
     <div class="container-inline">
 
-        <!-- -------------------------------------------------------------- -->
-
-        <!-- Start Page Content -->
-
-        <!-- -------------------------------------------------------------- -->
-
-
-
-
-
+       
         <!-- row -->
 
 
@@ -224,7 +157,7 @@
 
                 <div class="card w-100">
 
-                    <div class="card-body">
+                    <div class="card-body-no">
 
                         <h4 class="card-title">Customer Details</h4>
                         <div class="row">
@@ -544,7 +477,7 @@
                             </div>
     
                         </div>
-                        <div class="row mt-2">
+                        <div class="row mt-2" style="display:none">
                             <div class="col-sm-12 col-md-12">
 
                                 <div class="mb-3">
@@ -566,7 +499,7 @@
 
             <div class="col-lg-3 d-flex align-items-stretch">
                 <div class="card w-100">
-                    <div class="card-body border-top">
+                    <div class="card-body">
 
 
                         <div>
@@ -631,7 +564,7 @@
 
     </div>
 
-    </div>
+  
 
 
 
@@ -682,7 +615,7 @@
 
     <!-- -------------------------------------------------------------- -->
 
-    </div>
+  
 
     <!-- -------------------------------------------------------------- -->
 
@@ -690,8 +623,8 @@
 
 
 
-    </div>
+   
 
-    </div>
+   
 
 </form>

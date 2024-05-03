@@ -2,36 +2,44 @@
 
 @section('content')
 <style>
-.alert-dismissible {
-    position: relative;
-    padding-right: 4em;
-    /* Adjust as needed */
-}
+    .alert-dismissible {
+        position: relative;
+        padding-right: 4em;
+        /* Adjust as needed */
+    }
 
-.close-alert {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 0.75rem 1.25rem;
-    color: inherit;
-    cursor: pointer;
-}
+    .close-alert {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 0.75rem 1.25rem;
+        color: inherit;
+        cursor: pointer;
+    }
 </style>
 
 <div class="page-wrapper" style="display:inline;">
 
     <div class="page-breadcrumb" style="padding-top: 0px;">
         <div class="row">
-            <div class="col-8 align-self-center">
+            <div class="col-6 align-self-center">
                 <h4 class="page-title">My Profile</h4>
             </div>
-            <div class="col-4 align-self-end">
-                <div class="btn-toolbar profile-menu-btn" role="toolbar" aria-label="Toolbar with button groups">
+            <div class="col-6 align-self-end">
+                <div class="profile-menu-btn" role="toolbar" aria-label="Toolbar with button groups" style="text-align: right;">
                     <div class="btn-group me-1" role="group" aria-label="First group">
-                        <a href="{{route('myprofile.index')}}" class="btn btn-info mx-2">Profile</a>
-                        <a href="{{route('myprofile.account')}}" class="btn btn-light-info text-info mx-2">Account
-                            Settings</a>
-                        <a href="{{route('myprofile.activity')}}" class="btn btn-light-info text-info mx-2">Activity</a>
+                        <a href="{{ route('myprofile.index') }}"
+                            class="btn mx-2
+                        @if(request()->routeIs('myprofile.index')) btn-info active @else btn-light-info text-info @endif">Profile</a>
+                        <a href="{{ route('myprofile.account') }}"
+                            class="btn mx-2
+                        @if(request()->routeIs('myprofile.account')) btn-info active @else btn-light-info text-info @endif">Account Settings</a>
+                        <a href="{{ route('myprofile.activity') }}"
+                            class="btn mx-2
+                        @if(request()->routeIs('myprofile.activity')) btn-info active @else btn-light-info text-info @endif">Activity and Notifications</a>
+                        {{-- <a href="{{ route('myprofile.notification') }}"
+                            class="btn mx-2
+                        @if(request()->routeIs('myprofile.notification')) btn-info active @else btn-light-info text-info @endif">Notification</a> --}}
                     </div>
                 </div>
             </div>
@@ -56,45 +64,34 @@
         @endif
 
         <script>
-        // Automatically close the alerts after 5 seconds
-        setTimeout(function() {
-            $('#success-alert, #error-alert').alert('close');
-        }, 5000);
+            // Automatically close the alerts after 5 seconds
+            setTimeout(function() {
+                $('#success-alert, #error-alert').alert('close');
+            }, 5000);
+
         </script>
-<div class="row col-md-12 " style="display:flex; justify-content: space-between;">
-        <div class="row col-md-9 ">
-        
-                <div class="card" style="border: 1px solid #D8D8D8;">
-                    <div class="card-body">
-                        <h4 class="card-title">ACTIVITY FEED</h4>
+        <div class="row">
+            <div class="col-md-6 ">
+
+                <div class="card">
+                    <div class="card-body card-border shadow">
+                        <h5 class="card-title">ACTIVITY FEED</h5>
                         <div class="table-responsive">
                             <table class="table customize-table mb-0 v-middle">
+                                <thead>
+                                    <tr>
+                                        <!-- <th style="width:20%">User</th> -->
+                                        <th>Activity</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
                                 <tbody>
                                     @foreach($activity as $record)
                                     <tr>
-                                        <td style="width:20%">
-                                            <div class="d-flex align-items-center">
-                                                @if($record->user_image)
-                                              <img src="{{ asset('public/images/Uploads/users/' . $record->id . '/' . $record->user_image) }}"
-                                                alt="avatar" class="rounded-circle" width="40" />
-                                                 {{--  <img src="{{ asset('public/images/superadmin/' . $record->user_image) }}"
-                                                    alt="avatar" class="rounded-circle" width="40" /> --}}
-
-                                                @else
-                                                <img src="{{asset('public/images/login_img_bydefault.png')}}"
-                                                    alt="avatar" class="rounded-circle" width="40" />
-
-
-                                                @endif
-
-
-
-                                                <span class="ms-2 fw-normal">{{ $record->name }}</span>
-                                            </div>
-                                        </td>
-                                        <td style="width:60%">{{ $record->activity}}</td>
-                                        <td style="width:20%">
-                                            {{ \Carbon\Carbon::parse($record->created_at)->format('D n/j/y g:ia') ?? 'null' }}
+                                        <td>{{ $record->activity}}</td>
+                                        <td>
+                                            {{ \Carbon\Carbon::parse($record->created_at)->format('D n/j/y g:ia') ??
+                                            'null' }}
                                         </td>
                                     </tr>
                                     @endforeach
@@ -105,51 +102,50 @@
                     </div>
                 </div>
 
-       
-        </div>
-        <div class="col-md-3 row">
-            <div class="card" style="border: 1px solid #D8D8D8;">
-                <div class="card-body">
 
+            </div>
 
-                    <div class="row mt-2">
-                        <div class="col-12">
-                            <small class="text-muted pt-1 db">Status</small>
-                            <h6>{{ $record->status ?? null}}</h6>
+            <div class="col-md-6 ">
+
+                <div class="card">
+                    <div class="card-body card-border shadow">
+                        <h5 class="card-title">NOTIFICATIONS</h5>
+                        <div class="table-responsive">
+                            <table class="table customize-table mb-0 v-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Notifications</th>
+                                        <th>Date</th>
+                                     </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($userNotifications as $record)
+                                    <tr>
+                                        <td @if($record->is_read == 0) class="text-muted" @endif>
+                                            <span class="fw-normal">{{ $record->notice->notice_title ?? ''
+                                                }}</span>
+                                        </td>
+                                        <td @if($record->is_read == 0) class="text-muted" @endif>
+                                            {{ \Carbon\Carbon::parse($record->notice->notice_date)->format('D n/j/y
+                                            g:ia') ?? 'null' }}
+                                        </td>
+									</tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
-                    </div>
 
-                    <div class="row mt-2">
-                        <div class="col-12">
-                            <small class="text-muted pt-1 db">Login</small>
-                            <h6>{{ $record->login ?? null}}</h6>
-                        </div>
-                    </div>
-                    @if (!empty($record))
-                    <div class="row mt-2">
-                        <div class="col-12">
-                            <small class="text-muted pt-1 db">Last Login</small>
-                            <h6>{{ date('m-d-Y @h:iA', strtotime($record->last_login)) }}</h6>
-                        </div>
-                    </div>
-                    @else
-                    @endif
-
-
-                    <div class="row mt-2">
-                        <div class="col-12">
-                            <small class="text-muted pt-1 db">IP Address</small>
-                            <h6>{{ $record->ip_address ?? null}}</h6>
-                        </div>
                     </div>
                 </div>
+
+
             </div>
+
+
+
         </div>
 
-
     </div>
-
-</div>
 
 
 </div>

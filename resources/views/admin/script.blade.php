@@ -12,11 +12,11 @@
 
 <script src="{{ asset('public/admin/dist/js/app.min.js') }}"></script>
 
-@if (request()->routeIs('map'))
+{{-- @if (request()->routeIs('map'))
     <script src="{{ asset('public/admin/dist/js/app.init.mini-sidebar.js') }}"></script>
-@else
+@else --}}
     <script src="{{ asset('public/admin/dist/js/app.init.js') }}"></script>
-@endif
+{{-- @endif --}}
 
 
 <script src="{{ asset('public/admin/dist/js/app-style-switcher.js') }}"></script>
@@ -218,3 +218,8 @@
                 }
 
 </script>
+
+
+
+
+

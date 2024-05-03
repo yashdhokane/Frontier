@@ -52,7 +52,10 @@ class JobModel extends Model
         'updated_at',
     ];
    
-
+public function jobfieldname()
+    {
+       return $this->hasOne(Jobfields::class, 'field_id', 'job_field_ids');
+    }
   public function jobactivity()
     {
        return $this->hasMany(JobActivity::class, 'job_id', 'id');

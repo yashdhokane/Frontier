@@ -234,19 +234,17 @@
                     $("#appendbody").html(data);
                 }
             });
+             setTimeout(function() {
+                // Trigger click event on the element with class .sidebartoggler
+                $('.sidebartoggler').click();
+            }); 
         });
     </script>
     <script src="{{ asset('public/admin/dist/js/pages/contact/contact.js') }}"></script>
     <script src="{{ asset('public/admin/dist/js/feather.min.js') }}"></script>
 
     <script src="{{ asset('public/admin/dist/js/custom.min.js') }}"></script>
-    <script>
-        $(document).ready(function() {
-            setTimeout(function() {
-                // Trigger click event on the element with class .sidebartoggler
-                $('.sidebartoggler').click();
-            }); // Adjust the delay time as needed
-        });
-    </script>
+    
+
 @stop
 @stop

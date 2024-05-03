@@ -1,7 +1,7 @@
 @extends('home')
 @section('content')
     <!-- -------------------------------------------------------------- -->
-    <div class="page-wrapper" style="display: inline;">
+   
         <!-- ------------------------------------------------- -->
 
 
@@ -12,33 +12,24 @@
 
         <!-- Page wrapper  -->
         <!-- -------------------------------------------------------------- -->
-        <div class="page-wrapper" style="display:inline;">
+   
             <!-- -------------------------------------------------------------- -->
             <div class="page-breadcrumb">
                 <div class="row">
-                    <div class="col-5 align-self-center">
-                        <h4 class="page-title">Frontier Services Inc</h4>
-                        <div class="d-flex align-items-center">
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="{{ route('buisnessprofile.index') }}">Setting</a>
-                                    </li>
-                                    <li class="breadcrumb-item active" aria-current="page">Service Area </li>
-                                </ol>
-                            </nav>
-                        </div>
-                    </div>
-                    <div class="col-7 align-self-center">
-                        <div class="d-flex no-block justify-content-end align-items-center">
-                            <div class="me-2">
-                                <div class="lastmonth"></div>
-                            </div>
-                            <div class="">
-                                <small>LAST MONTH</small>
-                                <h4 class="text-info mb-0 font-medium">$58,256</h4>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="col-9 align-self-center">
+                        <h4 class="page-title">Service Area</h4>
+						<div class="d-flex align-items-center">
+						<nav aria-label="breadcrumb">
+						  <ol class="breadcrumb">
+							<li class="breadcrumb-item"><a href="{{ route('buisnessprofile.index') }}">Settings</a></li>
+							<li class="breadcrumb-item active" aria-current="page">Service Area</li>
+						  </ol>
+						</nav>
+					  </div>
+					</div>
+                    <div class="col-3 align-self-center">
+						<a href="{{ route('servicearea.create') }}" id="btn-add-contact" class="btn btn-info"><i class="ri-map-pin-line"> </i> Add New Service Area</a>
+					</div>
                 </div>
             </div>
             <!-- -------------------------------------------------------------- -->
@@ -67,28 +58,7 @@
                     </div>
                 @endif
 
-                <div class="card card-body">
-                    <div class="row">
-                        <div class="col-md-4 col-xl-2">
-                            <h4 class="mb-0 mt-2">Service Area</h4>
-                        </div>
-                        <div
-                            class="
-                        col-md-8 col-xl-10
-                        text-end
-                        d-flex
-                        justify-content-md-end justify-content-center
-                        mt-3 mt-md-0
-                      ">
-
-                            <a href="{{ route('servicearea.create') }}" id="btn-add-contact" class="btn btn-info">
-                                <i data-feather="users" class="feather-sm fill-white me-1"> </i>
-                                Add Service Area</a>
-                        </div>
-
-
-                    </div>
-                </div>
+                
 
 
                 <!-- Add Popup Model -->
@@ -138,7 +108,7 @@
 
                 <!-- Row -->
 
-                <div class="row">
+                <div class="row mt-2">
 
                     <!-- column -->
                     @foreach ($servicearea as $index => $item)
@@ -148,7 +118,7 @@
 
 
 
-                            <div class="card">
+                            <div class="card card-border shadow mb-4">
 
                                 <div class="mparea">
                                     <div class="row">
@@ -162,34 +132,22 @@
                                                 }
                                             </style>
                                             </head>
-
-                                            <body>
-
-                                                <!-- Add a div to hold the map -->
+                                             <body>
+                                                 <!-- Add a div to hold the map -->
                                                 <div id="map1{{ $index }}"></div>
                                             </body>
                                         </div>
-
-                                    </div>
+                                     </div>
                                 </div>
 
-                                <div class="card-body">
-
-                                    <h4 class="card-title">{{ $item->area_name ?? null }}</h4>
-
-                                    <p class="card-text">
-
-                                        {{ $item->area_description ?? null }}
-
-                                    </p>
-
-                                    <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#service-area"
-                                        class="btn btn-primary serviceareaedit" id="{{ $item->area_id }}">Edit</a>
+                                <div class="card-bodyX mx-3 mb-3">
+                                     <h5 class="card-title uppercase text-info">{{ $item->area_name ?? null }}</h5>
+                                     <p class="card-text mb-2">{{ $item->area_description ?? null }}</p>
+                                     <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#service-area"
+                                        class="btn btn-xs btn-primary serviceareaedit" id="{{ $item->area_id }}">Edit</a>
                                     <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#service-area-view"
-                                        class="btn btn-primary serviceareaview" id="{{ $item->area_id }}">View</a>
-
-
-                                </div>
+                                        class="btn btn-xs btn-primary serviceareaview mx-2" id="{{ $item->area_id }}">View</a>
+                                 </div>
 
                             </div>
 
@@ -297,8 +255,8 @@
             <!-- -------------------------------------------------------------- -->
             <!-- End Page wrapper  -->
             <!-- -------------------------------------------------------------- -->
-        </div>
-    </div>
+
+    
 @section('script')
     <script>
         $(document).on('click', '.serviceareaedit', function() {

@@ -11,7 +11,7 @@ class FleetVehicle extends Model
     protected $table = 'fleet_vehicles';
     protected $primaryKey = 'vehicle_id';
 
-    protected $fillable = ['vehicle_description', 'technician_id', 'created_by', 'updated_by'];
+    protected $fillable = ['vehicle_description','vehicle_summary', 'technician_id', 'created_by', 'updated_by'];
 
     public function technician()
     {

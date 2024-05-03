@@ -94,8 +94,8 @@
             {{-- <a href="{{ route('tickets.create') }}" class="btn btn-primary mb-3">Create New Ticket</a> --}}
             <div class="card">
                 <div class="card-body">
-                    <div class="table-responsive" style="overflow-x: auto;">
-                        <table id="zero_config" class="table table-bordered text-nowrap" data-paging="true"
+                    <div class="table-responsive table-custom">
+                        <table id="zero_config" class="table table-hover table-striped table-bordered text-nowrap" data-paging="true"
                             data-paging-size="7">
                             <div class="d-flex flex-wrap">
                             <div class="col-md-12 row" style="margin-bottom:7px;">
@@ -187,7 +187,7 @@
                                         <td>
                                             <a href="{{ route('tickets.show', $ticket->id) }}"
                                                 class="fw-bold link"><span class="mb-1 badge bg-primary">{{
-                                                    $ticket->job_code }}</span></a>
+                                                    $ticket->id }}</span></a>
                                         </td>
                                         <td>
                                             <div class="text-wrap2">
@@ -220,15 +220,14 @@
                                         </td>
                                         <td>
                                             @if ($ticket->user)
-                                            {{ $ticket->user->name  ??  null}}
+                                            {{ $ticket->user->name }}
                                             @else
                                             Unassigned
                                             @endif
                                         </td>
                                         <td>
                                             @if ($ticket->technician)
-                                            {{ $ticket->technician->name  ??
-                                                    null}}
+                                            {{ $ticket->technician->name }}
                                             @else
                                             Unassigned
                                             @endif

@@ -1,7 +1,7 @@
 @extends('home')
 @section('content')
     <!-- -------------------------------------------------------------- -->
-    <div class="page-wrapper" style="display: inline;">
+   
         <!-- -------------------------------------------------------------- -->
         <!-- Bread crumb and right sidebar toggle -->
         <!-- -------------------------------------------------------------- -->
@@ -19,16 +19,7 @@
                     </div>
                 </div>
                 <div class="col-7 align-self-center">
-                    <div class="d-flex no-block justify-content-end align-items-center">
-                        <div class="me-2">
-                            <div class="lastmonth"></div>
-                        </div>
-                        <div class="">
-                            <small>LAST MONTH</small>
-                            <h4 class="text-info mb-0 font-medium">$58,256</h4>
-                        </div>
-                    </div>
-                </div>
+                 </div>
             </div>
         </div>
         <!-- -------------------------------------------------------------- -->
@@ -52,7 +43,7 @@
             @endif
             <div class="row">
                 <div class="col-12">
-                    <div class="card">
+                    <div class="card card-border shadow">
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="default_order" class="table table-striped table-bordered display text-nowrap"
@@ -134,8 +125,7 @@
         <!-- -------------------------------------------------------------- -->
         <!-- -------------------------------------------------------------- -->
         <!-- footer -->
-    </div>
-    </div>
+    
 @section('script')
     <script>
         $(document).ready(function() {

@@ -97,7 +97,7 @@
 											<tr>
 												<td>
 												<a href="{{ url('tickets/' . $item->id) }}"
-												class="font-medium link">{{ $item->job_title }}</a><br />
+												class="font-medium link">{{ $item->job_title ?? null }}</a><br />
 												@if ($item->JobAppliances)
 												<span style="font-size:12px;">
 												Model: {{ $item->JobAppliances->Appliances->model_number ?? 'N/A' }} /
@@ -109,12 +109,12 @@
 												</span>
 												@endif
 												</td>
-												<td>{{ $item->user->name }}</td>
-												<td>{{ $item->technician->name }}</td>
+												<td>{{ $item->user->name ?? null }}</td>
+												<td>{{ $item->technician->name ?? null }}</td>
 <td>
                                             @if ($item->jobassignname && $item->jobassignname->start_date_time)
                                             <div class="font-medium link">{{
-                                                $convertDateToTimezone($item->jobassignname->start_date_time) }}</div>
+                                                $convertDateToTimezone($item->jobassignname->start_date_time ?? null) }}</div>
                                             @else
                                             <div></div>
                                             @endif
@@ -146,10 +146,10 @@
 					<div class="col-lg-4">
 						<div class="card card-border">
 						<div class="card-body">
-						  <h5 class="card-title"> {{$item->name}}</h5>
+						  <h5 class="card-title"> {{$item->name ?? null}}</h5>
 						  <h6 class="card-subtitle mb-2 text-muted d-flex align-items-center">
 							<i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i>  @if(isset($item->area_name) && !empty($item->area_name))
-                                    {{ $item->area_name }}
+                                    {{ $item->area_name ?? null }}
                                     @endif
 						  </h6>
 						  <p class="card-text pt-2">
@@ -175,7 +175,7 @@
         <div class="col-lg-4">
             <div class="card card-border">
                 <div class="card-body">
-                    <h5 class="card-title">{{ $user->name }}</h5>
+                    <h5 class="card-title">{{ $user->name ?? null }}</h5>
                     @foreach ($user->user_addresses as $address)
                         <h6 class="card-subtitle mb-2 text-muted d-flex align-items-center">
                             <i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i>

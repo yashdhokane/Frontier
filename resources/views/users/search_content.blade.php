@@ -66,10 +66,23 @@
 
         </div>
     </td>
+   
     <td>
         <span
             class="mb-1 badge @if ($user->status == 'deactive') { bg-danger } @else { bg-success } @endif">{{ $user->status }}</span>
     </td>
+     <td>
+											<div style="display:flex;" data-bs-toggle="modal" data-bs-target="#commentModal2" onclick="setUserIdModal2({{ $user->id }}, '{{ $user->is_updated }}')">
+												@if ($user->is_updated == 'no')
+ 													<span class="status_icons status_icon2"><i class="ri-close-line"></i></span> <span class="px-2 mt-1 pointer">Not Updated</span>
+												@elseif($user->is_updated == 'yes')
+ 													<span class="status_icons status_icon1"><i class="ri-check-fill"></i></span> 
+													<span class="px-2 mt-1 pointer">Updated <span class="is_updated_time">{{ $isEnd($user->updated_at)}}</span></span>
+  												@endif
+											</div>
+												  
+
+										</td>
     <td class="action footable-last-visible" style="display: table-cell;">
         <div class="btn-group">
             <button type="button"

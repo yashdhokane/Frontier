@@ -429,7 +429,7 @@
                             <div class="card">
                                 <div class="card-body px-0">
                                     <div class="">
-                                        <h5 class="font-weight-medium mb-2">Select Customer
+                                        <h5 class="font-weight-medium mb-2">
                                         </h5>
                                         <div class="customers2">
                                         </div>
@@ -900,9 +900,9 @@ function searchCity() {
                     if (data.customers) {
                         $('.customers2').append(data.customers);
                     } else {
-                        $('.customers2').html(
-                            '<div class="customer_sr_box"><div class="row"><div class="col-md-12" style="text-align: center;"><h6 class="font-weight-medium mb-0">No Data Found</h6></div></div></div>'
-                        );
+                        // $('.customers2').html(
+                        //     '<div class="customer_sr_box"><div class="row"><div class="col-md-12" style="text-align: center;"><h6 class="font-weight-medium mb-0">No Data Found</h6></div></div></div>'
+                        // );
                     }
                 },
                 //   alert(1);

@@ -1,33 +1,24 @@
 @extends('home')
-<meta name="csrf-token" content="{{ csrf_token() }}">
+<!--<meta name="csrf-token" content="{{ csrf_token() }}">-->
 
 @section('content')
-    <div class="page-wrapper" style="display:inline;">
+ 
 
-        <div class="page-breadcrumb">
+        <div class="page-breadcrumb" >
             <div class="row">
                 <div class="col-5 align-self-center">
                     <h4 class="page-title">Business hours</h4>
-                    <div class="d-flex align-items-center">
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{route('buisnessprofile.index')}}">Settings</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Business hours </li>
-                            </ol>
-                        </nav>
-                    </div>
-                </div>
+					<div class="d-flex align-items-center">
+						<nav aria-label="breadcrumb">
+						  <ol class="breadcrumb">
+							<li class="breadcrumb-item"><a href="{{ route('buisnessprofile.index') }}">Settings</a></li>
+							<li class="breadcrumb-item active" aria-current="page">Business Hours</li>
+						  </ol>
+						</nav>
+					  </div>
+                 </div>
                 <div class="col-7 align-self-center">
-                    <div class="d-flex no-block justify-content-end align-items-center">
-                        <div class="me-2">
-                            <div class="lastmonth"></div>
-                        </div>
-                        <div class="">
-                            <small>LAST MONTH</small>
-                            <h4 class="text-info mb-0 font-medium">$58,256</h4>
-                        </div>
-                    </div>
-                </div>
+                 </div>
             </div>
         </div>
 
@@ -85,18 +76,20 @@
 
             @endphp
 
-            <div class="row pb-4">
+         <div class="card card-border shadow">
+         <div class="card-body">
+            <div class="row pb-4 mt-2">
                 <div class="col-md-6 col-xl-2">
                     <div class="row ">
                         <div class="col-md-9 col-xl-2">
                             @if ($displayOperatingHours)
-                                <h3 class="card-title">Operating hours</h3>
+                                <h5 class="card-title uppercase text-info">Operating hours</h5>
                                 @php $displayOperatingHours = false; @endphp
                             @endif
                         </div>
                         <div class="col-md-3 col-xl-2 justify-content-md-end">
                             @if ($displayEditButton)
-                                <button type="button" class="btn waves-effect waves-light btn-sm btn-outline-info"
+                                <button type="button" class="btn btn-xs waves-effect waves-light btn-sm btn-outline-info"
                                     id="edit_hours">EDIT</button>
                                 @php $displayEditButton = false; @endphp
                             @endif
@@ -172,13 +165,13 @@
                     <div class="row ">
                         <div class="col-md-9 col-xl-2">
                             @if ($displayBookingWindows)
-                                <h3 class="card-title">Online booking windows</h3>
+                                <h5 class="card-title uppercase text-info">Online booking windows</h5>
                                 @php $displayBookingWindows = false; @endphp
                             @endif
                         </div>
                         <div class="col-md-3 col-xl-2 justify-content-md-end">
                             @if ($displayEditButtononline)
-                                <button type="button" class="btn waves-effect waves-light btn-sm btn-outline-info"
+                                <button type="button" class="btn btn-xs waves-effect waves-light btn-sm btn-outline-info"
                                     id="edit_online">EDIT</button>
                                 @php $displayEditButtononline = false; @endphp
                             @endif
@@ -260,10 +253,12 @@
             </div>
 
         </div>
+        </div>
+        </div>
 
-    </div>
 
-    </div>
+
+  
 
 
     <script>

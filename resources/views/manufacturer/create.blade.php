@@ -7,10 +7,7 @@
         }
     </style>
     <!-- -------------------------------------------------------------- -->
-    <div class="page-wrapper" style="display: inline;">
-        <!-- -------------------------------------------------------------- -->
-        <!-- -------------------------------------------------------------- -->
-        <div class="page-wrapper" style="display: inline;">
+    
             <!-- -------------------------------------------------------------- -->
             <!-- Bread crumb and right sidebar toggle -->
 
@@ -18,20 +15,8 @@
                 <div class="row">
                     <div class="col-5 align-self-center">
                         <h4 class="page-title"> Add Manufacture </h4>
-                        <div class="d-flex align-items-center">
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="{{ route('buisnessprofile.index') }}">Setting</a>
-                                    </li>
-                                    <li class="breadcrumb-item"><a href="{{ route('manufacturer.index') }}">Manufacturer
-                                            List</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Add Manufacture</li>
-                                </ol>
-                            </nav>
-                        </div>
-                    </div>
-
-                </div>
+                     </div>
+                 </div>
             </div>
             <!-- -------------------------------------------------------------- -->
             <!-- End Bread crumb and right sidebar toggle -->
@@ -51,7 +36,7 @@
 
                         <!-- Card -->
                         <form action="{{ route('manufacture.store') }}" method="post" enctype="multipart/form-data">
-                            <div class="card card-body">
+                            <div class="card card-body card-border shadow">
  
                                 @csrf
                                 <div class="mb-3">
@@ -62,22 +47,18 @@
                                 </div>
 
                                 <div class="mb-3 justify-content-between">
-                                    <div class="col-md-8">
-                                        <label class="control-label bold mb5 required-field">Description</label>
+                                         <label class="control-label bold mb5 required-field">Description</label>
                                         <textarea id="text" name="manufacturer_description" class="form-control" style="height: 180px;">
 							</textarea>
                                         <small id="textHelp" class="form-text text-muted"></small>
-                                    </div>
-
-                                </div>
+								</div>
+								
                                 <div class="mb-3 justify-content-between">
-                                    <div class="col-md-4">
-                                        <label class="control-label bold mb5 required-field"
+                                         <label class="control-label bold mb5 required-field"
                                             style="display: block; font-size: 1rem; margin-bottom: 0.5rem;">Image</label>
                                         <input type="file" class="form-control" name="manufacture_image" id="" >
                                         <small id="textHelp" class="form-text text-muted"></small>
-                                    </div>
-                                </div>
+                                 </div>
                             </div>
                             <!-- Card -->
 
@@ -124,7 +105,6 @@
             <!-- -------------------------------------------------------------- -->
             <!-- Recent comment and chats -->
             <!-- -------------------------------------------------------------- -->
-        </div>
-        <!-- -------------------------------------------------------------- -->
-    </div>
+      
+  
 @endsection

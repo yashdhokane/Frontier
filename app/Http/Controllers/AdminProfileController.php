@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\UserNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -18,154 +19,192 @@ class AdminProfileController extends Controller
 {
 
 
-    
-public function email_verified(Request $request)
-{
-    $userId = auth()->id(); 
-    $user = User::find($userId);
-    
-    if ($user && $user->id == $userId) {
-        // Check if email_notifications is already set to 1
-        if ($user->email_verified == 1) {
-            $user->email_verified = 0; // Set to 0
+
+    public function email_verified(Request $request)
+    {
+        $userId = auth()->id();
+        $user = User::find($userId);
+
+        if ($user && $user->id == $userId) {
+            // Check if email_notifications is already set to 1
+            if ($user->email_verified == 1) {
+                $user->email_verified = 0; // Set to 0
+            } else {
+                $user->email_verified = 1; // Set to 1
+            }
+
+            $user->save();
+
+            return redirect()->back()->with('success', 'Email verified preference updated.');
         } else {
-            $user->email_verified = 1; // Set to 1
+            return redirect()->back()->with('error', 'Unauthorized access.');
         }
-        
-        $user->save();
-
-        return redirect()->back()->with('success', 'Email verified preference updated.');
-    } else {
-        return redirect()->back()->with('error', 'Unauthorized access.');
     }
-}
 
-public function sms(Request $request)
-{
-    $userId = auth()->id(); 
-    $user = User::find($userId);
-    
-    if ($user && $user->id == $userId) {
-        // Check if email_notifications is already set to 1
-        if ($user->sms_notification == 1) {
-            $user->sms_notification = 0; // Set to 0
+    public function sms(Request $request)
+    {
+        $userId = auth()->id();
+        $user = User::find($userId);
+
+        if ($user && $user->id == $userId) {
+            // Check if email_notifications is already set to 1
+            if ($user->sms_notification == 1) {
+                $user->sms_notification = 0; // Set to 0
+            } else {
+                $user->sms_notification = 1; // Set to 1
+            }
+
+            $user->save();
+
+            return redirect()->back()->with('success', 'SMS Notification preference updated.');
         } else {
-            $user->sms_notification = 1; // Set to 1
+            return redirect()->back()->with('error', 'Unauthorized access.');
         }
-        
-        $user->save();
-
-        return redirect()->back()->with('success', 'SMS Notification preference updated.');
-    } else {
-        return redirect()->back()->with('error', 'Unauthorized access.');
     }
-}
 
-public function email(Request $request)
-{
-    $userId = auth()->id(); 
-    $user = User::find($userId);
-    
-    if ($user && $user->id == $userId) {
-        // Check if email_notifications is already set to 1
-        if ($user->email_notifications == 1) {
-            $user->email_notifications = 0; // Set to 0
+    public function email(Request $request)
+    {
+        $userId = auth()->id();
+        $user = User::find($userId);
+
+        if ($user && $user->id == $userId) {
+            // Check if email_notifications is already set to 1
+            if ($user->email_notifications == 1) {
+                $user->email_notifications = 0; // Set to 0
+            } else {
+                $user->email_notifications = 1; // Set to 1
+            }
+
+            $user->save();
+
+            return redirect()->back()->with('success', 'Email notification preference updated.');
         } else {
-            $user->email_notifications = 1; // Set to 1
+            return redirect()->back()->with('error', 'Unauthorized access.');
         }
-        
-        $user->save();
-
-        return redirect()->back()->with('success', 'Email notification preference updated.');
-    } else {
-        return redirect()->back()->with('error', 'Unauthorized access.');
     }
-}
-  public function index()
-{
-    $userId = auth()->id(); // Retrieve the authenticated user's ID
+    public function index()
+    {
+        $userId = auth()->id(); // Retrieve the authenticated user's ID
 
-    // Find the user and related data using the authenticated user's ID
-    $user = User::find($userId);
+        // Find the user and related data using the authenticated user's ID
+        $user = User::find($userId);
         $userAddress = CustomerUserAddress::where('user_id', $userId)->first();
 
-    $locationStates = LocationState::all();
-    $meta = $user->meta;
+        $locationStates = LocationState::all();
+        $meta = $user->meta;
 
-    // Retrieve user meta information
-    $first_name = $user->meta()->where('meta_key', 'first_name')->first()->meta_value ?? '';
-    $last_name = $user->meta()->where('meta_key', 'last_name')->first()->meta_value ?? '';
-    $home_phone = $user->meta()->where('meta_key', 'home_phone')->first()->meta_value ?? '';
-    $work_phone = $user->meta()->where('meta_key', 'work_phone')->first()->meta_value ?? '';
-    $ssn = $user->meta()->where('meta_key', 'ssn')->first()->meta_value ?? '';
-    $dob = $user->meta()->where('meta_key', 'dob')->first()->meta_value ?? '';
+        // Retrieve user meta information
+        $first_name = $user->meta()->where('meta_key', 'first_name')->first()->meta_value ?? '';
+        $last_name = $user->meta()->where('meta_key', 'last_name')->first()->meta_value ?? '';
+        $home_phone = $user->meta()->where('meta_key', 'home_phone')->first()->meta_value ?? '';
+        $work_phone = $user->meta()->where('meta_key', 'work_phone')->first()->meta_value ?? '';
+        $ssn = $user->meta()->where('meta_key', 'ssn')->first()->meta_value ?? '';
+        $dob = $user->meta()->where('meta_key', 'dob')->first()->meta_value ?? '';
 
-    return view('adminprofile.myprofile', compact('dob', 'ssn', 'work_phone', 'home_phone', 'last_name', 'first_name', 'locationStates', 'user', 'userAddress'));
-}
-
-public function activity(){
-    $userId = Auth::id();
-$activity = DB::table('job_activity')
-    ->join('users', 'job_activity.user_id', '=', 'users.id')
-    ->join('user_login_history', 'job_activity.user_id', '=', 'user_login_history.user_id')
-    ->where('job_activity.user_id', $userId)
-    ->get();
-
-
-  
-    return view('adminprofile.myprofile_activity',compact('activity'));
-}
-
-    public function account(){
-     $userId = auth()->id(); 
-    $user = User::find($userId);
-    return view('adminprofile.myprofile_account', compact('user'));
-}
-
-
-  public function store(Request $request)
-{
-    $request->validate([
-        // 'image' => 'required|mimes:gif,jpg,png,jpeg',
-        // 'content' => 'required',
-    ]);
-
-    $user = User::findOrFail($request->id);
-
-    // Check if a new image file is uploaded
-    if ($request->hasFile('user_image')) {
-        $directoryName = $user->id;
-        $directoryPath = public_path('images/Uploads/users/' . $directoryName);
-
-        // Create directory if it doesn't exist
-        if (!file_exists($directoryPath)) {
-            mkdir($directoryPath, 0777, true);
-        }
-
-        // Get the uploaded image file
-        $image = $request->file('user_image');
-        $imageName = $image->getClientOriginalName();
-
-        // Move the uploaded image to the user's directory
-        $image->move($directoryPath, $imageName);
-
-        // Delete the previous image if it exists
-        if ($user->user_image) {
-            $previousImagePath = public_path('images/Uploads/users/' . $directoryName . '/' . $user->user_image);
-            if (file_exists($previousImagePath)) {
-                unlink($previousImagePath);
-            }
-        }
-
-        // Update the user's image
-        $user->user_image = $imageName;
+        return view('adminprofile.myprofile', compact('dob', 'ssn', 'work_phone', 'home_phone', 'last_name', 'first_name', 'locationStates', 'user', 'userAddress'));
     }
 
-    // Save the user object
-    $user->save();
+    public function activity()
+    {
+        $userId = Auth::id();
+        // $activity = DB::table('job_activity')
+        // ->join('users', 'job_activity.user_id', '=', 'users.id')
+        // ->join('user_login_history', 'job_activity.user_id', '=', 'user_login_history.user_id')
+        // ->where('job_activity.user_id', $userId)
+        // ->get();
+        $jobActivity = DB::table('job_activity')
+            ->select(
+                'job_activity.user_id',
+                'job_activity.activity',
+                'job_activity.created_at as activity_date',
+                DB::raw("'job_activity' as activity_type"),
+                'users.*' // Select all columns from the users table
+            )
+            ->join('users', 'job_activity.user_id', '=', 'users.id')
+            ->join('user_login_history', 'job_activity.user_id', '=', 'user_login_history.user_id')
+            ->where('job_activity.user_id', $userId);
 
-    return redirect()->back()->with('success', 'Image updated successfully.');
-}
+        $userActivity = DB::table('user_activity')
+            ->select(
+                'user_activity.user_id',
+                'user_activity.activity',
+                'user_activity.created_at as activity_date',
+                DB::raw("'user_activity' as activity_type"),
+                'users.*' // Select all columns from the users table
+            )
+            ->join('users', 'user_activity.user_id', '=', 'users.id')
+            ->where('user_activity.user_id', $userId);
+
+        $activity = $jobActivity->union($userActivity)
+            ->orderBy('activity_date', 'desc') // Order by created_at in descending order
+            ->get();
+        $userNotifications = UserNotification::with('notice')->where('user_id', $userId)->orderBy('id', 'desc')->get();
+
+
+
+        return view('adminprofile.myprofile_activity', compact('activity', 'userNotifications'));
+    }
+
+    public function notification()
+    {
+        $userId = auth()->id();
+        $userNotifications = UserNotification::with('notice')->where('user_id', $userId)->orderBy('id', 'desc')->get();
+        return view('adminprofile.my_notification', compact('userNotifications'));
+    }
+
+
+
+    public function account()
+    {
+        $userId = auth()->id();
+        $user = User::find($userId);
+        return view('adminprofile.myprofile_account', compact('user'));
+    }
+
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            // 'image' => 'required|mimes:gif,jpg,png,jpeg',
+            // 'content' => 'required',
+        ]);
+
+        $user = User::findOrFail($request->id);
+
+        // Check if a new image file is uploaded
+        if ($request->hasFile('user_image')) {
+            $directoryName = $user->id;
+            $directoryPath = public_path('images/Uploads/users/' . $directoryName);
+
+            // Create directory if it doesn't exist
+            if (!file_exists($directoryPath)) {
+                mkdir($directoryPath, 0777, true);
+            }
+
+            // Get the uploaded image file
+            $image = $request->file('user_image');
+            $imageName = $image->getClientOriginalName();
+
+            // Move the uploaded image to the user's directory
+            $image->move($directoryPath, $imageName);
+
+            // Delete the previous image if it exists
+            if ($user->user_image) {
+                $previousImagePath = public_path('images/Uploads/users/' . $directoryName . '/' . $user->user_image);
+                if (file_exists($previousImagePath)) {
+                    unlink($previousImagePath);
+                }
+            }
+
+            // Update the user's image
+            $user->user_image = $imageName;
+        }
+
+        // Save the user object
+        $user->save();
+
+        return redirect()->back()->with('success', 'Image updated successfully.');
+    }
 
 
     public function passstore(Request $request)
@@ -194,7 +233,7 @@ $activity = DB::table('job_activity')
 
     public function infoadmin(Request $request)
     {
-    //    dd($request->all());
+        //    dd($request->all());
         $request->validate([
             // 'currentpassword' => 'required',
             // 'password' => 'required|min:8', // Adjust the minimum length as needed
@@ -215,27 +254,27 @@ $activity = DB::table('job_activity')
                 'city' => $request->city,
                 'state_id' => $request->state_id,
                 'address_line1' => $request->address_line1,
-				    'address_line2' => $request->address_line2,
-                    				    'zipcode' => $request->zipcode,
+                'address_line2' => $request->address_line2,
+                'zipcode' => $request->zipcode,
 
 
             ]
         );
 
-	$user = User::find($request->id);
-    $user->meta()->updateOrCreate(['meta_key' => 'first_name'], ['meta_value' => $request['first_name']]);
-    $user->meta()->updateOrCreate(['meta_key' => 'last_name'], ['meta_value' => $request['last_name']]);
-    $user->meta()->updateOrCreate(['meta_key' => 'home_phone'], ['meta_value' => $request['home_phone']]);
-    $user->meta()->updateOrCreate(['meta_key' => 'work_phone'], ['meta_value' => $request['work_phone']]);
-   $user->meta()->updateOrCreate(['meta_key' => 'ssn'], ['meta_value' => $request['ssn']]);
-    $user->meta()->updateOrCreate(['meta_key' => 'dob'], ['meta_value' => $request['dob']]);
+        $user = User::find($request->id);
+        $user->meta()->updateOrCreate(['meta_key' => 'first_name'], ['meta_value' => $request['first_name']]);
+        $user->meta()->updateOrCreate(['meta_key' => 'last_name'], ['meta_value' => $request['last_name']]);
+        $user->meta()->updateOrCreate(['meta_key' => 'home_phone'], ['meta_value' => $request['home_phone']]);
+        $user->meta()->updateOrCreate(['meta_key' => 'work_phone'], ['meta_value' => $request['work_phone']]);
+        $user->meta()->updateOrCreate(['meta_key' => 'ssn'], ['meta_value' => $request['ssn']]);
+        $user->meta()->updateOrCreate(['meta_key' => 'dob'], ['meta_value' => $request['dob']]);
 
-	    // dd(1);
+        // dd(1);
 
         return redirect()->back()->with('success', 'Information updated successfully.');
     }
 
 
-    
+
 
 }

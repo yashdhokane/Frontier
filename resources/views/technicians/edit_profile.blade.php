@@ -1,4 +1,12 @@
 <style>
+  .color_box {
+		width: 30px;
+		height: 24px;
+		border-radius: 4px;
+  }
+  </style>
+
+<style>
     .required-field::after {
         content: " *";
         color: red;
@@ -99,12 +107,9 @@
         <!-- row user information -->
         <div class="row">
 
-            <div class="col-lg-9 d-flex align-items-stretch">
-			
-                <div class="card w-100">
-
-                    <div class="card-body">
-						<h4 class="card-title">Technician Details</h4>
+            <div class="col-sm-9 col-md-9">
+                       
+						<h5 class="card-title uppercase">Edit Details</h5>
                         <div class="row">
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
@@ -163,9 +168,19 @@
                                         placeholder="" />
                                 </div>
                             </div>
-						</div>
+                            <div class="col-sm-12 col-md-4">
+                                <div class="mb-3">
+                                    <label for="email"
+                                        class="control-label bold mb5 col-form-label required-field">Email</label>
+                                    <input type="text" class="form-control" id="email" name="email"
+                                        value="{{ old('email', $technician->email) }}" placeholder="" required />
+                                </div>
+                            </div>
+                        </div>
 						
-						<h4 class="card-title mt-4">Address Details</h4>
+					 
+						
+						<h5 class="card-title uppercase mt-4">Address Details</h5>
  						<div class="row">
                             <div class="col-sm-12 col-md-12">
                                 <div class="mb-3">
@@ -244,7 +259,7 @@
                             </div>
                         </div>
 						
-						<h4 class="card-title mt-4">Other Details</h4>
+						<h5 class="card-title uppercase mt-4">Other Details</h5>
 						
                         <div class="row">
 							<!-- Date of Birth -->
@@ -317,17 +332,30 @@
  							</div>
                          </div>
 						
-                        <a href="#" id="openChangePasswordModal">Click here to change password</a>
-                    </div>
+                        <div class="row"><a href="#" id="openChangePasswordModal">Click here to change password</a></div>
+                   
+			</div>    
 
-                </div>
 				
-            </div>
+			<div class="col-sm-3 col-md-3">
+				<h5 class="card-title uppercase mt-4">Color Codes</h5>                            
+				<div class="row">
+					@foreach ($colorcode as $colorCode)
+						<div class="col-sm-12 col-md-4">
+							<div class="form-check">
+								<input class="form-check-input success check-outline outline-success" type="radio" name="color_code" id="{{ $colorCode->color_code }}" value="{{ $colorCode->color_code }}" @if ($colorCode->color_code == $technician->color_code) checked @endif>
+								<label class="form-check-label" for="{{ $colorCode->color_code }}">
+									<div class="color_box" style="background-color: {{ $colorCode->color_code }};"></div>
+								</label>
+							</div>
+						</div>
+					@endforeach
+				</div>
+			</div>
+
+
+		</div>
  
-        </div>
-
-        
-
         <!-- row -->
         <div class="row">
             <div class="p-3 border-top">
@@ -342,8 +370,9 @@
             </div>
         </div>
         <!-- End row -->
-
-</div>
+		
+ 
+	</div>
 
 
 </form>

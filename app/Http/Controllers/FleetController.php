@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\FleetDetails;
 use App\Models\FleetVehicle;
@@ -17,7 +18,7 @@ class FleetController extends Controller
      */
     public function index()
     {
-        $vehicle = FleetVehicle::get();
+$vehicle = FleetVehicle::orderBy('created_at', 'desc')->get();
 
        return view('fleet.index',compact('vehicle'));
     }
@@ -59,9 +60,10 @@ class FleetController extends Controller
     }
 
     public function store(Request $request)
-    {
+    { // dd($request->all());
         $vehicle = new FleetVehicle();
 
+        $vehicle->vehicle_summary = $request->vehicle_summary;
         $vehicle->vehicle_description = $request->vehicle_description;
         $vehicle->technician_id = $request->technician_id;
         $vehicle->created_by = auth()->user()->id;
@@ -71,7 +73,19 @@ class FleetController extends Controller
 
 
 
-        return redirect()->back()->with('success', 'Fleet Vehicle created successfully');
+        return redirect()->route('vehicles')->with('success', 'Fleet Vehicle created successfully');
+    }
+
+     public function fleetedit($id)
+    {
+        // Find the FleetModel by its ID
+        $fleetModel = FleetVehicle::findOrFail($id);
+
+        // Retrieve all users to populate the technician select dropdown
+        $users = User::where('role','technician')->get();
+
+        // Return the edit view with the FleetModel and users data
+        return view('fleet.edit', compact('fleetModel', 'users'));
     }
     public function edit(Request $request, $id)
     {
@@ -165,5 +179,28 @@ class FleetController extends Controller
         return redirect()->back()->with('success', 'Fleet data updated successfully!');
     }
 
-    
+     public function update(Request $request, $id)
+    {
+        // Validate the form data
+        $request->validate([
+            'vehicle_description' => 'required|string',
+            'vehicle_summary' => 'required|string',
+            'technician_id' => 'required|', // Assuming technicians are stored in the users table
+        ]);
+
+        // Find the FleetModel by its ID
+        $fleetModel = FleetVehicle::findOrFail($id);
+
+        // Update the FleetModel with the form data
+        $fleetModel->update([
+            'vehicle_description' => $request->input('vehicle_description'),
+            'vehicle_summary' => $request->input('vehicle_summary'),
+            'technician_id' => $request->input('technician_id'),
+            'updated_at' => now(), // Update the updated_at timestamp
+            'updated_by' => Auth::id(), // Set the updated_by column to the authenticated user's ID
+        ]);
+
+        // Redirect back with a success message
+        return redirect()->route('vehicles')->with('success', 'Fleet model updated successfully.');
+    }
 }

@@ -10,15 +10,7 @@
         <div class="row">
             <div class="col-5 align-self-center">
                 <h4 class="page-title">Admin</h4>
-                <div class="d-flex align-items-center">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Admin</li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
+             </div>
             <div class="col-7 align-self-center">
              </div>
         </div>
@@ -51,7 +43,7 @@
             <!-- ---------------------
                         start Contact
                     ---------------- -->
-            <div class="card card-body">
+            <div class="card card-body shadow">
                 <div class="row">
                     <div class="col-md-4 col-xl-2">
                         <form>
@@ -92,9 +84,9 @@
             <!-- Modal -->
 
 
-            <div class="card card-body">
-                <div class="table-responsive" style="overflow-x: auto">
-                    <table id="zero_config" class="table search-table v-middle text-nowrap">
+            <div class="card card-body shadow">
+                <div class="table-responsive table-custom">
+                    <table id="zero_config" class="table table-hover table-striped search-table v-middle text-nowrap">
                         <thead class="header-item">
 
                             {{-- <th>
@@ -144,7 +136,7 @@
                                         <div class="ms-2">
                                             <div class="user-meta-info">
                                                 <a href="{{ route('users.show', $user->id) }}">
-                                                    <h5 class="user-name mb-0" data-name="name"> {{ $user->name }}</h5>
+                                                    <h6 class="user-name mb-0" data-name="name"> {{ $user->name }}</h6>
                                                 </a>
                                              </div>
                                         </div>

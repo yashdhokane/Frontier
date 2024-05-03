@@ -50,15 +50,66 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+        public function index($status = null)
     {
+        // dd($status);
+        $usersQuery = User::where('role', 'customer');
 
-        $users = User::where('role', 'customer')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-        // Pass users and user addresses to the view
+        if ($status == "deactive") {
+            $usersQuery->where('status', 'deactive');
+        } else {
+            $usersQuery->where('status', 'active');
+        }
+
+        $users = $usersQuery->orderBy('created_at', 'desc')->paginate(50);
+
         return view('users.index', ['users' => $users]);
     }
+
+//     public function index($status = null)
+//     {
+//         $usersQuery = User::with('Location')->where('role', 'customer');
+
+//         if ($status == "deactive") {
+//             $usersQuery->where('status', 'deactive');
+//         } else {
+//             $usersQuery->where('status', 'active');
+//         }
+
+//         $users = $usersQuery->orderBy('created_at', 'desc')->paginate(50);
+
+//       foreach ($users as $user) {
+//     // if ($user->is_updated != 'yes') {
+//           if ($user) {
+        
+//         $address = $user->Location->address_line1 . ', ' . $user->Location->city;
+
+//         $response = file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($address) . '&key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&callback');
+
+
+//         $data = json_decode($response);
+
+//         if ($data && $data->status === 'OK') {
+//             $latitude = $data->results[0]->geometry->location->lat;
+//             $longitude = $data->results[0]->geometry->location->lng;
+
+//             // Update latitude and longitude in the CustomerUserAddress model
+//             CustomerUserAddress::updateOrCreate(
+//                 ['user_id' => $user->id],
+//                 ['latitude' => $latitude, 'longitude' => $longitude]
+//             );
+
+//           $user->is_updated = 'yes';
+//             $user->save();
+//         } else {
+//             $user->latitude = null;
+//             $user->longitude = null;
+//         }
+//     }
+// }
+//         return view('users.index', ['users' => $users]);
+//     }
+
 
     public function search(Request $request)
     {
@@ -70,7 +121,7 @@ class UserController extends Controller
                     ->orWhere('email', 'like', '%' . $query . '%');
             })
             ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->paginate(50);
     
         $tbodyHtml = view('users.search_content', compact('users'))->render();
     
@@ -136,6 +187,8 @@ class UserController extends Controller
 
         $user->save();
         $userId = $user->id;
+        app('sendNotices')('New Customer','New Customer Added at ' . now(), url()->current(), 'customer');
+
 
         if ($request->hasFile('image')) {
             $directoryName = $userId;
@@ -277,7 +330,7 @@ class UserController extends Controller
             }
         }
         //  dd(1);
-        return redirect()->route('users.index')->with('success', 'User created successfully');
+        return redirect()->route('users.index')->with('success', 'Customer created successfully');
     }
 
 
@@ -286,7 +339,14 @@ class UserController extends Controller
         //$roles = Role::all();
         $user = User::with('Location')->find($id);
                 $customer_tag = SiteTags::all();
-
+ $notename = DB::table('user_notes')->where(
+            'user_id',
+            $user->id
+        )->get();
+        $estimates = DB::table('estimates')->where(
+            'customer_id',
+            $user->id
+        )->get();
         // $userId = $user->id;
         // $attr = [
         //     'address_primary' => '',
@@ -409,7 +469,7 @@ $leadsourcename=Leadsource::where('user_id', $user->id)
        
 
         $leadsource = SiteLeadSource::all();
-        return view('users.show', compact('customer_tag','leadsourcename','leadsource','selectedTags','tickets','payment', 'activity', 'setting', 'login_history', 'location1', 'tags', 'leadSources', 'cities', 'locationStates', 'user',  'payments', 'payment', 'userAddresscity', 'jobasigndate', 'customerimage', 'jobasign', 'userTags', 'location', 'tickets', 'UsersDetails', 'Notes'));
+        return view('users.show', compact('customer_tag','estimates','notename','leadsourcename','leadsource','selectedTags','tickets','payment', 'activity', 'setting', 'login_history', 'location1', 'tags', 'leadSources', 'cities', 'locationStates', 'user',  'payments', 'payment', 'userAddresscity', 'jobasigndate', 'customerimage', 'jobasign', 'userTags', 'location', 'tickets', 'UsersDetails', 'Notes'));
     }
 
 
@@ -937,7 +997,6 @@ $leadsourcename=Leadsource::where('user_id', $user->id)
     }
 
 
-
     public function customer_schedule(Request $request)
     {
 
@@ -1133,6 +1192,7 @@ $leadsourcename=Leadsource::where('user_id', $user->id)
     }
 
 
+
     //  public function checkMobile(Request $request)
 // {
 //     $mobileNumber = $request->input('mobile_number');
@@ -1155,7 +1215,7 @@ $leadsourcename=Leadsource::where('user_id', $user->id)
         $customers = '';
 
         if (isset($phone) && !empty($phone)) {
-            $filterCustomer = User::where('mobile', 'LIKE', '%' . $phone . '%')
+            $filterCustomer = User::where('mobile',  $phone)
                 ->where('role', 'customer')
                 ->get();
 
@@ -1167,7 +1227,7 @@ $leadsourcename=Leadsource::where('user_id', $user->id)
                         ->where('user_id', $value->id)
                         ->first();
 
-                    $editRoute = route('users.edit', ['id' => $value->id]);
+                    $editRoute = route('users.show', ['id' => $value->id]);
 
                     // Define $imageSrc here (assuming it represents the user's image source)
                     $imagePath = public_path('images/Uploads/users/' . $value->user_image);
@@ -1178,7 +1238,8 @@ $leadsourcename=Leadsource::where('user_id', $user->id)
                     }
 
                     $customers .= '<a href="' . $editRoute . '">'; // Start anchor tag
-                    $customers .= '<div class="customer_sr_box selectCustomer2 px-0" data-id="' . $value->id . '" data-name="' . $value->name . '"><div class="row justify-content-around"><div class="col-md-2 d-flex align-items-center"><span>';
+                    $customers .= '<h5 class="font-weight-medium mb-2">Select Customer
+                                    </h5><div class="customer_sr_box selectCustomer2 px-0" data-id="' . $value->id . '" data-name="' . $value->name . '"><div class="row justify-content-around"><div class="col-md-2 d-flex align-items-center"><span>';
                     $customers .= '<img src="' . $imageSrc . '" alt="user" class="rounded-circle" width="50">';
                     $customers .= '</span></div><div class="col-md-9"><h6 class="font-weight-medium mb-0">' . $value->name . ' ';
                     if (isset($getCustomerAddress->city) && !empty($getCustomerAddress->city)) {
@@ -1345,5 +1406,36 @@ public function customer_file_store(Request $request)
         return redirect()->back()->with('error', 'Failed to create Leadsource: ' . $e->getMessage());
     }
 }
+
+public function customercomment(Request $request)
+{
+    // dd($request->all());
+    $addedByUserId = auth()->user()->id;
+    $user = User::findOrFail($request->user_id);
+
+    $note = new UserNotesCustomer();
+    $note->user_id = $user->id;
+    $note->added_by = $addedByUserId;
+    $note->last_updated_by = $addedByUserId;
+    $note->note = $request->note;
+
+    if (!empty($request->note)) {
+        $note->save();
+    }
+
+      if ($request->is_updated === null) {
+        $user->is_updated = 'no';
+    } else {
+        $isUpdated = $request->is_updated;
+        $user->is_updated = $isUpdated;
+    }
+
+    $user->updated_by = $addedByUserId;
+    $user->updated_at = now();
+    $user->save();
+
+    return redirect()->back()->with('success', 'Work details updated successfully');
+}
+
 
 }

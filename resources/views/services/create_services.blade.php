@@ -45,7 +45,7 @@
                 <div class="col-lg-8 col-md-8">
 
                     <!-- Card -->
-                    <div class="card card-body">
+                    <div class="card card-body card-border shadow">
                         <form action="{{ route('services.storeServices') }}" method="post" enctype="multipart/form-data">
                             @csrf
                             @if (session('success'))
@@ -55,12 +55,12 @@
                                 </div>
                             @endif
                             <div class="mb-3">
-                                <label class="control-label required-field">Name</label>
+                                <label class="control-label bold mb5 required-field">Name</label>
                                 <input type="text" name="service_name" id="firstName" class="form-control" placeholder=""
                                     required>
                             </div>
                             <div class="mb-3">
-                                <label class="control-label required-field">Description</label>
+                                <label class="control-label bold mb5 required-field">Description</label>
                                 <textarea id="text" name="service_description" class="form-control" style="height: 120px;" required></textarea>
                             </div>
 
@@ -71,7 +71,7 @@
                                 <div class="col-md-4 col-xl-2">
                                     <div class="mb-3">
                                         <label for="service"
-                                            class="control-label col-form-label required-field">Category</label>
+                                            class="control-label bold mb5 col-form-label required-field">Category</label>
                                         <select class="form-select" id="service" name="service_category_id" required>
                                             <option selected disabled value="">Select Category...</option>
                                             @foreach ($services as $service)
@@ -83,14 +83,14 @@
                                 </div>
                                 <div class="col-md-4 col-xl-2">
                                     <div class="mb-3">
-                                        <label class="control-label col-form-label required-field">Service Code</label>
+                                        <label class="control-label bold mb5 col-form-label required-field">Service Code</label>
                                         <input type="text" name="service_code" id="task" class="form-control"
                                             placeholder="" required>
                                     </div>
                                 </div>
                                 <div class="col-md-4 col-xl-2">
                                     <div class="mb-3">
-                                        <label class="control-label col-form-label required-field">Service Duration</label>
+                                        <label class="control-label bold mb5 col-form-label required-field">Service Duration</label>
                                         <select class="form-control form-select" name="hours"
                                             data-placeholder="Choose hours" tabindex="1" required>
                                             <option value="30">30 Mins</option>
@@ -106,7 +106,7 @@
                                 <div class="col-md-12 col-xl-2">
                                     <div class="mb-3">
                                         <label for="manufacturer"
-                                            class="control-label col-form-label required-field">Manufacturer</label>
+                                            class="control-label bold mb5 col-form-label required-field">Manufacturer</label>
                                             <select class="select2-with-menu-bg form-control  me-sm-2" name="manufacturer_ids[]"
                                             id="menu-bg-multiple" multiple="multiple" data-bgcolor="light"
                                             data-bgcolor-variation="accent-3" data-text-color="blue"
@@ -119,32 +119,26 @@
                                     </div>
                                 </div>
                             </div>
+							 
+							<div class="row mt-2 mb-4">
+								<div class="col-md-6">
+									<label class="control-label bold mb5 ">Troubleshooting Questions</label>
+									<input type="text" name="troubleshooting_question1" id="task" class="form-control"
+										placeholder=""  />
+								</div>
+								<div class="col-md-6">
+									<label class="control-label bold mb5 ">Additional Troubleshooting Questions</label>
+									<input type="text" name="troubleshooting_question2" id="task" class="form-control"
+										placeholder=""  />
+								</div>
+							</div>
 
 
 
 
                     </div>
                     <!-- Card -->
-
-
-                    <!-- Card -->
-                    <div class="card card-body">
-                        <h4>TROUBLESHOOTING</h4>
-
-                        <div class="row mt-2">
-                            <div class="col-md-6">
-                                <label class="control-label required-field">Troubleshooting Questions</label>
-                                <input type="text" name="troubleshooting_question1" id="task" class="form-control"
-                                    placeholder="" required />
-                            </div>
-                            <div class="col-md-6">
-                                <label class="control-label required-field">Additional Troubleshooting Questions</label>
-                                <input type="text" name="troubleshooting_question2" id="task" class="form-control"
-                                    placeholder="" required />
-                            </div>
-                        </div>
-
-                    </div>
+ 
 
                 </div>
                 <!-- column -->
@@ -152,8 +146,8 @@
                 <!-- column -->
                 <div class="col-lg-4 col-md-4">
 
-                    <div class="card card-body">
-                        <h4 class="required-field">Warranty</h4>
+                    <div class="card card-body  card-border shadow">
+                        <label class="required-field bold mb5">Warranty</label>
                         <div class="mb-4">
                             <div class="form-check form-switch">
                                 <input class="form-check-input" name="in_warranty" type="checkbox" value="yes"
@@ -162,7 +156,7 @@
                                     Warranty</label>
                             </div>
                         </div>
-                        <h4 class="required-field">Job Schedule</h4>
+                        <label class="required-field bold mb5">Job Schedule</label>
                         <div class="mb-4">
                             <div class="form-check form-switch">
                                 <input class="form-check-input" name="service_online" type="checkbox" value="yes"
@@ -171,7 +165,7 @@
                                     Schedule</label>
                             </div>
                         </div>
-                        <h4 class="required-field">Job Estimate</h4>
+                        <label class="required-field bold mb5">Job Estimate</label>
                         <div class="mb-4">
                             <div class="form-check form-switch">
                                 <input class="form-check-input" name="estimate_online" type="checkbox" value="yes"
@@ -183,29 +177,29 @@
                     </div>
 
                     <!-- Card -->
-                    <div class="card card-body">
+                    <div class="card card-body  card-border shadow">
                         <h4>Pricing</h4>
 
                         <div class="mb-3">
-                            <label class="control-label required-field">Price (Unit Price)</label>
-                            <input type="number" id="service" class="form-control" name="service_cost"
+                            <label class="control-label bold mb5 required-field">Price (Unit Price)</label>
+                            <input type="text" id="service" class="form-control" name="service_cost"
                                 placeholder="" required>
                         </div>
                         <div class="mb-3">
-                            <label class="control-label required-field">Discount (In Percentage)</label>
-                            <input type="number" id="service" name="service_discount" class="form-control"
+                            <label class="control-label bold mb5 required-field">Discount (In Percentage)</label>
+                            <input type="text" id="service" name="service_discount" class="form-control"
                                 placeholder="" required>
                             <small id="name" class="form-text text-muted">It should be in percentage</small>
                         </div>
-                        <div class="mb-3">
-                            <label class="control-labe required-field">Tax (In Percentage)</label>
-                            <input type="number" id="service" name="service_tax" class="form-control" placeholder=""
+                        <!--<div class="mb-3">
+                            <label class="control-label bold mb5 required-field">Tax (In Percentage)</label>
+                            <input type="text" id="service" name="service_tax" class="form-control" placeholder=""
                                 required>
                             <small id="name" class="form-text text-muted">If applicable only</small>
-                        </div>
+                        </div>-->
                         <div class="mb-3">
-                            <label class="control-label required-field">Total</label>
-                            <input type="number" id="service" name="service_total" class="form-control"
+                            <label class="control-label bold mb5 required-field">Total</label>
+                            <input type="text" id="service" name="service_total" class="form-control"
                                 placeholder="" required>
                             <small id="name" class="form-text text-muted">Gross Total = Unit Price - Discount +
                                 Tax</small>
@@ -215,12 +209,13 @@
 
 
                 </div>
+				
                 <!-- column -->
-                <div class="col-md-2" style="margin-top:5px; margin-left:260px;">
-                    <button type="submit" class="btn btn-primary">Submit</button>
+              <div class="col-lg-12 col-md-12" style="text-align: center;">
+    <button type="submit" class="btn btn-primary">Submit</button>
+</div>
 
-
-                </div>
+				
                 </form>
 
             </div>

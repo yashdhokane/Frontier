@@ -997,7 +997,7 @@
 
                                 <label for="{{ $permission }}_permission">{{ $permission }}</label><br>
 
-                                @endforeach
+                                @endforeach 
 
 
 

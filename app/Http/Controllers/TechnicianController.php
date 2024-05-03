@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\FleetVehicle;
+
+use App\Models\ColorCode;
 use App\Models\Payment;
 use App\Models\UserTag;
 use App\Models\JobModel;
@@ -12,6 +15,8 @@ use App\Models\JobActivity;
 use App\Models\Products;
 use App\Models\UsersActivity;
 use App\Models\UsersDetails;
+use App\Models\Schedule;
+
 
 
 use App\Models\SiteTags;
@@ -40,29 +45,35 @@ use Illuminate\Support\Facades\Validator;
 class TechnicianController extends Controller
 {
 
-    public function index()
-    {
+   public function index($status=null)
+{
+    $usersQuery = User::where('role', 'technician');
 
-
-        $users = User::where('role', 'technician')->orderBy('created_at', 'desc')->get();
-
-        foreach ($users as $key => $value) {
-            $areaName = [];
-            if (isset($value->service_areas) && !empty($value->service_areas)) {
-                $service_areas = explode(',', $value->service_areas);
-                foreach ($service_areas as $key1 => $value1) {
-                    $location_service_area = DB::table('location_service_area')->where('area_id', $value1)->first();
-                   if (isset($location_service_area->area_name) && !empty($location_service_area->area_name)) {
-                        $areaName[] = $location_service_area->area_name;
-                    }
-                }
-                $users[$key]['area_name'] = implode(', ', $areaName);
-            }
-
-        }
-
-        return view('technicians.index', compact('users'));
+    if ($status == "deactive") {
+        $usersQuery->where('status', 'deactive');
+    } else {
+        $usersQuery->where('status', 'active');
     }
+
+    $users = $usersQuery->orderBy('created_at', 'desc')->get();
+
+    foreach ($users as $key => $value) {
+        $areaName = [];
+        if (isset($value->service_areas) && !empty($value->service_areas)) {
+            $service_areas = explode(',', $value->service_areas);
+            foreach ($service_areas as $key1 => $value1) {
+                $location_service_area = DB::table('location_service_area')->where('area_id', $value1)->first();
+                if (isset($location_service_area->area_name) && !empty($location_service_area->area_name)) {
+                    $areaName[] = $location_service_area->area_name;
+                }
+            }
+            $users[$key]['area_name'] = implode(', ', $areaName);
+        }
+    }
+
+    return view('technicians.index', compact('users'));
+}
+
 
 
     public function create()
@@ -70,12 +81,14 @@ class TechnicianController extends Controller
 
         $serviceAreas = LocationServiceArea::all();
         $users = User::all();
+         $colorcode = ColorCode::all();
+
         //    $roles = Role::all();
         $locationStates = LocationState::all();
         $tags = SiteTags::all(); // Fetch all tags
 
 
-        return view('technicians.create', compact('users', 'serviceAreas', 'tags', 'locationStates'));
+        return view('technicians.create', compact('users','colorcode', 'serviceAreas', 'tags', 'locationStates'));
     }
 
    public function store(Request $request)
@@ -140,7 +153,7 @@ class TechnicianController extends Controller
             $user->user_image = $imageName;
             $user->save();
         }
-
+app('sendNotices')('New Technician','New Technician Added at ' . now(), url()->current(), 'technician');
         // $userId = $user->id;
         // $currentTimestamp = now();
 
@@ -287,14 +300,13 @@ class TechnicianController extends Controller
     {
 
         $technician = User::with('Location')->find($id);
+        $vehiclefleet=FleetVehicle::where('technician_id',$technician->id)->first();
+        $colorcode = ColorCode::all();
+        //dd($vehiclefleet);
+      $schedule=Schedule::where('technician_id',$technician->id)->orderBy('created_at', 'desc')->get();
 
-        //dd($technician);
 
-
-        $notename = DB::table('user_notes')->where(
-            'user_id',
-            $technician->id
-        )->get();
+        $notename = DB::table('user_notes')->where('user_id',$technician->id)->get();
         $meta = $technician->meta;
         $home_phone = $technician->meta()->where('meta_key', 'home_phone')->value('meta_value') ?? '';
         $location = CustomerUserAddress::where('user_id', $technician->id)->get();
@@ -446,9 +458,13 @@ class TechnicianController extends Controller
         $login_history = DB::table('user_login_history')
             ->where('user_login_history.user_id', $technician->id)
             ->first();
+             $estimates = DB::table('estimates')->where(
+            'technician_id',
+            $technician->id
+        )->get();
         //dd($login_history);
 
-        return view('technicians.show', compact('activity','setting', 'login_history', 'technician', 'oil_change', 'tune_up', 'tire_rotation', 'breaks', 'inspection_codes', 'mileage', 'registration_expiration_date', 'vehicle_coverage', 'license_plate', 'vin_number', 'make', 'model', 'year', 'color', 'vehicle_weight', 'vehicle_cost', 'use_of_vehicle', 'repair_services', 'ezpass', 'service', 'additional_service_notes', 'last_updated', 'epa_certification', 'notename', 'payments', 'longitude', 'latitude', 'userAddresscity', 'jobasign', 'customerimage', 'location', 'jobasigndate', 'serviceAreas', 'locationStates', 'tags', 'cities', 'selectedTags', 'userTags', 'product', 'assign', 'technicianpart', 'tickets', 'payment', 'manufacturer', 'tech','UsersDetails'));
+        return view('technicians.show', compact('vehiclefleet','colorcode','schedule','estimates','activity','setting', 'login_history', 'technician', 'oil_change', 'tune_up', 'tire_rotation', 'breaks', 'inspection_codes', 'mileage', 'registration_expiration_date', 'vehicle_coverage', 'license_plate', 'vin_number', 'make', 'model', 'year', 'color', 'vehicle_weight', 'vehicle_cost', 'use_of_vehicle', 'repair_services', 'ezpass', 'service', 'additional_service_notes', 'last_updated', 'epa_certification', 'notename', 'payments', 'longitude', 'latitude', 'userAddresscity', 'jobasign', 'customerimage', 'location', 'jobasigndate', 'serviceAreas', 'locationStates', 'tags', 'cities', 'selectedTags', 'userTags', 'product', 'assign', 'technicianpart', 'tickets', 'payment', 'manufacturer', 'tech','UsersDetails'));
     }
 
     public function edit($id)
@@ -538,7 +554,7 @@ class TechnicianController extends Controller
         }
 
         $user->name = $request['display_name'];
-        // $user->email = $request['email'];
+         $user->email = $request['email'];
         $user->mobile = $request['mobile_phone'];
         $user->role = $request['role'];
         $user->color_code  = $request['color_code'];
@@ -728,22 +744,26 @@ class TechnicianController extends Controller
     }
 
 
-    public function techniciancomment(Request $request)
-    {
-        $addedByUserId = auth()->user()->id;
-        $user = User::findOrFail($request->id);
+   public function techniciancomment(Request $request)
+{
+    $addedByUserId = auth()->user()->id;
+    $user = User::findOrFail($request->id);
 
-        $payment = new UserNotesCustomer();
-        $payment->user_id = $user->id;
-        $payment->added_by = $addedByUserId;
-        $payment->last_updated_by = $addedByUserId;
+    $payment = new UserNotesCustomer();
+    $payment->user_id = $user->id;
+    $payment->added_by = $addedByUserId;
+    $payment->last_updated_by = $addedByUserId;
+    $payment->note = $request->note;
+    $payment->save();
 
-        $payment->note = $request->note;
+    // Update the user's updated_by and updated_at fields
+    $user->updated_by = $addedByUserId;
+    $user->updated_at = now();
+    $user->save();
 
-        $payment->save();
+    return redirect()->back()->with('success', 'Comment added successfully');
+}
 
-        return redirect()->back()->with('success', 'Comment added successfully');
-    }
 
     public function technicianstaus(Request $request)
     {

@@ -5,29 +5,15 @@
 @section('content')
     <div class="container-fluid">
 
-        <div class="page-breadcrumb pb-2">
+        <div class="page-breadcrumb" style="padding: 0px 0px 10px 0px;">
             <div class="row">
                 <div class="col-5 align-self-center">
-
-                    </h4>
-                    <div class="d-flex align-items-center">
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{ route('vehicles') }}" class="fs-5">Fleet </a></li>
-                                <li class="breadcrumb-item"><a href="#" class="fs-5"> New
-                                        Vehicle</a></li>
-
-                            </ol>
-                        </nav>
-                    </div>
-                </div>
+					<h4 class="page-title">Add New Vehicles</h4>
+				</div>
                 <div class="col-7 text-end">
-                    <a href="#" data-bs-toggle="modal" data-bs-target="#newTechnician" id="btn-show-categories"
-                        class="btn btn-primary mx-3"><i class="fas fa-plus "></i>Add New Technician</a>
-
-                </div>
-
-            </div>
+					<a href="https://dispatchannel.com/portal/vehicles" class="justify-content-center d-flex align-items-center"><i class="ri-truck-line" style="margin-right: 8px;"></i> Back to Vehicles List </a>
+				</div>
+             </div>
         </div>
         <!-- -------------------------------------------------------------- -->
         <!-- Start Page Content -->
@@ -41,59 +27,42 @@
 
 
         <div class="card">
-            <div class="card-body">
+            <div class="card-body card-border shadow">
 
                 <form action="{{ route('fleet.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
-                        <div class="col-md-6">
-                            <input type="text" name="vehicle_description" id="" class="form-control"
-                                placeholder="Add Vehicle Details" required>
-                        </div>
-                        <div class="col-md-6">
-                            <select name="technician_id" id="" class="form-control" required>
-                                <option value="">----- Select Techniecian -----</option>
-                                @foreach ($user as $item)
-                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-6 mt-4">
-                            <button type="submit" class="btn btn-primary"> Submit</button>
-                        </div>
+						<div class="col-md-6">
+						<div class="mb-3">
+    <label for="vehicle_description" class="control-label bold mb5 col-form-label required-field">Vehicle Details</label>
+    <textarea  rows="3" name="vehicle_description" id="vehicle_description" class="form-control" placeholder="Add Vehicle Details" required></textarea>
+</div>
+<div class="mb-3">
+    <label for="vehicle_summary" class="control-label bold mb5 col-form-label required-field">Vehicle Summary</label>
+    <textarea  rows="3" name="vehicle_summary" id="vehicle_summary" class="form-control" placeholder="Add complete summary about vehicle" required></textarea>
+</div>
 
-                    </div>
+							<div class="mb-3">
+								<label for="technician_id" class="control-label bold mb5 col-form-label required-field">Select Technician</label>
+								<select name="technician_id" id="" class="form-control" required>
+									<option value="">----- Select Technician -----</option>
+									@foreach ($user as $item)
+										<option value="{{ $item->id }}">{{ $item->name }}</option>
+									@endforeach
+								</select>
+							</div> 
+							<div class="mb-3">	
+								<button type="submit" class="btn btn-primary"> Submit</button>
+							</div> 						                
+						</div>
+					</div>
                 </form>
 
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="newTechnician" tabindex="-1" aria-labelledby="scroll-long-inner-modal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable2 modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header d-flex align-items-center" style="padding-bottom: 0px;">
-                    <h4 class="modal-title" id="myLargeModalLabel" style="margin-left: 28px;color: #2962ff;">ADD
-                        NEW CUSTOMER
-                    </h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <form action="{{ route('technicians.fleet') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="modal-body createCustomerData">
-
-                        @include('fleet.new_techncian')
-
-                    </div>
-                </form>
-
-            </div>
-
-
-
-        </div>
-    </div>
+     
 
 @section('script')
     <script>

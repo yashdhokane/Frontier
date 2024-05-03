@@ -12,16 +12,16 @@
         <!-- -------------------------------------------------------------- -->
         <!-- Bread crumb and right sidebar toggle -->
         <!-- -------------------------------------------------------------- -->
-        <div class="page-breadcrumb">
+        <div class="page-breadcrumb" style="padding-top:0px;">
             <div class="row">
                 <div class="col-5 align-self-center">
-                    <h4 class="page-title">ADD Parts </h4>
+                    <h4 class="page-title">Add New Part </h4>
                     <div class="d-flex align-items-center">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="#">Price Book</a></li>
                                 <li class="breadcrumb-item"><a href="#">Parts </a></li>
-                                <li class="breadcrumb-item active" aria-current="page">ADD Parts </li>
+                                <li class="breadcrumb-item active" aria-current="page">Add New Part </li>
                             </ol>
                         </nav>
                     </div>
@@ -135,8 +135,8 @@
                                 <div class="row">
                                     <div class="col-md-8">
                                         <div class="mb-3">
-                                            <div class="btn btn-info waves-effect waves-light">
-                                                <span>Upload Another Image</span>
+											<label class="control-label col-form-label required-field bold">Product Image</label>
+                                            <div class="btn waves-effect waves-light">
                                                 <input id="file" type="file"
                                                     onchange="showImagePreview()" name="product_image"
                                                     class="upload" />
@@ -329,22 +329,26 @@
 
                     </div>
 
-                    <div class="card card text-center">
-                        <div class="card-body card-border">
-                            <div class="row">
-                                <div class="form-actions">
-                                    <button type="submit" class="btn btn-success rounded-pill px-4">Save</button>
-                                    <button type="button" class="btn btn-dark rounded-pill px-4"
-                                        onclick="cancelRedirect()">Cancel</button>
+                    <div class="row">
+						<div class="col-md-12">
+							<div class="card card text-center">
+								<div class="card-body card-border">
+									<div class="row">
+										<div class="form-actions">
+											<button type="submit" class="btn btn-success rounded-pill px-4">Save</button>
+											<button type="button" class="btn btn-dark rounded-pill px-4"
+												onclick="cancelRedirect()">Cancel</button>
 
-                                    <script>
-                                        function cancelRedirect() {
-                                            window.location.href = "{{ route('product.index') }}";
-                                        }
-                                    </script>
-                                </div>
-                            </div>
-                        </div>
+											<script>
+												function cancelRedirect() {
+													window.location.href = "{{ route('product.index') }}";
+												}
+											</script>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
                     </div>
 
                     <!-- ---------------------
