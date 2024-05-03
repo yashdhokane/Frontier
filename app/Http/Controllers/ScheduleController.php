@@ -825,6 +825,12 @@ class ScheduleController extends Controller
                 } while ($exists); 
                 $customer_name = User::where('id',$data['customer_id'])->first();
                 $technician_name = User::where('id',$data['technician_id'])->first();
+
+                if($getCustomerDetails->state_name == 'NY'){
+                     $tax_details = '4% for NY';
+                }elseif($getCustomerDetails->state_name == 'TX'){
+                     $tax_details = '6.25% for TX';
+                }
     
 
                 $jobsData = [
@@ -845,6 +851,7 @@ class ScheduleController extends Controller
                     'address' => (isset($getCustomerDetails->address_line1) && !empty($getCustomerDetails->address_line1)) ? $getCustomerDetails->address_line1 : '',
                     'city' => (isset($getCustomerDetails->city) && !empty($getCustomerDetails->city)) ? $getCustomerDetails->city : '',
                     'state' => (isset($getCustomerDetails->state_name) && !empty($getCustomerDetails->state_name)) ? $getCustomerDetails->state_name : '',
+                    'tax_details' =>  (isset($tax_details) && !empty($tax_details)) ? $tax_details : '',
                     'zipcode' => (isset($getCustomerDetails->zipcode) && !empty($getCustomerDetails->zipcode)) ? $getCustomerDetails->zipcode : '',
                     'latitude' => (isset($getCustomerDetails->latitude) && !empty($getCustomerDetails->latitude)) ? $getCustomerDetails->latitude : 0,
                     'longitude' => (isset($getCustomerDetails->longitude) && !empty($getCustomerDetails->longitude)) ? $getCustomerDetails->longitude : 0,
