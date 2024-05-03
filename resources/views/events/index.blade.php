@@ -115,9 +115,11 @@
                                                         <i class="ri-settings-3-fill align-middle fs-5"></i>
                                                     </button>
                                                     <div class="dropdown-menu">
-                                                        <a class="dropdown-item" href="#"><i
-                                                                data-feather="eye" class="feather-sm me-2"></i> View</a>
-                                                        <a class="dropdown-item" href="{{ url('event/delete/' . $item->id) }}"><i
+                                                        <a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                                            data-bs-target="#eventView"><i data-feather="eye"
+                                                                class="feather-sm me-2"></i> View</a>
+                                                        <a class="dropdown-item"
+                                                            href="{{ url('event/delete/' . $item->id) }}"><i
                                                                 data-feather="trash" class="feather-sm me-2"></i> Delete</a>
 
                                                     </div>
@@ -127,6 +129,39 @@
 
 
                                         </tr>
+
+                                        <div class="modal fade" id="eventView" tabindex="-1"
+                                            aria-labelledby="commentModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content px-3">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="commentModalLabel">
+                                                            {{ $item->event_name ?? null }}</h5>
+                                                    </div>
+                                                    @if ($item->event_description)
+                                                        <p class="ps-3"> {{ $item->event_description ?? null }}</p>
+                                                    @endif
+                                                    @if ($item->event_location)
+                                                        <p class="ps-3"> {{ $item->event_location ?? null }}</p>
+                                                    @endif
+                                                    <p class="ps-3"> Event Date <br>
+                                                        @if ($item->event_type == 'full')
+                                                            {{ $item->start_date_time ? \Carbon\Carbon::parse($item->start_date_time)->format('m-d-Y') : null }}
+                                                            to
+                                                            {{ $item->end_date_time ? \Carbon\Carbon::parse($item->end_date_time)->format('m-d-Y') : null }}
+                                                        @else
+                                                            {{ $item->start_date_time ? \Carbon\Carbon::parse($item->start_date_time)->format('m-d-Y ') : null }}
+                                                            ,
+                                                            {{ $item->start_date_time ? \Carbon\Carbon::parse($item->start_date_time)->format('h:i:a') : null }}
+                                                            to
+                                                            {{ $item->end_date_time ? \Carbon\Carbon::parse($item->end_date_time)->format('h:i:a') : null }}
+                                                        @endif
+                                                    </p>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
                                     @endforeach
                                 </tbody>
 
