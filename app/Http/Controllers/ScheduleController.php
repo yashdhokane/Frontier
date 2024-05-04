@@ -776,8 +776,10 @@ class ScheduleController extends Controller
 
                     $scheduleId = $schedule->id;
                 }
-                 $now = Carbon::now();
-                    $formattedDateTime = $now->format('D, M j \a\t g:ia');
+                $now = Carbon::now();
+                $formattedDate = $start_date_time->format('D, M j');
+                $formattedTime = $now->format('g:ia');
+                $formattedDateTime = "{$formattedDate} at {$formattedTime}";
                 $activity ='Job Re-Scheduled for '. $formattedDateTime;
                app('JobActivityManager')->addJobActivity($data['job_id'], $activity);
                app('sendNotices')(
@@ -1041,8 +1043,10 @@ class ScheduleController extends Controller
                     $schedule->save();
                     $scheduleId = $schedule->id;
                 }
-                 $now = Carbon::now();
-                    $formattedDateTime = $now->format('D, M j \a\t g:ia');
+                $now = Carbon::now();
+                $formattedDate = $start_date_time->format('D, M j');
+                $formattedTime = $now->format('g:ia');
+                $formattedDateTime = "{$formattedDate} at {$formattedTime}";
 
                 $activity ='Job scheduled for '. $formattedDateTime;
                app('JobActivityManager')->addJobActivity($jobId, $activity);

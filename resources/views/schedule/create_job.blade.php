@@ -1033,7 +1033,7 @@
                             // Append new options
                             $.each(data, function(index, value) {
                                 $('#appliances').append($('<option value="' + value
-                                    .appliance_id + '">' + value
+                                    .appliance_type_id + '">' + value
                                     .appliance_name + '</option>'));
                             });
                         }
