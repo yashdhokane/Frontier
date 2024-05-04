@@ -134,7 +134,8 @@
                                                     <td><a
                                                             href="{{ url('invoice-detail/' . $item->id) }}">{{ $item->invoice_number  ?? null}}</a>
                                                     </td>
-                                                    <td>{{ $item->JobAppliances->UserAppliances->manufacturer->manufacturer_name ?? null}}</td>
+                                                    <td>{{ $item->JobAppliances->Appliances->manufacturer->manufacturer_name ?? null}}</td>
+                                                  
                                                     <td>{{ $item->JobModel->job_code ?? null }}<br>{{ $item->JobModel->job_title ?? null }}</td>
                                                     <td>{{ $item->user->name ?? null}}</td>
                                                     <td>{{ $item->JobModel->technician->name ?? null}}</td>

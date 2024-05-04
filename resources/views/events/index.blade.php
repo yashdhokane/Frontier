@@ -3,6 +3,18 @@
 @extends('home')
 
 @section('content')
+
+	<div class="page-breadcrumb">
+        <div class="row">
+            <div class="col-6 align-self-center">
+                <h4 class="page-title">Events</h4>
+            </div>
+            <div class="col-6 text-end">
+                 
+            </div>
+        </div>
+    </div>
+	
     <div class="container-fluid">
         <!-- -------------------------------------------------------------- -->
         <!-- Start Page Content -->
@@ -18,12 +30,11 @@
 
                 <div class="card">
                     <div class="card-body">
-                        <div class="table-responsive" style="overflow-x: auto;">
-                            <table id="zero_config" class="table table-bordered text-nowrap" data-paging="true"
-                                data-paging-size="7">
+                        <div class="table-responsive table-custom">
+                            <table id="zero_config" class="table table-hover table-striped text-nowrap" data-paging="true" data-paging-size="7">
 
                                 <div class="col-md-12 row" style="margin-bottom:7px;">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="d-flex flex-column align-items-baseline">
                                             <!-- Date filtering input -->
 
@@ -60,7 +71,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="d-flex flex-column align-items-baseline">
                                             <!-- Filter by other column (example: Manufacturer) -->
                                             <label class="text-nowrap"><b>Technician </b></label>
@@ -70,6 +81,18 @@
                                                     <option value="{{ $item->name }}">
                                                         {{ $item->name }}</option>
                                                 @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="d-flex flex-column align-items-baseline">
+                                            <!-- Filter by other column (example: Manufacturer) -->
+                                            <label class="text-nowrap"><b>Event Type </b></label>
+                                            <select id="eventType-filter" class="form-control mx-2">
+                                                <option value="">All</option>
+                                                <option value="full">Full</option>
+                                                <option value="partial">Partial</option>
                                             </select>
                                         </div>
                                     </div>
@@ -92,7 +115,7 @@
                                         <tr>
                                             <td>{{ $item->technician->name ?? null }} </td>
                                             <td>{{ $item->event_name ?? null }} </td>
-                                            <td>{{ $item->event_type ?? null }} </td>
+                                            <td class="ucfirst">{{ $item->event_type ?? null }} </td>
                                             <td>
                                                 @if ($item->event_type == 'full')
                                                     {{ $item->start_date_time ? \Carbon\Carbon::parse($item->start_date_time)->format('m-d-Y') : null }}
@@ -135,28 +158,30 @@
                                             <div class="modal-dialog">
                                                 <div class="modal-content px-3">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="commentModalLabel">
-                                                            {{ $item->event_name ?? null }}</h5>
+                                                        <h5 class="modal-title" id="commentModalLabel">{{ $item->event_name ?? null }}</h5>
                                                     </div>
                                                     @if ($item->event_description)
                                                         <p class="ps-3"> {{ $item->event_description ?? null }}</p>
                                                     @endif
-                                                    @if ($item->event_location)
-                                                        <p class="ps-3"> {{ $item->event_location ?? null }}</p>
+													
+													<h6 class="mt-2 ps-3">Date & Location</h6>  
+													<div class="ps-3">
+													@if ($item->event_type == 'full')
+														{{ $item->start_date_time ? \Carbon\Carbon::parse($item->start_date_time)->format('m-d-Y') : null }}
+														to
+														{{ $item->end_date_time ? \Carbon\Carbon::parse($item->end_date_time)->format('m-d-Y') : null }}
+													@else
+														{{ $item->start_date_time ? \Carbon\Carbon::parse($item->start_date_time)->format('m-d-Y ') : null }}
+														,
+														{{ $item->start_date_time ? \Carbon\Carbon::parse($item->start_date_time)->format('h:i:a') : null }}
+														to
+														{{ $item->end_date_time ? \Carbon\Carbon::parse($item->end_date_time)->format('h:i:a') : null }}
+													@endif
+ 													@if ($item->event_location)
+                                                        <br/> {{ $item->event_location ?? null }}
                                                     @endif
-                                                    <p class="ps-3"> Event Date <br>
-                                                        @if ($item->event_type == 'full')
-                                                            {{ $item->start_date_time ? \Carbon\Carbon::parse($item->start_date_time)->format('m-d-Y') : null }}
-                                                            to
-                                                            {{ $item->end_date_time ? \Carbon\Carbon::parse($item->end_date_time)->format('m-d-Y') : null }}
-                                                        @else
-                                                            {{ $item->start_date_time ? \Carbon\Carbon::parse($item->start_date_time)->format('m-d-Y ') : null }}
-                                                            ,
-                                                            {{ $item->start_date_time ? \Carbon\Carbon::parse($item->start_date_time)->format('h:i:a') : null }}
-                                                            to
-                                                            {{ $item->end_date_time ? \Carbon\Carbon::parse($item->end_date_time)->format('h:i:a') : null }}
-                                                        @endif
-                                                    </p>
+													</div>
+													<hr/>
                                                 </div>
                                             </div>
 
@@ -203,10 +228,10 @@
                     var Month = moment(selectedMonth, 'MMMM YYYY').format('MM'); // Extract the month
                     var Year = moment(selectedMonth, 'MMMM YYYY').format('YYYY'); // Extract the year
                     // Perform filtering on the table to include all dates within the selected month and year
-                    table.column(4).search('^' + Month + '-' + '\\d{2}-' + Year, true, false).draw();
+                    table.column(3).search('^' + Month + '-' + '\\d{2}-' + Year, true, false).draw();
                 } else {
                     // If no month is selected, clear the filter
-                    table.column(4).search('').draw();
+                    table.column(3).search('').draw();
                 }
             });
 
@@ -214,6 +239,12 @@
             $('#technician-filter').on('change', function() {
                 var technician = $(this).val();
                 table.column(0).search(technician)
+                    .draw(); // Assuming technician names are in column index 3
+            });
+
+            $('#eventType-filter').on('change', function() {
+                var type = $(this).val();
+                table.column(2).search(type)
                     .draw(); // Assuming technician names are in column index 3
             });
 
