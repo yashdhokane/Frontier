@@ -2192,42 +2192,6 @@
 
                 var id = $(this).val().trim();
 
-                if ($('.pre_service_id').val() != '') {
-
-                    var service_cost = $('.service_cost').val();
-
-                    var service_discount = $('.service_discount').val();
-
-                    var service_tax = $('.service_tax').val();
-
-                    var getSubTotalVal = $('.subtotal').val().trim();
-                    var subTotal = parseInt(getSubTotalVal) - parseInt(service_cost);
-                    $('.subtotal').val(Math.abs(subTotal));
-                    $('.subtotaltext').text('$' + Math.abs(subTotal));
-
-                    var getDiscount = $('.discount').val().trim();
-                    var discount = parseInt(getDiscount) - parseInt(service_discount);
-                    $('.discount').val(Math.abs(discount));
-                    $('.discounttext').text('$' + Math.abs(discount));
-
-                    var getTotal = $('.total').val().trim();
-                    var total = parseInt(getTotal) - parseInt(service_cost) + parseInt(service_discount) -
-                        parseInt(
-                            service_tax);
-                    $('.total').val(Math.abs(total));
-                    $('.totaltext').text('$' + Math.abs(total));
-
-                    $('.service_cost').val(0);
-
-                    $('.service_discount').val(0);
-
-                    $('.service_tax_text').text('$0');
-
-                    $('.service_total_text').text('$0');
-
-                    $('.pre_service_id').val('');
-                }
-
                 if (id.length != 0) {
 
                     if (ajaxRequestForService) {
@@ -2351,10 +2315,97 @@
 
                         }
                     });
+                }else{
+                
+                    $('.service_cost').val(0);
+                    $('.service_discount').val(0);
+                    $('.service_total').val(0);
+                    $('.service_total_text').text('$0');
+                    var customerId = $('.selectCustomer').data('customer-id');
+
+                    var getSubTotalVal = $('.subtotal').val().trim();
+                    var getDiscount = $('.discount').val().trim();
+
+                    var newServiceTotalVal = $('.new_service_total').val();
+                    var productTotalVal = $('.product_total').val();
+                    var newProductTotalVal = $('.new_product_total').val();
+
+                    var newServiceAmmount = $('.new_service_discount_amount').val();
+                    var productAmmount = $('.product_discount_amount').val();
+                    var newProductAmmount = $('.new_product_discount_amount').val();
+
+                    function parseSafe(value) {
+                        // If value is undefined or empty, return 0
+                        if (value === undefined || value === '' || isNaN(value)) {
+                            return 0;
+                        }
+                        return parseFloat(value);
+                    }
+
+                    // Parse all inputs using the safe function
+                    var newServiceAmmount = parseSafe(newServiceAmmount);
+                    var productAmmount = parseSafe(productAmmount);
+                    var newProductAmmount = parseSafe(newProductAmmount);
+
+                    var newServiceTotalVal = parseSafe(newServiceTotalVal);
+                    var productTotalVal = parseSafe(productTotalVal);
+                    var newProductTotalVal = parseSafe(newProductTotalVal);
+
+                    // Calculate discount
+                    var discount =   newServiceAmmount +
+                        productAmmount + newProductAmmount;
+
+                    // Update the discount field
+                    $('.discount').val(Math.abs(discount).toFixed(
+                        2)); // Ensure consistent decimal representation
+                    $('.discounttext').text('$' + Math.abs(discount).toFixed(2));
+
+                    // Calculate subtotal
+                    var subTotal =   newServiceTotalVal +
+                        productTotalVal + newProductTotalVal;
+
+                    // Calculate allSubTotal
+                    var allSubTotal = subTotal + discount;
+
+                    // Ensure correct decimal representation and avoid NaN
+                    $('.subtotal').val(Math.abs(allSubTotal).toFixed(
+                        2)); // Fix to 2 decimal places
+                    $('.subtotaltext').text('$' + Math.abs(allSubTotal).toFixed(2));
+
+                     $.ajax({
+
+                            url: "{{ route('usertax') }}",
+                            data: {
+                                customerId: customerId,
+                            },
+                            type: 'GET',
+                            success: function(data) {
+                                $('.taxcodetext').empty();
+
+                                    var taxpercent = data.state_tax;
+                            var total_amount = allSubTotal * (taxpercent / 100);
+                            $('.tax_total').val(total_amount.toFixed(
+                                2)); // Update the value
+
+                            // Actions depending on updated tax_total
+                            var tax_value = parseFloat($('.tax_total').val()) || 0;
+                            var tax_amount = tax_value.toFixed(2);
+
+                            var getTotal = $('.total').val().trim();
+                            var total = parseSafe(subTotal) + parseSafe(total_amount);
+                            $('.total').val(Math.abs(total).toFixed(2));
+                            $('.totaltext').text('$' + Math.abs(total).toFixed(2));
+
+                                $('.taxcodetext').append('' + data.state_tax +
+                                    '% for ' + data
+                                    .state_code + ': $' + tax_amount);
+
+                            },
+                        });
+
+                
                 }
 
-
-              
 
             });
 
@@ -2363,8 +2414,6 @@
 
                 var customerId = $('.selectCustomer').data('customer-id');
                 var id = $(this).val().trim();
-
-
 
                 if (id.length != 0) {
 
@@ -2486,9 +2535,96 @@
 
                         }
                     });
+                }else{
+                
+                    $('.new_service_cost').val(0);
+                    $('.new_service_discount').val(0);
+                    $('.new_service_total').val(0);
+                    $('.new_service_total_text').text('$0');
+                    var customerId = $('.selectCustomer').data('customer-id');
+
+                    var getSubTotalVal = $('.subtotal').val().trim();
+                    var getDiscount = $('.discount').val().trim();
+
+                    var serviceTotalVal = $('.service_total').val();
+                    var productTotalVal = $('.product_total').val();
+                    var newProductTotalVal = $('.new_product_total').val();
+
+                    var serviceAmmount = $('.service_discount_amount').val();
+                    var productAmmount = $('.product_discount_amount').val();
+                    var newProductAmmount = $('.new_product_discount_amount').val();
+
+                    function parseSafe(value) {
+                        // If value is undefined or empty, return 0
+                        if (value === undefined || value === '' || isNaN(value)) {
+                            return 0;
+                        }
+                        return parseFloat(value);
+                    }
+
+                    // Parse all inputs using the safe function
+                    var serviceAmmount = parseSafe(serviceAmmount);
+                    var productAmmount = parseSafe(productAmmount);
+                    var newProductAmmount = parseSafe(newProductAmmount);
+
+                    var serviceTotalVal = parseSafe(serviceTotalVal);
+                    var productTotalVal = parseSafe(productTotalVal);
+                    var newProductTotalVal = parseSafe(newProductTotalVal);
+
+                    // Calculate discount
+                    var discount =   serviceAmmount +
+                        productAmmount + newProductAmmount;
+
+                    // Update the discount field
+                    $('.discount').val(Math.abs(discount).toFixed(
+                        2)); // Ensure consistent decimal representation
+                    $('.discounttext').text('$' + Math.abs(discount).toFixed(2));
+
+                    // Calculate subtotal
+                    var subTotal =   serviceTotalVal +
+                        productTotalVal + newProductTotalVal;
+
+                    // Calculate allSubTotal
+                    var allSubTotal = subTotal + discount;
+
+                    // Ensure correct decimal representation and avoid NaN
+                    $('.subtotal').val(Math.abs(allSubTotal).toFixed(
+                        2)); // Fix to 2 decimal places
+                    $('.subtotaltext').text('$' + Math.abs(allSubTotal).toFixed(2));
+
+                     $.ajax({
+
+                            url: "{{ route('usertax') }}",
+                            data: {
+                                customerId: customerId,
+                            },
+                            type: 'GET',
+                            success: function(data) {
+                                $('.taxcodetext').empty();
+
+                                    var taxpercent = data.state_tax;
+                            var total_amount = allSubTotal * (taxpercent / 100);
+                            $('.tax_total').val(total_amount.toFixed(
+                                2)); // Update the value
+
+                            // Actions depending on updated tax_total
+                            var tax_value = parseFloat($('.tax_total').val()) || 0;
+                            var tax_amount = tax_value.toFixed(2);
+
+                            var getTotal = $('.total').val().trim();
+                            var total = parseSafe(subTotal) + parseSafe(total_amount);
+                            $('.total').val(Math.abs(total).toFixed(2));
+                            $('.totaltext').text('$' + Math.abs(total).toFixed(2));
+
+                                $('.taxcodetext').append('' + data.state_tax +
+                                    '% for ' + data
+                                    .state_code + ': $' + tax_amount);
+
+                            },
+                        });
+
+                
                 }
-
-
 
             });
 
@@ -2875,42 +3011,6 @@
 
                 var id = $(this).val().trim();
 
-                if ($('.pre_product_id').val() != '') {
-
-                    var product_cost = $('.product_cost').val();
-
-                    var product_discount = $('.product_discount').val();
-
-                    var product_tax = $('.product_tax').val();
-
-                    var getSubTotalVal = $('.subtotal').val().trim();
-                    var subTotal = parseInt(getSubTotalVal) - parseInt(product_cost);
-                    $('.subtotal').val(Math.abs(subTotal));
-                    $('.subtotaltext').text('$' + Math.abs(subTotal));
-
-                    var getDiscount = $('.discount').val().trim();
-                    var discount = parseInt(getDiscount) - parseInt(product_discount);
-                    $('.discount').val(Math.abs(discount));
-                    $('.discounttext').text('$' + Math.abs(discount));
-
-                    var getTotal = $('.total').val().trim();
-                    var total = parseInt(getTotal) - parseInt(product_cost) + parseInt(product_discount) -
-                        parseInt(
-                            product_tax);
-                    $('.total').val(Math.abs(total));
-                    $('.totaltext').text('$' + Math.abs(total));
-
-                    $('.product_cost').val(0);
-
-                    $('.product_discount').val(0);
-
-                    $('.product_tax_text').text('$0');
-
-                    $('.product_total_text').text('$0');
-
-                    $('.pre_product_id').val('');
-                }
-
                 if (id.length != 0) {
 
                     if (ajaxRequestForProduct) {
@@ -3043,9 +3143,96 @@
 
                         }
                     });
+                }else{
+                
+                    $('.product_cost').val(0);
+                    $('.product_discount').val(0);
+                    $('.product_total').val(0);
+                    $('.product_total_text').text('$0');
+                    var customerId = $('.selectCustomer').data('customer-id');
+
+                    var getSubTotalVal = $('.subtotal').val().trim();
+                    var getDiscount = $('.discount').val().trim();
+
+                    var serviceTotalVal = $('.service_total').val();
+                    var newServiceTotalVal = $('.new_service_total').val();
+                    var newProductTotalVal = $('.new_product_total').val();
+
+                    var serviceAmmount = $('.service_discount_amount').val();
+                    var newServiceAmmount = $('.new_service_discount_amount').val();
+                    var newProductAmmount = $('.new_product_discount_amount').val();
+
+                    function parseSafe(value) {
+                        // If value is undefined or empty, return 0
+                        if (value === undefined || value === '' || isNaN(value)) {
+                            return 0;
+                        }
+                        return parseFloat(value);
+                    }
+
+                    // Parse all inputs using the safe function
+                    var serviceAmmount = parseSafe(serviceAmmount);
+                    var newServiceAmmount = parseSafe(newServiceAmmount);
+                    var newProductAmmount = parseSafe(newProductAmmount);
+
+                    var serviceTotalVal = parseSafe(serviceTotalVal);
+                    var newServiceTotalVal = parseSafe(newServiceTotalVal);
+                    var newProductTotalVal = parseSafe(newProductTotalVal);
+
+                    // Calculate discount
+                    var discount =   serviceAmmount +
+                        newServiceAmmount + newProductAmmount;
+
+                    // Update the discount field
+                    $('.discount').val(Math.abs(discount).toFixed(
+                        2)); // Ensure consistent decimal representation
+                    $('.discounttext').text('$' + Math.abs(discount).toFixed(2));
+
+                    // Calculate subtotal
+                    var subTotal =   serviceTotalVal +
+                        newServiceTotalVal + newProductTotalVal;
+
+                    // Calculate allSubTotal
+                    var allSubTotal = subTotal + discount;
+
+                    // Ensure correct decimal representation and avoid NaN
+                    $('.subtotal').val(Math.abs(allSubTotal).toFixed(
+                        2)); // Fix to 2 decimal places
+                    $('.subtotaltext').text('$' + Math.abs(allSubTotal).toFixed(2));
+
+                     $.ajax({
+
+                            url: "{{ route('usertax') }}",
+                            data: {
+                                customerId: customerId,
+                            },
+                            type: 'GET',
+                            success: function(data) {
+                                $('.taxcodetext').empty();
+
+                                    var taxpercent = data.state_tax;
+                            var total_amount = allSubTotal * (taxpercent / 100);
+                            $('.tax_total').val(total_amount.toFixed(
+                                2)); // Update the value
+
+                            // Actions depending on updated tax_total
+                            var tax_value = parseFloat($('.tax_total').val()) || 0;
+                            var tax_amount = tax_value.toFixed(2);
+
+                            var getTotal = $('.total').val().trim();
+                            var total = parseSafe(subTotal) + parseSafe(total_amount);
+                            $('.total').val(Math.abs(total).toFixed(2));
+                            $('.totaltext').text('$' + Math.abs(total).toFixed(2));
+
+                                $('.taxcodetext').append('' + data.state_tax +
+                                    '% for ' + data
+                                    .state_code + ': $' + tax_amount);
+
+                            },
+                        });
+
+                
                 }
-
-
 
             });
 
@@ -3054,7 +3241,6 @@
 
                 var customerId = $('.selectCustomer').data('customer-id');
                 var id = $(this).val().trim();
-
 
                 if (id.length != 0) {
 
@@ -3179,9 +3365,96 @@
 
                         }
                     });
+                }else{
+                
+                    $('.new_product_cost').val(0);
+                    $('.new_product_discount').val(0);
+                    $('.new_product_total').val(0);
+                    $('.new_product_total_text').text('$0');
+                    var customerId = $('.selectCustomer').data('customer-id');
+
+                    var getSubTotalVal = $('.subtotal').val().trim();
+                    var getDiscount = $('.discount').val().trim();
+
+                    var serviceTotalVal = $('.service_total').val();
+                    var newServiceTotalVal = $('.new_service_total').val();
+                    var productTotalVal = $('.product_total').val();
+
+                    var serviceAmmount = $('.service_discount_amount').val();
+                    var newServiceAmmount = $('.new_service_discount_amount').val();
+                    var productAmmount = $('.product_discount_amount').val();
+
+                    function parseSafe(value) {
+                        // If value is undefined or empty, return 0
+                        if (value === undefined || value === '' || isNaN(value)) {
+                            return 0;
+                        }
+                        return parseFloat(value);
+                    }
+
+                    // Parse all inputs using the safe function
+                    var serviceAmmount = parseSafe(serviceAmmount);
+                    var newServiceAmmount = parseSafe(newServiceAmmount);
+                    var productAmmount = parseSafe(productAmmount);
+
+                    var serviceTotalVal = parseSafe(serviceTotalVal);
+                    var newServiceTotalVal = parseSafe(newServiceTotalVal);
+                    var productTotalVal = parseSafe(productTotalVal);
+
+                    // Calculate discount
+                    var discount =   serviceAmmount +
+                        newServiceAmmount + productAmmount;
+
+                    // Update the discount field
+                    $('.discount').val(Math.abs(discount).toFixed(
+                        2)); // Ensure consistent decimal representation
+                    $('.discounttext').text('$' + Math.abs(discount).toFixed(2));
+
+                    // Calculate subtotal
+                    var subTotal =   serviceTotalVal +
+                        newServiceTotalVal + productTotalVal;
+
+                    // Calculate allSubTotal
+                    var allSubTotal = subTotal + discount;
+
+                    // Ensure correct decimal representation and avoid NaN
+                    $('.subtotal').val(Math.abs(allSubTotal).toFixed(
+                        2)); // Fix to 2 decimal places
+                    $('.subtotaltext').text('$' + Math.abs(allSubTotal).toFixed(2));
+
+                     $.ajax({
+
+                            url: "{{ route('usertax') }}",
+                            data: {
+                                customerId: customerId,
+                            },
+                            type: 'GET',
+                            success: function(data) {
+                                $('.taxcodetext').empty();
+
+                                    var taxpercent = data.state_tax;
+                            var total_amount = allSubTotal * (taxpercent / 100);
+                            $('.tax_total').val(total_amount.toFixed(
+                                2)); // Update the value
+
+                            // Actions depending on updated tax_total
+                            var tax_value = parseFloat($('.tax_total').val()) || 0;
+                            var tax_amount = tax_value.toFixed(2);
+
+                            var getTotal = $('.total').val().trim();
+                            var total = parseSafe(subTotal) + parseSafe(total_amount);
+                            $('.total').val(Math.abs(total).toFixed(2));
+                            $('.totaltext').text('$' + Math.abs(total).toFixed(2));
+
+                                $('.taxcodetext').append('' + data.state_tax +
+                                    '% for ' + data
+                                    .state_code + ': $' + tax_amount);
+
+                            },
+                        });
+
+                
                 }
-
-
 
             });
 
