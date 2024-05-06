@@ -72,7 +72,7 @@
                         <form action="change_timezone" method="POST">
                             @csrf
                             <!-- Change Timezone dropdown -->
-                            <select class="form-control timezoneSelect" id="timezoneSelect" name="timezone_id">
+                            <select class="form-control timezoneSelect select2" id="timezoneSelect" name="timezone_id">
                                 @foreach ($zone as $item)
                                     <option value="{{ $item->timezone_id }}"
                                         {{ $time->timezone_id == $item->timezone_id ? 'selected' : '' }}>
@@ -155,20 +155,3 @@
 	</div>
 
 </aside>
-
-<!-- Include jQuery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-<!-- Include Select2 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-
-<!-- Include Select2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-<script>
-    // Function to initialize Select2
-    jQuery(document).ready(function($) {
-        // Use $() inside this function
-        $('#timezoneSelect').select2();
-    });
-</script>

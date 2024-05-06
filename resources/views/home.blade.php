@@ -38,6 +38,8 @@
 
     <link href="{{ asset('public/admin/dist/css/custom.css') }}" rel="stylesheet" />
 
+    <link href="{{ asset('public/admin/dist/libs/select2/dist/css/select2.min.css') }}" rel="stylesheet" />
+
 	
 	<style>
         #main-wrapper[data-layout=vertical][data-boxed-layout=boxed] .page-wrapper>.container-fluid,
