@@ -46,22 +46,24 @@
                                         <label class="me-sm-2 py-2 " for="inlineFormCustomSelect">Select Territory</label>
                                         <select class="form-select me-sm-2 territory" id="territory" onchange="reloadPage()">
                                             <option value="">-- Select Territory --</option>
-                                            @foreach ($locationServiceArea as $value)
-                                            <option 
-                                                data-lat="{{ $value->area_latitude }}" 
-                                                value="{{ $value->area_id }}"
-                                                @if (request()->input('area_id') == $value->area_id) 
-                                                    selected
-                                                @elseif(isset($locationServiceSouthWest->area_id) &&
-                                                        !empty($locationServiceSouthWest->area_id) &&
-                                                        $locationServiceSouthWest->area_id == $value->area_id) selected
-                                                @endif
-                                                data-lag="{{ $value->area_longitude }}"
-                                                data-radius="{{ $value->area_radius }}"
-                                            >
-                                                {{ $value->area_name }}
-                                            </option>
-                                        @endforeach
+                                           @foreach ($locationServiceArea as $value)
+                                                <option 
+                                                    data-lat="{{ $value->area_latitude }}" 
+                                                    value="{{ $value->area_id }}"
+                                                    @if (
+                                                        (request()->input('area_id') == $value->area_id) || 
+                                                        (isset($locationServiceSouthWest) && $locationServiceSouthWest->area_id == $value->area_id)
+                                                    )
+                                                        selected
+                                                    @endif
+                                                    data-lag="{{ $value->area_longitude }}"
+                                                    data-radius="{{ $value->area_radius }}"
+                                                >
+                                                    {{ $value->area_name }}
+                                                </option>
+                                            @endforeach
+
+                                        
                                         
                                         </select>
                                         <span class="error territory_error"></span>
@@ -182,7 +184,7 @@
                 var area_id = selectedOption.val();
 
                 if (area_id == '') {
-                    initMap(40.73061, -73.935242, 4, 2000000);
+                    initMap(40.73061, -73.935242, 5, 2000000);
                 } else {
                     var lat = parseFloat(selectedOption.data('lat'));
                     var lag = parseFloat(selectedOption.data('lag'));
@@ -313,7 +315,7 @@
 
                         if (area_id == '') {
 
-                            initMap(40.73061, -73.935242, 4);
+                            initMap(40.73061, -73.935242, 5, 2000000);
 
                         } else {
 
@@ -321,7 +323,7 @@
                             var lag = parseFloat(selectedOption.data('lag'));
                             var radius = parseFloat(selectedOption.data('radius'));
 
-                            initMap(lat, lag, radius);
+                            initMap(lat, lag,5, radius);
                         }
                     }
                 });

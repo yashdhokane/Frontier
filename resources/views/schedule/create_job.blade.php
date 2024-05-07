@@ -29,6 +29,7 @@
                             <input type="hidden" class="address_type" id="" name="address_type" value="">
                             <input type="hidden" class="status_slot" value="">
                             <input type="hidden" class="tax_total" name="tax_total" value="">
+                            <input type="hidden" class="service_area_id" name="service_area_id" value="">
 
                             <!-- Step 1 -->
                             <h6>Customer Information </h6>
@@ -2306,6 +2307,8 @@
                                 type: 'GET',
                                 success: function(data) {
                                     $('.taxcodetext').empty();
+                                    $('.service_area_id').val(data.service_area_id);
+
 
                                     $('.taxcodetext').append('' + data.state_tax +
                                         '% for ' + data
@@ -2381,6 +2384,7 @@
                             type: 'GET',
                             success: function(data) {
                                 $('.taxcodetext').empty();
+                                    $('.service_area_id').val(data.service_area_id);
 
                                     var taxpercent = data.state_tax;
                             var total_amount = allSubTotal * (taxpercent / 100);
@@ -2526,6 +2530,7 @@
                                 type: 'GET',
                                 success: function(data) {
                                     $('.taxcodetext').empty();
+                                    $('.service_area_id').val(data.service_area_id);
 
                                     $('.taxcodetext').append('' + data.state_tax +
                                         '% for ' + data

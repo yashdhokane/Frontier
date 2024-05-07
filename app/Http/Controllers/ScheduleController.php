@@ -846,7 +846,7 @@ class ScheduleController extends Controller
                     'warranty_type' => (isset($data['job_type']) && !empty($data['job_type'])) ? $data['job_type'] : '',
                     'description' => (isset($data['job_description']) && !empty($data['job_description'])) ? trim($data['job_description']) : '',
                     'priority' => (isset($data['priority']) && !empty($data['priority'])) ? $data['priority'] : '',
-                    'service_area_id' => 1,
+                    'service_area_id' => (isset($data['service_area_id']) && !empty($data['service_area_id'])) ? $data['service_area_id'] : 0,
                     'tax' => (isset($data['tax_total']) && !empty($data['tax_total'])) ? $data['tax_total'] : '',
                     'discount' => (isset($data['discount']) && !empty($data['discount'])) ? $data['discount'] : 0,
                     'gross_total' => (isset($data['total']) && !empty($data['total'])) ? $data['total'] : 0,
