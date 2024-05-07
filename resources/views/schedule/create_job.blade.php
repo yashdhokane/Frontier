@@ -2208,7 +2208,8 @@
                         type: 'GET',
                         success: function(data) {
                             if (data) {
-
+                                $('.service_cost').removeAttr('readonly');
+                                $('.service_discount').removeAttr('readonly');
                                 $('.pre_service_id').val(id);
 
                                 $('.service_cost').val(data.serives.service_cost);
@@ -2321,6 +2322,8 @@
                 }else{
                 
                     $('.service_cost').val(0);
+                    $('.service_cost').attr('readonly', true);
+                    $('.service_discount').attr('readonly', true);
                     $('.service_discount').val(0);
                     $('.service_total').val(0);
                     $('.service_total_text').text('$0');
@@ -2433,6 +2436,8 @@
 
                             if (data) {
 
+                                $('.new_service_cost').removeAttr('readonly');
+                                $('.new_service_discount').removeAttr('readonly');
                                 $('.new_service_cost').val(data.serives.service_cost);
 
                                 $('.new_service_discount').val(data.serives.service_discount);
@@ -2542,6 +2547,8 @@
                     });
                 }else{
                 
+                    $('.new_service_cost').attr('readonly', true);
+                    $('.new_service_discount').attr('readonly', true);
                     $('.new_service_cost').val(0);
                     $('.new_service_discount').val(0);
                     $('.new_service_total').val(0);
@@ -3033,6 +3040,8 @@
 
                             if (data) {
 
+                                $('.product_cost').removeAttr('readonly');
+                                $('.product_discount').removeAttr('readonly');
                                 $('.pre_product_id').val(id);
 
                                 $('.product_cost').val(data.product.base_price);
@@ -3150,6 +3159,8 @@
                     });
                 }else{
                 
+                    $('.product_cost').attr('readonly', true);
+                    $('.product_discount').attr('readonly', true);
                     $('.product_cost').val(0);
                     $('.product_discount').val(0);
                     $('.product_total').val(0);
@@ -3260,6 +3271,8 @@
 
                             if (data) {
 
+                                $('.new_product_cost').removeAttr('readonly');
+                                $('.new_product_discount').removeAttr('readonly');
 
                                 $('.new_product_cost').val(data.product.base_price);
 
@@ -3372,6 +3385,8 @@
                     });
                 }else{
                 
+                    $('.new_product_cost').attr('readonly', true);
+                    $('.new_product_discount').attr('readonly', true);
                     $('.new_product_cost').val(0);
                     $('.new_product_discount').val(0);
                     $('.new_product_total').val(0);
