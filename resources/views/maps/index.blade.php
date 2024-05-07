@@ -17,49 +17,14 @@
             <div class="row">
                 <div class="container">
                     <div class="row mb-3">
-                        <div class="col-2 bg-light py-2 px-3 border">
-                            <div class="form-group mb-4">
-                                <label class="me-sm-2 py-2 " for="inlineFormCustomSelect">Select Territory</label>
-                                <select class="form-select me-sm-2 territory" id="territory" onchange="reloadPage()">
-                                    <option value="">-- Select Territory --</option>
-                                    @if (isset($locationServiceArea) && !empty($locationServiceArea->count()))
-                                        @foreach ($locationServiceArea as $value)
-                                            <option data-lat="{{ $value->area_latitude }}" value="{{ $value->area_id }}"
-                                                @if (app('request')->input('area_id') == $value->area_id) selected @elseif (isset($locationServiceAreaDallas->area_id) &&
-                                                        !empty($locationServiceAreaDallas->area_id) &&
-                                                        $locationServiceAreaDallas->area_id == $value->area_id) selected @endif
-                                                data-lag="{{ $value->area_longitude }}"
-                                                data-radius="{{ $value->area_radius }}">{{ $value->area_name }}</option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                                <span class="error territory_error"></span>
-                            </div>
-                        </div>
-                        <div class="col-2 bg-light py-2 px-3 border">
-                            <div class="form-group mb-4">
-                                <label class="me-sm-2 py-2" for="inlineFormCustomSelect">Select Technician</label>
-                                <select class="form-select me-sm-2 technician" id="inlineFormCustomSelect">
-                                    <option value="" selected>-- Select Technician --</option>
-                                    @if (isset($technician) && !empty($technician->count()))
-                                        @foreach ($technician as $value)
-                                            <option value="{{ $value->id }}">{{ $value->name }}</option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                                <span class="error technicians_error"></span>
-                            </div>
-                        </div>
-                        <div class="col-8 bg-light py-2 px-3 border reschedulejob" style="display: none">
+                      
+                        <div class="col-12 bg-light py-2 px-3 border reschedulejob" style="display: none">
                             <form class="rescheduleForm" method="post">
                                 <div class="row">
-                                    <div class="col-3 bg-light py-2 px-3"><label>Customer</label></div>
-                                    <div class="col-3 bg-light py-2 px-3"><label>Start Time</label></div>
-                                    <div class="col-3 bg-light py-2 px-3"><label>Service Duration</label></div>
-                                    <div class="col-3 bg-light py-2 px-3"><label>Driving Hours</label></div>
-                                </div>
-                                <div class="rescheduleList">
-
+                                    <div class="col-3">
+                                        <label class="fs-6 pt-4">Customer & Job <br>Job details here</label>
+                                     </div>
+                                    <div class="col-9 rescheduleList"> </div>
                                 </div>
                             </form>
                             <div class="row">
@@ -76,6 +41,32 @@
                     <div class="row">
                         <div class="col bg-light py-2 px-3 card-border">
                             <ul class="list-group scroll-container reschedule_user_list">
+                                <li class="list-group-item">
+                                    <div class="form-group mb-4">
+                                        <label class="me-sm-2 py-2 " for="inlineFormCustomSelect">Select Territory</label>
+                                        <select class="form-select me-sm-2 territory" id="territory" onchange="reloadPage()">
+                                            <option value="">-- Select Territory --</option>
+                                            @foreach ($locationServiceArea as $value)
+                                            <option 
+                                                data-lat="{{ $value->area_latitude }}" 
+                                                value="{{ $value->area_id }}"
+                                                @if (request()->input('area_id') == $value->area_id) 
+                                                    selected
+                                                @elseif(isset($locationServiceSouthWest->area_id) &&
+                                                        !empty($locationServiceSouthWest->area_id) &&
+                                                        $locationServiceSouthWest->area_id == $value->area_id) selected
+                                                @endif
+                                                data-lag="{{ $value->area_longitude }}"
+                                                data-radius="{{ $value->area_radius }}"
+                                            >
+                                                {{ $value->area_name }}
+                                            </option>
+                                        @endforeach
+                                        
+                                        </select>
+                                        <span class="error territory_error"></span>
+                                    </div>
+                                </li>
                                 @if (isset($data) && !empty($data->count()))
                                     @foreach ($data as $key => $value)
                                         <li class="list-group-item" id="event_click{{ $value->assign_id }}"
@@ -109,7 +100,7 @@
 
             var openInfoWindowpop = null;
 
-            function initMap(userLat, userLng, areaZoom) {
+            function initMap(userLat, userLng, areaZoom,radius) {
 
                 var map = new google.maps.Map(document.getElementById('map'), {
                     zoom: areaZoom,
@@ -191,39 +182,30 @@
                 var area_id = selectedOption.val();
 
                 if (area_id == '') {
-                    initMap(40.73061, -73.935242, 4);
+                    initMap(40.73061, -73.935242, 4, 2000000);
                 } else {
                     var lat = parseFloat(selectedOption.data('lat'));
                     var lag = parseFloat(selectedOption.data('lag'));
-                    var radius = parseFloat(selectedOption.data('radius'));
-                    initMap(lat, lag, radius);
+                    var radius = 2000000; // 2,000 km
+                    initMap(lat, lag, 5, radius);
                 }
             });
 
-            function reloadPage() {
-
-                var selectedValue = document.getElementById("territory").value;
-
-                if (selectedValue) {
-                    var url = "{{ route('map') }}" + "?area_id=" + selectedValue;
-                    window.location.href = url;
-                } else {
-                    var url = "{{ route('map') }}";
-                    window.location.href = url;
-                }
-            }
+           
 
             var count = 0;
             var jobIds = [];
 
             $("body").on('click', '.reschedule', function(e) {
+                var selectedOption = $('#territory').find('option:selected');
+                var area_id = selectedOption.val();
 
                 var error = 0;
 
-                if ($('.technician option:selected').val() == '') {
-                    $('.technicians_error').text('Please select Technicaian for reschedule job.');
-                    error++;
-                }
+                // if ($('.technician option:selected').val() == '') {
+                //     $('.technicians_error').text('Please select Technicaian for reschedule job.');
+                //     error++;
+                // }
 
                 if ($('.territory option:selected').val() == '') {
                     $('.territory_error').text('Please select Territory for reschedule job.');
@@ -248,7 +230,8 @@
                             url: "{{ route('get.jobDetails') }}",
                             data: {
                                 job_id: $(this).attr('data-job_id'),
-                                count: count
+                                count: count,
+                                area_id: area_id,
                             },
                             type: 'GET',
                             success: function(data) {
@@ -266,14 +249,6 @@
 
                 }
 
-            });
-
-            $("body").on('change', '.technician', function(e) {
-                jobIds.length = 0
-                $('.technicians_error').text('');
-                $('.reschedulejob').hide();
-                $('.rescheduleList').empty();
-                count = 0;
             });
 
             $("body").on('change', '.click', function(e) {
@@ -353,6 +328,20 @@
             });
 
         });
+    </script>
+    <script>
+     function reloadPage() {
+
+                var selectedValue = document.getElementById("territory").value;
+
+                if (selectedValue) {
+                    var url = "{{ route('map') }}" + "?area_id=" + selectedValue;
+                    window.location.href = url;
+                } else {
+                    var url = "{{ route('map') }}";
+                    window.location.href = url;
+                }
+            }
     </script>
 @endsection
 @endsection

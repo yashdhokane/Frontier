@@ -14,7 +14,7 @@ class MapController extends Controller
     public function index(Request $request)
     {
 
-        $locationServiceAreaDallas = DB::table('location_service_area')->where('area_name','Dallas')->first();
+        $locationServiceSouthWest = DB::table('location_service_area')->where('area_name','South West')->first();
 
         $query = DB::table('job_assigned')
             ->select(
@@ -48,23 +48,17 @@ class MapController extends Controller
 
         if (isset($request->area_id) && !empty($request->area_id)) {
             $query->where('jobs.service_area_id', $request->area_id);
-        }elseif (isset($locationServiceAreaDallas->area_id) && !empty($locationServiceAreaDallas->area_id)) {
-            $query->where('jobs.service_area_id', $locationServiceAreaDallas->area_id);
+        }elseif (isset($locationServiceSouthWest->area_id) && !empty($locationServiceSouthWest->area_id)) {
+            $query->where('jobs.service_area_id', $locationServiceSouthWest->area_id);
         }
 
         $data = $query->get();
 
-        $technician = null;
+       
 
-        if (isset($request->area_id) && !empty($request->area_id)) {
-            $technician = User::select('id', 'name')->where('role', 'technician')->where('service_areas', 'LIKE', '%' . $request->area_id . '%')->get();
-        }elseif (isset($locationServiceAreaDallas->area_id) && !empty($locationServiceAreaDallas->area_id)) {
-            $technician = User::select('id', 'name')->where('role', 'technician')->where('service_areas', 'LIKE', '%' . $locationServiceAreaDallas->area_id . '%')->get();
-        }
+        $locationServiceArea = DB::table('location_service_area')->where('area_type','region')->get();
 
-        $locationServiceArea = DB::table('location_service_area')->get();
-
-        return view('maps.index', compact('data', 'locationServiceArea','technician','locationServiceAreaDallas'));
+        return view('maps.index', compact('data', 'locationServiceArea','locationServiceSouthWest'));
     }
 
     public function getMarkerDetails(Request $request)
@@ -92,25 +86,35 @@ class MapController extends Controller
                 'users.name',
                 'users.email',
                 'technician.name as technicianname',
-                'technician.email as technicianemail'
+                'technician.email as technicianemail',
+                'jobs.job_field_ids'
             )
             ->join('jobs', 'jobs.id', 'job_assigned.job_id')
             ->join('users', 'users.id', 'jobs.customer_id')
             ->join('users as technician', 'technician.id', 'job_assigned.technician_id')
             ->where('job_assigned.job_id', $data['id'])->first();
 
-        if ($result->status == "open") {
-            $show_status = '<span class="mb-1 badge bg-success">' . ucfirst($result->status) . '</span>';
-        } else {
-            $show_status = '<span class="mb-1 badge bg-primary">' . ucfirst($result->status) . '</span>';
-        }
+            $jobFieldsIds = explode(',', $result->job_field_ids);
+
+            $jobFields = DB::table('site_job_fields')
+                ->whereIn('field_id', $jobFieldsIds)
+                ->get();
+
+                $show_status = ''; 
+
+                foreach ($jobFields as $item) {
+                    $show_status .= '<span class="mb-1 badge bg-success">' . $item->field_name . '</span> '; 
+                }
+                if (empty($jobFields)) {
+                    $show_status = '<span class="mb-1 badge bg-secondary">No Fields</span>'; 
+                }
 
         $content = "
 			<div class='maplocationpopup'>
-			<h4 style='margin-bottom: 0px;'>" . $result->pending_number . '. ' . $result->name . "</h4>
-			<div class='mt-2'><span class='mb-1 badge bg-primary'>" . $result->job_code . "</span> " . $show_status . "</div>
-			<div class='mt-2'>" . $result->address . ", " . $result->city . ", " . $result->state . ", " . $result->zipcode . "</div>
- 			<div class='mt-2'><a href='#' class='btn btn-success waves-effect waves-light btn-sm btn-info'>View</a> <a href='#' class='btn btn-warning waves-effect waves-light btn-sm btn-info reschedule' data-job_id='" . $result->job_id . "'>Reschedule</a></div>
+			<h4 style='margin-bottom: 0px;'>" . $result->subject . "</h4>
+			<div class='mt-2'><span class='mb-1 badge bg-primary'>" . $result->job_id . "</span> " . $show_status . "</div>
+			<div class='mt-2'>" . $result->name . ", " . $result->address . ", " . $result->city . ", " . $result->state . ", " . $result->zipcode . "</div>
+ 			<div class='mt-2'><a href='tickets/". $result->job_id ."' class='btn btn-success waves-effect waves-light btn-sm btn-info'>View</a> <a href='#' class='btn btn-warning waves-effect waves-light btn-sm btn-info reschedule' data-job_id='" . $result->job_id . "'>Reschedule</a></div>
 		</div>";
 
         return response()->json(['content' => $content]);
@@ -141,6 +145,7 @@ class MapController extends Controller
 
     public function getJobDetails(Request $request)
     {
+      $locationServiceSouthWest = DB::table('location_service_area')->where('area_name','South West')->first();
 
         $data = $request->all();
 
@@ -164,7 +169,15 @@ class MapController extends Controller
 
             $getData->start_date_time = $start_date_time->format('Y-m-d\TH:i');
 
-            return view('maps.reschedule_list', compact('getData', 'count'));
+             $technician = null;
+
+        if (isset($request->area_id) && !empty($request->area_id)) {
+            $technician = User::select('id', 'name')->where('role', 'technician')->where('service_areas', 'LIKE', '%' . $request->area_id . '%')->get();
+        }elseif (isset($locationServiceSouthWest->area_id) && !empty($locationServiceSouthWest->area_id)) {
+            $technician = User::select('id', 'name')->where('role', 'technician')->where('service_areas', 'LIKE', '%' . $locationServiceSouthWest->area_id . '%')->get();
+        }
+
+            return view('maps.reschedule_list', compact('getData', 'count','technician'));
 
         }
     }
