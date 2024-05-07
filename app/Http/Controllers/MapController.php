@@ -231,6 +231,21 @@ class MapController extends Controller
                     ];
 
                     $schedule = DB::table('schedule')->where('job_id', $value['job_id'])->update($scheduleData);
+                
+                    $technician_name = User::where('id',$technician_id)->first();
+                    $now = Carbon::now();
+                    $formattedDate = $start_date_time->format('D, M j');
+                    $formattedTime = $now->format('g:ia');
+                    $formattedDateTime = "{$formattedDate} at {$formattedTime}";
+                    $activity ='Job Re-Scheduled for '. $formattedDateTime;
+
+                    app('JobActivityManager')->addJobActivity($value['job_id'], $activity);
+                    app('sendNotices')(
+                        "Reschedule Job","Reschedule Job (#{$value['job_id']} - {$value['customer_name']}) added by {$technician_name->name}",
+                        url()->current(), 
+                        'job'
+                    );
+
                 }
 
             }
