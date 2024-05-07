@@ -46,22 +46,24 @@
                                         <label class="me-sm-2 py-2 " for="inlineFormCustomSelect">Select Territory</label>
                                         <select class="form-select me-sm-2 territory" id="territory" onchange="reloadPage()">
                                             <option value="">-- Select Territory --</option>
-                                           @foreach ($locationServiceArea as $value)
-                                                <option 
-                                                    data-lat="{{ $value->area_latitude }}" 
-                                                    value="{{ $value->area_id }}"
-                                                    @if (
-                                                        (request()->input('area_id') == $value->area_id) || 
-                                                        (isset($locationServiceSouthWest) && $locationServiceSouthWest->area_id == $value->area_id)
-                                                    )
-                                                        selected
-                                                    @endif
-                                                    data-lag="{{ $value->area_longitude }}"
-                                                    data-radius="{{ $value->area_radius }}"
-                                                >
-                                                    {{ $value->area_name }}
-                                                </option>
-                                            @endforeach
+                                            @php
+                                            $selectedAreaId = request()->input('area_id') ?? ($locationServiceSouthWest->area_id ?? null);
+                                        @endphp
+                                        
+                                        @foreach ($locationServiceArea as $value)
+                                            <option 
+                                                data-lat="{{ $value->area_latitude }}" 
+                                                value="{{ $value->area_id }}"
+                                                @if ($selectedAreaId == $value->area_id)
+                                                    selected
+                                                @endif
+                                                data-lag="{{ $value->area_longitude }}"
+                                                data-radius="{{ $value->area_radius }}"
+                                            >
+                                                {{ $value->area_name }}
+                                            </option>
+                                        @endforeach
+                                        
 
                                         
                                         
