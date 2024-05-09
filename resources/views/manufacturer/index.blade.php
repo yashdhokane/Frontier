@@ -29,11 +29,14 @@
                     </div>
                 </div>
             </div>
-            @if (session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
+           @if (Session::has('success'))
+<div class="alert_wrap">
+    <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
+        {{ Session::get('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert"
+            aria-label="Close"></button>
+    </div>
+</div>
+@endif
             <!-- ------------------------------------------------------------ -->
             <!-- End Bread crumb and right sidebar toggle -->
             <!-- -------------------------------------------------------------- -->

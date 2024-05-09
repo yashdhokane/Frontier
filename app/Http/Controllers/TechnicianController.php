@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\FleetVehicle;
@@ -120,6 +121,8 @@ class TechnicianController extends Controller
         // If validation passes, create the user and related records
         $user = new User();
         $user->name = $request['display_name'];
+        $user->employee_id = User::max('employee_id') + 1;
+
         $user->email = $request['email'];
         $user->mobile = $request['mobile_phone'];
          $user->color_code  = $request['color_code'];
@@ -300,10 +303,12 @@ app('sendNotices')('New Technician','New Technician Added at ' . now(), url()->c
     {
 
         $technician = User::with('Location')->find($id);
-        $vehiclefleet=FleetVehicle::where('technician_id',$technician->id)->first();
+$vehicleDescriptions = FleetVehicle::pluck('vehicle_description')->toArray();
+         //dd($vehicleDescriptions);
+            $vehiclefleet=FleetVehicle::where('technician_id',$technician->id)->first();
         $colorcode = ColorCode::all();
         //dd($vehiclefleet);
-      $schedule=Schedule::where('technician_id',$technician->id)->orderBy('created_at', 'desc')->get();
+      $schedule=Schedule::with('JobModel.user','JobModel.addresscustomer','JobModel','event')->where('technician_id',$technician->id)->orderBy('created_at', 'desc')->get();
 
 
         $notename = DB::table('user_notes')->where('user_id',$technician->id)->get();
@@ -464,7 +469,7 @@ app('sendNotices')('New Technician','New Technician Added at ' . now(), url()->c
         )->get();
         //dd($login_history);
 
-        return view('technicians.show', compact('vehiclefleet','colorcode','schedule','estimates','activity','setting', 'login_history', 'technician', 'oil_change', 'tune_up', 'tire_rotation', 'breaks', 'inspection_codes', 'mileage', 'registration_expiration_date', 'vehicle_coverage', 'license_plate', 'vin_number', 'make', 'model', 'year', 'color', 'vehicle_weight', 'vehicle_cost', 'use_of_vehicle', 'repair_services', 'ezpass', 'service', 'additional_service_notes', 'last_updated', 'epa_certification', 'notename', 'payments', 'longitude', 'latitude', 'userAddresscity', 'jobasign', 'customerimage', 'location', 'jobasigndate', 'serviceAreas', 'locationStates', 'tags', 'cities', 'selectedTags', 'userTags', 'product', 'assign', 'technicianpart', 'tickets', 'payment', 'manufacturer', 'tech','UsersDetails'));
+        return view('technicians.show', compact('vehiclefleet','vehicleDescriptions','colorcode','schedule','estimates','activity','setting', 'login_history', 'technician', 'oil_change', 'tune_up', 'tire_rotation', 'breaks', 'inspection_codes', 'mileage', 'registration_expiration_date', 'vehicle_coverage', 'license_plate', 'vin_number', 'make', 'model', 'year', 'color', 'vehicle_weight', 'vehicle_cost', 'use_of_vehicle', 'repair_services', 'ezpass', 'service', 'additional_service_notes', 'last_updated', 'epa_certification', 'notename', 'payments', 'longitude', 'latitude', 'userAddresscity', 'jobasign', 'customerimage', 'location', 'jobasigndate', 'serviceAreas', 'locationStates', 'tags', 'cities', 'selectedTags', 'userTags', 'product', 'assign', 'technicianpart', 'tickets', 'payment', 'manufacturer', 'tech','UsersDetails'));
     }
 
     public function edit($id)
@@ -1148,6 +1153,39 @@ public function smstechnician(Request $request)
         return redirect()->back()->with('error', 'Unauthorized access.');
     }
 }
+
+public function update_fleet_technician(Request $request)
+{
+    // Check if the user is authenticated
+    if (auth()->check()) {
+        // Retrieve the technician ID and vehicle description from the request
+        $technicianId = $request->input('technician_id');
+        $description = $request->input('vehicle_description');
+
+        // Find the FleetVehicle record that matches the technician ID and vehicle description
+        $fleet = FleetVehicle::where('technician_id', $technicianId)
+                             ->first();
+
+        if ($fleet) {
+            // Update the found FleetVehicle record with the provided technician ID and description
+            $fleet->update([
+                'updated_at' => now(),
+                'updated_by' => auth()->user()->id, // Access user ID using auth()->user()
+                'vehicle_description' => $request->vehicle_description,
+            ]);
+
+            // Return a success response
+            return redirect()->back()->with('success', 'Vehicle title changed successfully');
+        } else {
+            // Return an error response if the fleet record is not found
+            return redirect()->back()->with('error', 'Fleet record not found for the provided technician ID and description');
+        }
+    } else {
+        // User is not authenticated, handle the error accordingly
+        return redirect()->back()->with('error', 'User not authenticated');
+    }
+}
+
 
 
 }

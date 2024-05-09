@@ -7,7 +7,13 @@ use Illuminate\Support\Facades\Hash;
 
 
 use App\Models\User;
+use App\Models\UsersSettings;
+use App\Models\UsersDetails;
+
+
 use App\Models\UserTag;
+use App\Models\Payment;
+use App\Models\JobModel;
 use App\Models\SiteTags;
 use Illuminate\Support\Facades\DB;
 
@@ -25,7 +31,7 @@ class MultiAdminController extends Controller
 {
     public function index()
     {
-        $users = User::where('role', 'admin')->orderBy('created_at', 'desc') // Assuming 'created_at' is a timestamp column
+        $users = User::where('role', 'admin')->orderBy('name', 'asc') // Assuming 'created_at' is a timestamp column
             ->get();
 
         return view('multiadmin.index', compact('users'));
@@ -66,6 +72,8 @@ class MultiAdminController extends Controller
         $user = new User();
         $user->name = $request['display_name'];
         $user->email = $request['email'];
+        $user->employee_id = User::max('employee_id') + 1;
+
         $user->mobile = $request['mobile_phone'];
         $user->role = $request['role'];
         $user->password = Hash::make($request['password']);
@@ -244,9 +252,36 @@ class MultiAdminController extends Controller
             ->value('location_cities.longitude');
         $location = CustomerUserAddress::where('user_id', $multiadmin->id)->get();
 
+        $customerimage = DB::table('user_files')
+            ->where('user_id', $multiadmin->id)
+            ->get();
+        $tickets = JobModel::orderBy('created_at', 'desc')->get();
+        $payment = Payment::whereHas('JobModel', function ($query) use ($multiadmin) {
+            $query->where('added_by', $multiadmin->id);
+        })
+            ->latest()
+            ->get();
 
-        return view('multiadmin.show', compact('multiadmin', 'notename', 'activity', 'jobasign', 'longitude', 'latitude', 'userAddresscity', 'location', 'home_phone'));
+        $setting = UsersSettings::
+            where('user_id', $multiadmin->id)
+            ->first();
+
+        $UsersDetails = UsersDetails::where('user_id', $multiadmin->id)->first();
+
+        $locationStates = LocationState::all();
+        $location = $multiadmin->location;
+        $Note = $multiadmin->Note;
+        $source = $multiadmin->source;
+
+        $tags = SiteTags::all();
+
+        $userTags = $multiadmin->tags;
+
+        $selectedTags = explode(',', $userTags->pluck('tag_id')->implode(','));
+
+        return view('multiadmin.show', compact('UsersDetails', 'Note', 'source', 'multiadmin', 'tags', 'userTags', 'selectedTags', 'locationStates', 'setting', 'payment', 'tickets', 'customerimage', 'notename', 'activity', 'jobasign', 'longitude', 'latitude', 'userAddresscity', 'location', 'home_phone'));
     }
+
 
 
     public function edit(string $id)
@@ -348,26 +383,22 @@ class MultiAdminController extends Controller
 
 
         // Update user meta
-        $user->meta()->updateOrCreate(
-            ['meta_key' => 'first_name'],
-            ['meta_value' => $request['first_name']]
-        );
+            $userDetails = UsersDetails::updateOrCreate(
+            ['user_id' => $id],
+            [
+                'first_name' => $request->input('first_name'),
+                'last_name' => $request->input('last_name'),
+                'home_phone' => $request->input('home_phone'),
+                'work_phone' => $request->input('work_phone'),
 
-        $user->meta()->updateOrCreate(
-            ['meta_key' => 'last_name'],
-            ['meta_value' => $request['last_name']]
+                'lifetime_value' => '$0.00',
+                'license_number' => 0,
+                // 'dob' => $request->input('dob'),
+                'ssn' => 0,
+                'update_done' => 'no'
+            ]
         );
-
-        $user->meta()->updateOrCreate(
-            ['meta_key' => 'home_phone'],
-            ['meta_value' => $request['home_phone']]
-        );
-
-        $user->meta()->updateOrCreate(
-            ['meta_key' => 'work_phone'],
-            ['meta_value' => $request['work_phone']]
-        );
-
+        $userDetails->save();
         // Update user address
 
         if ($request->filled('city')) {
@@ -441,7 +472,7 @@ class MultiAdminController extends Controller
         $user->tags()->syncWithoutDetaching($tagIds);
 
 
-        return redirect()->route('multiadmin.index')->with('success', 'Admin updated successfully');
+        return redirect()->back()->with('success', 'Admin updated successfully');
     }
 
 

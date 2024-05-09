@@ -6,10 +6,10 @@
         <!-- -------------------------------------------------------------- -->
         <!-- Bread crumb and right sidebar toggle -->
         <!-- -------------------------------------------------------------- -->
-        <div class="page-breadcrumb">
+        <div class="page-breadcrumb" style="padding-top: 0px;">
             <div class="row">
                 <div class="col-5 align-self-center">
-                    <h3 class="page-title">Fleet Report</h3>
+                    <h4 class="page-title">Fleet Report</h4>
                 </div>
             </div>
         </div>
@@ -31,7 +31,7 @@
                         <div class="col-md-12">
                             <div class="card shadow card-border">
                                 <div class="card-body">
-                                    <h4 class="card-title">Fleet report by technician</h4>
+                                    <h5 class="card-title uppercase">Technician Fleet and Vehicle Report</h5>
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="table-responsive">

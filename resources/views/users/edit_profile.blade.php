@@ -159,7 +159,7 @@
 
                     <div class="card-body-no">
 
-                        <h4 class="card-title">Customer Details</h4>
+                        <h5 class="card-title uppercase">Customer Details</h5>
                         <div class="row">
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
@@ -230,7 +230,7 @@
                             </div>
                         </div>
 
-                        <h4 class="card-title">Address Details</h4>
+                        <h5 class="card-title uppercase">Address Details</h5>
                         <div class="row">
                             <div class="col-sm-12 col-md-12">
                                 <div class="mb-3">

@@ -76,7 +76,7 @@
 
 				<li>
 
-					<a class="nav-link text-center mb-1 text-dark" href="{{route('myprofile.notification')}}">
+ 					<a class="nav-link text-center mb-1 text-dark" href="{{route('myprofile.activity')}}">
 
 						<strong>Check all notifications</strong>
 

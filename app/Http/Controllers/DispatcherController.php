@@ -7,12 +7,16 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\User;
+use App\Models\JobModel;
+
 use App\Models\UsersDetails;
 
 
 use App\Models\UserTag;
 use App\Models\SiteTags;
 use App\Models\Technician;
+use App\Models\Payment;
+
 use Illuminate\Http\Request;
 use App\Models\LocationState;
 use App\Models\CustomerUserMeta;
@@ -24,8 +28,11 @@ class DispatcherController extends Controller
     public function index()
     {
 
-        $users = User::where('role', 'dispatcher')->orderBy('created_at', 'desc') // Assuming 'created_at' is a timestamp column
+    $users = User::where('role', 'dispatcher')
+            ->orderBy('name', 'asc')
             ->get();
+
+
 
         return view('dispatcher.index', compact('users'));
     }
@@ -67,6 +74,8 @@ class DispatcherController extends Controller
 
         $user = new User();
         $user->name = $request['display_name'];
+        $user->employee_id = User::max('employee_id') + 1;
+
         $user->email = $request['email'];
         $user->mobile = $request['mobile_phone'];
         $user->role = $request['role'];
@@ -244,6 +253,12 @@ class DispatcherController extends Controller
             ->where('user_id', $dispatcher->id)
             ->get();
 
+        $customerimage = DB::table('user_files')
+            ->where('user_id', $dispatcher->id)
+            ->get();
+        $tickets = JobModel::orderBy('created_at', 'desc')->get();
+
+
         $home_phone = $dispatcher->meta()->where('meta_key', 'home_phone')->value('meta_value') ?? '';
         // $userAddresscity = DB::table('user_address')
         //     ->leftJoin('location_cities', 'user_address.city_id', '=', 'location_cities.city_id')
@@ -264,11 +279,32 @@ class DispatcherController extends Controller
             ->value('location_cities.longitude');
 
         $location = CustomerUserAddress::where('user_id', $dispatcher->id)->get();
+        $payment = Payment::whereHas('JobModel', function ($query) use ($dispatcher) {
+            $query->where('added_by', $dispatcher->id);
+        })
+            ->latest()
+            ->get();
+
+        $UsersDetails = UsersDetails::where('user_id', $dispatcher->id)->first();
+
+        $locationStates = LocationState::all();
+
+        $location = $dispatcher->location;
+        $Note = $dispatcher->Note;
+        $source = $dispatcher->source;
+
+        $tags = SiteTags::all();
+        $permissions = DB::table('user_permissions')->pluck('permission_id')->toArray();
 
 
 
+        // Assuming you have a 'tags' relationship defined in your User model
+        $userTags = $dispatcher->tags;
 
-        return view('dispatcher.show', compact('dispatcher', 'notename', 'activity', 'jobasign', 'location', 'latitude', 'longitude', 'userAddresscity', 'home_phone'));
+        // Convert the comma-separated tag_id string to an array
+        $selectedTags = explode(',', $userTags->pluck('tag_id')->implode(','));
+
+        return view('dispatcher.show', compact('dispatcher', 'UsersDetails', 'locationStates', 'Note', 'source', 'selectedTags', 'userTags', 'permissions', 'tags', 'payment', 'tickets', 'customerimage', 'notename', 'activity', 'jobasign', 'location', 'latitude', 'longitude', 'userAddresscity', 'home_phone'));
     }
 
 
@@ -480,7 +516,7 @@ class DispatcherController extends Controller
         $user->tags()->attach($tagIds);
         $user->tags()->syncWithoutDetaching($tagIds);
 
-        return redirect()->route('dispatcher.index')->with('success', 'Dispatcher updated successfully');
+        return redirect()->back()->with('success', 'Dispatcher updated successfully');
     }
 
 

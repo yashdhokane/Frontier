@@ -25,11 +25,16 @@
     <!-- Container fluid  -->
     <!-- -------------------------------------------------------------- -->
     <div class="container-fluid">
-        @if(Session::has('success'))
-        <div class="alert alert-success">
-            {{ Session::get('success') }}
-        </div>
-        @endif
+       
+@if (Session::has('success'))
+<div class="alert_wrap">
+    <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
+        {{ Session::get('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert"
+            aria-label="Close"></button>
+    </div>
+</div>
+@endif
+
         <!-- -------------------------------------------------------------- -->
         <!-- Start Page Content -->
         <!-- -------------------------------------------------------------- -->
@@ -249,8 +254,8 @@
 										<table id="zero_config" class="table table-hover table-striped text-nowrap" data-paging="true" data-paging-size="7">
 											<thead>
 												<tr>
-													<th>Ticket ID</th>
-													<th>Ticket Details</th>
+													<th>Job No</th>
+													<th>Job Details</th>
 													<th>Customer</th>
 													<th>Technician</th>
 													<th>Date & Time</th>
@@ -296,14 +301,14 @@
 													</td>
 													<td>
 														@if ($ticket->user)
-														{{ $ticket->user->name }}
+                        						<a href="{{ route('users.show', $ticket->user->id) }}" class="link">{{ $ticket->user->name }}</a>
 														@else
 														Unassigned
 														@endif
 													</td>
 													<td>
 														@if ($ticket->technician)
-														{{ $ticket->technician->name }}
+                                        	<a href="{{ route('technicians.show', $ticket->technician->id) }}" class="link">{{ $ticket->technician->name }}</a>
 														@else
 														Unassigned
 														@endif
@@ -393,13 +398,17 @@
                                                         $technician_name = 'Unknown';
                                                         }
                                                         @endphp
-                                                        {{$technician1->name ?? null}} </td>
+                                                        <a href="{{ route('technicians.show', ['id' => $technician1->id]) }}" class="link">{{$technician1->name ?? null}}</a>
+                                                         </td>
 
                                                     
                                                     <td>@php
                                                         $customer = DB::table('users')->where('id',
                                                         $payment->customer_id)->first();
-                                                        @endphp {{ $customer->name ?? null }} </td>
+                                                        @endphp 
+                  	<a href="{{ route('users.show', ['id' => $customer->id]) }}" class="link">{{ $customer->name ?? null }}</a>
+
+                                                         </td>
 
                                                 </tr>
                                                 @endforeach
@@ -430,7 +439,32 @@
 										</div>
 										@else
 										<p>Summary: {{ $vehiclefleet->vehicle_summary ?? '' }}</p>
-										<p>FORM GOES HERE</p>
+<form class="form" method="post" action="{{ route('update_fleet_technician') }}">
+    @csrf
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="vehicle_description" class="control-label bold mb5 col-form-label required-field">Change Vehicle (title)</label>
+               <select name="vehicle_description" class="form-select" required>
+    @foreach($vehicleDescriptions as $description)
+        @if(in_array($description, explode(',', $vehiclefleet->vehicle_description)))
+            <option value="{{$description}}" selected>{{ $description }}</option>
+        @else
+            <option value="{{$description}}">{{ $description }}</option>
+        @endif
+    @endforeach
+</select>
+
+            </div>
+<input type="hidden" class="form-control" name="technician_id" value="{{ $technician->id }}" />
+
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+        </div>
+    </div>
+</form>
+
 										@endif
  									</div>
 									
@@ -792,26 +826,64 @@
 												@if (!empty($scheduleItem))
 													<tr>  
 														<td>
-														 @if ($scheduleItem->start_date_time && $scheduleItem->end_date_time && $scheduleItem->created_at )
-																		<div class="font-medium link">{{
-																			$convertDateToTimezone($scheduleItem->created_at) }}</div>
-																		@else
-																		<div></div>
-																		@endif
-																		<div style="font-size:12px;">
-																			{{ $convertTimeToTimezone($scheduleItem->start_date_time, 'H:i:a')
-																			}}
-																			to {{ $convertTimeToTimezone($scheduleItem->end_date_time, 'H:i:a')
-																			}}
-																		</div>
+	@if ($scheduleItem->schedule_type == 'job')
+    <div class="font-medium link">{{ $convertDateToTimezone($scheduleItem->created_at) }}</div>
+    <div style="font-size:12px;">
+        {{ $convertTimeToTimezone($scheduleItem->start_date_time, 'H:i:a') }}
+        to
+        {{ $convertTimeToTimezone($scheduleItem->end_date_time, 'H:i:a') }}
+    </div>
+@elseif ($scheduleItem->event->event_type == 'full')
+    <div class="font-medium link">{{ $convertDateToTimezone($scheduleItem->created_at) }}</div>
+    <div style="font-size:12px;">
+        <div>Full Day</div>
+    </div>
+@elseif ($scheduleItem->event->event_type == 'partial')
+    <div class="font-medium link">{{ $convertDateToTimezone($scheduleItem->created_at) }}</div>
+    <div style="font-size:12px;">
+        {{ $convertTimeToTimezone($scheduleItem->start_date_time, 'H:i:a') }}
+        to
+        {{ $convertTimeToTimezone($scheduleItem->end_date_time, 'H:i:a') }}
+    </div>
+@endif
+
+																		
 														
 														</td>
 														<td>{{ $scheduleItem->schedule_type ?? ''}}</td>
 														<td>
 															@if ($scheduleItem->schedule_type === 'job')
-																<a href="{{ route('tickets.show', ['id' => $scheduleItem->job_id]) }}">View Ticket</a>
+                                                            
+                                                                <div class="font-medium link">{{ $scheduleItem->JobModel->job_title ?? '' }}</div>
+                                                                  <div class="font-medium link">{{ $scheduleItem->JobModel->description ?? '' }}</div>
+                                                              <div class="font-medium link">   {{$scheduleItem->JobModel->user->name ?? ''}}</div>
+                                                 <div class="">
+                                                 
+    @if(isset($scheduleItem->JobModel->addresscustomer->address_line1) && $scheduleItem->JobModel->addresscustomer->address_line1 !== '')
+    {{ $scheduleItem->JobModel->addresscustomer->address_line1 }}, 
+@endif
+
+@if(isset($scheduleItem->JobModel->addresscustomer->address_line2) && $scheduleItem->JobModel->addresscustomer->address_line2 !== '')
+    {{ $scheduleItem->JobModel->addresscustomer->address_line2 }}, 
+@endif
+
+@if(isset($scheduleItem->JobModel->addresscustomer->city) && $scheduleItem->JobModel->addresscustomer->city !== '')
+    {{ $scheduleItem->JobModel->addresscustomer->city }}, 
+@endif
+
+@if(isset($scheduleItem->JobModel->addresscustomer->state_name) && $scheduleItem->JobModel->addresscustomer->state_name !== '')
+    {{ $scheduleItem->JobModel->addresscustomer->state_name }}, 
+@endif
+
+@if(isset($scheduleItem->JobModel->addresscustomer->zipcode) && $scheduleItem->JobModel->addresscustomer->zipcode !== '')
+    {{ $scheduleItem->JobModel->addresscustomer->zipcode }}
+@endif</div>
+
+
+																<!-- <a href="{{ route('tickets.show', ['id' => $scheduleItem->job_id]) }}">View Ticket</a> -->
 															@elseif ($scheduleItem->schedule_type === 'event')
-																{{ $scheduleItem->event->event_name ?? '' }} - {{ $scheduleItem->event->event_description ?? '' }}
+																{{ $scheduleItem->event->event_name ?? '' }}   {{ $scheduleItem->event->event_description ?? '' }}
+															  {{ $scheduleItem->event->event_location ?? '' }}
 															@else
 																No details available
 															@endif
@@ -824,6 +896,197 @@
 									@endif
 									
 								</div>
+								
+								
+			 <div class="card">
+                <div class="card-body">
+                  <ul class="timeline timeline-left">
+				  
+					<li class="timeline-inverted timeline-item">
+                      <div class="timeline-badge danger">
+                        <span class="fs-2">T</span>
+                      </div>
+                      <div class="timeline-panel shadow">
+                        <div class="timeline-heading">
+							<h5 class="timeline-title uppercase"><i class="ri-time-line align-middle"></i> 05-03-2024 <span class="ft12">03:30:am to 05:30:am</span></h5>
+ 						</div>
+                        <div class="timeline-body">
+  							<div class="row mt1">
+								<div class="col-md-12">
+									<div class="mb-2">
+									<h5 class="card-title uppercase">JOB TITLE HERE</h5>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis minus modi quam ipsum alias at est molestiae excepturi delectus nesciunt, quibusdam debitis amet, beatae consequuntur impedit nulla qui! Laborum, atque.
+								</div>
+							</div>
+							<div class="row mt-2">
+								<div class="col-md-6">
+									<div class="mb-2"><strong>Customer Name: </strong> JANES N</div>
+									<div class="mb-2"><strong>Address:</strong> quibusdam debitis amet, beatae consequuntur</div>
+									<div class="mb-2"><strong>Mobile: </strong>234123</div>
+									<div class="mb-2"><strong>Email: </strong> test@test.com </div>
+								</div>
+								<div class="col-md-3">
+									<div class="mb-2"><strong>Duration:</strong> 3 Hours</div>
+									<div class="mb-2"><strong>Priority:</strong> high</div>
+								</div>
+								<div class="col-md-3">
+									<div class="mb-2"><strong>Appliances: </strong> Laptop</div>
+									<div class="mb-2"><strong>Manufacturer:</strong> ipad	</div>
+									<div class="mb-2"><strong>Model Number: </strong>234123</div>
+									<div class="mb-2"><strong>Serial Number: </strong> 564324 </div>
+								</div>
+							</div>
+                         </div>
+                      </div>
+                    </li>
+					
+					<li class="timeline-inverted timeline-item">
+                      <div class="timeline-badge danger">
+                        <span class="fs-2">T</span>
+                      </div>
+                      <div class="timeline-panel shadow">
+                        <div class="timeline-heading">
+							<h5 class="timeline-title uppercase"><i class="ri-time-line align-middle"></i> 05-03-2024 <span class="ft12">03:30:am to 05:30:am</span></h5>
+ 						</div>
+                        <div class="timeline-body">
+  							<div class="row mt1">
+								<div class="col-md-12">
+									<div class="mb-2">
+									<h5 class="card-title uppercase">JOB TITLE HERE</h5>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis minus modi quam ipsum alias at est molestiae excepturi delectus nesciunt, quibusdam debitis amet, beatae consequuntur impedit nulla qui! Laborum, atque.
+								</div>
+							</div>
+							<div class="row mt-2">
+								<div class="col-md-6">
+									<div class="mb-2"><strong>Customer Name: </strong> JANES N</div>
+									<div class="mb-2"><strong>Address:</strong> quibusdam debitis amet, beatae consequuntur</div>
+									<div class="mb-2"><strong>Mobile: </strong>234123</div>
+									<div class="mb-2"><strong>Email: </strong> test@test.com </div>
+								</div>
+								<div class="col-md-3">
+									<div class="mb-2"><strong>Duration:</strong> 3 Hours</div>
+									<div class="mb-2"><strong>Priority:</strong> high</div>
+								</div>
+								<div class="col-md-3">
+									<div class="mb-2"><strong>Appliances: </strong> Laptop</div>
+									<div class="mb-2"><strong>Manufacturer:</strong> ipad	</div>
+									<div class="mb-2"><strong>Model Number: </strong>234123</div>
+									<div class="mb-2"><strong>Serial Number: </strong> 564324 </div>
+								</div>
+							</div>
+                         </div>
+                      </div>
+                    </li>
+					
+ 					  
+                    <li class="timeline-inverted timeline-item">
+                      <div class="timeline-badge success">
+                        <i class="ri-cpu-fill fs-7"></i>
+                      </div>
+                      <div class="timeline-panel shadow">
+                        <div class="timeline-heading">
+                          <h5 class="timeline-title uppercase"><i class="ri-time-line align-middle"></i> 05-03-2024 <span class="ft12">FULL DAY</span></h5>
+                         </div>
+                        <div class="timeline-body">
+							<div class="row">
+								<div class="col-md-12 mt-2">
+									<div class="mb-2">
+										<h5 class="card-title uppercase">EVENT TITLE HERE</h5>
+										<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt
+										obcaecati, quaerat tempore officia voluptas debitis consectetur culpa
+										amet, accusamus dolorum fugiat, animi dicta aperiam, enim incidunt
+										quisquam maxime neque eaque.
+										</p>
+									</div>
+								</div>
+							</div>
+                         </div>
+                      </div>
+                    </li>
+					
+					<li class="timeline-inverted timeline-item">
+                      <div class="timeline-badge danger">
+                        <span class="fs-2">T</span>
+                      </div>
+                      <div class="timeline-panel shadow">
+                        <div class="timeline-heading">
+							<h5 class="timeline-title uppercase"><i class="ri-time-line align-middle"></i> 05-03-2024 <span class="ft12">03:30:am to 05:30:am</span></h5>
+ 						</div>
+                        <div class="timeline-body">
+  							<div class="row mt1">
+								<div class="col-md-12">
+									<div class="mb-2">
+									<h5 class="card-title uppercase">JOB TITLE HERE</h5>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis minus modi quam ipsum alias at est molestiae excepturi delectus nesciunt, quibusdam debitis amet, beatae consequuntur impedit nulla qui! Laborum, atque.
+								</div>
+							</div>
+							<div class="row mt-2">
+								<div class="col-md-6">
+									<div class="mb-2"><strong>Customer Name: </strong> JANES N</div>
+									<div class="mb-2"><strong>Address:</strong> quibusdam debitis amet, beatae consequuntur</div>
+									<div class="mb-2"><strong>Mobile: </strong>234123</div>
+									<div class="mb-2"><strong>Email: </strong> test@test.com </div>
+								</div>
+								<div class="col-md-3">
+									<div class="mb-2"><strong>Duration:</strong> 3 Hours</div>
+									<div class="mb-2"><strong>Priority:</strong> high</div>
+								</div>
+								<div class="col-md-3">
+									<div class="mb-2"><strong>Appliances: </strong> Laptop</div>
+									<div class="mb-2"><strong>Manufacturer:</strong> ipad	</div>
+									<div class="mb-2"><strong>Model Number: </strong>234123</div>
+									<div class="mb-2"><strong>Serial Number: </strong> 564324 </div>
+								</div>
+							</div>
+                         </div>
+                      </div>
+                    </li>
+					
+					<li class="timeline-inverted timeline-item">
+                      <div class="timeline-badge success">
+                        <i class="ri-cpu-fill fs-7"></i>
+                      </div>
+                      <div class="timeline-panel shadow">
+                        <div class="timeline-heading">
+                          <h5 class="timeline-title uppercase"><i class="ri-time-line align-middle"></i> 05-03-2024 <span class="ft12">03:30:am to 05:30:am</span></h5>
+                         </div>
+                        <div class="timeline-body">
+							<div class="row">
+								<div class="col-md-12 mt-2">
+									<div class="mb-2">
+										<h5 class="card-title uppercase">EVENT TITLE HERE</h5>
+										<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt
+										obcaecati, quaerat tempore officia voluptas debitis consectetur culpa
+										amet, accusamus dolorum fugiat, animi dicta aperiam, enim incidunt
+										quisquam maxime neque eaque.
+										</p>
+									</div>
+								</div>
+							</div>
+                         </div>
+                      </div>
+                    </li>
+					
+                  </ul>
+                </div>
+              </div>
+             
+			 
   
 							</div>
 

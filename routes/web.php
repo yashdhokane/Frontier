@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\PerformanceMatrix;
-
+use App\Http\Controllers\CustomerDataController;
 use App\Http\Controllers\ProductController;
 
 use App\Http\Controllers\MultiAdminController;
@@ -345,6 +345,7 @@ Route::group(['middleware' => 'role:customer'], function () {
 
     Route::get('/technicians/{status?}', [TechnicianController::class, 'index'])->name('technicians.status');
 
+    Route::POST('/update-technician-fleet', [TechnicianController::class, 'update_fleet_technician'])->name('update_fleet_technician');
 
     Route::POST('/technicians/updatefleet', [TechnicianController::class, 'updatefleet'])->name('updatefleet');
     Route::post('/technicians/sms/', [TechnicianController::class, 'smstechnician'])->name('smstechnician');
@@ -1102,6 +1103,12 @@ Route::post('/create-payment-invoice', [PaymentController::class, 'createPayment
 
 
 Route::get('/performance-matrix', [PerformanceMatrix::class, 'performanncematrix'])->name('performanncematrix');
+
+
+    Route::get('/customers-data', [CustomerDataController::class, 'index'])->name('customersdata.index');
+    Route::post('/customerdata-update', [CustomerDataController::class, 'update'])->name('customerdata.update');
+
+    Route::get('/customers-data-view/{id}', [CustomerDataController::class, 'show'])->name('customersdata.show');
 
 });
 

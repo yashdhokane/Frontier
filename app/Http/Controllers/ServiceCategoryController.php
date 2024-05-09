@@ -12,7 +12,7 @@ class ServiceCategoryController extends Controller
     public function index()
     {
 
-        $servicecategory = ServiceCategory::all();
+        $servicecategory = ServiceCategory::where('parent_id',0)->get();
         return view('services.index', ['servicecategory' => $servicecategory]);
     }
     public function getCategoryById($id)

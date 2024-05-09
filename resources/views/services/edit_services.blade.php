@@ -131,16 +131,16 @@
 
 							<div class="row mt-2 mb-4">
                                 <div class="col-md-6">
-									<label class="control-label bold md5 required-field">Troubleshooting Questions</label>
+									<label class="control-label bold md5 ">Troubleshooting Questions</label>
 									<input type="text" value="{{ $service->troubleshooting_question1 }}"
 										name="troubleshooting_question1" id="task" class="form-control" placeholder=""
-										required />
+										 />
 								</div>
 								<div class="col-md-6">
-									<label class="control-label bold md5 required-field">Additional Troubleshooting Questions</label>
+									<label class="control-label bold md5 ">Additional Troubleshooting Questions</label>
 									<input type="text" value="{{ $service->troubleshooting_question2 }}"
 										name="troubleshooting_question2" id="task" class="form-control" placeholder=""
-										required />
+										 />
 								</div>
                             </div>
 
@@ -195,24 +195,24 @@
 
                         <div class="mb-3">
                             <label class="control-label bold md5 required-field">Price (Unit Price)</label>
-                            <input type="number" value="{{ $service->service_cost }}" id="service"
+                            <input type="text" value="{{ $service->service_cost }}" id="service"
                                 class="form-control" name="service_cost" placeholder="" required>
                         </div>
                         <div class="mb-3">
                             <label class="control-label bold md5 required-field">Discount (In Percentage)</label>
-                            <input type="number" value="{{ $service->service_discount }}" id="service"
+                            <input type="text" value="{{ $service->service_discount }}" id="service"
                                 name="service_discount" class="form-control" placeholder="" required>
                             <small id="name" class="form-text text-muted">It should be in percentage</small>
                         </div>
                      <!--   <div class="mb-3">
                             <label class="control-label bold md5 required-field">Tax (In Percentage)</label>
-                            <input type="number" value="{{ $service->service_tax }}" id="service" name="service_tax"
+                            <input type="text" value="{{ $service->service_tax }}" id="service" name="service_tax"
                                 class="form-control" placeholder="" required>
                             <small id="name" class="form-text text-muted">If applicable only</small>
                         </div> -->
                         <div class="mb-3">
                             <label class="control-label bold md5 required-field">Total</label>
-                            <input type="number" value="{{ $service->service_total }}" id="service"
+                            <input type="text" value="{{ $service->service_total }}" id="service"
                                 name="service_total" class="form-control" placeholder="" required>
                             <small id="name" class="form-text text-muted">Gross Total = Unit Price - Discount +
                                 Tax</small>
@@ -223,11 +223,12 @@
 
                 </div>
                 <!-- column -->
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary">Update</button>
+                <div style="text-align: center;">
+    <div class="col-md-2" style="display: inline-block;">
+        <button type="submit" class="btn btn-primary">Update</button>
+    </div>
+</div>
 
-
-                </div>
                 </form>
 
             </div>

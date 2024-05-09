@@ -12,8 +12,8 @@
                     <div class="d-flex align-items-center">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{ route('vehicles') }}" class="fs-5">Vehicles </a></li>
-                                <li class="breadcrumb-item"><a href="#" class="fs-5">Edit Vehicle</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('vehicles') }}">Vehicles </a></li>
+                                <li class="breadcrumb-item"><a href="#">Edit Vehicle</a></li>
                              </ol>
                         </nav>
                     </div>
@@ -33,53 +33,50 @@
             </div>
         @endif
 
-            <div class="card">
-                <div class="card-body card-border shadow">
-
-                    <div class="row">
-
-                        <div class="col-lg-8 col-xlg-9">
-
-                            <h4 class="card-title">Fleet Maintenance </h4>
-
-                            <form class="form" method="post" action="{{ route('fleetupdate', ['id' => $fleetModel->vehicle_id]) }}">
+			<div class="row">
+			
+				<div class="col-md-6">
+           
+					<div class="card">
+					
+						<div class="card-body card-border shadow">
+ 
+							<form class="form" method="post" action="{{ route('fleetupdate', ['id' => $fleetModel->vehicle_id]) }}">
                                 @csrf
-                               <div class="row">
-						<div class="col-md-6">
-						<div class="mb-3">
-                <label for="vehicle_description" class="control-label bold mb5 col-form-label required-field">Vehicle Details</label>
-                <textarea rows="3" name="vehicle_description" id="vehicle_description" class="form-control" placeholder="Add Vehicle Details" required>{{ $fleetModel->vehicle_description }}</textarea>
-            </div>
-            <div class="mb-3">
-                <label for="vehicle_summary" class="control-label bold mb5 col-form-label required-field">Vehicle Summary</label>
-                <textarea rows="3" name="vehicle_summary" id="vehicle_summary" class="form-control" placeholder="Add complete summary about vehicle" required>{{ $fleetModel->vehicle_summary }}</textarea>
-            </div>
-
-            <div class="mb-3">
-    <label for="technician_id" class="control-label bold mb5 col-form-label required-field">Select Technician</label>
-    <select name="technician_id" id="technician_id" class="form-control" required>
-        <option value="">----- Select Technician -----</option>
-        @foreach ($users as $user)
-        <option value="{{ $user->id }}" @if($user->id == $fleetModel->technician_id) selected @endif>{{ $user->name }}</option>
-        @endforeach
-    </select>
-</div>
-
-
-            <div class="mb-3">
-                <button type="submit" class="btn btn-primary">Update</button>
-            </div>						                
+								<div class="row">
+									<div class="col-md-12">
+										<div class="mb-2">
+											<label for="vehicle_description" class="control-label bold mb5 col-form-label required-field">Vehicle Details</label>
+											<textarea rows="3" name="vehicle_description" id="vehicle_description" class="form-control" placeholder="Add Vehicle Details" required>{{ $fleetModel->vehicle_description }}</textarea>
+										</div>
+										<div class="mb-2">
+											<label for="vehicle_summary" class="control-label bold mb5 col-form-label required-field">Vehicle Summary</label>
+											<textarea rows="3" name="vehicle_summary" id="vehicle_summary" class="form-control" placeholder="Add complete summary about vehicle" required>{{ $fleetModel->vehicle_summary }}</textarea>
+										</div>
+										<div class="mb-2">
+											<label for="technician_id" class="control-label bold mb5 col-form-label required-field">Select Technician</label>
+											<select name="technician_id" id="technician_id" class="form-control" required>
+											<option value="">----- Select Technician -----</option>
+											@foreach ($users as $user)
+											<option value="{{ $user->id }}" @if($user->id == $fleetModel->technician_id) selected @endif>{{ $user->name }}</option>
+											@endforeach
+											</select>
+										</div>
+										<div class="mb-3 mt-4">	
+											<button type="submit" class="btn btn-primary">Update</button>
+										</div>						                
+									</div>
+								</div>
+							</form>
+  
 						</div>
+						
 					</div>
-
-
-                            </form>
-
-                        </div>
-                    </div>
-
+				
                 </div>
+				
             </div>
+			
     </div>
 
 

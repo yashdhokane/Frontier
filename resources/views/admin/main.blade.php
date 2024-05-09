@@ -5,12 +5,10 @@
 
         <div class="row">
              <div class="col-8">
-				<h4 class="page-title"> {{$siteSettings->business_name ?? null}}</h4>
-				<div class="mt-2 mb-2" style="display: none">Offering INSTALLATION and REPAIR services for all major appliances at your home or business.<br/>
-				We are Authorized Service centers for the following brands who trust our trained technicians to service their products properly.</div>
- 			</div>
+				<h4 class="page-title text-info fw-bold"> {{$siteSettings->business_name ?? null}}</h4>
+  			</div>
 			<div class="col-4">
-				<div class="text-end">Thu 28 Mar, 2024</div>
+				<div class="text-end text-primary fw-bold">Thu 28 Mar, 2024</div>
 			</div>
          </div>
 
@@ -31,12 +29,21 @@
     <div class="container-fluid">
 
 		<div class="row">
+		
 			<div class="col-8">
- 			 
+ 				
+  				<div class="row">
+ 					<div class="col-12">
+						<div class="bg-success shadow mb-4 py-3 px-3" style="color: #FFF;border-radius: 4px;">
+							<h5 class="uppercase">Welcome to {{$siteSettings->business_name ?? null}}!</h5>
+							<div class="mt-1">{!! $siteSettings->description_long ?? null !!}</div>
+ 						</div>
+ 					</div>
+				</div>
 				
   				<div class="row">
 					<div class="col-lg-12">
-						<div class="card card-border">
+						<div class="card card-border shadow">
 							<div class="card-body">
 								<div class="row mt-1">
 									<div class="col-md-6 col-lg-3 col-xlg-3">
@@ -75,8 +82,8 @@
 								
 								<div class="d-md-flex align-items-center mt-2">
 									<div>
-										<h4 class="card-title">Recent Tickets</h4>
-										<h5 class="card-subtitle">Overview of Recent Tickets</h5>
+										<h5 class="card-title text-info uppercase mb-1">Recent Tickets</h5>
+										<h5 class="ft12">Overview of Recent Tickets</h5>
 									</div>
 								</div>
 								<div class="table-responsive mt-1">
@@ -138,24 +145,24 @@
 				
 				<div class="row mt-3">
 					<div>
-						<h4 class="card-title mb-2">Active Technicians</h4>
+						<h5 class="card-title text-info uppercase mb-2 px-1">Active Technicians</h5>
  					</div>
 				</div>
 	<div class="row">
                 @foreach($technicianuser as $item)
 					<div class="col-lg-4">
-						<div class="card card-border">
+						<div class="card card-border shadow">
 						<div class="card-body">
-						  <h5 class="card-title"> {{$item->name ?? null}}</h5>
-						  <h6 class="card-subtitle mb-2 text-muted d-flex align-items-center">
+						  <h5 class="card-title ft13 uppercase text-primary"> {{$item->name ?? null}}</h5>
+						  <h6 class="ft11 mb-2 d-flex align-items-center">
 							<i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i>  @if(isset($item->area_name) && !empty($item->area_name))
                                     {{ $item->area_name ?? null }}
                                     @endif
 						  </h6>
-						  <p class="card-text pt-2">
-                        {{ $item->completed_jobs_count }}/{{ $item->total_jobs_count }} Job Completed<br/>
-                        Completion Rate: {{ number_format($item->completion_rate, 2) }}%
-                    </p>
+							<p class="card-text pt-2 ft12">
+							{{ $item->completed_jobs_count }}/{{ $item->total_jobs_count }} Job Completed<br/>
+							Completion Rate: {{ number_format($item->completion_rate, 2) }}%
+							</p>
 <a href="{{ route('technicians.show', ['id' => $item->id]) }}" class="card-link">View Profile</a>
 						</div>
 						</div>
@@ -167,22 +174,22 @@
 
 				<div class="row mt-3">
 					<div>
-						<h4 class="card-title mb-2">Top Customers</h4>
+						<h5 class="card-title uppercase text-info text-info mb-2 px-1">Top Customers</h5>
  					</div>
 				</div>
 <div class="row">
     @foreach ($customeruser as $user)
         <div class="col-lg-4">
-            <div class="card card-border">
+            <div class="card card-border shadow">
                 <div class="card-body">
-                    <h5 class="card-title">{{ $user->name ?? null }}</h5>
+                    <h5 class="card-title ft13 uppercase text-primary">{{ $user->name ?? null }}</h5>
                     @foreach ($user->user_addresses as $address)
-                        <h6 class="card-subtitle mb-2 text-muted d-flex align-items-center">
+                        <h6 class="ft11 mb-2 d-flex align-items-center">
                             <i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i>
                             {{ $address->address_line1 ?? null}}, {{ $address->city ?? null }}, {{ $address->state_name ?? null }}, {{ $address->zipcode ?? null }}
                         </h6>
                     @endforeach
-                    <p class="card-text pt-2">
+                    <p class="card-text pt-2 ft12">
                         {{ count($user->jobs) }} Jobs<br/>
                     LifetimeValue: ${{ $user->gross_total ?? 0}}</p>
                     <a href="{{ route('users.show', ['id' => $user->id]) }}" class="card-link">View Profile</a>
@@ -200,12 +207,22 @@
 			
 			<div class="col-4">
 			
-				<div class="alert alert-success" role="alert">
-					<h4 class="alert-heading">Welcome to {{$siteSettings->business_name ?? null}}!</h4>
-					<p class="mt-1">{!! $siteSettings->description_long ?? null !!}</p>
- 				</div>
+ 				
+				<div class="card card-border shadow ">
+					<div class="card-body">
+						<h5 class="card-title uppercase text-info">Jobs by manufacturer</h5>
+						<div id="chart-pie-simple"></div>
+					</div>
+				</div>
+				
+				<div class="card card-border shadow mt-4">
+					<div class="card-body">
+						<h5 class="card-title uppercase text-info">Jobs by Service Types</h5>
+						<div id="chart-pie-donut"></div>
+					</div>
+				</div>
 
- 				<div class="card card-border">
+ 				<div class="card card-border shadow">
 					<div class="card-body">
  						<div class="row">			
 							<div class="col-6 mb-3">			
@@ -250,23 +267,11 @@
  					</div>
 				</div>
 				
-				<div class="card card-border mt-4">
-					<div class="card-body">
-						<h4 class="card-title">Jobs by Service Types</h4>
-						<div id="chart-pie-simple"></div>
-					</div>
-				</div>
 				
-				<div class="card card-border mt-4">
-					<div class="card-body">
-						<h4 class="card-title">Jobs by Manufacturer</h4>
-						<div id="chart-pie-donut"></div>
-					</div>
-				</div>
 				
- 				<div class="card card-border mt-4">
+ 				<div class="card card-border shadow mt-4">
 					<div class="card-body">
-						<h4 class="card-title">Help & Support</h4>
+						<h5 class="card-title text-info uppercase">Help & Support</h5>
 						<ul class="list-group list-group-flush">
 							<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="#.">Contact Support </a></li>
 							<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="#.">View Website </a></li>
@@ -284,7 +289,9 @@
  		</div>
         
 
-         
+
+ 
+ 
  
         <!-- -------------------------------------------------------------- -->
 

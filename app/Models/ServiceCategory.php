@@ -17,7 +17,8 @@ class ServiceCategory extends Model
         'added_by',
         'updated_by',
     ];
-    public function Services()
+    
+     public function Services()
     {
         return $this->hasMany(Services::class, 'service_category_id');
     }

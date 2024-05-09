@@ -140,7 +140,7 @@
 				</li>
  
                 <li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle waves-effect waves-dark" href="#."><i class="fas fa-chart-line" style="font-size: 20px;"></i> </a>
+					<a class="nav-link dropdown-toggle waves-effect waves-dark" href="https://dispatchannel.com/portal/reports/jobs"><i class="fas fa-chart-line" style="font-size: 20px;"></i> </a>
 				</li>
   
 				<!-- NOTIFICATION -->
@@ -231,7 +231,7 @@
 				</li>
 
                 <li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle waves-effect waves-dark" href="#."><i class="fas fa-chart-line" style="font-size: 20px;"></i> </a>
+					<a class="nav-link dropdown-toggle waves-effect waves-dark" href="https://dispatchannel.com/portal/reports/jobs"><i class="fas fa-chart-line" style="font-size: 20px;"></i> </a>
 				</li>
 
 				<!-- NOTIFICATION -->
@@ -321,7 +321,7 @@
 				</li>
 
                 <li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle waves-effect waves-dark" href="#."><i class="fas fa-chart-line" style="font-size: 20px;"></i> </a>
+					<a class="nav-link dropdown-toggle waves-effect waves-dark" href="https://dispatchannel.com/portal/reports/jobs"><i class="fas fa-chart-line" style="font-size: 20px;"></i> </a>
 				</li>
 
  				<!-- NOTIFICATION -->

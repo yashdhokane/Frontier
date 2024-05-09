@@ -21,10 +21,14 @@
                         style="font-size: 10px;">Customer</small></h4>
             </div>
             <div class="col-6 text-end">
-                <a href="https://dispatchannel.com/portal/users"
-                    class=""><i class="ri-contacts-line"
-                        style="margin-right: 8px;"></i> Back to Customers List </a>
-                        <a class="px-4" href="#."><i class="ri-download-2-line"></i> Audit Download</a>
+			
+<div class="btn-group" role="group" aria-label="Basic example">
+<a href="https://dispatchannel.com/portal/customers" class="btn btn-primary font-weight-medium shadow"><i class="ri-contacts-line"></i> Customers List </a>
+<a href="https://dispatchannel.com/portal/customer/create" class="btn btn-success font-weight-medium shadow"><i class="ri-user-add-line"></i> Add New Customers</a>
+<a href="#." class="btn btn-warning font-weight-medium shadow"><i class="ri-download-2-line"></i> Audit Download</a>
+</div>
+
+                 
             </div>
         </div>
     </div>
@@ -36,15 +40,14 @@
     <!-- Container fluid  -->
     <!-- -------------------------------------------------------------- -->
     <div class="container-fluid">
-      @if(Session::has('success'))
-
-    <div class="alert alert-success">
-
-        {{ Session::get('success') }}
-
+   @if (Session::has('success'))
+<div class="alert_wrap">
+    <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
+        {{ Session::get('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert"
+            aria-label="Close"></button>
     </div>
-
-    @endif
+</div>
+@endif
         <!-- -------------------------------------------------------------- -->
         <!-- Start Page Content -->
         <!-- -------------------------------------------------------------- -->
@@ -63,56 +66,28 @@
                     <!-- Tabs -->
                     <ul class="nav nav-pills custom-pills nav-fill flex-column flex-sm-row user_profile_tabs"
                         id="pills-tab" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="pills-profile-tab" data-bs-toggle="pill" href="#profile_tab"
-                                role="tab" aria-controls="pills-profile" aria-selected="true"><i
-                                    class="ri-contacts-line"></i> Profile</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="pills-setting-tab" data-bs-toggle="pill" href="#calls_tab"
-                                role="tab" aria-controls="pills-setting" aria-selected="false"><i
-                                    class="fas fa-calendar-check"></i> Calls</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="pills-payment-tab" data-bs-toggle="pill" href="#payment_tab"
-                                role="tab" aria-controls="pills-payments" aria-selected="false"><i
-                                    class="ri-money-dollar-box-line"></i> Payments</a>
-                        </li>
-                       <li class="nav-item">
-                                                <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#estimate_tab"
-                                                    role="tab" aria-controls="pills-timeline" aria-selected="false"><i
-                                                        class="far ri-price-tag-2-line"></i> Estimates</a>
-                                            </li>
-                        <!-- <li class="nav-item">
-                            <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#fleet_tab"
-                                role="tab" aria-controls="pills-timeline" aria-selected="false"><i
-                                    class="ri-truck-line"></i> Fleet</a>
-                        </li> -->
-                           <li class="nav-item">
-                            <a class="nav-link " id="pills-others-tab" data-bs-toggle="pill" href="#others_tab"
-                                role="tab" aria-controls="pills-others" aria-selected="false"><i
-                                    class="ri-draft-line"></i> Notes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#edit_profile_tab"
-                                role="tab" aria-controls="pills-timeline" aria-selected="false"><i
-                                    class="ri-edit-fill"></i> Edit Details</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#settings_tab"
-                                role="tab" aria-controls="pills-timeline" aria-selected="false"><i
-                                    class="ri-user-settings-line"></i> Settings</a>
-                        </li>
-                        <!-- <li><a class="dropdown-item" data-bs-toggle="pill" href="#settings_tab" role="tab" aria-controls="pills-timeline" aria-selected="false"><i class="ri-user-settings-line"></i> Settings</a></li> -->
-                     
-                        <!-- <li class="nav-item">
-                            <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#edit_service_tab"
-                                role="tab" aria-controls="pills-timeline" aria-selected="false"><i
-                                    class="ri-service-line fas"></i> Service Area</a>
-                        </li> -->
-
-                       
-                    </ul>
+						<li class="nav-item">
+						<a class="nav-link active" id="pills-profile-tab" data-bs-toggle="pill" href="#profile_tab" role="tab" aria-controls="pills-profile" aria-selected="true"><i class="ri-contacts-line"></i> Profile</a>
+						</li>
+						<li class="nav-item">
+						<a class="nav-link" id="pills-setting-tab" data-bs-toggle="pill" href="#calls_tab" role="tab" aria-controls="pills-setting" aria-selected="false"><i class="fas fa-calendar-check"></i> Calls</a>
+						</li>
+						<li class="nav-item">
+						<a class="nav-link" id="pills-payment-tab" data-bs-toggle="pill" href="#payment_tab" role="tab" aria-controls="pills-payments" aria-selected="false"><i class="ri-money-dollar-box-line"></i> Payments</a>
+						</li>
+						<li class="nav-item">
+						<a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#estimate_tab" role="tab" aria-controls="pills-timeline" aria-selected="false"><i class="far ri-price-tag-2-line"></i> Estimates</a>
+						</li>
+						<li class="nav-item">
+						<a class="nav-link " id="pills-others-tab" data-bs-toggle="pill" href="#others_tab" role="tab" aria-controls="pills-others" aria-selected="false"><i class="ri-draft-line"></i> Notes</a>
+						</li>
+						<li class="nav-item">
+						<a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#edit_profile_tab" role="tab" aria-controls="pills-timeline" aria-selected="false"><i class="ri-edit-fill"></i> Edit Details</a>
+						</li>
+						<li class="nav-item">
+						<a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#settings_tab" role="tab" aria-controls="pills-timeline" aria-selected="false"><i class="ri-user-settings-line"></i> Settings</a>
+						</li>
+					</ul>
                     <!-- Tabs -->
                     <div class="tab-content" id="pills-tabContent">
 
@@ -131,14 +106,14 @@
                                                 </div>
 											</div>
 											<div class="col-12 mb-3">
-                                            <div class="card" style="border: 1px solid #D8D8D8;">
+                                            <div class="card card-border">
                     <div class="card-body">
                         <div class="row open_items">
                             <div class="col-md-1">
                                 <i class="fas fa-paperclip"></i>
                             </div>
                             <div class="col-md-9">
-                                <h4>Files</h4>
+                                <h5 class="card-title uppercase">Files</h5>
                             </div>
                             <div class="col-md-1 addAttachment" style="cursor: pointer;">
                                 <i class="fas fa-plus "></i>
@@ -170,19 +145,19 @@
            
 											<div class="col-12 mb-3">
                                                    <div class="mb-4">
-                <div class="card" style="border: 1px solid #D8D8D8;">
+                <div class="card card-border">
     <div class="card-body">
         <div class="row open_items">
-            <div class="col-md-2">
+            <div class="col-md-1">
                 <i class="fas fas fa-tag" style="margin-top: 7px;"></i> <!-- Adjusted margin -->
             </div>
-            <div class="col-md-6"> <!-- Adjusted column size -->
-                <h4 >Customer Tags</h4> <!-- Adjusted margins -->
+            <div class="col-md-9"> <!-- Adjusted column size -->
+                <h5 class="card-title uppercase">Customer Tags</h5> <!-- Adjusted margins -->
             </div>
-            <div class="col-md-3 addCustomerTags" style="cursor: pointer;">
+            <div class="col-md-1 addCustomerTags" style="cursor: pointer;">
                 <i class="fas fa-plus"></i>
-                            </div>
-                        </div>
+			</div>
+		</div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="mb-2">
@@ -225,14 +200,14 @@
 											</div>
  										
 											<div class="col-12 mb-3">
-                                                <div class="card" style="border: 1px solid #D8D8D8;">
+                                                <div class="card card-border">
                     <div class="card-body">
                         <div class="row open_items">
                             <div class="col-md-1">
                                 <i class="fas fa-bullseye "></i>
                             </div>
                             <div class="col-md-9">
-                                <h4>Lead Source</h4>
+                                <h5 class="card-title uppercase">Lead Source</h5>
                             </div>
                             <div class="col-md-1 addSource" style="cursor: pointer;">
                                 <i class="fas fa-plus "></i>
@@ -277,61 +252,57 @@
 
                                     <div class="col-lg-8 col-xlg-9">
                                         <div class="row">
-                                            <div class="col-md-3 col-xs-6 b-r">
+                                            <div class="col-md-5 col-xs-6 b-r">
                                                 <div class="col-12 mx-3">
-                                                    <h4 class="card-title mt-2">Contact info</h4>
-                                                    <h6 style="font-weight: normal;"><i class="fas fa-mobile-alt"></i>
-                                                        {{$user->mobile}}</h6>
+                                                    <h5 class="card-title uppercase mt-2">Contact info</h5>
+                                                    <h6 style="font-weight: normal;"><i class="fas fa-mobile-alt"></i> {{$user->mobile}}</h6>
 													@if($UsersDetails->work_phone)
-    <h6 style="font-weight: normal;"><i class="fas fa-mobile-alt"></i> {{ $UsersDetails->work_phone }}</h6>
-@endif
+													<h6 style="font-weight: normal;"><i class="fas fa-mobile-alt"></i> {{ $UsersDetails->work_phone }} (Work)</h6>
+													@endif
 
-@if($UsersDetails->home_phone)
-    <h6 style="font-weight: normal;"><i class="fas fa-mobile-alt"></i>{{ $UsersDetails->home_phone }}</h6>
-@endif
+													@if($UsersDetails->home_phone)
+													<h6 style="font-weight: normal;"><i class="fas fa-mobile-alt"></i> {{ $UsersDetails->home_phone }} (Home)</h6>
+													@endif
+													
+													@if($user->email)
+													<h6 style="font-weight: normal;"><i class="fas fa-envelope"></i> {{$user->email}}</h6>
+													@endif
+													
+													@if($UsersDetails->additional_email)
+													<h6 style="font-weight: normal;"><i class="fas fa-envelope"></i> {{ $UsersDetails->additional_email }} (Additional)</h6>
+													@endif
 
-<h6 style="font-weight: normal;"><i class="fas fa-envelope"></i> {{$user->email}}</h6>
-
-@if($UsersDetails->additional_email)
-    <h6 style="font-weight: normal;"><i class="fas fa-envelope"></i> {{ $UsersDetails->additional_email }}</h6>
-@endif
-
-
-
-
+ 
                                                     @foreach($userAddresscity as $location)
-                                                    <h4 class="card-title mt-5">Address</h4>
-                                                    <h6 style="font-weight: normal;"><i class="ri-map-pin-line"></i> 
-                                                  @if(isset($location->address_line1) && $location->address_line1 !== '')
-    {{ $location->address_line1 }}, 
-@endif
+                                                    <h5 class="card-title uppercase mt-5">Address</h5>
+													<h6 style="font-weight: normal;"><i class="ri-map-pin-line"></i> 
+													@if(isset($location->address_line1) && $location->address_line1 !== '')
+													{{ $location->address_line1 }}, 
+													@endif
 
-@if(isset($location->address_line2) && $location->address_line2 !== '')
-    {{ $location->address_line2 }}, 
-@endif
+													@if(isset($location->address_line2) && $location->address_line2 !== '')
+													{{ $location->address_line2 }}, 
+													@endif
 
-@if(isset($user->Location->city) && $user->Location->city !== '')
-    {{ $user->Location->city }}, 
-@endif
+													@if(isset($user->Location->city) && $user->Location->city !== '')
+													{{ $user->Location->city }}, 
+													@endif
 
-@if(isset($location->state_name) && $location->state_name !== '')
-    {{ $location->state_name }}, 
-@endif
+													@if(isset($location->state_name) && $location->state_name !== '')
+													{{ $location->state_name }}, 
+													@endif
 
-@if(isset($location->zipcode) && $location->zipcode !== '')
-    {{ $location->zipcode }}
-@endif
+													@if(isset($location->zipcode) && $location->zipcode !== '')
+													{{ $location->zipcode }}
+													@endif
 
-</h6>
+													</h6>
                                                     @endforeach
-
-  
-<!-- {{ $isEnd($user->created_at) }}   -->
-                                                   
+ 
  
                                                     <div class="row">
                                                         <div class="col-12">
-                                                            <h4 class="card-title mt-4">Summary</h4>
+                                                            <h5 class="card-title uppercase mt-4">Summary</h5>
                                                         </div>
 														<div class="col-12">
                                                             <small class="text-muted pt-1 db">Last service</small>
@@ -359,14 +330,11 @@
                                                             <h6>$0.00</h6>
                                                         </div>
 													</div>
-
-
-
+  
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-1 col-xs-6 b-r">&nbsp;</div>
-                                            <div class="col-md-8 col-xs-6 b-r">
+											<div class="col-md-7 col-xs-6 b-r">
                                                 @foreach($userAddresscity as $location)
                                                 <div class="mt-4">
                                                     <iframe id="map{{ $location->address_id }}" width="100%"
@@ -415,267 +383,260 @@
                             </div>
                         </div>
 
-                           <div class="tab-pane fade" id="calls_tab" role="tabpanel" aria-labelledby="pills-setting-tab">
-<div class="card-body card-border shadow">  
-    <h4>Jobs / Calls</h4>
-    
-    @if($tickets->where('customer_id', $user->id)->isEmpty())
-        <div class="alert alert-info mt-3 mb-3" role="alert">
-            Calls not available for {{$user->name ?? null}}. <strong><a href="{{route('schedule')}}">Add New</a></strong>
-        </div>
-    @else
-        <div class="table-responsive" style="overflow-x: auto;">
-            <table id="zero_config" class="table table-bordered text-nowrap" data-paging="true" data-paging-size="7">
-                <thead>
-                    <tr>
-                        <th>Ticket ID</th>
-                        <th>Ticket Details</th>
-                        <th>Customer</th>
-                        <th>Technician</th>
-                        <th>Date & Time</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($tickets->where('customer_id', $user->id) as $ticket)
-                        <tr>
-                            <td>
-                                <a href="{{ route('tickets.show', $ticket->id) }}" class="fw-bold link"><span class="mb-1 badge bg-primary">{{ $ticket->job_code }}</span></a>
-                            </td>
-                            <td>
-                                <div class="text-wrap2">
-                                    <a href="{{ route('tickets.show', $ticket->id) }}" class="font-medium link">{{ $ticket->job_title ?? null }}</a>
-                                    <span class="badge bg-light-warning text-warning font-medium">{{ $ticket->status }}</span>
-                                </div>
-                                <div style="font-size:12px;">
-                                    @if ($ticket->jobdetailsinfo && $ticket->jobdetailsinfo->apliencename)
-                                        {{ $ticket->jobdetailsinfo->apliencename->appliance_name }}/
-                                    @endif
-                                    @if ($ticket->jobdetailsinfo && $ticket->jobdetailsinfo->manufacturername)
-                                        {{ $ticket->jobdetailsinfo->manufacturername->manufacturer_name }}/
-                                    @endif
-                                    @if ($ticket->jobdetailsinfo && $ticket->jobdetailsinfo->model_number)
-                                        {{ $ticket->jobdetailsinfo->model_number }}/
-                                    @endif
-                                    @if ($ticket->jobdetailsinfo && $ticket->jobdetailsinfo->serial_number)
-                                        {{ $ticket->jobdetailsinfo->serial_number }}
-                                    @endif
-                                </div>
-                            </td>
-                            <td>
-                                @if ($ticket->user)
-                                    {{ $ticket->user->name }}
-                                @else
-                                    Unassigned
-                                @endif
-                            </td>
-                            <td>
-                                @if ($ticket->technician)
-                                    {{ $ticket->technician->name }}
-                                @else
-                                    Unassigned
-                                @endif
-                            </td>
-                            <td>
-                                @if ($ticket->jobassignname && $ticket->jobassignname->start_date_time)
-                                    <div class="font-medium link">{{ $convertDateToTimezone($ticket->jobassignname->start_date_time) }}</div>
-                                @else
-                                    <div></div>
-                                @endif
-                                <div style="font-size:12px;">
-                                    {{ $convertTimeToTimezone($ticket->JobAssign->start_date_time ?? null, 'H:i:a') }} to {{ $convertTimeToTimezone($ticket->JobAssign->end_date_time ?? null, 'H:i:a') }}
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    @endif
-</div>
+						<div class="tab-pane fade" id="calls_tab" role="tabpanel" aria-labelledby="pills-setting-tab">
+							<div class="card-body card-border shadow">  
+								<h5 class="card-title uppercase">Jobs / Calls</h5>
+								
+								@if($tickets->where('customer_id', $user->id)->isEmpty())
+									<div class="alert alert-info mt-3 mb-3" role="alert">
+										Calls not available for {{$user->name ?? null}}. <strong><a href="{{route('schedule')}}">Add New</a></strong>
+									</div>
+								@else
+									<div class="table-responsive table-custom2 mt-2">
+										<table id="zero_config" class="table table-hover table-striped text-nowrap" data-paging="true" data-paging-size="7">
+											<thead>
+												<tr>
+													<th>Job No.</th>
+													<th>Job Details</th>
+													<th>Date & Time</th>
+													<th>Status</th>
+													<th>Customer</th>
+													<th>Technician</th>
+ 												</tr>
+											</thead>
+											<tbody>
+												@foreach ($tickets->where('customer_id', $user->id) as $ticket)
+													<tr>
+														<td>
+															<a href="{{ route('tickets.show', $ticket->id) }}" class="link">{{ $ticket->id }}</a>
+														</td>
+														<td>
+															<div class="text-wrap2">
+																<a href="{{ route('tickets.show', $ticket->id) }}" class="link">{{ $ticket->job_title ?? null }}</a>
+ 															</div>
+															<div style="font-size:12px;">
+																@if ($ticket->jobdetailsinfo && $ticket->jobdetailsinfo->apliencename)
+																	{{ $ticket->jobdetailsinfo->apliencename->appliance_name }}/
+																@endif
+																@if ($ticket->jobdetailsinfo && $ticket->jobdetailsinfo->manufacturername)
+																	{{ $ticket->jobdetailsinfo->manufacturername->manufacturer_name }}/
+																@endif
+																@if ($ticket->jobdetailsinfo && $ticket->jobdetailsinfo->model_number)
+																	{{ $ticket->jobdetailsinfo->model_number }}/
+																@endif
+																@if ($ticket->jobdetailsinfo && $ticket->jobdetailsinfo->serial_number)
+																	{{ $ticket->jobdetailsinfo->serial_number }}
+																@endif
+															</div>
+														</td>
+														<td>
+															@if ($ticket->jobassignname && $ticket->jobassignname->start_date_time)
+																<div class="font-medium link">{{ $convertDateToTimezone($ticket->jobassignname->start_date_time) }}</div>
+															@else
+																<div></div>
+															@endif
+															<div style="font-size:12px;">
+																{{ $convertTimeToTimezone($ticket->JobAssign->start_date_time ?? null, 'H:i:a') }} to {{ $convertTimeToTimezone($ticket->JobAssign->end_date_time ?? null, 'H:i:a') }}
+															</div>
+														</td>
+														<td class="ucfirst">{{ $ticket->status }}</td>
+														<td>
 
-                         </div>
+															@if ($ticket->user)
+                        						<a href="{{ route('users.show', $ticket->user->id) }}" class="link">{{ $ticket->user->name }}</a>
+															@else
+																Unassigned
+															@endif
+														</td>
+														<td>
+															@if ($ticket->technician)
+                                        	<a href="{{ route('technicians.show', $ticket->technician->id) }}" class="link">{{ $ticket->technician->name }}</a>
 
-                        <div class="tab-pane fade" id="payment_tab" role="tabpanel" aria-labelledby="pills-payment-tab">
-                          <div class="card-body card-border shadow">
-    <h4>Payments</h6>
-    @if($payments->isEmpty())
-    <div class="alert alert-info mt-3 mb-3" role="alert">
-        Payment details not available for {{$user->name ?? null}}. <strong><a href="{{route('schedule')}}">Add New Job</a></strong>
-    </div>
-    @else
-    <div class="table-responsive mt-4">
-        <table id="zero_config" class="table table-bordered text-nowrap">
-            <thead>
-                <tr>
-                    <th>Job Details</th>
-                    <th>Inv. Date</th>
-                    <th>Amount</th>
-                    <th>Technician</th>
-                    <th>Manufacturer</th>
-                    <th>Customer</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($payments as $payment)
-                <tr>
-                    @php
-                    $jobname = DB::table('jobs')->where('id', $payment->job_id)->first();
-                    @endphp
+																
+															@else
+																Unassigned
+															@endif
+														</td>
+														
+													</tr>
+												@endforeach
+											</tbody>
+										</table>
+									</div>
+								@endif
+							</div>
+						</div>
 
-                    <td>
-                        <a href="{{ route('invoicedetail', ['id' => $payment->id]) }}" class="font-medium link">{{ $jobname->job_title ?? 'N/A' }}</a>
-                    </td>
-                    <td>{{ isset($payment->created_at) ? \Carbon\Carbon::parse($payment->created_at)->format('m-d-Y @ g:i a') : null }}</td>
-                    <td>{{$payment->total ?? null}} <span class="badge bg-success font-weight-100">{{$payment->status ?? null}}</span>
-                    </td>
-                    <td>
-                        @php
-                        $job = DB::table('jobs')->where('id', $payment->job_id)->first();
-                        if ($job) {
-                        $user1 = DB::table('users')->where('id', $job->customer_id)->first();
-                        $user_name = $user1 ? $user1->name : 'Unknown';
-                        } else {
-                        $user_name = 'Unknown';
-                        }
-                        @endphp
-                        {{$user_name}}
-                    </td>
+						<div class="tab-pane fade" id="payment_tab" role="tabpanel" aria-labelledby="pills-payment-tab">
+							<div class="card-body card-border shadow">
+								<h5 class="card-title uppercase">Payments & Invoices</h5>
+								@if($payments->isEmpty())
+								<div class="alert alert-info mt-3 mb-3" role="alert">
+									Payment details not available for {{$user->name ?? null}}. <strong><a href="{{route('schedule')}}">Add New Job</a></strong>
+								</div>
+								@else
+								<div class="table-responsive table-custom2 mt-2">
+									<table id="zero_config" class="table table-hover table-striped text-nowrap">
+										<thead>
+											<tr>
+												<th>Invoice No.</th>
+												<th>Job Details</th>
+												<th>Due Date</th>
+												<th>Amount</th>
+												<th>Status</th>
+												<th>Customer</th>
+												<th>Technician</th>
+											</tr>
+										</thead>
+										<tbody>
+											@foreach($payments as $payment)
+											<tr>
+												@php
+												$jobname = DB::table('jobs')->where('id', $payment->job_id)->first();
+												@endphp
 
-                    <td>
-                        @php
-                        $jobId = $payment->job_id;
-                        $jobDetails = DB::table('job_details')->where('job_id', $jobId)->first();
-                        if ($jobDetails) {
-                        $manufacturerId = $jobDetails->manufacturer_id;
-                        $manufacturer = DB::table('manufacturers')->where('id', $manufacturerId)->value('manufacturer_name');
-                        }
-                        @endphp
-                        {{ $manufacturer ?? "Manufacturer not found" }}
-                    </td>
-                    <td>
-                        @php
-                        $customer = DB::table('users')->where('id', $payment->customer_id)->first();
-                        @endphp
-                        {{ $customer->name ?? null }}
-                    </td>
+												<td>
+													<a href="{{ route('invoicedetail', ['id' => $payment->id]) }}" class="link">{{ $payment->invoice_number ?? 'N/A' }}</a>
+												</td>
+												<td>
+													<a href="{{ route('tickets.show', ['id' => $payment->job_id]) }}" class="link">{{ $jobname->job_title ?? 'N/A' }}</a>
+												</td>
+												<td>{{ isset($payment->due_date) ? \Carbon\Carbon::parse($payment->due_date)->format('m-d-Y @ g:i a') : null }}</td>
+												<td>${{$payment->total ?? null}}</td>
+												<td class="ucfirst">{{$payment->status ?? null}}</td>
+												<td>
+													@php
+													$job = DB::table('jobs')->where('id', $payment->job_id)->first();
+													if ($job) {
+													$user1 = DB::table('users')->where('id', $job->customer_id)->first();
+													$user_name = $user1 ? $user1->name : 'Unknown';
+													} else {
+													$user_name = 'Unknown';
+													}
+                                                    if ($job) {
+                                                	$user2 = DB::table('users')->where('id', $job->technician_id)->first();
+													$tech_name = $user2 ? $user2->name : 'Unknown';
+													} else {
+													$tech_name = 'Unknown';
+													}
 
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-    @endif
-</div>
+													@endphp
+													
+                                 	<a href="{{ route('users.show', ['id' => $user1->id]) }}" class="link">{{$user_name }}</a>
 
-                        </div>
+												</td>
+												<td>
+                                                	<a href="{{ route('technicians.show', ['id' => $user2->id]) }}" class="link">{{$tech_name }}</a>
+</td>
+											</tr>
+											@endforeach
+										</tbody>
+									</table>
+								</div>
+								@endif
+							</div>
+						</div>
+						
 						
 						<div class="tab-pane fade " id="estimate_tab" role="tabpanel"
                             aria-labelledby="pills-timeline-tab">
                             <div class="card-body card-border shadow">
-
-                                @if($estimates->isEmpty())
-                                <div class="row">
-                                    
-                                        <h4>Estimates</h4>
-                                        <div class="col-12">
-                                            <div class="alert alert-info mt-3 mb-3 col-md-12" role="alert">
-                                                Estimates details not available for {{$user->name ?? null}}. <strong><a
-                                                        href="{{route('schedule')}}">Add New</a></strong>
-                                            </div>
-                                        </div>
-                                        <div class="col-6"></div>
-                                   
-                                    @else
-                                    <div class="table-responsive mt-4">
-                                        <table id="zero_config" class="table table-bordered text-nowrap">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Ticket</th>
-                                                    <th>Date</th>
-                                                    <th>Amount</th>
-                                                    <th>Technician</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach($estimates as $estimate)
-                                                <tr>
-                                                    <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $estimate->ticket ?? null }}</td>
-                                                    <td>{{ isset($estimate->date) ?
-                                                        \Carbon\Carbon::parse($estimate->date)->format('m-d-Y') : null
-                                                        }}</td>
-                                                    <td>{{ $estimate->amount ?? null }}</td>
-                                                    <td>{{ $estimate->technician ?? null }}</td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    @endif
-                                </div>
-                            </div>
-
-                        </div>
+								<h5 class="card-title uppercase">Estimates</h5>
+								
+								@if($estimates->isEmpty())
+								<div class="alert alert-info mt-3 mb-3" role="alert">Estimates details not available for {{$user->name ?? null}}. <strong><a href="{{route('schedule')}}">Add New</a></strong></div>
+									   
+								@else
+								<div class="table-responsive table-custom2 mt-2">
+									<table id="zero_config" class="table table-hover table-striped text-nowrap">
+										<thead>
+											<tr>
+												<th>#</th>
+												<th>Ticket</th>
+												<th>Date</th>
+												<th>Amount</th>
+												<th>Technician</th>
+											</tr>
+										</thead>
+										<tbody>
+											@foreach($estimates as $estimate)
+											<tr>
+												<td>{{ $loop->iteration }}</td>
+												<td>{{ $estimate->ticket ?? null }}</td>
+												<td>{{ isset($estimate->date) ?
+													\Carbon\Carbon::parse($estimate->date)->format('m-d-Y') : null
+													}}</td>
+												<td>{{ $estimate->amount ?? null }}</td>
+												<td>{{ $estimate->technician ?? null }}</td>
+											</tr>
+											@endforeach
+										</tbody>
+									</table>
+								</div>
+								@endif
+							</div>
+                         </div>
+						 
 						
 						<div class="tab-pane fade " id="others_tab" role="tabpanel"
                             aria-labelledby="pills-others-tab">
  							<div class="card-body card-border shadow">
-                                <div class="profiletimeline mt-0">
-                                    @foreach ($notename as $notename )
-                                    <div class="sl-item mb-4">
-                                        <div class="sl-left">
-                                            @php
-                                            $username = DB::table('users')->where('id',
-                                            $notename->added_by)->first();
-                                            @endphp
-                                            @if($username && $username->user_image)
-                                            <img src="{{ asset('public/images/Uploads/users/'. $username->id . '/' . $username->user_image) }}"
-                                                class="rounded-circle" alt="user" />
-                                            @else
-                                            <img src="{{ asset('public/images/login_img_bydefault.png') }}" alt="user"
-                                                class=" rounded-circle" />
-                                            @endif
+								<h5 class="card-title uppercase">Notes </h5>
+								<div class="row mt-2">
+									 <div class="col-lg-6 col-xlg-6">
+										<div class="profiletimeline mt-2">
+											@foreach ($notename as $notename )
+											<div class="sl-item mb-4">
+												<div class="sl-left">
+													@php
+													$username = DB::table('users')->where('id',
+													$notename->added_by)->first();
+													@endphp
+													@if($username && $username->user_image)
+													<img src="{{ asset('public/images/Uploads/users/'. $username->id . '/' . $username->user_image) }}"
+														class="rounded-circle" alt="user" />
+													@else
+													<img src="{{ asset('public/images/login_img_bydefault.png') }}" alt="user"
+														class=" rounded-circle" />
+													@endif
 
-                                        </div>
-
-                                        <div class="sl-right">
-                                            <div>
-                                                <a href="javascript:void(0)" class="link ucfirst ft17"> {{$username->name ??
-                                                    null}}</a>
-												<span class="sl-date">
-													{{ \Carbon\Carbon::parse($notename->created_at)->diffForHumans() }}
-												</span>
-												<div class="row">
-                                                    <div class="col-lg-12 col-md-12 ft15">
-                                                        {{ $notename->note }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-									@endforeach
-                     
-									
-                                    <div class="row">
-                                         <div class="col-lg-8 col-xlg-9">
-											<h4 class="card-title mt-1">Add New Comment</h4>	
-											 <form id="commentForm" action="{{ route('techniciancomment.store') }}"
-												method="POST">
-												@csrf
- 												<div class="mb-3 d-flex align-items-center">
-													<input type="hidden" name="id" value="{{ $user->id }}">
-													<textarea class="form-control" id="comment" name="note" rows="3"></textarea>
- 												</div>
-												<div class="mb-3 d-flex align-items-center">
-													<button type="submit" id="submitButton" class="btn btn-primary ms-2">Submit</button>
 												</div>
- 											</form>
-                                         </div>
-                                     </div>
 
-
-                                </div>
+												<div class="sl-right">
+													<div>
+														<a href="javascript:void(0)" class="link ucfirst bold ft14"> {{$username->name ??
+															null}}</a>
+														<span class="sl-date">
+															{{ \Carbon\Carbon::parse($notename->created_at)->diffForHumans() }}
+														</span>
+														<div class="row">
+															<div class="col-lg-12 col-md-12 ft14">
+																{{ $notename->note }}
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											@endforeach
+										 </div>
+									 </div>
+								 </div>
+								 <div class="row mt-2">
+									 <div class="col-lg-6 col-xlg-6">
+										 <form id="commentForm" action="{{ route('techniciancomment.store') }}"
+											method="POST">
+											@csrf
+											<div class="mb-3">
+												<input type="hidden" name="id" value="{{ $user->id }}">
+												<label for="comment" class="control-label bold col-form-label uppercase">Add New Comment</label>
+												<textarea class="form-control" id="comment" name="note" rows="3"></textarea>
+											</div>
+											<div class="mb-3 d-flex align-items-center">
+												<button type="submit" id="submitButton" class="btn btn-primary ms-2">Submit</button>
+											</div>
+										</form>
+									 </div>
+								 </div>
                             </div>
                         </div>
 

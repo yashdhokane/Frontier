@@ -85,7 +85,7 @@ class PaymentController extends Controller
 
     $paymentInvoice = Payment::create($paymentData);
 
-    return redirect()->back()->with('success', 'Payment invoice created successfully');
+return redirect()->route('invoicedetail', ['id' => $paymentInvoice->id]);
 }
     public function index()
     {

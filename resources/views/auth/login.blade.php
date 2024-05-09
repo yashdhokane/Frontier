@@ -34,8 +34,8 @@
         <div class="auth-box">
           <div id="loginform">
             <div class="logo">
-              <span class="db"><img src="{{asset('public/admin/assets/images/logo-icon.png')}}" alt="logo" /></span>
-              <h5 class="font-medium mb-3">SIGN IN TO DISPATCHANNEL PORTAL</h5>
+              <span class="db"><img src="{{asset('public/admin/assets/images/dispatch-logo.png')}}" alt="logo" /></span>
+              <h5 class="font-medium mb-2 mt-4">SIGN IN TO DISPATCHANNEL PORTAL</h5>
               @if(session('error'))
     <div class="alert alert-danger">
         {{ session('error') }}
@@ -105,8 +105,8 @@
           </div>
           <div id="recoverform">
             <div class="logo">
-              <span class="db"><img src="{{asset('public/admin/assets/images/logo-icon.png')}}" alt="logo" /></span>
-              <h5 class="font-medium mt-3 mb-3">Recover Password</h5>
+              <span class="db"><img src="{{asset('public/admin/assets/images/dispatch-logo.png')}}" alt="logo" /></span>
+              <h5 class="font-medium mt-4 mb-3 uppercase card-title">Recover Password</h5>
               <span>Enter your Email and instructions will be sent to you!</span>
             </div>
             <div class="row mt-3">

@@ -29,21 +29,22 @@
     <!-- -------------------------------------------------------------- -->
     <div class="container-fluid">
 	
-		
-		@if (session('success'))
-			<div class="alert_wrap">
-				<div class="alert alert-success">
-					{{ session('success') }}
-				</div>
-			</div>
-		@endif
-		@if (session('error'))
-			<div class="alert_wrap">
-				<div class="alert alert-danger">
-					{{ session('error') }}
-				</div>
-			</div>
-		@endif
+		@if (Session::has('success'))
+<div class="alert_wrap">
+    <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
+        {{ Session::get('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert"
+            aria-label="Close"></button>
+    </div>
+</div>
+@endif
+
+@if (Session::has('error'))
+<div class="alert_wrap">
+    <div class="alert alert-danger">
+        {{ Session::get('error') }}
+    </div>
+</div>
+@endif
 		
         <!-- -------------------------------------------------------------- -->
         <!-- Start Page Content -->
@@ -707,7 +708,7 @@
                                     <div class="col-md-7">
                                        <h5 class="card-title uppercase"><i class="fas fas fa-dollar-sign px-1"></i> Payment & Invoice</h5>
                                     </div>
-                                   @if ($technicians->invoice_status == 'created')
+ @if ($technicians->invoice_status == 'created')
     <div class="col-md-5 text-center">
         @php
             $payment = \App\Models\Payment::where('job_id', $technicians->id)->first();
@@ -728,7 +729,7 @@
 
                                 </div>
                                 <div class="row mb-3">
-                                   @if ($technicians->invoice_status == 'created')
+                                   @if ($technicians->invoice_status == 'created' || $technicians->invoice_status == 'complete' )
 <div class="col-md-12">
     <table class="table">
         <thead>

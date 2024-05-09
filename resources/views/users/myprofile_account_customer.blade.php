@@ -1,14 +1,13 @@
-
 <div class="row">
 
-    <div class="col-md-9">
-        
- 				<h4 class="card-title">Settings</h4>  
-                <div class="row mt-2">
+    <div class="col-md-12">
+        <h5 class="card-title uppercase">Setting</h5>  
+		
+                 <div class="row mt-2">
 
                     <form id="settingsForm" action="{{ route('smstechnician') }}" method="POST">
                         @csrf
-                        <div class="col-12">
+                        <div class="col-6">
                             <div class="d-flex align-items-center justify-content-between py-3">
                                 <div class="d-flex align-items-center">
                                     <div

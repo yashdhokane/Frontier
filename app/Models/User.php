@@ -28,6 +28,7 @@ class User extends Authenticatable
         'login',
         'source_id',
         'service_areas',
+        'employee_id',
     ];
 
     /**
@@ -50,6 +51,7 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+  
 public function Locationareaname()
     {
         return $this->hasOne(LocationServiceArea::class, 'area_id', 'service_areas');

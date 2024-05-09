@@ -19,17 +19,23 @@
     <!-- End Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
     <div style="width:98%; margin-left:5px;">
-        @if(Session::has('success'))
-        <div class="alert alert-success">
-            {{ Session::get('success') }}
-        </div>
-        @endif
+      @if (Session::has('success'))
+<div class="alert_wrap">
+    <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
+        {{ Session::get('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert"
+            aria-label="Close"></button>
+    </div>
+</div>
+@endif
 
-        @if(Session::has('error'))
-        <div class="alert alert-danger">
-            {{ Session::get('error') }}
-        </div>
-        @endif
+@if (Session::has('error'))
+<div class="alert_wrap">
+    <div class="alert alert-danger">
+        {{ Session::get('error') }}
+    </div>
+</div>
+@endif
+
 
     </div>
     <!-- -------------------------------------------------------------- -->
@@ -99,6 +105,8 @@
                                     </div>
                                 </div>
                             </th> --}}
+                       <th>EMP ID</th>
+
                             <th>Name</th>
                             <th>Contacts</th>
                             <th>Location/Address</th>
@@ -121,6 +129,7 @@
                                         </div>
                                     </div>
                                 </td> --}}
+<td class="align-items-center ">{{ $user->employee_id ?? '' }}</td>
                                 <td>
                                     <div class="d-flex align-items-center">
                                         @if($user->user_image)
@@ -135,7 +144,7 @@
 
                                         <div class="ms-2">
                                             <div class="user-meta-info">
-                                                <a href="{{ route('users.show', $user->id) }}">
+                                                <a href="{{ route('multiadmin.show', $user->id) }}">
                                                     <h6 class="user-name mb-0" data-name="name"> {{ $user->name }}</h6>
                                                 </a>
                                              </div>
@@ -198,7 +207,7 @@
                                         @if($userAddress)
                                         <span class="user-work text-muted">{{ $userAddresscity ?? null }}</span>&nbsp;
 
-
+<span class="user-work text-muted">,</span>
                                         <span class="user-work text-muted">{{ $userAddress->state_name }}</span>
 
 
@@ -227,8 +236,8 @@
                                         <div class="dropdown-menu">
                                             <a class="dropdown-item" href="{{ route('multiadmin.show', $user->id) }}"><i
                                                     data-feather="eye" class="feather-sm me-2"></i> View</a>
-                                            <a class="dropdown-item" href="{{ route('multiadmin.edit', $user->id) }}"><i
-                                                    data-feather="edit-2" class="feather-sm me-2"></i> Edit</a>
+                                           <!-- <a class="dropdown-item" href="{{ route('multiadmin.edit', $user->id) }}"><i
+                                                    data-feather="edit-2" class="feather-sm me-2"></i> Edit</a> -->
                                             <a class="dropdown-item activity" href="javascript:void(0)"
                                                 data-bs-toggle="modal" data-bs-target="#commentModal1"
                                                 onclick="setUserId({{ $user->id }})">

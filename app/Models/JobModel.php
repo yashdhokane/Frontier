@@ -52,6 +52,18 @@ class JobModel extends Model
         'updated_at',
     ];
    
+   public function Customerservice()
+    {
+        return $this->hasOne(CustomerDataServices::class, 'job_id', 'id');
+    }
+     public function Customernote()
+    {
+        return $this->hasOne(CustomerDataNotes::class, 'job_id', 'id');
+    }
+      public function Customerdata()
+    {
+        return $this->hasOne(CustomerData::class, 'user_id', 'customer_id');
+    }
 public function jobfieldname()
     {
        return $this->hasOne(Jobfields::class, 'field_id', 'job_field_ids');
@@ -176,5 +188,10 @@ public function jobfieldname()
     public function JobAppliances()
     {
         return $this->belongsTo(JobAppliances::class, 'id', 'job_id');
+    }
+
+     public function schedule()
+    {
+        return $this->hasOne(Schedule::class, 'job_id', 'id');
     }
 }

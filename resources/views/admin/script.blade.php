@@ -48,7 +48,6 @@
 <!-- --------------------------------------------------------------- -->
 <!-- COMMENTED BY SR
 <script src="{{ asset('public/admin/dist/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
-<script src="{{ asset('public/admin/dist/js/pages/dashboards/dashboard1.js') }}"></script>
 -->
 
 
@@ -80,6 +79,31 @@
 <script src="{{ asset('public/admin/dist/js/pages/calendar/cal-init.js') }}"></script>
 -->
 
+<?php  
+    if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')   
+         $url = "https://";   
+    else  
+         $url = "http://";   
+    // Append the host(domain name, ip) to the URL.   
+    $url.= $_SERVER['HTTP_HOST'];   
+    
+    // Append the requested resource location to the URL   
+    $url.= $_SERVER['REQUEST_URI'];    
+      
+    
+	if($url == "https://dispatchannel.com/portal/home") {
+		//echo $url." home page";  
+		?>
+		<script src="{{ asset('public/admin/dist/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
+		<script src="{{ asset('public/admin/dist/js/pages/dashboards/dashboard1.js') }}"></script>
+		<script src="{{ asset('public/admin/dist/js/pages/apex-chart/apex.pie.init.js') }}"></script>
+		<?php 
+	}
+  ?>  
+  
+  
+  
+  
 <script src="{{ asset('public/admin/dist/libs/jquery-steps/build/jquery.steps.min.js') }}"></script>
 
 <script src="{{ asset('public/admin/dist/libs/jquery-validation/dist/jquery.validate.min.js') }}"></script>
@@ -89,6 +113,8 @@
 <script src="{{ asset('public/admin/dist/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
 
 <script src="{{ asset('public/admin/dist/js/pages/datatable/datatable-basic.init.js') }}"></script>
+
+
 <script>
     $(document).on('click', '.viewinfo', function() {
         $("#add-contact1").modal({

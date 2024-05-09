@@ -19,28 +19,24 @@
 				<div class="message-center message-body">
 					<!-- Message -->
 					@foreach ($chats as $item)
-					<a href="{{ route('app_chats', ['message_id' => $item->id, 'user_one' => $item->user_one, 'user_two' => $item->user_two]) }}"
-						class="message-item">
-						<span class="user-img">
-							@if ($item->user)
-							<img src="{{ asset('public/images/technician/' . $item->user->user_image) }}"
-								alt="user" class="rounded-circle" />
-							@else
-							<img src="{{ asset('public/images/technician/1708105764_avatar-1.png') }}"
-								alt="user" class="rounded-circle" />
-							@endif
-							<span class="profile-status online pull-right"></span>
-						</span>
-						<div class="mail-contnet">
-							@if ($item->user)
-							<h5 class="message-title">{{ $item->user->name }}</h5>
-							@else
-							<p class="m-00">Technician N\A</p>
-							@endif
-							<span class="mail-desc">Just see the my admin!</span>
-							<span class="time">{{ $item->created_at->format('g:i A') }}</span>
-						</div>
-					</a>
+					
+						@if ($item->user)
+						
+						<a href="{{ route('app_chats', ['message_id' => $item->id, 'user_one' => $item->user_one, 'user_two' => $item->user_two]) }}"
+							class="message-item">
+							
+							<span class="user-img">
+								<img src="{{ asset('public/images/login_img_bydefault.png') }}" alt="user" class="rounded-circle" />
+								<span class="profile-status online pull-right"></span>
+							</span>
+							<div class="mail-contnet">
+ 								<h6 class="message-title">{{ $item->user->name }}</h6>
+ 								<span class="time">{{ $item->created_at->format('g:i A') }}</span>
+							</div>
+						</a>
+					
+						@endif
+						
 					@endforeach
 				</div>
 			</li>

@@ -70,11 +70,10 @@
     <div class="page-breadcrumb" style="padding-top: 0px;">
         <div class="row">
             <div class="col-5 align-self-center">
-                <h3 class="page-title">Performance Metrix</h3>
+                <h4 class="page-title">Performance Metrix</h4>
             </div>
             <div class="col-7 align-self-right" style="text-align: right;padding-right: 40px;">
-                <a href="#." style="margin-right: 10px;font-size: 13px;"><i class="fas fa-calendar-alt"></i> Select
-                    Dates</a>
+                 
              </div>
         </div>
     </div>
@@ -96,8 +95,8 @@
                     <div class="col bg-light py-2 px-3 border">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="card-title">Top Performers</h4>
-                                <h6 class="card-subtitle">Top 5 Performers</h6>
+                                <h5 class="card-title uppercase text-info">Top Performers</h5>
+                                <h6 class="ft12">Top 5 Performers</h6>
 								<ul class="list-style-none mt-4">
 									@foreach ($topPerformers as $performer)
  										<li class="mb-4">
@@ -122,8 +121,8 @@
                     <div class="col bg-light py-2 px-3 border">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="card-title">Poor Performers</h4>
-                                <h6 class="card-subtitle">Top 5 Poor Performers</h5>
+                                <h5 class="card-title uppercase text-info">Poor Performers</h5>
+                                <h6 class="ft12">Top 5 Poor Performers</h5>
 								<ul class="list-style-none mt-4">
 									@foreach ($goodPerformers as $performer)
  										<li class="mb-4">
@@ -148,8 +147,8 @@
                     <div class="col bg-light py-2 px-3 border">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="card-title">Critical Performers</h4>
-                                <h6 class="card-subtitle">Top 5 Critical performance</h6>
+                                <h5 class="card-title uppercase text-info">Critical Performers</h5>
+                                <h6 class="ft12">Top 5 Critical performance</h6>
 								<ul class="list-style-none mt-4">
 									@foreach ($poorPerformers as $performer)
  										<li class="mb-4">
@@ -182,8 +181,8 @@
                             <div class="card-body">
                                 <div class="row">
 									<div class="col-md-8">
-										<h4 class="card-title">Technician Performance Report</h4>
-										<h6 class="card-subtitle">Detailed Performance Report</h5>
+										<h5 class="card-title uppercase text-info">Technician Performance Report</h5>
+										<h6 class="ft12">Detailed Performance Report</h5>
 									</div>
 									<div class="col-md-4">
 										<button type="button" class="justify-content-center w-100 btn btn-rounded btn-outline-primary d-flex align-items-center"><i class="fas fa-download fill-white me-2"></i>Download</button>

@@ -34,25 +34,23 @@
                         start Contact
                     ---------------- -->
  		
-			@if(Session::has('success'))
-			<div class="row">
-				<div class="col-md-10 col-xl-12 mt-3 mb-1 mx-4">
-					<div class="alert alert-success">
-						{{ Session::get('success') }}
-					</div>
-				</div>
-			</div>
-			@endif
+		@if (Session::has('success'))
+<div class="alert_wrap">
+    <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
+        {{ Session::get('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert"
+            aria-label="Close"></button>
+    </div>
+</div>
+@endif
 
-			@if(Session::has('error'))
-			<div class="row">
-				<div class="col-md-10 col-xl-12 mt-3 mb-1 mx-4">
-					<div class="alert alert-danger">
-						{{ Session::get('error') }}
-					</div>
-				</div>
-			</div>
-			@endif
+		@if (Session::has('error'))
+<div class="alert_wrap">
+    <div class="alert alert-danger">
+        {{ Session::get('error') }}
+    </div>
+</div>
+@endif
+
  
 	
             <div class="card card-body shadow">
@@ -98,6 +96,7 @@
                                     </div>
                                 </div>
                             </th> --}}
+                            <th>EMP ID</th>
                             <th>Name</th>
                             <th>Contacts</th>
                             <th class="text-wrap">Service Area</th>
@@ -120,6 +119,7 @@
                                     </div>
                                 </td>
                                 --}}
+                                <td>{{$user->employee_id ?? ''}}</td>
                                 <td>
                                     <div class="d-flex align-items-center">
                                         @if($user->user_image)

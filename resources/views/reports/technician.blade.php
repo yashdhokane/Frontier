@@ -6,10 +6,10 @@
         <!-- -------------------------------------------------------------- -->
         <!-- Bread crumb and right sidebar toggle -->
         <!-- -------------------------------------------------------------- -->
-        <div class="page-breadcrumb">
+        <div class="page-breadcrumb" style="padding-top: 0px;">
             <div class="row">
                 <div class="col-5 align-self-center">
-                    <h3 class="page-title">Technician Report</h3>
+                    <h4 class="page-title">Technician Report</h4>
                 </div>
             </div>
         </div>
@@ -31,11 +31,11 @@
                         <div class="col-md-6">
                             <div class="card shadow card-border">
                                 <div class="card-body">
-                                    <h4 class="card-title">Jobs completed by technician</h4>
-                                    <div class="row">
+                                    <h5 class="card-title uppercase">Jobs completed by technician</h5>
+                                    <div class="row mt-2">
                                         <div class="col-md-12">
                                             <div class="table-responsive">
-                                                <table class="table customize-table mb-0 v-middle overflow-auto">
+                                                <table class="table table-hover table-striped  customize-table mb-0 v-middle overflow-auto">
                                                     <thead class="table-dark">
                                                         <tr>
                                                             <th class="border-bottom border-top">Technician Name</th>
@@ -82,11 +82,11 @@
                         <div class="col-md-6">
                             <div class="card shadow card-border">
                                 <div class="card-body">
-                                    <h4 class="card-title">Time tracking (completed jobs)</h4>
-                                    <div class="row">
+                                    <h5 class="card-title uppercase">Time tracking (completed jobs)</h5>
+                                    <div class="row mt-2">
                                         <div class="col-md-12">
                                             <div class="table-responsive">
-                                                <table class="table customize-table mb-0 v-middle overflow-auto">
+                                                <table class="table table-hover table-striped  customize-table mb-0 v-middle overflow-auto">
                                                     <thead class="table-dark">
                                                         <tr>
                                                             <th class="border-bottom border-top">Technician Name</th>

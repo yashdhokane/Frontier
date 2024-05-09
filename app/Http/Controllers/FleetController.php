@@ -80,9 +80,11 @@ $vehicle = FleetVehicle::orderBy('created_at', 'desc')->get();
     {
         // Find the FleetModel by its ID
         $fleetModel = FleetVehicle::findOrFail($id);
+$technicianIds = $fleetModel->pluck('technician_id');
 
-        // Retrieve all users to populate the technician select dropdown
-        $users = User::where('role','technician')->get();
+$users = User::where('role', 'technician')
+             ->whereNotIn('id', $technicianIds)
+             ->get();
 
         // Return the edit view with the FleetModel and users data
         return view('fleet.edit', compact('fleetModel', 'users'));
