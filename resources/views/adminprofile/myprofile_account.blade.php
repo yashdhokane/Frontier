@@ -158,7 +158,7 @@
                                 @endphp
                                  <h4 class="mb-2 mt-4">Timezone</h4>
                                 <div class="mt-3 mb-4">
-                                    <form action="change_timezone" method="POST">
+                                    <form action="{{url('change_timezone')}}" method="POST">
                                         @csrf
                                         <!-- Change Timezone dropdown -->
                                         <select class="form-control timezoneSelect select2" id="timezoneSelect" name="timezone_id">
@@ -168,7 +168,7 @@
                                                     {{ $item->timezone_name }}/{{ $item->gmt_offset }}</option>
                                             @endforeach
                                         </select>
-                                        <button class="btn btn-info mt-2" type="submit">Change Timezone</button>
+                                        <button class="btn btn-info mt-2 d-block" type="submit">Change Timezone</button>
                                     </form>
                                 </div>
 
