@@ -1,14 +1,14 @@
 @extends('home')
 @section('content')
-<!-- Page wrapper  -->
-
+    <!-- Page wrapper  -->
     <!-- -------------------------------------------------------------- -->
     <!-- Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
     <div class="page-breadcrumb">
         <div class="row">
             <div class="col-9 align-self-center">
-                <h4 class="page-title">{{ $technician->name }} <small class="text-muted" style="font-size: 10px;">Technician</small></h4>
+                <h4 class="page-title">{{ $technician->name }} <small class="text-muted"
+                        style="font-size: 10px;">Technician</small></h4>
             </div>
             <div class="col-3 text-end px-4">
                 <a href="https://dispatchannel.com/portal/technicians"
@@ -25,15 +25,15 @@
     <!-- Container fluid  -->
     <!-- -------------------------------------------------------------- -->
     <div class="container-fluid">
-       
-@if (Session::has('success'))
-<div class="alert_wrap">
-    <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
-        {{ Session::get('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert"
-            aria-label="Close"></button>
-    </div>
-</div>
-@endif
+
+        @if (Session::has('success'))
+            <div class="alert_wrap">
+                <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
+                    {{ Session::get('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert"
+                        aria-label="Close"></button>
+                </div>
+            </div>
+        @endif
 
         <!-- -------------------------------------------------------------- -->
         <!-- Start Page Content -->
@@ -46,45 +46,68 @@
             <!-- Column -->
             <div class="col-lg-12 col-xlg-9 col-md-7">
                 <!-- ---------------------
-                            start Timeline
-                        ---------------- -->
+                                                    start Timeline
+                                                ---------------- -->
                 <div class="card">
                     <!-- Tabs -->
-                    <ul class="nav nav-pills custom-pills nav-fill flex-column flex-sm-row user_profile_tabs"
-                        id="pills-tab" role="tablist">
+                    <ul class="nav nav-pills custom-pills nav-fill flex-column flex-sm-row user_profile_tabs" id="pills-tab"
+                        role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" id="pills-profile-tab" data-bs-toggle="pill" href="#profile_tab" role="tab" aria-controls="pills-profile" aria-selected="true"><i class="ri-contacts-line"></i> Profile</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="pills-setting-tab" data-bs-toggle="pill" href="#calls_tab" role="tab" aria-controls="pills-setting" aria-selected="false"><i class="fas fa-calendar-check"></i> Calls</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="pills-payment-tab" data-bs-toggle="pill" href="#payment_tab" role="tab" aria-controls="pills-payments" aria-selected="false"><i class="ri-money-dollar-box-line"></i> Payments</a>
+                            <a class="nav-link active" id="pills-profile-tab" data-bs-toggle="pill" href="#profile_tab"
+                                role="tab" aria-controls="pills-profile" aria-selected="true"><i
+                                    class="ri-contacts-line"></i> Profile</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#estimate_tab" role="tab" aria-controls="pills-timeline" aria-selected="false"><i class="far ri-price-tag-2-line"></i> Estimates</a>
+                            <a class="nav-link" id="pills-setting-tab" data-bs-toggle="pill" href="#calls_tab"
+                                role="tab" aria-controls="pills-setting" aria-selected="false"><i
+                                    class="fas fa-calendar-check"></i> Calls</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#fleet_tab" role="tab" aria-controls="pills-timeline" aria-selected="false"><i class="ri-truck-line"></i> Vehicle</a>
+                            <a class="nav-link" id="pills-payment-tab" data-bs-toggle="pill" href="#payment_tab"
+                                role="tab" aria-controls="pills-payments" aria-selected="false"><i
+                                    class="ri-money-dollar-box-line"></i> Payments</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#edit_profile_tab" role="tab" aria-controls="pills-timeline" aria-selected="false"><i class="ri-edit-fill"></i> Edit Details</a>
+                            <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#estimate_tab"
+                                role="tab" aria-controls="pills-timeline" aria-selected="false"><i
+                                    class="far ri-price-tag-2-line"></i> Estimates</a>
                         </li>
-						
-						<li class="nav-item">
-                            <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#others_tab" role="tab" aria-controls="pills-timeline" aria-selected="false"><i class="ri-draft-line"></i> Notes</a>
+                        <li class="nav-item">
+                            <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#fleet_tab"
+                                role="tab" aria-controls="pills-timeline" aria-selected="false"><i
+                                    class="ri-truck-line"></i> Vehicle</a>
                         </li>
-						 
-						<li class="nav-item dropdown">
-							<a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"> <span>More</span> </a>
-							<ul class="dropdown-menu">
-								<li><a class="dropdown-item" id="pills-timeline-tab" data-bs-toggle="pill" href="#edit_service_tab" role="tab" aria-controls="pills-timeline" aria-selected="false"><i class="ri-service-line fas"></i> Service Area</a></li>
-								<li><a class="dropdown-item" data-bs-toggle="pill" href="#parts_tab" role="tab" aria-controls="pills-timeline" aria-selected="false"><i class="mdi mdi-book-multiple"></i> Parts</a></li>
-								<li><a class="dropdown-item" data-bs-toggle="pill" href="#settings_tab" role="tab" aria-controls="pills-timeline" aria-selected="false"><i class="fas ri-settings-2-line"></i> Settings</a></li>
-								<li><a class="dropdown-item" data-bs-toggle="pill" href="#activity_tab" role="tab" aria-controls="pills-timeline" aria-selected="false"><i class="fas fa-calendar-check"></i> Schedule</a></li>
-							</ul>
+                        <li class="nav-item">
+                            <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#edit_profile_tab"
+                                role="tab" aria-controls="pills-timeline" aria-selected="false"><i
+                                    class="ri-edit-fill"></i> Edit Details</a>
                         </li>
-                       
+
+                        <li class="nav-item">
+                            <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#others_tab"
+                                role="tab" aria-controls="pills-timeline" aria-selected="false"><i
+                                    class="ri-draft-line"></i> Notes</a>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"
+                                role="button" aria-expanded="false"> <span>More</span> </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" id="pills-timeline-tab" data-bs-toggle="pill"
+                                        href="#edit_service_tab" role="tab" aria-controls="pills-timeline"
+                                        aria-selected="false"><i class="ri-service-line fas"></i> Service Area</a></li>
+                                <li><a class="dropdown-item" data-bs-toggle="pill" href="#parts_tab" role="tab"
+                                        aria-controls="pills-timeline" aria-selected="false"><i
+                                            class="mdi mdi-book-multiple"></i> Parts</a></li>
+                                <li><a class="dropdown-item" data-bs-toggle="pill" href="#settings_tab" role="tab"
+                                        aria-controls="pills-timeline" aria-selected="false"><i
+                                            class="fas ri-settings-2-line"></i> Settings</a></li>
+                                <li><a class="dropdown-item" data-bs-toggle="pill" href="#activity_tab" role="tab"
+                                        aria-controls="pills-timeline" aria-selected="false"><i
+                                            class="fas fa-calendar-check"></i> Schedule</a></li>
+                            </ul>
+                        </li>
+
                     </ul>
 
 
@@ -104,12 +127,12 @@
 
                                             <div class="col-12">
                                                 <center class="mt-1">
-                                                    @if($technician->user_image)
-                                                    <img src="{{ asset('public/images/Uploads/users/'. $technician->id . '/' . $technician->user_image) }}"
-                                                        class="rounded-circle" width="150" />
+                                                    @if ($technician->user_image)
+                                                        <img src="{{ asset('public/images/Uploads/users/' . $technician->id . '/' . $technician->user_image) }}"
+                                                            class="rounded-circle" width="150" />
                                                     @else
-                                                    <img src="{{ asset('public/images/login_img_bydefault.png') }}"
-                                                        alt="avatar" class="rounded-circle" width="150" />
+                                                        <img src="{{ asset('public/images/login_img_bydefault.png') }}"
+                                                            alt="avatar" class="rounded-circle" width="150" />
                                                     @endif
                                                     <h5 class="card-title uppercase mt-1">{{ $technician->name }}</h5>
                                                     <h6 class="card-subtitle">Technician</h6>
@@ -120,12 +143,12 @@
                                             <div class="col-12">
                                                 <h5 class="card-title uppercase mt-4">Tags</h5>
                                                 <div class="mt-0">
-                                                    @if($technician->tags->isNotEmpty())
-                                                    @foreach($technician->tags as $tag)
-                                                    <span class="badge bg-dark">{{ $tag->tag_name }}</span>
-                                                    @endforeach
+                                                    @if ($technician->tags->isNotEmpty())
+                                                        @foreach ($technician->tags as $tag)
+                                                            <span class="badge bg-dark">{{ $tag->tag_name }}</span>
+                                                        @endforeach
                                                     @else
-                                                    <span class="badge bg-dark">No tags available</span>
+                                                        <span class="badge bg-dark">No tags available</span>
                                                     @endif
                                                 </div>
                                             </div>
@@ -133,18 +156,20 @@
                                             <div class="col-md-12">
                                                 <h5 class="card-title uppercase mt-4">Files & Attachments</h5>
                                                 <div class="mt-0">
-                                                    @foreach($customerimage as $image)
-                                                    @if($image->filename)
-                                                    <a href="{{ asset('storage/app/' . $image->filename) }}" download>
-                                                        <p><i class="fas fa-file-alt"></i></p>
-                                                        <img src="{{ asset('storage/app/' . $image->filename) }}"
-                                                            alt="Customer Image" style="width: 50px; height: 50px;">
-                                                    </a>
-                                                    @else
-                                                    <!-- Default image if no image available -->
-                                                    <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}"
-                                                        alt="Default Image" style="width: 50px; height: 50px;">
-                                                    @endif
+                                                    @foreach ($customerimage as $image)
+                                                        @if ($image->filename)
+                                                            <a href="{{ asset('storage/app/' . $image->filename) }}"
+                                                                download>
+                                                                <p><i class="fas fa-file-alt"></i></p>
+                                                                <img src="{{ asset('storage/app/' . $image->filename) }}"
+                                                                    alt="Customer Image"
+                                                                    style="width: 50px; height: 50px;">
+                                                            </a>
+                                                        @else
+                                                            <!-- Default image if no image available -->
+                                                            <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}"
+                                                                alt="Default Image" style="width: 50px; height: 50px;">
+                                                        @endif
                                                     @endforeach
                                                 </div>
                                             </div>
@@ -161,16 +186,18 @@
                                                 <div class="col-12">
                                                     <h5 class="card-title uppercase mt-4">Contact info</h5>
                                                     <h6 style="font-weight: normal;"><i class="fas fa-mobile-alt"></i>
-                                                        {{$technician->mobile}}</h6>
+                                                        {{ $technician->mobile }}</h6>
                                                     <h6 style="font-weight: normal;"><i class="fas fa-envelope"></i>
-                                                        {{$technician->email}}</h6>
+                                                        {{ $technician->email }}</h6>
 
-                                                    @foreach($userAddresscity as $location)
-                                                    <h5 class="card-title uppercase mt-5">Address</h5>
-                                                    <h6 style="font-weight: normal;"><i class="ri-map-pin-line"></i> {{
-                                                        $location->address_line1}}, {{ $location->address_line2}}, {{
-                                                        $technician->Location->city}}, {{ $location->state_name ?? null
-                                                        }}, {{ $location->zipcode }} </h6>
+                                                    @foreach ($userAddresscity as $location)
+                                                        <h5 class="card-title uppercase mt-5">Address</h5>
+                                                        <h6 style="font-weight: normal;"><i class="ri-map-pin-line"></i>
+                                                            {{ $location->address_line1 }},
+                                                            {{ $location->address_line2 }},
+                                                            {{ $technician->Location->city }},
+                                                            {{ $location->state_name ?? null }}, {{ $location->zipcode }}
+                                                        </h6>
                                                     @endforeach
 
                                                     <div class="row">
@@ -191,22 +218,20 @@
                                                         </div>
                                                         <div class="col-12">
                                                             <small class="text-muted pt-1 db">Profile Created</small>
-                                                            <h6>{{ $technician->created_at ?
-                                                                \Carbon\Carbon::parse($technician->created_at)->format('m-d-Y')
-                                                                : null }}</h6>
+                                                            <h6>{{ $technician->created_at ? \Carbon\Carbon::parse($technician->created_at)->format('m-d-Y') : null }}
+                                                            </h6>
                                                         </div>
                                                         <div class="col-12">
                                                             <small class="text-muted pt-1 db">Last service</small>
                                                             <h6>
-                                                                {{ $jobasigndate && $jobasigndate->start_date_time ?
-                                                                \Carbon\Carbon::parse($jobasigndate->start_date_time)->format('m-d-Y')
-                                                                :
-                                                                null }}
+                                                                {{ $jobasigndate && $jobasigndate->start_date_time
+                                                                    ? \Carbon\Carbon::parse($jobasigndate->start_date_time)->format('m-d-Y')
+                                                                    : null }}
                                                             </h6>
                                                         </div>
-														<div class="col-12">
+                                                        <div class="col-12">
                                                             <small class="text-muted pt-1 db">Status</small>
-                                                            <h6 class="ucfirst">{{ $technician->status ?? null}}</h6>
+                                                            <h6 class="ucfirst">{{ $technician->status ?? null }}</h6>
                                                         </div>
                                                     </div>
 
@@ -215,18 +240,19 @@
 
                                             <div class="col-md-1 col-xs-6 b-r">&nbsp;</div>
                                             <div class="col-md-8 col-xs-6 b-r">
-                                                @foreach($userAddresscity as $location)
-                                                <div class="mt-4">
-                                                    <iframe id="map{{ $location->address_id }}" width="100%"
-                                                        height="300" frameborder="0" style="border: 0"
-                                                        allowfullscreen></iframe>
-                                                    <div style="display:flex;">
-                                                        <h6>{{ $location->address_line1}}, {{
-                                                            $location->address_line2}}, {{ $location->city}}, {{
-                                                            $location->state_name ?? null }}, {{ $location->zipcode }}
-                                                        </h6>
+                                                @foreach ($userAddresscity as $location)
+                                                    <div class="mt-4">
+                                                        <iframe id="map{{ $location->address_id }}" width="100%"
+                                                            height="300" frameborder="0" style="border: 0"
+                                                            allowfullscreen></iframe>
+                                                        <div style="display:flex;">
+                                                            <h6>{{ $location->address_line1 }},
+                                                                {{ $location->address_line2 }}, {{ $location->city }},
+                                                                {{ $location->state_name ?? null }},
+                                                                {{ $location->zipcode }}
+                                                            </h6>
+                                                        </div>
                                                     </div>
-                                                </div>
                                                 @endforeach
                                             </div>
 
@@ -245,235 +271,242 @@
 
                         <div class="tab-pane fade" id="calls_tab" role="tabpanel" aria-labelledby="pills-setting-tab">
                             <div class="card-body card-border shadow">
-								<h5 class="card-title uppercase">Jobs / Calls</h5>
-                                             
-								@if($tickets->where('technician_id', $technician->id)->isEmpty())
-									<div class="alert alert-info mt-4 col-md-12" role="alert">Calls not available for {{ $technician->name ?? '' }}. <strong><a href="{{route('schedule')}}">Add New</a></strong></div>
-								@else
-									<div class="table-responsive table-custom2 mt-2">
-										<table id="zero_config" class="table table-hover table-striped text-nowrap" data-paging="true" data-paging-size="7">
-											<thead>
-												<tr>
-													<th>Job No</th>
-													<th>Job Details</th>
-													<th>Customer</th>
-													<th>Technician</th>
-													<th>Date & Time</th>
-												</tr>
-											</thead>
-											<tbody>
-												@foreach ($tickets->where('technician_id', $technician->id) as $ticket)
-												<tr>
-													<td>
-														<a href="{{ route('tickets.show', $ticket->id) }}"
-															class="fw-bold link"><span class="mb-1 badge bg-primary">{{
-																$ticket->job_code }}</span></a>
-													</td>
-													<td>
-														<div class="text-wrap2">
-															<a href="{{ route('tickets.show', $ticket->id) }}"
-																class="font-medium link">{{ $ticket->job_title ??
-																null }}</a> <span
-																class="badge bg-light-warning text-warning font-medium">{{
-																$ticket->status
-																}}</span>
-														</div>
-														<div style="font-size:12px;">
-															@if ($ticket->jobdetailsinfo &&
-															$ticket->jobdetailsinfo->apliencename)
-															{{ $ticket->jobdetailsinfo->apliencename->appliance_name }}/
-															@endif
-															@if ($ticket->jobdetailsinfo &&
-															$ticket->jobdetailsinfo->manufacturername)
-															{{
-															$ticket->jobdetailsinfo->manufacturername->manufacturer_name
-															}}/
-															@endif
-															@if ($ticket->jobdetailsinfo &&
-															$ticket->jobdetailsinfo->model_number)
-															{{ $ticket->jobdetailsinfo->model_number }}/
-															@endif
-															@if ($ticket->jobdetailsinfo &&
-															$ticket->jobdetailsinfo->serial_number)
-															{{ $ticket->jobdetailsinfo->serial_number }}
-															@endif
-														</div>
-													</td>
-													<td>
-														@if ($ticket->user)
-                        						<a href="{{ route('users.show', $ticket->user->id) }}" class="link">{{ $ticket->user->name }}</a>
-														@else
-														Unassigned
-														@endif
-													</td>
-													<td>
-														@if ($ticket->technician)
-                                        	<a href="{{ route('technicians.show', $ticket->technician->id) }}" class="link">{{ $ticket->technician->name }}</a>
-														@else
-														Unassigned
-														@endif
-													</td>
-													<td>
-														@if ($ticket->jobassignname &&
-														$ticket->jobassignname->start_date_time)
-														<div class="font-medium link">{{
-															$convertDateToTimezone($ticket->jobassignname->start_date_time)
-															}}</div>
-														@else
-														<div></div>
-														@endif
-														<div style="font-size:12px;">
-															{{
-															$convertTimeToTimezone($ticket->JobAssign->start_date_time
-															?? null, 'H:i:a') }} to {{
-															$convertTimeToTimezone($ticket->JobAssign->end_date_time ??
-															null, 'H:i:a') }}
-														</div>
-													</td>
-												</tr>
-												@endforeach
-											</tbody>
-										</table>
-									</div>
-								@endif
-                                 
-							</div>
+                                <h5 class="card-title uppercase">Jobs / Calls</h5>
+
+                                @if ($tickets->where('technician_id', $technician->id)->isEmpty())
+                                    <div class="alert alert-info mt-4 col-md-12" role="alert">Calls not available for
+                                        {{ $technician->name ?? '' }}. <strong><a href="{{ route('schedule') }}">Add
+                                                New</a></strong></div>
+                                @else
+                                    <div class="table-responsive table-custom2 mt-2">
+                                        <table id="zero_config" class="table table-hover table-striped text-nowrap"
+                                            data-paging="true" data-paging-size="7">
+                                            <thead>
+                                                <tr>
+                                                    <th>Job No</th>
+                                                    <th>Job Details</th>
+                                                    <th>Customer</th>
+                                                    <th>Technician</th>
+                                                    <th>Date & Time</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($tickets->where('technician_id', $technician->id) as $ticket)
+                                                    <tr>
+                                                        <td>
+                                                            <a href="{{ route('tickets.show', $ticket->id) }}"
+                                                                class="fw-bold link"><span
+                                                                    class="mb-1 badge bg-primary">{{ $ticket->job_code }}</span></a>
+                                                        </td>
+                                                        <td>
+                                                            <div class="text-wrap2">
+                                                                <a href="{{ route('tickets.show', $ticket->id) }}"
+                                                                    class="font-medium link">{{ $ticket->job_title ?? null }}</a>
+                                                                <span
+                                                                    class="badge bg-light-warning text-warning font-medium">{{ $ticket->status }}</span>
+                                                            </div>
+                                                            <div style="font-size:12px;">
+                                                                @if ($ticket->jobdetailsinfo && $ticket->jobdetailsinfo->apliencename)
+                                                                    {{ $ticket->jobdetailsinfo->apliencename->appliance_name }}/
+                                                                @endif
+                                                                @if ($ticket->jobdetailsinfo && $ticket->jobdetailsinfo->manufacturername)
+                                                                    {{ $ticket->jobdetailsinfo->manufacturername->manufacturer_name }}/
+                                                                @endif
+                                                                @if ($ticket->jobdetailsinfo && $ticket->jobdetailsinfo->model_number)
+                                                                    {{ $ticket->jobdetailsinfo->model_number }}/
+                                                                @endif
+                                                                @if ($ticket->jobdetailsinfo && $ticket->jobdetailsinfo->serial_number)
+                                                                    {{ $ticket->jobdetailsinfo->serial_number }}
+                                                                @endif
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            @if ($ticket->user)
+                                                                <a href="{{ route('users.show', $ticket->user->id) }}"
+                                                                    class="link">{{ $ticket->user->name }}</a>
+                                                            @else
+                                                                Unassigned
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @if ($ticket->technician)
+                                                                <a href="{{ route('technicians.show', $ticket->technician->id) }}"
+                                                                    class="link">{{ $ticket->technician->name }}</a>
+                                                            @else
+                                                                Unassigned
+                                                            @endif
+                                                        </td>
+                                                        <td>
+                                                            @if ($ticket->jobassignname && $ticket->jobassignname->start_date_time)
+                                                                <div class="font-medium link">
+                                                                    {{ $convertDateToTimezone($ticket->jobassignname->start_date_time) }}
+                                                                </div>
+                                                            @else
+                                                                <div></div>
+                                                            @endif
+                                                            <div style="font-size:12px;">
+                                                                {{ $convertTimeToTimezone($ticket->JobAssign->start_date_time ?? null, 'H:i:a') }}
+                                                                to
+                                                                {{ $convertTimeToTimezone($ticket->JobAssign->end_date_time ?? null, 'H:i:a') }}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                @endif
+
+                            </div>
                         </div>
 
                         <div class="tab-pane fade" id="payment_tab" role="tabpanel" aria-labelledby="pills-payment-tab">
                             <div class="card-body card-border shadow">
                                 <h5 class="card-title uppercase">Payments & Invoices</h5>
-                                 @if($payments->isEmpty())
-									<div class="alert alert-info mt-4" role="alert">
-										Payments not available for {{ $technician->name ?? '' }}. 
-										<strong><a href="{{ route('schedule') }}">Add New</a></strong>
-									</div>
-								@else
+                                @if ($payments->isEmpty())
+                                    <div class="alert alert-info mt-4" role="alert">
+                                        Payments not available for {{ $technician->name ?? '' }}.
+                                        <strong><a href="{{ route('schedule') }}">Add New</a></strong>
+                                    </div>
+                                @else
                                     <div class="table-responsive table-custom2 mt-2">
-                                        <table id="zero_config2" class="table table-hover table-striped text-nowrap" data-paging="true" data-paging-size="7">
+                                        <table id="zero_config2" class="table table-hover table-striped text-nowrap"
+                                            data-paging="true" data-paging-size="7">
                                             <thead>
                                                 <tr>
-													<th># Invoice No.</th>
-													<th>Job Details</th>
-													<th>Due Date</th>
-													<th>Amount</th>
-													<th>Status</th>
-													<th>Technician</th>
-													<th>Customer</th>
-                                                 </tr>
+                                                    <th># Invoice No.</th>
+                                                    <th>Job Details</th>
+                                                    <th>Due Date</th>
+                                                    <th>Amount</th>
+                                                    <th>Status</th>
+                                                    <th>Technician</th>
+                                                    <th>Customer</th>
+                                                </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach($payments as $payment)
-                                                <tr>
-                                                    @php
-                                                    $jobname = DB::table('jobs')->where('id',
-                                                    $payment->job_id)->first();
-                                                    @endphp
-													<td>
-                                                        <a href=" {{ route('invoicedetail', ['id' => $payment->id]) }}"
-                                                            class="font-medium link">{{ $payment->id ?? 'N/A'
-                                                            }}</a>
-                                                    </td>
-													
-                                                    <td><a href=" {{ route('invoicedetail', ['id' => $payment->id]) }}"
-                                                            class="font-medium link">{{ $jobname->job_title ?? 'N/A'
-                                                            }}</a>
-                                                    </td>
-													
-                                                    <td>{{ isset($payment->created_at) ?
-                                                        \Carbon\Carbon::parse($payment->created_at)->format('m-d-Y @ g:i
-                                                        a') : null }}</td>
-                                                    <td>{{$payment->total ?? null}}</td>
-													<td>{{$payment->status  ?? null}} </td>
-                                                    <td>
+                                                @foreach ($payments as $payment)
+                                                    <tr>
                                                         @php
-                                                        $job = DB::table('jobs')->where('id',
-                                                        $payment->job_id)->first(); // Retrieve job details
-                                                        if ($job) {
-                                                        $technician1 = DB::table('users')->where('id',
-                                                        $job->technician_id)->first(); // Retrieve technician details
-                                                        $technician_name = $technician ? $technician->name : 'Unknown';
-                                                        // Get technician's name or set to 'Unknown' if not found
-                                                        } else {
-                                                        $technician_name = 'Unknown';
-                                                        }
+                                                            $jobname = DB::table('jobs')
+                                                                ->where('id', $payment->job_id)
+                                                                ->first();
                                                         @endphp
-                                                        <a href="{{ route('technicians.show', ['id' => $technician1->id]) }}" class="link">{{$technician1->name ?? null}}</a>
-                                                         </td>
+                                                        <td>
+                                                            <a href=" {{ route('invoicedetail', ['id' => $payment->id]) }}"
+                                                                class="font-medium link">{{ $payment->id ?? 'N/A' }}</a>
+                                                        </td>
 
-                                                    
-                                                    <td>@php
-                                                        $customer = DB::table('users')->where('id',
-                                                        $payment->customer_id)->first();
-                                                        @endphp 
-                  	<a href="{{ route('users.show', ['id' => $customer->id]) }}" class="link">{{ $customer->name ?? null }}</a>
+                                                        <td><a href=" {{ route('invoicedetail', ['id' => $payment->id]) }}"
+                                                                class="font-medium link">{{ $jobname->job_title ?? 'N/A' }}</a>
+                                                        </td>
 
-                                                         </td>
+                                                        <td>{{ isset($payment->created_at) ? \Carbon\Carbon::parse($payment->created_at)->format('m-d-Y @ g:ia') : null }}
+                                                        </td>
+                                                        <td>{{ $payment->total ?? null }}</td>
+                                                        <td>{{ $payment->status ?? null }} </td>
+                                                        <td>
+                                                            @php
+                                                                $job = DB::table('jobs')
+                                                                    ->where('id', $payment->job_id)
+                                                                    ->first(); // Retrieve job details
+                                                                if ($job) {
+                                                                    $technician1 = DB::table('users')
+                                                                        ->where('id', $job->technician_id)
+                                                                        ->first(); // Retrieve technician details
+                                                                    $technician_name = $technician
+                                                                        ? $technician->name
+                                                                        : 'Unknown';
+                                                                    // Get technician's name or set to 'Unknown' if not found
+} else {
+    $technician_name = 'Unknown';
+                                                                }
+                                                            @endphp
+                                                            <a href="{{ route('technicians.show', ['id' => $technician1->id]) }}"
+                                                                class="link">{{ $technician1->name ?? null }}</a>
+                                                        </td>
 
-                                                </tr>
+
+                                                        <td>@php
+                                                            $customer = DB::table('users')
+                                                                ->where('id', $payment->customer_id)
+                                                                ->first();
+                                                        @endphp
+                                                            <a href="{{ route('users.show', ['id' => $customer->id]) }}"
+                                                                class="link">{{ $customer->name ?? null }}</a>
+
+                                                        </td>
+
+                                                    </tr>
                                                 @endforeach
                                             </tbody>
                                         </table>
                                     </div>
-                                        @endif
-                                    <br />
+                                @endif
+                                <br />
 
 
                             </div>
                         </div>
-						
-						
-						<div class="tab-pane fade" id="fleet_tab" role="tabpanel"
-                            aria-labelledby="pills-timeline-tab">
+
+
+                        <div class="tab-pane fade" id="fleet_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
                             <div class="card-body card-border shadow">
-								<h5 class="card-title uppercase">Vehicle </h5>
-								 
-								
+                                <h5 class="card-title uppercase">Vehicle </h5>
+
+
                                 <div class="row mt-3">
 
-									 <div class="col-lg-6 col-xlg-6">
-										<h5 class="card-title uppercase">Edit Vehicle Details </h5>
-										@if(empty($vehiclefleet->technician_id))
-										<div class="alert alert-info mt-4 col-md-12" role="alert">
-										Please go to the Vehicle section and assign a vehicle to a  {{ $technician->name ?? '' }}. <strong><a href="{{ route('vehicles') }}">Add New</a></strong>
-										</div>
-										@else
-										<p>Summary: {{ $vehiclefleet->vehicle_summary ?? '' }}</p>
-<form class="form" method="post" action="{{ route('update_fleet_technician') }}">
-    @csrf
-    <div class="row">
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label for="vehicle_description" class="control-label bold mb5 col-form-label required-field">Change Vehicle (title)</label>
-               <select name="vehicle_description" class="form-select" required>
-    @foreach($vehicleDescriptions as $description)
-        @if(in_array($description, explode(',', $vehiclefleet->vehicle_description)))
-            <option value="{{$description}}" selected>{{ $description }}</option>
-        @else
-            <option value="{{$description}}">{{ $description }}</option>
-        @endif
-    @endforeach
-</select>
-
-            </div>
-<input type="hidden" class="form-control" name="technician_id" value="{{ $technician->id }}" />
-
-            <div class="mb-3">
-                <button type="submit" class="btn btn-primary">Update</button>
-            </div>
-        </div>
-    </div>
-</form>
-
-										@endif
- 									</div>
-									
                                     <div class="col-lg-6 col-xlg-6">
-										<h5 class="card-title uppercase">Fleet Maintenance </h5>
+                                        <h5 class="card-title uppercase">Edit Vehicle Details </h5>
+                                        @if (empty($vehiclefleet->technician_id))
+                                            <div class="alert alert-info mt-4 col-md-12" role="alert">
+                                                Please go to the Vehicle section and assign a vehicle to a
+                                                {{ $technician->name ?? '' }}. <strong><a
+                                                        href="{{ route('vehicles') }}">Add New</a></strong>
+                                            </div>
+                                        @else
+                                            <p>Summary: {{ $vehiclefleet->vehicle_summary ?? '' }}</p>
+                                            <form class="form" method="post"
+                                                action="{{ route('update_fleet_technician') }}">
+                                                @csrf
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label for="vehicle_description"
+                                                                class="control-label bold mb5 col-form-label required-field">Change
+                                                                Vehicle (title)</label>
+                                                            <select name="vehicle_description" class="form-select"
+                                                                required>
+                                                                @foreach ($vehicleDescriptions as $description)
+                                                                    @if (in_array($description, explode(',', $vehiclefleet->vehicle_description)))
+                                                                        <option value="{{ $description }}" selected>
+                                                                            {{ $description }}</option>
+                                                                    @else
+                                                                        <option value="{{ $description }}">
+                                                                            {{ $description }}</option>
+                                                                    @endif
+                                                                @endforeach
+                                                            </select>
 
-                                        <form class="form" method="post" action="{{route('updatefleet')}}">
+                                                        </div>
+                                                        <input type="hidden" class="form-control" name="technician_id"
+                                                            value="{{ $technician->id }}" />
+
+                                                        <div class="mb-3">
+                                                            <button type="submit" class="btn btn-primary">Update</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        @endif
+                                    </div>
+
+                                    <div class="col-lg-6 col-xlg-6">
+                                        <h5 class="card-title uppercase">Fleet Maintenance </h5>
+
+                                        <form class="form" method="post" action="{{ route('updatefleet') }}">
                                             @csrf
-                                            <input class="form-control" type="hidden" value="{{$technician->id}}"
+                                            <input class="form-control" type="hidden" value="{{ $technician->id }}"
                                                 name="id">
 
                                             <div class="mb-3 row">
@@ -481,14 +514,14 @@
                                                     CHANGE</label>
                                                 <div class="col-md-9">
                                                     <input class="form-control" type="text"
-                                                        value="{{ old('oil_change',  $oil_change) }}" name="oil_change">
+                                                        value="{{ old('oil_change', $oil_change) }}" name="oil_change">
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
                                                 <label for="tune_up" class="col-md-3 col-form-label">TUNE UP</label>
                                                 <div class="col-md-9">
-                                                    <input class="form-control" type="text" value="{{$tune_up ?? ''}}"
-                                                        name="tune_up">
+                                                    <input class="form-control" type="text"
+                                                        value="{{ $tune_up ?? '' }}" name="tune_up">
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
@@ -496,14 +529,14 @@
                                                     ROTATION</label>
                                                 <div class="col-md-9">
                                                     <input class="form-control" type="text"
-                                                        value="{{$tire_rotation ?? ''}}" name="tire_rotation">
+                                                        value="{{ $tire_rotation ?? '' }}" name="tire_rotation">
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
                                                 <label for="breaks" class="col-md-3 col-form-label">BREAKS</label>
                                                 <div class="col-md-9">
-                                                    <input class="form-control" type="text" value="{{$breaks ?? ''}}"
-                                                        name="breaks">
+                                                    <input class="form-control" type="text"
+                                                        value="{{ $breaks ?? '' }}" name="breaks">
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
@@ -511,15 +544,15 @@
                                                     / CODES</label>
                                                 <div class="col-md-9">
                                                     <input class="form-control" type="text"
-                                                        value="{{$inspection_codes ?? ''}}" name="inspection_codes">
+                                                        value="{{ $inspection_codes ?? '' }}" name="inspection_codes">
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
                                                 <label for="mileage" class="col-md-3 col-form-label">MILEAGE AS OF
                                                     00/00/2024</label>
                                                 <div class="col-md-9">
-                                                    <input class="form-control" type="date" value="{{$mileage ?? ''}}"
-                                                        name="mileage">
+                                                    <input class="form-control" type="date"
+                                                        value="{{ $mileage ?? '' }}" name="mileage">
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
@@ -527,7 +560,7 @@
                                                     class="col-md-3 col-form-label">REGISTRATION EXPIRATION DATE</label>
                                                 <div class="col-md-9">
                                                     <input class="form-control" type="date"
-                                                        value="{{$registration_expiration_date ?? ''}}"
+                                                        value="{{ $registration_expiration_date ?? '' }}"
                                                         name="registration_expiration_date">
                                                 </div>
                                             </div>
@@ -536,7 +569,7 @@
                                                     COVERAGE</label>
                                                 <div class="col-md-9">
                                                     <input class="form-control" type="text"
-                                                        value="{{$vehicle_coverage ?? ''}}" name="vehicle_coverage">
+                                                        value="{{ $vehicle_coverage ?? '' }}" name="vehicle_coverage">
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
@@ -544,7 +577,7 @@
                                                     PLATE</label>
                                                 <div class="col-md-9">
                                                     <input class="form-control" type="text"
-                                                        value="{{$license_plate ?? ''}}" name="license_plate">
+                                                        value="{{ $license_plate ?? '' }}" name="license_plate">
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
@@ -552,35 +585,35 @@
                                                     NUMBER</label>
                                                 <div class="col-md-9">
                                                     <input class="form-control" type="text"
-                                                        value="{{$vin_number ?? ''}}" name="vin_number">
+                                                        value="{{ $vin_number ?? '' }}" name="vin_number">
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
                                                 <label for="make" class="col-md-3 col-form-label">MAKE</label>
                                                 <div class="col-md-9">
-                                                    <input class="form-control" type="text" value="{{$make ?? ''}}"
-                                                        name="make">
+                                                    <input class="form-control" type="text"
+                                                        value="{{ $make ?? '' }}" name="make">
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
                                                 <label for="model" class="col-md-3 col-form-label">MODEL</label>
                                                 <div class="col-md-9">
-                                                    <input class="form-control" type="text" value="{{$model ?? ''}}"
-                                                        name="model">
+                                                    <input class="form-control" type="text"
+                                                        value="{{ $model ?? '' }}" name="model">
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
                                                 <label for="year" class="col-md-3 col-form-label">YEAR</label>
                                                 <div class="col-md-9">
-                                                    <input class="form-control" type="text" value="{{$year ?? ''}}"
-                                                        name="year">
+                                                    <input class="form-control" type="text"
+                                                        value="{{ $year ?? '' }}" name="year">
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
                                                 <label for="color" class="col-md-3 col-form-label">COLOR</label>
                                                 <div class="col-md-9">
-                                                    <input class="form-control" type="text" value="{{$color ?? ''}}"
-                                                        name="color">
+                                                    <input class="form-control" type="text"
+                                                        value="{{ $color ?? '' }}" name="color">
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
@@ -588,7 +621,7 @@
                                                     WEIGHT</label>
                                                 <div class="col-md-9">
                                                     <input class="form-control" type="text"
-                                                        value="{{$vehicle_weight ?? ''}}" name="vehicle_weight">
+                                                        value="{{ $vehicle_weight ?? '' }}" name="vehicle_weight">
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
@@ -596,7 +629,7 @@
                                                     COST</label>
                                                 <div class="col-md-9">
                                                     <input class="form-control" type="text"
-                                                        value="{{$vehicle_cost ?? ''}}" name="vehicle_cost">
+                                                        value="{{ $vehicle_cost ?? '' }}" name="vehicle_cost">
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
@@ -604,7 +637,7 @@
                                                     VEHICLE</label>
                                                 <div class="col-md-9">
                                                     <input class="form-control" type="text"
-                                                        value="{{$use_of_vehicle ?? ''}}" name="use_of_vehicle">
+                                                        value="{{ $use_of_vehicle ?? '' }}" name="use_of_vehicle">
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
@@ -612,21 +645,21 @@
                                                     SERVICES</label>
                                                 <div class="col-md-9">
                                                     <input class="form-control" type="text"
-                                                        value="{{$repair_services ?? ''}}" name="repair_services">
+                                                        value="{{ $repair_services ?? '' }}" name="repair_services">
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
                                                 <label for="ezpass" class="col-md-3 col-form-label">E-ZPass</label>
                                                 <div class="col-md-9">
-                                                    <input class="form-control" type="text" value="{{$ezpass ?? ''}}"
-                                                        name="ezpass">
+                                                    <input class="form-control" type="text"
+                                                        value="{{ $ezpass ?? '' }}" name="ezpass">
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
                                                 <label for="service" class="col-md-3 col-form-label">SERVICE</label>
                                                 <div class="col-md-9">
-                                                    <input class="form-control" type="text" value="{{$service ?? ''}}"
-                                                        name="service">
+                                                    <input class="form-control" type="text"
+                                                        value="{{ $service ?? '' }}" name="service">
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
@@ -634,7 +667,7 @@
                                                     class="col-md-3 col-form-label">ADDITIONAL SERVICE NOTES</label>
                                                 <div class="col-md-9">
                                                     <input class="form-control" type="text"
-                                                        value="{{$additional_service_notes ?? ''}}"
+                                                        value="{{ $additional_service_notes ?? '' }}"
                                                         name="additional_service_notes">
                                                 </div>
                                             </div>
@@ -643,7 +676,7 @@
                                                     UPDATED</label>
                                                 <div class="col-md-9">
                                                     <input class="form-control" type="date"
-                                                        value="{{$last_updated ?? ''}}" name="last_updated">
+                                                        value="{{ $last_updated ?? '' }}" name="last_updated">
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
@@ -651,7 +684,7 @@
                                                     CERTIFICATION</label>
                                                 <div class="col-md-9">
                                                     <input class="form-control" type="text"
-                                                        value="{{$epa_certification ?? ''}}" name="epa_certification">
+                                                        value="{{ $epa_certification ?? '' }}" name="epa_certification">
                                                 </div>
                                             </div>
                                             <div class="mb-3 row">
@@ -669,126 +702,129 @@
                             </div>
                         </div>
 
-                       
-						<div class="tab-pane fade" id="edit_profile_tab" role="tabpanel"
+
+                        <div class="tab-pane fade" id="edit_profile_tab" role="tabpanel"
                             aria-labelledby="pills-timeline-tab">
-                           <div class="card-body card-border shadow">
-                                 @include('technicians.edit_profile')
+                            <div class="card-body card-border shadow">
+                                @include('technicians.edit_profile')
                             </div>
                         </div>
-						
-						
-						<div class="tab-pane fade" id="others_tab" role="tabpanel"
-                            aria-labelledby="pills-timeline-tab">
-							<div class="card-body card-border shadow">
-								<h5 class="card-title uppercase">Notes </h5>
+
+
+                        <div class="tab-pane fade" id="others_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
+                            <div class="card-body card-border shadow">
+                                <h5 class="card-title uppercase">Notes </h5>
                                 <div class="profiletimeline mt-2">
-                                    @foreach ($notename as $notename )
-                                    <div class="sl-item mb-4">
-                                        <div class="sl-left">
-                                            @php
-                                            $username = DB::table('users')->where('id',
-                                            $notename->added_by)->first();
-                                            @endphp
-                                            @if($username && $username->user_image)
-                                            <img src="{{ asset('public/images/Uploads/users/'. $username->id . '/' . $username->user_image) }}"
-                                                class="rounded-circle" alt="user" />
-                                            @else
-                                            <img src="{{ asset('public/images/login_img_bydefault.png') }}" alt="user"
-                                                class=" rounded-circle" />
-                                            @endif
+                                    @foreach ($notename as $notename)
+                                        <div class="sl-item mb-4">
+                                            <div class="sl-left">
+                                                @php
+                                                    $username = DB::table('users')
+                                                        ->where('id', $notename->added_by)
+                                                        ->first();
+                                                @endphp
+                                                @if ($username && $username->user_image)
+                                                    <img src="{{ asset('public/images/Uploads/users/' . $username->id . '/' . $username->user_image) }}"
+                                                        class="rounded-circle" alt="user" />
+                                                @else
+                                                    <img src="{{ asset('public/images/login_img_bydefault.png') }}"
+                                                        alt="user" class=" rounded-circle" />
+                                                @endif
 
-                                        </div>
+                                            </div>
 
-                                        <div class="sl-right">
-                                            <div>
-                                                <a href="javascript:void(0)" class="link ucfirst ft17"> {{$username->name ??
-                                                    null}}</a>
-												<span class="sl-date">
-													{{ \Carbon\Carbon::parse($notename->created_at)->diffForHumans() }}
-												</span>
-												<div class="row">
-                                                    <div class="col-lg-12 col-md-12 ft15">
-                                                        {{ $notename->note }}
+                                            <div class="sl-right">
+                                                <div>
+                                                    <a href="javascript:void(0)" class="link ucfirst ft17">
+                                                        {{ $username->name ?? null }}</a>
+                                                    <span class="sl-date">
+                                                        {{ \Carbon\Carbon::parse($notename->created_at)->diffForHumans() }}
+                                                    </span>
+                                                    <div class="row">
+                                                        <div class="col-lg-12 col-md-12 ft15">
+                                                            {{ $notename->note }}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+                                    @endforeach
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-lg-6 col-xlg-6">
+                                        <form id="commentForm" action="{{ route('techniciancomment.store') }}"
+                                            method="POST">
+                                            @csrf
+                                            <div class="mb-3">
+                                                <label for="tag_id"
+                                                    class="control-label bold col-form-label uppercase">Add New
+                                                    Comment</label>
+                                                <input type="hidden" name="id" value="{{ $technician->id }}">
+                                                <textarea class="form-control" id="comment" name="note" rows="3"></textarea>
+                                            </div>
+                                            <div class="mb-3 d-flex align-items-center">
+                                                <button type="submit" id="submitButton"
+                                                    class="btn btn-primary ms-2">Submit</button>
+                                            </div>
+                                        </form>
                                     </div>
-									@endforeach
-								</div>
-								<div class="row mt-2">
-									 <div class="col-lg-6 col-xlg-6">
- 										 <form id="commentForm" action="{{ route('techniciancomment.store') }}"
-											method="POST">
-											@csrf
-											<div class="mb-3">
-												<label for="tag_id" class="control-label bold col-form-label uppercase">Add New Comment</label>
-												<input type="hidden" name="id" value="{{ $technician->id }}">
-												<textarea class="form-control" id="comment" name="note" rows="3"></textarea>
-											</div>
-											<div class="mb-3 d-flex align-items-center">
-												<button type="submit" id="submitButton" class="btn btn-primary ms-2">Submit</button>
-											</div>
-										</form>
-									 </div>
-								 </div>
+                                </div>
                             </div>
                         </div>
-						
-						<div class="tab-pane fade" id="edit_service_tab" role="tabpanel"
+
+                        <div class="tab-pane fade" id="edit_service_tab" role="tabpanel"
                             aria-labelledby="pills-timeline-tab">
                             <div class="card-body card-border shadow">
-                               @include('technicians.service_area')
+                                @include('technicians.service_area')
                             </div>
                         </div>
 
                         <div class="tab-pane fade" id="estimate_tab" role="tabpanel"
                             aria-labelledby="pills-timeline-tab">
-							<div class="card-body card-border shadow">
-							
-							@if($estimates->isEmpty())
-								<h5 class="card-title uppercase">Estimates</h5>
-								<div class="alert alert-info mt-4 col-md-12" role="alert">
-								Estimates details not available for {{$user->name ?? null}}. <strong><a href="{{route('schedule')}}">Add New</a></strong>
-								</div>
-							
-							@else
-								<div class="table-responsive table-custom2 mt-2">
-								<table id="zero_config" class="table table-hover table-striped text-nowrap">
-								<thead>
-								<tr>
-								<th>#</th>
-								<th>Ticket</th>
-								<th>Date</th>
-								<th>Amount</th>
-								<th>Technician</th>
-								</tr>
-								</thead>
-								<tbody>
-									@foreach($estimates as $estimate)
-									<tr>
-									<td>{{ $loop->iteration }}</td>
-									<td>{{ $estimate->ticket ?? null }}</td>
-									<td>{{ isset($estimate->date) ? \Carbon\Carbon::parse($estimate->date)->format('m-d-Y') : null }}</td>
-									<td>{{ $estimate->amount ?? null }}</td>
-									<td>{{ $estimate->technician ?? null }}</td>
-									</tr>
-									@endforeach
-								</tbody>
-								</table>
-								</div>
-							@endif
-							</div>
-
-                         </div>
-
-                         
-
-                        <div class="tab-pane fade" id="parts_tab" role="tabpanel"
-                            aria-labelledby="pills-timeline-tab">
                             <div class="card-body card-border shadow">
-                                 @include('technicians.parts_view_and_assign')
+
+                                @if ($estimates->isEmpty())
+                                    <h5 class="card-title uppercase">Estimates</h5>
+                                    <div class="alert alert-info mt-4 col-md-12" role="alert">
+                                        Estimates details not available for {{ $user->name ?? null }}. <strong><a
+                                                href="{{ route('schedule') }}">Add New</a></strong>
+                                    </div>
+                                @else
+                                    <div class="table-responsive table-custom2 mt-2">
+                                        <table id="zero_config" class="table table-hover table-striped text-nowrap">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Ticket</th>
+                                                    <th>Date</th>
+                                                    <th>Amount</th>
+                                                    <th>Technician</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($estimates as $estimate)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>{{ $estimate->ticket ?? null }}</td>
+                                                        <td>{{ isset($estimate->date) ? \Carbon\Carbon::parse($estimate->date)->format('m-d-Y') : null }}
+                                                        </td>
+                                                        <td>{{ $estimate->amount ?? null }}</td>
+                                                        <td>{{ $estimate->technician ?? null }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                @endif
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="tab-pane fade" id="parts_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
+                            <div class="card-body card-border shadow">
+                                @include('technicians.parts_view_and_assign')
                             </div>
                         </div>
 
@@ -801,305 +837,182 @@
 
                         <div class="tab-pane fade" id="activity_tab" role="tabpanel"
                             aria-labelledby="pills-timeline-tab">
-                        
-								<div class="card-body card-border shadow">
-									
-									<h5 class="card-title uppercase">schedule</h5>  
-									
-									@if($schedule->isEmpty())
-									<div class="alert alert-info mt-4 col-md-12" role="alert">
-									Schedule details not available for {{ $user->name ?? '' }}. <strong><a href="{{ route('schedule') }}">Add New</a></strong>
-									</div>
-									
-									@else
-										
-									<table class="table">
-										<thead>
-											<tr>
-												<th>Date</th>
-												<th>Type</th>
-												<th>Details</th>
-											</tr>
-										</thead>
-										<tbody>
-											@foreach ($schedule  as $scheduleItem)
-												@if (!empty($scheduleItem))
-													<tr>  
-														<td>
-	@if ($scheduleItem->schedule_type == 'job')
-    <div class="font-medium link">{{ $convertDateToTimezone($scheduleItem->created_at) }}</div>
-    <div style="font-size:12px;">
-        {{ $convertTimeToTimezone($scheduleItem->start_date_time, 'H:i:a') }}
-        to
-        {{ $convertTimeToTimezone($scheduleItem->end_date_time, 'H:i:a') }}
-    </div>
-@elseif ($scheduleItem->event->event_type == 'full')
-    <div class="font-medium link">{{ $convertDateToTimezone($scheduleItem->created_at) }}</div>
-    <div style="font-size:12px;">
-        <div>Full Day</div>
-    </div>
-@elseif ($scheduleItem->event->event_type == 'partial')
-    <div class="font-medium link">{{ $convertDateToTimezone($scheduleItem->created_at) }}</div>
-    <div style="font-size:12px;">
-        {{ $convertTimeToTimezone($scheduleItem->start_date_time, 'H:i:a') }}
-        to
-        {{ $convertTimeToTimezone($scheduleItem->end_date_time, 'H:i:a') }}
-    </div>
-@endif
 
-																		
-														
-														</td>
-														<td>{{ $scheduleItem->schedule_type ?? ''}}</td>
-														<td>
-															@if ($scheduleItem->schedule_type === 'job')
-                                                            
-                                                                <div class="font-medium link">{{ $scheduleItem->JobModel->job_title ?? '' }}</div>
-                                                                  <div class="font-medium link">{{ $scheduleItem->JobModel->description ?? '' }}</div>
-                                                              <div class="font-medium link">   {{$scheduleItem->JobModel->user->name ?? ''}}</div>
-                                                 <div class="">
-                                                 
-    @if(isset($scheduleItem->JobModel->addresscustomer->address_line1) && $scheduleItem->JobModel->addresscustomer->address_line1 !== '')
-    {{ $scheduleItem->JobModel->addresscustomer->address_line1 }}, 
-@endif
+                            <div class="card-body card-border shadow">
 
-@if(isset($scheduleItem->JobModel->addresscustomer->address_line2) && $scheduleItem->JobModel->addresscustomer->address_line2 !== '')
-    {{ $scheduleItem->JobModel->addresscustomer->address_line2 }}, 
-@endif
+                                <h5 class="card-title uppercase">schedule</h5>
 
-@if(isset($scheduleItem->JobModel->addresscustomer->city) && $scheduleItem->JobModel->addresscustomer->city !== '')
-    {{ $scheduleItem->JobModel->addresscustomer->city }}, 
-@endif
+                                @if ($schedule->isEmpty())
+                                    <div class="alert alert-info mt-4 col-md-12" role="alert">
+                                        Schedule details not available for {{ $user->name ?? '' }}. <strong><a
+                                                href="{{ route('schedule') }}">Add New</a></strong>
+                                    </div>
+                                @else
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <ul class="timeline timeline-left">
+                                                @foreach ($schedule as $scheduleItem)
+                                                    @if (isset($scheduleItem))
+                                                        <li class="timeline-inverted timeline-item">
+                                                            <div
+                                                                class="timeline-badge
+                                                     @if ($scheduleItem->schedule_type === 'job') danger
+                                                            @elseif ($scheduleItem->schedule_type === 'event')
+                                                             success @endif">
+                                                                <span class="fs-2">
+                                                                    @if ($scheduleItem->schedule_type === 'job')
+                                                                        T
+                                                                    @elseif ($scheduleItem->schedule_type === 'event')
+                                                                        <i class="ri-cpu-fill fs-7"></i>
+                                                                    @endif
+                                                                </span>
+                                                            </div>
+                                                            <div class="timeline-panel shadow">
+                                                                <div class="timeline-heading">
+                                                                    <h5 class="timeline-title uppercase">
+                                                                        <i class="ri-time-line align-middle"></i>
+                                                                        {{ $convertDateToTimezone($scheduleItem->created_at) }}
+                                                                        <span class="ft12">
+                                                                            @if ($scheduleItem->schedule_type === 'job' || $scheduleItem->event->event_type === 'partial')
+                                                                                {{ $convertTimeToTimezone($scheduleItem->start_date_time, 'H:i:a') }}
+                                                                                to
+                                                                                {{ $convertTimeToTimezone($scheduleItem->end_date_time, 'H:i:a') }}
+                                                                            @elseif ($scheduleItem->event->event_type === 'full')
+                                                                                FULL DAY
+                                                                            @endif
+                                                                        </span>
+                                                                    </h5>
+                                                                </div>
+                                                                <div class="timeline-body">
+                                                                    <div class="row mt1">
+                                                                        <div class="col-md-12">
+                                                                            <div class="mb-2">
+                                                                                <h5 class="card-title uppercase">
+                                                                                    @if ($scheduleItem->schedule_type === 'job')
+                                                                                        {{ $scheduleItem->JobModel->job_title ?? null }}
+                                                                                        @elseif ($scheduleItem->schedule_type === 'event')
+                                                                                        {{ $scheduleItem->event->event_name ?? null }}
+                                                                                    @endif
+                                                                                </h5>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-md-12">
+                                                                            @if ($scheduleItem->schedule_type === 'job')
+                                                                                {{ $scheduleItem->JobModel->description ?? null }}
+                                                                            @elseif ($scheduleItem->schedule_type === 'event')
+                                                                                {{ $scheduleItem->event->event_description ?? null }}
+                                                                            @endif
+                                                                        </div>
+                                                                    </div>
+                                                                    @if ($scheduleItem->schedule_type === 'job')
+                                                                        <div class="row mt-2">
+                                                                            <div class="col-md-6">
+                                                                                <div class="mb-2"><strong>Customer
+                                                                                        Name:</strong>
+                                                                                    {{ $scheduleItem->JobModel->user->name ?? '' }}
+                                                                                </div>
+                                                                                <div class="mb-2">
+                                                                                    <strong>Address:</strong>
+                                                                                    @if (isset($scheduleItem->JobModel->addresscustomer->address_line1) &&
+                                                                                            $scheduleItem->JobModel->addresscustomer->address_line1 !== '')
+                                                                                        {{ $scheduleItem->JobModel->addresscustomer->address_line1 }},
+                                                                                    @endif
 
-@if(isset($scheduleItem->JobModel->addresscustomer->state_name) && $scheduleItem->JobModel->addresscustomer->state_name !== '')
-    {{ $scheduleItem->JobModel->addresscustomer->state_name }}, 
-@endif
+                                                                                    @if (isset($scheduleItem->JobModel->addresscustomer->address_line2) &&
+                                                                                            $scheduleItem->JobModel->addresscustomer->address_line2 !== '')
+                                                                                        {{ $scheduleItem->JobModel->addresscustomer->address_line2 }},
+                                                                                    @endif
 
-@if(isset($scheduleItem->JobModel->addresscustomer->zipcode) && $scheduleItem->JobModel->addresscustomer->zipcode !== '')
-    {{ $scheduleItem->JobModel->addresscustomer->zipcode }}
-@endif</div>
+                                                                                    @if (isset($scheduleItem->JobModel->addresscustomer->city) && $scheduleItem->JobModel->addresscustomer->city !== '')
+                                                                                        {{ $scheduleItem->JobModel->addresscustomer->city }},
+                                                                                    @endif
 
+                                                                                    @if (isset($scheduleItem->JobModel->addresscustomer->state_name) &&
+                                                                                            $scheduleItem->JobModel->addresscustomer->state_name !== '')
+                                                                                        {{ $scheduleItem->JobModel->addresscustomer->state_name }},
+                                                                                    @endif
 
-																<!-- <a href="{{ route('tickets.show', ['id' => $scheduleItem->job_id]) }}">View Ticket</a> -->
-															@elseif ($scheduleItem->schedule_type === 'event')
-																{{ $scheduleItem->event->event_name ?? '' }}   {{ $scheduleItem->event->event_description ?? '' }}
-															  {{ $scheduleItem->event->event_location ?? '' }}
-															@else
-																No details available
-															@endif
-														</td>
-													</tr>
-												@endif
-											@endforeach
-										</tbody>
-									</table>
-									@endif
-									
-								</div>
-								
-								
-			 <div class="card">
-                <div class="card-body">
-                  <ul class="timeline timeline-left">
-				  
-					<li class="timeline-inverted timeline-item">
-                      <div class="timeline-badge danger">
-                        <span class="fs-2">T</span>
-                      </div>
-                      <div class="timeline-panel shadow">
-                        <div class="timeline-heading">
-							<h5 class="timeline-title uppercase"><i class="ri-time-line align-middle"></i> 05-03-2024 <span class="ft12">03:30:am to 05:30:am</span></h5>
- 						</div>
-                        <div class="timeline-body">
-  							<div class="row mt1">
-								<div class="col-md-12">
-									<div class="mb-2">
-									<h5 class="card-title uppercase">JOB TITLE HERE</h5>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-12">
-									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis minus modi quam ipsum alias at est molestiae excepturi delectus nesciunt, quibusdam debitis amet, beatae consequuntur impedit nulla qui! Laborum, atque.
-								</div>
-							</div>
-							<div class="row mt-2">
-								<div class="col-md-6">
-									<div class="mb-2"><strong>Customer Name: </strong> JANES N</div>
-									<div class="mb-2"><strong>Address:</strong> quibusdam debitis amet, beatae consequuntur</div>
-									<div class="mb-2"><strong>Mobile: </strong>234123</div>
-									<div class="mb-2"><strong>Email: </strong> test@test.com </div>
-								</div>
-								<div class="col-md-3">
-									<div class="mb-2"><strong>Duration:</strong> 3 Hours</div>
-									<div class="mb-2"><strong>Priority:</strong> high</div>
-								</div>
-								<div class="col-md-3">
-									<div class="mb-2"><strong>Appliances: </strong> Laptop</div>
-									<div class="mb-2"><strong>Manufacturer:</strong> ipad	</div>
-									<div class="mb-2"><strong>Model Number: </strong>234123</div>
-									<div class="mb-2"><strong>Serial Number: </strong> 564324 </div>
-								</div>
-							</div>
-                         </div>
-                      </div>
-                    </li>
-					
-					<li class="timeline-inverted timeline-item">
-                      <div class="timeline-badge danger">
-                        <span class="fs-2">T</span>
-                      </div>
-                      <div class="timeline-panel shadow">
-                        <div class="timeline-heading">
-							<h5 class="timeline-title uppercase"><i class="ri-time-line align-middle"></i> 05-03-2024 <span class="ft12">03:30:am to 05:30:am</span></h5>
- 						</div>
-                        <div class="timeline-body">
-  							<div class="row mt1">
-								<div class="col-md-12">
-									<div class="mb-2">
-									<h5 class="card-title uppercase">JOB TITLE HERE</h5>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-12">
-									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis minus modi quam ipsum alias at est molestiae excepturi delectus nesciunt, quibusdam debitis amet, beatae consequuntur impedit nulla qui! Laborum, atque.
-								</div>
-							</div>
-							<div class="row mt-2">
-								<div class="col-md-6">
-									<div class="mb-2"><strong>Customer Name: </strong> JANES N</div>
-									<div class="mb-2"><strong>Address:</strong> quibusdam debitis amet, beatae consequuntur</div>
-									<div class="mb-2"><strong>Mobile: </strong>234123</div>
-									<div class="mb-2"><strong>Email: </strong> test@test.com </div>
-								</div>
-								<div class="col-md-3">
-									<div class="mb-2"><strong>Duration:</strong> 3 Hours</div>
-									<div class="mb-2"><strong>Priority:</strong> high</div>
-								</div>
-								<div class="col-md-3">
-									<div class="mb-2"><strong>Appliances: </strong> Laptop</div>
-									<div class="mb-2"><strong>Manufacturer:</strong> ipad	</div>
-									<div class="mb-2"><strong>Model Number: </strong>234123</div>
-									<div class="mb-2"><strong>Serial Number: </strong> 564324 </div>
-								</div>
-							</div>
-                         </div>
-                      </div>
-                    </li>
-					
- 					  
-                    <li class="timeline-inverted timeline-item">
-                      <div class="timeline-badge success">
-                        <i class="ri-cpu-fill fs-7"></i>
-                      </div>
-                      <div class="timeline-panel shadow">
-                        <div class="timeline-heading">
-                          <h5 class="timeline-title uppercase"><i class="ri-time-line align-middle"></i> 05-03-2024 <span class="ft12">FULL DAY</span></h5>
-                         </div>
-                        <div class="timeline-body">
-							<div class="row">
-								<div class="col-md-12 mt-2">
-									<div class="mb-2">
-										<h5 class="card-title uppercase">EVENT TITLE HERE</h5>
-										<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt
-										obcaecati, quaerat tempore officia voluptas debitis consectetur culpa
-										amet, accusamus dolorum fugiat, animi dicta aperiam, enim incidunt
-										quisquam maxime neque eaque.
-										</p>
-									</div>
-								</div>
-							</div>
-                         </div>
-                      </div>
-                    </li>
-					
-					<li class="timeline-inverted timeline-item">
-                      <div class="timeline-badge danger">
-                        <span class="fs-2">T</span>
-                      </div>
-                      <div class="timeline-panel shadow">
-                        <div class="timeline-heading">
-							<h5 class="timeline-title uppercase"><i class="ri-time-line align-middle"></i> 05-03-2024 <span class="ft12">03:30:am to 05:30:am</span></h5>
- 						</div>
-                        <div class="timeline-body">
-  							<div class="row mt1">
-								<div class="col-md-12">
-									<div class="mb-2">
-									<h5 class="card-title uppercase">JOB TITLE HERE</h5>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-12">
-									Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nobis minus modi quam ipsum alias at est molestiae excepturi delectus nesciunt, quibusdam debitis amet, beatae consequuntur impedit nulla qui! Laborum, atque.
-								</div>
-							</div>
-							<div class="row mt-2">
-								<div class="col-md-6">
-									<div class="mb-2"><strong>Customer Name: </strong> JANES N</div>
-									<div class="mb-2"><strong>Address:</strong> quibusdam debitis amet, beatae consequuntur</div>
-									<div class="mb-2"><strong>Mobile: </strong>234123</div>
-									<div class="mb-2"><strong>Email: </strong> test@test.com </div>
-								</div>
-								<div class="col-md-3">
-									<div class="mb-2"><strong>Duration:</strong> 3 Hours</div>
-									<div class="mb-2"><strong>Priority:</strong> high</div>
-								</div>
-								<div class="col-md-3">
-									<div class="mb-2"><strong>Appliances: </strong> Laptop</div>
-									<div class="mb-2"><strong>Manufacturer:</strong> ipad	</div>
-									<div class="mb-2"><strong>Model Number: </strong>234123</div>
-									<div class="mb-2"><strong>Serial Number: </strong> 564324 </div>
-								</div>
-							</div>
-                         </div>
-                      </div>
-                    </li>
-					
-					<li class="timeline-inverted timeline-item">
-                      <div class="timeline-badge success">
-                        <i class="ri-cpu-fill fs-7"></i>
-                      </div>
-                      <div class="timeline-panel shadow">
-                        <div class="timeline-heading">
-                          <h5 class="timeline-title uppercase"><i class="ri-time-line align-middle"></i> 05-03-2024 <span class="ft12">03:30:am to 05:30:am</span></h5>
-                         </div>
-                        <div class="timeline-body">
-							<div class="row">
-								<div class="col-md-12 mt-2">
-									<div class="mb-2">
-										<h5 class="card-title uppercase">EVENT TITLE HERE</h5>
-										<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt
-										obcaecati, quaerat tempore officia voluptas debitis consectetur culpa
-										amet, accusamus dolorum fugiat, animi dicta aperiam, enim incidunt
-										quisquam maxime neque eaque.
-										</p>
-									</div>
-								</div>
-							</div>
-                         </div>
-                      </div>
-                    </li>
-					
-                  </ul>
-                </div>
-              </div>
-             
-			 
-  
-							</div>
+                                                                                    @if (isset($scheduleItem->JobModel->addresscustomer->zipcode) &&
+                                                                                            $scheduleItem->JobModel->addresscustomer->zipcode !== '')
+                                                                                        {{ $scheduleItem->JobModel->addresscustomer->zipcode }}
+                                                                                    @endif
+                                                                                </div>
+                                                                                <div class="mb-2">
+                                                                                    <strong>Mobile:</strong>
+                                                                                    {{ $scheduleItem->JobModel->user->mobile ?? '' }}
+                                                                                </div>
+                                                                                <div class="mb-2"><strong>Email:</strong>
+                                                                                    {{ $scheduleItem->JobModel->user->email ?? '' }}
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-3">
+                                                                                <div class="mb-2">
+                                                                                    <strong>Duration:</strong>
+                                                                                  @php
+                                                                                    $minutes = $scheduleItem->JobModel->jobassignname->duration ?? 0;
+                                                                                    $hours = intdiv($minutes, 60);
+                                                                                    $remaining_minutes = $minutes % 60;
+                                                                                    $duration = ($hours > 0 ? $hours . ' hour' . ($hours > 1 ? 's' : '') : '') . 
+                                                                                                ($remaining_minutes > 0 ? ' ' . $remaining_minutes . ' minute' . ($remaining_minutes > 1 ? 's' : '') : '');
+                                                                                @endphp
+
+                                                                                {{ $duration }}
+
+                                                                                </div>
+                                                                                <div class="mb-2">
+                                                                                    <strong>Priority:</strong>
+                                                                                    {{ $scheduleItem->JobModel->priority ?? '' }}
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-3">
+                                                                                <div class="mb-2">
+                                                                                    <strong>Appliances:</strong>
+                                                                                    {{ $scheduleItem->JobModel->JobAppliances->Appliances->appliance->appliance_name ?? '' }}
+                                                                                </div>
+                                                                                <div class="mb-2">
+                                                                                    <strong>Manufacturer:</strong>
+                                                                                    {{ $scheduleItem->JobModel->JobAppliances->Appliances->manufacturer->manufacturer_name ?? '' }}
+                                                                                </div>
+                                                                                <div class="mb-2"><strong>Model
+                                                                                        Number:</strong>
+                                                                                    {{ $scheduleItem->JobModel->JobAppliances->Appliances->model_number ?? '' }}
+                                                                                </div>
+                                                                                <div class="mb-2"><strong>Serial
+                                                                                        Number:</strong>
+                                                                                    {{ $scheduleItem->JobModel->JobAppliances->Appliances->serial_number ?? '' }}
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    @endif
+                                                @endforeach
 
 
-                          
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                @endif
+
+                            </div>
+
+                        </div>
+
+
+
 
 
 
                     </div>
                 </div>
                 <!-- ---------------------
-                            end Timeline
-                        ---------------- -->
+                                                    end Timeline
+                                                ---------------- -->
             </div>
             <!-- Column -->
         </div>
@@ -1118,250 +1031,250 @@
     <!-- -------------------------------------------------------------- -->
     <!-- End Container fluid  -->
 @section('script')
-<script>
-    @foreach($userAddresscity as $location)
-    var latitude = {{ $location->latitude }}; // Example latitude
-    var longitude = {{ $location->longitude }}; // Example longitude
+    <script>
+        @foreach ($userAddresscity as $location)
+            var latitude = {{ $location->latitude }}; // Example latitude
+            var longitude = {{ $location->longitude }}; // Example longitude
 
-    // Construct the URL with the latitude and longitude values
-    var mapUrl = 'https://www.google.com/maps/embed/v1/view?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&center=' + latitude
-    + ',' + longitude + '&zoom=13';
+            // Construct the URL with the latitude and longitude values
+            var mapUrl = 'https://www.google.com/maps/embed/v1/view?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&center=' +
+                latitude +
+                ',' + longitude + '&zoom=13';
 
-    document.getElementById('map{{ $location->address_id }}').src = mapUrl;
-    @endforeach
-</script>
-<script>
-    $(document).ready(function(){
-        // Select the password and new password input fields
-        var passwordField = $('input[name="password"]');
-        var newPasswordField = $('input[name="confirm_password"]');
-        var passwordMatchMessage = $('#passwordMatchMessage');
+            document.getElementById('map{{ $location->address_id }}').src = mapUrl;
+        @endforeach
+    </script>
+    <script>
+        $(document).ready(function() {
+            // Select the password and new password input fields
+            var passwordField = $('input[name="password"]');
+            var newPasswordField = $('input[name="confirm_password"]');
+            var passwordMatchMessage = $('#passwordMatchMessage');
 
-        // Select the form and attach a submit event listener
-        $('form').submit(function(event){
-            // Prevent the form from submitting
+            // Select the form and attach a submit event listener
+            $('form').submit(function(event) {
+                // Prevent the form from submitting
+                event.preventDefault();
+
+                // Get the values of the password and new password fields
+                var passwordValue = passwordField.val();
+                var newPasswordValue = newPasswordField.val();
+
+                // Check if the passwords match
+                if (passwordValue === newPasswordValue) {
+                    // If passwords match, submit the form
+                    this.submit();
+                } else {
+                    // Show danger message
+                    passwordMatchMessage.removeClass('alert-success').addClass('alert-danger').html(
+                        'Passwords do not match. Please enter matching passwords.').show();
+                }
+            });
+        });
+    </script>
+    <script>
+        const firstNameInput = document.getElementById('first_name');
+        const lastNameInput = document.getElementById('last_name');
+        const displayNameInput = document.getElementById('display_name');
+
+        // Function to update the display name field
+        function updateDisplayName() {
+            const firstName = firstNameInput.value.trim();
+            const lastName = lastNameInput.value.trim();
+
+            // Concatenate first and last name
+            const displayName = firstName + ' ' + lastName;
+
+            // Set the display name input value
+            displayNameInput.value = displayName;
+        }
+
+        // Listen for input changes on first and last name fields
+        firstNameInput.addEventListener('input', updateDisplayName);
+        lastNameInput.addEventListener('input', updateDisplayName);
+    </script>
+    <script>
+        document.getElementById('openChangePasswordModal').addEventListener('click', function(event) {
             event.preventDefault();
+            $('#changePasswordModal').modal('show');
+        });
 
-            // Get the values of the password and new password fields
-            var passwordValue = passwordField.val();
-            var newPasswordValue = newPasswordField.val();
+        // Close modal when close button is clicked
+        $('.close').on('click', function() {
+            $('#changePasswordModal').modal('hide');
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
 
-            // Check if the passwords match
-            if(passwordValue === newPasswordValue){
-                // If passwords match, submit the form
-                this.submit();
-            } else {
-                // Show danger message
-                passwordMatchMessage.removeClass('alert-success').addClass('alert-danger').html('Passwords do not match. Please enter matching passwords.').show();
+            $('#state_id').change(function() {
+
+                var stateId = $(this).val();
+
+                var citySelect = $('#city');
+
+                citySelect.html('<option selected disabled value="">Loading...</option>');
+
+
+
+                // Make an AJAX request to fetch the cities based on the selected state
+
+                $.ajax({
+
+                    url: "{{ route('getcities') }}", // Correct route URL
+
+                    type: 'GET',
+
+                    data: {
+
+                        state_id: stateId
+
+                    },
+
+                    dataType: 'json',
+
+                    success: function(data) {
+
+                        citySelect.html(
+                            '<option selected disabled value="">Select City...</option>');
+
+                        $.each(data, function(index, city) {
+
+                            citySelect.append('<option value="' + city.city_id + '">' +
+                                city.city + ' - ' + city.zip + '</option>');
+
+                        });
+
+                    },
+
+                    error: function(xhr, status, error) {
+
+                        console.error('Error fetching cities:', error);
+
+                    }
+
+                });
+
+            });
+
+
+
+            // Trigger another function to get zip code after selecting a city
+
+            $('#city').change(function() {
+
+                var cityId = $(this).val();
+
+                var cityName = $(this).find(':selected').text().split(' - ')[
+                    0]; // Extract city name from option text
+
+                getZipCode(cityId, cityName); // Call the function to get the zip code
+
+            });
+
+        });
+
+
+        // Function to get zip code
+        function searchCity() {
+            // Initialize autocomplete
+            $("#city").autocomplete({
+                source: function(request, response) {
+                    // Clear previous autocomplete results
+                    $("#autocomplete-results").empty();
+
+                    $.ajax({
+                        url: "{{ route('autocomplete.city') }}",
+                        data: {
+                            term: request.term
+                        },
+                        dataType: "json",
+                        type: "GET",
+                        success: function(data) {
+                            response(data);
+                        },
+                        error: function(response) {
+                            console.log("Error fetching city data:", response);
+                        }
+                    });
+                },
+                minLength: 2,
+                select: function(event, ui) {
+                    $("#city").val(ui.item.city);
+                    $("#city_id").val(ui.item.city_id);
+                    return false;
+                }
+            }).data("ui-autocomplete")._renderItem = function(ul, item) {
+                // Render each item
+                var listItem = $("<li>").text(item.city).appendTo("#autocomplete-results");
+                listItem.data("city_id", item.city_id);
+                return listItem;
+            };
+
+            // Handle click on autocomplete results
+            $("#autocomplete-results").on("click", "li", function() {
+                var cityName = $(this).text();
+                var cityId = $(this).data("city_id");
+
+                // Check if cityId is retrieved properly
+                console.log("Selected City ID:", cityId);
+
+                // Set the city ID
+                $("#city_id").val(cityId);
+
+                // Set the city name
+                $("#city").val(cityName);
+
+                // Hide autocomplete results
+                $("#autocomplete-results").hide();
+            });
+
+            // Handle input field click
+            $("#city").click(function() {
+                // Show autocomplete results box
+                $("#autocomplete-results").show();
+            });
+
+            // Clear appended city when input is cleared
+            $("#city").on("input", function() {
+                var inputVal = $(this).val();
+                if (inputVal === "") {
+                    // If input is cleared, re-initialize autocomplete
+                    $("#autocomplete-results").empty(); // Clear appended cities
+                    searchCity(); // Re-initialize autocomplete
+                }
+            });
+        }
+
+        // Function to get zip code
+        function getZipCode(cityId, cityName) {
+            $.ajax({
+                url: "{{ route('getZipCode') }}", // Adjust route URL accordingly
+                type: 'GET',
+                data: {
+                    city_id: cityId,
+                    city_name: cityName
+                },
+                dataType: 'json',
+                success: function(data) {
+                    var zipCode = data.zip_code; // Assuming the response contains the zip code
+                    $('#zip_code').val(zipCode); // Set the zip code in the input field
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching zip code:', error);
+                }
+            });
+        }
+    </script>
+    <script>
+        document.getElementById("submitButton").addEventListener("click", function(event) {
+            var comment = document.getElementById("comment").value.trim();
+            if (comment === "") {
+                event.preventDefault(); // Prevent form submission
+                alert("Please add a comment before submitting.");
             }
         });
-    });
-</script>
-<script>
-    const firstNameInput = document.getElementById('first_name');
-    const lastNameInput = document.getElementById('last_name');
-    const displayNameInput = document.getElementById('display_name');
-
-    // Function to update the display name field
-    function updateDisplayName() {
-        const firstName = firstNameInput.value.trim();
-        const lastName = lastNameInput.value.trim();
-
-        // Concatenate first and last name
-        const displayName = firstName + ' ' + lastName;
-
-        // Set the display name input value
-        displayNameInput.value = displayName;
-    }
-
-    // Listen for input changes on first and last name fields
-    firstNameInput.addEventListener('input', updateDisplayName);
-    lastNameInput.addEventListener('input', updateDisplayName);
-
-
-</script>
-<script>
-    document.getElementById('openChangePasswordModal').addEventListener('click', function(event) {
-    event.preventDefault();
-    $('#changePasswordModal').modal('show');
-  });
-
-  // Close modal when close button is clicked
-  $('.close').on('click', function() {
-    $('#changePasswordModal').modal('hide');
-  });
-</script>
-<script>
-    $(document).ready(function () {
-
-        $('#state_id').change(function () {
-
-            var stateId = $(this).val();
-
-            var citySelect = $('#city');
-
-            citySelect.html('<option selected disabled value="">Loading...</option>');
-
-
-
-            // Make an AJAX request to fetch the cities based on the selected state
-
-            $.ajax({
-
-                url: "{{ route('getcities') }}", // Correct route URL
-
-                type: 'GET',
-
-                data: {
-
-                    state_id: stateId
-
-                },
-
-                dataType: 'json',
-
-                success: function (data) {
-
-                    citySelect.html('<option selected disabled value="">Select City...</option>');
-
-                    $.each(data, function (index, city) {
-
-                        citySelect.append('<option value="' + city.city_id + '">' + city.city + ' - ' + city.zip + '</option>');
-
-                    });
-
-                },
-
-                error: function (xhr, status, error) {
-
-                    console.error('Error fetching cities:', error);
-
-                }
-
-            });
-
-        });
-
-
-
-        // Trigger another function to get zip code after selecting a city
-
-        $('#city').change(function () {
-
-            var cityId = $(this).val();
-
-            var cityName = $(this).find(':selected').text().split(' - ')[0]; // Extract city name from option text
-
-            getZipCode(cityId, cityName); // Call the function to get the zip code
-
-        });
-
-    });
-
-
- // Function to get zip code
-function searchCity() {
-    // Initialize autocomplete
-    $("#city").autocomplete({
-        source: function(request, response) {
-            // Clear previous autocomplete results
-            $("#autocomplete-results").empty();
-
-            $.ajax({
-                url: "{{ route('autocomplete.city') }}",
-                data: {
-                    term: request.term
-                },
-                dataType: "json",
-                type: "GET",
-                success: function(data) {
-                    response(data);
-                },
-                error: function(response) {
-                    console.log("Error fetching city data:", response);
-                }
-            });
-        },
-        minLength: 2,
-        select: function(event, ui) {
-            $("#city").val(ui.item.city);
-            $("#city_id").val(ui.item.city_id);
-            return false;
-        }
-    }).data("ui-autocomplete")._renderItem = function(ul, item) {
-        // Render each item
-        var listItem = $("<li>").text(item.city).appendTo("#autocomplete-results");
-        listItem.data("city_id", item.city_id);
-        return listItem;
-    };
-
-    // Handle click on autocomplete results
-    $("#autocomplete-results").on("click", "li", function() {
-        var cityName = $(this).text();
-        var cityId = $(this).data("city_id");
-
-        // Check if cityId is retrieved properly
-        console.log("Selected City ID:", cityId);
-
-        // Set the city ID
-        $("#city_id").val(cityId);
-
-        // Set the city name
-        $("#city").val(cityName);
-
-        // Hide autocomplete results
-        $("#autocomplete-results").hide();
-    });
-
-    // Handle input field click
-    $("#city").click(function() {
-        // Show autocomplete results box
-        $("#autocomplete-results").show();
-    });
-
-    // Clear appended city when input is cleared
-    $("#city").on("input", function() {
-        var inputVal = $(this).val();
-        if (inputVal === "") {
-            // If input is cleared, re-initialize autocomplete
-            $("#autocomplete-results").empty(); // Clear appended cities
-            searchCity(); // Re-initialize autocomplete
-        }
-    });
-}
-
-// Function to get zip code
-function getZipCode(cityId, cityName) {
-    $.ajax({
-        url: "{{ route('getZipCode') }}", // Adjust route URL accordingly
-        type: 'GET',
-        data: {
-            city_id: cityId,
-            city_name: cityName
-        },
-        dataType: 'json',
-        success: function(data){
-            var zipCode = data.zip_code; // Assuming the response contains the zip code
-            $('#zip_code').val(zipCode); // Set the zip code in the input field
-        },
-        error: function(xhr, status, error){
-            console.error('Error fetching zip code:', error);
-        }
-    });
-}
-
-
-
-</script>
-<script>
-    document.getElementById("submitButton").addEventListener("click", function(event) {
-        var comment = document.getElementById("comment").value.trim();
-        if (comment === "") {
-            event.preventDefault(); // Prevent form submission
-            alert("Please add a comment before submitting.");
-        }
-    });
-</script>
+    </script>
 @endsection
 
 @endsection
