@@ -354,14 +354,7 @@
                                         </div>
                                         <div class="dtwrap">
                                             <div class="date">
-                                                {{ \Carbon\Carbon::parse($schedule->start_date_time)->format('D, M j \'y') }}
-                                            </div>
-                                            <div class="time">
-                                                {{ \Carbon\Carbon::parse($schedule->start_date_time)->format('g:i A') }}-{{ \Carbon\Carbon::parse($schedule->end_date_time)->format('g:i A') }}
-
-                                            </div>
-                                            <div class="sec">
-
+                                                {{ $jobTimings['time_schedule'] }}
                                             </div>
                                         </div>
                                     </div>
@@ -378,13 +371,7 @@
                                         </div>
                                         <div class="dtwrap">
                                             <div class="date">
-                                                {{ \Carbon\Carbon::parse($schedule->start_date_time)->format('D, M j \'y') }}
-                                            </div>
-                                            <div class="time">
-                                                {{ \Carbon\Carbon::parse($schedule->start_date_time)->format('g:i A') }}
-                                            </div>
-                                            <div class="sec">
-
+                                               {{ $jobTimings['time_omw'] }}
                                             </div>
                                         </div>
                                     </div>
@@ -401,14 +388,7 @@
                                         </div>
                                         <div class="dtwrap">
                                             <div class="date">
-                                                {{ \Carbon\Carbon::parse($schedule->start_date_time)->format('D, M j \'y') }}
-                                            </div>
-                                            <div class="time">
-                                                {{ $schedule->driving_hours ?? null ? $schedule->driving_hours / 60 : null }}
-                                                hours
-                                            </div>
-                                            <div class="sec">
-
+                                              {{ $jobTimings['time_start'] }}
                                             </div>
                                         </div>
                                     </div>
@@ -418,20 +398,19 @@
                                     <div class="flowchart">
                                         
                                         <div class="icwrap">
-                                            <div class="ictop">
+                                            @php
+                                                use Carbon\Carbon;
+                                                $timeFinish = $jobTimings['time_finish'] ?? null;
+                                                $isTimeOver = $timeFinish ? Carbon::parse($timeFinish)->isPast() : false;
+                                            @endphp
+                                            <div class="ictop {{ !$isTimeOver ? 'bg-white text-primary' : '' }}">
                                                 <i class="ri-stop-circle-line"></i>
                                             </div>
                                             <span class="cht">Finish</span>
                                         </div>
                                         <div class="dtwrap">
                                             <div class="date">
-                                                {{ \Carbon\Carbon::parse($schedule->end_date_time)->format('D, M j \'y') }}
-                                            </div>
-                                            <div class="time">
-                                                {{ \Carbon\Carbon::parse($schedule->end_date_time)->format('g:i A') }}
-                                            </div>
-                                            <div class="sec">
-
+                                                {{ $jobTimings['time_finish'] }}
                                             </div>
                                         </div>
                                     </div>
@@ -447,13 +426,7 @@
                                         </div>
                                         <div class="dtwrap">
                                             <div class="date">
-
-                                            </div>
-                                            <div class="time">
-
-                                            </div>
-                                            <div class="sec">
-
+                                                {{ $jobTimings['time_invoice'] }}
                                             </div>
                                         </div>
                                     </div>
@@ -470,13 +443,9 @@
                                         </div>
                                         <div class="dtwrap">
                                             <div class="date">
-
-                                            </div>
-                                            <div class="time">
-
-                                            </div>
-                                            <div class="sec">
-
+                                            @if(isset($Payment) && $Payment->status === 'paid')
+                                                  {{Carbon::parse( $Payment->payment_date ?? null)->format('Y-m-d H:i:s')}}
+                                              @endif
                                             </div>
                                         </div>
                                     </div>

@@ -1722,7 +1722,7 @@ class ScheduleController extends Controller
     
     public function travel_time(Request $request)
     {
-        // dd();
+       
         $tech_add = CustomerUserAddress::where('user_id' , $request->tech_id)->first();
         $address = $tech_add->latitude .','. $tech_add->longitude;
         $origin = $address;

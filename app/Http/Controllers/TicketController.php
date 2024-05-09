@@ -30,6 +30,7 @@ use App\Models\JobServices;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\File;
 
 class TicketController extends Controller
@@ -106,13 +107,13 @@ class TicketController extends Controller
     // Display the specified ticket
     public function show($id)
     {
-        $technicians = JobModel::with('jobassignname','JobAssign', 'usertechnician','addedby','jobfieldname')->find($id);
-        $fieldIds = explode(',', $technicians->job_field_ids); 
+        $technicians = JobModel::with('jobassignname', 'JobAssign', 'usertechnician', 'addedby', 'jobfieldname')->find($id);
+        $fieldIds = explode(',', $technicians->job_field_ids);
         $jobFields = Jobfields::whereIn('field_id', $fieldIds)->get();
-         $Payment = Payment::where('job_id', $id)->first();
-       //  dd($Payment);
+        $Payment = Payment::where('job_id', $id)->first();
+        //  dd($Payment);
 
-       $jobproduct = JobProduct::where('job_id', $id)->get();
+        $jobproduct = JobProduct::where('job_id', $id)->get();
         $jobservice = JobServices::where('job_id', $id)->get();
 
 
@@ -144,19 +145,18 @@ class TicketController extends Controller
 
         if ($lead) {
             $lead_id = $lead->source_id;
-                    $lead_id = $lead->source_id;
-
+            $lead_id = $lead->source_id;
         } else {
-            
+
             $lead_id = null;
         }
-      
+
 
         $leadone = explode(',', $lead_id);
 
         $source = SiteLeadSource::whereIn('source_id', $leadone)->get();
 
-         $leadsource = SiteLeadSource::all();
+        $leadsource = SiteLeadSource::all();
 
         $activity = JobActivity::with('user')->where('job_id', $id)->latest()->get();
 
@@ -164,8 +164,10 @@ class TicketController extends Controller
 
         $schedule = JobAssign::where('job_id', $id)->first();
 
+        $jobTimings = App::make('JobTimingManager')->getJobTimings($id);
 
-        return view('tickets.show', ['Payment'=>$Payment,'jobservice'=>$jobservice,'jobproduct'=>$jobproduct,'jobFields'=>$jobFields,'ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source, 'activity' => $activity, 'files'=>$files, 'schedule' => $schedule]);
+
+        return view('tickets.show', ['Payment' => $Payment, 'jobservice' => $jobservice, 'jobproduct' => $jobproduct, 'jobFields' => $jobFields, 'ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source, 'activity' => $activity, 'files' => $files, 'schedule' => $schedule, 'jobTimings' => $jobTimings]);
     }
 
     // Show the form for editing the specified ticket 
@@ -269,15 +271,15 @@ class TicketController extends Controller
             'added_by' => Auth::id(),
             'updated_by' => Auth::id(),
         ]);
-    
+
         $jobNote->save();
-    
+
         // Check if the job note was successfully saved
         if ($jobNote) {
             $activity = 'Job Note added';
-        app('JobActivityManager')->addJobActivity($request->id, $activity);
+            app('JobActivityManager')->addJobActivity($request->id, $activity);
         }
-    
+
         // Redirect back with success message
         return redirect()->back()->with('success', 'Job note created successfully');
     }
@@ -306,7 +308,7 @@ class TicketController extends Controller
 
         // Save the changes
         $job->save();
-        
+
         $activity = 'Customer Tags Updated';
         app('JobActivityManager')->addJobActivity($id, $activity);
 
@@ -346,7 +348,7 @@ class TicketController extends Controller
     }
 
 
-  public function attachment(Request $request, $id)
+    public function attachment(Request $request, $id)
     {
         $file = new JobFile();
         $file->job_id = $id;
@@ -379,7 +381,7 @@ class TicketController extends Controller
                     $file->save();
 
                     $activity = 'Attachments Uploaded';
-                   app('JobActivityManager')->addJobActivity($id, $activity);
+                    app('JobActivityManager')->addJobActivity($id, $activity);
 
                     return redirect()->back()->with('success', 'Attachment added successfully');
                 } else {
@@ -391,8 +393,6 @@ class TicketController extends Controller
         } else {
             return redirect()->back()->with('error', 'No file uploaded');
         }
-
-       
     }
 
 
@@ -400,7 +400,7 @@ class TicketController extends Controller
     {
         $technicians = JobModel::with('jobassignname', 'usertechnician')->find($id);
         $job = User::where('id', $technicians->customer_id)->first();
-       
+
 
         $existingTags = explode(',', $job->source_id);
 

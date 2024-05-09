@@ -951,33 +951,8 @@
     </script>
     <script>
         $(document).ready(function() {
-            $(document).on('change', '.customer_address', function(event) {
-                var customer_add = $('#addres_lat').val();
-                var tech_id = $('.technician_id').val();
-
-                $.ajax({
-                    url: '{{ route('travel_time') }}',
-                    type: 'GET', // Use GET instead of get
-                    dataType: 'json',
-                    data: {
-                        tech_id: tech_id,
-                        customer_add: customer_add,
-                    },
-                    success: function(response) {
-                        // Check if the travel_time key exists in the response
-                        if (response.hasOwnProperty('travel_time')) {
-                            // Display the travel time
-                            $('#travel_input').val(response.travel_time);
-                        } else {
-                            // Handle the case where travel_time is not present in the response
-                            $('#travel_input').val('Travel time not available.');
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(xhr.responseText);
-                    }
-                });
-            });
+               
+           
 
             $(document).on('change', '#duration', function(event) {
                 var duration = parseInt($(this).val()); // Parse the first value to an integer
@@ -2141,6 +2116,35 @@
                                 option.attr('data-city', element.city);
 
                                 selectElement.append(option);
+
+                                 var customer_add = element.latitude + ',' + element
+                                    .longitude;
+                                console.log(customer_add);
+                                var tech_id = $('.technician_id').val();
+
+                                $.ajax({
+                                    url: '{{ route('travel_time') }}',
+                                    type: 'GET', // Use GET instead of get
+                                    dataType: 'json',
+                                    data: {
+                                        tech_id: tech_id,
+                                        customer_add: customer_add,
+                                    },
+                                    success: function(response) {
+                                    console.log(response);
+                                        // Check if the travel_time key exists in the response
+                                        if (response.hasOwnProperty('travel_time')) {
+                                            // Display the travel time
+                                            $('#travel_input').val(response.travel_time);
+                                        } else {
+                                            // Handle the case where travel_time is not present in the response
+                                            $('#travel_input').val('Travel time not available.');
+                                        }
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.error(xhr.responseText);
+                                    }
+                                });
                             });
                         }
                     }
@@ -2183,6 +2187,8 @@
                         ); // Notify user
                     }
                 });
+
+                
 
             });
 

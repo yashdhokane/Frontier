@@ -5,17 +5,16 @@ namespace App\Providers;
 use Carbon\Carbon;
 
 use App\Models\JobActivity;
+use App\Models\JobAssign;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\DB;
 use App\Models\NotificationModel;
+use App\Models\Payment;
+use App\Models\Schedule;
 use App\Models\UserNotification;
 use App\Models\User;
-
-
-
-
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -38,6 +37,26 @@ class AppServiceProvider extends ServiceProvider
                         $jobActivity->save();
 
                         return $jobActivity;
+                    }
+                };
+            });
+
+             $this->app->singleton('JobTimingManager', function () {
+                return new class {
+                    public function getJobTimings($jobId)
+                    {
+                        $job = JobAssign::where('job_id',$jobId)->first();
+                        $invoice = Payment::where('job_id',$jobId)->first();
+
+                        
+
+                        return [
+                            'time_schedule' => Carbon::parse($job->start_date_time ?? null)->format('Y-m-d H:i:s'),
+                            'time_omw' => Carbon::parse($job->start_date_time ?? null)->format('Y-m-d H:i:s'),
+                            'time_start' => Carbon::parse($job->start_date_time ?? null)->format('Y-m-d H:i:s'),
+                            'time_finish' => Carbon::parse($job->time_finish ?? null)->format('Y-m-d H:i:s'),
+                            'time_invoice' => Carbon::parse($invoice->issue_date ?? null)->format('Y-m-d H:i:s'),
+                        ];
                     }
                 };
             });
