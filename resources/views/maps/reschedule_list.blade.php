@@ -1,10 +1,12 @@
 <div class="row mb-3">
-    <div class="col-2">
-        <div class='maplocationpopup'>
-			<h4 style='margin-bottom: 0px;'>{{ $getData->job_title }} <span class='mb-1 badge bg-primary'>{{ $getData->job_id }}</span></h4>
+    <div class="col-4">
+        <div class="maplocationpopup">
+			<div class="ft12 bold">#{{ $getData->job_id }} {{ $getData->job_title }}</div>
 			
-			<div class='mt-2 fw-medium'>{{ $getData->name }}</div>
-            <div class='mt-2'>{{ $getData->address }}, {{ $getData->city }}, {{ $getData->state }}, {{ $getData->zipcode }}</div>
+			<div class="mt-0 ft11 fw-medium text-info">{{ $getData->name }}</div>
+            <div class="mt-0 ft11">{{ $getData->address }}, {{ $getData->city }}, {{ $getData->state }}, {{ $getData->zipcode }}</div>
+            <input type="hidden" value="{{ $getData->name }}" name="rescheduleData[{{ $count }}][customer_name]">
+            <input type="hidden" name="rescheduleData[{{ $count }}][job_id]" value="{{ $getData->job_id }}">
 		</div>
     </div>
     <div class="col-2 bg-light py-2 px-3">
@@ -19,13 +21,6 @@
                 @endif
             </select>
             <span class="error technicians_error"></span>
-        </div>
-    </div>
-    <div class="col-2 bg-light py-2 px-3">
-        <div class="bg-light py-2 px-3"><label>Customer</label></div>
-        <div class="form-group">
-            <input type="text" class="form-control" value="{{ $getData->name }}" readonly name="rescheduleData[{{ $count }}][customer_name]">
-            <input type="hidden" name="rescheduleData[{{ $count }}][job_id]" value="{{ $getData->job_id }}">
         </div>
     </div>
     <div class="col-2 bg-light py-2 px-3">
