@@ -21,10 +21,7 @@
                         <div class="col-12 bg-light py-2 px-3 border reschedulejob" style="display: none">
                             <form class="rescheduleForm" method="post">
                                 <div class="row">
-                                    <div class="col-3">
-                                        <label class="fs-6 pt-4">Customer & Job <br>Job details here</label>
-                                     </div>
-                                    <div class="col-9 rescheduleList"> </div>
+                                    <div class="col-12 rescheduleList"> </div>
                                 </div>
                             </form>
                             <div class="row">

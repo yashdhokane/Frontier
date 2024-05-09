@@ -1,4 +1,12 @@
-<div class="row">
+<div class="row mb-3">
+    <div class="col-2">
+        <div class='maplocationpopup'>
+			<h4 style='margin-bottom: 0px;'>{{ $getData->job_title }} <span class='mb-1 badge bg-primary'>{{ $getData->job_id }}</span></h4>
+			
+			<div class='mt-2 fw-medium'>{{ $getData->name }}</div>
+            <div class='mt-2'>{{ $getData->address }}, {{ $getData->city }}, {{ $getData->state }}, {{ $getData->zipcode }}</div>
+		</div>
+    </div>
     <div class="col-2 bg-light py-2 px-3">
         <div class="form-group mb-4">
             <label class="me-sm-2 py-2" for="inlineFormCustomSelect">Select Technician</label>
@@ -20,14 +28,14 @@
             <input type="hidden" name="rescheduleData[{{ $count }}][job_id]" value="{{ $getData->job_id }}">
         </div>
     </div>
-    <div class="col-3 bg-light py-2 px-3">
+    <div class="col-2 bg-light py-2 px-3">
         <div class="bg-light py-2 px-3"><label>Start Time</label></div>
         <div class="form-group">
             <input type="datetime-local" class="form-control start_date_time" min="{{ now()->format('Y-m-d\TH:i') }}"
                 value="{{ $getData->start_date_time }}" name="rescheduleData[{{ $count }}][start_date_time]">
         </div>
     </div>
-    <div class="col-3 bg-light py-2 px-3">
+    <div class="col-2 bg-light py-2 px-3">
         <div class="bg-light py-2 px-3"><label>Service Duration</label></div>
         <div class="form-group">
             <select class="form-select me-sm-2" id="inlineFormCustomSelect" name="rescheduleData[{{ $count }}][duration]">

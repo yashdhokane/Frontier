@@ -158,11 +158,17 @@ class MapController extends Controller
                 ->select(
                     'job_assigned.start_date_time',
                     'job_assigned.job_id',
+                    'jobs.job_title',
+                    'jobs.address',
+                    'jobs.city',
+                    'jobs.state',
+                    'jobs.zipcode',
                     'users.name',
                     'job_assigned.duration',
                     'job_assigned.driving_hours',
                 )
                 ->join('users', 'users.id', 'job_assigned.customer_id')
+                ->join('jobs', 'jobs.id', 'job_assigned.job_id')
                 ->where('job_assigned.job_id', $job_id)->first();
 
             $start_date_time = Carbon::parse($getData->start_date_time);
