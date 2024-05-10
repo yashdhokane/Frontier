@@ -387,8 +387,14 @@
                                             <span class="cht">Start</span>
                                         </div>
                                         <div class="dtwrap">
-                                            <div class="date">
-                                              {{ $jobTimings['time_start'] }}
+                                              <div class="date">
+                                            @php
+                                                 use Carbon\Carbon;
+                                                $travel_time = intval(preg_replace('/[^0-9]/', '', $travelTime)); 
+                                                $newTime = Carbon::parse($jobTimings['time_start'])->addMinutes($travel_time);
+                                            @endphp
+
+                                              {{ $newTime->format('Y-m-d h:i a') }}
                                             </div>
                                         </div>
                                     </div>
@@ -399,7 +405,6 @@
                                         
                                         <div class="icwrap">
                                             @php
-                                                use Carbon\Carbon;
                                                 $timeFinish = $jobTimings['time_finish'] ?? null;
                                                 $isTimeOver = $timeFinish ? Carbon::parse($timeFinish)->isPast() : false;
                                             @endphp
