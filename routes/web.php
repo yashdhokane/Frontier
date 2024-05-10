@@ -1112,6 +1112,7 @@ Route::get('/performance-matrix', [PerformanceMatrix::class, 'performanncematrix
 
     Route::post('/customerdata-store', [CustomerDataController::class, 'store'])->name('customerdata.store');
     Route::get('/customers-data-view/{id}', [CustomerDataController::class, 'show'])->name('customersdata.show');
+    Route::get('/customers-data-search', [CustomerDataController::class, 'search'])->name('customerData.search');
 
 });
 

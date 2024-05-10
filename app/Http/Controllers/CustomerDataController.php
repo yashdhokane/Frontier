@@ -146,7 +146,6 @@ class CustomerDataController extends Controller
         }
         if ($amount !== null) {
             $service->amount = $amount;
-
         }
         $service->save();
 
@@ -176,7 +175,7 @@ class CustomerDataController extends Controller
     }
 
 
-     public function store(Request $request)
+    public function store(Request $request)
     {
         // dd($request->all());
 
@@ -309,6 +308,20 @@ class CustomerDataController extends Controller
         return redirect()->back()->with('success', 'Job stored successfully.');
     }
 
+    public function search(Request $request)
+    {
+        $query = $request->input('search');
 
+        $users = User::with('customerdatafetch')->where('role', 'customer')
+            ->where(function ($queryBuilder) use ($query) {
+                $queryBuilder->where('name', 'like', '%' . $query . '%')
+                    ->orWhere('email', 'like', '%' . $query . '%');
+            })
+            ->orderBy('updated_at', 'desc')
+            ->paginate(50);
 
+        $tbodyHtml = view('customerdata.searchcustomerdata', compact('users'))->render();
+
+        return response()->json(['tbody' => $tbodyHtml]);
+    }
 }
