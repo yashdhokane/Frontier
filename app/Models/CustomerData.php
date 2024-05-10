@@ -20,14 +20,18 @@ class CustomerData extends Model
         'admin_comment',
         'tcc',
         'schedule_date',
+        'created_at',
+        'ticket_number',
+        'updated_at',
+
 
     ];
 
-    public $timestamps = false; // Disable timestamps
+    //  public $timestamps = false; // Disable timestamps
 
     public function Jobdata()
     {
-        return $this->hasMany(JobModel::class, 'customer_id', 'user_id');
+        return $this->hasMany(CustomerDataJob::class, 'user_id', 'user_id');
     }
     public function userdata()
     {

@@ -205,6 +205,9 @@ li.toplinks a{
     text-align: left;
     margin-left: 5px;
 }
+.select2-container--default .select2-selection--multiple {
+  height: auto;
+}
 
 /*SHOW TICKET PAGE CSS*/
 .flowchart {
@@ -277,7 +280,7 @@ li.toplinks a{
 	width: 85%;
 	left: 7%;
 	position: absolute;
-	top: 52px;
+	top: 30px;
 	z-index: 1;
 }
 /*SHOW TICKET PAGE CSS*/

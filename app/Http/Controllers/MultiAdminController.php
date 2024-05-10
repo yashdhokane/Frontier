@@ -48,7 +48,7 @@ class MultiAdminController extends Controller
         return view('multiadmin.create', compact('users', 'tags', 'locationStates'));
     }
 
-    public function store(Request $request)
+   public function store(Request $request)
     {
         // dd($request->all());
         $validator = Validator::make($request->all(), [
@@ -102,19 +102,43 @@ class MultiAdminController extends Controller
             $user->save();
         }
 
-        $userId = $user->id;
-        $currentTimestamp = now();
+        // $userId = $user->id;
+        // $currentTimestamp = now();
 
-        $userMeta = [
-            ['user_id' => $userId, 'meta_key' => 'first_name', 'meta_value' => $request['first_name']],
-            ['user_id' => $userId, 'meta_key' => 'last_name', 'meta_value' => $request['last_name']],
-            ['user_id' => $userId, 'meta_key' => 'home_phone', 'meta_value' => $request['home_phone']],
-            ['user_id' => $userId, 'meta_key' => 'work_phone', 'meta_value' => $request['work_phone']],
-            ['user_id' => $userId, 'meta_key' => 'created_at', 'meta_value' => $currentTimestamp],
-            ['user_id' => $userId, 'meta_key' => 'updated_at', 'meta_value' => $currentTimestamp],
-        ];
+        // $userMeta = [
+        //     ['user_id' => $userId, 'meta_key' => 'first_name', 'meta_value' => $request['first_name']],
+        //     ['user_id' => $userId, 'meta_key' => 'last_name', 'meta_value' => $request['last_name']],
+        //     ['user_id' => $userId, 'meta_key' => 'home_phone', 'meta_value' => $request['home_phone']],
+        //     ['user_id' => $userId, 'meta_key' => 'work_phone', 'meta_value' => $request['work_phone']],
+        //     ['user_id' => $userId, 'meta_key' => 'created_at', 'meta_value' => $currentTimestamp],
+        //     ['user_id' => $userId, 'meta_key' => 'updated_at', 'meta_value' => $currentTimestamp],
+        // ];
 
-        CustomerUserMeta::insert($userMeta);
+        // CustomerUserMeta::insert($userMeta);
+
+        $usersDetails = new UsersDetails();
+        $usersDetails->user_id = $userId;
+        // $usersDetails->unique_number = 0;
+        // $usersDetails->lifetime_value = 0;
+        // $usersDetails->license_number = 0;
+        // $usersDetails->dob = 0;
+        // $usersDetails->ssn = 0;
+        $usersDetails->update_done = 'no';
+
+
+        $usersDetails->first_name = $request->input('first_name');
+        $usersDetails->last_name = $request->input('last_name');
+        $usersDetails->home_phone = $request->input('home_phone');
+        $usersDetails->work_phone = $request->input('work_phone');
+        // $usersDetails->customer_position = $request->input('role');
+
+        // $usersDetails->additional_email = $request->input('additional_email');
+
+        // $usersDetails->customer_company = $request->input('company');
+
+        // $usersDetails->customer_type = $request->input('user_type');
+
+        $usersDetails->save();
 
         if ($request->filled('city')) {
             $customerAddress = new CustomerUserAddress();
@@ -214,7 +238,7 @@ class MultiAdminController extends Controller
 
 
 
-    public function show($id)
+     public function show($id)
     {
 
         $multiadmin = User::find($id);
@@ -278,8 +302,33 @@ class MultiAdminController extends Controller
         $userTags = $multiadmin->tags;
 
         $selectedTags = explode(',', $userTags->pluck('tag_id')->implode(','));
+        $jobActivity = DB::table('job_activity')
+            ->select(
+                'job_activity.user_id',
+                'job_activity.activity',
+                'job_activity.created_at as activity_date',
+                DB::raw("'job_activity' as activity_type"),
+                'users.*' // Select all columns from the users table
+            )
+            ->join('users', 'job_activity.user_id', '=', 'users.id')
+            ->where('job_activity.user_id', $multiadmin->id);
 
-        return view('multiadmin.show', compact('UsersDetails', 'Note', 'source', 'multiadmin', 'tags', 'userTags', 'selectedTags', 'locationStates', 'setting', 'payment', 'tickets', 'customerimage', 'notename', 'activity', 'jobasign', 'longitude', 'latitude', 'userAddresscity', 'location', 'home_phone'));
+        $userActivity = DB::table('user_activity') // Corrected table name
+            ->select(
+                'user_activity.user_id',
+                'user_activity.activity',
+                'user_activity.created_at as activity_date',
+                DB::raw("'user_activity' as activity_type"),
+                'users.*' // Select all columns from the users table
+            )
+            ->join('users', 'user_activity.user_id', '=', 'users.id')
+            ->where('user_activity.user_id', $multiadmin->id);
+
+        $activity = $jobActivity->union($userActivity)
+            ->orderBy('activity_date', 'desc') // Order by created_at in descending order
+            ->get();
+
+        return view('multiadmin.show', compact('UsersDetails', 'activity', 'Note', 'source', 'multiadmin', 'tags', 'userTags', 'selectedTags', 'locationStates', 'setting', 'payment', 'tickets', 'customerimage', 'notename', 'activity', 'jobasign', 'longitude', 'latitude', 'userAddresscity', 'location', 'home_phone'));
     }
 
 
@@ -383,18 +432,20 @@ class MultiAdminController extends Controller
 
 
         // Update user meta
-            $userDetails = UsersDetails::updateOrCreate(
+        $userDetails = UsersDetails::updateOrCreate(
             ['user_id' => $id],
             [
                 'first_name' => $request->input('first_name'),
+                'additional_email' => $request->input('additional_email'),
+
                 'last_name' => $request->input('last_name'),
                 'home_phone' => $request->input('home_phone'),
                 'work_phone' => $request->input('work_phone'),
 
                 'lifetime_value' => '$0.00',
-                'license_number' => 0,
-                // 'dob' => $request->input('dob'),
-                'ssn' => 0,
+                'license_number' => $request->input('license_number'),
+                'dob' => $request->input('dob'),
+                'ssn' => $request->input('ssn'),
                 'update_done' => 'no'
             ]
         );

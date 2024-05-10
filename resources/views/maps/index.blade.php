@@ -13,22 +13,20 @@
     <div class="page-wrapper" style="display:inline;">
         <!-- Container fluid  -->
         <!-- -------------------------------------------------------------- -->
-        <div class="container-fluid">
+        <div class="container-fluid" style="padding-top: 0px;">
             <div class="row">
                 <div class="container">
                     <div class="row mb-3">
                       
-                        <div class="col-12 bg-light py-2 px-3 border reschedulejob" style="display: none">
+                        <div class="col-12 reschedulejob" style="display: none">
                             <form class="rescheduleForm" method="post">
                                 <div class="row">
                                     <div class="col-12 rescheduleList"> </div>
                                 </div>
                             </form>
                             <div class="row">
-                                <div class="col-9 bg-light py-2 px-3">&nbsp;</div>
-                                <div class="col-3 bg-light py-2 px-3">
-                                    <button type="button"
-                                        class="btn waves-effect waves-light btn-warning reschedulebutton">Reschedule Jobs
+                                 <div class="col-12  py-2 px-3">
+                                    <button type="button" class="btn waves-effect waves-light btn-info reschedulebutton"><i class="ri-calendar-check-line"></i> Reschedule Jobs
                                     </button>
                                 </div>
                             </div>
@@ -40,7 +38,7 @@
                             <ul class="list-group scroll-container reschedule_user_list">
                                 <li class="list-group-item">
                                     <div class="form-group mb-4">
-                                        <label class="me-sm-2 py-2 " for="inlineFormCustomSelect">Select Territory</label>
+                                        <label class="me-sm-2 py-2 bold" for="inlineFormCustomSelect">Select Territory</label>
                                         <select class="form-select me-sm-2 territory" id="territory" onchange="reloadPage()">
                                             <option value="">-- Select Territory --</option>
                                             @php

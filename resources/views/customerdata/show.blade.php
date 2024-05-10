@@ -6,7 +6,10 @@
         <div class="col-9 align-self-center">
             <h4 class="page-title">{{ $username->name ?? '' }}</h4>
         </div>
-        <div class="col-3 align-self-center justify-content-md-end"><a href="" id="newCustomerBtn"  class="btn btn-info"><i class="fas fa-calendar-check"></i> Add Ticket</a> <a href="https://dispatchannel.com/portal/customers-data" class="btn btn-success mx-2"><i class="ri-user-add-line"></i> Customer Data</a></div>
+        <div class="col-3 align-self-center justify-content-md-end"><a href="" id="newCustomerBtn"
+                class="btn btn-info"><i class="fas fa-calendar-check"></i> Add Ticket</a> <a
+                href="https://dispatchannel.com/portal/customers-data" class="btn btn-success mx-2"><i
+                    class="ri-user-add-line"></i> Customer Data</a></div>
 
     </div>
 
@@ -25,143 +28,165 @@
 
     @if (Session::has('error'))
     <div class="alert_wrap">
-        <div class="alert alert-danger">
-            {{ Session::get('error') }}
-        </div>
+        <div class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show">
+            {{ Session::get('error') }} <button type="button" class="btn-close" data-bs-dismiss="alert"
+                aria-label="Close"></button>
+    </div>
     </div>
     @endif
 
 
 
     <div class="row">
-	
-		
+
+
         <div class="col-md-9">
-		
-			@foreach($users->Jobdata as $job)
-			
+@if (!empty($users->Jobdata))
+
+            @foreach($users->Jobdata as $job)
+
             <div class="mb-4">
 
                 <div class="card" style="border: 1px solid #D8D8D8;">
                     <form action="{{ route('customerdata.update') }}" method="post"
-                        id="updateForm{{ $job->job_code ?? '' }}">
+                        id="updateForm{{ $job->ticket_number ?? '' }}">
                         @csrf
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label for="ticket_number" class="control-label bold col-form-label ">Ticket Number</label>
+                                    <label for="ticket_number" class="control-label bold col-form-label ">Ticket
+                                        Number</label>
                                     <input type="text" name="ticket_number" class="form-control" id="ticket_number"
-                                        value="{{ $job->job_code ?? '' }}" >
-                                    <input type="hidden" name="job_id" value="{{ $job->id }}" >
+                                        value="{{ $job->ticket_number ?? '' }}">
+                                    <input type="hidden" name="job_id" value="{{ $job->job_id ?? '' }}">
                                 </div>
                                 <div class="col-md-6  "><label for="tcc"
                                         class="control-label bold col-form-label required-field">
                                         TCC</label>
                                     <input type="text" name="tcc" class="form-control" id="tcc"
-                                        value="{{ $users->tcc }}">
+                                        value="{{ $job->tcc ?? '' }}">
                                 </div>
-                             </div>
-							
-							<div class="row mb-3">
+                            </div>
+
+                            <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="schedule_date" class="control-label bold col-form-label ">Schedule
                                         Date</label>
                                     <input type="text" name="schedule_date" class="form-control" id="schedule_date"
-                                        value="{{ $job->schedule->start_date_time ? \Carbon\Carbon::parse($job->schedule->start_date_time)->format('D, M j \'y h:i a') . ' - ' . \Carbon\Carbon::parse($job->schedule->end_date_time)->format('h:i a') . ' ' . ($job->schedule->start_date_time ? \Carbon\Carbon::parse($job->schedule->start_date_time)->getTimezone()->getName() : '') : '' }}"
-                                        >
+                                        value="{{ $job->schedule_date ?? ''}}">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="technician"
                                         class="control-label bold col-form-label ">Technician</label>
                                     <input type="text" name="technician" class="form-control" id="technician"
-                                        value="{{ $job->technician->name ?? '' }}" >
+                                        value="{{ $job->technician ?? '' }}">
                                 </div>
                             </div>
-							
+                            <input type="hidden" name="no_of_visits" id="hidden_no_of_visits"
+                                value="{{ $users->no_of_visits ?? '' }}">
+                            <input type="hidden" name="job_completed" id="hidden_job_completed"
+                                value="{{ $users->job_completed ?? '' }}">
+                            <input type="hidden" name="issue_resolved" id="hidden_issue_resolved"
+                                value="{{ $users->issue_resolved ?? '' }}">
+
                             <div class="row mb-3">
                                 <div class="col-md-8">
                                     <label for="service_name" class="control-label bold col-form-label ">Service
                                         Name</label>
                                     <input type="text" name="service_name" class="form-control" id="service_name"
-                                        value="{{ $job->Customerservice->service_name }}">
+                                        value="{{ $job->Customerservice->service_name ?? '' }}">
                                 </div>
                                 <div class="col-md-4">
                                     <label for="amount" class="control-label bold col-form-label ">Service
                                         Amount</label>
                                     <input type="text" name="amount" class="form-control" id="amount"
-                                        value="{{ $job->Customerservice->amount }}">
+                                        value="{{ $job->Customerservice->amount ?? '' }}">
                                 </div>
                             </div>
-							
+
                             <div class="row mb-3">
-                                
+
                                 <div class="col-md-12">
                                     <label for="notes" class="control-label bold col-form-label ">Notes</label>
                                     <textarea rows="2" name="notes" class="form-control"
-                                        id="notes">{{ $job->Customernote->notes }}</textarea>
+                                        id="notes">{{ $job->Customernote->notes ?? '' }}</textarea>
                                 </div>
-								<div class="col-md-4">
-                                    <label for="notes_by" class="control-label bold col-form-label ">By</label>
+                                <div class="col-md-4">
+                                    <label for="notes_by" class="control-label bold col-form-label ">Notes By</label>
                                     <input type="text" name="notes_by" class="form-control" id="notes_by"
-                                        value="{{ $job->Customernote->notes_by }}">
+                                        value="{{ $job->Customernote->notes_by ?? '' }}">
                                 </div>
                             </div>
-							
+
                             <div class="row">
                                 <div class="col-md-12 text-center">
                                     <button type="submit" class="btn btn-primary me-2"
-                                        id="submitButton{{ $job->id }}">Update</button>
+                                        id="submitButton{{ $job->id ?? '' }}">Update</button>
                                     <a href="{{ route('customersdata.index') }}" class="btn btn-secondary">Back</a>
                                 </div>
                             </div>
-							
+
                         </div>
                     </form>
                 </div>
 
             </div>
-			
-			@endforeach
-			
+
+            @endforeach
+
         </div>
-		
- 		
+
+
         <div class="col-md-3">
             <div class="mb-4">
                 <div class="card" style="border: 1px solid #D8D8D8;">
                     <div class="card-body">
-						<div class="row mb-3">
-							<div class="col-md-12 mb-2">
-								<label class="control-label bold col-form-label">No of Visits</label>
-								<input type="text" name="no_of_visits" class="form-control"
-									value="2">
-							</div>
-							<div class="col-md-12 mb-2">
-								<label class="control-label bold col-form-label">Job Completed</label>
-								<input type="text" name="job_completed" class="form-control"
-									value="1">
-							</div>
-							<div class="col-md-12 mb-2">
-								<label class="control-label bold col-form-label">Issue Resolved</label>
-								<input type="text" name="issue_resolved" class="form-control"
-									value="Yes">
-							</div>
-							<div class="col-md-12 mb-2">
-								<label class="control-label bold col-form-label">Ticket IDs</label>
-                                <div class="mb-2">ABC1234, XYZ1234</div>
+                        <div class="row mb-3">
+                            <div class="col-md-12 mb-2">
+                                <label class="control-label bold col-form-label">No of Visits</label>
+                                <input type="text" name="no_of_visits" id="no_of_visits" class="form-control"
+                                    value="{{ $users->no_of_visits ?? '' }}">
                             </div>
-							<div class="col-md-12 mb-2">
-								<label class="control-label bold col-form-label">TCC</label>
-                                <div class="mb-2">12AABBCC, 24ADV</div>
+                            <div class="col-md-12 mb-2">
+                                <label class="control-label bold col-form-label">Job Completed</label>
+                                <input type="text" name="job_completed" id="job_completed" class="form-control"
+                                    value="{{ $users->job_completed ?? ''}}">
                             </div>
-						</div>
-						
-                         
+                            <div class="col-md-12 mb-2">
+                                <label class="control-label bold col-form-label">Issue Resolved</label>
+                                <input type="text" name="issue_resolved" id="issue_resolved" class="form-control"
+                                    value="{{ $users->issue_resolved ?? '' }}">
+                            </div>
+                            <div class="col-md-12 mb-2">
+                                <label class="control-label bold col-form-label">Ticket IDs</label>
+                                <div class="mb-2">{{ htmlspecialchars(implode(', ', $ticketNumbers)) }}</div>
+                            </div>
+                            <div class="col-md-12 mb-2">
+                                <label class="control-label bold col-form-label">TCC</label>
+                                <div class="mb-2">{{ htmlspecialchars(implode(', ', $tccValues)) }}</div>
+                            </div>
+                        </div>
+
+
                     </div>
                 </div>
             </div>
         </div>
-		
+@else
+    <div class="mb-12 d-flex flex-column ">
+
+        <div class="card shadow-sm" style="width: auto; border: 1px solid #D8D8D8; border-radius: 4px;">
+
+            <div class="card-body ">
+
+                <p class="mb-0">No ticket found.</p>
+
+            </div>
+
+        </div>
+
+    </div>
+@endif
     </div>
 
     <div class="modal fade" id="customerModal" tabindex="-1" role="dialog" aria-labelledby="customerModalLabel"
@@ -177,17 +202,18 @@
                 <div class="modal-body">
                     <!-- Your form content goes here -->
                     <!-- For example, you can include a form for adding new customer data -->
-                    <form id="customerForm">
+                    <form id="customerForm" action="{{ route('customerdata.store') }}" method="post">
+                        @csrf
                         <div class="row mb-1">
                             <div class="col-md-4">
                                 <label class="control-label bold col-form-label" for="job_code">Ticket Number</label>
-								 <input type="text" name="job_code" class="form-control" id="job_code" value="">
-							</div>
+                                <input type="text" name="ticket_number" class="form-control" id="job_code" value="">
+                            </div>
                             <div class="col-md-4">
                                 <label class="control-label bold col-form-label" for="tcc">TCC</label>
                                 <input type="text" name="tcc" class="form-control" id="tcc" value="">
                             </div>
-							<div class="col-md-4">
+                            <div class="col-md-4">
                                 <label class="control-label bold col-form-label" for="status">Status</label>
                                 <input type="text" name="status" class="form-control" id="status" value="">
                             </div>
@@ -199,13 +225,11 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="control-label bold col-form-label" for="time_on_job">Time on Job</label>
-                                <input type="text" name="time_on_job" class="form-control" id="time_on_job"
-                                    value="">
+                                <input type="text" name="time_on_job" class="form-control" id="time_on_job" value="">
                             </div>
                             <div class="col-md-4">
                                 <label class="control-label bold col-form-label" for="total_time">Total Time</label>
-                                <input type="text" name="total_time" class="form-control" id="total_time"
-                                    value="">
+                                <input type="text" name="total_time" class="form-control" id="total_time" value="">
                             </div>
                         </div>
                         <div class="row mb-1">
@@ -219,45 +243,74 @@
                                 <input type="text" name="technician" class="form-control" id="technician" value="">
                             </div>
                         </div>
-                        <div class="row mb-1">
+                      <div class="row mb-1">
                             <div class="col-md-8">
                                 <label class="control-label bold col-form-label" for="service_name">Service
                                     Name</label>
-                                <input type="text" name="service_name" class="form-control" id="service_name" value="">
+                                <input type="text" name="service_name[]" class="form-control" id="service_name"
+                                    value="">
                             </div>
                             <div class="col-md-4">
                                 <label class="control-label bold col-form-label" for="amount">Service Amount</label>
-                                <input type="text" name="amount" class="form-control" id="amount" value="">
+                                <input type="text" name="amount[]" class="form-control" id="amount" value="">
                             </div>
-                        </div>
-						<div class="row mb-1">
-							<div class="col-md-9">
-							</div>
-                            <div class="col-md-3">
-                                <a href="#.">Add More Services</a>
-                             </div>
                         </div>
                         <div class="row mb-1">
-							<div class="col-md-8">
-                                <label class="control-label bold col-form-label" for="notes">Notes</label>
-                                <textarea rows="1" name="notes" class="form-control" id="notes"></textarea>
+                            <div class="col-md-9">
                             </div>
-							<div class="col-md-4">
-                                <label class="control-label bold col-form-label" for="notes_by">By</label>
-                                <input type="text" name="notes_by" class="form-control" id="notes_by" value="">
+                            <div class="col-md-3">
+                                <a href="#." id="addMoreServices">Add More Services</a>
                             </div>
                         </div>
-						<div class="row mb-1">
-							<div class="col-md-10">
-							</div>
+                        <div id="serviceTemplate" style="display: none;">
+                            <div class="row mb-1">
+                                <div class="col-md-8">
+                                    <label class="control-label bold col-form-label" for="service_name">Service
+                                        Name</label>
+                                    <input type="text" name="service_name[]" class="form-control" id="service_name"
+                                        value="">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="control-label bold col-form-label" for="amount">Service Amount</label>
+                                    <input type="text" name="amount[]" class="form-control" id="amount" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-1">
+                            <div class="col-md-8">
+                                <label class="control-label bold col-form-label" for="notes">Notes</label>
+                                <textarea rows="1" name="notes[]" class="form-control" id="notes"></textarea>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="control-label bold col-form-label" for="notes_by">Notes By</label>
+                                <input type="text" name="notes_by[]" class="form-control" id="notes_by" value="">
+                                <input type="hidden" name="user_id" class="form-control" id="user_id"
+                                    value="{{ $username->id }}">
+                            </div>
+                        </div>
+                        <div class="row mb-1">
+                            <div class="col-md-10">
+                            </div>
                             <div class="col-md-2">
-                                <a href="#.">Add More Notes</a>
-                             </div>
+                                <a href="#." id="addMoreNotes">Add More Notes</a>
+                            </div>
+                        </div>
+                        <div id="noteTemplate" style="display: none;">
+                            <div class="row mb-1">
+                                <div class="col-md-8">
+                                    <label class="control-label bold col-form-label" for="notes">Notes</label>
+                                    <textarea rows="1" name="notes[]" class="form-control" id="notes"></textarea>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="control-label bold col-form-label" for="notes_by">Notes By</label>
+                                    <input type="text" name="notes_by[]" class="form-control" id="notes_by" value="">
+                                </div>
+                            </div>
                         </div>
                         <!-- Modal Footer -->
                         <div class="modal-footer justify-content-center">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> <button
-                                type="button" class="btn btn-primary">Save changes</button>
+                                type="submit" class="btn btn-primary">Save changes</button>
                         </div>
                     </form>
                 </div>
@@ -265,7 +318,7 @@
             </div>
         </div>
     </div>
-    
+
 
 </div>
 </div>
@@ -274,6 +327,19 @@
 @section('script')
 <script>
     $(document).ready(function() {
+
+    $("#addMoreServices").click(function(e) {
+        e.preventDefault();
+        $("#serviceTemplate").show();
+        $("#addMoreServices").hide();
+    });
+
+    // Add More Notes
+    $("#addMoreNotes").click(function(e) {
+        e.preventDefault();
+        $("#noteTemplate").show();
+        $("#addMoreNotes").hide();
+    });
         // Handle click event of the button
         $('#newCustomerBtn').click(function(e) {
             e.preventDefault(); // Prevent default action of the anchor tag
@@ -295,6 +361,24 @@
         if ($(event.target).hasClass('modal')) {
         closeModal();
         }
+        });
+
+        function updateHiddenInput(inputId, hiddenInputId) {
+        const inputValue = document.getElementById(inputId).value;
+        document.getElementById(hiddenInputId).value = inputValue;
+        }
+
+        // Event listeners for input changes
+        document.getElementById('no_of_visits').addEventListener('input', function() {
+        updateHiddenInput('no_of_visits', 'hidden_no_of_visits');
+        });
+
+        document.getElementById('job_completed').addEventListener('input', function() {
+        updateHiddenInput('job_completed', 'hidden_job_completed');
+        });
+
+        document.getElementById('issue_resolved').addEventListener('input', function() {
+        updateHiddenInput('issue_resolved', 'hidden_issue_resolved');
         });
     });
 </script>

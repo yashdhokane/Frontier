@@ -90,20 +90,20 @@
                         <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#others_tab" role="tab"
                             aria-controls="pills-timeline" aria-selected="false">Notes</a>
                     </li>
-					
-					<li class="nav-item">
-                        <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#settings_tab" role="tab"
-                            aria-controls="pills-timeline" aria-selected="false">Settings</a>
+
+                    <li class="nav-item">
+                        <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#settings_tab"
+                            role="tab" aria-controls="pills-timeline" aria-selected="false">Settings</a>
                     </li>
-					<li class="nav-item">
-                        <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#permission_tab" role="tab"
-                            aria-controls="pills-timeline" aria-selected="false">Permission</a>
+                    <li class="nav-item">
+                        <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#permission_tab"
+                            role="tab" aria-controls="pills-timeline" aria-selected="false">Permission</a>
                     </li>
-					<li class="nav-item">
-                        <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#activity_tab" role="tab"
-                            aria-controls="pills-timeline" aria-selected="false">Activity</a>
+                    <li class="nav-item">
+                        <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#activity_tab"
+                            role="tab" aria-controls="pills-timeline" aria-selected="false">Activity</a>
                     </li>
-                    
+
 
                 </ul>
                 <!-- Tabs -->
@@ -224,9 +224,9 @@
                                                 \Carbon\Carbon::parse($dispatcher->created_at)->format('m-d-Y') : null
                                                 }}</h6>
                                         </div>
-                                        
 
-                                       
+
+
 
                                     </div>
 
@@ -489,36 +489,68 @@
 
                         </div>
                     </div>
-					
+
                     <div class="tab-pane fade" id="estimate_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
-						<div class="card-body card-border shadow">
-							<h5 class="card-title uppercase">Estimates</h5>
-							<div class="alert alert-info mt-4 col-md-12" role="alert">Estimates details not available for {{$dispatcher->name ?? null}}. <strong><a href="{{route('schedule')}}">Add New</a></strong>
-							</div>
-                         </div>
-					</div>
-					
-					<div class="tab-pane fade" id="settings_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
-						<div class="card-body card-border shadow">
-							<h5 class="card-title uppercase">Settings</h5>
-							DETAILS HERE
-                         </div>
-					</div>
-					<div class="tab-pane fade" id="permission_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
-						<div class="card-body card-border shadow">
-							<h5 class="card-title uppercase">Permission</h5>
-							PERMISSION MODULE HERE
-                         </div>
-					</div>
-					<div class="tab-pane fade" id="activity_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
-						<div class="card-body card-border shadow">
-							<h5 class="card-title uppercase">Activity </h5>
-							activity like my profile will go here
-                         </div>
-					</div>
-					
-					 
-					
+                        <div class="card-body card-border shadow">
+                            <h5 class="card-title uppercase">Estimates</h5>
+                            <div class="alert alert-info mt-4 col-md-12" role="alert">Estimates details not available
+                                for {{$dispatcher->name ?? null}}. <strong><a href="{{route('schedule')}}">Add
+                                        New</a></strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="settings_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
+                        <div class="card-body card-border shadow">
+                            {{-- <h5 class="card-title uppercase">Settings</h5> --}}
+                            @include('dispatcher.setting_tab_file')
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="permission_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
+                        <div class="card-body card-border shadow">
+                            <h5 class="card-title uppercase">Permission</h5>
+                            PERMISSION MODULE HERE
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="activity_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
+                        <div class="card-body card-border shadow">
+                            {{-- <h5 class="card-title uppercase">Activity </h5> --}}
+                            <div class="col-md-12 ">
+
+                                <h5 class="card-title">ACTIVITY FEED</h5>
+                                <div class="table-responsive">
+                                    <table class="table customize-table mb-0 v-middle">
+                                        <thead>
+                                            <tr>
+                                                <!-- <th style="width:20%">User</th> -->
+                                                <th>Activity</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($activity as $record)
+                                            <tr>
+                                                <td>{{ $record->activity}}</td>
+                                                <td>
+                                                    {{ \Carbon\Carbon::parse($record->created_at)->format('D
+                                                    n/j/y g:ia') ??
+                                                    'null' }}
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+
+                                    </table>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
 
                     <div class="tab-pane fade" id="edit_profile_tab" role="tabpanel"
                         aria-labelledby="pills-timeline-tab">
@@ -535,7 +567,7 @@
                     <div class="tab-pane fade show " id="others_tab" role="tabpanel"
                         aria-labelledby="pills-timeline-tab">
                         <div class="card-body card-border shadow">
-							<h5 class="card-title uppercase">Notes </h5>
+                            <h5 class="card-title uppercase">Notes </h5>
                             <div class="profiletimeline mt-0">
                                 @foreach ($notename as $notename )
                                 <div class="sl-item">

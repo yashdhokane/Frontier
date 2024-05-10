@@ -1126,33 +1126,50 @@ $vehicleDescriptions = FleetVehicle::pluck('vehicle_description')->toArray();
         return redirect()->back()->with('success', 'Technician created successfully');
     }
 
-public function smstechnician(Request $request)
-{
-    $userId = $request->id;
+ public function smstechnician(Request $request)
+    {
+        $userId = $request->id;
 
-    // Find the user by ID
-    $user = UsersSettings::where('user_id', $userId)->first();
+        // Find the user settings by user ID
+        $userSettings = UsersSettings::where('user_id', $userId)->first();
 
+        // Update or create user settings
+        if ($userSettings) {
+            // Update email notification if provided in the request
+            if ($request->filled('switch_email')) {
+                $userSettings->email_notifications = $request->switch_email;
+            }
 
-    // Check if the user exists and if the user ID matches
-    if ($user && $user->user_id == $userId) {
-        // Update email notification if provided in the request
-        if ($request->filled('switch_email')) {
-            $user->email_notifications = $request->switch_email;
-            $user->save();
+            // Update SMS notification if provided in the request
+            if ($request->filled('switch_sms')) {
+                $userSettings->sms_notification = $request->switch_sms;
+            }
+
+            $userSettings->save();
+
+            return redirect()->back()->with('success', 'Settings updated successfully.');
+        } else {
+            // Create new user settings
+            $userSettings = new UsersSettings();
+            $userSettings->user_id = $userId;
+
+            // Set email notification if provided in the request
+            if ($request->filled('switch_email')) {
+                $userSettings->email_notifications = $request->switch_email;
+            }
+
+            // Set SMS notification if provided in the request
+            if ($request->filled('switch_sms')) {
+                $userSettings->sms_notification = $request->switch_sms;
+            }
+
+            $userSettings->save();
+
+            return redirect()->back()->with('success', 'Settings created successfully.');
         }
-
-        // Update SMS notification if provided in the request
-        if ($request->filled('switch_sms')) {
-            $user->sms_notification = $request->switch_sms;
-            $user->save();
-        }
-
-        return redirect()->back()->with('success', 'Settings updated successfully.');
-    } else {
-        return redirect()->back()->with('error', 'Unauthorized access.');
     }
-}
+
+
 
 public function update_fleet_technician(Request $request)
 {

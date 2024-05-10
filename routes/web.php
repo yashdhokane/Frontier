@@ -1108,6 +1108,9 @@ Route::get('/performance-matrix', [PerformanceMatrix::class, 'performanncematrix
     Route::get('/customers-data', [CustomerDataController::class, 'index'])->name('customersdata.index');
     Route::post('/customerdata-update', [CustomerDataController::class, 'update'])->name('customerdata.update');
 
+    Route::post('/check-and-update-and-view', [CustomerDataController::class, 'checkAndUpdateAndView'])->name('checkAndUpdateAndView');
+
+    Route::post('/customerdata-store', [CustomerDataController::class, 'store'])->name('customerdata.store');
     Route::get('/customers-data-view/{id}', [CustomerDataController::class, 'show'])->name('customersdata.show');
 
 });

@@ -20,7 +20,7 @@
                 </div>-->
         </div>
         <div class="col-6 text-end">
-            <a href="#" class=""><i class="ri-contacts-line" style="margin-right: 8px;"></i> Back to Admin List </a>
+            <a href="{{ route('multiadmin.index') }}" class=""><i class="ri-contacts-line" style="margin-right: 8px;"></i> Back to Admin List </a>
         </div>
     </div>
 </div>
@@ -31,6 +31,14 @@
 <!-- Container fluid  -->
 <!-- -------------------------------------------------------------- -->
 <div class="container-fluid">
+    @if (Session::has('success'))
+    <div class="alert_wrap">
+        <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
+            {{ Session::get('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert"
+                aria-label="Close"></button>
+        </div>
+    </div>
+    @endif
     <!-- -------------------------------------------------------------- -->
     <!-- Start Page Content -->
     <!-- -------------------------------------------------------------- -->
@@ -94,10 +102,16 @@
 
                     <li class="nav-item">
                         <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#settings_tab"
-                            role="tab" aria-controls="pills-timeline" aria-selected="false"><i
-                                class="ri-user-settings-line"></i> Settings</a>
+                            role="tab" aria-controls="pills-timeline" aria-selected="false">Settings</a>
                     </li>
-
+                    <li class="nav-item">
+                        <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#permission_tab"
+                            role="tab" aria-controls="pills-timeline" aria-selected="false">Permission</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#activity_tab"
+                            role="tab" aria-controls="pills-timeline" aria-selected="false">Activity</a>
+                    </li>
                     <!--<li class="nav-item" style="">
                             <a class="nav-link" id="pills-payment-tab" data-bs-toggle="pill" href="#payment_tab"
                                 role="tab" aria-controls="pills-payments" aria-selected="false">Activity</a>
@@ -530,6 +544,54 @@
 
 
 
+                    </div>
+                    <div class="tab-pane fade" id="settings_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
+                        <div class="card-body card-border shadow">
+                            {{-- <h5 class="card-title uppercase">Settings</h5> --}}
+                            @include('multiadmin.setting_tab_file_multiadmin')
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="permission_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
+                        <div class="card-body card-border shadow">
+                            <h5 class="card-title uppercase">Permission</h5>
+                            PERMISSION MODULE HERE
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="activity_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
+                        <div class="card-body card-border shadow">
+                            {{-- <h5 class="card-title uppercase">Activity </h5> --}}
+                            <div class="col-md-12 ">
+
+                                <h5 class="card-title">ACTIVITY FEED</h5>
+                                <div class="table-responsive">
+                                    <table class="table customize-table mb-0 v-middle">
+                                        <thead>
+                                            <tr>
+                                                <!-- <th style="width:20%">User</th> -->
+                                                <th>Activity</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($activity as $record)
+                                            <tr>
+                                                <td>{{ $record->activity}}</td>
+                                                <td>
+                                                    {{ \Carbon\Carbon::parse($record->created_at)->format('D
+                                                    n/j/y g:ia') ??
+                                                    'null' }}
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+
+                                    </table>
+                                </div>
+
+
+
+                            </div>
+                        </div>
                     </div>
 
                     <div class="tab-pane fade" id="edit_profile_tab" role="tabpanel"

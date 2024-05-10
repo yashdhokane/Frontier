@@ -70,7 +70,7 @@
 
     <!-- -------------------------------------------------------------- -->
 
-    <div class="page-wrapper" style="display:inline;">
+  
 
         <!-- -------------------------------------------------------------- -->
 
@@ -78,7 +78,7 @@
 
         <!-- -------------------------------------------------------------- -->
  
-		<div class="page-breadcrumb" style="padding-top: 0px;">
+		<div class="page-breadcrumb">
             <div class="row">
                 <div class="col-9 align-self-center">
                     <h4 class="page-title">NEW DISPATCHERS</h4>
@@ -136,7 +136,7 @@
 
 
 
-    </div>
+   
 
     @if(Session::has('success'))
 
@@ -239,23 +239,23 @@
 							<div class="col-sm-12 col-md-4">
                                  <div class="mb-3">
                                      <label for="mobile_phone" class="control-label bold mb5 col-form-label required-field">Mobile Phone</label>
-                                     <input type="text" class="form-control" id="mobile_phone" name="mobile_phone"
+                                     <input type="number" maxlength="10" class="form-control" id="mobile_phone" name="mobile_phone"
                                         placeholder="" required />
-                                    <small id="name" class="form-text text-muted">Don’t add +1. Only add mobile number
+                                    <small id="name" class="form-text text-muted">Don’t add +1. Only add number
                                         without space.</small>
                                  </div>
 							</div>
 							<div class="col-sm-12 col-md-4">
                                  <div class="mb-3">
                                      <label for="home_phone" class="control-label bold mb5 col-form-label">Home Phone</label>
-                                     <input type="text" class="form-control" id="home_phone" name="home_phone"
+                                     <input type="number" maxlength="10" class="form-control" id="home_phone" name="home_phone"
                                         placeholder="" />
                                  </div>
 							</div>
 							<div class="col-sm-12 col-md-4">
                                  <div class="mb-3">
                                      <label for="work_phone" class="control-label bold mb5 col-form-label">Work Phone</label>
-                                     <input type="text" class="form-control" id="work_phone" name="work_phone"
+                                     <input type="number" maxlength="10" class="form-control" id="work_phone" name="work_phone"
                                         placeholder="" />
                                  </div>
 							</div>
@@ -322,15 +322,40 @@
 						 
 						<h4 class="card-title mt-4">Other Details</h4>	
 						<div class="row">
+							<div class="col-sm-12 col-md-4">
+								<div class="mb-3">
+									<label for="dob" class="control-label bold mb5 col-form-label required-field">DOB</label>
+									<!-- Change the input type to "date" -->
+									<input type="date" class="form-control" id="dob" name="dob" placeholder=""
+										required />
+								</div>
+							</div>
+ 							<div class="col-sm-12 col-md-4">
+								<div class="mb-3">
+									<label for="license_number"
+										class="control-label bold mb5 col-form-label required-field">License Number</label>
+									<input type="text" class="form-control" id="license_number" name="license_number"
+										placeholder="" required />
+								</div>
+							</div>
+							<div class="col-sm-12 col-md-4">
+								<div class="mb-3">
+									<label for="ssn" class="control-label bold mb5 col-form-label ">SSN(Social Security
+										Number)</label>
+									<input type="text" class="form-control" id="ssn" name="ssn" placeholder="" />
+								</div>
+							</div>
+ 						</div>
+						<div class="row">
                              <div class="col-sm-12 col-md-4">
                                  <div class="mb-3">
-                                     <label for="image" class="control-label bold mb5 col-form-label">Display Picture</label>
+                                     <label for="image" class="control-label bold mb5 col-form-label">Image Upload</label>
                                     <input type="file" class="form-control" id="image" name="image" accept="image/*" />
                                 </div>
                             </div>
 							<div class="col-sm-12 col-md-4">
 								 <div class="mb-3">
-									 <label for="tag_id" class="control-label bold mb5 col-form-label">User Tags</label>
+									 <label for="tag_id" class="control-label bold mb5 col-form-label">Tags</label>
 									 <select class="form-control select2-hidden-accessible" id="select2-with-tags"
 										name="tag_id[]" multiple="multiple" data-bgcolor="light"
 										data-select2-id="select2-data-select2-with-tags" tabindex="-1"
