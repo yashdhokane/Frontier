@@ -334,7 +334,9 @@ class ScheduleController extends Controller
 
             $tags = SiteJobFields::all(); // Fetch all tags
 
-            return view('schedule.create_job', compact('tags', 'leadSources', 'locationStates', 'technician', 'dateTime', 'manufacturers', 'appliances', 'getServices', 'getProduct', 'tags','hours','time','serviceCat'));
+            $site = SiteTags::all();
+
+            return view('schedule.create_job', compact('tags', 'leadSources', 'locationStates', 'technician', 'dateTime', 'manufacturers', 'appliances', 'getServices', 'getProduct', 'tags','hours','time','serviceCat','site'));
         }
     }
     public function create(Request $request)
@@ -1634,9 +1636,9 @@ class ScheduleController extends Controller
         $locationStates = LocationState::all();
         $leadSources = SiteLeadSource::all();
 
-        $tags = SiteTags::all(); // Fetch all tags
+        $site = SiteTags::all(); // Fetch all tags
 
-        return view('schedule.new_customer', compact('locationStates', 'leadSources', 'tags'));
+        return view('schedule.new_customer', compact('locationStates', 'leadSources', 'site'));
     }
 
     public function userstate(Request $request)

@@ -231,9 +231,9 @@ enctype="multipart/form-data">
                                         Tags</label>
                                     <select class="form-control  me-sm-2" id="" name="tag_id[]"
                                         multiple="multiple" style="width: 100%">
-                                        @foreach ($tags as $tag)
-                                            <option value="{{ $tag->tag_id }}">
-                                                {{ $tag->tag_name }}</option>
+                                        @foreach ($site as $item)
+                                            <option value="{{ $item->tag_id }}">
+                                                {{ $item->tag_name }}</option>
                                         @endforeach
                                     </select>
 
