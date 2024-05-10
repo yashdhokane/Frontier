@@ -1063,7 +1063,7 @@ $leadsourcename=Leadsource::where('user_id', $user->id)
 
         $userId = $user->id;
 
-        $usersDetails = new UsersDetails();
+       $usersDetails = new UsersDetails();
         $usersDetails->user_id = $userId;
         $usersDetails->unique_number = 0;
         $usersDetails->lifetime_value = 0;

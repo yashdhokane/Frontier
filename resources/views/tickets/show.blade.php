@@ -422,7 +422,7 @@
                                 </div>
                                 <div class="col-sm-2">
                                     <div class="flowchart">
-                                        <button class="bl"></button>
+                                        <!--<button class="bl"></button>-->
                                         <div class="icwrap">
                                             <div class="ictop icblank">
                                                 <i class="ri-bill-line"></i>
@@ -431,7 +431,10 @@
                                         </div>
                                         <div class="dtwrap">
                                             <div class="date">
-                                                {{ $jobTimings['time_invoice'] }}
+                                               @if(isset($jobTimings['time_invoice']))
+                                                    {{ $jobTimings['time_invoice'] }}
+                                                @endif
+
                                             </div>
                                         </div>
                                     </div>
@@ -439,7 +442,7 @@
 
                                 <div class="col-sm-2">
                                     <div class="flowchart">
-                                        <button class="bl"></button>
+                                        <!--<button class="bl"></button>-->
                                         <div class="icwrap">
                                             <div class="ictop icblank">
                                                 <i class="ri-currency-line"></i>
