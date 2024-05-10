@@ -58,7 +58,8 @@ class AppServiceProvider extends ServiceProvider
                         'time_omw' => Carbon::parse($job->start_date_time ?? null)->format('Y-m-d h:i a'),
                         'time_start' => Carbon::parse($job->start_date_time ?? null)->format('Y-m-d h:i a'),
                         'time_finish' => Carbon::parse($job->end_date_time ?? null)->format('Y-m-d h:i a'),
-                        'time_invoice' => Carbon::parse($invoice->issue_date ?? null)->format('Y-m-d h:i a'),
+                        'time_invoice' => isset($invoice->issue_date) ? Carbon::parse($invoice->issue_date)->format('Y-m-d') : null,
+
                     ];
                 }
             };

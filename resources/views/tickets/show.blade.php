@@ -449,7 +449,7 @@
                                         <div class="dtwrap">
                                             <div class="date">
                                             @if(isset($Payment) && $Payment->status === 'paid')
-                                                  {{Carbon::parse( $Payment->payment_date ?? null)->format('Y-m-d H:i:s')}}
+                                                  {{Carbon::parse( $Payment->payment_date ?? null)->format('Y-m-d h:i a')}}
                                               @endif
                                             </div>
                                         </div>
