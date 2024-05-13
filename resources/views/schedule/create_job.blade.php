@@ -954,31 +954,45 @@
                
            
 
-            $(document).on('change', '#duration', function(event) {
+           $(document).on('change', '#duration', function(event) {
                 var duration = parseInt($(this).val()); // Parse the first value to an integer
                 var time = $('#travel_input').val(); // Get the second value
 
                 var days = 0;
                 var hours = 0;
-                if (time.includes('day') && time.includes('hour')) {
+                var minutes = 0;
+                if (time.includes('day')) {
                     var parts = time.split(' ');
                     days = parseInt(parts[0]); // Parse the days part to an integer
-                    hours = parseInt(parts[2]); // Parse the hours part to an integer
-                } else if (time.includes('day')) {
-                    var parts = time.split(' ');
-                    days = parseInt(parts[0]); // Parse the days part to an integer
-                } else if (time.includes('hour')) {
+                }
+                if (time.includes('hour')) {
                     var parts = time.split(' ');
                     hours = parseInt(parts[0]); // Parse the hours part to an integer
                 }
+                if (time.includes('mins')) {
+                    var parts = time.split(' ');
+                    minutes = parseInt(parts[2]); // Parse the minutes part to an integer
+                }
 
-                // Calculate the total time in hours
-                var totalTime = (duration / 60) + (days * 24) + hours;
+                // Convert duration to hours and minutes
+                var durationHours = Math.floor(duration / 60);
+                var durationMinutes = duration % 60;
 
+                // Calculate the total time in hours and minutes
+                var totalHours = days * 24 + hours + durationHours;
+                var totalMinutes = minutes + durationMinutes;
+
+                // Adjust total hours if total minutes exceed 60
+                if (totalMinutes >= 60) {
+                    totalHours += Math.floor(totalMinutes / 60);
+                    totalMinutes %= 60;
+                }
+
+                // Display the result
                 $('#result_travel').show();
-                $('#result_travel').text('Travel time :' + totalTime + ' hours');
-
+                $('#result_travel').text('Travel time: ' + totalHours + ' hours ' + totalMinutes + ' minutes');
             });
+
 
         });
     </script>

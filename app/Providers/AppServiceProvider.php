@@ -12,12 +12,10 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\DB;
 use App\Models\NotificationModel;
+use App\Models\TimeZone;
 use App\Models\UserNotification;
 use App\Models\User;
-
-
-
-
+use Illuminate\Support\Facades\Auth;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -197,7 +195,19 @@ class AppServiceProvider extends ServiceProvider
 
             //useraddress function
 
-
+            $user = auth()->user();
+            if ($user) {
+                $timezone = User::where('id', $user->id)->first();
+                if ($timezone) {
+                    $timezoneName = TimeZone::where('timezone_id', $timezone->timezone_id)->value('timezone_name');
+                    if ($timezoneName) {
+                        $view->with('timezoneName', $timezoneName);
+                    }
+                }
+            }
         });
+
+        
+        
     }
 }

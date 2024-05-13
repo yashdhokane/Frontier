@@ -26,7 +26,7 @@ use App\Models\UserAppliances;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-
+use Illuminate\Support\Facades\View;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Storage;
@@ -1407,7 +1407,6 @@ class ScheduleController extends Controller
                 $getCustomerDetails = User::with('userAddress')
                     ->where('id', $data['customer_id'])
                     ->first();
-                // dd($getCustomerDetails);
 
                 $jobsData = [
                     'job_code' => (isset($data['job_code']) && !empty($data['job_code'])) ? $data['job_code'] : '',
@@ -1724,24 +1723,25 @@ class ScheduleController extends Controller
     
     public function travel_time(Request $request)
     {
+
        
-        $currentTime = Carbon::now(); // Get the current time
+      $currentTime = Carbon::now('Asia/Kolkata');
+       
+      $tech_add = CustomerUserAddress::where('user_id' , $request->tech_id)->first();
 
         $technician = Schedule::where('technician_id', $request->tech_id)
             ->where('start_date_time', '<=', $currentTime)
             ->where('end_date_time', '>=', $currentTime)
-            ->first();
-        $tech_add = CustomerUserAddress::where('user_id' , $request->tech_id)->first();
+            ->first(); // Find the technician whose working time includes the current time
 
         if ($technician) {
-            $jobaddress = JobModel::where('job_id' , $technician->job_id)->first();
-           $address = $jobaddress->latitude .','. $jobaddress->longitude;
-
+            $jobAddress = JobModel::where('id' , $technician->job_id)->first();
+        $address = $jobAddress->latitude .','. $jobAddress->longitude;
         } else {
-           $address = $tech_add->latitude .','. $tech_add->longitude;
+           
+        $address = $tech_add->latitude .','. $tech_add->longitude;
         }
-
-
+        
         $origin = $address;
         $destination = $request->customer_add;
 

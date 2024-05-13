@@ -170,9 +170,16 @@ class TicketController extends Controller
         $jobTimings = App::make('JobTimingManager')->getJobTimings($id);
 
         // travel time 
-
+        $currentDate = Carbon::today('Asia/Kolkata');
+        $previousJob = JobModel::where('technician_id', $technicians->technician_id)
+                    ->whereDate('created_at', $currentDate)
+                    ->exists();
         $tech_add = CustomerUserAddress::where('user_id', $technicians->technician_id)->first();
+        if(!$previousJob){
+           $address = ($previousJob->latitude ?? 0) . ',' . ($previousJob->longitude ?? 0);
+        }else{
         $address = ($tech_add->latitude ?? 0) . ',' . ($tech_add->longitude ?? 0);
+        }
         $customer_address = ($technicians->latitude ?? 0) . ',' . ($technicians->longitude ?? 0);
 
         $origin = $address;
