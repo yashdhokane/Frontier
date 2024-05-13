@@ -50,7 +50,6 @@ class TicketController extends Controller
         $status = JobModel::all();
         $tickets = JobModel::orderBy('created_at', 'desc')->get();
         $technicians = JobModel::with('jobdetailsinfo', 'jobassignname')->orderBy('created_at', 'desc')->get();
-        //dd($technicians->jobdetailsinfo->manufacturername[15]);
 
         return view('tickets.index', [
             'tickets' => $tickets,
@@ -77,7 +76,6 @@ class TicketController extends Controller
     // Store a newly created ticket in the database
     public function store(Request $request)
     {
-        // dd($request->all());
         $validatedData = $request->validate([
             'status' => 'required',
             'priority' => 'required',
@@ -110,6 +108,11 @@ class TicketController extends Controller
     public function show($id)
     {
         $technicians = JobModel::with('jobassignname', 'JobAssign', 'usertechnician', 'addedby', 'jobfieldname')->find($id);
+
+        if(!$technicians){
+           return view('404');
+        }
+
         $fieldIds = explode(',', $technicians->job_field_ids);
         $jobFields = Jobfields::whereIn('field_id', $fieldIds)->get();
         $Payment = Payment::where('job_id', $id)->first();
@@ -168,7 +171,7 @@ class TicketController extends Controller
 
         // travel time 
 
-        $tech_add = CustomerUserAddress::where('user_id' , $technicians->technician_id)->first();
+        $tech_add = CustomerUserAddress::where('user_id', $technicians->technician_id)->first();
         $address = ($tech_add->latitude ?? 0) . ',' . ($tech_add->longitude ?? 0);
         $customer_address = ($technicians->latitude ?? 0) . ',' . ($technicians->longitude ?? 0);
 
@@ -178,19 +181,18 @@ class TicketController extends Controller
         $response = Http::get('https://maps.googleapis.com/maps/api/distancematrix/json', [
             'destinations' => $destination,
             'origins' => $origin,
-            'key' => 'AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo', 
+            'key' => 'AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo',
         ]);
         $travelTime = 0;
         $data = $response->json();
         if ($response->successful()) {
             if ($data['status'] === 'OK' && isset($data['rows'][0]['elements'][0]['duration'])) {
                 // Extract duration
-            $travelTime = $data['rows'][0]['elements'][0]['duration']['text'];
+                $travelTime = $data['rows'][0]['elements'][0]['duration']['text'];
             }
         } else {
-             $travelTime = 0;
+            $travelTime = 0;
         }
-// dd($travelTime);
 
         return view('tickets.show', ['Payment' => $Payment, 'jobservice' => $jobservice, 'jobproduct' => $jobproduct, 'jobFields' => $jobFields, 'ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source, 'activity' => $activity, 'files' => $files, 'schedule' => $schedule, 'jobTimings' => $jobTimings, 'travelTime' => $travelTime]);
     }

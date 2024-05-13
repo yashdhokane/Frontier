@@ -23,6 +23,9 @@ class ManufactureController extends Controller
     {
 
         $manufacture = Manufacturer::find($id);
+        if(!$manufacture){
+             return view('404');
+        }
         return view('manufacturer.edit', compact('manufacture'));
     }
 
@@ -58,7 +61,6 @@ class ManufactureController extends Controller
             'added_by' => $adminId,
             'last_updated_by' => $adminId,
         ]);
-        // dd(1);
         return redirect()->route('manufacturer.index')->with('success', 'Manufacturer created successfully!');
     }
 
@@ -66,9 +68,7 @@ class ManufactureController extends Controller
 
     public function update(Request $request, $id)
     {
-        // dd($request->all());
         $request->validate([
-            // Add validation rules for other fields if needed
         ]);
 
         $manufacturer = Manufacturer::findOrFail($id);
@@ -118,11 +118,6 @@ class ManufactureController extends Controller
 
         $manufacture->is_active = 'yes';
 
-        // Delete the associated image (if it exists)
-        // if ($manufacture->manufacturer_image) {
-        //     unlink(public_path('images/' . $manufacture->manufacturer_image));
-        // }
-
         // Delete the manufacturer record from the database
         $manufacture->update();
 
@@ -138,11 +133,6 @@ class ManufactureController extends Controller
         }
 
         $manufacture->is_active = 'not';
-
-        // Delete the associated image (if it exists)
-        // if ($manufacture->manufacturer_image) {
-        //     unlink(public_path('images/' . $manufacture->manufacturer_image));
-        // }
 
         // Delete the manufacturer record from the database
         $manufacture->update();

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\JobModel;
-use App\Models\JobActivity;  
+use App\Models\JobActivity;
 use App\Models\Manufacturer;
 use App\Models\JobProduct;
 use App\Models\JobServices;
@@ -23,95 +23,96 @@ class PaymentController extends Controller
 {
 
     public function updatePaymentStatus(Request $request)
-{
-    // Validate the incoming request data
-    $validatedData = $request->validate([
-        'payment_id' => 'required|',
-    ]);
+    {
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'payment_id' => 'required|',
+        ]);
 
-    // Find the payment by ID
-    $payment = Payment::findOrFail($validatedData['payment_id']);
+        // Find the payment by ID
+        $payment = Payment::findOrFail($validatedData['payment_id']);
 
-    // Update payment status to completed
-    $payment->status = 'paid';
-    $payment->save();
+        // Update payment status to completed
+        $payment->status = 'paid';
+        $payment->save();
 
-    // Update job table invoice_status to complete if requested job_id matches
-    JobModel::where('id', $payment->job_id)->update(['invoice_status' => 'complete']);
+        // Update job table invoice_status to complete if requested job_id matches
+        JobModel::where('id', $payment->job_id)->update(['invoice_status' => 'complete']);
 
-    // Store activity in JobActivity model
-    JobActivity::create([
-        'job_id' => $payment->job_id,
-        'user_id' => auth()->id(),
-        'activity' => 'Amount Paid (#' . $payment->job_id . ')',
-    ]);
+        // Store activity in JobActivity model
+        JobActivity::create([
+            'job_id' => $payment->job_id,
+            'user_id' => auth()->id(),
+            'activity' => 'Amount Paid (#' . $payment->job_id . ')',
+        ]);
 
-            app('sendNotices')('New Invoice', ' Amount Paid ' . now(), url()->current(), 'Invoice');
+        app('sendNotices')('New Invoice', ' Amount Paid ' . now(), url()->current(), 'Invoice');
 
-    return redirect()->back()->with('success', 'Payment status updated successfully.');
-}
+        return redirect()->back()->with('success', 'Payment status updated successfully.');
+    }
 
     public function createPaymentInvoice(Request $request)
-{
-    $validatedData = $request->validate([
-        'job_id' => 'required',
-    ]);
+    {
+        $validatedData = $request->validate([
+            'job_id' => 'required',
+        ]);
 
-    $job = JobModel::findOrFail($validatedData['job_id']);
+        $job = JobModel::findOrFail($validatedData['job_id']);
 
-    $paymentData = [
-        'job_id' => $job->id,
-        'customer_id' => $job->customer_id,
-        'sub_total' => $job->subtotal,
-        'discount' => $job->discount,
-        'tax' => $job->tax,
-        'total' => $job->gross_total,
-    ];
+        $paymentData = [
+            'job_id' => $job->id,
+            'customer_id' => $job->customer_id,
+            'sub_total' => $job->subtotal,
+            'discount' => $job->discount,
+            'tax' => $job->tax,
+            'total' => $job->gross_total,
+        ];
 
-    $paymentId = Payment::max('id') + 1;
-    $invoiceNumber = 'INV-DC-' . $paymentId;
+        $paymentId = Payment::max('id') + 1;
+        $invoiceNumber = 'INV-DC-' . $paymentId;
 
-    $issueDate = now();
-    $dueDate = now()->addDays(7);
+        $issueDate = now();
+        $dueDate = now()->addDays(7);
 
-    $paymentData = array_merge($paymentData, [
-        'invoice_number' => $invoiceNumber,
-        'issue_date' => $issueDate,
-        'due_date' => $dueDate,
-        'status' => 'unpaid',
-    ]);
+        $paymentData = array_merge($paymentData, [
+            'invoice_number' => $invoiceNumber,
+            'issue_date' => $issueDate,
+            'due_date' => $dueDate,
+            'status' => 'unpaid',
+        ]);
 
-    JobModel::where('id', $validatedData['job_id'])->update(['invoice_status' => 'created']);
+        JobModel::where('id', $validatedData['job_id'])->update(['invoice_status' => 'created']);
 
-    $paymentInvoice = Payment::create($paymentData);
+        $paymentInvoice = Payment::create($paymentData);
 
-return redirect()->route('invoicedetail', ['id' => $paymentInvoice->id]);
-}
+        return redirect()->route('invoicedetail', ['id' => $paymentInvoice->id]);
+    }
     public function index()
     {
-        $payment = Payment::with('JobAppliances','user', 'JobModel')->latest()->get();
+        $payment = Payment::with('JobAppliances', 'user', 'JobModel')->latest()->get();
 
-        $manufacturer = Manufacturer::where('is_active','yes')->get();
+        $manufacturer = Manufacturer::where('is_active', 'yes')->get();
 
         $tech = User::where('role', 'technician')->get();
 
-        return view('payment.index', compact('payment', 'manufacturer','tech'));
+        return view('payment.index', compact('payment', 'manufacturer', 'tech'));
     }
 
     public function invoice_detail(Request $request, $id)
     {
         $site = SiteSettings::first();
         $payment = Payment::with('JobModel')->find($id);
-         $jobproduct = JobProduct::where('job_id', $payment->job_id)->get();
-        $jobservice = JobServices::where('job_id', $payment->job_id)->get();
-        
-        if ($payment) {
-            $job = JobModel::with('jobserviceinfo', 'jobproductinfo')->where('id', $payment->job_id)->first();
 
-            return view('payment.invoice_detail', compact('payment','jobproduct','jobservice', 'job','site'));
-        } else {
+        if (!$payment) {
             return view('404');
         }
+
+        $jobproduct = JobProduct::where('job_id', $payment->job_id)->get();
+        $jobservice = JobServices::where('job_id', $payment->job_id)->get();
+
+        $job = JobModel::with('jobserviceinfo', 'jobproductinfo')->where('id', $payment->job_id)->first();
+
+        return view('payment.invoice_detail', compact('payment', 'jobproduct', 'jobservice', 'job', 'site'));
     }
 
     public function update(Request $request, $id)

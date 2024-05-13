@@ -17,8 +17,6 @@ class ProductCategoryController extends Controller
 
         $products = Products::orderBy('created_at', 'desc')->get();
 
-
-        // echo ($product_id);
         $manufacture = Manufacturer::all();
         $product = ProductCategory::get();
 
@@ -34,8 +32,6 @@ class ProductCategoryController extends Controller
     public function storeproductcategory(Request $request)
     {
         $adminId = Auth::id();
-
-
 
         $cat = new ProductCategory();
 
@@ -77,7 +73,7 @@ class ProductCategoryController extends Controller
 
         // Check if the category exists
         if (!$service) {
-            return redirect()->route('product.index')->with('error', 'Service category not found!');
+            return view('404');
         }
 
         return view('product.index', ['service' => $service]);
@@ -85,19 +81,10 @@ class ProductCategoryController extends Controller
 
     public function editproduct(Request $request)
     {
-
-
-
         $productCategory = ProductCategory::where('id', $request->entry_id)->first();
 
-
-
-        // $proreport=$proreport->get();
-        //   $render_view= view('promotor_sale_summary',compact('proreport'))->render();
-        // echo json_encode($proreport);
-        // exit();resources\views\frontend\story_details.blade.php
         $render_view = view('product.product_category_render', compact('productCategory'))->render();
-        // return response()->json(['proreport'=>$proreport]);
+
         return response()->json($render_view);
     }
 
@@ -109,8 +96,6 @@ class ProductCategoryController extends Controller
         $adminId = Auth::id();
 
         $request->validate([
-            // 'category_name' => 'required|string|max:255',
-            // 'category_image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $productCategory = ProductCategory::find($request->input('category_id'));

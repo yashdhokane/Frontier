@@ -31,8 +31,6 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
-       
 
         $adminId = Auth::id();
 
@@ -83,12 +81,10 @@ class ProductController extends Controller
         // Insert the product meta data into the database
         ProductMeta::insert($productmeta);
 
-
-        // dd("end");
         $assignedTo = $request->input('assigned_to');
 
         if ($assignedTo === 'all') {
-            // $technicianIds = User::where('role', 'technician')->pluck('id')->toArray();
+
             $technicianIds = $request->input('technician_id', []);
         } elseif ($assignedTo === 'selected') {
             $technicianIds = $request->input('technician_id', []);
@@ -105,9 +101,6 @@ class ProductController extends Controller
             ]);
         }
 
-
-
-
         return redirect()->route('product.index')
             ->with('success', 'Product & Material created successfully');
     }
@@ -115,8 +108,6 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        // dd($request->all());
-       
 
         $adminId = Auth::id();
 
@@ -208,6 +199,11 @@ class ProductController extends Controller
     {
         // Find the product by ID
         $product = Products::find($id);
+
+        if(!$product){
+          return view('404');
+        }
+
         $manufacture = Manufacturer::all();
         $technicians = User::where('role', 'technician')->get();
 
@@ -263,7 +259,6 @@ class ProductController extends Controller
     // Controller method
     public function listProductsAjax(Request $request)
     {
-        dd(1); // Retrieve query parameters
         $category_id = $request->input('product_category_id');
         $manufacturer_id = $request->input('product_manu_id');
 
@@ -287,27 +282,25 @@ class ProductController extends Controller
 
     public function inactive(Request $request, $id)
     {
-     
+
         $product = Products::find($id);
 
         $product->status = 'Draft';
 
         $product->update();
 
-       return redirect()->back()->with('success', 'Status Inactive successfully');
+        return redirect()->back()->with('success', 'Status Inactive successfully');
     }
 
     public function active(Request $request, $id)
     {
-     
+
         $product = Products::find($id);
 
         $product->status = 'Publish';
 
         $product->update();
 
-       return redirect()->back()->with('success', 'Status Active successfully');
+        return redirect()->back()->with('success', 'Status Active successfully');
     }
-
-
 }

@@ -26,7 +26,7 @@
 
                                 @if ($category_id)
                                     <li class="breadcrumb-item">
-                                        {{ \App\Models\ServiceCategory::find($category_id)->category_name }}
+                                        {{ \App\Models\ServiceCategory::find($category_id)->category_name ?? null }}
                                     </li>
                                 @else
                                     <li class="breadcrumb-item"><a href="">Category</a></li>

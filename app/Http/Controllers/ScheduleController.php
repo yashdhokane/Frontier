@@ -1725,8 +1725,23 @@ class ScheduleController extends Controller
     public function travel_time(Request $request)
     {
        
+        $currentTime = Carbon::now(); // Get the current time
+
+        $technician = Schedule::where('technician_id', $request->tech_id)
+            ->where('start_date_time', '<=', $currentTime)
+            ->where('end_date_time', '>=', $currentTime)
+            ->first();
         $tech_add = CustomerUserAddress::where('user_id' , $request->tech_id)->first();
-        $address = $tech_add->latitude .','. $tech_add->longitude;
+
+        if ($technician) {
+            $jobaddress = JobModel::where('job_id' , $technician->job_id)->first();
+           $address = $jobaddress->latitude .','. $jobaddress->longitude;
+
+        } else {
+           $address = $tech_add->latitude .','. $tech_add->longitude;
+        }
+
+
         $origin = $address;
         $destination = $request->customer_add;
 
