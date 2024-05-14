@@ -170,15 +170,19 @@ class TicketController extends Controller
         $jobTimings = App::make('JobTimingManager')->getJobTimings($id);
 
         // travel time 
-        $user = auth()->user();
-        $timezone = User::where('id', $user->id)->first();
-        $timezoneTable = TimeZone::where('timezone_id', $timezone->timezone_id)->first();
-        $timezoneName = $timezoneTable->timezone_name;
-        $currentDate = Carbon::today($timezoneName);
+       
+        $currentJobDate = $technicians->created_at;
 
+        // Define the start and end of the current job's date
+        $startOfDay = Carbon::parse($currentJobDate)->startOfDay();
+        $endOfDay = Carbon::parse($currentJobDate)->endOfDay();
+    
+        // Find the previous job for the same technician created before the current job's creation time on the same day
         $previousJob = JobModel::where('technician_id', $technicians->technician_id)
-            ->whereDate('created_at', $currentDate)
-            ->exists();
+            ->whereBetween('created_at', [$startOfDay, $endOfDay])
+            ->where('created_at', '<', $currentJobDate)
+            ->orderBy('created_at', 'desc')
+            ->first();
 
         $tech_add = CustomerUserAddress::where('user_id', $technicians->technician_id)->first();
 
