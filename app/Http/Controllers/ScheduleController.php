@@ -22,6 +22,7 @@ use App\Models\ServiceCategory;
 use App\Models\SiteJobFields;
 use App\Models\SiteLeadSource;
 use App\Models\SiteTags;
+use App\Models\TimeZone;
 use App\Models\UserAppliances;
 use DB;
 use Illuminate\Http\Request;
@@ -67,8 +68,8 @@ class ScheduleController extends Controller
             $currentDate = Carbon::now();
         }
 
-        $currentDay = $currentDate->format('l'); 
-        $currentDayLower = strtolower($currentDay); 
+        $currentDay = $currentDate->format('l');
+        $currentDayLower = strtolower($currentDay);
         // Query the business hours for the given day
         $hours = BusinessHours::where('day', $currentDayLower)->first();
 
@@ -166,7 +167,7 @@ class ScheduleController extends Controller
         }
 
 
-        return view('schedule.index', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate', 'users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', 'cities', 'cities1', 'TodayDate', 'tech', 'schedule_arr','hours'));
+        return view('schedule.index', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate', 'users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', 'cities', 'cities1', 'TodayDate', 'tech', 'schedule_arr', 'hours'));
     }
 
     public function schedule_new(Request $request)
@@ -312,9 +313,9 @@ class ScheduleController extends Controller
             $date = $d;
 
             $dateTime = Carbon::parse("$date $time");
-             $datenew = Carbon::parse($date);
-                $currentDay = $datenew->format('l'); 
-            $currentDayLower = strtolower($currentDay); 
+            $datenew = Carbon::parse($date);
+            $currentDay = $datenew->format('l');
+            $currentDayLower = strtolower($currentDay);
             // Query the business hours for the given day
             $hours = BusinessHours::where('day', $currentDayLower)->first();
 
@@ -325,7 +326,7 @@ class ScheduleController extends Controller
             $technician = User::join('user_address', 'user_address.user_id', 'users.id')->where('id', $id)->first();
 
             $getServices = Service::all();
-            $serviceCat =ServiceCategory::with('Services')->get();
+            $serviceCat = ServiceCategory::with('Services')->get();
 
             $getProduct = Products::whereNotNull('base_price')->where('status', 'Publish')->get();
             $locationStates = LocationState::all();
@@ -336,7 +337,7 @@ class ScheduleController extends Controller
 
             $site = SiteTags::all();
 
-            return view('schedule.create_job', compact('tags', 'leadSources', 'locationStates', 'technician', 'dateTime', 'manufacturers', 'appliances', 'getServices', 'getProduct', 'tags','hours','time','serviceCat','site'));
+            return view('schedule.create_job', compact('tags', 'leadSources', 'locationStates', 'technician', 'dateTime', 'manufacturers', 'appliances', 'getServices', 'getProduct', 'tags', 'hours', 'time', 'serviceCat', 'site'));
         }
     }
     public function create(Request $request)
@@ -397,7 +398,7 @@ class ScheduleController extends Controller
                 foreach ($filterCustomer as $key => $value) {
 
                     $getCustomerAddress = DB::table('user_address')
-                        ->select('user_address.address_line1','user_address.address_line2','user_address.city', 'location_states.state_name',  'location_states.state_code', 'user_address.zipcode')
+                        ->select('user_address.address_line1', 'user_address.address_line2', 'user_address.city', 'location_states.state_name',  'location_states.state_code', 'user_address.zipcode')
                         ->join('location_states', 'location_states.state_id', 'user_address.state_id')
                         ->where('user_id', $value->id)
                         ->first();
@@ -417,34 +418,34 @@ class ScheduleController extends Controller
                     }
                     $customers .= '</h6><p class="text-muted test">';
                     if (isset($value->mobile) && !empty($value->mobile)) {
-                       $customers .= $value->mobile . ' / ' ;
+                        $customers .= $value->mobile . ' / ';
                     }
                     if (isset($value->email) && !empty($value->email)) {
-                       $customers .= $value->email   ;
+                        $customers .= $value->email;
                     }
                     if (isset($value->email) && !empty($value->email) && isset($value->email) && !empty($value->email)) {
-                    $customers .= '<br />'   ;
+                        $customers .= '<br />';
                     }
-                    if (isset($getCustomerAddress->address_line1) && !empty($getCustomerAddress->address_line1)){
-                     $customers .=  $getCustomerAddress->address_line1 . ', ';
+                    if (isset($getCustomerAddress->address_line1) && !empty($getCustomerAddress->address_line1)) {
+                        $customers .=  $getCustomerAddress->address_line1 . ', ';
                     }
-                    if (isset($getCustomerAddress->address_line2) && !empty($getCustomerAddress->address_line2)){
-                     $customers .= $getCustomerAddress->address_line2 . ', ';
+                    if (isset($getCustomerAddress->address_line2) && !empty($getCustomerAddress->address_line2)) {
+                        $customers .= $getCustomerAddress->address_line2 . ', ';
                     }
-                    if (isset($getCustomerAddress->address_line2) && !empty($getCustomerAddress->address_line2)){
-                     $customers .= $getCustomerAddress->address_line2 . ', ';
+                    if (isset($getCustomerAddress->address_line2) && !empty($getCustomerAddress->address_line2)) {
+                        $customers .= $getCustomerAddress->address_line2 . ', ';
                     }
-                    if (isset($getCustomerAddress->city) && !empty($getCustomerAddress->city)){
-                     $customers .= $getCustomerAddress->city . ', ';
+                    if (isset($getCustomerAddress->city) && !empty($getCustomerAddress->city)) {
+                        $customers .= $getCustomerAddress->city . ', ';
                     }
-                    if (isset($getCustomerAddress->state_name) && !empty($getCustomerAddress->state_name)){
-                     $customers .= $getCustomerAddress->state_name . ', ';
+                    if (isset($getCustomerAddress->state_name) && !empty($getCustomerAddress->state_name)) {
+                        $customers .= $getCustomerAddress->state_name . ', ';
                     }
-                    if (isset($getCustomerAddress->zipcode) && !empty($getCustomerAddress->zipcode)){
-                     $customers .= $getCustomerAddress->zipcode ;
+                    if (isset($getCustomerAddress->zipcode) && !empty($getCustomerAddress->zipcode)) {
+                        $customers .= $getCustomerAddress->zipcode;
                     }
-                    
-                     
+
+
                     $customers .= '</p></div></div></div>';
                 }
             }
@@ -550,9 +551,9 @@ class ScheduleController extends Controller
         $customer = CustomerUserAddress::with('locationStateName')->where('user_id', $request->customerId)->first();
         $statecode = $customer->locationStateName;
 
-          return response()->json([
-           'product' => $product,
-           'statecode' => $statecode
+        return response()->json([
+            'product' => $product,
+            'statecode' => $statecode
         ]);
     }
 
@@ -574,8 +575,8 @@ class ScheduleController extends Controller
         $statecode = $customer->locationStateName;
 
         return response()->json([
-           'serives' => $serives,
-           'statecode' => $statecode
+            'serives' => $serives,
+            'statecode' => $statecode
         ]);
     }
     public function createSchedule(Request $request)
@@ -609,16 +610,16 @@ class ScheduleController extends Controller
                 do {
                     $randomSixDigit = mt_rand(100000, 999999);
                     $exists = DB::table('jobs')->where('job_code', $randomSixDigit)->exists();
-                } while ($exists); 
+                } while ($exists);
 
-                if (is_array($request->tags)){  
+                if (is_array($request->tags)) {
                     $tagIds = implode(',', $request->tags);
-                }else {
+                } else {
                     $tagIds = '';
                 }
-                
-                $customer_name = User::where('id',$data['customer_id'])->first();
-                $technician_name = User::where('id',$data['technician_id'])->first();
+
+                $customer_name = User::where('id', $data['customer_id'])->first();
+                $technician_name = User::where('id', $data['technician_id'])->first();
 
                 $jobsData = [
                     'job_code' => (isset($randomSixDigit) && !empty($randomSixDigit)) ? $randomSixDigit : '',
@@ -639,8 +640,8 @@ class ScheduleController extends Controller
 
                 $jobId = DB::table('jobs')->where('id', $data['job_id'])->update($jobsData);
 
-               
-               
+
+
                 $jobNotes = [
                     'note' => (isset($data['technician_notes']) && !empty($data['technician_notes'])) ? $data['technician_notes'] : '',
                     'updated_by' => auth()->id(),
@@ -666,14 +667,13 @@ class ScheduleController extends Controller
 
                 $jobAssignedID = DB::table('job_assigned')->where('job_id', $data['job_id'])->update($JobAssignedData);
 
-                if(isset($data['exist_appl_id']) && !empty($data['exist_appl_id'])){
-              
+                if (isset($data['exist_appl_id']) && !empty($data['exist_appl_id'])) {
+
                     $userappl = [
-                        'appliance_id' =>(isset($data['exist_appl_id']) && !empty($data['exist_appl_id'])) ? $data['exist_appl_id'] : '',
+                        'appliance_id' => (isset($data['exist_appl_id']) && !empty($data['exist_appl_id'])) ? $data['exist_appl_id'] : '',
                     ];
                     $addAppliancesUser = DB::table('job_appliance')->where('job_id', $data['job_id'])->update($userappl);
-
-                }else{
+                } else {
                     $jobDetails = [
                         'user_id' => $data['customer_id'],
                         'appliance_type_id' => (isset($data['appliances']) && !empty($data['appliances'])) ? $data['appliances'] : '',
@@ -683,10 +683,10 @@ class ScheduleController extends Controller
                     ];
 
                     $userappliances = DB::table('user_appliances')->insertGetId($jobDetails);
-                    
+
                     $userappl = [
                         'job_id' => $data['job_id'],
-                        'appliance_id' => $userappliances ,
+                        'appliance_id' => $userappliances,
                     ];
                     $addAppliancesUser = DB::table('job_appliance')->insertGetId($userappl);
                 }
@@ -782,11 +782,12 @@ class ScheduleController extends Controller
                 $formattedDate = $start_date_time->format('D, M j');
                 $formattedTime = $now->format('g:ia');
                 $formattedDateTime = "{$formattedDate} at {$formattedTime}";
-                $activity ='Job Re-Scheduled for '. $formattedDateTime;
-               app('JobActivityManager')->addJobActivity($data['job_id'], $activity);
-               app('sendNotices')(
-                    "Reschedule Job","Reschedule Job (#{$jobId} - {$customer_name->name}) added by {$technician_name->name}",
-                    url()->current(), 
+                $activity = 'Job Re-Scheduled for ' . $formattedDateTime;
+                app('JobActivityManager')->addJobActivity($data['job_id'], $activity);
+                app('sendNotices')(
+                    "Reschedule Job",
+                    "Reschedule Job (#{$jobId} - {$customer_name->name}) added by {$technician_name->name}",
+                    url()->current(),
                     'job'
                 );
 
@@ -819,25 +820,25 @@ class ScheduleController extends Controller
                     ->where('users.id', $data['customer_id'])->where('user_address.address_type', $data['customer_address'])
                     ->first();
 
-                if (is_array($request->tags)){  
-                  $tagIds = implode(',', $request->tags);
-                }else {
+                if (is_array($request->tags)) {
+                    $tagIds = implode(',', $request->tags);
+                } else {
                     $tagIds = '';
                 }
 
                 do {
                     $randomSixDigit = mt_rand(100000, 999999);
                     $exists = DB::table('jobs')->where('job_code', $randomSixDigit)->exists();
-                } while ($exists); 
-                $customer_name = User::where('id',$data['customer_id'])->first();
-                $technician_name = User::where('id',$data['technician_id'])->first();
+                } while ($exists);
+                $customer_name = User::where('id', $data['customer_id'])->first();
+                $technician_name = User::where('id', $data['technician_id'])->first();
 
-                if($getCustomerDetails->state_name == 'NY'){
-                     $tax_details = '4% for NY';
-                }elseif($getCustomerDetails->state_name == 'TX'){
-                     $tax_details = '6.25% for TX';
+                if ($getCustomerDetails->state_name == 'NY') {
+                    $tax_details = '4% for NY';
+                } elseif ($getCustomerDetails->state_name == 'TX') {
+                    $tax_details = '6.25% for TX';
                 }
-    
+
 
                 $jobsData = [
                     'job_code' => (isset($randomSixDigit) && !empty($randomSixDigit)) ? $randomSixDigit : '',
@@ -857,7 +858,7 @@ class ScheduleController extends Controller
                     'address' => (isset($getCustomerDetails->address_line1) && !empty($getCustomerDetails->address_line1)) ? $getCustomerDetails->address_line1 : '',
                     'city' => (isset($getCustomerDetails->city) && !empty($getCustomerDetails->city)) ? $getCustomerDetails->city : '',
                     'state' => (isset($getCustomerDetails->state_name) && !empty($getCustomerDetails->state_name)) ? $getCustomerDetails->state_name : '',
-                    'tax_details' =>  (isset($tax_details) && !empty($tax_details)) ? $tax_details : '',
+                    'tax_details' => (isset($tax_details) && !empty($tax_details)) ? $tax_details : '',
                     'zipcode' => (isset($getCustomerDetails->zipcode) && !empty($getCustomerDetails->zipcode)) ? $getCustomerDetails->zipcode : '',
                     'latitude' => (isset($getCustomerDetails->latitude) && !empty($getCustomerDetails->latitude)) ? $getCustomerDetails->latitude : 0,
                     'longitude' => (isset($getCustomerDetails->longitude) && !empty($getCustomerDetails->longitude)) ? $getCustomerDetails->longitude : 0,
@@ -872,7 +873,7 @@ class ScheduleController extends Controller
 
                 $jobId = DB::table('jobs')->insertGetId($jobsData);
 
-                
+
 
                 $jobNotes = [
                     'job_id' => $jobId,
@@ -905,31 +906,30 @@ class ScheduleController extends Controller
 
                 $jobAssignedID = DB::table('job_assigned')->insertGetId($JobAssignedData);
 
-            if(isset($data['exist_appl_id']) && !empty($data['exist_appl_id'])){
-              
-                 $userappl = [
-                     'job_id' => $jobId,
-                     'appliance_id' =>(isset($data['exist_appl_id']) && !empty($data['exist_appl_id'])) ? $data['exist_appl_id'] : '',
-                ];
-                $addAppliancesUser = DB::table('job_appliance')->insertGetId($userappl);
+                if (isset($data['exist_appl_id']) && !empty($data['exist_appl_id'])) {
 
-            }else{
-                $jobDetails = [
-                    'user_id' => $data['customer_id'],
-                    'appliance_type_id' => (isset($data['appliances']) && !empty($data['appliances'])) ? $data['appliances'] : '',
-                    'model_number' => (isset($data['model_number']) && !empty($data['model_number'])) ? $data['model_number'] : '',
-                    'serial_number' => (isset($data['serial_number']) && !empty($data['serial_number'])) ? $data['serial_number'] : '',
-                    'manufacturer_id' => (isset($data['manufacturer']) && !empty($data['manufacturer'])) ? $data['manufacturer'] : '',
-                ];
+                    $userappl = [
+                        'job_id' => $jobId,
+                        'appliance_id' => (isset($data['exist_appl_id']) && !empty($data['exist_appl_id'])) ? $data['exist_appl_id'] : '',
+                    ];
+                    $addAppliancesUser = DB::table('job_appliance')->insertGetId($userappl);
+                } else {
+                    $jobDetails = [
+                        'user_id' => $data['customer_id'],
+                        'appliance_type_id' => (isset($data['appliances']) && !empty($data['appliances'])) ? $data['appliances'] : '',
+                        'model_number' => (isset($data['model_number']) && !empty($data['model_number'])) ? $data['model_number'] : '',
+                        'serial_number' => (isset($data['serial_number']) && !empty($data['serial_number'])) ? $data['serial_number'] : '',
+                        'manufacturer_id' => (isset($data['manufacturer']) && !empty($data['manufacturer'])) ? $data['manufacturer'] : '',
+                    ];
 
-                $userappliances = DB::table('user_appliances')->insertGetId($jobDetails);
-                
-                $userappl = [
-                     'job_id' => $jobId,
-                     'appliance_id' => $userappliances ,
-                ];
-                $addAppliancesUser = DB::table('job_appliance')->insertGetId($userappl);
-            }
+                    $userappliances = DB::table('user_appliances')->insertGetId($jobDetails);
+
+                    $userappl = [
+                        'job_id' => $jobId,
+                        'appliance_id' => $userappliances,
+                    ];
+                    $addAppliancesUser = DB::table('job_appliance')->insertGetId($userappl);
+                }
 
                 if (isset($data['services']) && !empty($data['services'])) {
 
@@ -959,7 +959,7 @@ class ScheduleController extends Controller
                     $serviceDataInsert = DB::table('job_service_items')->insertGetId($serviceData);
                 }
 
-                
+
 
                 if (isset($data['products']) && !empty($data['products'])) {
 
@@ -1028,7 +1028,7 @@ class ScheduleController extends Controller
                     // Insert file data into the database
                     $fileDataInsert = DB::table('job_files')->insert($fileData);
                 }
-                     // for job activity 
+                // for job activity 
 
                 if ($jobId && $data['scheduleType']) {
 
@@ -1050,11 +1050,12 @@ class ScheduleController extends Controller
                 $formattedTime = $now->format('g:ia');
                 $formattedDateTime = "{$formattedDate} at {$formattedTime}";
 
-                $activity ='Job scheduled for '. $formattedDateTime;
-               app('JobActivityManager')->addJobActivity($jobId, $activity);
-               app('sendNotices')(
-                     "New Job","New Job (#{$jobId} - {$customer_name->name}) added by {$technician_name->name}",
-                    url()->current(), 
+                $activity = 'Job scheduled for ' . $formattedDateTime;
+                app('JobActivityManager')->addJobActivity($jobId, $activity);
+                app('sendNotices')(
+                    "New Job",
+                    "New Job (#{$jobId} - {$customer_name->name}) added by {$technician_name->name}",
+                    url()->current(),
                     'job'
                 );
                 $height_slot = $duration / 60;
@@ -1068,7 +1069,7 @@ class ScheduleController extends Controller
                 return [
                     'html' => $returnDate,
                     'schedule_id' => $scheduleId,
-            ];
+                ];
             }
         }
 
@@ -1518,7 +1519,7 @@ class ScheduleController extends Controller
         $starthours = BusinessHours::where('day', $dayOfWeek1)->first();
         $endhours = BusinessHours::where('day', $dayOfWeek2)->first();
 
-        if($request->event_type == 'full'){
+        if ($request->event_type == 'full') {
 
             $event = new Event();
 
@@ -1578,10 +1579,9 @@ class ScheduleController extends Controller
                 // Move to the next day
                 $current_date->addDay();
             }
-        
-        }else{
+        } else {
 
-             $event = new Event();
+            $event = new Event();
 
             $event->technician_id = $request->event_technician_id;
             $event->event_name = $request->event_name;
@@ -1649,12 +1649,12 @@ class ScheduleController extends Controller
         $job = User::where('name', $request->technician_name)->first();
 
         $service_area_ids = explode(',', $job->service_areas);
-    
+
         $area_locations = LocationServiceArea::whereIn('area_id', $service_area_ids)->get();
 
         $results = [];
 
-        $area_locations->each(function($location) use (&$results) {
+        $area_locations->each(function ($location) use (&$results) {
             $areaName = strtolower(trim($location->area_name)); // Normalize the area name
 
             switch ($areaName) {
@@ -1684,8 +1684,8 @@ class ScheduleController extends Controller
 
 
         return response()->json([
-        'address' => $address,
-        'result' => $result_string,
+            'address' => $address,
+            'result' => $result_string,
         ]);
     }
     public function new_appliance(Request $request)
@@ -1693,7 +1693,7 @@ class ScheduleController extends Controller
         $appliance = new AppliancesType();
         $appliance->appliance_name = $request->appliance;
         $appliance->save();
-    
+
         // Retrieve all appliances and return them as JSON
         $appliances = AppliancesType::all();
         return response()->json($appliances);
@@ -1704,7 +1704,7 @@ class ScheduleController extends Controller
         $manufacturer = new Manufacturer();
         $manufacturer->manufacturer_name = $request->manufacturer;
         $manufacturer->save();
-    
+
         // Retrieve all appliances and return them as JSON
         $manufacturer = Manufacturer::all();
         return response()->json($manufacturer);
@@ -1720,14 +1720,16 @@ class ScheduleController extends Controller
             'newproducts' => $newproducts,
         ]);
     }
-    
+
     public function travel_time(Request $request)
     {
+        $user = auth()->user();
+        $timezone = User::where('id', $user->id)->first();
+        $timezoneTable = TimeZone::where('timezone_id', $timezone->timezone_id)->first();
+        $timezoneName = $timezoneTable->timezone_name;
+        $currentTime = Carbon::now($timezoneName);
 
-       
-      $currentTime = Carbon::now('Asia/Kolkata');
-       
-      $tech_add = CustomerUserAddress::where('user_id' , $request->tech_id)->first();
+        $tech_add = CustomerUserAddress::where('user_id', $request->tech_id)->first();
 
         $technician = Schedule::where('technician_id', $request->tech_id)
             ->where('start_date_time', '<=', $currentTime)
@@ -1735,35 +1737,35 @@ class ScheduleController extends Controller
             ->first(); // Find the technician whose working time includes the current time
 
         if ($technician) {
-            $jobAddress = JobModel::where('id' , $technician->job_id)->first();
-        $address = $jobAddress->latitude .','. $jobAddress->longitude;
+            $jobAddress = JobModel::where('id', $technician->job_id)->first();
+            $address = $jobAddress->latitude . ',' . $jobAddress->longitude;
         } else {
-           
-        $address = $tech_add->latitude .','. $tech_add->longitude;
+
+            $address = $tech_add->latitude . ',' . $tech_add->longitude;
         }
-        
+
         $origin = $address;
         $destination = $request->customer_add;
 
         $response = Http::get('https://maps.googleapis.com/maps/api/distancematrix/json', [
             'destinations' => $destination,
             'origins' => $origin,
-            'key' => 'AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo', 
+            'key' => 'AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo',
         ]);
 
         $data = $response->json();
         if ($response->successful()) {
             if ($data['status'] === 'OK' && isset($data['rows'][0]['elements'][0]['duration'])) {
                 // Extract duration
-            $travelTime = $data['rows'][0]['elements'][0]['duration']['text'];
-            return response()->json(['travel_time' => $travelTime]);
+                $travelTime = $data['rows'][0]['elements'][0]['duration']['text'];
+                return response()->json(['travel_time' => $travelTime]);
             }
         } else {
             return response()->json(['travel_time' => 'Unable to calculate travel time.']);
         }
     }
 
-   public function get_tech_state(Request $request)
+    public function get_tech_state(Request $request)
     {
         $state_ids = explode(',', $request->stateIds);
 
@@ -1779,15 +1781,15 @@ class ScheduleController extends Controller
         return response()->json($result_string);
     }
 
-   public function customer_appliances(Request $request)
+    public function customer_appliances(Request $request)
     {
-       $appliance = UserAppliances::with('appliance','manufacturer')->where('user_id',$request->id)->get();
+        $appliance = UserAppliances::with('appliance', 'manufacturer')->where('user_id', $request->id)->get();
 
         return response()->json($appliance);
     }
-  public function technician_schedule(Request $request)
+    public function technician_schedule(Request $request)
     {
-        $tech_id = $request->input('tech_id'); 
+        $tech_id = $request->input('tech_id');
         $date = $request->input('date'); // Date part (e.g., '2024-04-26')
         $start_time = $request->input('start_time'); // Time part (e.g., '09:00:00 AM')
         $duration = (int) $request->input('duration'); // Duration in minutes
@@ -1801,7 +1803,7 @@ class ScheduleController extends Controller
         } catch (Carbon\Exceptions\InvalidFormatException $e) {
             return response()->json(['error' => 'Invalid date-time format'], 400);
         }
-        
+
         // Add duration to get end time
         $endDateTime = $startDateTime->copy()->addMinutes($duration); // End time after adding duration
 
@@ -1814,7 +1816,7 @@ class ScheduleController extends Controller
                 'message' => 'Time slot exceeds business hours.',
             ]);
         }
-        
+
         // Query to check for overlapping schedules
         $overlapCheck = Schedule::where('technician_id', $tech_id)
             ->where(function ($query) use ($startDateTime, $endDateTime) {
@@ -1823,20 +1825,15 @@ class ScheduleController extends Controller
                     ->orWhereBetween('end_date_time', [$startDateTime, $endDateTime])
                     ->orWhere(function ($query) use ($startDateTime, $endDateTime) {
                         $query->where('start_date_time', '<=', $startDateTime)
-                                ->where('end_date_time', '>=', $endDateTime);
+                            ->where('end_date_time', '>=', $endDateTime);
                     });
             })
             ->get();
-        
+
         if ($overlapCheck->isNotEmpty()) {
             return response()->json(['available' => false, 'message' => 'Time slot is not available due to overlap.']);
         }
-        
+
         return response()->json(['available' => true, 'message' => 'Time slot is available.']);
     }
-
-
-
-
 }
-    

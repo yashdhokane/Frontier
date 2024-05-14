@@ -28,7 +28,7 @@ use App\Models\Technician;
 use App\Models\JobProduct;
 
 use App\Models\JobServices;
-
+use App\Models\TimeZone;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -109,8 +109,8 @@ class TicketController extends Controller
     {
         $technicians = JobModel::with('jobassignname', 'JobAssign', 'usertechnician', 'addedby', 'jobfieldname')->find($id);
 
-        if(!$technicians){
-           return view('404');
+        if (!$technicians) {
+            return view('404');
         }
 
         $fieldIds = explode(',', $technicians->job_field_ids);
@@ -170,15 +170,22 @@ class TicketController extends Controller
         $jobTimings = App::make('JobTimingManager')->getJobTimings($id);
 
         // travel time 
-        $currentDate = Carbon::today('Asia/Kolkata');
+        $user = auth()->user();
+        $timezone = User::where('id', $user->id)->first();
+        $timezoneTable = TimeZone::where('timezone_id', $timezone->timezone_id)->first();
+        $timezoneName = $timezoneTable->timezone_name;
+        $currentDate = Carbon::today($timezoneName);
+
         $previousJob = JobModel::where('technician_id', $technicians->technician_id)
-                    ->whereDate('created_at', $currentDate)
-                    ->exists();
+            ->whereDate('created_at', $currentDate)
+            ->exists();
+
         $tech_add = CustomerUserAddress::where('user_id', $technicians->technician_id)->first();
-        if(!$previousJob){
-           $address = ($previousJob->latitude ?? 0) . ',' . ($previousJob->longitude ?? 0);
-        }else{
-        $address = ($tech_add->latitude ?? 0) . ',' . ($tech_add->longitude ?? 0);
+
+        if ($previousJob) {
+            $address = ($previousJob->latitude ?? 0) . ',' . ($previousJob->longitude ?? 0);
+        } else {
+            $address = ($tech_add->latitude ?? 0) . ',' . ($tech_add->longitude ?? 0);
         }
         $customer_address = ($technicians->latitude ?? 0) . ',' . ($technicians->longitude ?? 0);
 

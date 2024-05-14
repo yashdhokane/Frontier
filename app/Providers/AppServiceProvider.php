@@ -17,6 +17,10 @@ use App\Models\UserNotification;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
+
+
+
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -206,8 +210,5 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
         });
-
-        
-        
     }
 }

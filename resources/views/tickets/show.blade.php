@@ -350,7 +350,7 @@
                                            @php
                                                 use Carbon\Carbon;
                                                 $timeSchedule = $jobTimings['time_schedule'];
-                                                $shTimeOver = $timeSchedule ? Carbon::parse($timeSchedule)->isPast() : false;
+                                                $shTimeOver = $timeSchedule ? Carbon::parse($timeSchedule,$timezoneName)->isPast() : false;
                                             @endphp
 
                                             <div class="ictop {{ $shTimeOver ? 'bg-info text-white' : 'icblank' }}">
@@ -372,7 +372,7 @@
                                         <div class="icwrap">
                                         @php
                                                 $time_omw = $jobTimings['time_omw'];
-                                                $omwTimeOver = $time_omw ? Carbon::parse($time_omw)->isPast() : false;
+                                                $omwTimeOver = $time_omw ? Carbon::parse($time_omw,$timezoneName)->isPast() : false;
                                             @endphp
                                             <div class="ictop {{ $shTimeOver ? 'bg-info text-white' : 'icblank' }}">
                                                 <i class="ri-truck-line"></i>
@@ -395,7 +395,7 @@
                                                 $travel_time = intval(preg_replace('/[^0-9]/', '', $travelTime)); 
                                                 $newTime = Carbon::parse($jobTimings['time_start'])->addMinutes($travel_time);
                                                 $time_omw = $newTime;
-                                                $startTimeOver = $time_omw ? Carbon::parse($time_omw)->isPast() : false;
+                                                $startTimeOver = $time_omw ? Carbon::parse($time_omw,$timezoneName)->isPast() : false;
                                             @endphp
                                             <div class="ictop {{ $startTimeOver ? 'bg-info text-white' : 'icblank' }}">
                                                 <i class="ri-play-line"></i>
@@ -416,7 +416,7 @@
                                         <div class="icwrap">
                                             @php
                                                 $timeFinish = $jobTimings['time_finish'] ?? null;
-                                                $isTimeOver = $timeFinish ? Carbon::parse($timeFinish)->isPast() : false;
+                                                $isTimeOver = $timeFinish ? Carbon::parse($timeFinish,$timezoneName)->isPast() : false;
                                             @endphp
                                             <div class="ictop {{ $isTimeOver ? 'bg-info text-white' : 'icblank text-primary' }}">
                                                 <i class="ri-stop-circle-line"></i>
@@ -436,7 +436,7 @@
                                         <div class="icwrap">
                                             @php
                                                 $time_invoice = $jobTimings['time_invoice'] ?? null;
-                                                $invoiceTimeOver = $time_invoice ? Carbon::parse($time_invoice)->isPast() : false;
+                                                $invoiceTimeOver = $time_invoice ? Carbon::parse($time_invoice,$timezoneName)->isPast() : false;
                                             @endphp
                                             <div class="ictop {{ $invoiceTimeOver ? 'bg-info text-white' : 'icblank' }}">
                                                 <i class="ri-bill-line"></i>
@@ -460,7 +460,7 @@
                                         <div class="icwrap"> 
                                              @php
                                                 $payment_date = $Payment->payment_date ?? null;
-                                                $payTimeOver = $payment_date ? Carbon::parse($payment_date)->isPast() : false;
+                                                $payTimeOver = $payment_date ? Carbon::parse($payment_date,$timezoneName)->isPast() : false;
                                             @endphp
                                             <div class="ictop  {{ $payTimeOver ? 'bg-info text-white' : 'icblank' }}">
                                                 <i class="ri-currency-line"></i>
