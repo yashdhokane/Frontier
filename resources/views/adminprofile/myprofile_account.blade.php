@@ -148,7 +148,7 @@
                                 @php
                                     use App\Models\User;
                                     use App\Models\TimeZone;
-                                    $zone = TimeZone::where('is_active', 1)->orderBy('timezone_id', 'ASC')->get();
+                                    $zone = TimeZone::where('is_active', 1)->orderBy('time_interval', 'ASC')->get();
 
                                     $id = Auth::User()->id;
 
