@@ -35,7 +35,7 @@ class AuthenticatedSessionController extends Controller
         $timezone = TimeZone::where('timezone_id', $timezoneId)->first();
         Session::put('timezone_id', $timezoneId);
         Session::put('timezone_name', $timezone->timezone_name);
-        Session::put('time_interval', 1);
+        Session::put('time_interval', $timezone->time_interval);
 
         if ($user->status == 'disable' || $user->login == 'disable') {
             Auth::logout(); 
