@@ -149,7 +149,7 @@
                                     use App\Models\User;
                                     use App\Models\TimeZone;
 
-                                    $zone = TimeZone::all();
+                                    $zone = TimeZone::where('is_active', 1)->get();
 
                                     $id = Auth::User()->id;
 

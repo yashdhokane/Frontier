@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\TimeZone;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
@@ -29,6 +31,11 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
         $user = Auth::user();
+        $timezoneId = $user->timezone_id;
+        $timezone = TimeZone::where('timezone_id', $timezoneId)->first();
+        Session::put('timezone_id', $timezoneId);
+        Session::put('timezone_name', $timezone->timezone_name);
+        Session::put('time_interval', 1);
 
         if ($user->status == 'disable' || $user->login == 'disable') {
             Auth::logout(); 
