@@ -46,55 +46,79 @@ use Illuminate\Support\Facades\Validator;
 class TechnicianController extends Controller
 {
 
-   public function index($status=null)
-{
-    $usersQuery = User::where('role', 'technician');
-
-    if ($status == "deactive") {
-        $usersQuery->where('status', 'deactive');
-    } else {
-        $usersQuery->where('status', 'active');
-    }
-
-    $users = $usersQuery->orderBy('created_at', 'desc')->get();
-
-    foreach ($users as $key => $value) {
-        $areaName = [];
-        if (isset($value->service_areas) && !empty($value->service_areas)) {
-            $service_areas = explode(',', $value->service_areas);
-            foreach ($service_areas as $key1 => $value1) {
-                $location_service_area = DB::table('location_service_area')->where('area_id', $value1)->first();
-                if (isset($location_service_area->area_name) && !empty($location_service_area->area_name)) {
-                    $areaName[] = $location_service_area->area_name;
-                }
-            }
-            $users[$key]['area_name'] = implode(', ', $areaName);
+    public function index($status = null)
+    {
+        
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 8;
+        
+        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck === true) {
+            // Proceed with the action
+        } else {
+            return $permissionCheck; // This will handle the redirection
         }
-    }
 
-    return view('technicians.index', compact('users'));
-}
+        $usersQuery = User::where('role', 'technician');
+
+        if ($status == "deactive") {
+            $usersQuery->where('status', 'deactive');
+        } else {
+            $usersQuery->where('status', 'active');
+        }
+
+        $users = $usersQuery->orderBy('created_at', 'desc')->get();
+
+        foreach ($users as $key => $value) {
+            $areaName = [];
+            if (isset($value->service_areas) && !empty($value->service_areas)) {
+                $service_areas = explode(',', $value->service_areas);
+                foreach ($service_areas as $key1 => $value1) {
+                    $location_service_area = DB::table('location_service_area')->where('area_id', $value1)->first();
+                    if (isset($location_service_area->area_name) && !empty($location_service_area->area_name)) {
+                        $areaName[] = $location_service_area->area_name;
+                    }
+                }
+                $users[$key]['area_name'] = implode(', ', $areaName);
+            }
+        }
+
+        return view('technicians.index', compact('users'));
+    }
 
 
 
     public function create()
     {
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 10;
+        
+        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck === true) {
+            // Proceed with the action
+        } else {
+            return $permissionCheck; // This will handle the redirection
+        }
 
         $serviceAreas = LocationServiceArea::all();
         $users = User::all();
-         $colorcode = ColorCode::all();
+        $colorcode = ColorCode::all();
 
         //    $roles = Role::all();
         $locationStates = LocationState::all();
         $tags = SiteTags::all(); // Fetch all tags
 
 
-        return view('technicians.create', compact('users','colorcode', 'serviceAreas', 'tags', 'locationStates'));
+        return view('technicians.create', compact('users', 'colorcode', 'serviceAreas', 'tags', 'locationStates'));
     }
 
-   public function store(Request $request)
+    public function store(Request $request)
     {
-       // dd($request->all());
+        // dd($request->all());
 
         $validator = Validator::make($request->all(), [
 
@@ -122,12 +146,12 @@ class TechnicianController extends Controller
         $user = new User();
         $user->name = $request['display_name'];
         $user->employee_id = User::max('employee_id') + 1;
-      $user->is_employee = 'yes';
+        $user->is_employee = 'yes';
 
         $user->email = $request['email'];
         $user->mobile = $request['mobile_phone'];
-         $user->color_code  = $request['color_code'];
-                  $user->role  = $request['role'];
+        $user->color_code  = $request['color_code'];
+        $user->role  = $request['role'];
 
         $user->password = Hash::make($request['password']);
         // $user->service_areas = implode(',', $request['service_areas']);
@@ -157,7 +181,7 @@ class TechnicianController extends Controller
             $user->user_image = $imageName;
             $user->save();
         }
-app('sendNotices')('New Technician','New Technician Added at ' . now(), url()->current(), 'technician');
+        app('sendNotices')('New Technician', 'New Technician Added at ' . now(), url()->current(), 'technician');
         // $userId = $user->id;
         // $currentTimestamp = now();
 
@@ -188,13 +212,13 @@ app('sendNotices')('New Technician','New Technician Added at ' . now(), url()->c
         $usersDetails->last_name = $request->input('last_name');
         $usersDetails->home_phone = $request->input('home_phone');
         $usersDetails->work_phone = $request->input('work_phone');
-       // $usersDetails->customer_position = $request->input('role');
+        // $usersDetails->customer_position = $request->input('role');
 
-  //  $usersDetails->additional_email = $request->input('additional_email');
+        //  $usersDetails->additional_email = $request->input('additional_email');
 
-      //  $usersDetails->customer_company = $request->input('company');
+        //  $usersDetails->customer_company = $request->input('company');
 
-       // $usersDetails->customer_type = $request->input('user_type');
+        // $usersDetails->customer_type = $request->input('user_type');
 
         $usersDetails->save();
 
@@ -303,20 +327,33 @@ app('sendNotices')('New Technician','New Technician Added at ' . now(), url()->c
     public function show($id)
     {
 
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 11;
+        
+        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck === true) {
+            // Proceed with the action
+        } else {
+            return $permissionCheck; // This will handle the redirection
+        }
+
+
         $technician = User::with('Location')->find($id);
 
         if (!$technician) {
             return view('404');
         }
-$vehicleDescriptions = FleetVehicle::pluck('vehicle_description')->toArray();
-         //dd($vehicleDescriptions);
-            $vehiclefleet=FleetVehicle::where('technician_id',$technician->id)->first();
+        $vehicleDescriptions = FleetVehicle::pluck('vehicle_description')->toArray();
+        //dd($vehicleDescriptions);
+        $vehiclefleet = FleetVehicle::where('technician_id', $technician->id)->first();
         $colorcode = ColorCode::all();
         //dd($vehiclefleet);
-      $schedule=Schedule::with('JobModel.user','JobModel.addresscustomer','JobModel','event')->where('technician_id',$technician->id)->orderBy('created_at', 'desc')->get();
+        $schedule = Schedule::with('JobModel.user', 'JobModel.addresscustomer', 'JobModel', 'event')->where('technician_id', $technician->id)->orderBy('created_at', 'desc')->get();
 
 
-        $notename = DB::table('user_notes')->where('user_id',$technician->id)->get();
+        $notename = DB::table('user_notes')->where('user_id', $technician->id)->get();
         $meta = $technician->meta;
         $home_phone = $technician->meta()->where('meta_key', 'home_phone')->value('meta_value') ?? '';
         $location = CustomerUserAddress::where('user_id', $technician->id)->get();
@@ -420,7 +457,7 @@ $vehicleDescriptions = FleetVehicle::pluck('vehicle_description')->toArray();
             $epa_certification = '';
         }
 
-               $UsersDetails = UsersDetails::where('user_id', $technician->id)->first();
+        $UsersDetails = UsersDetails::where('user_id', $technician->id)->first();
 
         $serviceAreas = LocationServiceArea::all();
         $locationStates = LocationState::all();
@@ -458,23 +495,22 @@ $vehicleDescriptions = FleetVehicle::pluck('vehicle_description')->toArray();
         $manufacturer = Manufacturer::where('is_active', 'yes')->get();
 
         $tech = User::where('role', 'technician')->get();
-       $activity = UsersActivity::with('user')
-    ->where('user_id', $technician->id)
-    ->get();
+        $activity = UsersActivity::with('user')
+            ->where('user_id', $technician->id)
+            ->get();
 
-           $setting = UsersSettings::
-           where('user_id', $technician->id)
+        $setting = UsersSettings::where('user_id', $technician->id)
             ->first();
         $login_history = DB::table('user_login_history')
             ->where('user_login_history.user_id', $technician->id)
             ->first();
-             $estimates = DB::table('estimates')->where(
+        $estimates = DB::table('estimates')->where(
             'technician_id',
             $technician->id
         )->get();
         //dd($login_history);
 
-        return view('technicians.show', compact('vehiclefleet','vehicleDescriptions','colorcode','schedule','estimates','activity','setting', 'login_history', 'technician', 'oil_change', 'tune_up', 'tire_rotation', 'breaks', 'inspection_codes', 'mileage', 'registration_expiration_date', 'vehicle_coverage', 'license_plate', 'vin_number', 'make', 'model', 'year', 'color', 'vehicle_weight', 'vehicle_cost', 'use_of_vehicle', 'repair_services', 'ezpass', 'service', 'additional_service_notes', 'last_updated', 'epa_certification', 'notename', 'payments', 'longitude', 'latitude', 'userAddresscity', 'jobasign', 'customerimage', 'location', 'jobasigndate', 'serviceAreas', 'locationStates', 'tags', 'cities', 'selectedTags', 'userTags', 'product', 'assign', 'technicianpart', 'tickets', 'payment', 'manufacturer', 'tech','UsersDetails'));
+        return view('technicians.show', compact('vehiclefleet', 'vehicleDescriptions', 'colorcode', 'schedule', 'estimates', 'activity', 'setting', 'login_history', 'technician', 'oil_change', 'tune_up', 'tire_rotation', 'breaks', 'inspection_codes', 'mileage', 'registration_expiration_date', 'vehicle_coverage', 'license_plate', 'vin_number', 'make', 'model', 'year', 'color', 'vehicle_weight', 'vehicle_cost', 'use_of_vehicle', 'repair_services', 'ezpass', 'service', 'additional_service_notes', 'last_updated', 'epa_certification', 'notename', 'payments', 'longitude', 'latitude', 'userAddresscity', 'jobasign', 'customerimage', 'location', 'jobasigndate', 'serviceAreas', 'locationStates', 'tags', 'cities', 'selectedTags', 'userTags', 'product', 'assign', 'technicianpart', 'tickets', 'payment', 'manufacturer', 'tech', 'UsersDetails'));
     }
 
     public function edit($id)
@@ -532,7 +568,7 @@ $vehicleDescriptions = FleetVehicle::pluck('vehicle_description')->toArray();
             return redirect()->route('technicians.index');
         }
     }
-   public function update(Request $request, $id)
+    public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|max:255',
@@ -564,7 +600,7 @@ $vehicleDescriptions = FleetVehicle::pluck('vehicle_description')->toArray();
         }
 
         $user->name = $request['display_name'];
-         $user->email = $request['email'];
+        $user->email = $request['email'];
         $user->mobile = $request['mobile_phone'];
         $user->role = $request['role'];
         $user->color_code  = $request['color_code'];
@@ -614,7 +650,7 @@ $vehicleDescriptions = FleetVehicle::pluck('vehicle_description')->toArray();
                 'last_name' => $request->input('last_name'),
                 'home_phone' => $request->input('home_phone'),
                 'work_phone' => $request->input('work_phone'),
-             //   'additional_email' => $request->input('additional_email'),
+                //   'additional_email' => $request->input('additional_email'),
                 //'customer_company' => $request->input('company'),
                 //'customer_type' => $request->input('user_type'),
                 //'customer_position' => $request->input('role'),
@@ -707,10 +743,7 @@ $vehicleDescriptions = FleetVehicle::pluck('vehicle_description')->toArray();
 
     public function updateservice(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-
-
-        ]);
+        $validator = Validator::make($request->all(), []);
 
         if ($validator->fails()) {
             return redirect()
@@ -754,14 +787,14 @@ $vehicleDescriptions = FleetVehicle::pluck('vehicle_description')->toArray();
     }
 
 
-   public function techniciancomment(Request $request)
-{
+    public function techniciancomment(Request $request)
+    {
 
         $user_auth = auth()->user();
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
         $module_id = 5;
-        
+
         $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
@@ -769,28 +802,38 @@ $vehicleDescriptions = FleetVehicle::pluck('vehicle_description')->toArray();
             return $permissionCheck; // This will handle the redirection
         }
 
-    $addedByUserId = auth()->user()->id;
-    $user = User::findOrFail($request->id);
+        $addedByUserId = auth()->user()->id;
+        $user = User::findOrFail($request->id);
 
-    $payment = new UserNotesCustomer();
-    $payment->user_id = $user->id;
-    $payment->added_by = $addedByUserId;
-    $payment->last_updated_by = $addedByUserId;
-    $payment->note = $request->note;
-    $payment->save();
+        $payment = new UserNotesCustomer();
+        $payment->user_id = $user->id;
+        $payment->added_by = $addedByUserId;
+        $payment->last_updated_by = $addedByUserId;
+        $payment->note = $request->note;
+        $payment->save();
 
-    // Update the user's updated_by and updated_at fields
-    $user->updated_by = $addedByUserId;
-    $user->updated_at = now();
-    $user->save();
+        // Update the user's updated_by and updated_at fields
+        $user->updated_by = $addedByUserId;
+        $user->updated_at = now();
+        $user->save();
 
-    return redirect()->back()->with('success', 'Comment added successfully');
-}
+        return redirect()->back()->with('success', 'Comment added successfully');
+    }
 
 
     public function technicianstaus(Request $request)
     {
-        //dd($id);
+       $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 6;
+        
+        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck === true) {
+            // Proceed with the action
+        } else {
+            return $permissionCheck; // This will handle the redirection
+        }
 
         // Find the user based on the provided $id
         $user = User::findOrFail($request->user_id);
@@ -937,40 +980,40 @@ $vehicleDescriptions = FleetVehicle::pluck('vehicle_description')->toArray();
         return redirect()->back()->with('success', 'Fleet data updated successfully!');
     }
     // public function updatefleet(Request $request)
-// {
+    // {
 
     //     // Find the FleetDetails record based on the user ID
-// $fleetDetails = FleetDetails::where('user_id', $request->id)->first();
-//  dd($fleetDetails);
-//     // Update or create each field in the fleet details
-//     $fleetDetails->updateOrCreate(['fleet_key' => 'oil_change'], ['fleet_value' => $request->input('oil_change')]);
-//     $fleetDetails->updateOrCreate(['fleet_key' => 'tune_up'], ['fleet_value' => $request->input('tune_up')]);
-//     $fleetDetails->updateOrCreate(['fleet_key' => 'tire_rotation'], ['fleet_value' => $request->input('tire_rotation')]);
-//     $fleetDetails->updateOrCreate(['fleet_key' => 'breaks'], ['fleet_value' => $request->input('breaks')]);
-//     $fleetDetails->updateOrCreate(['fleet_key' => 'inspection_codes'], ['fleet_value' => $request->input('inspection_codes')]);
-//     $fleetDetails->updateOrCreate(['fleet_key' => 'mileage'], ['fleet_value' => $request->input('mileage')]);
-//     $fleetDetails->updateOrCreate(['fleet_key' => 'registration_expiration_date'], ['fleet_value' => $request->input('registration_expiration_date')]);
-//     $fleetDetails->updateOrCreate(['fleet_key' => 'vehicle_coverage'], ['fleet_value' => $request->input('vehicle_coverage')]);
-//     $fleetDetails->updateOrCreate(['fleet_key' => 'license_plate'], ['fleet_value' => $request->input('license_plate')]);
-//     $fleetDetails->updateOrCreate(['fleet_key' => 'vin_number'], ['fleet_value' => $request->input('vin_number')]);
-//     $fleetDetails->updateOrCreate(['fleet_key' => 'make'], ['fleet_value' => $request->input('make')]);
-//     $fleetDetails->updateOrCreate(['fleet_key' => 'model'], ['fleet_value' => $request->input('model')]);
-//     $fleetDetails->updateOrCreate(['fleet_key' => 'year'], ['fleet_value' => $request->input('year')]);
-//     $fleetDetails->updateOrCreate(['fleet_key' => 'color'], ['fleet_value' => $request->input('color')]);
-//     $fleetDetails->updateOrCreate(['fleet_key' => 'vehicle_weight'], ['fleet_value' => $request->input('vehicle_weight')]);
-//     $fleetDetails->updateOrCreate(['fleet_key' => 'vehicle_cost'], ['fleet_value' => $request->input('vehicle_cost')]);
-//     $fleetDetails->updateOrCreate(['fleet_key' => 'use_of_vehicle'], ['fleet_value' => $request->input('use_of_vehicle')]);
-//     $fleetDetails->updateOrCreate(['fleet_key' => 'repair_services'], ['fleet_value' => $request->input('repair_services')]);
-//     $fleetDetails->updateOrCreate(['fleet_key' => 'ezpass'], ['fleet_value' => $request->input('ezpass')]);
-//     $fleetDetails->updateOrCreate(['fleet_key' => 'service'], ['fleet_value' => $request->input('service')]);
-//     $fleetDetails->updateOrCreate(['fleet_key' => 'additional_service_notes'], ['fleet_value' => $request->input('additional_service_notes')]);
-//     $fleetDetails->updateOrCreate(['fleet_key' => 'last_updated'], ['fleet_value' => $request->input('last_updated')]);
-//     $fleetDetails->updateOrCreate(['fleet_key' => 'epa_certification'], ['fleet_value' => $request->input('epa_certification')]);
+    // $fleetDetails = FleetDetails::where('user_id', $request->id)->first();
+    //  dd($fleetDetails);
+    //     // Update or create each field in the fleet details
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'oil_change'], ['fleet_value' => $request->input('oil_change')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'tune_up'], ['fleet_value' => $request->input('tune_up')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'tire_rotation'], ['fleet_value' => $request->input('tire_rotation')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'breaks'], ['fleet_value' => $request->input('breaks')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'inspection_codes'], ['fleet_value' => $request->input('inspection_codes')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'mileage'], ['fleet_value' => $request->input('mileage')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'registration_expiration_date'], ['fleet_value' => $request->input('registration_expiration_date')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'vehicle_coverage'], ['fleet_value' => $request->input('vehicle_coverage')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'license_plate'], ['fleet_value' => $request->input('license_plate')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'vin_number'], ['fleet_value' => $request->input('vin_number')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'make'], ['fleet_value' => $request->input('make')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'model'], ['fleet_value' => $request->input('model')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'year'], ['fleet_value' => $request->input('year')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'color'], ['fleet_value' => $request->input('color')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'vehicle_weight'], ['fleet_value' => $request->input('vehicle_weight')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'vehicle_cost'], ['fleet_value' => $request->input('vehicle_cost')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'use_of_vehicle'], ['fleet_value' => $request->input('use_of_vehicle')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'repair_services'], ['fleet_value' => $request->input('repair_services')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'ezpass'], ['fleet_value' => $request->input('ezpass')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'service'], ['fleet_value' => $request->input('service')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'additional_service_notes'], ['fleet_value' => $request->input('additional_service_notes')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'last_updated'], ['fleet_value' => $request->input('last_updated')]);
+    //     $fleetDetails->updateOrCreate(['fleet_key' => 'epa_certification'], ['fleet_value' => $request->input('epa_certification')]);
 
     //     return redirect()->back()->with('success', 'Fleet data updated successfully!');
-// }
+    // }
 
- public function fleettechnician(Request $request)
+    public function fleettechnician(Request $request)
     {
         //dd($request->all());
 
@@ -1144,7 +1187,7 @@ $vehicleDescriptions = FleetVehicle::pluck('vehicle_description')->toArray();
         return redirect()->back()->with('success', 'Technician created successfully');
     }
 
- public function smstechnician(Request $request)
+    public function smstechnician(Request $request)
     {
         $userId = $request->id;
 
@@ -1189,38 +1232,35 @@ $vehicleDescriptions = FleetVehicle::pluck('vehicle_description')->toArray();
 
 
 
-public function update_fleet_technician(Request $request)
-{
-    // Check if the user is authenticated
-    if (auth()->check()) {
-        // Retrieve the technician ID and vehicle description from the request
-        $technicianId = $request->input('technician_id');
-        $description = $request->input('vehicle_description');
+    public function update_fleet_technician(Request $request)
+    {
+        // Check if the user is authenticated
+        if (auth()->check()) {
+            // Retrieve the technician ID and vehicle description from the request
+            $technicianId = $request->input('technician_id');
+            $description = $request->input('vehicle_description');
 
-        // Find the FleetVehicle record that matches the technician ID and vehicle description
-        $fleet = FleetVehicle::where('technician_id', $technicianId)
-                             ->first();
+            // Find the FleetVehicle record that matches the technician ID and vehicle description
+            $fleet = FleetVehicle::where('technician_id', $technicianId)
+                ->first();
 
-        if ($fleet) {
-            // Update the found FleetVehicle record with the provided technician ID and description
-            $fleet->update([
-                'updated_at' => now(),
-                'updated_by' => auth()->user()->id, // Access user ID using auth()->user()
-                'vehicle_description' => $request->vehicle_description,
-            ]);
+            if ($fleet) {
+                // Update the found FleetVehicle record with the provided technician ID and description
+                $fleet->update([
+                    'updated_at' => now(),
+                    'updated_by' => auth()->user()->id, // Access user ID using auth()->user()
+                    'vehicle_description' => $request->vehicle_description,
+                ]);
 
-            // Return a success response
-            return redirect()->back()->with('success', 'Vehicle title changed successfully');
+                // Return a success response
+                return redirect()->back()->with('success', 'Vehicle title changed successfully');
+            } else {
+                // Return an error response if the fleet record is not found
+                return redirect()->back()->with('error', 'Fleet record not found for the provided technician ID and description');
+            }
         } else {
-            // Return an error response if the fleet record is not found
-            return redirect()->back()->with('error', 'Fleet record not found for the provided technician ID and description');
+            // User is not authenticated, handle the error accordingly
+            return redirect()->back()->with('error', 'User not authenticated');
         }
-    } else {
-        // User is not authenticated, handle the error accordingly
-        return redirect()->back()->with('error', 'User not authenticated');
     }
-}
-
-
-
 }
