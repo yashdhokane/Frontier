@@ -31,6 +31,18 @@ class DispatcherController extends Controller
 {
     public function index()
     {
+         $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 16;
+        
+        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck === true) {
+            // Proceed with the action
+        } else {
+            return $permissionCheck; // This will handle the redirection
+        }
+
 
     $users = User::where('role', 'dispatcher')
             ->orderBy('name', 'asc')
@@ -43,6 +55,18 @@ class DispatcherController extends Controller
 
     public function create()
     {
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 17;
+        
+        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck === true) {
+            // Proceed with the action
+        } else {
+            return $permissionCheck; // This will handle the redirection
+        }
+
         $permissions = DB::table('user_permissions')->pluck('permission_id')->toArray();
 
         $users = User::all();
@@ -245,6 +269,21 @@ class DispatcherController extends Controller
 
     public function show($id)
     {
+
+
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 18;
+        
+        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck === true) {
+            // Proceed with the action
+        } else {
+            return $permissionCheck; // This will handle the redirection
+        }
+
+
         $dispatcher = User::find($id);
            if (!$dispatcher) {
             return view('404');

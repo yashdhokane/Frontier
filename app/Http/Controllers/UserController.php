@@ -56,7 +56,7 @@ class UserController extends Controller
         $user_auth = auth()->user();
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
-        $module_id = 1;
+        $module_id = 2;
         
         $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
