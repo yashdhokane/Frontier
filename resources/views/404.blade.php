@@ -14,7 +14,7 @@
       content="Frontier Tech Services - Technician management and system management."
     />
     <meta name="robots" content="noindex,nofollow" />
-    <title>Frontier Tech Services - Web Application to manage technicians</title>
+    <title>Dispatch Channel Inc. - Web Application to manage technicians</title>
     <link rel="canonical" href="{{ route('home') }}" />
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('public/admin/assets/images/favicon.png') }}" />
