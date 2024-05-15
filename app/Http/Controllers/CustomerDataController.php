@@ -21,6 +21,18 @@ class CustomerDataController extends Controller
 {
     public function index($status = null)
     {
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 2;
+        
+        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck === true) {
+            // Proceed with the action
+        } else {
+            return $permissionCheck; // This will handle the redirection
+        }
+
         // Start with the base query for users with eager loading
         $usersQuery = User::with('customerdatafetch'); // Eager load the related data
 

@@ -18,10 +18,7 @@ use App\Models\TimeZone;
 use App\Models\UserNotification;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-
-
-
-
+use Illuminate\Support\Facades\Redirect;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,6 +27,32 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->singleton('UserPermissionChecker', function () {
+            return new class {
+                public function checkUserPermission($user_id, $permissions_type, $module_id)
+                {
+                    if ($permissions_type == 'all') {
+                        return true; // Allow access
+                    } elseif ($permissions_type == 'block') {
+                        return Redirect::to('unauthorized'); // Redirect to unauthorized page
+                    } elseif ($permissions_type == 'selected') {
+                        $permission = DB::table('user_permissions')
+                            ->where('user_id', $user_id)
+                            ->where('module_id', $module_id)
+                            ->value('permission');
+                        if ($permission === 1) {
+                            return true; // Allow access
+                            dd();
+                        } else {
+                            return Redirect::to('unauthorized'); // Redirect to unauthorized page
+                        }
+                    }
+                    return Redirect::to('unauthorized'); // Default unauthorized response
+                }
+            };
+        });
+
+
         // Bind a singleton with a common function
         $this->app->singleton('JobActivityManager', function () {
             return new class
