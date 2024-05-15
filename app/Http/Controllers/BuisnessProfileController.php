@@ -19,15 +19,27 @@ use Carbon\Carbon;
 class BuisnessProfileController extends Controller
 
 {
- public function index()
-{
-    $businessProfiles = BuisnessProfileModel::get();
+    public function index()
+    {
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 53;
 
-    return view('buisnessprofile.buisnessprofile', compact('businessProfiles'));
-}
+        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck === true) {
+            // Proceed with the action
+        } else {
+            return $permissionCheck; // This will handle the redirection
+        }
+
+        $businessProfiles = BuisnessProfileModel::get();
+
+        return view('buisnessprofile.buisnessprofile', compact('businessProfiles'));
+    }
 
 
-        public function update(Request $request)
+    public function update(Request $request)
     {
         // Find the model by ID
         $businessProfile = BuisnessProfileModel::find($request->id);
@@ -45,7 +57,7 @@ class BuisnessProfileController extends Controller
 
             // Save the changes
             $businessProfile->save();
-// dd(1);
+            // dd(1);
             // Add success flash message
             return redirect()->back()->with('success', 'Business profile updated successfully.');
         } else {
@@ -53,10 +65,10 @@ class BuisnessProfileController extends Controller
             return redirect()->back()->with('error', 'Business profile not found.');
         }
     }
-    
 
 
-     public function bpupdate(Request $request)
+
+    public function bpupdate(Request $request)
     {
         // Find the model by ID
         $businessProfile = BuisnessProfileModel::find($request->id);
@@ -65,7 +77,7 @@ class BuisnessProfileController extends Controller
             // Update model properties without validation
             $businessProfile->description_long = $request->description_long;
             $businessProfile->save();
-// dd(1);
+            // dd(1);
             // Add success flash message
             return redirect()->back()->with('success', 'Business profile updated successfully.');
         } else {
@@ -73,7 +85,7 @@ class BuisnessProfileController extends Controller
             return redirect()->back()->with('error', 'Business profile not found.');
         }
     }
-    
+
 
 
     public function moiupdate(Request $request)
@@ -85,7 +97,7 @@ class BuisnessProfileController extends Controller
             // Update model properties without validation
             $businessProfile->message_on_docs = $request->message_on_docs;
             $businessProfile->save();
-// dd(1);
+            // dd(1);
             // Add success flash message
             return redirect()->back()->with('success', 'Business profile updated successfully.');
         } else {
@@ -93,9 +105,9 @@ class BuisnessProfileController extends Controller
             return redirect()->back()->with('error', 'Business profile not found.');
         }
     }
-    
 
-     public function tacupdate(Request $request)
+
+    public function tacupdate(Request $request)
     {
         // Find the model by ID
         $businessProfile = BuisnessProfileModel::find($request->id);
@@ -104,7 +116,7 @@ class BuisnessProfileController extends Controller
             // Update model properties without validation
             $businessProfile->terms_condition = $request->terms_condition;
             $businessProfile->save();
-// dd(1);
+            // dd(1);
             // Add success flash message
             return redirect()->back()->with('success', 'Business profile updated successfully.');
         } else {
@@ -112,5 +124,4 @@ class BuisnessProfileController extends Controller
             return redirect()->back()->with('error', 'Business profile not found.');
         }
     }
-
 }

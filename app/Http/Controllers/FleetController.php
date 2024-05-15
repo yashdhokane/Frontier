@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\FleetDetails;
@@ -18,45 +19,58 @@ class FleetController extends Controller
      */
     public function index()
     {
-$vehicle = FleetVehicle::orderBy('created_at', 'desc')->get();
+        
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 50;
+        
+        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck === true) {
+            // Proceed with the action
+        } else {
+            return $permissionCheck; // This will handle the redirection
+        }
 
-       return view('fleet.index',compact('vehicle'));
+        $vehicle = FleetVehicle::orderBy('created_at', 'desc')->get();
+
+        return view('fleet.index', compact('vehicle'));
     }
 
     public function inactive(Request $request, $id)
     {
-     
+
         $product = FleetVehicle::find($id);
 
         $product->status = 'inactive';
 
         $product->update();
 
-       return redirect()->back()->with('success', 'Status Inactive successfully');
+        return redirect()->back()->with('success', 'Status Inactive successfully');
     }
 
     public function active(Request $request, $id)
     {
-     
+
         $product = FleetVehicle::find($id);
 
         $product->status = 'active';
 
         $product->update();
 
-       return redirect()->back()->with('success', 'Status Active successfully');
+        return redirect()->back()->with('success', 'Status Active successfully');
     }
 
     public function addvehicle(Request $request)
     {
-        $user = User::where('role','technician')->get();
+        $user = User::where('role', 'technician')->get();
         $serviceAreas = LocationServiceArea::all();
         $users = User::all();
         //    $roles = Role::all();
         $locationStates = LocationState::all();
         $tags = SiteTags::all(); // Fetch all tags
-     
-         return view('fleet.create',compact('user','users', 'serviceAreas', 'tags', 'locationStates'));
+
+        return view('fleet.create', compact('user', 'users', 'serviceAreas', 'tags', 'locationStates'));
     }
 
     public function store(Request $request)
@@ -76,23 +90,23 @@ $vehicle = FleetVehicle::orderBy('created_at', 'desc')->get();
         return redirect()->route('vehicles')->with('success', 'Fleet Vehicle created successfully');
     }
 
-     public function fleetedit($id)
+    public function fleetedit($id)
     {
         // Find the FleetModel by its ID
         $fleetModel = FleetVehicle::findOrFail($id);
-$technicianIds = $fleetModel->pluck('technician_id');
+        $technicianIds = $fleetModel->pluck('technician_id');
 
-$users = User::where('role', 'technician')
-             ->whereNotIn('id', $technicianIds)
-             ->get();
+        $users = User::where('role', 'technician')
+            ->whereNotIn('id', $technicianIds)
+            ->get();
 
         // Return the edit view with the FleetModel and users data
         return view('fleet.edit', compact('fleetModel', 'users'));
     }
     public function edit(Request $request, $id)
     {
-       $vehicle_id = $id;
-        $fleet = FleetDetails::where('vehicle_id',$vehicle_id)->first();
+        $vehicle_id = $id;
+        $fleet = FleetDetails::where('vehicle_id', $vehicle_id)->first();
 
         if ($fleet) {
             $oil_change = $fleet->where('fleet_key', 'oil_change')->value('fleet_value') ?? '';
@@ -143,27 +157,27 @@ $users = User::where('role', 'technician')
             $last_updated = '';
             $epa_certification = '';
         }
-        
-        
-        
 
 
-       return view('fleet.edit',compact('fleet','vehicle_id','oil_change', 'tune_up', 'tire_rotation', 'breaks', 'inspection_codes', 'mileage', 'registration_expiration_date', 'vehicle_coverage', 'license_plate', 'vin_number', 'make', 'model', 'year', 'color', 'vehicle_weight', 'vehicle_cost', 'use_of_vehicle', 'repair_services', 'ezpass', 'service', 'additional_service_notes', 'last_updated', 'epa_certification'));
+
+
+
+        return view('fleet.edit', compact('fleet', 'vehicle_id', 'oil_change', 'tune_up', 'tire_rotation', 'breaks', 'inspection_codes', 'mileage', 'registration_expiration_date', 'vehicle_coverage', 'license_plate', 'vin_number', 'make', 'model', 'year', 'color', 'vehicle_weight', 'vehicle_cost', 'use_of_vehicle', 'repair_services', 'ezpass', 'service', 'additional_service_notes', 'last_updated', 'epa_certification'));
     }
 
     public function updatefleetdetails(Request $request)
     {
         // Retrieve the vehicle_id from the request
         $vehicleId = $request->input('vehicle_id');
-    $auth = auth()->user()->id;
+        $auth = auth()->user()->id;
         // Loop through each input and update or create the corresponding FleetDetails record
         $inputs = $request->except('_token', 'vehicle_id');
         foreach ($inputs as $key => $value) {
             // Attempt to find the FleetDetails record for the given vehicle_id and fleet_key
             $fleetDetail = FleetDetails::where('vehicle_id', $vehicleId)
-                                        ->where('fleet_key', $key)
-                                        ->first();
-    
+                ->where('fleet_key', $key)
+                ->first();
+
             // If record not found, create a new one
             if (!$fleetDetail) {
                 FleetDetails::create([
@@ -177,11 +191,11 @@ $users = User::where('role', 'technician')
                 $fleetDetail->update(['fleet_value' => $value]);
             }
         }
-    
+
         return redirect()->back()->with('success', 'Fleet data updated successfully!');
     }
 
-     public function update(Request $request, $id)
+    public function update(Request $request, $id)
     {
         // Validate the form data
         $request->validate([

@@ -40,6 +40,19 @@ class TicketController extends Controller
     // Display a listing of the tickets
     public function index()
     {
+        
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 32;
+        
+        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck === true) {
+            // Proceed with the action
+        } else {
+            return $permissionCheck; // This will handle the redirection
+        }
+
         $servicearea = LocationServiceArea::all();
         $manufacturer = Manufacturer::all();
         $technicianrole = User::where('role', 'technician')->get();
@@ -107,6 +120,19 @@ class TicketController extends Controller
     // Display the specified ticket
     public function show($id)
     {
+        
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 34;
+        
+        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck === true) {
+            // Proceed with the action
+        } else {
+            return $permissionCheck; // This will handle the redirection
+        }
+
         $technicians = JobModel::with('jobassignname', 'JobAssign', 'usertechnician', 'addedby', 'jobfieldname')->find($id);
 
         if (!$technicians) {

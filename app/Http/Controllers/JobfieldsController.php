@@ -22,6 +22,17 @@ class JobfieldsController extends Controller
 
     public function create()
     {
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 59;
+        
+        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck === true) {
+            // Proceed with the action
+        } else {
+            return $permissionCheck; // This will handle the redirection
+        }
         $JobfieldsList = SiteJobFields::all();
 
         return view('jobfields.job-fields-list', ['JobfieldsList' => $JobfieldsList]);

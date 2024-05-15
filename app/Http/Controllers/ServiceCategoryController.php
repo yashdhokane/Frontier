@@ -11,6 +11,19 @@ class ServiceCategoryController extends Controller
 {
     public function index()
     {
+        
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 36;
+        
+        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck === true) {
+            // Proceed with the action
+        } else {
+            return $permissionCheck; // This will handle the redirection
+        }
+
 
         $servicecategory = ServiceCategory::where('parent_id',0)->get();
         return view('services.index', ['servicecategory' => $servicecategory]);

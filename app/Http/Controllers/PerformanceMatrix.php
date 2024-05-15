@@ -10,6 +10,19 @@ class PerformanceMatrix extends Controller
 {
     public function performanncematrix()
     {
+
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 45;
+
+        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck === true) {
+            // Proceed with the action
+        } else {
+            return $permissionCheck; // This will handle the redirection
+        }
+
         // Fetch technician_id, count of assigned jobs, and count of completed jobs for each technician
         $performances = DB::table('jobs')
             ->select(
@@ -35,11 +48,11 @@ class PerformanceMatrix extends Controller
         $goodPerformers = $performances->where('percentage_completed', '>=', 0)->where('percentage_completed', '<', 50)->take(5);
         $poorPerformers = $performances->where('percentage_completed', '>=', 0)->where('percentage_completed', '<', 30)->take(5);
         $allPerformers = $performances->where('percentage_completed', '>=', 0)->where('percentage_completed', '<', 100);
-      $successratecounts = $performances->where('percentage_completed', '>=', 0)->where('percentage_completed', '<', 100)->count();
+        $successratecounts = $performances->where('percentage_completed', '>=', 0)->where('percentage_completed', '<', 100)->count();
 
         // dd($allPerformers);
         // Pass the variables to the blade view
-          // Count jobs with status = rejected
+        // Count jobs with status = rejected
         $rejectedCount = DB::table('jobs')
             ->where('status', 'rejected')
             ->count();
@@ -59,54 +72,49 @@ class PerformanceMatrix extends Controller
             ->where('status', 'open')
             ->count();
 
-$startDate = Carbon::now()->subMonth()->startOfMonth();
+        $startDate = Carbon::now()->subMonth()->startOfMonth();
 
-// Get the end date of the last month
-$endDate = Carbon::now()->subMonth()->endOfMonth();
+        // Get the end date of the last month
+        $endDate = Carbon::now()->subMonth()->endOfMonth();
 
-// Get the total count of jobs generated in the last month
-$onemonthCount = DB::table('jobs')
-    ->whereBetween('created_at', [$startDate, $endDate])
-    ->count();
+        // Get the total count of jobs generated in the last month
+        $onemonthCount = DB::table('jobs')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->count();
 
-// Get the count of closed jobs for the last month
-$onemonthcompleteCount = DB::table('jobs')
-    ->where('status', 'closed')
-    ->whereBetween('created_at', [$startDate, $endDate])
-    ->count();
+        // Get the count of closed jobs for the last month
+        $onemonthcompleteCount = DB::table('jobs')
+            ->where('status', 'closed')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->count();
 
-// Calculate the percentage of closed jobs relative to the total count
-if ($onemonthCount > 0) {
-    $closedPercentage = ($onemonthcompleteCount / $onemonthCount) * 100;
-    $formattedPercentage = number_format($closedPercentage, 2); // Format to two decimal places
-} else {
-    $formattedPercentage = 0; // Handle division by zero error
-}
+        // Calculate the percentage of closed jobs relative to the total count
+        if ($onemonthCount > 0) {
+            $closedPercentage = ($onemonthcompleteCount / $onemonthCount) * 100;
+            $formattedPercentage = number_format($closedPercentage, 2); // Format to two decimal places
+        } else {
+            $formattedPercentage = 0; // Handle division by zero error
+        }
 
-//earning
-// Get the one-month total earning count from the gross_total column
-$oneMonthTotalEarningCount = DB::table('jobs')
-    ->whereBetween('created_at', [$startDate, $endDate])
-    ->sum('gross_total'); // Assuming 'gross_total' is the column storing earnings
+        //earning
+        // Get the one-month total earning count from the gross_total column
+        $oneMonthTotalEarningCount = DB::table('jobs')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->sum('gross_total'); // Assuming 'gross_total' is the column storing earnings
 
-// Get the count of closed earnings for the last month
-$oneMonthClosedEarningCount = DB::table('jobs')
-    ->where('status', 'closed')
-    ->whereBetween('created_at', [$startDate, $endDate])
-    ->sum('gross_total'); 
-// Calculate the percentage of closed earnings relative to the total earnings count
-if ($oneMonthTotalEarningCount > 0) {
-    $closedEarningPercentage = ($oneMonthClosedEarningCount / $oneMonthTotalEarningCount) * 100;
-    $formattedPercentage = number_format($closedEarningPercentage, 2); // Format to two decimal places
-} else {
-    $formattedPercentage = 0; // Handle division by zero error
-}
+        // Get the count of closed earnings for the last month
+        $oneMonthClosedEarningCount = DB::table('jobs')
+            ->where('status', 'closed')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->sum('gross_total');
+        // Calculate the percentage of closed earnings relative to the total earnings count
+        if ($oneMonthTotalEarningCount > 0) {
+            $closedEarningPercentage = ($oneMonthClosedEarningCount / $oneMonthTotalEarningCount) * 100;
+            $formattedPercentage = number_format($closedEarningPercentage, 2); // Format to two decimal places
+        } else {
+            $formattedPercentage = 0; // Handle division by zero error
+        }
 
-        return view('performancematrix.performance_matrix', compact('oneMonthClosedEarningCount','formattedPercentage','oneMonthTotalEarningCount','topPerformers','onemonthcompleteCount','formattedPercentage','onemonthCount','successratecounts', 'closedCount', 'pendingCount', 'openCount', 'rejectedCount', 'allPerformers', 'goodPerformers', 'poorPerformers'));
+        return view('performancematrix.performance_matrix', compact('oneMonthClosedEarningCount', 'formattedPercentage', 'oneMonthTotalEarningCount', 'topPerformers', 'onemonthcompleteCount', 'formattedPercentage', 'onemonthCount', 'successratecounts', 'closedCount', 'pendingCount', 'openCount', 'rejectedCount', 'allPerformers', 'goodPerformers', 'poorPerformers'));
     }
-
-
-
-
-
 }
