@@ -168,7 +168,6 @@ class ScheduleController extends Controller
                         $newFormattedDateTime = Carbon::parse($datetimeString)->addHours($time_interval)->format('Y-m-d H:i:s');
                         $time = date("h:i A", strtotime($newFormattedDateTime));
                         $schedule_arr[$value][$time][] = $item;
-                        // dd($schedule_arr);
                     }
                 }
             }
@@ -307,6 +306,37 @@ class ScheduleController extends Controller
 
         return view('schedule.schedule_new', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate', 'users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', 'cities', 'cities1', 'TodayDate', 'tech', 'schedule_arr'));
     }
+
+    public function refreshSchedule(Request $request)
+    {
+        $filterDate = Carbon::now()->format('Y-m-d');
+
+        $technician = User::where('role', 'technician')->where('status', 'active')->get();
+        $time_interval = Session::get('time_interval');
+
+        $schedule_arr = [];
+
+        foreach ($technician as $tech) {
+            $user_id = $tech->id;
+            $schedule_arr[$user_id] = [];
+
+            $schedule = Schedule::with('JobModel', 'technician')
+                ->where('technician_id', $user_id)
+                ->where('start_date_time', 'LIKE', "%$filterDate%")
+                ->get();
+
+            foreach ($schedule as $item) {
+                $datetimeString = $item->start_date_time;
+                $newFormattedDateTime = Carbon::parse($datetimeString)->addHours($time_interval)->format('Y-m-d H:i:s');
+                $time = date("h:i A", strtotime($newFormattedDateTime));
+                $schedule_arr[$user_id][$time][] = $item;
+            }
+        }
+
+        return response()->json(['schedule_arr' => $schedule_arr]);
+    }
+
+
 
     public function create_job(Request $request, $id, $t, $d)
     {

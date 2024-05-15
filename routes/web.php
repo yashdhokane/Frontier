@@ -771,6 +771,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('technician_schedule', [ScheduleController::class, 'technician_schedule'])->name('technician_schedule');
 
+   Route::post('/refresh-schedule', [ScheduleController::class, 'refreshSchedule'])->name('refresh-schedule');
+
+
+
     // MailController  
 
     Route::get('get/mail/schedule', [MailController::class, 'index']);
