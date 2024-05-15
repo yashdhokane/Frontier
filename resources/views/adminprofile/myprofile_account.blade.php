@@ -77,13 +77,14 @@
             <div class="col-md-9">
                 <div class="card">
                     <div class="card-body card-border shadow">
-                        <h5 class="card-title">SETTINGS</h5>
+                        <h5 class="card-title uppercase">SETTINGS</h5>
                         <div class="row mt-2">
+						
                             <div class="col-12">
 
                                 <div class="d-flex align-items-center justify-content-between py-3 border-top">
                                     <div>
-                                        <h5 class="fs-4 fw-semibold mb-0">E-mail Verification</h5>
+                                        <h6 class="fw-semibold uppercase">E-mail Verification</h6>
                                         <p class="mb-0">E-mail to send verification link</p>
 
                                     </div>
@@ -107,7 +108,7 @@
                                             <i class="ti ti-mail text-dark d-block fs-7" width="22" height="22"></i>
                                         </div>
                                         <div>
-                                            <h5 class="fs-4 fw-semibold">Email Notification</h5>
+                                            <h6 class="fw-semibold uppercase">Email Notification</h6>
                                             <p class="mb-0">Turn on email notification to get updates through email</p>
                                         </div>
                                     </div>
@@ -132,7 +133,7 @@
                                             <i class="ti ti-mail text-dark d-block fs-7" width="22" height="22"></i>
                                         </div>
                                         <div>
-                                            <h5 class="fs-4 fw-semibold">SMS Notification</h5>
+                                            <h6 class="fw-semibold uppercase">SMS Notification</h6>
                                             <p class="mb-0">Turn on SMS notification to get updates through SMS</p>
                                         </div>
                                     </div>
@@ -148,6 +149,7 @@
                                 @php
                                     use App\Models\User;
                                     use App\Models\TimeZone;
+
                                     $zone = TimeZone::where('is_active', 1)->orderBy('time_interval', 'ASC')->get();
 
                                     $id = Auth::User()->id;
@@ -155,7 +157,8 @@
                                     $time = User::with('TimeZone')->where('id', $id)->first();
 
                                 @endphp
-                                 <h4 class="mb-2 mt-4">Timezone</h4>
+								
+                                <h5 class="card-title uppercase mb-2 mt-4">Timezone</h5>
                                 <div class="mt-3 mb-4">
                                     <form action="{{url('change_timezone')}}" method="POST">
                                         @csrf
@@ -170,9 +173,8 @@
                                         <button class="btn btn-info mt-2 d-block" type="submit">Change Timezone</button>
                                     </form>
                                 </div>
-
-
-                            </div>
+								
+							</div>
 
                         </div>
                     </div>

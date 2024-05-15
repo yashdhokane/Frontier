@@ -23,6 +23,7 @@ class CustomerData extends Model
         'created_at',
         'ticket_number',
         'updated_at',
+        'created_at',
 
 
     ];

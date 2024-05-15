@@ -122,6 +122,7 @@ class TechnicianController extends Controller
         $user = new User();
         $user->name = $request['display_name'];
         $user->employee_id = User::max('employee_id') + 1;
+      $user->is_employee = 'yes';
 
         $user->email = $request['email'];
         $user->mobile = $request['mobile_phone'];
@@ -303,6 +304,10 @@ app('sendNotices')('New Technician','New Technician Added at ' . now(), url()->c
     {
 
         $technician = User::with('Location')->find($id);
+
+        if (!$technician) {
+            return view('404');
+        }
 $vehicleDescriptions = FleetVehicle::pluck('vehicle_description')->toArray();
          //dd($vehicleDescriptions);
             $vehiclefleet=FleetVehicle::where('technician_id',$technician->id)->first();

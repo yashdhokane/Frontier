@@ -30,19 +30,19 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\View;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Storage;
+use Illuminate\Support\Facades\Session;
 
 class ScheduleController extends Controller
 {
 
 
+   
     public function index(Request $request)
     {
         $timezone_id = Session::get('timezone_id');
         $timezone_name = Session::get('timezone_name');
         $time_interval = Session::get('time_interval');
-
 
         $users = User::all();
 
@@ -178,7 +178,6 @@ class ScheduleController extends Controller
 
         return view('schedule.index', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate', 'users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', 'cities', 'cities1', 'TodayDate', 'tech', 'schedule_arr', 'hours','current_time'));
     }
-
 
     public function schedule_new(Request $request)
     {

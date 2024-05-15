@@ -222,11 +222,12 @@ img.calimg2 {
     z-index: 999;
     background-color: #5e5d5d;
     color: white;
-    bottom: 106%;
-    left: -50%;
-    right: -50%;
-    width: max-content;
+    top: 0;
+    left: 100%;
+    right: auto;
+    width: 180px;
     font-family: Arial, Helvetica, sans-serif;
+	white-space: wrap;
   }
   .cls_is_confirmed {
     position: absolute;

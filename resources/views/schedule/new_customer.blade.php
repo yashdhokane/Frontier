@@ -212,6 +212,8 @@ enctype="multipart/form-data">
                                     <input type="file" class="form-control" id="image" name="image" accept="image/*" />
                                 </div>
                             </div>
+							
+							
 							<div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
                                     <label for="source_id" class="control-label bold mb5 col-form-label">Lead Source</label>
@@ -224,7 +226,7 @@ enctype="multipart/form-data">
                                     </select>
                                 </div>
                             </div>
-							 <div class="col-sm-12 col-md-4">
+							<div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
                                     <label for="tag_id"
                                         class="control-label bold mb5 col-form-label">Customer
@@ -241,6 +243,9 @@ enctype="multipart/form-data">
                                         select multiple tags.</small>
                                 </div>
                             </div>
+							
+							 
+							
                         </div>
                          <div class="row mt-2">
                             <div class="col-sm-12 col-md-12">

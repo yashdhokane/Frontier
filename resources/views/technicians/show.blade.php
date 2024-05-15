@@ -1,6 +1,27 @@
 @extends('home')
 @section('content')
     <!-- Page wrapper  -->
+
+    @php
+    $address = '';
+    if (isset($location->address_line1) && $location->address_line1 !== '') {
+        $address .= $location->address_line1 . ', ';
+    }
+    if (isset($location->address_line2) && $location->address_line2 !== '') {
+        $address .= $location->address_line2 . ', ';
+    }
+    if (isset($user->Location->city) && $user->Location->city !== '') {
+        $address .= $user->Location->city . ', ';
+    }
+    if (isset($location->state_name) && $location->state_name !== '') {
+        $address .= $location->state_name . ', ';
+    }
+    if (isset($location->zipcode) && $location->zipcode !== '') {
+        $address .= $location->zipcode;
+    }
+@endphp
+
+
     <!-- -------------------------------------------------------------- -->
     <!-- Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
@@ -190,15 +211,9 @@
                                                     <h6 style="font-weight: normal;"><i class="fas fa-envelope"></i>
                                                         {{ $technician->email }}</h6>
 
-                                                    @foreach ($userAddresscity as $location)
                                                         <h5 class="card-title uppercase mt-5">Address</h5>
                                                         <h6 style="font-weight: normal;"><i class="ri-map-pin-line"></i>
-                                                            {{ $location->address_line1 }},
-                                                            {{ $location->address_line2 }},
-                                                            {{ $technician->Location->city }},
-                                                            {{ $location->state_name ?? null }}, {{ $location->zipcode }}
-                                                        </h6>
-                                                    @endforeach
+                                                          {{ $address ?? ''}}</h6>
 
                                                     <div class="row">
                                                         <div class="col-12">
@@ -240,20 +255,15 @@
 
                                             <div class="col-md-1 col-xs-6 b-r">&nbsp;</div>
                                             <div class="col-md-8 col-xs-6 b-r">
-                                                @foreach ($userAddresscity as $location)
                                                     <div class="mt-4">
                                                         <iframe id="map{{ $location->address_id }}" width="100%"
                                                             height="300" frameborder="0" style="border: 0"
                                                             allowfullscreen></iframe>
                                                         <div style="display:flex;">
-                                                            <h6>{{ $location->address_line1 }},
-                                                                {{ $location->address_line2 }}, {{ $location->city }},
-                                                                {{ $location->state_name ?? null }},
-                                                                {{ $location->zipcode }}
+                                                            <h6>{{ $address?? '' }}
                                                             </h6>
                                                         </div>
                                                     </div>
-                                                @endforeach
                                             </div>
 
 

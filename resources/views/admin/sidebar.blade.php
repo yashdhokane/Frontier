@@ -30,6 +30,10 @@
 						<li class="sidebar-item">
 							<a href="{{ route('multiadmin.index') }}" class="sidebar-link fs18"><i class="ri-admin-fill"></i><span class="hide-menu">Admin </span></a>
 						</li>
+						 <li class="sidebar-item">
+                            <a href="{{ route('customersdata.index') }}" class="sidebar-link fs18"><i
+                                    class="ri-admin-fill"></i><span class="hide-menu">Customer Data </span></a>
+                        </li>
 					</ul>
                 </li>
 

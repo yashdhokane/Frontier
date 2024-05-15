@@ -2,30 +2,46 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\JobModel;
 use App\Models\CustomerData;
 use Illuminate\Http\Request;
+use App\Models\CustomerFiles;
 use App\Models\CustomerDataJob;
 use App\Models\CustomerDataNotes;
 use App\Models\CustomerDataServices;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
+
+
 
 class CustomerDataController extends Controller
 {
     public function index($status = null)
     {
-        // dd($status);
-        $usersQuery = User::with('customerdatafetch')->where('role', 'customer');
+        // Start with the base query for users with eager loading
+        $usersQuery = User::with('customerdatafetch'); // Eager load the related data
 
-        if ($status == "deactive") {
+        // Optional: Filter by user role
+        $usersQuery->where('role', 'customer'); // Or any other role if needed
+
+        // Optional: Filter by status
+        if ($status === 'deactive') {
             $usersQuery->where('status', 'deactive');
         } else {
             $usersQuery->where('status', 'active');
         }
 
-        $users = $usersQuery->orderBy('created_at', 'desc')->paginate(50);
+        // Optional: Order by related model's field
+        $usersQuery->Leftjoin('customer_data', 'users.id', '=', 'customer_data.user_id')
+            ->orderBy('customer_data.updated_at', 'desc'); // Order by the related model's column
 
+        // Fetch all users with pagination
+        $users = $usersQuery->paginate(50); // You can adjust pagination size as needed
+
+        // Return the view with user data
         return view('customerdata.index', ['users' => $users]);
     }
 
@@ -129,6 +145,9 @@ class CustomerDataController extends Controller
         $job->save();
 
         $customerData = CustomerData::updateOrCreate(['user_id' => $job->user_id], []);
+        $customerData->updated_at = now();
+
+
         if ($no_of_visits !== null) {
             $customerData->no_of_visits = $no_of_visits;
         }
@@ -196,10 +215,10 @@ class CustomerDataController extends Controller
         $total_time = $request->input('total_time');
         $user_id = $request->input('user_id');
 
-        $carbonScheduleDate = Carbon::parse($scheduleDate);
+        //  $carbonScheduleDate = Carbon::parse($scheduleDate);
 
         // Format the Carbon instance as a string
-        $formattedScheduleDate = $carbonScheduleDate->format('D, M j \'y h:i a T');
+        //  $formattedScheduleDate = $carbonScheduleDate->format('D, M j \'y h:i a T');
         // Create a new CustomerDataJob record
         $job = new CustomerDataJob();
 
@@ -211,9 +230,9 @@ class CustomerDataController extends Controller
 
             $job->ticket_number = $jobCode;
         }
-        if ($formattedScheduleDate !== null) {
+        if ($scheduleDate !== null) {
 
-            $job->schedule_date = $formattedScheduleDate;
+            $job->schedule_date = $scheduleDate;
         }
         if ($tcc !== null) {
 
@@ -256,6 +275,9 @@ class CustomerDataController extends Controller
         $tccValuesString = implode(',', $tccValues);
 
         $customerData = CustomerData::updateOrCreate(['user_id' => $user_id], []);
+        $customerData->updated_at = now();
+        $customerData->created_at = now();
+
         $customerData->ticket_number = $ticketNumbersString;
         $customerData->tcc = $tccValuesString;
         $customerData->save();
@@ -293,19 +315,55 @@ class CustomerDataController extends Controller
             }
         }
 
-        // Create CustomerDataNotes records
-        foreach ($notes as $key => $note) {
-            // Check if notes and notes_by are not null before creating the record
-            if (!empty($note) && isset($notes_by[$key])) {
-                $noteRecord = new CustomerDataNotes();
-                $noteRecord->job_id = $job->job_id; // Assuming job_id is generated during job creation
-                $noteRecord->notes_by = $notes_by[$key];
-                $noteRecord->notes = $note;
-                $noteRecord->save();
+        // Iterate over each image
+        if (!empty($request->filename)) {
+            foreach ($request->filename as $key => $image) {
+                // Extract image extension
+                $extension = explode('/', mime_content_type($image))[1];
+
+                // Decode base64 image data
+                $data = base64_decode(substr($image, strpos($image, ',') + 1));
+
+                // Generate a unique filename
+                $imgname = 'e' . rand(000, 999) . $key . time() . '.' . $extension;
+
+                // Directory path for user's images
+                $directoryPath = public_path('images/users/' . $job->user_id);
+
+                // Ensure the directory exists; if not, create it
+                if (!File::exists($directoryPath)) {
+                    File::makeDirectory($directoryPath, 0777, true);
+                }
+
+                // Save the image to the user's directory
+                if (file_put_contents($directoryPath . '/' . $imgname, $data)) {
+                    // Create a new entry in the database for the image
+                    $file = new CustomerFiles();
+                    $file->user_id = $job->user_id;
+                    $file->filename = $imgname;
+                    $file->path = $directoryPath;
+                    $file->type = 'image/' . $extension;
+                    $file->storage_location = 'local'; // Assuming storage location is local
+                    $file->save();
+                }
             }
+
+
+
+            // Create CustomerDataNotes records
+            foreach ($notes as $key => $note) {
+                // Check if notes and notes_by are not null before creating the record
+                if (!empty($note) && isset($notes_by[$key])) {
+                    $noteRecord = new CustomerDataNotes();
+                    $noteRecord->job_id = $job->job_id; // Assuming job_id is generated during job creation
+                    $noteRecord->notes_by = $notes_by[$key];
+                    $noteRecord->notes = $note;
+                    $noteRecord->save();
+                }
+            }
+            //   dd(1);
+            return redirect()->back()->with('success', 'Job stored successfully.');
         }
-        //    dd(1);
-        return redirect()->back()->with('success', 'Job stored successfully.');
     }
 
     public function search(Request $request)

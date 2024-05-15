@@ -184,6 +184,7 @@ class UserController extends Controller
         $user->source_id = $request['source_id'];
         $user->customer_id = 0;
         $user->password = Hash::make($request['password']);
+      $user->is_employee = 'yes';
 
         $user->save();
         $userId = $user->id;
@@ -338,6 +339,10 @@ class UserController extends Controller
     {
         //$roles = Role::all();
         $user = User::with('Location')->find($id);
+
+            if (!$user) {
+            return view('404');
+        }
                 $customer_tag = SiteTags::all();
  $notename = DB::table('user_notes')->where(
             'user_id',

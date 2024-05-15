@@ -1,13 +1,31 @@
 @extends('home')
 @section('content')
 <!-- Page wrapper  -->
+@php
+    $address = '';
+    if (isset($location->address_line1) && $location->address_line1 !== '') {
+        $address .= $location->address_line1 . ', ';
+    }
+    if (isset($location->address_line2) && $location->address_line2 !== '') {
+        $address .= $location->address_line2 . ', ';
+    }
+    if (isset($user->Location->city) && $user->Location->city !== '') {
+        $address .= $user->Location->city . ', ';
+    }
+    if (isset($location->state_name) && $location->state_name !== '') {
+        $address .= $location->state_name . ', ';
+    }
+    if (isset($location->zipcode) && $location->zipcode !== '') {
+        $address .= $location->zipcode;
+    }
+@endphp
 
 <!-- -------------------------------------------------------------- -->
 <!-- Bread crumb and right sidebar toggle -->
 <!-- -------------------------------------------------------------- -->
 <div class="page-breadcrumb">
     <div class="row">
-        <div class="col-6 align-self-center">
+        <div class="col-9 align-self-center">
             <h4 class="page-title">{{ $multiadmin->name }}</h4>
             <!--<div class="d-flex align-items-center">
                     <nav aria-label="breadcrumb">
@@ -19,8 +37,8 @@
                     </nav>
                 </div>-->
         </div>
-        <div class="col-6 text-end">
-            <a href="{{ route('multiadmin.index') }}" class=""><i class="ri-contacts-line" style="margin-right: 8px;"></i> Back to Admin List </a>
+        <div class="col-3 text-end">
+            <a href="{{ route('multiadmin.index') }}" class="btn btn-primary font-weight-medium shadow"><i class="ri-contacts-line" style="margin-right: 8px;"></i>Admin List </a>
         </div>
     </div>
 </div>
@@ -124,9 +142,8 @@
                         aria-labelledby="pills-profile-tab">
                         <div class="card-body card-border shadow">
                             <div class="row">
-                                <div class="col-md-3 col-xs-6 b-r">
-                                    <div class="card">
-                                        <div class="card-body">
+                                <div class="col-lg-3 col-xlg-9">
+                                   
                                             <center class="mt-1">
                                                 @if($multiadmin->user_image)
                                                 <img src="{{ asset('public/images/Uploads/users/' . $multiadmin->id . '/' . $multiadmin->user_image) }}"
@@ -172,148 +189,113 @@
                                             </div>
 
 
-                                        </div>
-                                    </div>
                                 </div>
-                                <div class="col-md-3 col-xs-6 b-r">
-                                    <div class="row text-left justify-content-md-left">
+								
+								<div class="col-lg-9 col-xlg-9">
+								    <div class="row">
+									<div class="col-md-3 col-xs-6 b-r">
+										<div class="row text-left justify-content-md-left">
 
-                                        <div class="col-12">
-                                            <h5 class="card-title uppercase mt-4">Contact info</h5>
+											<div class="col-12">
+												<h5 class="card-title uppercase mt-1">Contact info</h5>
 
-                                            <!--<h6 style="font-weight: normal;">
-													<i class="fas fa-home"></i>{{ old('home_phone', $home_phone) }}
-												</h6>-->
-                                            <h6 style="font-weight: normal;"><i class="fas fa-mobile-alt"></i>
-                                                {{$multiadmin->mobile}}</h6>
-                                            {{-- <h6 style="font-weight: normal;"><i class="fas fa-mobile-alt"></i> +1
-                                                123 456 7890
-                                            </h6> --}}
-                                            <h6 style="font-weight: normal;"><i class="fas fa-envelope"></i>
-                                                {{$multiadmin->email}}
-                                            </h6>
-                                        </div>
-                                        <div class="col-12">
-                                            @foreach($userAddresscity as $location)
-                                            <h5 class="card-title uppercase mt-5">Address</h5>
-                                            <h6 style="font-weight: normal;"><i class="ri-map-pin-line"></i>
-                                                @if(isset($location->address_line1) && $location->address_line1 !== '')
-                                                {{ $location->address_line1 }},
-                                                @endif
+												<!--<h6 style="font-weight: normal;">
+														<i class="fas fa-home"></i>{{ old('home_phone', $home_phone) }}
+													</h6>-->
+												<h6 style="font-weight: normal;"><i class="fas fa-mobile-alt"></i>
+													{{$multiadmin->mobile}}</h6>
+												{{-- <h6 style="font-weight: normal;"><i class="fas fa-mobile-alt"></i> +1
+													123 456 7890
+												</h6> --}}
+												<h6 style="font-weight: normal;"><i class="fas fa-envelope"></i>
+													{{$multiadmin->email}}
+												</h6>
+											</div>
+											<div class="col-12">
+												<h5 class="card-title uppercase mt-5">Address</h5>
+												<h6 style="font-weight: normal;"><i class="ri-map-pin-line"></i>
+													{{ $address ?? '' }}
 
-                                                @if(isset($location->address_line2) && $location->address_line2 !== '')
-                                                {{ $location->address_line2 }},
-                                                @endif
+												</h6>
+											
+											</div>
+											<h5 class="card-title uppercase mt-4">Summary</h5>
+											<div class="col-12">
+												<small class="text-muted pt-1 db">Last service </small>
+												<h6>Active</h6>
+											</div>
+											<div class="col-12">
+												<small class="text-muted pt-1 db">Profile Created</small>
+												<h6>{{ $multiadmin->created_at ?
+													\Carbon\Carbon::parse($multiadmin->created_at)->format('m-d-Y') : null
+													}}</h6>
+											</div>
+											<div class="col-12">
+												<small class="text-muted pt-1 db">Lifetime value</small>
+												<h6>$0.00</h6>
+											</div>
+											<div class="col-12">
+												<small class="text-muted pt-1 db">Outstanding balance</small>
+												<h6>$0.00</h6>
+											</div>
 
-                                                @if(isset($user->Location->city) && $user->Location->city !== '')
-                                                {{ $user->Location->city }},
-                                                @endif
+											<div class="col-12">
+												<h5 class="card-title uppercase mt-4">Notifications</h5>
+												<h6 style="font-weight: normal;margin-bottom: 0px;"><i
+														class="fas fa-check"></i> Yes
+												</h6>
+											</div>
 
-                                                @if(isset($location->state_name) && $location->state_name !== '')
-                                                {{ $location->state_name }},
-                                                @endif
+											<div class="col-12">
+												{{-- <h4 class=" card-title mt-4">Lead Source</h4>
+												<div class="mt-0">
+													<span
+														class="mb-1 badge bg-primary">{{$multiadmin->leadsourcename->source_name
+														??
+														null }}</span>
+												</div> --}}
+											</div>
 
-                                                @if(isset($location->zipcode) && $location->zipcode !== '')
-                                                {{ $location->zipcode }}
-                                                @endif
+										</div>
+									</div>
+									<div class="col-md-1 col-xs-6 b-r">&nbsp;</div>
+									
+									<div class="col-md-8 col-xs-6 b-r">
+										<div class="mt-2">
 
-                                            </h6>
-                                            @endforeach
-                                        </div>
-                                        <h5 class="card-title uppercase mt-4">Summary</h5>
-                                        <div class="col-12">
-                                            <small class="text-muted pt-1 db">Last service </small>
-                                            <h6>Active</h6>
-                                        </div>
-                                        <div class="col-12">
-                                            <small class="text-muted pt-1 db">Profile Created</small>
-                                            <h6>{{ $multiadmin->created_at ?
-                                                \Carbon\Carbon::parse($multiadmin->created_at)->format('m-d-Y') : null
-                                                }}</h6>
-                                        </div>
-                                        <div class="col-12">
-                                            <small class="text-muted pt-1 db">Lifetime value</small>
-                                            <h6>$0.00</h6>
-                                        </div>
-                                        <div class="col-12">
-                                            <small class="text-muted pt-1 db">Outstanding balance</small>
-                                            <h6>$0.00</h6>
-                                        </div>
+											<div>
 
-                                        <div class="col-12">
-                                            <h5 class="card-title uppercase mt-4">Notifications</h5>
-                                            <h6 style="font-weight: normal;margin-bottom: 0px;"><i
-                                                    class="fas fa-check"></i> Yes
-                                            </h6>
-                                        </div>
+												<iframe id="map{{ $location->address_id }}" width="100%" height="300"
+													frameborder="0" style="border: 0" allowfullscreen></iframe>
 
-                                        <div class="col-12">
-                                            {{-- <h4 class=" card-title mt-4">Lead Source</h4>
-                                            <div class="mt-0">
-                                                <span
-                                                    class="mb-1 badge bg-primary">{{$multiadmin->leadsourcename->source_name
-                                                    ??
-                                                    null }}</span>
-                                            </div> --}}
-                                        </div>
+												<small class="text-muted pt-4 db">{{ $location->address_type
+													}}</small>
+												<div style="display:flex;">
 
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-xs-6 b-r">
-                                    <div class="mt-4">
-                                        @foreach($userAddresscity as $location)
+													<h6>{{ $address  ?? ''}}
+                                                    </h6>
+													<br />
+												</div>
 
-                                        <div>
+												{{-- <iframe
+													src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6991603.699017098!2d-100.0768425!3d31.168910300000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x864070360b823249%3A0x16eb1c8f1808de3c!2sTexas%2C%20USA!5e0!3m2!1sen!2sin!4v1701086703789!5m2!1sen!2sin"
+													width="100%" height="300" style="border:0;" allowfullscreen=""
+													loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+												--}}
 
-                                            <iframe id="map{{ $location->address_id }}" width="100%" height="300"
-                                                frameborder="0" style="border: 0" allowfullscreen></iframe>
-
-                                            <small class="text-muted pt-4 db">{{ $location->address_type
-                                                }}</small>
-                                            <div style="display:flex;">
-
-                                                @if(isset($location->address_line1) && $location->address_line1 !==
-                                                '')
-                                                {{ $location->address_line1 }},
-                                                @endif
-
-                                                @if(isset($location->address_line2) && $location->address_line2 !==
-                                                '')
-                                                {{ $location->address_line2 }},
-                                                @endif
-
-                                                @if(isset($user->Location->city) && $user->Location->city !== '')
-                                                {{ $user->Location->city }},
-                                                @endif
-
-                                                @if(isset($location->state_name) && $location->state_name !== '')
-                                                {{ $location->state_name }},
-                                                @endif
-
-                                                @if(isset($location->zipcode) && $location->zipcode !== '')
-                                                {{ $location->zipcode }}
-                                                @endif
-
-                                                <br />
-                                            </div>
-
-                                            {{-- <iframe
-                                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6991603.699017098!2d-100.0768425!3d31.168910300000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x864070360b823249%3A0x16eb1c8f1808de3c!2sTexas%2C%20USA!5e0!3m2!1sen!2sin!4v1701086703789!5m2!1sen!2sin"
-                                                width="100%" height="300" style="border:0;" allowfullscreen=""
-                                                loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                                            --}}
-
-                                        </div>
-                                        <hr />
-                                        @endforeach
+											</div>
+											<hr />
+										
 
 
 
 
-                                    </div>
+										</div>
 
 
-                                </div>
+									</div>
+								</div>
+								</div>
                             </div>
 
 
@@ -506,7 +488,7 @@
                                 </table>
                             </div>
                             @endif
-                            <br />
+                          
 
 
                         </div>
@@ -514,11 +496,6 @@
                     <div class="tab-pane fade" id="estimate_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
 
                         <div class="card-body card-border shadow">
-
-
-
-
-                            <div class="row">
 
 
 
@@ -534,11 +511,6 @@
                                 </div>
 
 
-
-
-
-
-                            </div>
 
                         </div>
 
@@ -609,6 +581,7 @@
                     <div class="tab-pane fade show " id="others_tab" role="tabpanel"
                         aria-labelledby="pills-timeline-tab">
                         <div class="card-body card-border shadow">
+						<h5 class="card-title uppercase">Notes </h5>
                             <div class="profiletimeline mt-0">
                                 @foreach ($notename as $notename )
                                 <div class="sl-item">

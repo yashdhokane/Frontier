@@ -14,7 +14,21 @@
     </div>
 
 </div>
+<style>
+    /* CSS for appended image section */
+    .add_more {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+    }
 
+    .add_more img {
+        height: 70px;
+        width: auto;
+        margin-right: 10px;
+    }
+</style>
 <div class="container-fluid">
 
     @if (Session::has('success'))
@@ -31,7 +45,7 @@
         <div class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show">
             {{ Session::get('error') }} <button type="button" class="btn-close" data-bs-dismiss="alert"
                 aria-label="Close"></button>
-    </div>
+        </div>
     </div>
     @endif
 
@@ -41,7 +55,7 @@
 
 
         <div class="col-md-9">
-@if (!empty($users->Jobdata))
+            @if (!empty($users->Jobdata))
 
             @foreach($users->Jobdata as $job)
 
@@ -172,21 +186,21 @@
                 </div>
             </div>
         </div>
-@else
-    <div class="mb-12 d-flex flex-column ">
+        @else
+        <div class="mb-12 d-flex flex-column ">
 
-        <div class="card shadow-sm" style="width: auto; border: 1px solid #D8D8D8; border-radius: 4px;">
+            <div class="card shadow-sm" style="width: auto; border: 1px solid #D8D8D8; border-radius: 4px;">
 
-            <div class="card-body ">
+                <div class="card-body ">
 
-                <p class="mb-0">No ticket found.</p>
+                    <p class="mb-0">No ticket found.</p>
+
+                </div>
 
             </div>
 
         </div>
-
-    </div>
-@endif
+        @endif
     </div>
 
     <div class="modal fade" id="customerModal" tabindex="-1" role="dialog" aria-labelledby="customerModalLabel"
@@ -236,14 +250,28 @@
                             <div class="col-md-6">
                                 <label class="control-label bold col-form-label" for="schedule_date">Schedule
                                     Date</label>
-                                <input type="date" name="schedule_date" class="form-control" id="schedule_date">
+                                <input type="text" name="schedule_date" class="form-control" id="schedule_date">
                             </div>
                             <div class="col-md-6">
                                 <label class="control-label bold col-form-label" for="technician">Technician</label>
                                 <input type="text" name="technician" class="form-control" id="technician" value="">
                             </div>
                         </div>
-                      <div class="row mb-1">
+                        <div class="row mb-1">
+                            <div class="col-md-6">
+                                <label class="control-label bold col-form-label" for="Attachments">Files &
+                                    Attachments</label>
+                                <div class="" style="display: flex;">
+                                    <input type="file" class="form-control" id="image" placeholder="" />
+                                    <button style="margin-left:2px;" type="button" class="btn mjks add-row"><i
+                                            class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="add_more"></div>
+                            </div>
+                        </div>
+                        <div class="row mb-1">
                             <div class="col-md-8">
                                 <label class="control-label bold col-form-label" for="service_name">Service
                                     Name</label>
@@ -271,7 +299,8 @@
                                         value="">
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="control-label bold col-form-label" for="amount">Service Amount</label>
+                                    <label class="control-label bold col-form-label" for="amount">Service
+                                        Amount</label>
                                     <input type="text" name="amount[]" class="form-control" id="amount" value="">
                                 </div>
                             </div>
@@ -309,8 +338,8 @@
                         </div>
                         <!-- Modal Footer -->
                         <div class="modal-footer justify-content-center">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> <button
-                                type="submit" class="btn btn-primary">Save changes</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
                         </div>
                     </form>
                 </div>
@@ -327,19 +356,69 @@
 @section('script')
 <script>
     $(document).ready(function() {
+        var src1; // Variable for the first file input
+        var src2; // Variable for the second file input
+        var blob1;
+        var blob2;
 
-    $("#addMoreServices").click(function(e) {
-        e.preventDefault();
-        $("#serviceTemplate").show();
-        $("#addMoreServices").hide();
-    });
+        // Event handler for the first file input
+        $("#image").on('change', function(e) {
+            src1 = URL.createObjectURL(e.target.files[0]);
+            let file = e.target.files[0];
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function(e) {
+                blob1 = e.target.result;
+            };
+        });
 
-    // Add More Notes
-    $("#addMoreNotes").click(function(e) {
-        e.preventDefault();
-        $("#noteTemplate").show();
-        $("#addMoreNotes").hide();
-    });
+        // Event handler for the second file input
+        $("#images").on('change', function(e) {
+            src2 = URL.createObjectURL(e.target.files[0]);
+            let file = e.target.files[0];
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function(e) {
+                blob2 = e.target.result;
+            };
+        });
+
+        // Click event for adding a new row for the first file input
+        $(".add-row").click(function() {
+            if (!src1) {
+                alert("Please select an image before adding.");
+                return;
+            }
+            var image_src = src1;
+            let link = '<img style="height:70px;width:auto;" src="' + image_src + '">';
+            var markup =
+                '<tr>' +
+                '<td><input name="filename[]" type="hidden" value="' + blob1 + '"><a target="_blank" href="' + image_src + '">' + link +
+                '</a></td>' +
+                '<td style="text-align:center; color:#FF0000"><button style="btn btn-primary" class="delete-row1 "><i class="fa fa-trash"></i></button></td>' +
+                '</tr>';
+            $(".add_more").append(markup);
+            // Clear the input field
+            $('#image').val('');
+            src1 = null;
+            blob1 = null;
+        });
+
+        $(".add_more").on("click", ".delete-row1", function() {
+            $(this).closest("tr").remove(); // Remove the parent <tr> of the clicked delete button
+        });
+        $("#addMoreServices").click(function(e) {
+            e.preventDefault();
+            $("#serviceTemplate").show();
+            $("#addMoreServices").hide();
+        });
+
+        // Add More Notes
+        $("#addMoreNotes").click(function(e) {
+            e.preventDefault();
+            $("#noteTemplate").show();
+            $("#addMoreNotes").hide();
+        });
         // Handle click event of the button
         $('#newCustomerBtn').click(function(e) {
             e.preventDefault(); // Prevent default action of the anchor tag
@@ -347,40 +426,42 @@
             // Show the modal
             $('#customerModal').modal('show');
         });
-       function closeModal() {
-        $('#customerModal').modal('hide');
+
+        function closeModal() {
+            $('#customerModal').modal('hide');
         }
 
         // Close the modal when clicking the close button
         $('#customerModal').on('click', '[data-dismiss="modal"]', function() {
-        closeModal();
+            closeModal();
         });
 
         // Close the modal when clicking outside the modal
         $(document).on('click', function(event) {
-        if ($(event.target).hasClass('modal')) {
-        closeModal();
-        }
+            if ($(event.target).hasClass('modal')) {
+                closeModal();
+            }
         });
 
         function updateHiddenInput(inputId, hiddenInputId) {
-        const inputValue = document.getElementById(inputId).value;
-        document.getElementById(hiddenInputId).value = inputValue;
+            const inputValue = document.getElementById(inputId).value;
+            document.getElementById(hiddenInputId).value = inputValue;
         }
 
         // Event listeners for input changes
         document.getElementById('no_of_visits').addEventListener('input', function() {
-        updateHiddenInput('no_of_visits', 'hidden_no_of_visits');
+            updateHiddenInput('no_of_visits', 'hidden_no_of_visits');
         });
 
         document.getElementById('job_completed').addEventListener('input', function() {
-        updateHiddenInput('job_completed', 'hidden_job_completed');
+            updateHiddenInput('job_completed', 'hidden_job_completed');
         });
 
         document.getElementById('issue_resolved').addEventListener('input', function() {
-        updateHiddenInput('issue_resolved', 'hidden_issue_resolved');
+            updateHiddenInput('issue_resolved', 'hidden_issue_resolved');
         });
     });
+
 </script>
 <script>
     // document.addEventListener('DOMContentLoaded', function() {

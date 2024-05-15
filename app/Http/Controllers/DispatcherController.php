@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\User;
+use App\Models\UserPermission;
+
 use App\Models\JobModel;
 
 use App\Models\UsersDetails;
@@ -20,7 +22,8 @@ use App\Models\Payment;
 
 use Illuminate\Http\Request;
 use App\Models\LocationState;
-use App\Models\CustomerUserMeta;
+use App\Models\CustomerUserMeta; 
+use App\Models\PermissionModel;
 use App\Models\CustomerUserAddress;
 use Illuminate\Support\Facades\Validator;
 
@@ -76,7 +79,9 @@ class DispatcherController extends Controller
         $user = new User();
         $user->name = $request['display_name'];
         $user->employee_id = User::max('employee_id') + 1;
+      $user->is_employee = 'yes';
 
+	
         $user->email = $request['email'];
         $user->mobile = $request['mobile_phone'];
         $user->role = $request['role'];
@@ -241,6 +246,9 @@ class DispatcherController extends Controller
     public function show($id)
     {
         $dispatcher = User::find($id);
+           if (!$dispatcher) {
+            return view('404');
+        }
         // dd($dispatcher);
         $notename = DB::table('user_notes')->where(
             'user_id',
@@ -297,7 +305,7 @@ class DispatcherController extends Controller
         $source = $dispatcher->source;
 
         $tags = SiteTags::all();
-        $permissions = DB::table('user_permissions')->pluck('permission_id')->toArray();
+       // $permissions = DB::table('user_permissions')->pluck('permission_id')->toArray();
 
 
 
@@ -333,9 +341,19 @@ class DispatcherController extends Controller
             ->orderBy('activity_date', 'desc') // Order by created_at in descending order
             ->get();
 
+        $access_array = UserPermission::where('user_id', $dispatcher->id)
+            ->where('permission', 1)
+            ->pluck('module_id')
+            ->toArray();
+
+        // Fetch parent modules
+        $parentModules = PermissionModel::where('parent_id', 0)
+            ->orderBy('module_id', 'ASC')
+            ->get();
+
         // echo json_encode($jobActivity);
         // exit();
-        return view('dispatcher.show', compact('dispatcher', 'activity', 'setting', 'UsersDetails', 'locationStates', 'Note', 'source', 'selectedTags', 'userTags', 'permissions', 'tags', 'payment', 'tickets', 'customerimage', 'notename', 'activity', 'jobasign', 'location', 'latitude', 'longitude', 'userAddresscity', 'home_phone'));
+        return view('dispatcher.show', compact('dispatcher','access_array','parentModules','activity', 'setting', 'UsersDetails', 'locationStates', 'Note', 'source', 'selectedTags', 'userTags',  'tags', 'payment', 'tickets', 'customerimage', 'notename', 'activity', 'jobasign', 'location', 'latitude', 'longitude', 'userAddresscity', 'home_phone'));
     }
 
 

@@ -285,6 +285,10 @@ li.toplinks a{
 }
 /*SHOW TICKET PAGE CSS*/
 
+.nav-pills.custom-pills .nav-link {
+    border-radius: 0;
+    opacity: 1; 
+}
 
 
 

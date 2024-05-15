@@ -29,6 +29,7 @@ class User extends Authenticatable
         'source_id',
         'service_areas',
         'employee_id',
+        'is_employee',
     ];
 
     /**
@@ -51,10 +52,12 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-      public function customerdatafetch()
-    {
-        return $this->hasOne(CustomerData::class, 'user_id', 'id');
-    }
+public function customerdatafetch()
+{
+    return $this->hasOne(CustomerData::class, 'user_id', 'id')->latest('updated_at');
+}
+
+
 public function Locationareaname()
     {
         return $this->hasOne(LocationServiceArea::class, 'area_id', 'service_areas');

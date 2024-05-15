@@ -119,7 +119,7 @@
                                     </div>
                                 </td>
                                 --}}
-                                <td>{{$user->employee_id ?? ''}}</td>
+                                <td>{{ str_pad($user->employee_id, 4, '0', STR_PAD_LEFT)  }}</td>
                                 <td>
                                     <div class="d-flex align-items-center">
                                         @if($user->user_image)

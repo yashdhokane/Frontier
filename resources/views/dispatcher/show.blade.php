@@ -1,8 +1,27 @@
 @extends('home')
 @section('content')
 <!-- Page wrapper  -->
-<!-- -------------------------------------------------------------- -->
 
+
+<!-- -------------------------------------------------------------- -->
+@php
+$address = '';
+if (isset($location->address_line1) && $location->address_line1 !== '') {
+$address .= $location->address_line1 . ', ';
+}
+if (isset($location->address_line2) && $location->address_line2 !== '') {
+$address .= $location->address_line2 . ', ';
+}
+if (isset($user->Location->city) && $user->Location->city !== '') {
+$address .= $user->Location->city . ', ';
+}
+if (isset($location->state_name) && $location->state_name !== '') {
+$address .= $location->state_name . ', ';
+}
+if (isset($location->zipcode) && $location->zipcode !== '') {
+$address .= $location->zipcode;
+}
+@endphp
 <!-- -------------------------------------------------------------- -->
 <!-- Bread crumb and right sidebar toggle -->
 <!-- -------------------------------------------------------------- -->
@@ -12,10 +31,10 @@
             <h4 class="page-title">{{ $dispatcher->name }} <small class="text-muted"
                     style="font-size: 10px;">Dispatcher</small></h4>
         </div>
-        <div class="col-3 text-end px-4">
+        <div class="col-3 text-end">
             <a href="https://dispatchannel.com/portal/dispatcher-index"
-                class="justify-content-center d-flex align-items-center"><i class="ri-contacts-line"
-                    style="margin-right: 8px;"></i> Back to Dispatcher List </a>
+                class="btn btn-primary font-weight-medium shadow"><i class="ri-contacts-line"
+                    style="margin-right: 8px;"></i>Dispatcher List</a>
         </div>
     </div>
 </div>
@@ -113,181 +132,143 @@
                         aria-labelledby="pills-profile-tab">
                         <div class="card-body card-border shadow">
                             <div class="row">
-                                <div class="col-md-3 col-xs-6 b-r">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <center class="mt-1">
-                                                @if($dispatcher->user_image)
-                                                <img src="{{ asset('public/images/Uploads/users/'. $dispatcher->id . '/' . $dispatcher->user_image) }}"
-                                                    class="rounded-circle" width="150" />
-                                                @else
-                                                <img src="{{asset('public/images/login_img_bydefault.png')}}"
-                                                    alt="avatar" class="rounded-circle" width="150" />
-                                                @endif
-                                                <h4 class="card-title mt-1">{{ $dispatcher->name }}</h4>
-                                                {{-- <h6 class="card-subtitle">{{ $dispatcher->company ?? 'null' }}
-                                                </h6> --}}
-                                            </center>
+                                <div class="col-lg-3 col-xlg-9">
 
-                                            <div class="col-12">
-                                                <h5 class="card-title uppercase mt-4">Tags</h5>
-                                                <div class="mt-0">
-                                                    @if($dispatcher->tags->isNotEmpty())
-                                                    @foreach($dispatcher->tags as $tag)
-                                                    <span class="badge bg-dark">{{ $tag->tag_name }}</span>
-                                                    @endforeach
-                                                    @else
-                                                    <span class="badge bg-dark">No tags available</span>
-                                                    @endif
-                                                </div>
-                                            </div>
+                                    <center class="mt-1">
+                                        @if($dispatcher->user_image)
+                                        <img src="{{ asset('public/images/Uploads/users/'. $dispatcher->id . '/' . $dispatcher->user_image) }}"
+                                            class="rounded-circle" width="150" />
+                                        @else
+                                        <img src="{{asset('public/images/login_img_bydefault.png')}}" alt="avatar"
+                                            class="rounded-circle" width="150" />
+                                        @endif
+                                        <h4 class="card-title mt-1">{{ $dispatcher->name }}</h4>
+                                        {{-- <h6 class="card-subtitle">{{ $dispatcher->company ?? 'null' }}
+                                        </h6> --}}
+                                    </center>
 
-                                            <div class="col-12">
-                                                <h5 class="card-title uppercase mt-4">Files & Attachments</h5>
-                                                <div class="mt-0">
-                                                    @foreach($customerimage as $image)
-                                                    @if($image->filename)
-                                                    <a href="{{ asset('storage/app/' . $image->filename) }}" download>
-                                                        <p><i class="fas fa-file-alt"></i></p>
-                                                        <img src="{{ asset('storage/app/' . $image->filename) }}"
-                                                            alt="Customer Image" style="width: 50px; height: 50px;">
-                                                    </a>
-                                                    @else
-                                                    <!-- Default image if no image available -->
-                                                    <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}"
-                                                        alt="Default Image" style="width: 50px; height: 50px;">
-                                                    @endif
-                                                    @endforeach
-                                                </div>
-                                            </div>
-
-
+                                    <div class="col-12">
+                                        <h5 class="card-title uppercase mt-4">Tags</h5>
+                                        <div class="mt-0">
+                                            @if($dispatcher->tags->isNotEmpty())
+                                            @foreach($dispatcher->tags as $tag)
+                                            <span class="badge bg-dark">{{ $tag->tag_name }}</span>
+                                            @endforeach
+                                            @else
+                                            <span class="badge bg-dark">No tags available</span>
+                                            @endif
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="col-md-3 col-xs-6 b-r">
-
-                                    <div class="row text-left justify-content-md-left">
-
-                                        <div class="col-12">
-                                            <h5 class="card-title uppercase mt-4">Contact info</h5>
-
-                                            <!--<h6 style="font-weight: normal;">
-													<i class="fas fa-home"></i>{{ old('home_phone', $home_phone) }}
-												</h6>-->
-                                            <h6 style="font-weight: normal;"><i class="fas fa-mobile-alt"></i>
-                                                {{$dispatcher->mobile}}</h6>
-                                            {{-- <h6 style="font-weight: normal;"><i class="fas fa-mobile-alt"></i> +1
-                                                123 456 7890
-                                            </h6> --}}
-                                            <h6 style="font-weight: normal;"><i class="fas fa-envelope"></i>
-                                                {{$dispatcher->email}}
-                                            </h6>
-                                        </div>
-                                        <div class="col-12">
-                                            @foreach($userAddresscity as $location)
-                                            <h5 class="card-title uppercase mt-5">Address</h5>
-                                            <h6 style="font-weight: normal;"><i class="ri-map-pin-line"></i>
-                                                @if(isset($location->address_line1) && $location->address_line1 !== '')
-                                                {{ $location->address_line1 }},
-                                                @endif
-
-                                                @if(isset($location->address_line2) && $location->address_line2 !== '')
-                                                {{ $location->address_line2 }},
-                                                @endif
-
-                                                @if(isset($user->Location->city) && $user->Location->city !== '')
-                                                {{ $user->Location->city }},
-                                                @endif
-
-                                                @if(isset($location->state_name) && $location->state_name !== '')
-                                                {{ $location->state_name }},
-                                                @endif
-
-                                                @if(isset($location->zipcode) && $location->zipcode !== '')
-                                                {{ $location->zipcode }}
-                                                @endif
-
-                                            </h6>
+                                    <div class="col-12">
+                                        <h5 class="card-title uppercase mt-4">Files & Attachments</h5>
+                                        <div class="mt-0">
+                                            @foreach($customerimage as $image)
+                                            @if($image->filename)
+                                            <a href="{{ asset('storage/app/' . $image->filename) }}" download>
+                                                <p><i class="fas fa-file-alt"></i></p>
+                                                <img src="{{ asset('storage/app/' . $image->filename) }}"
+                                                    alt="Customer Image" style="width: 50px; height: 50px;">
+                                            </a>
+                                            @else
+                                            <!-- Default image if no image available -->
+                                            <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}"
+                                                alt="Default Image" style="width: 50px; height: 50px;">
+                                            @endif
                                             @endforeach
                                         </div>
-
-                                        <h5 class="card-title uppercase mt-4">Summary</h5>
-                                        <div class="col-12">
-                                            <small class="text-muted pt-1 db">Last service</small>
-                                            <h6>Active</h6>
-                                        </div>
-                                        <div class="col-12">
-                                            <small class="text-muted pt-1 db">Profile Created</small>
-                                            <h6>{{ $dispatcher->created_at ?
-                                                \Carbon\Carbon::parse($dispatcher->created_at)->format('m-d-Y') : null
-                                                }}</h6>
-                                        </div>
-
-
-
-
                                     </div>
 
                                 </div>
 
-                                <div class="col-md-6 col-xs-6 b-r">
-                                    <div>
-                                        @foreach($userAddresscity as $location)
+                                <div class="col-lg-9 col-xlg-9">
+                                    <div class="row">
+                                        <div class="col-md-3 col-xs-6 b-r">
 
-                                        <div class="mt-4">
+                                            <div class="row text-left justify-content-md-left">
 
-                                            <iframe id="map{{ $location->address_id }}" width="100%" height="300"
-                                                frameborder="0" style="border: 0" allowfullscreen></iframe>
+                                                <div class="col-12">
+                                                    <h5 class="card-title uppercase mt-1">Contact info</h5>
+
+                                                    <!--<h6 style="font-weight: normal;">
+															<i class="fas fa-home"></i>{{ old('home_phone', $home_phone) }}
+														</h6>-->
+                                                    <h6 style="font-weight: normal;"><i class="fas fa-mobile-alt"></i>
+                                                        {{$dispatcher->mobile}}</h6>
+                                                    {{-- <h6 style="font-weight: normal;"><i
+                                                            class="fas fa-mobile-alt"></i> +1
+                                                        123 456 7890
+                                                    </h6> --}}
+                                                    <h6 style="font-weight: normal;"><i class="fas fa-envelope"></i>
+                                                        {{$dispatcher->email}}
+                                                    </h6>
+                                                </div>
+                                                <div class="col-12">
+                                                    <h5 class="card-title uppercase mt-5">Address</h5>
+                                                    <h6 style="font-weight: normal;"><i class="ri-map-pin-line"></i>
+                                                        {{ $address ?? ''}}
+                                                    </h6>
+
+                                                </div>
+
+                                                <h5 class="card-title uppercase mt-4">Summary</h5>
+                                                <div class="col-12">
+                                                    <small class="text-muted pt-1 db">Last service</small>
+                                                    <h6>Active</h6>
+                                                </div>
+                                                <div class="col-12">
+                                                    <small class="text-muted pt-1 db">Profile Created</small>
+                                                    <h6>{{ $dispatcher->created_at ?
+                                                        \Carbon\Carbon::parse($dispatcher->created_at)->format('m-d-Y')
+                                                        : null
+                                                        }}</h6>
+                                                </div>
 
 
-                                            <div style="display:flex;">
 
 
-                                                <h6 style="font-weight: normal;"><i class="ri-map-pin-line"></i>
-                                                    @if(isset($location->address_line1) && $location->address_line1 !==
-                                                    '')
-                                                    {{ $location->address_line1 }},
-                                                    @endif
-
-                                                    @if(isset($location->address_line2) && $location->address_line2 !==
-                                                    '')
-                                                    {{ $location->address_line2 }},
-                                                    @endif
-
-                                                    @if(isset($user->Location->city) && $user->Location->city !== '')
-                                                    {{ $user->Location->city }},
-                                                    @endif
-
-                                                    @if(isset($location->state_name) && $location->state_name !== '')
-                                                    {{ $location->state_name }},
-                                                    @endif
-
-                                                    @if(isset($location->zipcode) && $location->zipcode !== '')
-                                                    {{ $location->zipcode }}
-                                                    @endif
-
-                                                </h6>
-
-                                                <br />
                                             </div>
-                                            {{-- <iframe
-                                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6991603.699017098!2d-100.0768425!3d31.168910300000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x864070360b823249%3A0x16eb1c8f1808de3c!2sTexas%2C%20USA!5e0!3m2!1sen!2sin!4v1701086703789!5m2!1sen!2sin"
-                                                width="100%" height="300" style="border:0;" allowfullscreen=""
-                                                loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                                            --}}
 
                                         </div>
-                                        <hr />
-                                        @endforeach
+                                        <div class="col-md-1 col-xs-6 b-r">&nbsp;</div>
+
+                                        <div class="col-md-8 col-xs-6 b-r">
+                                            <div>
+
+                                                <div class="mt-2">
+
+                                                    <iframe id="map{{ $location->address_id }}" width="100%"
+                                                        height="300" frameborder="0" style="border: 0"
+                                                        allowfullscreen></iframe>
+
+
+                                                    <div style="display:flex;">
+
+
+                                                        <h6>
+                                                            {{ $address ?? ''}}
+                                                        </h6>
+
+                                                        <br />
+                                                    </div>
+                                                    {{-- <iframe
+                                                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6991603.699017098!2d-100.0768425!3d31.168910300000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x864070360b823249%3A0x16eb1c8f1808de3c!2sTexas%2C%20USA!5e0!3m2!1sen!2sin!4v1701086703789!5m2!1sen!2sin"
+                                                        width="100%" height="300" style="border:0;" allowfullscreen=""
+                                                        loading="lazy"
+                                                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                                    --}}
+
+                                                </div>
+                                                <hr />
 
 
 
 
+                                            </div>
+
+
+                                        </div>
                                     </div>
-
-
                                 </div>
 
                             </div>
@@ -484,7 +465,6 @@
                                 </table>
                             </div>
                             @endif
-                            <br />
 
 
                         </div>
@@ -508,184 +488,111 @@
                     </div>
                     <div class="tab-pane fade" id="permission_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
                         <div class="card-body card-border shadow">
-                            <h5 class="card-title uppercase">Permission</h5>
-                            PERMISSION MODULE HERE
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="activity_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
-                        <div class="card-body card-border shadow">
-                            {{-- <h5 class="card-title uppercase">Activity </h5> --}}
-                            <div class="col-md-12 ">
-
-                                <h5 class="card-title">ACTIVITY FEED</h5>
-                                <div class="table-responsive">
-                                    <table class="table customize-table mb-0 v-middle">
-                                        <thead>
-                                            <tr>
-                                                <!-- <th style="width:20%">User</th> -->
-                                                <th>Activity</th>
-                                                <th>Date</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($activity as $record)
-                                            <tr>
-                                                <td>{{ $record->activity}}</td>
-                                                <td>
-                                                    {{ \Carbon\Carbon::parse($record->created_at)->format('D
-                                                    n/j/y g:ia') ??
-                                                    'null' }}
-                                                </td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-
-                                    </table>
-                                </div>
+                            <h5 class="card-title uppercase">User Permission</h5>
 
 
-
-                            </div>
-                        </div>
-                    </div>
-
-
-
-
-                    <div class="tab-pane fade" id="edit_profile_tab" role="tabpanel"
-                        aria-labelledby="pills-timeline-tab">
-
-                        <div class="card-body card-border shadow">
-
-                            @include('dispatcher.edit')
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="tab-pane fade show " id="others_tab" role="tabpanel"
-                        aria-labelledby="pills-timeline-tab">
-                        <div class="card-body card-border shadow">
-                            <h5 class="card-title uppercase">Notes </h5>
-                            <div class="profiletimeline mt-0">
-                                @foreach ($notename as $notename )
-                                <div class="sl-item">
-                                    <div class="sl-left">
-                                        @php
-                                        $username = DB::table('users')->where('id',
-                                        $notename->added_by)->first();
-                                        @endphp
-                                        @if($username && $username->user_image) <img
-                                            src="{{ asset('public/images/Uploads/users/'. $username->id . '/' . $username->user_image) }}"
-                                            class="rounded-circle" alt="user" />
-                                        @else
-                                        <img src="{{ asset('public/images/login_img_bydefault.png') }}" alt="user"
-                                            class=" rounded-circle" />
-                                        @endif
-
+                            {{-- <div class="row mt-3 mb-3">
+                                <div class="col-md-8">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input info" type="radio" name="radio-solid-info"
+                                            id="permissions_type_all" value="all" {{ $dispatcher->permissions_type ==
+                                        'all' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="permissions_type_all">All</label>
                                     </div>
-
-                                    <div class="sl-right">
-                                        <div>
-                                            <a href="javascript:void(0)" class="link"> {{$username->name ??
-                                                null}}</a>
-                                            <span class="sl-date">
-                                                {{ \Carbon\Carbon::parse($notename->created_at)->diffForHumans() }}
-                                            </span>
-                                            <p><strong> </strong><a href="javascript:void(0)">
-                                                </a></p>
-                                            <div class="row">
-                                                <div class="col-lg-12 col-md-12">
-                                                    {{ $notename->note }}
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input info" type="radio" name="radio-solid-info"
+                                            id="permissions_type_selected" value="selected" {{
+                                            $dispatcher->permissions_type == 'selected' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="permissions_type_selected">Selected</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input info" type="radio" name="radio-solid-info"
+                                            id="permissions_type_block" value="block" {{ $dispatcher->permissions_type
+                                        ==
+                                        'block' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="permissions_type_block">Block</label>
                                     </div>
                                 </div>
+                            </div> --}}
 
-                                <hr />
-                                @endforeach
-                                {{-- <div class="sl-item">
-                                    <div class="sl-left">
-                                        <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}" alt="user"
-                                            class="rounded-circle" />
-                                    </div>
-                                    <div class="sl-right">
-                                        <div>
-                                            <span class="sl-date">2 days ago</span>
-                                            <a href="javascript:void(0)" class="link">John Smith</a>
-                                            <p><strong>LG AC REPAIR </strong><a href="javascript:void(0)">
-                                                    View
-                                                    Ticket</a></p>
-                                            <div class="row">
-                                                <div class="col-lg-12 col-md-12">Lorem ipsum dolor sit amet,
-                                                    consectetur adipiscing elit, sed do eiusmod tempor
-                                                    incididunt ut
-                                                    labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                                    quis
-                                                    nostrud exercitation ullamco laboris nisi ut aliquip ex
-                                                    ea
-                                                    commodo consequat</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr />
-                                <div class="sl-item">
-                                    <div class="sl-left">
-                                        <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}" alt="user"
-                                            class="rounded-circle" />
-                                    </div>
-                                    <div class="sl-right">
-                                        <div>
-                                            <a href="javascript:void(0)" class="link">James Nelson</a>
-                                            <span class="sl-date">4 days ago</span>
-                                            <p><strong>LG AC REPAIR </strong><a href="javascript:void(0)">
-                                                    View
-                                                    Ticket</a></p>
-                                            <div class="row">
-                                                <div class="col-lg-12 col-md-12">Lorem ipsum dolor sit amet,
-                                                    consectetur adipiscing elit, sed do eiusmod tempor
-                                                    incididunt ut
-                                                    labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                                    quis
-                                                    nostrud exercitation ullamco laboris nisi ut aliquip ex
-                                                    ea
-                                                    commodo consequat</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> --}}
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-lg-6 col-xlg-6">
-                                    <form id="commentForm" action="{{ route('techniciancomment.store') }}"
-                                        method="POST">
+                            <div class="row mt-3 mb-3">
+                                @php
+                                use App\Models\UserPermission;
+                                use App\Models\PermissionModel;
+                                @endphp
+                                <div class="col-md-8">
+                                    <form action="{{ route('update.permissions') }}" method="POST">
                                         @csrf
-                                        <div class="mb-3">
-                                            <label for="tag_id" class="control-label bold col-form-label uppercase">Add
-                                                New Comment</label>
-                                            <input type="hidden" name="id" value="{{ $dispatcher->id }}">
-                                            <textarea class="form-control" id="comment" name="note" rows="3"></textarea>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input info" type="radio" name="radio-solid-info"
+                                                id="permissions_type_all" value="all" {{ $dispatcher->permissions_type
+                                            == 'all' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="permissions_type_all">All</label>
                                         </div>
-                                        <div class="mb-3 d-flex align-items-center">
-                                            <button type="submit" id="submitButton"
-                                                class="btn btn-primary ms-2">Submit</button>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input info" type="radio" name="radio-solid-info"
+                                                id="permissions_type_selected" value="selected" {{
+                                                $dispatcher->permissions_type == 'selected' ? 'checked' : '' }}>
+                                            <label class="form-check-label"
+                                                for="permissions_type_selected">Selected</label>
                                         </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input info" type="radio" name="radio-solid-info"
+                                                id="permissions_type_block" value="block" {{
+                                                $dispatcher->permissions_type == 'block' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="permissions_type_block">Block</label>
+                                        </div>
+
+                                        <div class="row mt-3">
+                                            <div class="col-md-12">
+                                                @foreach($parentModules as $parentModule)
+                                                @php
+                                                // Get child modules for each parent module
+                                                $childModules = PermissionModel::where('parent_id',
+                                                $parentModule->module_id)
+                                                ->orderBy('module_id', 'ASC')
+                                                ->get();
+                                                @endphp
+
+                                                {{-- Display parent module name --}}
+                                                <h6>{{ $loop->iteration }}: {{ $parentModule->module_name }}</h6>
+
+                                                {{-- Display child modules and checkboxes --}}
+                                                @foreach($childModules as $childModule)
+                                                <div class="mb-2">
+                                                    <label class="form-check-label"
+                                                        for="p_mod_{{ $childModule->module_id }}">
+                                                        <input class="form-check-input" type="checkbox"
+                                                            id="p_mod_{{ $childModule->module_id }}"
+                                                            name="p_mod_{{ $childModule->module_id }}"
+                                                            value="{{ $childModule->module_id }}"
+                                                            @if(in_array($childModule->module_id, $access_array))
+                                                        checked @endif>
+                                                        {{ $childModule->module_name }}
+                                                    </label>
+                                                    <input type="hidden" name="permission[]"
+                                                        value="{{ in_array($childModule->module_id, $access_array) ? '1' : '0' }}">
+                                                    <input type="hidden" name="user_id" value="{{ $dispatcher->id }}">
+                                                    <input type="hidden" name="module_id"
+                                                        value="{{ $childModule->module_id }}">
+                                                </div>
+                                                @endforeach
+
+                                                <br><br>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Save Permissions</button>
                                     </form>
                                 </div>
                             </div>
+
+
+
+
+
                         </div>
                     </div>
-
-
-
-
-
-
-
-
 
 
 
@@ -693,23 +600,200 @@
 
                 </div>
             </div>
-            <!-- ---------------------
+            <div class="tab-pane fade" id="activity_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
+                <div class="card-body card-border shadow">
+                    {{-- <h5 class="card-title uppercase">Activity </h5> --}}
+                    <div class="col-md-12 ">
+
+                        <h5 class="card-title">ACTIVITY FEED</h5>
+                        <div class="table-responsive">
+                            <table class="table customize-table mb-0 v-middle">
+                                <thead>
+                                    <tr>
+                                        <!-- <th style="width:20%">User</th> -->
+                                        <th>Activity</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($activity as $record)
+                                    <tr>
+                                        <td>{{ $record->activity}}</td>
+                                        <td>
+                                            {{ \Carbon\Carbon::parse($record->created_at)->format('D
+                                            n/j/y g:ia') ??
+                                            'null' }}
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+
+                            </table>
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <div class="tab-pane fade" id="edit_profile_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
+
+                <div class="card-body card-border shadow">
+
+                    @include('dispatcher.edit')
+
+                </div>
+
+            </div>
+
+
+            <div class="tab-pane fade show " id="others_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
+                <div class="card-body card-border shadow">
+                    <h5 class="card-title uppercase">Notes </h5>
+                    <div class="profiletimeline mt-0">
+                        @foreach ($notename as $notename )
+                        <div class="sl-item">
+                            <div class="sl-left">
+                                @php
+                                $username = DB::table('users')->where('id',
+                                $notename->added_by)->first();
+                                @endphp
+                                @if($username && $username->user_image) <img
+                                    src="{{ asset('public/images/Uploads/users/'. $username->id . '/' . $username->user_image) }}"
+                                    class="rounded-circle" alt="user" />
+                                @else
+                                <img src="{{ asset('public/images/login_img_bydefault.png') }}" alt="user"
+                                    class=" rounded-circle" />
+                                @endif
+
+                            </div>
+
+                            <div class="sl-right">
+                                <div>
+                                    <a href="javascript:void(0)" class="link"> {{$username->name ??
+                                        null}}</a>
+                                    <span class="sl-date">
+                                        {{ \Carbon\Carbon::parse($notename->created_at)->diffForHumans() }}
+                                    </span>
+                                    <p><strong> </strong><a href="javascript:void(0)">
+                                        </a></p>
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12">
+                                            {{ $notename->note }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr />
+                        @endforeach
+                        {{-- <div class="sl-item">
+                            <div class="sl-left">
+                                <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}" alt="user"
+                                    class="rounded-circle" />
+                            </div>
+                            <div class="sl-right">
+                                <div>
+                                    <span class="sl-date">2 days ago</span>
+                                    <a href="javascript:void(0)" class="link">John Smith</a>
+                                    <p><strong>LG AC REPAIR </strong><a href="javascript:void(0)">
+                                            View
+                                            Ticket</a></p>
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12">Lorem ipsum dolor sit amet,
+                                            consectetur adipiscing elit, sed do eiusmod tempor
+                                            incididunt ut
+                                            labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                            quis
+                                            nostrud exercitation ullamco laboris nisi ut aliquip ex
+                                            ea
+                                            commodo consequat</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="sl-item">
+                            <div class="sl-left">
+                                <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}" alt="user"
+                                    class="rounded-circle" />
+                            </div>
+                            <div class="sl-right">
+                                <div>
+                                    <a href="javascript:void(0)" class="link">James Nelson</a>
+                                    <span class="sl-date">4 days ago</span>
+                                    <p><strong>LG AC REPAIR </strong><a href="javascript:void(0)">
+                                            View
+                                            Ticket</a></p>
+                                    <div class="row">
+                                        <div class="col-lg-12 col-md-12">Lorem ipsum dolor sit amet,
+                                            consectetur adipiscing elit, sed do eiusmod tempor
+                                            incididunt ut
+                                            labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                            quis
+                                            nostrud exercitation ullamco laboris nisi ut aliquip ex
+                                            ea
+                                            commodo consequat</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> --}}
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-lg-6 col-xlg-6">
+                            <form id="commentForm" action="{{ route('techniciancomment.store') }}" method="POST">
+                                @csrf
+                                <div class="mb-3">
+                                    <label for="tag_id" class="control-label bold col-form-label uppercase">Add
+                                        New Comment</label>
+                                    <input type="hidden" name="id" value="{{ $dispatcher->id }}">
+                                    <textarea class="form-control" id="comment" name="note" rows="3"></textarea>
+                                </div>
+                                <div class="mb-3 d-flex align-items-center">
+                                    <button type="submit" id="submitButton" class="btn btn-primary ms-2">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+        </div>
+    </div>
+    <!-- ---------------------
                             end Timeline
                         ---------------- -->
-        </div>
-        <!-- Column -->
-    </div>
-    <!-- Row -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- End PAge Content -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- Right sidebar -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- .right-sidebar -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- End Right sidebar -->
-    <!-- -------------------------------------------------------------- -->
+</div>
+<!-- Column -->
+</div>
+<!-- Row -->
+<!-- -------------------------------------------------------------- -->
+<!-- End PAge Content -->
+<!-- -------------------------------------------------------------- -->
+<!-- -------------------------------------------------------------- -->
+<!-- Right sidebar -->
+<!-- -------------------------------------------------------------- -->
+<!-- .right-sidebar -->
+<!-- -------------------------------------------------------------- -->
+<!-- End Right sidebar -->
+<!-- -------------------------------------------------------------- -->
 </div>
 <!-- -------------------------------------------------------------- -->
 <!-- End Container fluid  -->

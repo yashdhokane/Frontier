@@ -351,7 +351,6 @@
             $('#searchInputing').keyup(function() {
                 // Get the search query from the input field
                 var query = $(this).val();
-                console.log(query);
 
                 // Perform AJAX request to fetch search results
                 $.ajax({

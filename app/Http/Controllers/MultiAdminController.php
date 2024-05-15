@@ -242,6 +242,9 @@ class MultiAdminController extends Controller
     {
 
         $multiadmin = User::find($id);
+        if (!$multiadmin) {
+            return view('404');
+        }
 
 
         $notename = DB::table('user_notes')->where(

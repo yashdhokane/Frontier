@@ -52,56 +52,53 @@ class ApiController extends Controller
         return response()->json(['status' => false, 'message' => 'Invalid email or password']);
     }
 }
-
 public function reset_password(Request $request)
-    {
-        $request->validate([
-           // 'email' => 'required|email|exists:users,email',
-        ]);
+{
+    $request->validate([
+        // 'email' => 'required|email|exists:users,email',
+    ]);
 
-      $user = User::where('email', $request->email)
-            ->where('role', 'technician')
-            ->first();
+    $user = User::where('email', $request->email)
+        ->where('role', 'technician')
+        ->first();
 
-
-        if (!$user) {
-            return response()->json(['error' => 'User not found.'], 404);
-        }
-
-        $newPassword = Str::random(10);
-
-        $user->password = Hash::make($newPassword);
-        $user->save();
-
-        $companyName = "Frontier"; 
-
-       
-        Mail::send('emailtouser.forget_password_email', ['newPassword' => $newPassword, 'companyName' => $companyName], function ($message) use ($request) {
-            $message->to($request->email)->subject('Updated Password');
-            $message->from('yashdhokane890@gmail.com', 'Admin');
-        });
-
-        return response()->json(['message' => 'Password reset successful. Check your email for the new password.'], 200);
+    if (!$user) {
+        return response()->json(['status' => false, 'error' => 'User not found.'], 404);
     }
 
+    $newPassword = Str::random(10);
 
- public function getTechnicianJobs(Request $request)
-    {
-        $userId = $request->input('user_id');
-        $currentDate = Carbon::now()->toDateString();
+    $user->password = Hash::make($newPassword);
+    $user->save();
+
+    $companyName = "Frontier"; 
+
+    Mail::send('emailtouser.forget_password_email', ['newPassword' => $newPassword, 'companyName' => $companyName], function ($message) use ($request) {
+        $message->to($request->email)->subject('Updated Password');
+        $message->from('yashdhokane890@gmail.com', 'Admin');
+    });
+
+    return response()->json(['status' => true, 'message' => 'Password reset successful. Check your email for the new password.'], 200);
+}
+
+
+public function getTechnicianJobs(Request $request)
+{
+    $userId = $request->input('user_id');
+    $currentDate = Carbon::now()->toDateString();
     //   dd($currentDate);
-        // Check if there are any jobs for the specified technician (user_id) with the current date
-        $jobs = JobModel::with('user','JobAssign','addresscustomer','jobdetailsinfo','jobdetailsinfo.manufacturername')->where('technician_id', $userId)
-                    ->whereDate('created_at', $currentDate)
-                    
-                    ->get();
+    // Check if there are any jobs for the specified technician (user_id) with the current date
+    $jobs = JobModel::with('user', 'JobAssign', 'addresscustomer', 'jobdetailsinfo', 'jobdetailsinfo.manufacturername')
+        ->where('technician_id', $userId)
+        ->whereDate('created_at', $currentDate)
+        ->get();
 
-        if ($jobs->isEmpty()) {
-            return response()->json(['message' => 'Today no  jobs are available '], 404);
-        }
-
-        return response()->json($jobs);
+    if ($jobs->isEmpty()) {
+        return response()->json(['status' => false, 'message' => 'Today no jobs are available'], 404);
     }
+
+    return response()->json(['status' => true, 'data' => $jobs]);
+}
 
 public function getCustomerHistory(Request $request)
 {
@@ -113,11 +110,12 @@ public function getCustomerHistory(Request $request)
                                 ->get();
 
     if ($customerHistory->isEmpty()) {
-        return response()->json(['message' => 'No customer history found for the specified user'], 404);
+        return response()->json(['status' => false, 'message' => 'No customer history found for the specified user'], 404);
     }
 
-    return response()->json($customerHistory);
+    return response()->json(['status' => true, 'data' => $customerHistory]);
 }
+
 
 public function getTechnicianJobsHistory(Request $request)
 {
@@ -128,27 +126,28 @@ public function getTechnicianJobsHistory(Request $request)
     // Check if the date is provided
     if (!$date) {
         // If the date is missing, return a 400 Bad Request response
-        return response()->json(['message' => 'Date is required'], 400);
+        return response()->json(['status' => false, 'message' => 'Date is required'], 400);
     }
 
     // Parse and format the date using Carbon
     try {
         $formattedDate = Carbon::createFromFormat('m-d-Y', $date)->format('Y-m-d');
     } catch (\Exception $e) {
-        return response()->json(['message' => 'Invalid date format'], 400);
+        return response()->json(['status' => false, 'message' => 'Invalid date format'], 400);
     }
 
     // Filter the jobs by technician_id and the specified date
-    $jobs = JobModel::with('user','addresscustomer')->where('technician_id', $userId)
-                    ->whereDate('created_at', $formattedDate)
-                    ->get();
+    $jobs = JobModel::with('user', 'addresscustomer')->where('technician_id', $userId)
+        ->whereDate('created_at', $formattedDate)
+        ->get();
 
     if ($jobs->isEmpty()) {
-        return response()->json(['message' => 'No jobs available for the specified date'], 404);
+        return response()->json(['status' => false, 'message' => 'No jobs available for the specified date'], 404);
     }
 
-    return response()->json($jobs);
+    return response()->json(['status' => true, 'data' => $jobs]);
 }
+
 
 public function getcustomerJobsHistory(Request $request)
     {
@@ -356,24 +355,29 @@ public function jobfileUploadByTechnician(Request $request)
         $jobNote->save();
     }
 
-    return response()->json(['message' => 'File uploaded successfully', 'file' => $file], 201);
+    return response()->json(['status' => true, 'message' => 'File uploaded successfully', 'data' => $file], 201);
 }
 
 
 
-     public function getPartsByTechnicianId(Request $request)
-    {
-        // Retrieve the technician ID from the request
-        $technicianId = $request->input('technician_id');
+   public function getPartsByTechnicianId(Request $request)
+{
+    // Retrieve the technician ID from the request
+    $technicianId = $request->input('technician_id');
 
-        // Retrieve the ProductAssigned record by technician ID
-        $productAssigned = ProductAssigned::with('Product')->where('technician_id', $technicianId)->get();
+    // Retrieve the ProductAssigned record by technician ID
+    $productAssigned = ProductAssigned::with('Product')->where('technician_id', $technicianId)->get();
 
-       
-            // If no ProductAssigned record found, return empty response or error message
-            return response()->json(['message' => 'No parts assigned to the specified technician' ,'parts'=>$productAssigned], 404);
-        
+    // Check if any ProductAssigned record found
+    if ($productAssigned->isEmpty()) {
+        // If no ProductAssigned record found, return a response with status false and error message
+        return response()->json(['status' => false, 'message' => 'No parts assigned to the specified technician'], 404);
     }
+
+    // If ProductAssigned record(s) found, return a response with status true and the parts data
+    return response()->json(['status' => true, 'parts' => $productAssigned]);
+}
+
 
 
 public function technicianLogout(Request $request)
@@ -386,17 +390,28 @@ public function updateTechnicianProfile(Request $request)
 {
     // Validate the incoming request data
     $request->validate([
-        'technician_id' => 'required|',
-        'name' => 'required|string|',
+        'technician_id' => 'required',
+        'name' => 'required|string',
         'email' => 'required|email',
     ]);
-    $technician = User::findOrFail($request->technician_id);
+
+    try {
+        // Find the technician by ID
+        $technician = User::where('role','technician')->findOrFail($request->technician_id);
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        // Return a response with status false and error message if technician is not found
+        return response()->json(['status' => false, 'message' => 'Technician not found'], 404);
+    }
+
+    // Update technician's name and email
     $technician->name = $request->name;
     $technician->email = $request->email;
     $technician->save();
 
-    return response()->json(['message' => 'Technician profile updated successfully', 'technician' => $technician], 200);
+    // Assuming the update is successful
+    return response()->json(['status' => true, 'message' => 'Technician profile updated successfully', 'technician' => $technician], 200);
 }
+
 
 public function calculateJobStatusPercentage(Request $request)
 {

@@ -11,6 +11,26 @@
 }
 </style>
 
+
+@php
+    $address = '';
+    if (isset($location->address_line1) && $location->address_line1 !== '') {
+        $address .= $location->address_line1 . ', ';
+    }
+    if (isset($location->address_line2) && $location->address_line2 !== '') {
+        $address .= $location->address_line2 . ', ';
+    }
+    if (isset($user->Location->city) && $user->Location->city !== '') {
+        $address .= $user->Location->city . ', ';
+    }
+    if (isset($location->state_name) && $location->state_name !== '') {
+        $address .= $location->state_name . ', ';
+    }
+    if (isset($location->zipcode) && $location->zipcode !== '') {
+        $address .= $location->zipcode;
+    }
+@endphp
+
     <!-- -------------------------------------------------------------- -->
     <!-- Bread crumb and right sidebar toggle -->
 
@@ -273,31 +293,13 @@
 													@endif
 
  
-                                                    @foreach($userAddresscity as $location)
+
                                                     <h5 class="card-title uppercase mt-5">Address</h5>
 													<h6 style="font-weight: normal;"><i class="ri-map-pin-line"></i> 
-													@if(isset($location->address_line1) && $location->address_line1 !== '')
-													{{ $location->address_line1 }}, 
-													@endif
-
-													@if(isset($location->address_line2) && $location->address_line2 !== '')
-													{{ $location->address_line2 }}, 
-													@endif
-
-													@if(isset($user->Location->city) && $user->Location->city !== '')
-													{{ $user->Location->city }}, 
-													@endif
-
-													@if(isset($location->state_name) && $location->state_name !== '')
-													{{ $location->state_name }}, 
-													@endif
-
-													@if(isset($location->zipcode) && $location->zipcode !== '')
-													{{ $location->zipcode }}
-													@endif
+                                                    {{ $address  ?? ''}}
 
 													</h6>
-                                                    @endforeach
+                                                    
  
  
                                                     <div class="row">
@@ -335,36 +337,19 @@
                                             </div>
 
 											<div class="col-md-7 col-xs-6 b-r">
-                                                @foreach($userAddresscity as $location)
+                                               
                                                 <div class="mt-4">
                                                     <iframe id="map{{ $location->address_id }}" width="100%"
                                                         height="300" frameborder="0" style="border: 0"
                                                         allowfullscreen></iframe>
                                                     <div style="display:flex;">
-                                                        <h6>@if(isset($location->address_line1) && $location->address_line1 !== '')
-    {{ $location->address_line1 }}, 
-@endif
-
-@if(isset($location->address_line2) && $location->address_line2 !== '')
-    {{ $location->address_line2 }}, 
-@endif
-
-@if(isset($user->Location->city) && $user->Location->city !== '')
-    {{ $user->Location->city }}, 
-@endif
-
-@if(isset($location->state_name) && $location->state_name !== '')
-    {{ $location->state_name }}, 
-@endif
-
-@if(isset($location->zipcode) && $location->zipcode !== '')
-    {{ $location->zipcode }}
-@endif
+                                                        <h6>
+                                                                                                            {{ $address  ?? ''}}
 
                                                         </h6>
                                                     </div>
                                                 </div>
-                                                @endforeach
+                                               
                                             </div>
                                         </div>
                                         <div>

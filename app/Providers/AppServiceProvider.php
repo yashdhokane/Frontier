@@ -7,6 +7,8 @@ use Carbon\Carbon;
 use App\Models\JobActivity;
 use App\Models\JobAssign;
 use App\Models\Payment;
+use App\Models\PermissionModel;
+
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -210,5 +212,9 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
         });
+
+          view()->share('getPermissionsByParentId', function ($parentId) {
+                return PermissionModel::with('module')->where('parent_id', $parentId)->get();
+            });
     }
 }
