@@ -562,7 +562,12 @@ $address .= $location->zipcode;
                                                 <input type="hidden" name="user_id" value="{{ $dispatcher->id }}">
                                             </div>
                                         </div>
-                                        <button type="submit" class="btn btn-primary">Save Permissions</button>
+                                         @if($auth->role == 'dispatcher')
+                                           <button type="button" class="btn btn-primary" disabled>Save Permissions</button>
+                                            <br><small class="bg-danger text-white px-2"> Dispatcher can't change the permission.</small>
+                                         @else
+                                         <button type="submit" class="btn btn-primary">Save Permissions</button>
+                                         @endif
                                     </form>
                                 </div>
                             </div>

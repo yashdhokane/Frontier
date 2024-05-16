@@ -249,6 +249,9 @@ class DispatcherController extends Controller
         if (!$dispatcher) {
             return view('404');
         }
+
+       $auth = auth()->user();
+
         // dd($dispatcher);
         $notename = DB::table('user_notes')->where(
             'user_id',
@@ -353,7 +356,7 @@ class DispatcherController extends Controller
 
         // echo json_encode($jobActivity);
         // exit();
-        return view('dispatcher.show', compact('dispatcher','access_array','parentModules','activity', 'setting', 'UsersDetails', 'locationStates', 'Note', 'source', 'selectedTags', 'userTags',  'tags', 'payment', 'tickets', 'customerimage', 'notename', 'activity', 'jobasign', 'location', 'latitude', 'longitude', 'userAddresscity', 'home_phone'));
+        return view('dispatcher.show', compact('dispatcher','access_array','parentModules','activity', 'setting', 'UsersDetails', 'locationStates', 'Note', 'source', 'selectedTags', 'userTags',  'tags', 'payment', 'tickets', 'customerimage', 'notename', 'activity', 'jobasign', 'location', 'latitude', 'longitude', 'userAddresscity', 'home_phone','auth'));
     }
   public function permission(Request $request)
     {
