@@ -62,9 +62,13 @@
 
             <!-- Right side toggle and nav items -->
             <ul class="navbar-nav">
-
-				<li class="nav-item dropdown">
-					<div class="nav-clock"><span>Tue 16, Apr' 24</span><br/>02:20:30 CDT</div>
+					@php
+						use Carbon\Carbon;
+					$currentFormattedDate = Carbon::now($timezoneName)->format('D d, M\' y');
+					$currentFormattedDateTime = Carbon::now($timezoneName)->format('h:i:s A T');
+					@endphp
+				<li class="nav-item dropdown align-self-center px-2">
+					<div class="nav-clock"><span>{{ $currentFormattedDate }}</span><br/>{{ $currentFormattedDateTime }}</div>
 				</li>
 				
 				<li class="nav-item dropdown">
