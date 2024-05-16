@@ -184,6 +184,7 @@ Route::fallback(function () {
 Route::get('/unauthorized', function () {
     return view('403');
 });
+
 Route::middleware('guest')->group(function () {
 
 
@@ -776,8 +777,6 @@ Route::middleware('auth')->group(function () {
     Route::get('technician_schedule', [ScheduleController::class, 'technician_schedule'])->name('technician_schedule');
 
     Route::post('/refresh-schedule', [ScheduleController::class, 'refreshSchedule'])->name('refresh-schedule');
-
-
 
     // MailController  
 

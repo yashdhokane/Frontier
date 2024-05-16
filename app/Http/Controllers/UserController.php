@@ -375,7 +375,6 @@ class UserController extends Controller
 
         //$roles = Role::all();
         $user = User::with('Location')->find($id);
-
         if (!$user) {
             return view('404');
         }

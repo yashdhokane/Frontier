@@ -35,6 +35,7 @@ class BusinessHoursController extends Controller
           return $permissionCheck; // This will handle the redirection
       }
 
+        
         $businessHours = BusinessHours::all();
         // dd($businessHours);
 

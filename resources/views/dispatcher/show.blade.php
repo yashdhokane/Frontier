@@ -490,38 +490,22 @@ $address .= $location->zipcode;
                         <div class="card-body card-border shadow">
                             <h5 class="card-title uppercase">User Permission</h5>
 
-
-                            {{-- <div class="row mt-3 mb-3">
-                                <div class="col-md-8">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input info" type="radio" name="radio-solid-info"
-                                            id="permissions_type_all" value="all" {{ $dispatcher->permissions_type ==
-                                        'all' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="permissions_type_all">All</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input info" type="radio" name="radio-solid-info"
-                                            id="permissions_type_selected" value="selected" {{
-                                            $dispatcher->permissions_type == 'selected' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="permissions_type_selected">Selected</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input info" type="radio" name="radio-solid-info"
-                                            id="permissions_type_block" value="block" {{ $dispatcher->permissions_type
-                                        ==
-                                        'block' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="permissions_type_block">Block</label>
-                                    </div>
-                                </div>
-                            </div> --}}
-
                             <div class="row mt-3 mb-3">
                                 @php
                                 use App\Models\UserPermission;
                                 use App\Models\PermissionModel;
+
+                                $access_array = UserPermission::where('user_id', $dispatcher->id)
+                                ->where('permission', 1)
+                                ->pluck('module_id')
+                                ->toArray();
+
+                                $parentModules = PermissionModel::where('parent_id', 0)
+                                ->orderBy('module_id', 'ASC')
+                                ->get();
                                 @endphp
                                 <div class="col-md-8">
-                                    <form action="{{ route('update.permissions') }}" method="POST">
+                                    <form id="permissionsForm" action="{{ route('update.permissions') }}" method="POST">
                                         @csrf
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input info" type="radio" name="radio-solid-info"
@@ -547,262 +531,309 @@ $address .= $location->zipcode;
                                             <div class="col-md-12">
                                                 @foreach($parentModules as $parentModule)
                                                 @php
-                                                // Get child modules for each parent module
+
                                                 $childModules = PermissionModel::where('parent_id',
                                                 $parentModule->module_id)
                                                 ->orderBy('module_id', 'ASC')
                                                 ->get();
                                                 @endphp
 
-                                                {{-- Display parent module name --}}
                                                 <h6>{{ $loop->iteration }}: {{ $parentModule->module_name }}</h6>
 
-                                                {{-- Display child modules and checkboxes --}}
                                                 @foreach($childModules as $childModule)
                                                 <div class="mb-2">
                                                     <label class="form-check-label"
                                                         for="p_mod_{{ $childModule->module_id }}">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            id="p_mod_{{ $childModule->module_id }}"
-                                                            name="p_mod_{{ $childModule->module_id }}"
-                                                            value="{{ $childModule->module_id }}"
-                                                            @if(in_array($childModule->module_id, $access_array))
-                                                        checked @endif>
+                                                        <input class="form-check-input permission-checkbox updatevalue"
+                                                            type="checkbox" id="p_mod_{{ $childModule->module_id }}"
+                                                            name="{{ $childModule->module_id }}[]" value="1" {{
+                                                            in_array($childModule->module_id, $access_array) ? 'checked'
+                                                        : '' }}>
                                                         {{ $childModule->module_name }}
                                                     </label>
-                                                    <input type="hidden" name="permission[]"
-                                                        value="{{ in_array($childModule->module_id, $access_array) ? '1' : '0' }}">
-                                                    <input type="hidden" name="user_id" value="{{ $dispatcher->id }}">
-                                                    <input type="hidden" name="module_id"
-                                                        value="{{ $childModule->module_id }}">
+                                                    <!-- Hidden input to ensure the value is always submitted -->
+                                                    <input type="hidden" name="{{ $childModule->module_id }}[]"
+                                                        value="0">
                                                 </div>
                                                 @endforeach
 
                                                 <br><br>
                                                 @endforeach
+                                                <input type="hidden" name="user_id" value="{{ $dispatcher->id }}">
                                             </div>
                                         </div>
                                         <button type="submit" class="btn btn-primary">Save Permissions</button>
                                     </form>
                                 </div>
                             </div>
-
-
-
-
-
-                        </div>
-                    </div>
-
-
-
-
-
-                </div>
-            </div>
-            <div class="tab-pane fade" id="activity_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
-                <div class="card-body card-border shadow">
-                    {{-- <h5 class="card-title uppercase">Activity </h5> --}}
-                    <div class="col-md-12 ">
-
-                        <h5 class="card-title">ACTIVITY FEED</h5>
-                        <div class="table-responsive">
-                            <table class="table customize-table mb-0 v-middle">
-                                <thead>
-                                    <tr>
-                                        <!-- <th style="width:20%">User</th> -->
-                                        <th>Activity</th>
-                                        <th>Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($activity as $record)
-                                    <tr>
-                                        <td>{{ $record->activity}}</td>
-                                        <td>
-                                            {{ \Carbon\Carbon::parse($record->created_at)->format('D
-                                            n/j/y g:ia') ??
-                                            'null' }}
-                                        </td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-
-                            </table>
                         </div>
 
 
 
+
+
+
                     </div>
-                </div>
-            </div>
+                    <div class="tab-pane fade" id="activity_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
+                        <div class="card-body card-border shadow">
+                            {{-- <h5 class="card-title uppercase">Activity </h5> --}}
+                            <div class="col-md-12 ">
+
+                                <h5 class="card-title">ACTIVITY FEED</h5>
+                                <div class="table-responsive">
+                                    <table class="table customize-table mb-0 v-middle">
+                                        <thead>
+                                            <tr>
+                                                <!-- <th style="width:20%">User</th> -->
+                                                <th>Activity</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($activity as $record)
+                                            <tr>
+                                                <td>{{ $record->activity}}</td>
+                                                <td>
+                                                    {{ \Carbon\Carbon::parse($record->created_at)->format('D
+                                                    n/j/y g:ia') ??
+                                                    'null' }}
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+
+                                    </table>
+                                </div>
 
 
-
-
-            <div class="tab-pane fade" id="edit_profile_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
-
-                <div class="card-body card-border shadow">
-
-                    @include('dispatcher.edit')
-
-                </div>
-
-            </div>
-
-
-            <div class="tab-pane fade show " id="others_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
-                <div class="card-body card-border shadow">
-                    <h5 class="card-title uppercase">Notes </h5>
-                    <div class="profiletimeline mt-0">
-                        @foreach ($notename as $notename )
-                        <div class="sl-item">
-                            <div class="sl-left">
-                                @php
-                                $username = DB::table('users')->where('id',
-                                $notename->added_by)->first();
-                                @endphp
-                                @if($username && $username->user_image) <img
-                                    src="{{ asset('public/images/Uploads/users/'. $username->id . '/' . $username->user_image) }}"
-                                    class="rounded-circle" alt="user" />
-                                @else
-                                <img src="{{ asset('public/images/login_img_bydefault.png') }}" alt="user"
-                                    class=" rounded-circle" />
-                                @endif
 
                             </div>
+                        </div>
+                    </div>
 
-                            <div class="sl-right">
-                                <div>
-                                    <a href="javascript:void(0)" class="link"> {{$username->name ??
-                                        null}}</a>
-                                    <span class="sl-date">
-                                        {{ \Carbon\Carbon::parse($notename->created_at)->diffForHumans() }}
-                                    </span>
-                                    <p><strong> </strong><a href="javascript:void(0)">
-                                        </a></p>
-                                    <div class="row">
-                                        <div class="col-lg-12 col-md-12">
-                                            {{ $notename->note }}
+
+
+
+                    <div class="tab-pane fade" id="edit_profile_tab" role="tabpanel"
+                        aria-labelledby="pills-timeline-tab">
+
+                        <div class="card-body card-border shadow">
+
+                            @include('dispatcher.edit')
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="tab-pane fade show " id="others_tab" role="tabpanel"
+                        aria-labelledby="pills-timeline-tab">
+                        <div class="card-body card-border shadow">
+                            <h5 class="card-title uppercase">Notes </h5>
+                            <div class="profiletimeline mt-0">
+                                @foreach ($notename as $notename )
+                                <div class="sl-item">
+                                    <div class="sl-left">
+                                        @php
+                                        $username = DB::table('users')->where('id',
+                                        $notename->added_by)->first();
+                                        @endphp
+                                        @if($username && $username->user_image) <img
+                                            src="{{ asset('public/images/Uploads/users/'. $username->id . '/' . $username->user_image) }}"
+                                            class="rounded-circle" alt="user" />
+                                        @else
+                                        <img src="{{ asset('public/images/login_img_bydefault.png') }}" alt="user"
+                                            class=" rounded-circle" />
+                                        @endif
+
+                                    </div>
+
+                                    <div class="sl-right">
+                                        <div>
+                                            <a href="javascript:void(0)" class="link"> {{$username->name ??
+                                                null}}</a>
+                                            <span class="sl-date">
+                                                {{ \Carbon\Carbon::parse($notename->created_at)->diffForHumans() }}
+                                            </span>
+                                            <p><strong> </strong><a href="javascript:void(0)">
+                                                </a></p>
+                                            <div class="row">
+                                                <div class="col-lg-12 col-md-12">
+                                                    {{ $notename->note }}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
 
-                        <hr />
-                        @endforeach
-                        {{-- <div class="sl-item">
-                            <div class="sl-left">
-                                <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}" alt="user"
-                                    class="rounded-circle" />
-                            </div>
-                            <div class="sl-right">
-                                <div>
-                                    <span class="sl-date">2 days ago</span>
-                                    <a href="javascript:void(0)" class="link">John Smith</a>
-                                    <p><strong>LG AC REPAIR </strong><a href="javascript:void(0)">
-                                            View
-                                            Ticket</a></p>
-                                    <div class="row">
-                                        <div class="col-lg-12 col-md-12">Lorem ipsum dolor sit amet,
-                                            consectetur adipiscing elit, sed do eiusmod tempor
-                                            incididunt ut
-                                            labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                            quis
-                                            nostrud exercitation ullamco laboris nisi ut aliquip ex
-                                            ea
-                                            commodo consequat</div>
+                                <hr />
+                                @endforeach
+                                {{-- <div class="sl-item">
+                                    <div class="sl-left">
+                                        <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}" alt="user"
+                                            class="rounded-circle" />
                                     </div>
+                                    <div class="sl-right">
+                                        <div>
+                                            <span class="sl-date">2 days ago</span>
+                                            <a href="javascript:void(0)" class="link">John Smith</a>
+                                            <p><strong>LG AC REPAIR </strong><a href="javascript:void(0)">
+                                                    View
+                                                    Ticket</a></p>
+                                            <div class="row">
+                                                <div class="col-lg-12 col-md-12">Lorem ipsum dolor sit amet,
+                                                    consectetur adipiscing elit, sed do eiusmod tempor
+                                                    incididunt ut
+                                                    labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                                    quis
+                                                    nostrud exercitation ullamco laboris nisi ut aliquip ex
+                                                    ea
+                                                    commodo consequat</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="sl-item">
+                                    <div class="sl-left">
+                                        <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}" alt="user"
+                                            class="rounded-circle" />
+                                    </div>
+                                    <div class="sl-right">
+                                        <div>
+                                            <a href="javascript:void(0)" class="link">James Nelson</a>
+                                            <span class="sl-date">4 days ago</span>
+                                            <p><strong>LG AC REPAIR </strong><a href="javascript:void(0)">
+                                                    View
+                                                    Ticket</a></p>
+                                            <div class="row">
+                                                <div class="col-lg-12 col-md-12">Lorem ipsum dolor sit amet,
+                                                    consectetur adipiscing elit, sed do eiusmod tempor
+                                                    incididunt ut
+                                                    labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                                    quis
+                                                    nostrud exercitation ullamco laboris nisi ut aliquip ex
+                                                    ea
+                                                    commodo consequat</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> --}}
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-lg-6 col-xlg-6">
+                                    <form id="commentForm" action="{{ route('techniciancomment.store') }}"
+                                        method="POST">
+                                        @csrf
+                                        <div class="mb-3">
+                                            <label for="tag_id" class="control-label bold col-form-label uppercase">Add
+                                                New Comment</label>
+                                            <input type="hidden" name="id" value="{{ $dispatcher->id }}">
+                                            <textarea class="form-control" id="comment" name="note" rows="3"></textarea>
+                                        </div>
+                                        <div class="mb-3 d-flex align-items-center">
+                                            <button type="submit" id="submitButton"
+                                                class="btn btn-primary ms-2">Submit</button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
-                        <hr />
-                        <div class="sl-item">
-                            <div class="sl-left">
-                                <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}" alt="user"
-                                    class="rounded-circle" />
-                            </div>
-                            <div class="sl-right">
-                                <div>
-                                    <a href="javascript:void(0)" class="link">James Nelson</a>
-                                    <span class="sl-date">4 days ago</span>
-                                    <p><strong>LG AC REPAIR </strong><a href="javascript:void(0)">
-                                            View
-                                            Ticket</a></p>
-                                    <div class="row">
-                                        <div class="col-lg-12 col-md-12">Lorem ipsum dolor sit amet,
-                                            consectetur adipiscing elit, sed do eiusmod tempor
-                                            incididunt ut
-                                            labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                            quis
-                                            nostrud exercitation ullamco laboris nisi ut aliquip ex
-                                            ea
-                                            commodo consequat</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> --}}
                     </div>
-                    <div class="row mt-2">
-                        <div class="col-lg-6 col-xlg-6">
-                            <form id="commentForm" action="{{ route('techniciancomment.store') }}" method="POST">
-                                @csrf
-                                <div class="mb-3">
-                                    <label for="tag_id" class="control-label bold col-form-label uppercase">Add
-                                        New Comment</label>
-                                    <input type="hidden" name="id" value="{{ $dispatcher->id }}">
-                                    <textarea class="form-control" id="comment" name="note" rows="3"></textarea>
-                                </div>
-                                <div class="mb-3 d-flex align-items-center">
-                                    <button type="submit" id="submitButton" class="btn btn-primary ms-2">Submit</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
                 </div>
             </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-        </div>
-    </div>
-    <!-- ---------------------
+            <!-- ---------------------
                             end Timeline
                         ---------------- -->
-</div>
-<!-- Column -->
-</div>
-<!-- Row -->
-<!-- -------------------------------------------------------------- -->
-<!-- End PAge Content -->
-<!-- -------------------------------------------------------------- -->
-<!-- -------------------------------------------------------------- -->
-<!-- Right sidebar -->
-<!-- -------------------------------------------------------------- -->
-<!-- .right-sidebar -->
-<!-- -------------------------------------------------------------- -->
-<!-- End Right sidebar -->
-<!-- -------------------------------------------------------------- -->
+        </div>
+        <!-- Column -->
+    </div>
+    <!-- Row -->
+    <!-- -------------------------------------------------------------- -->
+    <!-- End PAge Content -->
+    <!-- -------------------------------------------------------------- -->
+    <!-- -------------------------------------------------------------- -->
+    <!-- Right sidebar -->
+    <!-- -------------------------------------------------------------- -->
+    <!-- .right-sidebar -->
+    <!-- -------------------------------------------------------------- -->
+    <!-- End Right sidebar -->
+    <!-- -------------------------------------------------------------- -->
 </div>
 <!-- -------------------------------------------------------------- -->
 <!-- End Container fluid  -->
 
 @section('script')
-
 <script>
-    $(document).ready(function(){
+    document.addEventListener('DOMContentLoaded', function() {
+        var allCheckbox = document.querySelectorAll('.permission-checkbox');
+        var allRadio = document.querySelectorAll('input[name="radio-solid-info"]');
 
+        allRadio.forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                if (this.value === 'all') {
+                    allCheckbox.forEach(function(checkbox) {
+                        checkbox.checked = true;
+                        checkbox.value = 1;
+                        checkbox.disabled = false; // Set value to 1 for all checkboxes when 'All' is selected
+                    });
+                } else if (this.value === 'block') {
+                    allCheckbox.forEach(function(checkbox) {
+                        checkbox.checked = false;
+                        checkbox.value = 0;
+                        checkbox.disabled = true; // Set value to 0 for all checkboxes when 'Block' is selected
+                    });
+                }
+                else if (this.value === 'selected') {
+                allCheckbox.forEach(function(checkbox) {
+            //  checkbox.checked = true;
+            // checkbox.value = 1;
+                checkbox.disabled = false; // Set value to 0 for all checkboxes when 'Block' is selected
+                });
+                }
+            });
+        });
+
+        // Update the state of the 'All' radio button based on checkbox states
+        allCheckbox.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                var allChecked = true;
+                allCheckbox.forEach(function(cb) {
+                    if (!cb.checked) {
+                        allChecked = false;
+                    }
+                });
+                document.getElementById('permissions_type_all').checked = allChecked;
+            });
+        });
+    });
+
+</script>
+<script>
+    $(document).ready(function() {
+
+
+        $(document).on('click', '.updatevalue', function() {
+            var updatevalue = $(this).val();
+            if (this.checked) {
+                $(this).val(1);
+            } else {
+                $(this).val(0);
+            }
+        });
 
 
         // Select the password and new password input fields
@@ -829,7 +860,7 @@ $address .= $location->zipcode;
 
 
 
-        $('form').submit(function(event){
+        $('form').submit(function(event) {
 
 
 
@@ -865,7 +896,7 @@ $address .= $location->zipcode;
 
 
 
-            if(passwordValue === newPasswordValue){
+            if (passwordValue === newPasswordValue) {
 
 
 
@@ -899,8 +930,6 @@ $address .= $location->zipcode;
 
     });
 
-
-
 </script>
 
 
@@ -910,15 +939,15 @@ $address .= $location->zipcode;
 
 
 
-    event.preventDefault();
+        event.preventDefault();
 
 
 
-    $('#changePasswordModal').modal('show');
+        $('#changePasswordModal').modal('show');
 
 
 
-  });
+    });
 
 
 
@@ -926,30 +955,28 @@ $address .= $location->zipcode;
 
 
 
-  // Close modal when close button is clicked
+    // Close modal when close button is clicked
 
 
 
-  $('.close').on('click', function() {
+    $('.close').on('click', function() {
 
 
 
-    $('#changePasswordModal').modal('hide');
+        $('#changePasswordModal').modal('hide');
 
 
 
-  });
-
-
+    });
 
 </script>
 
 
 
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
 
-        $('#state_id').change(function () {
+        $('#state_id').change(function() {
 
             var stateId = $(this).val();
 
@@ -975,11 +1002,11 @@ $address .= $location->zipcode;
 
                 dataType: 'json',
 
-                success: function (data) {
+                success: function(data) {
 
                     citySelect.html('<option selected disabled value="">Select City...</option>');
 
-                    $.each(data, function (index, city) {
+                    $.each(data, function(index, city) {
 
                         citySelect.append('<option value="' + city.city_id + '">' + city.city + ' - ' + city.zip + '</option>');
 
@@ -987,7 +1014,7 @@ $address .= $location->zipcode;
 
                 },
 
-                error: function (xhr, status, error) {
+                error: function(xhr, status, error) {
 
                     console.error('Error fetching cities:', error);
 
@@ -1001,7 +1028,7 @@ $address .= $location->zipcode;
 
         // Trigger another function to get zip code after selecting a city
 
-        $('#city').change(function () {
+        $('#city').change(function() {
 
             var cityId = $(this).val();
 
@@ -1014,165 +1041,151 @@ $address .= $location->zipcode;
     });
 
 
- // Function to get zip code
-   function searchCity() {
-    // Initialize autocomplete
-    $("#city").autocomplete({
-        source: function(request, response) {
-            // Clear previous autocomplete results
-            $("#autocomplete-results").empty();
+    // Function to get zip code
+    function searchCity() {
+        // Initialize autocomplete
+        $("#city").autocomplete({
+            source: function(request, response) {
+                // Clear previous autocomplete results
+                $("#autocomplete-results").empty();
 
-            $.ajax({
-                url: "{{ route('autocomplete.city') }}",
-                data: {
-                    term: request.term
-                },
-                dataType: "json",
-                type: "GET",
-                success: function(data) {
-                    response(data);
-                },
-                error: function(response) {
-                    console.log("Error fetching city data:", response);
-                }
-            });
-        },
-        minLength: 2,
-        select: function(event, ui) {
-            $("#city").val(ui.item.city);
-            $("#city_id").val(ui.item.city_id);
-            return false;
-        }
-    }).data("ui-autocomplete")._renderItem = function(ul, item) {
-        // Render each item
-        var listItem = $("<li>").text(item.city).appendTo("#autocomplete-results");
-        listItem.data("city_id", item.city_id);
-        return listItem;
-    };
+                $.ajax({
+                    url: "{{ route('autocomplete.city') }}"
+                    , data: {
+                        term: request.term
+                    }
+                    , dataType: "json"
+                    , type: "GET"
+                    , success: function(data) {
+                        response(data);
+                    }
+                    , error: function(response) {
+                        console.log("Error fetching city data:", response);
+                    }
+                });
+            }
+            , minLength: 2
+            , select: function(event, ui) {
+                $("#city").val(ui.item.city);
+                $("#city_id").val(ui.item.city_id);
+                return false;
+            }
+        }).data("ui-autocomplete")._renderItem = function(ul, item) {
+            // Render each item
+            var listItem = $("<li>").text(item.city).appendTo("#autocomplete-results");
+            listItem.data("city_id", item.city_id);
+            return listItem;
+        };
 
-    // Handle click on autocomplete results
-    $("#autocomplete-results").on("click", "li", function() {
-        var cityName = $(this).text();
-        var cityId = $(this).data("city_id");
+        // Handle click on autocomplete results
+        $("#autocomplete-results").on("click", "li", function() {
+            var cityName = $(this).text();
+            var cityId = $(this).data("city_id");
 
-        // Check if cityId is retrieved properly
-        console.log("Selected City ID:", cityId);
+            // Check if cityId is retrieved properly
+            console.log("Selected City ID:", cityId);
 
-        // Set the city ID
-        $("#city_id").val(cityId);
+            // Set the city ID
+            $("#city_id").val(cityId);
 
-        // Set the city name
-        $("#city").val(cityName);
+            // Set the city name
+            $("#city").val(cityName);
 
-        // Hide autocomplete results
-        $("#autocomplete-results").hide();
-    });
+            // Hide autocomplete results
+            $("#autocomplete-results").hide();
+        });
 
-    // Handle input field click
-    $("#city").click(function() {
-        // Show autocomplete results box
-        $("#autocomplete-results").show();
-    });
+        // Handle input field click
+        $("#city").click(function() {
+            // Show autocomplete results box
+            $("#autocomplete-results").show();
+        });
 
-    // Clear appended city when input is cleared
-    $("#city").on("input", function() {
-        var inputVal = $(this).val();
-        if (inputVal === "") {
-            // If input is cleared, re-initialize autocomplete
-            $("#autocomplete-results").empty(); // Clear appended cities
-            searchCity(); // Re-initialize autocomplete
-        }
-    });
-}
+        // Clear appended city when input is cleared
+        $("#city").on("input", function() {
+            var inputVal = $(this).val();
+            if (inputVal === "") {
+                // If input is cleared, re-initialize autocomplete
+                $("#autocomplete-results").empty(); // Clear appended cities
+                searchCity(); // Re-initialize autocomplete
+            }
+        });
+    }
 
 
-// Function to get zip code
+    // Function to get zip code
 
 
 
-function getZipCode(cityId, cityName) {
+    function getZipCode(cityId, cityName) {
 
 
 
-    $.ajax({
+        $.ajax({
 
 
 
-        url: "{{ route('getZipCode') }}", // Adjust route URL accordingly
+            url: "{{ route('getZipCode') }}", // Adjust route URL accordingly
 
 
 
-        type: 'GET',
+            type: 'GET',
 
 
 
-        data: {
+            data: {
 
 
 
-            city_id: cityId,
+                city_id: cityId,
 
 
 
-            city_name: cityName
+                city_name: cityName
 
 
 
-        },
+            },
 
 
 
-        dataType: 'json',
+            dataType: 'json',
 
 
 
-        success: function(data){
+            success: function(data) {
 
 
 
-            var zipCode = data.zip_code; // Assuming the response contains the zip code
+                var zipCode = data.zip_code; // Assuming the response contains the zip code
 
 
 
-            $('#zip_code').val(zipCode); // Set the zip code in the input field
+                $('#zip_code').val(zipCode); // Set the zip code in the input field
 
 
 
-        },
+            },
 
 
 
-        error: function(xhr, status, error){
+            error: function(xhr, status, error) {
 
 
 
-            console.error('Error fetching zip code:', error);
+                console.error('Error fetching zip code:', error);
 
 
 
-        }
+            }
 
 
 
-    });
+        });
 
 
 
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    }
 
 </script>
 
@@ -1199,20 +1212,29 @@ function getZipCode(cityId, cityName) {
     firstNameInput.addEventListener('input', updateDisplayName);
     lastNameInput.addEventListener('input', updateDisplayName);
 
-
 </script>
 <script>
     @foreach($userAddresscity as $location)
-    var latitude = {{ $location->latitude }}; // Example latitude
-    var longitude = {{ $location->longitude }}; // Example longitude
+    var latitude = {
+        {
+            $location - > latitude
+        }
+    }; // Example latitude
+    var longitude = {
+        {
+            $location - > longitude
+        }
+    }; // Example longitude
 
     // Construct the URL with the latitude and longitude values
-    var mapUrl = 'https://www.google.com/maps/embed/v1/view?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&center=' + latitude
-    + ',' + longitude + '&zoom=13';
+    var mapUrl = 'https://www.google.com/maps/embed/v1/view?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&center=' + latitude +
+        ',' + longitude + '&zoom=13';
 
     document.getElementById('map{{ $location->address_id }}').src = mapUrl;
     @endforeach
+
 </script>
+
 
 @endsection
 

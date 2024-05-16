@@ -26,6 +26,7 @@ class MapController extends Controller
             return $permissionCheck; // This will handle the redirection
         }
 
+
         $locationServiceSouthWest = DB::table('location_service_area')->where('area_name','South West')->first();
 
         $query = DB::table('job_assigned')

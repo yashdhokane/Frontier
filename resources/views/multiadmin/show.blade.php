@@ -526,7 +526,82 @@
                     <div class="tab-pane fade" id="permission_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
                         <div class="card-body card-border shadow">
                             <h5 class="card-title uppercase">Permission</h5>
-                            PERMISSION MODULE HERE
+                             <div class="row mt-3 mb-3">
+                                @php
+                                use App\Models\UserPermission;
+                                use App\Models\PermissionModel;
+
+                                $access_array = UserPermission::where('user_id', $multiadmin->id)
+                                ->where('permission', 1)
+                                ->pluck('module_id')
+                                ->toArray();
+
+                                $parentModules = PermissionModel::where('parent_id', 0)
+                                ->orderBy('module_id', 'ASC')
+                                ->get();
+                                @endphp
+                                <div class="col-md-8">
+                                    <form id="permissionsForm" action="{{ route('update.permissions') }}" method="POST">
+                                        @csrf
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input info" type="radio" name="radio-solid-info"
+                                                id="permissions_type_all" value="all" {{ $multiadmin->permissions_type
+                                            == 'all' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="permissions_type_all">All</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input info" type="radio" name="radio-solid-info"
+                                                id="permissions_type_selected" value="selected" {{
+                                                $multiadmin->permissions_type == 'selected' ? 'checked' : '' }}>
+                                            <label class="form-check-label"
+                                                for="permissions_type_selected">Selected</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input info" type="radio" name="radio-solid-info"
+                                                id="permissions_type_block" value="block" {{
+                                                $multiadmin->permissions_type == 'block' ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="permissions_type_block">Block</label>
+                                        </div>
+
+                                        <div class="row mt-3">
+                                            <div class="col-md-12">
+                                                @foreach($parentModules as $parentModule)
+                                                @php
+
+                                                $childModules = PermissionModel::where('parent_id',
+                                                $parentModule->module_id)
+                                                ->orderBy('module_id', 'ASC')
+                                                ->get();
+                                                @endphp
+
+                                                <h6>{{ $loop->iteration }}: {{ $parentModule->module_name }}</h6>
+
+                                                @foreach($childModules as $childModule)
+                                                <div class="mb-2">
+                                                    <label class="form-check-label"
+                                                        for="p_mod_{{ $childModule->module_id }}">
+                                                        <input class="form-check-input permission-checkbox updatevalue"
+                                                            type="checkbox" id="p_mod_{{ $childModule->module_id }}"
+                                                            name="{{ $childModule->module_id }}[]" value="1" {{
+                                                            in_array($childModule->module_id, $access_array) ? 'checked'
+                                                        : '' }}>
+                                                        {{ $childModule->module_name }}
+                                                    </label>
+                                                    <!-- Hidden input to ensure the value is always submitted -->
+                                                    <input type="hidden" name="{{ $childModule->module_id }}[]"
+                                                        value="0">
+                                                </div>
+                                                @endforeach
+
+                                                <br><br>
+                                                @endforeach
+                                                <input type="hidden" name="user_id" value="{{ $multiadmin->id }}">
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Save Permissions</button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="activity_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
@@ -737,6 +812,51 @@
 
 @section('script')
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var allCheckbox = document.querySelectorAll('.permission-checkbox');
+        var allRadio = document.querySelectorAll('input[name="radio-solid-info"]');
+
+        allRadio.forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                if (this.value === 'all') {
+                    allCheckbox.forEach(function(checkbox) {
+                        checkbox.checked = true;
+                        checkbox.value = 1;
+                        checkbox.disabled = false; // Set value to 1 for all checkboxes when 'All' is selected
+                    });
+                } else if (this.value === 'block') {
+                    allCheckbox.forEach(function(checkbox) {
+                        checkbox.checked = false;
+                        checkbox.value = 0;
+                        checkbox.disabled = true; // Set value to 0 for all checkboxes when 'Block' is selected
+                    });
+                }
+                else if (this.value === 'selected') {
+                allCheckbox.forEach(function(checkbox) {
+            //  checkbox.checked = true;
+            // checkbox.value = 1;
+                checkbox.disabled = false; // Set value to 0 for all checkboxes when 'Block' is selected
+                });
+                }
+            });
+        });
+
+        // Update the state of the 'All' radio button based on checkbox states
+        allCheckbox.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                var allChecked = true;
+                allCheckbox.forEach(function(cb) {
+                    if (!cb.checked) {
+                        allChecked = false;
+                    }
+                });
+                document.getElementById('permissions_type_all').checked = allChecked;
+            });
+        });
+    });
+
+</script>
+<script>
     const firstNameInput = document.getElementById('first_name');
     const lastNameInput = document.getElementById('last_name');
     const displayNameInput = document.getElementById('display_name');
@@ -760,9 +880,19 @@
 </script>
 
 <script>
-    $(document).ready(function(){
 
 
+ $(document).ready(function() {
+
+
+        $(document).on('click', '.updatevalue', function() {
+            var updatevalue = $(this).val();
+            if (this.checked) {
+                $(this).val(1);
+            } else {
+                $(this).val(0);
+            }
+        });
 
         // Select the password and new password input fields
 

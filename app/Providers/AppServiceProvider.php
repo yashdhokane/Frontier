@@ -20,6 +20,10 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 
+
+
+
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -27,6 +31,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        
         $this->app->singleton('UserPermissionChecker', function () {
             return new class {
                 public function checkUserPermission($user_id, $permissions_type, $module_id)

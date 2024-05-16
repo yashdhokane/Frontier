@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class ServiceAreaController extends Controller
 {
     public function index()
-    { 
+    {
         $user_auth = auth()->user();
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
@@ -20,7 +20,6 @@ class ServiceAreaController extends Controller
         } else {
             return $permissionCheck; // This will handle the redirection
         }
-  
         $servicearea = LocationServiceArea::all();
         return view('servicearea.index', compact('servicearea'));
     }
