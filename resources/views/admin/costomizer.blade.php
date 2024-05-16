@@ -84,7 +84,7 @@
 			<!-- Tab Activity -->
 		 <div class="tab-pane fade p-3 show active" id="tab-activity" role="tabpanel"
                 aria-labelledby="tab-activity-tab">
-                <h4 class="mt-3 mb-3">Job Timeline</h4>
+                <h4 class="mt-3 mb-3">Today's Jobs</h4>
                 <div class="steamline">
                     @foreach ($technicians as $technician)
                     <div class="sl-item">
@@ -124,10 +124,12 @@
 			<div class="tab-pane fade p-3" id="chat" role="tabpanel" aria-labelledby="pills-profile-tab">
 				<h4 class="mt-3 mb-3">Information</h4>
 				<ul class="list-group list-group-flush">
-					<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="{{route('contact')}}">Contact Support </a></li>
-					<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="{{route('about')}}">View Website </a></li>
 					<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="{{route('download')}}">Download App </a></li>
-					<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="{{route('privacy')}}">Privacy Policy </a></li>
+					<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="#.">View Website </a></li>
+					<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="{{route('contact')}}">Contact Support </a></li>
+ 					<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="{{route('about')}}">About Dispat Channel</a></li>
+ 					<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="{{route('reviews')}}">Reviews</a></li>
+ 					<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="{{route('privacy')}}">Privacy Policy </a></li>
 					<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="{{route('documentation')}}">Documentation </a></li>
 				</ul>
 				<div class="mt-3 mb-3">All Rights Reserved by Frontier Tech Services. Designed and Developed by <a href="https://gaffis.com/" target="blank">Gaffis Technologies Private Limited</a>.</div>
