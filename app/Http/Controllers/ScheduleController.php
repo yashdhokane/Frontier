@@ -375,7 +375,7 @@ class ScheduleController extends Controller
 
             $dateTime = $dateTime->format('Y-m-d H:i:s');
 
-            $technician = User::join('user_address', 'user_address.user_id', 'users.id')->where('id', $id)->first();
+            $technician = User::where('id', $id)->first();
 
             $getServices = Service::all();
             $serviceCat = ServiceCategory::with('Services')->get();
