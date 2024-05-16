@@ -74,9 +74,10 @@
 			
 			   @php
             $today = now()->toDateString(); // Get today's date
-            $technicians = App\Models\JobModel::with('user', 'usertechnician')
-            ->whereDate('created_at', $today) // Filter by today's date
-            ->orderBy('created_at', 'desc')
+            $technicians = App\Models\Schedule::with('technician', 'JobModel')
+            ->where('schedule_type','job')
+            ->whereDate('start_date_time', $today) 
+            ->orderBy('start_date_time', 'desc')
             ->get();
             @endphp
 
@@ -91,28 +92,28 @@
                         <div class="sl-left bg-light-success text-success"><i class="ri-calendar-check-fill"></i></div>
                         <div class="sl-right">
                             <div class="font-medium">
-                                Ticket: {{ $technician->job_title ?? '' }}
-                                Customer: {{ $technician->user->name ?? '' }}
+                                Ticket: {{ $technician->JobModel->job_title ?? '' }}<br>
+                                Customer: {{ $technician->JobModel->user->name ?? '' }}
                                 <span class="sl-date" style="display: block;">
                                     ADDRESS:
-                                    @if (isset($technician->address) && $technician->address !== '')
-                                    {{ $technician->address }},
+                                    @if (isset($technician->JobModel->address) && $technician->JobModel->address !== '')
+                                    {{ $technician->JobModel->address }},
                                     @endif
 
-                                    @if (isset($technician->city) && $technician->city !== '')
-                                    {{ $technician->city }},
+                                    @if (isset($technician->JobModel->city) && $technician->JobModel->city !== '')
+                                    {{ $technician->JobModel->city }},
                                     @endif
 
-                                    @if (isset($technician->state) && $technician->state !== '')
-                                    {{ $technician->state }},
+                                    @if (isset($technician->JobModel->state) && $technician->JobModel->state !== '')
+                                    {{ $technician->JobModel->state }},
                                     @endif
 
-                                    @if (isset($technician->zipcode) && $technician->zipcode !== '')
-                                    {{ $technician->zipcode }}
+                                    @if (isset($technician->JobModel->zipcode) && $technician->JobModel->zipcode !== '')
+                                    {{ $technician->JobModel->zipcode }}
                                     @endif
                                 </span>
                             </div>
-                            <div class="desc">Technician: {{ $technician->usertechnician->name ?? '' }}</div>
+                            <div class="desc">Technician: {{ $technician->technician->name ?? '' }}</div>
                         </div>
                     </div>
                     @endforeach
