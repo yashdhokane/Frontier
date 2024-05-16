@@ -2,18 +2,14 @@
     <!-- Sidebar scroll-->
     <div class="scroll-sidebar">
         <!-- Sidebar navigation-->
-        <nav class="sidebar-nav">
+        <nav class="sidebar-nav mt-2">
 
-            <div style="height: 10px;"></div>
-            <ul id="sidebarnav">
-
-                
-           
-					
+             <ul id="sidebarnav">
+ 					
                 <li class="sidebar-item">
 					<a class="sidebar-link waves-effect waves-dark sidebar-link ft1" href="{{ route('home') }}"  aria-expanded="false">
 					<i class="fas fa-home"></i><span class="hide-menu">Dashboard</span></a>
-                 </li>
+				</li>
 
                 <li class="sidebar-item ft2">
                     <a class="sidebar-link has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="fas ri-group-fill fs20" style="font-size: 16px;"></i> <span class="hide-menu">Profiles</span></a>
@@ -148,6 +144,10 @@
 				<li class="sidebar-item">
                     <a class="sidebar-link waves-effect waves-dark sidebar-link ft8" href="#." aria-expanded="false"><i class="fas fa-power-off "></i><span class="hide-menu">Log Out</span></a>
                 </li>
+				
+				
+				
+				 
                
 
             </ul>

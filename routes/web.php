@@ -170,7 +170,6 @@ use Illuminate\Support\Facades\Artisan;
 
 
 */
-
 Route::get('clear', function () {
     Artisan::call('cache:clear');
     return "Cache cleared successfully";
@@ -249,7 +248,7 @@ Route::group(['middleware' => 'role:admin'], function () {
 
     Route::get('/admins/create', [AdminController::class, 'create'])->name('admins.create');
 
-    Route::post('/update-notification', [AdminController::class, 'updateNotification'])->name('update.notification');
+Route::post('/update-notification', [AdminController::class, 'updateNotification'])->name('update.notification');
 
 
     // Store - Save a new admin to the database
@@ -312,7 +311,7 @@ Route::group(['middleware' => 'role:customer'], function () {
 
     Route::get('/customer/create', [UserController::class, 'create'])->name('users.create');
 
-    Route::post('/get-user-status', [UserController::class, 'getUserStatus'])->name('get.user.status');
+Route::post('/get-user-status', [UserController::class, 'getUserStatus'])->name('get.user.status');
     Route::get('/autocomplete/city', [UserController::class, 'autocomplete'])->name('autocomplete.city');
 
     Route::POST('/customers/store', [UserController::class, 'store'])->name('users.store');
@@ -347,7 +346,7 @@ Route::group(['middleware' => 'role:customer'], function () {
 
 
     // Route::resource('/technicians', TechnicianController::class,);
-    Route::get('/technicians', [TechnicianController::class, 'index'])->name('technicians.index');
+        Route::get('/technicians', [TechnicianController::class, 'index'])->name('technicians.index');
 
     Route::get('/technicians/{status?}', [TechnicianController::class, 'index'])->name('technicians.status');
 
@@ -472,7 +471,7 @@ Route::middleware('auth')->group(function () {
     Route::post('add/customer_tags/{id}', [TicketController::class, 'addCustomerTags']);
 
     Route::post('add/job_tags/{id}', [TicketController::class, 'job_tags']);
-
+    
     Route::post('add/attachment/{id}', [TicketController::class, 'attachment']);
 
     Route::post('add/leadsource/{id}', [TicketController::class, 'leadSource']);
@@ -546,7 +545,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/tasks/{id}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 
 
-    //Reports
+//Reports
 
     Route::get('/reports/technician', [ReportsController::class, 'technicianreport'])->name('technicianreport.index');
 
@@ -743,7 +742,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('schedule/update/post', [ScheduleController::class, 'update'])->name('schedule.update.post');
 
-    Route::get('schedule/edit', [ScheduleController::class, 'edit'])->name('schedule.edit');
+   Route::get('schedule/edit', [ScheduleController::class, 'edit'])->name('schedule.edit');
 
     Route::post('schedule/update', [ScheduleController::class, 'updateSchedule'])->name('schedule.update');
 
@@ -781,7 +780,7 @@ Route::middleware('auth')->group(function () {
     // MailController  
 
     Route::get('get/mail/schedule', [MailController::class, 'index']);
-
+    
 
 
     // EventController
@@ -794,7 +793,7 @@ Route::middleware('auth')->group(function () {
     // FleetController
 
     Route::get('vehicles', [FleetController::class, 'index'])->name('vehicles');
-
+    
     Route::post('fleet/store', [FleetController::class, 'store'])->name('fleet.store');
 
     Route::get('vehicle/details/{id}', [FleetController::class, 'edit']);
@@ -809,7 +808,7 @@ Route::middleware('auth')->group(function () {
     Route::get('addvehicle', [FleetController::class, 'addvehicle'])->name('addvehicle');
 
     Route::post('updatefleetdetails', [FleetController::class, 'updatefleetdetails'])->name('updatefleetdetails');
-    Route::post('fleet-update/{id}', [FleetController::class, 'update'])->name('fleetupdate');
+Route::post('fleet-update/{id}', [FleetController::class, 'update'])->name('fleetupdate');
 
 
 
@@ -821,7 +820,7 @@ Route::middleware('auth')->group(function () {
 
 
 
-
+   
     Route::get('parts', [ProductCategoryController::class, 'index'])->name('product.index');
 
     Route::post('book-list/partscategory-store', [ProductCategoryController::class, 'storeproductcategory'])->name('productcategory.store');
@@ -852,9 +851,9 @@ Route::middleware('auth')->group(function () {
     Route::get('book-list/parts/{id}/destroy', [productController::class, 'destroy'])->name('product.destroy');
 
     Route::get('assign_product', [ProductCategoryController::class, 'assign_product'])->name('assign_product');
-
+    
     Route::post('store/assign-product', [ProductCategoryController::class, 'store_assign_product']);
-
+    
     Route::get('partCategory', [ProductController::class, 'listingproduct'])->name('partCategory');
 
 
@@ -1003,17 +1002,17 @@ Route::middleware('auth')->group(function () {
 
     //adminprofile
 
-    Route::get('/my-profile', [AdminProfileController::class, 'index'])->name('myprofile.index')->middleware('auth');
-    Route::get('/my-profile/notification', [AdminProfileController::class, 'notification'])->name('myprofile.notification')->middleware('auth');
+Route::get('/my-profile', [AdminProfileController::class, 'index'])->name('myprofile.index')->middleware('auth');
+Route::get('/my-profile/notification', [AdminProfileController::class, 'notification'])->name('myprofile.notification')->middleware('auth');
 
-    Route::get('/my-profile/activity', [AdminProfileController::class, 'activity'])->name('myprofile.activity')->middleware('auth');
+Route::get('/my-profile/activity', [AdminProfileController::class, 'activity'])->name('myprofile.activity')->middleware('auth');
 
-    Route::get('/my-profile/account', [AdminProfileController::class, 'account'])->name('myprofile.account')->middleware('auth');
-    Route::post('/my-profile/account/email', [AdminProfileController::class, 'email'])->name('myprofile.email')->middleware('auth');
+Route::get('/my-profile/account', [AdminProfileController::class, 'account'])->name('myprofile.account')->middleware('auth');
+Route::post('/my-profile/account/email', [AdminProfileController::class, 'email'])->name('myprofile.email')->middleware('auth');
 
-    Route::post('/my-profile/account/sms', [AdminProfileController::class, 'sms'])->name('myprofile.sms')->middleware('auth');
+Route::post('/my-profile/account/sms', [AdminProfileController::class, 'sms'])->name('myprofile.sms')->middleware('auth');
 
-    Route::post('/my-profile/account/email-verify', [AdminProfileController::class, 'email_verified'])->name('myprofile.email_verified')->middleware('auth');
+Route::post('/my-profile/account/email-verify', [AdminProfileController::class, 'email_verified'])->name('myprofile.email_verified')->middleware('auth');
 
     Route::post('/my-profile-store', [AdminProfileController::class, 'store'])->name('user.adminprofileimg');
 
@@ -1073,7 +1072,7 @@ Route::middleware('auth')->group(function () {
 
 
     //chat
-
+    
     //chat
     Route::post('/add-user-to-conversation', [ChatSupportController::class, 'addUserToConversation'])->name('addUserToConversation');
 
@@ -1090,14 +1089,14 @@ Route::middleware('auth')->group(function () {
     // payments
     Route::post('/update-payment-status', [PaymentController::class, 'updatePaymentStatus'])->name('update.payment.status');
 
-    Route::post('/create-payment-invoice', [PaymentController::class, 'createPaymentInvoice'])->name('create.payment.invoice');
+Route::post('/create-payment-invoice', [PaymentController::class, 'createPaymentInvoice'])->name('create.payment.invoice');
 
     Route::get('/payment-list', [PaymentController::class, 'index'])->name('payment-list');
 
     Route::get('/invoice-detail/{id}', [PaymentController::class, 'invoice_detail'])->name('invoicedetail');
 
     Route::get('/update/payment/{id}', [PaymentController::class, 'update']);
-
+    
     Route::post('/store/comment/{id}', [PaymentController::class, 'comment']);
 
     // timezone 
@@ -1111,7 +1110,7 @@ Route::middleware('auth')->group(function () {
 
 
 
-    Route::get('/performance-matrix', [PerformanceMatrix::class, 'performanncematrix'])->name('performanncematrix');
+Route::get('/performance-matrix', [PerformanceMatrix::class, 'performanncematrix'])->name('performanncematrix');
 
 
     Route::get('/customers-data', [CustomerDataController::class, 'index'])->name('customersdata.index');
@@ -1124,13 +1123,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/customers-data-search', [CustomerDataController::class, 'search'])->name('customerData.search');
 
     // pages controller 
-
+    
     Route::get('dispatcher/pages/contact', [PagesController::class, 'contact'])->name('contact');
     Route::get('dispatcher/pages/about', [PagesController::class, 'about'])->name('about');
     Route::get('dispatcher/pages/download', [PagesController::class, 'download'])->name('download');
     Route::get('dispatcher/pages/privacy', [PagesController::class, 'privacy'])->name('privacy');
     Route::get('dispatcher/pages/documentation', [PagesController::class, 'documentation'])->name('documentation');
     Route::get('dispatcher/pages/reviews', [PagesController::class, 'reviews'])->name('reviews');
+
+
 });
 
 Route::post('/reset-password', [UserController::class, 'resetPassword'])->name('resetPassword');

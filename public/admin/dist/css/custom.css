@@ -34,6 +34,18 @@ li.toplinks a{
 .ft16 {
 	font-size: 16px;
 }
+.ft17 {
+	font-size: 17px;
+}
+.ft18 {
+	font-size: 18px;
+}
+.ft19 {
+	font-size: 19px;
+}
+.ft20 {
+	font-size: 20px;
+}
 .page-breadcrumb .page-title {
 	text-transform: uppercase;
 	letter-spacing: 2px;
@@ -289,6 +301,20 @@ li.toplinks a{
     border-radius: 0;
     opacity: 1; 
 }
+.nav-clock {
+  color: #FFF;
+  line-height: 16px;
+  font-size: 13px;
+  margin-right: 40px;
+  margin-top: 15px;
+}
+.nav-clock span {
+    font-size: 11px;
+}
+
+
+
+
 
 
 
