@@ -31,5 +31,9 @@ class PagesController extends Controller
     {
         return view('pages.documentation');
     }
+    public function reviews()
+    {
+        return view('pages.reviews');
+    }
 
 }

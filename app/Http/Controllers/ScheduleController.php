@@ -635,14 +635,17 @@ class ScheduleController extends Controller
     {
 
         $data = $request->all();
+        $timezone_id = Session::get('timezone_id');
+        $timezone_name = Session::get('timezone_name');
+        $time_interval = Session::get('time_interval');
 
         //try {
 
         if (isset($data) && !empty($data)) {
 
             if (isset($data['job_id']) && !empty($data['job_id'])) {
-
-                $start_date_time = Carbon::parse($data['datetime']);
+                $newFormattedDateTime = Carbon::parse($data['datetime'])->subHours($time_interval)->format('Y-m-d H:i:s');
+                $start_date_time = Carbon::parse($newFormattedDateTime);
 
                 $duration = (int) $data['duration'];
 
@@ -857,11 +860,14 @@ class ScheduleController extends Controller
 
                 $customer = User::where('id', $data['customer_id'])->first();
 
-                $start_date_time = Carbon::parse($data['datetime']);
+                $newFormattedDateTime = Carbon::parse($data['datetime'])->subHours($time_interval)->format('Y-m-d H:i:s');
+               
+
+                $start_date_time = Carbon::parse($newFormattedDateTime);
 
                 $duration = (int) $data['duration'];
 
-                $end_date_time = $start_date_time->copy()->addMinutes($duration);
+                $end_date_time = $start_date_time->copy()->addMinutes($duration); 
 
                 $service_tax = (isset($data['service_tax']) && !empty($data['service_tax'])) ? $data['service_tax'] : 0;
 

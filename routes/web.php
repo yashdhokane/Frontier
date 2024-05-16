@@ -1130,6 +1130,7 @@ Route::middleware('auth')->group(function () {
     Route::get('dispatcher/pages/download', [PagesController::class, 'download'])->name('download');
     Route::get('dispatcher/pages/privacy', [PagesController::class, 'privacy'])->name('privacy');
     Route::get('dispatcher/pages/documentation', [PagesController::class, 'documentation'])->name('documentation');
+    Route::get('dispatcher/pages/reviews', [PagesController::class, 'reviews'])->name('reviews');
 });
 
 Route::post('/reset-password', [UserController::class, 'resetPassword'])->name('resetPassword');
