@@ -68,7 +68,8 @@
 					$currentFormattedDateTime = Carbon::now($timezoneName)->format('h:i:s A T');
 					@endphp
 				<li class="nav-item dropdown align-self-center px-2">
-					<div class="nav-clock"><span>{{ $currentFormattedDate }}</span><br/>{{ $currentFormattedDateTime }}</div>
+					<div class="nav-clock"><span>{{ $currentFormattedDate }}</span><br/>
+					<span id="liveTime"></span></div>
 				</li>
 				
 				<li class="nav-item dropdown">
@@ -112,3 +113,26 @@
 
 
 </header>
+
+ <script>
+        function updateTime() {
+            const timezoneName = '{{ $timezoneName }}'; // Dynamic timezone from backend
+            const options = {
+                timeZone: timezoneName, 
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true,
+                timeZoneName: 'short'
+            };
+
+            const formatter = new Intl.DateTimeFormat('en-US', options);
+            const now = new Date();
+            const formattedTime = formatter.format(now);
+
+            document.getElementById('liveTime').innerText = formattedTime;
+        }
+
+        setInterval(updateTime, 1000); // Update every second
+        updateTime(); // Initial call
+    </script>
