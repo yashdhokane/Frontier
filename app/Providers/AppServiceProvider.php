@@ -47,7 +47,6 @@ class AppServiceProvider extends ServiceProvider
                             ->value('permission');
                         if ($permission === 1) {
                             return true; // Allow access
-                            dd();
                         } else {
                             return Redirect::to('unauthorized'); // Redirect to unauthorized page
                         }
