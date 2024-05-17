@@ -1081,7 +1081,7 @@ Route::post('/my-profile/account/email-verify', [AdminProfileController::class, 
     Route::get('/autocompleteUser', [ChatSupportController::class, 'autocompleteUser'])->name('autocomplete.user');
 
 
-    Route::get('/app_chats', [ChatSupportController::class, 'index'])->name('app_chats');
+    Route::get('/inbox', [ChatSupportController::class, 'index'])->name('app_chats');
 
     Route::get('/get-chat-messages', [ChatSupportController::class, 'get_chats']);
 

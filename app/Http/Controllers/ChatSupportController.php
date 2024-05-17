@@ -134,99 +134,12 @@ class ChatSupportController extends Controller
 
         return back()->with('success', 'User added to the conversation successfully');
     }
-    // public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'auth_id' => 'required',
-    //         'support_message_id' => 'required',
-    //     ]);
-
-    //     // Check if a file is present
-    //     if ($request->hasFile('file')) {
-    //         // Handle file upload
-    //         $file = $request->file('file');
-
-    //         // Store the file in the specified directory
-    //         $filePath = 'public/images/Uploads/chat/' . $request->support_message_id;
-    //         $fileName = $file->getClientOriginalName();
-    //         $file->storeAs($filePath, $fileName);
-
-    //         // Create a new ChatFile record
-    //         $chatFile = new ChatFile();
-    //         $chatFile->conversation_id = $request->support_message_id;
-    //         $chatFile->filename = $fileName;
-    //         $chatFile->type = $file->getClientMimeType();
-    //         $chatFile->size = $file->getSize();
-    //         $chatFile->save();
-    //     }
-
-    //     // Check if a message is present and not null
-    //     if ($request->filled('reply')) {
-    //         // Create a new message
-    //         $message = new ChatMessage();
-    //         $message->sender = $request->auth_id;
-    //         $message->conversation_id = $request->support_message_id;
-    //         $message->message = $request->reply;
-    //         $message->time = now();
-    //         $message->save();
-    //     }
-
-    //     // Optionally, you can return a success response
-    //     return response()->json(['message' => 'Reply stored successfully'], 200);
-    // }
-
-    // public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'auth_id' => 'required',
-    //         'support_message_id' => 'required',
-    //     ]);
-
-    //     // Check if a file is present
-    //     if ($request->hasFile('file')) {
-    //         // Handle file upload
-    //         $file = $request->file('file');
-
-    //         // Store the file in the specified directory
-    //         $directory = 'images/Uploads/chat/' . $request->support_message_id;
-    //         $filePath = public_path($directory); // Use public_path() to get the full public directory path
-    //         $fileName = $file->getClientOriginalName();
-    //         $file->move($filePath, $fileName);
-
-    //         // Create a new ChatFile record
-    //         $chatFile = new ChatFile();
-    //         $chatFile->conversation_id = $request->support_message_id;
-    //         $chatFile->filename = $fileName;
-    //         $chatFile->type = $file->getClientMimeType();
-    //         $chatFile->size = $file->getSize();
-    //         $chatFile->save();
-    //     }
-
-    //     // Check if a message is present and not null
-    //     if ($request->filled('reply')) {
-    //         // Create a new message
-    //         $message = new ChatMessage();
-    //         $message->sender = $request->auth_id;
-    //         $message->conversation_id = $request->support_message_id;
-    //         $message->message = $request->reply;
-    //         $message->time = now();
-    //         $message->save();
-    //     }
-
-    //     // Optionally, you can return a success response
-    //     return response()->json(['message' => 'Reply stored successfully'], 200);
-    // }
-
+   
     public function store(Request $request)
     {
         $request->validate([
             'auth_id' => 'required',
             'support_message_id' => 'required',
-
-
-
-
-            // Validate file presence and size
         ]);
 
         if ($request->hasFile('file')) {
