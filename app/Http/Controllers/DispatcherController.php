@@ -22,7 +22,7 @@ use App\Models\Payment;
 
 use Illuminate\Http\Request;
 use App\Models\LocationState;
-use App\Models\CustomerUserMeta; 
+use App\Models\CustomerUserMeta;
 use App\Models\PermissionModel;
 use App\Models\CustomerUserAddress;
 use Illuminate\Support\Facades\Validator;
@@ -32,7 +32,7 @@ class DispatcherController extends Controller
     public function index()
     {
 
-    $users = User::where('role', 'dispatcher')
+        $users = User::where('role', 'dispatcher')
             ->orderBy('name', 'asc')
             ->get();
 
@@ -54,7 +54,7 @@ class DispatcherController extends Controller
         return view('dispatcher.create', compact('permissions', 'users', 'tags', 'locationStates'));
     }
 
-     public function store(Request $request)
+    public function store(Request $request)
     {
         //dd($request->all());
         $validator = Validator::make($request->all(), [
@@ -79,9 +79,9 @@ class DispatcherController extends Controller
         $user = new User();
         $user->name = $request['display_name'];
         $user->employee_id = User::max('employee_id') + 1;
-      $user->is_employee = 'yes';
+        $user->is_employee = 'yes';
 
-	
+
         $user->email = $request['email'];
         $user->mobile = $request['mobile_phone'];
         $user->role = $request['role'];
@@ -245,75 +245,74 @@ class DispatcherController extends Controller
 
     public function show($id)
     {
-       $dispatcher = User::where('role', 'dispatcher')->where('id', $id)->first();
-        if (!$dispatcher) {
+
+
+        $commonUser = User::where('role', 'dispatcher')->where('id', $id)->first();
+        if (!$commonUser) {
             return view('404');
         }
-
-       $auth = auth()->user();
-
-        // dd($dispatcher);
+        // dd($commonUser);
         $notename = DB::table('user_notes')->where(
             'user_id',
-            $dispatcher->id
+            $commonUser->id
         )->get();
-        $meta = $dispatcher->meta;
+        $meta = $commonUser->meta;
         $jobasign = DB::table('jobs')
-            ->where('added_by', $dispatcher->id)
+            ->where('added_by', $commonUser->id)
             ->get();
         $activity = DB::table('job_activity')
-            ->where('user_id', $dispatcher->id)
+            ->where('user_id', $commonUser->id)
             ->get();
 
         $customerimage = DB::table('user_files')
-            ->where('user_id', $dispatcher->id)
+            ->where('user_id', $commonUser->id)
             ->get();
         $tickets = JobModel::orderBy('created_at', 'desc')->get();
         $setting = UsersSettings::
-            where('user_id', $dispatcher->id)
+            where('user_id', $commonUser->id)
             ->first();
 
-        $home_phone = $dispatcher->meta()->where('meta_key', 'home_phone')->value('meta_value') ?? '';
+        $home_phone = $commonUser->meta()->where('meta_key', 'home_phone')->value('meta_value') ?? '';
         // $userAddresscity = DB::table('user_address')
         //     ->leftJoin('location_cities', 'user_address.city_id', '=', 'location_cities.city_id')
-        //     ->where('user_address.user_id', $dispatcher->id)
+        //     ->where('user_address.user_id', $commonUser->id)
         //     ->value('location_cities.city');
         $userAddresscity = DB::table('user_address')
             ->leftJoin('location_cities', 'user_address.city_id', '=', 'location_cities.city_id')
             ->leftJoin('location_states', 'user_address.state_id', '=', 'location_states.state_id')
-            ->where('user_address.user_id', $dispatcher->id)
+            ->where('user_address.user_id', $commonUser->id)
             ->get();
         $latitude = DB::table('user_address')
             ->leftJoin('location_cities', 'user_address.city_id', '=', 'location_cities.city_id')
-            ->where('user_address.user_id', $dispatcher->id)
+            ->where('user_address.user_id', $commonUser->id)
             ->value('location_cities.latitude');
         $longitude = DB::table('user_address')
             ->leftJoin('location_cities', 'user_address.city_id', '=', 'location_cities.city_id')
-            ->where('user_address.user_id', $dispatcher->id)
+            ->where('user_address.user_id', $commonUser->id)
             ->value('location_cities.longitude');
 
-        $location = CustomerUserAddress::where('user_id', $dispatcher->id)->get();
-        $payment = Payment::whereHas('JobModel', function ($query) use ($dispatcher) {
-            $query->where('added_by', $dispatcher->id);
+        $location = CustomerUserAddress::where('user_id', $commonUser->id)->get();
+        $payment = Payment::whereHas('JobModel', function ($query) use ($commonUser) {
+            $query->where('added_by', $commonUser->id);
         })
             ->latest()
             ->get();
 
-        $UsersDetails = UsersDetails::where('user_id', $dispatcher->id)->first();
+        $UsersDetails = UsersDetails::where('user_id', $commonUser->id)->first();
 
         $locationStates = LocationState::all();
 
-        $location = $dispatcher->location;
-        $Note = $dispatcher->Note;
-        $source = $dispatcher->source;
+        $location = $commonUser->location;
+        $Note = $commonUser->Note;
+        $source = $commonUser->source;
 
         $tags = SiteTags::all();
-       // $permissions = DB::table('user_permissions')->pluck('permission_id')->toArray();
+        // $permissions = DB::table('user_permissions')->pluck('permission_id')->toArray();
 
 
 
         // Assuming you have a 'tags' relationship defined in your User model
-        $userTags = $dispatcher->tags;
+        $userTags = $commonUser->tags;
 
         // Convert the comma-separated tag_id string to an array
         $selectedTags = explode(',', $userTags->pluck('tag_id')->implode(','));
@@ -327,7 +326,7 @@ class DispatcherController extends Controller
                 'users.*' // Select all columns from the users table
             )
             ->join('users', 'job_activity.user_id', '=', 'users.id')
-            ->where('job_activity.user_id', $dispatcher->id);
+            ->where('job_activity.user_id', $commonUser->id);
 
         $userActivity = DB::table('user_activity') // Corrected table name
             ->select(
@@ -338,13 +337,13 @@ class DispatcherController extends Controller
                 'users.*' // Select all columns from the users table
             )
             ->join('users', 'user_activity.user_id', '=', 'users.id')
-            ->where('user_activity.user_id', $dispatcher->id);
+            ->where('user_activity.user_id', $commonUser->id);
 
         $activity = $jobActivity->union($userActivity)
             ->orderBy('activity_date', 'desc') // Order by created_at in descending order
             ->get();
 
-        $access_array = UserPermission::where('user_id', $dispatcher->id)
+        $access_array = UserPermission::where('user_id', $commonUser->id)
             ->where('permission', 1)
             ->pluck('module_id')
             ->toArray();
@@ -356,9 +355,9 @@ class DispatcherController extends Controller
 
         // echo json_encode($jobActivity);
         // exit();
-        return view('dispatcher.show', compact('dispatcher','access_array','parentModules','activity', 'setting', 'UsersDetails', 'locationStates', 'Note', 'source', 'selectedTags', 'userTags',  'tags', 'payment', 'tickets', 'customerimage', 'notename', 'activity', 'jobasign', 'location', 'latitude', 'longitude', 'userAddresscity', 'home_phone','auth'));
+        return view('dispatcher.show', compact('commonUser', 'access_array', 'parentModules', 'activity', 'setting', 'UsersDetails', 'locationStates', 'Note', 'source', 'selectedTags', 'userTags', 'tags', 'payment', 'tickets', 'customerimage', 'notename', 'activity', 'jobasign', 'location', 'latitude', 'longitude', 'userAddresscity', 'home_phone'));
     }
-  public function permission(Request $request)
+    public function permission(Request $request)
     {
         $data = $request->all();
         $userId = $data['user_id'] ?? null;
@@ -466,7 +465,7 @@ class DispatcherController extends Controller
             $source = $dispatcher->source;
 
             $tags = SiteTags::all();
-           $permissions = DB::table('user_permissions')->pluck('permission_id')->toArray();
+            $permissions = DB::table('user_permissions')->pluck('permission_id')->toArray();
 
 
 
@@ -476,7 +475,7 @@ class DispatcherController extends Controller
             // Convert the comma-separated tag_id string to an array
             $selectedTags = explode(',', $userTags->pluck('tag_id')->implode(','));
 
-            return view('dispatcher.edit', compact('dispatcher',  'permissions','locationStates', 'userTags', 'selectedTags', 'meta', 'location', 'Note', 'tags', 'source', 'first_name', 'last_name', 'home_phone', 'work_phone'));
+            return view('dispatcher.edit', compact('dispatcher', 'permissions', 'locationStates', 'userTags', 'selectedTags', 'meta', 'location', 'Note', 'tags', 'source', 'first_name', 'last_name', 'home_phone', 'work_phone'));
         } else {
             // Handle the case where meta is not found, perhaps redirect to an error page
             return redirect()->route('dispatcher.index');
@@ -484,7 +483,7 @@ class DispatcherController extends Controller
     }
 
 
-     public function update(Request $request, $id)
+    public function update(Request $request, $id)
     {
         //dd($request->all());
         $validator = Validator::make($request->all(), [

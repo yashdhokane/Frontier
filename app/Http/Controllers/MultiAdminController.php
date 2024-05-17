@@ -31,13 +31,13 @@ class MultiAdminController extends Controller
 {
     public function index()
     {
-      
+
         $user_auth = auth()->user();
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
         $module_id = 23;
-        
-        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
         } else {
@@ -56,8 +56,8 @@ class MultiAdminController extends Controller
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
         $module_id = 24;
-        
-        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
         } else {
@@ -73,7 +73,7 @@ class MultiAdminController extends Controller
         return view('multiadmin.create', compact('users', 'tags', 'locationStates'));
     }
 
-   public function store(Request $request)
+    public function store(Request $request)
     {
         // dd($request->all());
         $validator = Validator::make($request->all(), [
@@ -263,83 +263,83 @@ class MultiAdminController extends Controller
 
 
 
-     public function show($id)
+    public function show($id)
     {
 
         $user_auth = auth()->user();
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
         $module_id = 25;
-        
-        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
         } else {
             return $permissionCheck; // This will handle the redirection
         }
 
-        $multiadmin = User::find($id);
-        if (!$multiadmin) {
+        $commonUser = User::find($id);
+        if (!$commonUser) {
             return view('404');
         }
 
 
         $notename = DB::table('user_notes')->where(
             'user_id',
-            $multiadmin->id
+            $commonUser->id
         )->get();
-        $meta = $multiadmin->meta;
+        $meta = $commonUser->meta;
         $jobasign = DB::table('jobs')
-            ->where('added_by', $multiadmin->id)
+            ->where('added_by', $commonUser->id)
             ->get();
         $activity = DB::table('job_activity')
-            ->where('user_id', $multiadmin->id)
+            ->where('user_id', $commonUser->id)
             ->get();
-        $home_phone = $multiadmin->meta()->where('meta_key', 'home_phone')->value('meta_value') ?? '';
+        $home_phone = $commonUser->meta()->where('meta_key', 'home_phone')->value('meta_value') ?? '';
         // $userAddresscity = DB::table('user_address')
         //     ->leftJoin('location_cities', 'user_address.city_id', '=', 'location_cities.city_id')
-        //     ->where('user_address.user_id', $multiadmin->id)
+        //     ->where('user_address.user_id', $commonUser->id)
         //     ->value('location_cities.city');
         $userAddresscity = DB::table('user_address')
             ->leftJoin('location_cities', 'user_address.city_id', '=', 'location_cities.city_id')
             ->leftJoin('location_states', 'user_address.state_id', '=', 'location_states.state_id')
-            ->where('user_address.user_id', $multiadmin->id)
+            ->where('user_address.user_id', $commonUser->id)
             ->get();
 
         $latitude = DB::table('user_address')
             ->leftJoin('location_cities', 'user_address.city', '=', 'location_cities.city_id')
-            ->where('user_address.user_id', $multiadmin->id)
+            ->where('user_address.user_id', $commonUser->id)
             ->value('location_cities.latitude');
         $longitude = DB::table('user_address')
             ->leftJoin('location_cities', 'user_address.city', '=', 'location_cities.city_id')
-            ->where('user_address.user_id', $multiadmin->id)
+            ->where('user_address.user_id', $commonUser->id)
             ->value('location_cities.longitude');
-        $location = CustomerUserAddress::where('user_id', $multiadmin->id)->get();
+        $location = CustomerUserAddress::where('user_id', $commonUser->id)->get();
 
         $customerimage = DB::table('user_files')
-            ->where('user_id', $multiadmin->id)
+            ->where('user_id', $commonUser->id)
             ->get();
         $tickets = JobModel::orderBy('created_at', 'desc')->get();
-        $payment = Payment::whereHas('JobModel', function ($query) use ($multiadmin) {
-            $query->where('added_by', $multiadmin->id);
+        $payment = Payment::whereHas('JobModel', function ($query) use ($commonUser) {
+            $query->where('added_by', $commonUser->id);
         })
             ->latest()
             ->get();
 
         $setting = UsersSettings::
-            where('user_id', $multiadmin->id)
+            where('user_id', $commonUser->id)
             ->first();
 
-        $UsersDetails = UsersDetails::where('user_id', $multiadmin->id)->first();
+        $UsersDetails = UsersDetails::where('user_id', $commonUser->id)->first();
 
         $locationStates = LocationState::all();
-        $location = $multiadmin->location;
-        $Note = $multiadmin->Note;
-        $source = $multiadmin->source;
+        $location = $commonUser->location;
+        $Note = $commonUser->Note;
+        $source = $commonUser->source;
 
         $tags = SiteTags::all();
 
-        $userTags = $multiadmin->tags;
+        $userTags = $commonUser->tags;
 
         $selectedTags = explode(',', $userTags->pluck('tag_id')->implode(','));
         $jobActivity = DB::table('job_activity')
@@ -351,7 +351,7 @@ class MultiAdminController extends Controller
                 'users.*' // Select all columns from the users table
             )
             ->join('users', 'job_activity.user_id', '=', 'users.id')
-            ->where('job_activity.user_id', $multiadmin->id);
+            ->where('job_activity.user_id', $commonUser->id);
 
         $userActivity = DB::table('user_activity') // Corrected table name
             ->select(
@@ -362,13 +362,13 @@ class MultiAdminController extends Controller
                 'users.*' // Select all columns from the users table
             )
             ->join('users', 'user_activity.user_id', '=', 'users.id')
-            ->where('user_activity.user_id', $multiadmin->id);
+            ->where('user_activity.user_id', $commonUser->id);
 
         $activity = $jobActivity->union($userActivity)
             ->orderBy('activity_date', 'desc') // Order by created_at in descending order
             ->get();
 
-        return view('multiadmin.show', compact('UsersDetails', 'activity', 'Note', 'source', 'multiadmin', 'tags', 'userTags', 'selectedTags', 'locationStates', 'setting', 'payment', 'tickets', 'customerimage', 'notename', 'activity', 'jobasign', 'longitude', 'latitude', 'userAddresscity', 'location', 'home_phone'));
+        return view('multiadmin.show', compact('UsersDetails', 'activity', 'Note', 'source', 'commonUser', 'tags', 'userTags', 'selectedTags', 'locationStates', 'setting', 'payment', 'tickets', 'customerimage', 'notename', 'activity', 'jobasign', 'longitude', 'latitude', 'userAddresscity', 'location', 'home_phone'));
     }
 
 

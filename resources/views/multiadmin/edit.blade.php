@@ -61,7 +61,7 @@
                 <div id="passwordMatchMessage" class="alert" style="display:none; margin-bottom:5px;"></div>
                 <form id="changePasswordForm" method="get" action="{{route('update-customer-password')}}">
                     @csrf
-                    <input type="hidden" class="form-control" name="id" value="{{$multiadmin->id}}" placeholder=""
+                    <input type="hidden" class="form-control" name="id" value="{{$commonUser->id}}" placeholder=""
                         required />
                     <div class="form-group">
                         <label for="newPassword">New Password</label>
@@ -80,7 +80,7 @@
     </div>
 </div>
 
-<form action="{{ route('multiadmin.update', $multiadmin->id) }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('multiadmin.update', $commonUser->id) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     <div class="container-inline">
@@ -98,7 +98,7 @@
                             <input type="text" class="form-control" id="first_name" name="first_name"
                                 value="{{ $UsersDetails->first_name }}" placeholder="" required />
                             <input type="hidden" class="form-control" id="role"
-                                value="{{ old('role', $multiadmin->role) }}" name="role" placeholder=""
+                                value="{{ old('role', $commonUser->role) }}" name="role" placeholder=""
                                 value="multiadmin">
                         </div>
                     </div>
@@ -115,7 +115,7 @@
                             <label for="display_name" class="control-label bold col-form-label required-field">Display
                                 Name (shown on invoice)</label>
                             <input type="text" class="form-control" id="display_name" name="display_name"
-                                value="{{ $multiadmin->name }}" placeholder="" required />
+                                value="{{ $commonUser->name }}" placeholder="" required />
                         </div>
                     </div>
                 </div>
@@ -124,7 +124,7 @@
                         <div class="mb-3">
                             <label for="email" class="control-label bold col-form-label required-field">Email</label>
                             <input type="email" class="form-control" id="email" name="email"
-                                value="{{ old('email', $multiadmin->email) }}" placeholder="" />
+                                value="{{ old('email', $commonUser->email) }}" placeholder="" />
                         </div>
                     </div>
                     <div class="col-sm-4 col-md-4">
@@ -142,7 +142,7 @@
                             <label for="mobile_phone" class="control-label bold col-form-label required-field">Mobile
                                 Phone</label>
                             <input type="number" maxlength="10" class="form-control" id="mobile_phone"
-                                name="mobile_phone" value="{{ $multiadmin->mobile }}" placeholder="" required />
+                                name="mobile_phone" value="{{ $commonUser->mobile }}" placeholder="" required />
                             <small id="name" class="form-text text-muted">Don’t add +1. Only add mobile number without
                                 space.</small>
                         </div>
@@ -188,7 +188,7 @@
                                 <option selected disabled value="">Select City...</option>
                             </select> --}}
                             <input type="text" class="form-control" id="city" name="city"
-                                value="{{ $multiadmin->Location->city ?? null }}" oninput="searchCity()" required />
+                                value="{{ $commonUser->Location->city ?? null }}" oninput="searchCity()" required />
                             {{-- <input type="hidden" class="form-control" id="city_id" name="city_id"
                                 oninput="searchCity1()" required /> --}}
                             <div id="autocomplete-results"></div>
@@ -250,7 +250,7 @@
                     <div class="col-sm-12 col-md-4">
                         <label for="image" class="control-label bold col-form-label">Display Picture</label>
                         <input type="file" class="form-control" id="image"
-                            value="{{ old('image', $multiadmin->user_image) }}" name="image" accept="image/*" />
+                            value="{{ old('image', $commonUser->user_image) }}" name="image" accept="image/*" />
                     </div>
                     <div class="col-sm-12 col-md-4">
                         <div class="mb-3">

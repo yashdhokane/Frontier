@@ -28,7 +28,7 @@ $address .= $location->zipcode;
 <div class="page-breadcrumb">
     <div class="row">
         <div class="col-9 align-self-center">
-            <h4 class="page-title">{{ $commonUser->name }} <small class="text-muted"
+            <h4 class="page-title">{{ $dispatcher->name }} <small class="text-muted"
                     style="font-size: 10px;">Dispatcher</small></h4>
         </div>
         <div class="col-3 text-end">
@@ -135,23 +135,23 @@ $address .= $location->zipcode;
                                 <div class="col-lg-3 col-xlg-9">
 
                                     <center class="mt-1">
-                                        @if($commonUser->user_image)
-                                        <img src="{{ asset('public/images/Uploads/users/'. $commonUser->id . '/' . $commonUser->user_image) }}"
+                                        @if($dispatcher->user_image)
+                                        <img src="{{ asset('public/images/Uploads/users/'. $dispatcher->id . '/' . $dispatcher->user_image) }}"
                                             class="rounded-circle" width="150" />
                                         @else
                                         <img src="{{asset('public/images/login_img_bydefault.png')}}" alt="avatar"
                                             class="rounded-circle" width="150" />
                                         @endif
-                                        <h4 class="card-title mt-1">{{ $commonUser->name }}</h4>
-                                        {{-- <h6 class="card-subtitle">{{ $commonUser->company ?? 'null' }}
+                                        <h4 class="card-title mt-1">{{ $dispatcher->name }}</h4>
+                                        {{-- <h6 class="card-subtitle">{{ $dispatcher->company ?? 'null' }}
                                         </h6> --}}
                                     </center>
 
                                     <div class="col-12">
                                         <h5 class="card-title uppercase mt-4">Tags</h5>
                                         <div class="mt-0">
-                                            @if($commonUser->tags->isNotEmpty())
-                                            @foreach($commonUser->tags as $tag)
+                                            @if($dispatcher->tags->isNotEmpty())
+                                            @foreach($dispatcher->tags as $tag)
                                             <span class="badge bg-dark">{{ $tag->tag_name }}</span>
                                             @endforeach
                                             @else
@@ -194,13 +194,13 @@ $address .= $location->zipcode;
 															<i class="fas fa-home"></i>{{ old('home_phone', $home_phone) }}
 														</h6>-->
                                                     <h6 style="font-weight: normal;"><i class="fas fa-mobile-alt"></i>
-                                                        {{$commonUser->mobile}}</h6>
+                                                        {{$dispatcher->mobile}}</h6>
                                                     {{-- <h6 style="font-weight: normal;"><i
                                                             class="fas fa-mobile-alt"></i> +1
                                                         123 456 7890
                                                     </h6> --}}
                                                     <h6 style="font-weight: normal;"><i class="fas fa-envelope"></i>
-                                                        {{$commonUser->email}}
+                                                        {{$dispatcher->email}}
                                                     </h6>
                                                 </div>
                                                 <div class="col-12">
@@ -218,8 +218,8 @@ $address .= $location->zipcode;
                                                 </div>
                                                 <div class="col-12">
                                                     <small class="text-muted pt-1 db">Profile Created</small>
-                                                    <h6>{{ $commonUser->created_at ?
-                                                        \Carbon\Carbon::parse($commonUser->created_at)->format('m-d-Y')
+                                                    <h6>{{ $dispatcher->created_at ?
+                                                        \Carbon\Carbon::parse($dispatcher->created_at)->format('m-d-Y')
                                                         : null
                                                         }}</h6>
                                                 </div>
@@ -282,9 +282,9 @@ $address .= $location->zipcode;
                         <div class="card-body card-border shadow">
                             <h5 class="card-title uppercase">Jobs / Calls</h5>
 
-                            @if($tickets->where('added_by', $commonUser->id)->isEmpty())
+                            @if($tickets->where('added_by', $dispatcher->id)->isEmpty())
                             <div class="alert alert-info mt-4 col-md-12" role="alert">Calls not available for {{
-                                $commonUser->name ?? '' }}.
+                                $dispatcher->name ?? '' }}.
                                 <strong><a href="{{route('schedule')}}">Add New</a></strong>
                             </div>
                             @else
@@ -301,7 +301,7 @@ $address .= $location->zipcode;
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($tickets->where('added_by', $commonUser->id) as $ticket)
+                                        @foreach ($tickets->where('added_by', $dispatcher->id) as $ticket)
                                         <tr>
                                             <td>
                                                 <a href="{{ route('tickets.show', $ticket->id) }}"
@@ -389,7 +389,7 @@ $address .= $location->zipcode;
                             <h5 class="card-title uppercase">Payments & Invoices</h5>
                             @if($payment->isEmpty())
                             <div class="alert alert-info mt-4" role="alert">
-                                Payments not available for {{ $commonUser->name ?? '' }}.
+                                Payments not available for {{ $dispatcher->name ?? '' }}.
                                 <strong><a href="{{ route('schedule') }}">Add New</a></strong>
                             </div>
                             @else
@@ -474,7 +474,7 @@ $address .= $location->zipcode;
                         <div class="card-body card-border shadow">
                             <h5 class="card-title uppercase">Estimates</h5>
                             <div class="alert alert-info mt-4 col-md-12" role="alert">Estimates details not available
-                                for {{$commonUser->name ?? null}}. <strong><a href="{{route('schedule')}}">Add
+                                for {{$dispatcher->name ?? null}}. <strong><a href="{{route('schedule')}}">Add
                                         New</a></strong>
                             </div>
                         </div>
@@ -490,14 +490,12 @@ $address .= $location->zipcode;
                         <div class="card-body card-border shadow">
                             <h5 class="card-title uppercase">User Permission</h5>
 
-                            @include('dispatcher.permission')
-                            {{--
                             <div class="row mt-3 mb-3">
                                 @php
                                 use App\Models\UserPermission;
                                 use App\Models\PermissionModel;
 
-                                $access_array = UserPermission::where('user_id', $commonUser->id)
+                                $access_array = UserPermission::where('user_id', $dispatcher->id)
                                 ->where('permission', 1)
                                 ->pluck('module_id')
                                 ->toArray();
@@ -511,63 +509,67 @@ $address .= $location->zipcode;
                                         @csrf
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input info" type="radio" name="radio-solid-info"
-                                                id="permissions_type_all" value="all" {{ $commonUser->permissions_type
+                                                id="permissions_type_all" value="all" {{ $dispatcher->permissions_type
                                             == 'all' ? 'checked' : '' }}>
                                             <label class="form-check-label" for="permissions_type_all">All</label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input info" type="radio" name="radio-solid-info"
                                                 id="permissions_type_selected" value="selected" {{
-                                                $commonUser->permissions_type == 'selected' ? 'checked' : '' }}>
+                                                $dispatcher->permissions_type == 'selected' ? 'checked' : '' }}>
                                             <label class="form-check-label"
                                                 for="permissions_type_selected">Selected</label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input info" type="radio" name="radio-solid-info"
                                                 id="permissions_type_block" value="block" {{
-                                                $commonUser->permissions_type == 'block' ? 'checked' : '' }}>
+                                                $dispatcher->permissions_type == 'block' ? 'checked' : '' }}>
                                             <label class="form-check-label" for="permissions_type_block">Block</label>
                                         </div>
 
                                         <div class="row mt-3">
-                                            <div class="col-md-12">
-                                                @foreach($parentModules as $parentModule)
-                                                @php
+                                            <div id="dynamicContent">
+                                                <div class="col-md-12">
+                                                    @foreach($parentModules as $parentModule)
+                                                    @php
 
-                                                $childModules = PermissionModel::where('parent_id',
-                                                $parentModule->module_id)
-                                                ->orderBy('module_id', 'ASC')
-                                                ->get();
-                                                @endphp
+                                                    $childModules = PermissionModel::where('parent_id',
+                                                    $parentModule->module_id)
+                                                    ->orderBy('module_id', 'ASC')
+                                                    ->get();
+                                                    @endphp
 
-                                                <h6>{{ $loop->iteration }}: {{ $parentModule->module_name }}</h6>
+                                                    <h6>{{ $loop->iteration }}: {{ $parentModule->module_name }}</h6>
 
-                                                @foreach($childModules as $childModule)
-                                                <div class="mb-2">
-                                                    <label class="form-check-label"
-                                                        for="p_mod_{{ $childModule->module_id }}">
-                                                        <input class="form-check-input permission-checkbox updatevalue"
-                                                            type="checkbox" id="p_mod_{{ $childModule->module_id }}"
-                                                            name="{{ $childModule->module_id }}[]" value="1" {{
-                                                            in_array($childModule->module_id, $access_array) ? 'checked'
-                                                        : '' }}>
-                                                        {{ $childModule->module_name }}
-                                                    </label>
-                                                    <!-- Hidden input to ensure the value is always submitted -->
-                                                    <input type="hidden" name="{{ $childModule->module_id }}[]"
-                                                        value="0">
+                                                    @foreach($childModules as $childModule)
+                                                    <div class="mb-2">
+                                                        <label class="form-check-label"
+                                                            for="p_mod_{{ $childModule->module_id }}">
+                                                            <input
+                                                                class="form-check-input permission-checkbox updatevalue"
+                                                                type="checkbox" id="p_mod_{{ $childModule->module_id }}"
+                                                                name="{{ $childModule->module_id }}[]" value="1" {{
+                                                                in_array($childModule->module_id, $access_array) ?
+                                                            'checked'
+                                                            : '' }}>
+                                                            {{ $childModule->module_name }}
+                                                        </label>
+                                                        <!-- Hidden input to ensure the value is always submitted -->
+                                                        <input type="hidden" name="{{ $childModule->module_id }}[]"
+                                                            value="0">
+                                                    </div>
+                                                    @endforeach
+
+                                                    <br><br>
+                                                    @endforeach
+                                                    <input type="hidden" name="user_id" value="{{ $dispatcher->id }}">
                                                 </div>
-                                                @endforeach
-
-                                                <br><br>
-                                                @endforeach
-                                                <input type="hidden" name="user_id" value="{{ $commonUser->id }}">
                                             </div>
                                         </div>
                                         <button type="submit" class="btn btn-primary">Save Permissions</button>
                                     </form>
                                 </div>
-                            </div> --}}
+                            </div>
                         </div>
 
 
@@ -730,7 +732,7 @@ $address .= $location->zipcode;
                                         <div class="mb-3">
                                             <label for="tag_id" class="control-label bold col-form-label uppercase">Add
                                                 New Comment</label>
-                                            <input type="hidden" name="id" value="{{ $commonUser->id }}">
+                                            <input type="hidden" name="id" value="{{ $dispatcher->id }}">
                                             <textarea class="form-control" id="comment" name="note" rows="3"></textarea>
                                         </div>
                                         <div class="mb-3 d-flex align-items-center">
@@ -779,57 +781,59 @@ $address .= $location->zipcode;
 <!-- End Container fluid  -->
 
 @section('script')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var allCheckbox = document.querySelectorAll('.permission-checkbox');
-        var allRadio = document.querySelectorAll('input[name="radio-solid-info"]');
-
-        allRadio.forEach(function(radio) {
-            radio.addEventListener('change', function() {
-                if (this.value === 'all') {
-                    allCheckbox.forEach(function(checkbox) {
-                        checkbox.checked = true;
-                        checkbox.value = 1;
-                        checkbox.disabled = false; // Set value to 1 for all checkboxes when 'All' is selected
-                    });
-                } else if (this.value === 'block') {
-                    allCheckbox.forEach(function(checkbox) {
-                        checkbox.checked = false;
-                        checkbox.value = 0;
-                        checkbox.disabled = true; // Set value to 0 for all checkboxes when 'Block' is selected
-                    });
-                }
-                else if (this.value === 'selected') {
-                allCheckbox.forEach(function(checkbox) {
-            //  checkbox.checked = true;
-            // checkbox.value = 1;
-                checkbox.disabled = false; // Set value to 0 for all checkboxes when 'Block' is selected
-                });
-                }
-            });
-        });
-
-
-
-        // Update the state of the 'All' radio button based on checkbox states
-        allCheckbox.forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                var allChecked = true;
-                allCheckbox.forEach(function(cb) {
-                    if (!cb.checked) {
-                        allChecked = false;
-                    }
-                });
-                document.getElementById('permissions_type_all').checked = allChecked;
-            });
-        });
-    });
-
-</script>
-
 
 <script>
     $(document).ready(function() {
+
+        var allCheckbox = $('.permission-checkbox');
+        var allRadio = $('input[name="radio-solid-info"]');
+
+        allRadio.change(function() {
+            if ($(this).val() === 'all') {
+                allCheckbox.prop('checked', true);
+                allCheckbox.val(1);
+                allCheckbox.prop('disabled', false); // Set value to 1 for all checkboxes when 'All' is selected
+            } else if ($(this).val() === 'block') {
+                allCheckbox.prop('checked', false);
+                allCheckbox.val(0);
+                allCheckbox.prop('disabled', true); // Set value to 0 for all checkboxes when 'Block' is selected
+            } else if ($(this).val() === 'selected') {
+                allCheckbox.prop('disabled', false); // Set value to 0 for all checkboxes when 'Block' is selected
+
+                var dispatcher_id = '{{ $dispatcher->id }}'; // Define the dispatcher_id variable
+
+                $.ajax({
+                url: '{{ route('dynamic') }}',
+                type: 'GET',
+                data: {
+                dispatcher_id: dispatcher_id // Pass the dispatcher_id as data
+                },
+                success: function(response) {
+                    console.log(response);
+                // Replace the content of the div with the loaded content
+                $('#dynamicContent').html(response);
+                },
+                error: function(xhr) {
+                console.log(xhr.responseText);
+                }
+                });
+            }
+        });
+
+        // Update the state of the 'All' radio button based on checkbox states
+        allCheckbox.change(function() {
+            var allChecked = true;
+            allCheckbox.each(function() {
+                if (!$(this).is(':checked')) {
+                    allChecked = false;
+                }
+            });
+            $('#permissions_type_all').prop('checked', allChecked);
+        });
+
+
+
+
 
 
         $(document).on('click', '.updatevalue', function() {
@@ -938,42 +942,7 @@ $address .= $location->zipcode;
 
 </script>
 
-<script>
-    function updateRadio() {
-        // Get all checkboxes with class 'updatevalue'
-        var checkboxes = document.querySelectorAll('.updatevalue');
 
-        // Get the radio buttons with name 'radio-solid-info'
-        var radioAll = document.getElementById('permissions_type_all');
-        var radioSelected = document.getElementById('permissions_type_selected');
-
-        // Check if all checkboxes are checked
-        var allChecked = true;
-        checkboxes.forEach(function(checkbox) {
-            if (!checkbox.checked) {
-                allChecked = false;
-            }
-        });
-
-        // Update the radio button based on the checked status of checkboxes
-        if (allChecked) {
-            radioAll.checked = true;
-            radioSelected.checked = false;
-        } else {
-            radioAll.checked = false;
-            radioSelected.checked = true;
-        }
-    }
-
-    // Attach the 'updateRadio' function to each checkbox's 'change' event
-    var checkboxes = document.querySelectorAll('.updatevalue');
-    checkboxes.forEach(function(checkbox) {
-        checkbox.addEventListener('change', updateRadio);
-    });
-
-    // Call the 'updateRadio' function initially to set the radio button based on current checkbox status
-    updateRadio();
-</script>
 
 <script>
     document.getElementById('openChangePasswordModal').addEventListener('click', function(event) {

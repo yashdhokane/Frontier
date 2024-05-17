@@ -5,9 +5,11 @@
 	
         <ul class="nav customizer-tab" role="tablist">
 			
-			<li class="nav-item"><a class="nav-link active" id="tab-activity-tab" data-bs-toggle="pill" href="#tab-activity" role="tab" aria-controls="tab-activity" aria-selected="false" ><i class="ri-timer-line fs-6"></i></a></li>
+			<li class="nav-item"><a class="nav-link active" id="tab-activity-tab" data-bs-toggle="pill" href="#tab-activity" role="tab" aria-controls="tab-activity" aria-selected="false" ><i class="ri-calendar-line fs-6"></i></a></li>
+  			
+			<li class="nav-item"><a class="nav-link " id="timezone-tab" data-bs-toggle="pill" href="#timezone" role="tab" aria-controls="timezone" aria-selected="true" ><i class="ri-timer-line fs-6"></i></a></li>
 			
-			<li class="nav-item"><a class="nav-link " id="timezone-tab" data-bs-toggle="pill" href="#timezone" role="tab" aria-controls="timezone" aria-selected="true" ><i class="ri-tools-fill fs-6"></i></a></li>
+			
  			
 			<li class="nav-item"><a class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" href="#chat" role="tab" aria-controls="chat" aria-selected="false" ><i class="ri-information-line fs-6"></i></a></li>
         </ul>
@@ -29,8 +31,8 @@
             <!-- Tab Timezone -->
             <div class="tab-pane fade" id="timezone" role="tabpanel" aria-labelledby="timezone-tab">
                 <div class="p-3 border-bottom">
-                    <h4 class="mb-2 mt-2">Current Time</h4>
-                    <div class="mt-2">
+ 					<h5 class="card-title uppercase mt-3 mb-1">Current Time</h5>
+                    <div class="mt-1">
                         <?php
                         // Assuming $time->TimeZone->country_name contains a valid country name
                         $country_name = $time->TimeZone->timezone_name;
@@ -60,12 +62,9 @@
                             echo 'Invalid country name or timezone not found.';
                         }
                         ?>
-
-
-
-                    </div>
-                    <h4 class="mb-2 mt-4">Timezone</h4>
-                    <div class="mt-2">
+                     </div>
+                    <h5 class="card-title uppercase mt-4 mb-1">Timezone</h5>
+                    <div class="mt-1">
                         {{ $time->TimeZone->timezone_name }}<br />{{ $time->TimeZone->gmt_offset }} Hours
                     </div>
                 </div>
@@ -85,18 +84,18 @@
 			<!-- Tab Activity -->
 		 <div class="tab-pane fade p-3 show active" id="tab-activity" role="tabpanel"
                 aria-labelledby="tab-activity-tab">
-                <h4 class="mt-3 mb-3">Today's Jobs</h4>
+                <h5 class="card-title uppercase mt-3 mb-3">Today's Jobs</h5>
                 <div class="steamline">
                     @foreach ($technicians as $technician)
                     <div class="sl-item">
                         <div class="sl-left bg-light-success text-success"><i class="ri-calendar-check-fill"></i></div>
                         <div class="sl-right">
                             <div class="font-medium">
-                                Ticket: {{ $technician->JobModel->job_title ?? '' }}<br>
-                                Customer: {{ $technician->JobModel->user->name ?? '' }}
-                                <span class="sl-date" style="display: block;">
-                                    ADDRESS:
-                                    @if (isset($technician->JobModel->address) && $technician->JobModel->address !== '')
+                                <div class="ft13 uppercase bold">{{ $technician->JobModel->job_title ?? '' }}</div>
+                                <div class="ft12"><i class="ri-user-line"></i> {{ $technician->JobModel->user->name ?? '' }}</div>
+                                <div class="sl-date ft12" style="display: block;">
+									<i class="ri-map-pin-fill"></i> 
+									@if (isset($technician->JobModel->address) && $technician->JobModel->address !== '')
                                     {{ $technician->JobModel->address }},
                                     @endif
 
@@ -111,9 +110,9 @@
                                     @if (isset($technician->JobModel->zipcode) && $technician->JobModel->zipcode !== '')
                                     {{ $technician->JobModel->zipcode }}
                                     @endif
-                                </span>
+                                </div>
                             </div>
-                            <div class="desc">Technician: {{ $technician->technician->name ?? '' }}</div>
+                            <div class="desc ft12"><i class="ri-tools-line"></i> {{ $technician->technician->name ?? '' }}</div>
                         </div>
                     </div>
                     @endforeach
@@ -123,7 +122,7 @@
 			
 			<!-- Tab Information -->
 			<div class="tab-pane fade p-3" id="chat" role="tabpanel" aria-labelledby="pills-profile-tab">
-				<h4 class="mt-3 mb-3">Information</h4>
+				<h5 class="card-title uppercase mt-3 mb-3">Quick Links</h5>
 				<ul class="list-group list-group-flush">
 					<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="{{route('download')}}">Download App </a></li>
 					<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="#.">View Website </a></li>

@@ -52,18 +52,17 @@
 
 
     <div class="row">
-
-
+        @php $index=0; @endphp
         <div class="col-md-9">
             @if (!empty($users->Jobdata))
 
             @foreach($users->Jobdata as $job)
-
+            @php $index++; @endphp
             <div class="mb-4">
 
                 <div class="card" style="border: 1px solid #D8D8D8;">
-                    <form action="{{ route('customerdata.update') }}" method="post"
-                        id="updateForm{{ $job->ticket_number ?? '' }}">
+                    <form action="{{ route('customerdata.update') }}" method="post" id="updateForm{{ $index ?? '' }}"
+                        enctype="multipart/form-data">
                         @csrf
                         <div class="card-body">
                             <div class="row mb-3">
@@ -96,46 +95,91 @@
                                         value="{{ $job->technician ?? '' }}">
                                 </div>
                             </div>
+                            <div class="container mt-5">
+                                <div id="file-input-containery{{ $index }}">
+                                    <div class="row mb-1">
+                                        <div class="col-md-6">
+                                            <label class="control-label bold col-form-label" for="Attachments">Files &
+                                                Attachments</label>
+                                            <div style="display: flex;">
+                                                <input type="file" class="form-control" name="files[]" placeholder="" />
+                                                <button style="margin-left:2px;" type="button"
+                                                    class="btn btn-primary add-rowy{{ $index }}">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="add_morey{{ $index }}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Include jQuery library -->
+
                             <input type="hidden" name="no_of_visits" id="hidden_no_of_visits"
                                 value="{{ $users->no_of_visits ?? '' }}">
                             <input type="hidden" name="job_completed" id="hidden_job_completed"
                                 value="{{ $users->job_completed ?? '' }}">
                             <input type="hidden" name="issue_resolved" id="hidden_issue_resolved"
                                 value="{{ $users->issue_resolved ?? '' }}">
-
-                            <div class="row mb-3">
-                                <div class="col-md-8">
-                                    <label for="service_name" class="control-label bold col-form-label ">Service
-                                        Name</label>
-                                    <input type="text" name="service_name" class="form-control" id="service_name"
-                                        value="{{ $job->Customerservice->service_name ?? '' }}">
+                            <div id="additional-services-container{{ $index }}">
+                                <div class="row mb-3">
+                                    <div class="col-md-8">
+                                        <label for="service_name" class="control-label bold col-form-label">Service
+                                            Name</label>
+                                        <input type="text" name="service_name" class="form-control" id="service_name"
+                                            value="{{ $job->Customerservice->service_name ?? '' }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="amount" class="control-label bold col-form-label">Service
+                                            Amount</label>
+                                        <input type="text" name="amount" class="form-control" id="amount"
+                                            value="{{ $job->Customerservice->amount ?? '' }}">
+                                    </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <label for="amount" class="control-label bold col-form-label ">Service
-                                        Amount</label>
-                                    <input type="text" name="amount" class="form-control" id="amount"
-                                        value="{{ $job->Customerservice->amount ?? '' }}">
+                            </div>
+                            <div class="row mb-1">
+                                <div class="col-md-9">
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="#." class="add-more-services{{ $index }}" data-index="{{ $index }}">Add
+                                        More
+                                        Services</a>
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
+                            <div id="additional-notes-container{{ $index }}">
+                                <div class="row mb-3">
 
-                                <div class="col-md-12">
-                                    <label for="notes" class="control-label bold col-form-label ">Notes</label>
-                                    <textarea rows="2" name="notes" class="form-control"
-                                        id="notes">{{ $job->Customernote->notes ?? '' }}</textarea>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="notes_by" class="control-label bold col-form-label ">Notes By</label>
-                                    <input type="text" name="notes_by" class="form-control" id="notes_by"
-                                        value="{{ $job->Customernote->notes_by ?? '' }}">
+                                    <div class="col-md-8">
+                                        <label for="notes" class="control-label bold col-form-label ">Notes</label>
+                                        <textarea rows="2" name="notes" class="form-control"
+                                            id="notes">{{ $job->Customernote->notes ?? '' }}</textarea>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="notes_by" class="control-label bold col-form-label ">Notes
+                                            By</label>
+                                        <input type="text" name="notes_by" class="form-control" id="notes_by"
+                                            value="{{ $job->Customernote->notes_by ?? '' }}">
+                                    </div>
                                 </div>
                             </div>
+                            <div class="row mb-1">
+                                <div class="col-md-9">
+                                </div>
+                                <div class="col-md-3">
+                                    <a href="#" class="add-more-notes{{ $index }}" data-index="{{ $index }}">Add More
+                                        Notes</a>
+                                </div>
+                            </div>
+
 
                             <div class="row">
                                 <div class="col-md-12 text-center">
                                     <button type="submit" class="btn btn-primary me-2"
-                                        id="submitButton{{ $job->id ?? '' }}">Update</button>
+                                        id="submitButton{{ $index }}">Update</button>
                                     <a href="{{ route('customersdata.index') }}" class="btn btn-secondary">Back</a>
                                 </div>
                             </div>
@@ -143,7 +187,67 @@
                         </div>
                     </form>
                 </div>
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+                <script>
+                    // Your JavaScript code using jQuery
+                         // Define the dispatcher_id variable
+                            $(document).on('click', '.add-rowy{{ $index}}', function() {
+                                var newFileInputGroup = `
+                                    <div class="row mb-1">
+                                        <div class="col-md-6">
+                                            <label class="control-label bold col-form-label" for="Attachments">Files & Attachments</label>
+                                            <div style="display: flex;">
+                                                <input type="file" class="form-control" name="files[]" placeholder="" />
+                                                <button style="margin-left:2px;" type="button" class="btn btn-danger remove-row">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="add_morey"></div>
+                                        </div>
+                                    </div>`;
+                                $('#file-input-containery{{ $index}}').append(newFileInputGroup);
+                            });
+
+
+                            $(document).on('click', '.add-more-services{{ $index }}', function(e) {
+                            e.preventDefault();
+
+                            var newServiceInputGroup = `
+                            <div class="row mb-3">
+                                <div class="col-md-8">
+                                    <label for="service_name_{{ $index }}" class="control-label bold col-form-label">Service Name</label>
+                                    <input type="text" name="service_name[]" class="form-control" id="service_name_{{ $index }}" value="">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="amount_{{ $index }}" class="control-label bold col-form-label">Service Amount</label>
+                                    <input type="text" name="amount[]" class="form-control" id="amount_{{ $index }}" value="">
+                                </div>
+                            </div>`;
+                            $('#additional-services-container{{ $index }}').append(newServiceInputGroup);
+                            });
+
+                            $(document).on('click', '.add-more-notes{{ $index }}', function(e) {
+                            e.preventDefault();
+                            // var index = $(this).data('index');
+
+                            var newNotesInputGroup = `
+                            <div class="row mb-3">
+                                <div class="col-md-8">
+                                    <label for="notes_{{ $index }}" class="control-label bold col-form-label">Notes</label>
+                                    <textarea rows="2" name="notes[]" class="form-control" id="notes_{{ $index }}"></textarea>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="notes_by_{{ $index }}" class="control-label bold col-form-label">Notes By</label>
+                                    <input type="text" name="notes_by[]" class="form-control" id="notes_by_{{ $index }}">
+                                </div>
+                            </div>`;
+
+                            $('#additional-notes-container{{ $index }}' ).append(newNotesInputGroup);
+                            });
+                </script>
             </div>
 
             @endforeach
@@ -216,7 +320,8 @@
                 <div class="modal-body">
                     <!-- Your form content goes here -->
                     <!-- For example, you can include a form for adding new customer data -->
-                    <form id="customerForm" action="{{ route('customerdata.store') }}" method="post">
+                    <form id="customerForm" action="{{ route('customerdata.store') }}" method="post"
+                        enctype="multipart/form-data">
                         @csrf
                         <div class="row mb-1">
                             <div class="col-md-4">
@@ -257,18 +362,24 @@
                                 <input type="text" name="technician" class="form-control" id="technician" value="">
                             </div>
                         </div>
-                        <div class="row mb-1">
-                            <div class="col-md-6">
-                                <label class="control-label bold col-form-label" for="Attachments">Files &
-                                    Attachments</label>
-                                <div class="" style="display: flex;">
-                                    <input type="file" class="form-control" id="image" placeholder="" />
-                                    <button style="margin-left:2px;" type="button" class="btn mjks add-row"><i
-                                            class="fa fa-plus"></i></button>
+                        <div class="container mt-5">
+                            <div id="file-input-container">
+                                <div class="row mb-1">
+                                    <div class="col-md-6">
+                                        <label class="control-label bold col-form-label" for="Attachments">Files &
+                                            Attachments</label>
+                                        <div style="display: flex;">
+                                            <input type="file" class="form-control" name="files[]" placeholder="" />
+                                            <button style="margin-left:2px;" type="button"
+                                                class="btn btn-primary add-row">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="add_more"></div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="add_more"></div>
                             </div>
                         </div>
                         <div class="row mb-1">
@@ -383,30 +494,33 @@
             };
         });
 
-        // Click event for adding a new row for the first file input
-        $(".add-row").click(function() {
-            if (!src1) {
-                alert("Please select an image before adding.");
-                return;
-            }
-            var image_src = src1;
-            let link = '<img style="height:70px;width:auto;" src="' + image_src + '">';
-            var markup =
-                '<tr>' +
-                '<td><input name="filename[]" type="hidden" value="' + blob1 + '"><a target="_blank" href="' + image_src + '">' + link +
-                '</a></td>' +
-                '<td style="text-align:center; color:#FF0000"><button style="btn btn-primary" class="delete-row1 "><i class="fa fa-trash"></i></button></td>' +
-                '</tr>';
-            $(".add_more").append(markup);
-            // Clear the input field
-            $('#image').val('');
-            src1 = null;
-            blob1 = null;
-        });
 
-        $(".add_more").on("click", ".delete-row1", function() {
-            $(this).closest("tr").remove(); // Remove the parent <tr> of the clicked delete button
-        });
+
+        // Click event for adding a new row for the first file input
+      $(document).on('click', '.add-row', function() {
+    var newFileInputGroup = `
+    <div class="row mb-1">
+        <div class="col-md-6">
+            <label class="control-label bold col-form-label" for="Attachments">Files & Attachments</label>
+            <div style="display: flex;">
+                <input type="file" class="form-control" name="files[]" placeholder="" />
+                <button style="margin-left:2px;" type="button" class="btn btn-danger remove-row">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="add_more"></div>
+        </div>
+    </div>`;
+    $('#file-input-container').append(newFileInputGroup);
+    });
+
+    // Handle remove-row button click
+    $(document).on('click', '.remove-row', function() {
+    $(this).closest('.row').remove();
+    });
+
         $("#addMoreServices").click(function(e) {
             e.preventDefault();
             $("#serviceTemplate").show();

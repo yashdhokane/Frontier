@@ -8,9 +8,17 @@
 				<h4 class="page-title text-info fw-bold"> {{$siteSettings->business_name ?? null}}</h4>
   			</div>
 			<div class="col-4">
-				<div class="text-end text-primary fw-bold">Thu 28 Mar, 2024</div>
-			</div>
-         </div>
+  				<div class="text-end text-primary fw-bold">
+					@php
+					use Carbon\Carbon;
+					$currentFormattedDate = Carbon::now($timezoneName)->format('D d, M Y');
+					$currentFormattedDateTime = Carbon::now($timezoneName)->format('h:i:s A T');
+					@endphp
+				
+					{{ $currentFormattedDate }} 
+				</div>
+ 			</div>
+		</div>
 
     </div>
 
@@ -54,30 +62,32 @@
 											</div>
 										</div>
  									</div>
+  									
+									<div class="col-md-6 col-lg-3 col-xlg-3">
+										<div class="card card-hover">
+											<div class="p-2 rounded bg-light-warning text-center">
+												<h1 class="fw-light text-warning">{{$opened}}</h1>
+												<h6 class="text-warning">Open Jobs</h6>
+											</div>
+										</div>
+									</div>
 									<div class="col-md-6 col-lg-3 col-xlg-3">
 										<div class="card card-hover">
 											<div class="p-2 rounded bg-light-success text-center">
-											<h1 class="fw-light text-success">{{$opened}}</h1>
-											<h6 class="text-success">Open Jobs</h6>
+											<h1 class="fw-light text-success">{{$complete}}</h1>
+											<h6 class="text-success">Closed Jobs</h6>
 											</div>
 										</div>
 									</div>
 									<div class="col-md-6 col-lg-3 col-xlg-3">
 										<div class="card card-hover">
 											<div class="p-2 rounded bg-light-danger text-center">
-												<h1 class="fw-light text-danger">{{$complete}}</h1>
-												<h6 class="text-danger">Closed Jobs</h6>
+												<h1 class="fw-light text-danger">{{$inProgress}}</h1>
+												<h6 class="text-danger">Canceled Jobs</h6>
 											</div>
 										</div>
 									</div>
-									<div class="col-md-6 col-lg-3 col-xlg-3">
-										<div class="card card-hover">
-											<div class="p-2 rounded bg-light-warning text-center">
-												<h1 class="fw-light text-warning">{{$inProgress}}</h1>
-												<h6 class="text-warning">In Progress</h6>
-											</div>
-										</div>
-									</div>
+									
 								</div>
 								
 								<div class="d-md-flex align-items-center mt-2">
@@ -88,50 +98,38 @@
 								</div>
 								<div class="table-responsive mt-1">
 									<table id="" class="table table-bordered text-nowrap">
-										<thead>
+										<thead class="uppercase">
 											<tr>
-												
 												<th>Jobs Details</th>
-											
 												<th>Customer</th>
-											
 												<th>Technician</th>
-													<th>Date</th>
+												<th>Date</th>
 											</tr>
 										</thead>
 										<tbody>
 										@foreach ($job as $item)
 											<tr>
 												<td>
-												<a href="{{ url('tickets/' . $item->id) }}"
-												class="font-medium link">{{ $item->job_title ?? null }}</a><br />
-												@if ($item->JobAppliances)
-												<span style="font-size:12px;">
-												Model: {{ $item->JobAppliances->Appliances->model_number ?? 'N/A' }} /
-												Serial Number: {{ $item->JobAppliances->Appliances->serial_number ?? 'N/A' }}
-												</span>
-												@else
-												<span style="font-size:12px;">
-												Model: N/A / Serial Number: N/A
-												</span>
-												@endif
-												</td>
+													<a href="{{ url('tickets/' . $item->id) }}"
+													class="font-medium link">{{ $item->job_title ?? null }}</a><br />
+													{{ $item->description ?? null }} 
+ 												</td>
 												<td>{{ $item->user->name ?? null }}</td>
 												<td>{{ $item->technician->name ?? null }}</td>
-<td>
-                                            @if ($item->jobassignname && $item->jobassignname->start_date_time)
-                                            <div class="font-medium link">{{
-                                                $convertDateToTimezone($item->jobassignname->start_date_time ?? null) }}</div>
-                                            @else
-                                            <div></div>
-                                            @endif
-                                            <div style="font-size:12px;">
-                                                {{ $convertTimeToTimezone($item->JobAssign->start_date_time ?? null, 'H:i:a')
-                                                }}
-                                                to {{ $convertTimeToTimezone($item->JobAssign->end_date_time ?? null, 'H:i:a')
-                                                }}
-                                            </div>
-                                        </td>
+												<td>
+												@if ($item->jobassignname && $item->jobassignname->start_date_time)
+												<div class="font-medium link ft12">{{
+													$convertDateToTimezone($item->jobassignname->start_date_time ?? null) }}</div>
+												@else
+												<div></div>
+												@endif
+												<div class="ft12">
+													{{ $convertTimeToTimezone($item->JobAssign->start_date_time ?? null, 'H:i:a')
+													}}
+													to {{ $convertTimeToTimezone($item->JobAssign->end_date_time ?? null, 'H:i:a')
+													}}
+												</div>
+												</td>
 											</tr>
 										@endforeach
 										</tbody>
@@ -271,13 +269,15 @@
 				
  				<div class="card card-border shadow mt-4">
 					<div class="card-body">
-						<h5 class="card-title text-info uppercase">Help & Support</h5>
+						<h5 class="card-title text-info uppercase">Quick Links</h5>
 						<ul class="list-group list-group-flush">
-							<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="#.">Contact Support </a></li>
+							<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="{{route('download')}}">Download App </a></li>
 							<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="#.">View Website </a></li>
-							<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="#.">Download App </a></li>
-							<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="#.">Privacy Policy </a></li>
-							<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="#.">Documentation </a></li>
+							<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="{{route('contact')}}">Contact Support </a></li>
+							<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="{{route('about')}}">About Dispat Channel</a></li>
+							<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="{{route('reviews')}}">Reviews</a></li>
+							<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="{{route('privacy')}}">Privacy Policy </a></li>
+							<li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a href="{{route('documentation')}}">Documentation </a></li>
 						</ul>
 					</div>
 				</div>

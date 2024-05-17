@@ -159,23 +159,23 @@ class CustomerDataController extends Controller
         }
         $customerData->save();
 
-        $service = CustomerDataServices::updateOrCreate(['job_id' => $job->job_id], []);
-        if ($service_name !== null) {
-            $service->service_name = $service_name;
-        }
-        if ($amount !== null) {
-            $service->amount = $amount;
-        }
-        $service->save();
+        // $service = CustomerDataServices::updateOrCreate(['job_id' => $job->job_id], []);
+        // if ($service_name !== null) {
+        //     $service->service_name = $service_name;
+        // }
+        // if ($amount !== null) {
+        //     $service->amount = $amount;
+        // }
+        // $service->save();
 
-        $note = CustomerDataNotes::updateOrCreate(['job_id' => $job->job_id], []);
-        if ($notes_by !== null) {
-            $note->notes_by = $notes_by;
-        }
-        if ($notes !== null) {
-            $note->notes = $notes;
-            $note->save();
-        }
+        // $note = CustomerDataNotes::updateOrCreate(['job_id' => $job->job_id], []);
+        // if ($notes_by !== null) {
+        //     $note->notes_by = $notes_by;
+        // }
+        // if ($notes !== null) {
+        //     $note->notes = $notes;
+        //     $note->save();
+        // }
         $ticketNumbers = CustomerDataJob::pluck('ticket_number')->toArray();
         $tccValues = CustomerDataJob::pluck('tcc')->toArray();
         $user_id = $request->input('user_id');
@@ -190,7 +190,59 @@ class CustomerDataController extends Controller
         $customerData->tcc = $tccValuesString;
         $customerData->save();
 
-        return redirect()->back()->with('success', 'Job updated successfully.');
+
+        if (!empty($request->file('files'))) {
+            foreach ($request->file('files') as $file) {
+                // Generate a unique filename
+                $imgname = 'e' . rand(000, 999) . time() . '.' . $file->getClientOriginalExtension();
+
+                // Directory path for user's images
+                $directoryPath = public_path('images/users/' . $job->user_id);
+
+                // Ensure the directory exists; if not, create it
+                if (!File::exists($directoryPath)) {
+                    File::makeDirectory($directoryPath, 0777, true);
+                }
+
+                // Move the file to the user's directory
+                $file->move($directoryPath, $imgname);
+
+                // Create a new entry in the database for the image
+                $customerFile = new CustomerFiles();
+                $customerFile->user_id = $job->user_id;
+                $customerFile->filename = $imgname;
+                $customerFile->path = 'images/users/' . $job->user_id; // Store relative path
+                $customerFile->type = $file->getClientMimeType();
+                $customerFile->storage_location = 'local'; // Assuming storage location is local
+                $customerFile->save();
+            }
+
+            foreach ($service_name as $key => $service) {
+                // Check if service name and amount are not null before creating or updating the record
+                if (!empty($service) && isset($amount[$key])) {
+                    CustomerDataServices::updateOrCreate(
+                        ['job_id' => $job->job_id, 'service_name' => $service],
+                        ['amount' => $amount[$key]]
+                    );
+                }
+            }
+
+
+
+
+            // Create CustomerDataNotes records
+            foreach ($notes as $key => $note) {
+                // Check if notes and notes_by are not null before creating or updating the record
+                if (!empty($note) && isset($notes_by[$key])) {
+                    CustomerDataNotes::updateOrCreate(
+                        ['job_id' => $job->job_id, 'notes_by' => $notes_by[$key]],
+                        ['notes' => $note]
+                    );
+                }
+            }
+            //  dd(1);
+            return redirect()->back()->with('success', 'Job updated successfully.');
+        }
     }
 
 
@@ -316,16 +368,43 @@ class CustomerDataController extends Controller
         }
 
         // Iterate over each image
-        if (!empty($request->filename)) {
-            foreach ($request->filename as $key => $image) {
-                // Extract image extension
-                $extension = explode('/', mime_content_type($image))[1];
+        // if (!empty($request->filename)) {
+        //     foreach ($request->filename as $key => $image) {
+        //         // Extract image extension
+        //         $extension = explode('/', mime_content_type($image))[1];
 
-                // Decode base64 image data
-                $data = base64_decode(substr($image, strpos($image, ',') + 1));
+        //         // Decode base64 image data
+        //         $data = base64_decode(substr($image, strpos($image, ',') + 1));
 
+        //         // Generate a unique filename
+        //         $imgname = 'e' . rand(000, 999) . $key . time() . '.' . $extension;
+
+        //         // Directory path for user's images
+        //         $directoryPath = public_path('images/users/' . $job->user_id);
+
+        //         // Ensure the directory exists; if not, create it
+        //         if (!File::exists($directoryPath)) {
+        //             File::makeDirectory($directoryPath, 0777, true);
+        //         }
+
+        //         // Save the image to the user's directory
+        //         if (file_put_contents($directoryPath . '/' . $imgname, $data)) {
+        //             // Create a new entry in the database for the image
+        //             $file = new CustomerFiles();
+        //             $file->user_id = $job->user_id;
+        //             $file->filename = $imgname;
+        //             $file->path = $directoryPath;
+        //             $file->type = 'image/' . $extension;
+        //             $file->storage_location = 'local'; // Assuming storage location is local
+        //             $file->save();
+        //         }
+        //     }
+        //  dd(1);
+
+        if (!empty($request->file('files'))) {
+            foreach ($request->file('files') as $file) {
                 // Generate a unique filename
-                $imgname = 'e' . rand(000, 999) . $key . time() . '.' . $extension;
+                $imgname = 'e' . rand(000, 999) . time() . '.' . $file->getClientOriginalExtension();
 
                 // Directory path for user's images
                 $directoryPath = public_path('images/users/' . $job->user_id);
@@ -335,17 +414,17 @@ class CustomerDataController extends Controller
                     File::makeDirectory($directoryPath, 0777, true);
                 }
 
-                // Save the image to the user's directory
-                if (file_put_contents($directoryPath . '/' . $imgname, $data)) {
-                    // Create a new entry in the database for the image
-                    $file = new CustomerFiles();
-                    $file->user_id = $job->user_id;
-                    $file->filename = $imgname;
-                    $file->path = $directoryPath;
-                    $file->type = 'image/' . $extension;
-                    $file->storage_location = 'local'; // Assuming storage location is local
-                    $file->save();
-                }
+                // Move the file to the user's directory
+                $file->move($directoryPath, $imgname);
+
+                // Create a new entry in the database for the image
+                $customerFile = new CustomerFiles();
+                $customerFile->user_id = $job->user_id;
+                $customerFile->filename = $imgname;
+                $customerFile->path = 'images/users/' . $job->user_id; // Store relative path
+                $customerFile->type = $file->getClientMimeType();
+                $customerFile->storage_location = 'local'; // Assuming storage location is local
+                $customerFile->save();
             }
 
 
@@ -361,7 +440,7 @@ class CustomerDataController extends Controller
                     $noteRecord->save();
                 }
             }
-            //   dd(1);
+
             return redirect()->back()->with('success', 'Job stored successfully.');
         }
     }

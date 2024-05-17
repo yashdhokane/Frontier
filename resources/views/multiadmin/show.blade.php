@@ -2,22 +2,22 @@
 @section('content')
 <!-- Page wrapper  -->
 @php
-    $address = '';
-    if (isset($location->address_line1) && $location->address_line1 !== '') {
-        $address .= $location->address_line1 . ', ';
-    }
-    if (isset($location->address_line2) && $location->address_line2 !== '') {
-        $address .= $location->address_line2 . ', ';
-    }
-    if (isset($user->Location->city) && $user->Location->city !== '') {
-        $address .= $user->Location->city . ', ';
-    }
-    if (isset($location->state_name) && $location->state_name !== '') {
-        $address .= $location->state_name . ', ';
-    }
-    if (isset($location->zipcode) && $location->zipcode !== '') {
-        $address .= $location->zipcode;
-    }
+$address = '';
+if (isset($location->address_line1) && $location->address_line1 !== '') {
+$address .= $location->address_line1 . ', ';
+}
+if (isset($location->address_line2) && $location->address_line2 !== '') {
+$address .= $location->address_line2 . ', ';
+}
+if (isset($user->Location->city) && $user->Location->city !== '') {
+$address .= $user->Location->city . ', ';
+}
+if (isset($location->state_name) && $location->state_name !== '') {
+$address .= $location->state_name . ', ';
+}
+if (isset($location->zipcode) && $location->zipcode !== '') {
+$address .= $location->zipcode;
+}
 @endphp
 
 <!-- -------------------------------------------------------------- -->
@@ -26,7 +26,7 @@
 <div class="page-breadcrumb">
     <div class="row">
         <div class="col-9 align-self-center">
-            <h4 class="page-title">{{ $multiadmin->name }}</h4>
+            <h4 class="page-title">{{ $commonUser->name }}</h4>
             <!--<div class="d-flex align-items-center">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
@@ -38,7 +38,8 @@
                 </div>-->
         </div>
         <div class="col-3 text-end">
-            <a href="{{ route('multiadmin.index') }}" class="btn btn-primary font-weight-medium shadow"><i class="ri-contacts-line" style="margin-right: 8px;"></i>Admin List </a>
+            <a href="{{ route('multiadmin.index') }}" class="btn btn-primary font-weight-medium shadow"><i
+                    class="ri-contacts-line" style="margin-right: 8px;"></i>Admin List </a>
         </div>
     </div>
 </div>
@@ -143,159 +144,163 @@
                         <div class="card-body card-border shadow">
                             <div class="row">
                                 <div class="col-lg-3 col-xlg-9">
-                                   
-                                            <center class="mt-1">
-                                                @if($multiadmin->user_image)
-                                                <img src="{{ asset('public/images/Uploads/users/' . $multiadmin->id . '/' . $multiadmin->user_image) }}"
-                                                    class="rounded-circle" width="150" />
-                                                @else
-                                                <img src="{{asset('public/images/login_img_bydefault.png')}}"
-                                                    alt="avatar" class="rounded-circle" width="150" />
-                                                @endif <h4 class="card-title mt-1">{{ $multiadmin->name }}</h4>
-                                                {{-- <h6 class="card-subtitle">{{ $multiadmin->company ?? null }}
-                                                </h6> --}}
-                                            </center>
 
-                                            <div class="col-12">
-                                                <h5 class="card-title uppercase mt-4">Tags</h5>
-                                                <div class="mt-0">
-                                                    @if($multiadmin->tags->isNotEmpty())
-                                                    @foreach($multiadmin->tags as $tag)
-                                                    <span class="badge bg-dark">{{ $tag->tag_name }}</span>
-                                                    @endforeach
-                                                    @else
-                                                    <span class="badge bg-dark">No tags available</span>
-                                                    @endif
-                                                </div>
-                                            </div>
+                                    <center class="mt-1">
+                                        @if($commonUser->user_image)
+                                        <img src="{{ asset('public/images/Uploads/users/' . $commonUser->id . '/' . $commonUser->user_image) }}"
+                                            class="rounded-circle" width="150" />
+                                        @else
+                                        <img src="{{asset('public/images/login_img_bydefault.png')}}" alt="avatar"
+                                            class="rounded-circle" width="150" />
+                                        @endif <h4 class="card-title mt-1">{{ $commonUser->name }}</h4>
+                                        {{-- <h6 class="card-subtitle">{{ $commonUser->company ?? null }}
+                                        </h6> --}}
+                                    </center>
 
-                                            <div class="col-md-12">
-                                                <h5 class="card-title uppercase mt-4">Files & Attachments</h5>
-                                                <div class="mt-0">
-                                                    @foreach($customerimage as $image)
-                                                    @if($image->filename)
-                                                    <a href="{{ asset('storage/app/' . $image->filename) }}" download>
-                                                        <p><i class="fas fa-file-alt"></i></p>
-                                                        <img src="{{ asset('storage/app/' . $image->filename) }}"
-                                                            alt="Customer Image" style="width: 50px; height: 50px;">
-                                                    </a>
-                                                    @else
-                                                    <!-- Default image if no image available -->
-                                                    <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}"
-                                                        alt="Default Image" style="width: 50px; height: 50px;">
-                                                    @endif
-                                                    @endforeach
-                                                </div>
-                                            </div>
+                                    <div class="col-12">
+                                        <h5 class="card-title uppercase mt-4">Tags</h5>
+                                        <div class="mt-0">
+                                            @if($commonUser->tags->isNotEmpty())
+                                            @foreach($commonUser->tags as $tag)
+                                            <span class="badge bg-dark">{{ $tag->tag_name }}</span>
+                                            @endforeach
+                                            @else
+                                            <span class="badge bg-dark">No tags available</span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <h5 class="card-title uppercase mt-4">Files & Attachments</h5>
+                                        <div class="mt-0">
+                                            @foreach($customerimage as $image)
+                                            @if($image->filename)
+                                            <a href="{{ asset('storage/app/' . $image->filename) }}" download>
+                                                <p><i class="fas fa-file-alt"></i></p>
+                                                <img src="{{ asset('storage/app/' . $image->filename) }}"
+                                                    alt="Customer Image" style="width: 50px; height: 50px;">
+                                            </a>
+                                            @else
+                                            <!-- Default image if no image available -->
+                                            <img src="{{ asset('public/admin/assets/images/users/1.jpg') }}"
+                                                alt="Default Image" style="width: 50px; height: 50px;">
+                                            @endif
+                                            @endforeach
+                                        </div>
+                                    </div>
 
 
                                 </div>
-								
-								<div class="col-lg-9 col-xlg-9">
-								    <div class="row">
-									<div class="col-md-3 col-xs-6 b-r">
-										<div class="row text-left justify-content-md-left">
 
-											<div class="col-12">
-												<h5 class="card-title uppercase mt-1">Contact info</h5>
+                                <div class="col-lg-9 col-xlg-9">
+                                    <div class="row">
+                                        <div class="col-md-3 col-xs-6 b-r">
+                                            <div class="row text-left justify-content-md-left">
 
-												<!--<h6 style="font-weight: normal;">
+                                                <div class="col-12">
+                                                    <h5 class="card-title uppercase mt-1">Contact info</h5>
+
+                                                    <!--<h6 style="font-weight: normal;">
 														<i class="fas fa-home"></i>{{ old('home_phone', $home_phone) }}
 													</h6>-->
-												<h6 style="font-weight: normal;"><i class="fas fa-mobile-alt"></i>
-													{{$multiadmin->mobile}}</h6>
-												{{-- <h6 style="font-weight: normal;"><i class="fas fa-mobile-alt"></i> +1
-													123 456 7890
-												</h6> --}}
-												<h6 style="font-weight: normal;"><i class="fas fa-envelope"></i>
-													{{$multiadmin->email}}
-												</h6>
-											</div>
-											<div class="col-12">
-												<h5 class="card-title uppercase mt-5">Address</h5>
-												<h6 style="font-weight: normal;"><i class="ri-map-pin-line"></i>
-													{{ $address ?? '' }}
-
-												</h6>
-											
-											</div>
-											<h5 class="card-title uppercase mt-4">Summary</h5>
-											<div class="col-12">
-												<small class="text-muted pt-1 db">Last service </small>
-												<h6>Active</h6>
-											</div>
-											<div class="col-12">
-												<small class="text-muted pt-1 db">Profile Created</small>
-												<h6>{{ $multiadmin->created_at ?
-													\Carbon\Carbon::parse($multiadmin->created_at)->format('m-d-Y') : null
-													}}</h6>
-											</div>
-											<div class="col-12">
-												<small class="text-muted pt-1 db">Lifetime value</small>
-												<h6>$0.00</h6>
-											</div>
-											<div class="col-12">
-												<small class="text-muted pt-1 db">Outstanding balance</small>
-												<h6>$0.00</h6>
-											</div>
-
-											<div class="col-12">
-												<h5 class="card-title uppercase mt-4">Notifications</h5>
-												<h6 style="font-weight: normal;margin-bottom: 0px;"><i
-														class="fas fa-check"></i> Yes
-												</h6>
-											</div>
-
-											<div class="col-12">
-												{{-- <h4 class=" card-title mt-4">Lead Source</h4>
-												<div class="mt-0">
-													<span
-														class="mb-1 badge bg-primary">{{$multiadmin->leadsourcename->source_name
-														??
-														null }}</span>
-												</div> --}}
-											</div>
-
-										</div>
-									</div>
-									<div class="col-md-1 col-xs-6 b-r">&nbsp;</div>
-									
-									<div class="col-md-8 col-xs-6 b-r">
-										<div class="mt-2">
-
-											<div>
-
-												<iframe id="map{{ $location->address_id }}" width="100%" height="300"
-													frameborder="0" style="border: 0" allowfullscreen></iframe>
-
-												<small class="text-muted pt-4 db">{{ $location->address_type
-													}}</small>
-												<div style="display:flex;">
-
-													<h6>{{ $address  ?? ''}}
+                                                    <h6 style="font-weight: normal;"><i class="fas fa-mobile-alt"></i>
+                                                        {{$commonUser->mobile}}</h6>
+                                                    {{-- <h6 style="font-weight: normal;"><i
+                                                            class="fas fa-mobile-alt"></i> +1
+                                                        123 456 7890
+                                                    </h6> --}}
+                                                    <h6 style="font-weight: normal;"><i class="fas fa-envelope"></i>
+                                                        {{$commonUser->email}}
                                                     </h6>
-													<br />
-												</div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <h5 class="card-title uppercase mt-5">Address</h5>
+                                                    <h6 style="font-weight: normal;"><i class="ri-map-pin-line"></i>
+                                                        {{ $address ?? '' }}
 
-												{{-- <iframe
-													src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6991603.699017098!2d-100.0768425!3d31.168910300000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x864070360b823249%3A0x16eb1c8f1808de3c!2sTexas%2C%20USA!5e0!3m2!1sen!2sin!4v1701086703789!5m2!1sen!2sin"
-													width="100%" height="300" style="border:0;" allowfullscreen=""
-													loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-												--}}
+                                                    </h6>
 
-											</div>
-											<hr />
-										
+                                                </div>
+                                                <h5 class="card-title uppercase mt-4">Summary</h5>
+                                                <div class="col-12">
+                                                    <small class="text-muted pt-1 db">Last service </small>
+                                                    <h6>Active</h6>
+                                                </div>
+                                                <div class="col-12">
+                                                    <small class="text-muted pt-1 db">Profile Created</small>
+                                                    <h6>{{ $commonUser->created_at ?
+                                                        \Carbon\Carbon::parse($commonUser->created_at)->format('m-d-Y')
+                                                        : null
+                                                        }}</h6>
+                                                </div>
+                                                <div class="col-12">
+                                                    <small class="text-muted pt-1 db">Lifetime value</small>
+                                                    <h6>$0.00</h6>
+                                                </div>
+                                                <div class="col-12">
+                                                    <small class="text-muted pt-1 db">Outstanding balance</small>
+                                                    <h6>$0.00</h6>
+                                                </div>
+
+                                                <div class="col-12">
+                                                    <h5 class="card-title uppercase mt-4">Notifications</h5>
+                                                    <h6 style="font-weight: normal;margin-bottom: 0px;"><i
+                                                            class="fas fa-check"></i> Yes
+                                                    </h6>
+                                                </div>
+
+                                                <div class="col-12">
+                                                    {{-- <h4 class=" card-title mt-4">Lead Source</h4>
+                                                    <div class="mt-0">
+                                                        <span
+                                                            class="mb-1 badge bg-primary">{{$commonUser->leadsourcename->source_name
+                                                            ??
+                                                            null }}</span>
+                                                    </div> --}}
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1 col-xs-6 b-r">&nbsp;</div>
+
+                                        <div class="col-md-8 col-xs-6 b-r">
+                                            <div class="mt-2">
+
+                                                <div>
+
+                                                    <iframe id="map{{ $location->address_id }}" width="100%"
+                                                        height="300" frameborder="0" style="border: 0"
+                                                        allowfullscreen></iframe>
+
+                                                    <small class="text-muted pt-4 db">{{ $location->address_type
+                                                        }}</small>
+                                                    <div style="display:flex;">
+
+                                                        <h6>{{ $address ?? ''}}
+                                                        </h6>
+                                                        <br />
+                                                    </div>
+
+                                                    {{-- <iframe
+                                                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6991603.699017098!2d-100.0768425!3d31.168910300000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x864070360b823249%3A0x16eb1c8f1808de3c!2sTexas%2C%20USA!5e0!3m2!1sen!2sin!4v1701086703789!5m2!1sen!2sin"
+                                                        width="100%" height="300" style="border:0;" allowfullscreen=""
+                                                        loading="lazy"
+                                                        referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                                    --}}
+
+                                                </div>
+                                                <hr />
 
 
 
 
-										</div>
+
+                                            </div>
 
 
-									</div>
-								</div>
-								</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
 
@@ -305,9 +310,9 @@
                         <div class="card-body card-border shadow">
                             <h5 class="card-title uppercase">Jobs / Calls</h5>
 
-                            @if($tickets->where('added_by', $multiadmin->id)->isEmpty())
+                            @if($tickets->where('added_by', $commonUser->id)->isEmpty())
                             <div class="alert alert-info mt-4 col-md-12" role="alert">Calls not available for {{
-                                $multiadmin->name ?? '' }}.
+                                $commonUser->name ?? '' }}.
                                 <strong><a href="{{route('schedule')}}">Add New</a></strong>
                             </div>
                             @else
@@ -324,7 +329,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($tickets->where('added_by', $multiadmin->id) as $ticket)
+                                        @foreach ($tickets->where('added_by', $commonUser->id) as $ticket)
                                         <tr>
                                             <td>
                                                 <a href="{{ route('tickets.show', $ticket->id) }}"
@@ -412,7 +417,7 @@
                             <h5 class="card-title uppercase">Payments & Invoices</h5>
                             @if($payment->isEmpty())
                             <div class="alert alert-info mt-4" role="alert">
-                                Payments not available for {{ $multiadmin->name ?? '' }}.
+                                Payments not available for {{ $commonUser->name ?? '' }}.
                                 <strong><a href="{{ route('schedule') }}">Add New</a></strong>
                             </div>
                             @else
@@ -488,7 +493,7 @@
                                 </table>
                             </div>
                             @endif
-                          
+
 
 
                         </div>
@@ -499,16 +504,16 @@
 
 
 
-                                <h4>Estimates</h4>
+                            <h4>Estimates</h4>
 
 
 
-                                <div class="alert alert-info mt-4 col-md-12" role="alert">
+                            <div class="alert alert-info mt-4 col-md-12" role="alert">
 
-                                    Estimates details not available for {{$multiadmin->name ?? null}}. <strong><a
-                                            href="{{route('schedule')}}">Add New</a></strong>
+                                Estimates details not available for {{$commonUser->name ?? null}}. <strong><a
+                                        href="{{route('schedule')}}">Add New</a></strong>
 
-                                </div>
+                            </div>
 
 
 
@@ -526,82 +531,7 @@
                     <div class="tab-pane fade" id="permission_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
                         <div class="card-body card-border shadow">
                             <h5 class="card-title uppercase">Permission</h5>
-                             <div class="row mt-3 mb-3">
-                                @php
-                                use App\Models\UserPermission;
-                                use App\Models\PermissionModel;
-
-                                $access_array = UserPermission::where('user_id', $multiadmin->id)
-                                ->where('permission', 1)
-                                ->pluck('module_id')
-                                ->toArray();
-
-                                $parentModules = PermissionModel::where('parent_id', 0)
-                                ->orderBy('module_id', 'ASC')
-                                ->get();
-                                @endphp
-                                <div class="col-md-8">
-                                    <form id="permissionsForm" action="{{ route('update.permissions') }}" method="POST">
-                                        @csrf
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input info" type="radio" name="radio-solid-info"
-                                                id="permissions_type_all" value="all" {{ $multiadmin->permissions_type
-                                            == 'all' ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="permissions_type_all">All</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input info" type="radio" name="radio-solid-info"
-                                                id="permissions_type_selected" value="selected" {{
-                                                $multiadmin->permissions_type == 'selected' ? 'checked' : '' }}>
-                                            <label class="form-check-label"
-                                                for="permissions_type_selected">Selected</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input info" type="radio" name="radio-solid-info"
-                                                id="permissions_type_block" value="block" {{
-                                                $multiadmin->permissions_type == 'block' ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="permissions_type_block">Block</label>
-                                        </div>
-
-                                        <div class="row mt-3">
-                                            <div class="col-md-12">
-                                                @foreach($parentModules as $parentModule)
-                                                @php
-
-                                                $childModules = PermissionModel::where('parent_id',
-                                                $parentModule->module_id)
-                                                ->orderBy('module_id', 'ASC')
-                                                ->get();
-                                                @endphp
-
-                                                <h6>{{ $loop->iteration }}: {{ $parentModule->module_name }}</h6>
-
-                                                @foreach($childModules as $childModule)
-                                                <div class="mb-2">
-                                                    <label class="form-check-label"
-                                                        for="p_mod_{{ $childModule->module_id }}">
-                                                        <input class="form-check-input permission-checkbox updatevalue"
-                                                            type="checkbox" id="p_mod_{{ $childModule->module_id }}"
-                                                            name="{{ $childModule->module_id }}[]" value="1" {{
-                                                            in_array($childModule->module_id, $access_array) ? 'checked'
-                                                        : '' }}>
-                                                        {{ $childModule->module_name }}
-                                                    </label>
-                                                    <!-- Hidden input to ensure the value is always submitted -->
-                                                    <input type="hidden" name="{{ $childModule->module_id }}[]"
-                                                        value="0">
-                                                </div>
-                                                @endforeach
-
-                                                <br><br>
-                                                @endforeach
-                                                <input type="hidden" name="user_id" value="{{ $multiadmin->id }}">
-                                            </div>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Save Permissions</button>
-                                    </form>
-                                </div>
-                            </div>
+                            @include('dispatcher.permission')
                         </div>
                     </div>
                     <div class="tab-pane fade" id="activity_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
@@ -656,7 +586,7 @@
                     <div class="tab-pane fade show " id="others_tab" role="tabpanel"
                         aria-labelledby="pills-timeline-tab">
                         <div class="card-body card-border shadow">
-						<h5 class="card-title uppercase">Notes </h5>
+                            <h5 class="card-title uppercase">Notes </h5>
                             <div class="profiletimeline mt-0">
                                 @foreach ($notename as $notename )
                                 <div class="sl-item">
@@ -755,7 +685,7 @@
                                         <div class="mb-3">
                                             <label for="tag_id" class="control-label bold col-form-label uppercase">Add
                                                 New Comment</label>
-                                            <input type="hidden" name="id" value="{{ $multiadmin->id }}">
+                                            <input type="hidden" name="id" value="{{ $commonUser->id }}">
                                             <textarea class="form-control" id="comment" name="note" rows="3"></textarea>
                                         </div>
                                         <div class="mb-3 d-flex align-items-center">
@@ -880,9 +810,7 @@
 </script>
 
 <script>
-
-
- $(document).ready(function() {
+    $(document).ready(function() {
 
 
         $(document).on('click', '.updatevalue', function() {
@@ -1033,7 +961,42 @@
 
 </script>
 
+<script>
+    function updateRadio() {
+        // Get all checkboxes with class 'updatevalue'
+        var checkboxes = document.querySelectorAll('.updatevalue');
 
+        // Get the radio buttons with name 'radio-solid-info'
+        var radioAll = document.getElementById('permissions_type_all');
+        var radioSelected = document.getElementById('permissions_type_selected');
+
+        // Check if all checkboxes are checked
+        var allChecked = true;
+        checkboxes.forEach(function(checkbox) {
+            if (!checkbox.checked) {
+                allChecked = false;
+            }
+        });
+
+        // Update the radio button based on the checked status of checkboxes
+        if (allChecked) {
+            radioAll.checked = true;
+            radioSelected.checked = false;
+        } else {
+            radioAll.checked = false;
+            radioSelected.checked = true;
+        }
+    }
+
+    // Attach the 'updateRadio' function to each checkbox's 'change' event
+    var checkboxes = document.querySelectorAll('.updatevalue');
+    checkboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', updateRadio);
+    });
+
+    // Call the 'updateRadio' function initially to set the radio button based on current checkbox status
+    updateRadio();
+</script>
 
 <script>
     $(document).ready(function() {
