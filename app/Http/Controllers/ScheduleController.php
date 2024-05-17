@@ -84,7 +84,7 @@ class ScheduleController extends Controller
         if (isset($data['date']) && !empty($data['date'])) {
             $currentDate = Carbon::parse($data['date']);
         } else {
-            $currentDate = Carbon::now();
+            $currentDate = Carbon::now($timezone_name);
         }
 
         $currentDay = $currentDate->format('l');
@@ -100,7 +100,7 @@ class ScheduleController extends Controller
 
         $filterDate = $currentDate->format('Y-m-d');
 
-        $TodayDate = Carbon::now()->format('Y-m-d');
+        $TodayDate = Carbon::now($timezone_name)->format('Y-m-d');
 
         $user_array = [];
 
@@ -186,7 +186,7 @@ class ScheduleController extends Controller
             }
         }
 
-        $current_time = Carbon::now()->format('h:i A');
+        $current_time = Carbon::now($timezone_name)->format('h:i A');
 
         return view('schedule.index', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate', 'users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', 'cities', 'cities1', 'TodayDate', 'tech', 'schedule_arr', 'hours','current_time'));
     }
@@ -310,7 +310,6 @@ class ScheduleController extends Controller
                         $datetimeString = $item->start_date_time;
                         $time = date("h:i A", strtotime($datetimeString));
                         $schedule_arr[$value][$time][] = $item;
-                        // dd($schedule_arr);
                     }
                 }
             }
@@ -833,7 +832,7 @@ class ScheduleController extends Controller
 
                     $scheduleId = $schedule->id;
                 }
-                $now = Carbon::now();
+                $now = Carbon::now($timezone_name);
                 $formattedDate = $start_date_time->format('D, M j');
                 $formattedTime = $now->format('g:ia');
                 $formattedDateTime = "{$formattedDate} at {$formattedTime}";
@@ -1103,7 +1102,7 @@ class ScheduleController extends Controller
                     $schedule->save();
                     $scheduleId = $schedule->id;
                 }
-                $now = Carbon::now();
+                $now = Carbon::now($timezone_name);
                 $formattedDate = $start_date_time->format('D, M j');
                 $formattedTime = $now->format('g:ia');
                 $formattedDateTime = "{$formattedDate} at {$formattedTime}";

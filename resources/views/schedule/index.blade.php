@@ -709,7 +709,7 @@
     {{-- this for the schedule page --}}
     <script>
         $(document).ready(function() {
-
+            var timezoneName = '{{$timezoneName}}'
             $('#selectDates').datepicker({
                 format: 'yyyy-mm-dd', // Specify the format
                 autoclose: true, // Close the datepicker when a date is selected
