@@ -6,6 +6,10 @@
             <div class="mt-0 ft11">{{ $getData->address }}, {{ $getData->city }}, {{ $getData->state }}, {{ $getData->zipcode }}</div>
             <input type="hidden" value="{{ $getData->name }}" name="rescheduleData[{{ $count }}][customer_name]">
             <input type="hidden" name="rescheduleData[{{ $count }}][job_id]" value="{{ $getData->job_id }}">
+            <input type="hidden" name="rescheduleData[{{ $count }}][customer_id]" value="{{ $getData->customer_id }}">
+            <input type="hidden" name="rescheduleData[{{ $count }}][assign_title]" value="{{ $getData->job_title }}">
+            <input type="hidden" name="rescheduleData[{{ $count }}][assign_description]" value="{{ $getData->description }}">
+            <input type="hidden" name="rescheduleData[{{ $count }}][technician_note_id]" value="{{ $getData->technician_note_id }}">
 		</div>
     </div>
     <div class="col-3 bg-light px-3">

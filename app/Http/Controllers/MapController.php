@@ -6,6 +6,7 @@ use App\Models\User;
 use DB;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Storage;
 
 class MapController extends Controller
@@ -171,7 +172,10 @@ class MapController extends Controller
                 ->select(
                     'job_assigned.start_date_time',
                     'job_assigned.job_id',
+                    'job_assigned.customer_id',
+                    'job_assigned.technician_note_id',
                     'jobs.job_title',
+                    'jobs.description',
                     'jobs.address',
                     'jobs.city',
                     'jobs.state',
@@ -205,6 +209,7 @@ class MapController extends Controller
     {
 
         $data = $request->all();
+        $timezone_name = Session::get('timezone_name');
 
         try {
 
@@ -226,18 +231,31 @@ class MapController extends Controller
                     ]);
 
                     $JobAssignedData = [
+                        'assign_status' => 'rescheduled',
+                    ];
+
+                    $jobAssignedID = DB::table('job_assigned')->where('job_id', $value['job_id'])->update($JobAssignedData);
+
+                    $newJobAssignedData = [
                         'technician_id' => $technician_id,
+                        'customer_id' => $value['customer_id'],
+                        'job_id' => $value['job_id'],
                         'duration' => $value['duration'],
                         'driving_hours' => $value['driving_hours'],
+                        'assign_title' => $value['assign_title'],
+                        'technician_note_id' => $value['technician_note_id'],
+                        'assign_description' => $value['assign_description'],
                         'start_date_time' => $start_date_time->format('Y-m-d h:i:s'),
                         'end_date_time' => $end_date_time->format('Y-m-d h:i:s'),
+                        'added_by' => auth()->id(),
                         'updated_by' => auth()->id(),
+                        'created_at' => date('Y-m-d H:i:s'),
                         'updated_at' => date('Y-m-d H:i:s'),
                         'start_slot' => $start_date_time->format('H'),
                         'end_slot' => $end_date_time->format('H'),
                     ];
 
-                    $jobAssignedID = DB::table('job_assigned')->where('job_id', $value['job_id'])->update($JobAssignedData);
+                    $newjobAssignedID = DB::table('job_assigned')->insertGetId($newJobAssignedData);
 
                     $scheduleData = [
                         'technician_id' => $technician_id,
@@ -252,7 +270,7 @@ class MapController extends Controller
                     $schedule = DB::table('schedule')->where('job_id', $value['job_id'])->update($scheduleData);
                 
                     $technician_name = User::where('id',$technician_id)->first();
-                    $now = Carbon::now();
+                    $now = Carbon::now($timezone_name);
                     $formattedDate = $start_date_time->format('D, M j');
                     $formattedTime = $now->format('g:ia');
                     $formattedDateTime = "{$formattedDate} at {$formattedTime}";
