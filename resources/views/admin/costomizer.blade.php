@@ -72,7 +72,7 @@
             <!-- End Tab Timezone -->
 			
 			   @php
-            $today = now()->toDateString(); // Get today's date
+            $today = now($timezoneName)->toDateString(); // Get today's date
             $technicians = App\Models\Schedule::with('technician', 'JobModel')
             ->where('schedule_type','job')
             ->whereDate('start_date_time', $today) 
