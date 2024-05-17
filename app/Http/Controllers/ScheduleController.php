@@ -638,7 +638,6 @@ class ScheduleController extends Controller
         $timezone_name = Session::get('timezone_name');
         $time_interval = Session::get('time_interval');
 
-        //try {
 
         if (isset($data) && !empty($data)) {
 
@@ -659,7 +658,6 @@ class ScheduleController extends Controller
                 $getCustomerDetails = User::with('userAddress')
                     ->where('id', $data['customer_id'])
                     ->first();
-                // dd($getCustomerDetails);
 
                 do {
                     $randomSixDigit = mt_rand(100000, 999999);
@@ -681,7 +679,6 @@ class ScheduleController extends Controller
                     'appliances_id' => (isset($data['appliances']) && !empty($data['appliances'])) ? $data['appliances'] : $data['exist_appl_id'],
                     'description' => (isset($data['job_description']) && !empty($data['job_description'])) ? $data['job_description'] : '',
                     'priority' => (isset($data['priority']) && !empty($data['priority'])) ? $data['priority'] : '',
-                    'service_area_id' => 1,
                     'warranty_type' => (isset($data['job_type']) && !empty($data['job_type'])) ? $data['job_type'] : '',
                     'tax' => (isset($data['tax_total']) && !empty($data['tax_total'])) ? $data['tax_total'] : '',
                     'discount' => (isset($data['discount']) && !empty($data['discount'])) ? $data['discount'] : 0,
@@ -872,10 +869,13 @@ class ScheduleController extends Controller
 
                 $product_tax = (isset($data['product_tax']) && !empty($data['product_tax'])) ? $data['product_tax'] : 0;
 
-                $getCustomerDetails = User::select('user_address.*')
-                    ->join('user_address', 'user_address.user_id', 'users.id')
-                    ->where('users.id', $data['customer_id'])->where('user_address.address_type', $data['customer_address'])
+                $getCustomerDetails = User::select('user_address.*', 'location_states.state_code as customer_state')
+                    ->join('user_address', 'user_address.user_id', '=', 'users.id')
+                    ->join('location_states', 'location_states.state_id', '=', 'user_address.state_id')
+                    ->where('users.id', $data['customer_id'])
+                    ->where('user_address.address_type', $data['customer_address'])
                     ->first();
+
 
                 if (is_array($request->tags)) {
                     $tagIds = implode(',', $request->tags);
@@ -890,9 +890,9 @@ class ScheduleController extends Controller
                 $customer_name = User::where('id', $data['customer_id'])->first();
                 $technician_name = User::where('id', $data['technician_id'])->first();
 
-                if ($getCustomerDetails->state_name == 'NY') {
+                if ($getCustomerDetails->customer_state == 'NY') {
                     $tax_details = '4% for NY';
-                } elseif ($getCustomerDetails->state_name == 'TX') {
+                } elseif ($getCustomerDetails->customer_state == 'TX') {
                     $tax_details = '6.25% for TX';
                 }
 
@@ -914,7 +914,7 @@ class ScheduleController extends Controller
                     'address_type' => (isset($data['customer_address']) && !empty($data['customer_address'])) ? $data['customer_address'] : '',
                     'address' => (isset($getCustomerDetails->address_line1) && !empty($getCustomerDetails->address_line1)) ? $getCustomerDetails->address_line1 : '',
                     'city' => (isset($getCustomerDetails->city) && !empty($getCustomerDetails->city)) ? $getCustomerDetails->city : '',
-                    'state' => (isset($getCustomerDetails->state_name) && !empty($getCustomerDetails->state_name)) ? $getCustomerDetails->state_name : '',
+                    'state' => (isset($getCustomerDetails->customer_state) && !empty($getCustomerDetails->customer_state)) ? $getCustomerDetails->customer_state : '',
                     'tax_details' => (isset($tax_details) && !empty($tax_details)) ? $tax_details : '',
                     'zipcode' => (isset($getCustomerDetails->zipcode) && !empty($getCustomerDetails->zipcode)) ? $getCustomerDetails->zipcode : '',
                     'latitude' => (isset($getCustomerDetails->latitude) && !empty($getCustomerDetails->latitude)) ? $getCustomerDetails->latitude : 0,
@@ -1130,12 +1130,6 @@ class ScheduleController extends Controller
             }
         }
 
-        // } catch (\Exception $e) {
-
-        //     Storage::append('CreateSchedule.log', ' error_msg -- ' . json_encode($e->getMessage()) . ' line number: ' . json_encode($e->getLine()) . ' File: ' . json_encode($e->getFile()) . ' - ' . date('Y-m-d H:i:s') . PHP_EOL);
-
-        //     return 'false';
-        // }
 
     }
 
