@@ -17,7 +17,7 @@
             <div class="row">
                 <div class="container">
                     <div class="row mb-3">
-                      
+
                         <div class="col-12 reschedulejob" style="display: none">
                             <form class="rescheduleForm" method="post">
                                 <div class="row">
@@ -25,8 +25,9 @@
                                 </div>
                             </form>
                             <div class="row">
-                                 <div class="col-12  py-2 px-3">
-                                    <button type="button" class="btn waves-effect waves-light btn-info reschedulebutton"><i class="ri-calendar-check-line"></i> Reschedule Jobs
+                                <div class="col-12  py-2 px-3">
+                                    <button type="button" class="btn waves-effect waves-light btn-info reschedulebutton"><i
+                                            class="ri-calendar-check-line"></i> Reschedule Jobs
                                     </button>
                                 </div>
                             </div>
@@ -38,30 +39,29 @@
                             <ul class="list-group scroll-container reschedule_user_list">
                                 <li class="list-group-item">
                                     <div class="form-group mb-4">
-                                        <label class="me-sm-2 py-2 bold" for="inlineFormCustomSelect">Select Territory</label>
-                                        <select class="form-select me-sm-2 territory" id="territory" onchange="reloadPage()">
+                                        <label class="me-sm-2 py-2 bold" for="inlineFormCustomSelect">Select
+                                            Territory</label>
+                                        <select class="form-select me-sm-2 territory" id="territory"
+                                            onchange="reloadPage()">
                                             <option value="">-- Select Territory --</option>
                                             @php
-                                            $selectedAreaId = request()->input('area_id') ?? ($locationServiceSouthWest->area_id ?? null);
-                                        @endphp
-                                        
-                                        @foreach ($locationServiceArea as $value)
-                                            <option 
-                                                data-lat="{{ $value->area_latitude }}" 
-                                                value="{{ $value->area_id }}"
-                                                @if ($selectedAreaId == $value->area_id)
-                                                    selected
-                                                @endif
-                                                data-lag="{{ $value->area_longitude }}"
-                                                data-radius="{{ $value->area_radius }}"
-                                            >
-                                                {{ $value->area_name }}
-                                            </option>
-                                        @endforeach
-                                        
+                                                $selectedAreaId =
+                                                    request()->input('area_id') ??
+                                                    ($locationServiceSouthWest->area_id ?? null);
+                                            @endphp
 
-                                        
-                                        
+                                            @foreach ($locationServiceArea as $value)
+                                                <option data-lat="{{ $value->area_latitude }}" value="{{ $value->area_id }}"
+                                                    @if ($selectedAreaId == $value->area_id) selected @endif
+                                                    data-lag="{{ $value->area_longitude }}"
+                                                    data-radius="{{ $value->area_radius }}">
+                                                    {{ $value->area_name }}
+                                                </option>
+                                            @endforeach
+
+
+
+
                                         </select>
                                         <span class="error territory_error"></span>
                                     </div>
@@ -69,11 +69,13 @@
                                 @if (isset($data) && !empty($data->count()))
                                     @foreach ($data as $key => $value)
                                         <li class="list-group-item" id="event_click{{ $value->assign_id }}"
-                                            style="cursor: pointer;"> 
-											<h6 class="uppercase mb-0">{{ $value->subject }}</h6>
-                                            <div class="ft14"><i  class="ri-user-location-fill"></i> {{ $value->name }}<br/> {{ $value->address . ', ' . $value->city . ', ' . $value->state }}
-											</div>
-                                         </li>
+                                            style="cursor: pointer;">
+                                            <h6 class="uppercase mb-0">{{ $value->subject }}</h6>
+                                            <div class="ft14"><i class="ri-user-location-fill"></i>
+                                                {{ $value->name }}<br />
+                                                {{ $value->address . ', ' . $value->city . ', ' . $value->state }}
+                                            </div>
+                                        </li>
                                     @endforeach
                                 @else
                                     <li class="list-group-item mb-2" id="event_click" style="cursor: pointer;">
@@ -93,24 +95,13 @@
     </div>
 @section('script')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&callback=initMap"></script>
+    <script async
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&loading=async&callback=initMap&libraries=marker">
+    </script>
     <script>
         $(document).ready(function() {
 
             var openInfoWindowpop = null;
-
-            function initMap(userLat, userLng, areaZoom,radius) {
-
-                var map = new google.maps.Map(document.getElementById('map'), {
-                    zoom: areaZoom,
-                    center: {
-                        lat: userLat,
-                        lng: userLng
-                    }
-                });
-
-                setMarkers(map);
-            }
 
             function setMarkers(map) {
 
@@ -175,7 +166,20 @@
 
             }
 
-            $(document).ready(function() {
+            async function initMap(userLat, userLng, areaZoom, radius) {
+
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: areaZoom,
+                    center: {
+                        lat: userLat,
+                        lng: userLng
+                    }
+                });
+
+                setMarkers(map);
+            }
+
+            setTimeout(function() {
 
                 var selectedOption = $('#territory').find('option:selected');
                 var area_id = selectedOption.val();
@@ -185,15 +189,13 @@
                 } else {
                     var lat = parseFloat(selectedOption.data('lat'));
                     var lag = parseFloat(selectedOption.data('lag'));
-                    var radius = 2000000; // 2,000 km
+                    var radius = 2000000;
                     initMap(lat, lag, 5, radius);
                 }
-            });
+            }, 1500);
 
-           
-
-            var count = 0;
             var jobIds = [];
+            var count = 0;
 
             $("body").on('click', '.reschedule', function(e) {
                 var selectedOption = $('#territory').find('option:selected');
@@ -320,7 +322,7 @@
                             var lag = parseFloat(selectedOption.data('lag'));
                             var radius = parseFloat(selectedOption.data('radius'));
 
-                            initMap(lat, lag,5, radius);
+                            initMap(lat, lag, 5, radius);
                         }
                     }
                 });
@@ -329,18 +331,18 @@
         });
     </script>
     <script>
-     function reloadPage() {
+        function reloadPage() {
 
-                var selectedValue = document.getElementById("territory").value;
+            var selectedValue = document.getElementById("territory").value;
 
-                if (selectedValue) {
-                    var url = "{{ route('map') }}" + "?area_id=" + selectedValue;
-                    window.location.href = url;
-                } else {
-                    var url = "{{ route('map') }}";
-                    window.location.href = url;
-                }
+            if (selectedValue) {
+                var url = "{{ route('map') }}" + "?area_id=" + selectedValue;
+                window.location.href = url;
+            } else {
+                var url = "{{ route('map') }}";
+                window.location.href = url;
             }
+        }
     </script>
 @endsection
 @endsection

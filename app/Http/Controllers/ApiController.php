@@ -88,7 +88,7 @@ public function getTechnicianJobs(Request $request)
     $currentDate = Carbon::now()->toDateString();
     //   dd($currentDate);
     // Check if there are any jobs for the specified technician (user_id) with the current date
-    $jobs = JobModel::with('user', 'JobAssign', 'addresscustomer', 'jobdetailsinfo', 'jobdetailsinfo.manufacturername')
+    $jobs = JobModel::with('user', 'JobAssign', 'addresscustomer', 'usertechnician', 'jobdetailsinfo.manufacturername')
         ->where('technician_id', $userId)
         ->whereDate('created_at', $currentDate)
         ->get();
@@ -137,7 +137,7 @@ public function getTechnicianJobsHistory(Request $request)
     }
 
     // Filter the jobs by technician_id and the specified date
-    $jobs = JobModel::with('user', 'addresscustomer')->where('technician_id', $userId)
+    $jobs = JobModel::with('user', 'JobAssign', 'addresscustomer', 'usertechnician', 'jobdetailsinfo.manufacturername')->where('technician_id', $userId)
         ->whereDate('created_at', $formattedDate)
         ->get();
 

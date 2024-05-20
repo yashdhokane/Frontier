@@ -33,4 +33,18 @@ class CustomerDataJob extends Model
     {
         return $this->hasOne(CustomerDataNotes::class, 'job_id', 'job_id');
     }
+
+    public function Customerservicemany()
+    {
+        return $this->hasMany(CustomerDataServices::class, 'job_id', 'job_id');
+    }
+    public function Customernotemany()
+    {
+        return $this->hasMany(CustomerDataNotes::class, 'job_id', 'job_id');
+    }
+
+    public function filesmany()
+    {
+        return $this->hasMany(CustomerFiles::class, 'user_id', 'user_id');
+    }
 }

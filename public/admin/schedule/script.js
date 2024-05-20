@@ -16,8 +16,8 @@ $(document).ready(function () {
 
         // Set position of the popup
         popupContainer.css({
-            top: 56 + "px",
-            left: 16 + "px",
+            top: 83 + "px",
+            left: 0 + "px",
         });
 
         // Show the popup
@@ -94,8 +94,8 @@ $(document).ready(function() {
         var leftPosition = position.left + messagePopup.outerWidth(); // Position to the right of the message popup
 
         smscontainer.css({
-            'top': 63 + 'px',
-            'left': 127 + 'px'
+            'top': 100 + 'px',
+            'left': 105 + 'px'
         }).fadeToggle();
 
         // Hide all other open smscontainers
@@ -128,8 +128,8 @@ $(document).ready(function() {
         var leftPosition = position.left + messagePopup.outerWidth(); // Position to the right of the message popup
 
         smscontainer.css({
-            'top': 125 + 'px',
-            'left': 127 + 'px'
+            'top': 90 + 'px',
+            'left': 105 + 'px'
         }).fadeToggle();
 
         // Hide all other open smscontainers

@@ -26,21 +26,26 @@
         .popupContainer {
             position: absolute;
             z-index: 999;
-            background-color: #444445;
+            background-color: #1777d3;
             color: white;
-            border: 1px solid #cccccc;
-            padding: 10px;
+            padding: 10px 7px;
             display: none;
+			border-radius: 5px;
         }
 
         .popup-option {
             display: block;
             margin-bottom: 5px;
             color: white;
-            font-family: 'Font Awesome 5 Free';
             font-size: 12px;
             text-decoration: none;
         }
+		.popup-option.setting-popup{
+			margin-bottom: 0px;
+		}
+		.popup-option i {
+		  font-size: 11px;
+		}
 
         .tech_th {
             position: relative;
@@ -66,19 +71,19 @@
             margin-left: -5px;
             border-width: 6px;
             border-style: solid;
-            border-color: transparent transparent #444445 transparent;
+            border-color: transparent transparent #1777d3 transparent;
             /* Change border-color */
         }
 
         .smscontainer {
             position: absolute;
             z-index: 999;
-            background-color: #444445;
+            background-color: #1777d3;
             color: white;
-            border: 1px solid #cccccc;
-            padding: 10px;
+            padding: 7px;
             display: none;
-            width: 300px;
+            width: 250px;
+			border-radius: 4px;
         }
 
         .smscontainer::after {
@@ -92,17 +97,28 @@
             /* Adjust margin-top as needed */
             border-width: 6px;
             border-style: solid;
-            border-color: transparent #444445 transparent transparent;
+            border-color: transparent #1777d3 transparent transparent;
             /* Change border-color */
         }
+		.smscontainer .message_content {
+		  width: 75%;
+		  display: inline-block;
+		  border-radius: 0px;
+		}
+		.smscontainer .btn {
+		  width: 25%;
+		  height: 31px;
+		  border-radius: 0px;
+		  background:#3699ff;
+		}
         .settingcontainer {
             position: absolute;
             z-index: 999;
-            background-color: #444445;
+            background-color: #1777d3;
             color: white;
-            border: 1px solid #cccccc;
-            padding: 10px;
+            padding: 7px;
             display: none;
+			border-radius: 5px;
         }
 
         .settingcontainer::after {
@@ -116,7 +132,7 @@
             /* Adjust margin-top as needed */
             border-width: 6px;
             border-style: solid;
-            border-color: transparent #444445 transparent transparent;
+            border-color: transparent #1777d3 transparent transparent;
             /* Change border-color */
         }
 
@@ -210,7 +226,7 @@
 
                                                                 </div>
                                                                 <div class="settingcontainer">
-																	<div style="width:150px; height:150px;">
+																	<div style="width:150px; height:100px;">
 																	</div>
                                                                 </div>
 

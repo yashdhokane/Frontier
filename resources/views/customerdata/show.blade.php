@@ -3,14 +3,23 @@
 @section('content')
 <div class="page-breadcrumb">
     <div class="row">
-        <div class="col-9 align-self-center">
+        <div class="col-6 align-self-center">
             <h4 class="page-title">{{ $username->name ?? '' }}</h4>
         </div>
-        <div class="col-3 align-self-center justify-content-md-end"><a href="" id="newCustomerBtn"
-                class="btn btn-info"><i class="fas fa-calendar-check"></i> Add Ticket</a> <a
-                href="https://dispatchannel.com/portal/customers-data" class="btn btn-success mx-2"><i
-                    class="ri-user-add-line"></i> Customer Data</a></div>
-
+        <div class="col-6 align-self-center justify-content-md-end">
+            <a href="javascript:void(0)" id="viewAllBtn" class="btn btn-info mx-2" style="display: none;">
+                <i class="fas fa-calendar-check mx-1"></i> View All
+            </a>
+            <a href="javascript:void(0)" id="editCustomerBtn" class="btn btn-success mx-2">
+                <i class="fas fa-calendar-check mx-1"></i> Edit
+            </a>
+            <a href="javascript:void(0)" id="newCustomerBtn" class="btn btn-info mx-2">
+                <i class="fas fa-calendar-check mx-1"></i> Add Ticket
+            </a>
+            <a href="https://dispatchannel.com/portal/customers-data" class="btn btn-warning mx-2">
+                <i class="ri-user-add-line mx-1"></i> Customer Data
+            </a>
+        </div>
     </div>
 
 </div>
@@ -50,33 +59,127 @@
     @endif
 
 
-
-    <div class="row">
-        @php $index=0; @endphp
+    <div class="row" id="customer_details">
         <div class="col-md-9">
             @if (!empty($users->Jobdata))
 
             @foreach($users->Jobdata as $job)
-            @php $index++; @endphp
-            <div class="mb-4">
 
+            <div class="card mb-3">
+                <div class="card-body card-border shadow">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-2"><strong>Ticket Number:</strong>{{ $job->ticket_number ?? '' }}</div>
+                            <div class="mb-2"><strong>TCC:</strong> {{ $job->tcc ?? '' }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-2"><strong>Schedule: </strong>{{ $job->schedule_date ?? ''}}</div>
+                            <div class="mb-2"><strong>Technician: </strong>{{ $job->technician ?? '' }}</div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="mb-2"><strong>Files & Attachments:</strong><br>
+                                @foreach($job->filesmany as $file)
+                                <a href="{{ asset('public/images/users/' . $job->user_id . '/' . $file->filename) }}"
+                                    target="_blank">{{
+                                    $file->filename }}</a><br>
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="mb-2"><strong>Services:</strong>
+                                <br>
+                                @foreach($job->Customerservicemany as $service)
+                                {{ $service->service_name }} - {{ $service->amount ? '$'.$service->amount : '$0' }}<br>
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="mb-2"><strong>Notes:</strong>
+                                <br>
+                                @foreach($job->Customernotemany as $note)
+                                {{ $note->notes }}<br>
+                                By {{ $note->notes_by }}<br>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @endforeach
+            @endif
+
+        </div>
+
+        <div class="col-md-3">
+            <div class="mb-4">
                 <div class="card" style="border: 1px solid #D8D8D8;">
-                    <form action="{{ route('customerdata.update') }}" method="post" id="updateForm{{ $index ?? '' }}"
-                        enctype="multipart/form-data">
-                        @csrf
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-12 mb-2">
+                                <label class="control-label bold col-form-label">No of Visits</label>
+                                {{ $users->no_of_visits ?? '' }}
+                            </div>
+                            <div class="col-md-12 mb-2">
+                                <label class="control-label bold col-form-label">Job Completed</label>
+                                {{ $users->job_completed ?? ''}}
+                            </div>
+                            <div class="col-md-12 mb-2">
+                                <label class="control-label bold col-form-label">Issue Resolved</label>
+                                {{ $users->issue_resolved ?? '' }}
+                            </div>
+                            <div class="col-md-12 mb-2">
+                                <label class="control-label bold col-form-label">Ticket IDs</label>
+                                <div class="mb-2">{{ htmlspecialchars(implode(', ', $ticketNumbers)) }}</div>
+                            </div>
+                            <div class="col-md-12 mb-2">
+                                <label class="control-label bold col-form-label">TCC</label>
+                                @php
+                                // Filter out null or empty values from the $tccValues array
+                                $filteredTccValues = array_filter($tccValues, function($value) {
+                                return !empty($value);
+                                });
+                                @endphp
+                                <div class="mb-2">@if (!empty($filteredTccValues))
+                                    {{ htmlspecialchars(implode(', ', $filteredTccValues)) }}
+                                    @endif</div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="customer_edit_section" style="display: none;">
+        @php $index=0; @endphp
+        <div class="col-md-9">
+            <form action="{{ route('customerdata.update') }}" method="post" id="updateForm{{ $index ?? '' }}"
+                enctype="multipart/form-data">
+                @csrf
+                @if (!empty($users->Jobdata))
+
+                @foreach($users->Jobdata as $job)
+                @php $index++; @endphp
+                <div class="mb-4">
+
+                    <div class="card" style="border: 1px solid #D8D8D8;">
+
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="ticket_number" class="control-label bold col-form-label ">Ticket
                                         Number</label>
-                                    <input type="text" name="ticket_number" class="form-control" id="ticket_number"
+                                    <input type="text" name="ticket_number[]" class="form-control" id="ticket_number"
                                         value="{{ $job->ticket_number ?? '' }}">
-                                    <input type="hidden" name="job_id" value="{{ $job->job_id ?? '' }}">
+                                    <input type="hidden" name="job_id[]" value="{{ $job->job_id ?? '' }}">
                                 </div>
                                 <div class="col-md-6  "><label for="tcc"
                                         class="control-label bold col-form-label required-field">
                                         TCC</label>
-                                    <input type="text" name="tcc" class="form-control" id="tcc"
+                                    <input type="text" name="tcc[]" class="form-control" id="tcc"
                                         value="{{ $job->tcc ?? '' }}">
                                 </div>
                             </div>
@@ -85,13 +188,13 @@
                                 <div class="col-md-6">
                                     <label for="schedule_date" class="control-label bold col-form-label ">Schedule
                                         Date</label>
-                                    <input type="text" name="schedule_date" class="form-control" id="schedule_date"
+                                    <input type="text" name="schedule_date[]" class="form-control" id="schedule_date"
                                         value="{{ $job->schedule_date ?? ''}}">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="technician"
                                         class="control-label bold col-form-label ">Technician</label>
-                                    <input type="text" name="technician" class="form-control" id="technician"
+                                    <input type="text" name="technician[]" class="form-control" id="technician"
                                         value="{{ $job->technician ?? '' }}">
                                 </div>
                             </div>
@@ -102,9 +205,11 @@
                                             <label class="control-label bold col-form-label" for="Attachments">Files &
                                                 Attachments</label>
                                             <div style="display: flex;">
-                                                <input type="file" class="form-control" name="files[]" placeholder="" />
+                                                <input type="file" class="form-control" name="files[][]"
+                                                    placeholder="" />
                                                 <button style="margin-left:2px;" type="button"
-                                                    class="btn btn-primary add-rowy{{ $index }}">
+                                                    class="btn btn-primary add-rowy{{ $index }}"
+                                                    data-index="{{ $index }}">
                                                     <i class="fa fa-plus"></i>
                                                 </button>
                                             </div>
@@ -118,24 +223,24 @@
 
                             <!-- Include jQuery library -->
 
-                            <input type="hidden" name="no_of_visits" id="hidden_no_of_visits"
+                            <input type="hidden" name="no_of_visits" id="hidden_no_of_visits{{ $index }}"
                                 value="{{ $users->no_of_visits ?? '' }}">
-                            <input type="hidden" name="job_completed" id="hidden_job_completed"
+                            <input type="hidden" name="job_completed" id="hidden_job_completed{{ $index }}"
                                 value="{{ $users->job_completed ?? '' }}">
-                            <input type="hidden" name="issue_resolved" id="hidden_issue_resolved"
+                            <input type="hidden" name="issue_resolved" id="hidden_issue_resolved{{ $index }}"
                                 value="{{ $users->issue_resolved ?? '' }}">
                             <div id="additional-services-container{{ $index }}">
                                 <div class="row mb-3">
                                     <div class="col-md-8">
                                         <label for="service_name" class="control-label bold col-form-label">Service
                                             Name</label>
-                                        <input type="text" name="service_name" class="form-control" id="service_name"
-                                            value="{{ $job->Customerservice->service_name ?? '' }}">
+                                        <input type="text" name="service_name[][]" class="form-control"
+                                            id="service_name" value="{{ $job->Customerservice->service_name ?? '' }}">
                                     </div>
                                     <div class="col-md-4">
                                         <label for="amount" class="control-label bold col-form-label">Service
                                             Amount</label>
-                                        <input type="text" name="amount" class="form-control" id="amount"
+                                        <input type="text" name="amount[][]" class="form-control" id="amount"
                                             value="{{ $job->Customerservice->amount ?? '' }}">
                                     </div>
                                 </div>
@@ -155,13 +260,13 @@
 
                                     <div class="col-md-8">
                                         <label for="notes" class="control-label bold col-form-label ">Notes</label>
-                                        <textarea rows="2" name="notes" class="form-control"
+                                        <textarea rows="2" name="notes[][]" class="form-control"
                                             id="notes">{{ $job->Customernote->notes ?? '' }}</textarea>
                                     </div>
                                     <div class="col-md-4">
                                         <label for="notes_by" class="control-label bold col-form-label ">Notes
                                             By</label>
-                                        <input type="text" name="notes_by" class="form-control" id="notes_by"
+                                        <input type="text" name="notes_by[][]" class="form-control" id="notes_by"
                                             value="{{ $job->Customernote->notes_by ?? '' }}">
                                     </div>
                                 </div>
@@ -176,29 +281,24 @@
                             </div>
 
 
-                            <div class="row">
-                                <div class="col-md-12 text-center">
-                                    <button type="submit" class="btn btn-primary me-2"
-                                        id="submitButton{{ $index }}">Update</button>
-                                    <a href="{{ route('customersdata.index') }}" class="btn btn-secondary">Back</a>
-                                </div>
-                            </div>
+
 
                         </div>
-                    </form>
-                </div>
-                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-                <script>
-                    // Your JavaScript code using jQuery
-                         // Define the dispatcher_id variable
-                            $(document).on('click', '.add-rowy{{ $index}}', function() {
-                                var newFileInputGroup = `
+                    </div>
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+                    <script>
+                        // Your JavaScript code using jQuery
+                        // Define the dispatcher_id variable
+                        $(document).on('click', '.add-rowy{{ $index}}', function() {
+var currentIndex = parseInt($(this).data('index')) - 1;
+                            var newFileInputGroup = `
                                     <div class="row mb-1">
                                         <div class="col-md-6">
                                             <label class="control-label bold col-form-label" for="Attachments">Files & Attachments</label>
                                             <div style="display: flex;">
-                                                <input type="file" class="form-control" name="files[]" placeholder="" />
+                                                <input type="file" class="form-control" name="files[${currentIndex}][]" placeholder="" />
                                                 <button style="margin-left:2px;" type="button" class="btn btn-danger remove-row">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
@@ -208,53 +308,63 @@
                                             <div class="add_morey"></div>
                                         </div>
                                     </div>`;
-                                $('#file-input-containery{{ $index}}').append(newFileInputGroup);
-                            });
+                            $('#file-input-containery{{ $index}}').append(newFileInputGroup);
+                        });
 
 
-                            $(document).on('click', '.add-more-services{{ $index }}', function(e) {
+                        $(document).on('click', '.add-more-services{{ $index }}', function(e) {
                             e.preventDefault();
 
+var currentIndex = $(this).data('index') - 1;
                             var newServiceInputGroup = `
                             <div class="row mb-3">
                                 <div class="col-md-8">
                                     <label for="service_name_{{ $index }}" class="control-label bold col-form-label">Service Name</label>
-                                    <input type="text" name="service_name[]" class="form-control" id="service_name_{{ $index }}" value="">
+                                    <input type="text" name="service_name[${currentIndex}][]" class="form-control" id="service_name_${currentIndex}"
+                                        value="">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="amount_{{ $index }}" class="control-label bold col-form-label">Service Amount</label>
-                                    <input type="text" name="amount[]" class="form-control" id="amount_{{ $index }}" value="">
+                                    <label for="amount_${currentIndex}" class="control-label bold col-form-label">Service Amount</label>
+                                    <input type="text" name="amount[${currentIndex}][]" class="form-control" id="amount_${currentIndex}" value="">
                                 </div>
                             </div>`;
                             $('#additional-services-container{{ $index }}').append(newServiceInputGroup);
-                            });
+                        });
 
-                            $(document).on('click', '.add-more-notes{{ $index }}', function(e) {
+                        $(document).on('click', '.add-more-notes{{ $index }}', function(e) {
                             e.preventDefault();
                             // var index = $(this).data('index');
+
+                           var currentIndex = $(this).data('index') - 1;
 
                             var newNotesInputGroup = `
                             <div class="row mb-3">
                                 <div class="col-md-8">
-                                    <label for="notes_{{ $index }}" class="control-label bold col-form-label">Notes</label>
-                                    <textarea rows="2" name="notes[]" class="form-control" id="notes_{{ $index }}"></textarea>
+                                    <label for="notes_${currentIndex}" class="control-label bold col-form-label">Notes</label>
+                                    <textarea rows="2" name="notes[${currentIndex}][]" class="form-control" id="notes_${currentIndex}"></textarea>
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="notes_by_{{ $index }}" class="control-label bold col-form-label">Notes By</label>
-                                    <input type="text" name="notes_by[]" class="form-control" id="notes_by_{{ $index }}">
+                                    <label for="notes_by_${currentIndex}" class="control-label bold col-form-label">Notes By</label>
+                                    <input type="text" name="notes_by[${currentIndex}][]" class="form-control" id="notes_by_${currentIndex}">
                                 </div>
                             </div>`;
 
-                            $('#additional-notes-container{{ $index }}' ).append(newNotesInputGroup);
-                            });
-                </script>
-            </div>
+                            $('#additional-notes-container{{ $index }}').append(newNotesInputGroup);
+                        });
 
-            @endforeach
+                    </script>
+                </div>
+
+                @endforeach
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <button type="submit" class="btn btn-primary me-2" id="submitButton{{ $index }}">Update</button>
+                        <a href="{{ route('customersdata.index') }}" class="btn btn-secondary">Back</a>
+                    </div>
+                </div>
+            </form>
 
         </div>
-
-
         <div class="col-md-3">
             <div class="mb-4">
                 <div class="card" style="border: 1px solid #D8D8D8;">
@@ -262,18 +372,18 @@
                         <div class="row mb-3">
                             <div class="col-md-12 mb-2">
                                 <label class="control-label bold col-form-label">No of Visits</label>
-                                <input type="text" name="no_of_visits" id="no_of_visits" class="form-control"
-                                    value="{{ $users->no_of_visits ?? '' }}">
+                                <input type="text" name="no_of_visits" id="no_of_visits{{ $index }}"
+                                    class="form-control" value="{{ $users->no_of_visits ?? '' }}">
                             </div>
                             <div class="col-md-12 mb-2">
                                 <label class="control-label bold col-form-label">Job Completed</label>
-                                <input type="text" name="job_completed" id="job_completed" class="form-control"
-                                    value="{{ $users->job_completed ?? ''}}">
+                                <input type="text" name="job_completed" id="job_completed{{ $index }}"
+                                    class="form-control" value="{{ $users->job_completed ?? ''}}">
                             </div>
                             <div class="col-md-12 mb-2">
                                 <label class="control-label bold col-form-label">Issue Resolved</label>
-                                <input type="text" name="issue_resolved" id="issue_resolved" class="form-control"
-                                    value="{{ $users->issue_resolved ?? '' }}">
+                                <input type="text" name="issue_resolved" id="issue_resolved{{ $index }}"
+                                    class="form-control" value="{{ $users->issue_resolved ?? '' }}">
                             </div>
                             <div class="col-md-12 mb-2">
                                 <label class="control-label bold col-form-label">Ticket IDs</label>
@@ -281,7 +391,15 @@
                             </div>
                             <div class="col-md-12 mb-2">
                                 <label class="control-label bold col-form-label">TCC</label>
-                                <div class="mb-2">{{ htmlspecialchars(implode(', ', $tccValues)) }}</div>
+                                @php
+                                // Filter out null or empty values from the $tccValues array
+                                $filteredTccValues = array_filter($tccValues, function($value) {
+                                return !empty($value);
+                                });
+                                @endphp
+                                <div class="mb-2">@if (!empty($filteredTccValues))
+                                    {{ htmlspecialchars(implode(', ', $filteredTccValues)) }}
+                                    @endif</div>
                             </div>
                         </div>
 
@@ -290,6 +408,9 @@
                 </div>
             </div>
         </div>
+
+
+
         @else
         <div class="mb-12 d-flex flex-column ">
 
@@ -466,6 +587,35 @@
 
 @section('script')
 <script>
+    // JavaScript code
+    // JavaScript code
+    document.addEventListener('DOMContentLoaded', function() {
+        const customerDetails = document.getElementById('customer_details');
+        const customerEditSection = document.getElementById('customer_edit_section');
+        const editCustomerBtn = document.getElementById('editCustomerBtn');
+        const viewAllBtn = document.getElementById('viewAllBtn');
+
+        // Event listener for the "Edit" button
+        editCustomerBtn.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent the default behavior of the link
+            customerDetails.style.display = 'none'; // Hide customer details
+            customerEditSection.style.display = 'block'; // Show edit section
+            editCustomerBtn.style.display = 'none'; // Hide the "Edit" button
+            viewAllBtn.style.display = 'block'; // Show the "View All" button
+        });
+
+        // Event listener for the "View All" button
+        viewAllBtn.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent the default behavior of the link
+            customerDetails.style.display = 'block'; // Show customer details
+            customerEditSection.style.display = 'none'; // Hide edit section
+            editCustomerBtn.style.display = 'block'; // Show the "Edit" button
+            viewAllBtn.style.display = 'none'; // Hide the "View All" button
+        });
+    });
+
+</script>
+<script>
     $(document).ready(function() {
         var src1; // Variable for the first file input
         var src2; // Variable for the second file input
@@ -497,8 +647,8 @@
 
 
         // Click event for adding a new row for the first file input
-      $(document).on('click', '.add-row', function() {
-    var newFileInputGroup = `
+        $(document).on('click', '.add-row', function() {
+            var newFileInputGroup = `
     <div class="row mb-1">
         <div class="col-md-6">
             <label class="control-label bold col-form-label" for="Attachments">Files & Attachments</label>
@@ -513,13 +663,13 @@
             <div class="add_more"></div>
         </div>
     </div>`;
-    $('#file-input-container').append(newFileInputGroup);
-    });
+            $('#file-input-container').append(newFileInputGroup);
+        });
 
-    // Handle remove-row button click
-    $(document).on('click', '.remove-row', function() {
-    $(this).closest('.row').remove();
-    });
+        // Handle remove-row button click
+        $(document).on('click', '.remove-row', function() {
+            $(this).closest('.row').remove();
+        });
 
         $("#addMoreServices").click(function(e) {
             e.preventDefault();
@@ -563,16 +713,16 @@
         }
 
         // Event listeners for input changes
-        document.getElementById('no_of_visits').addEventListener('input', function() {
-            updateHiddenInput('no_of_visits', 'hidden_no_of_visits');
+        document.getElementById('no_of_visits{{ $index }}').addEventListener('input', function() {
+            updateHiddenInput('no_of_visits{{ $index }}', 'hidden_no_of_visits{{ $index }}');
         });
 
-        document.getElementById('job_completed').addEventListener('input', function() {
-            updateHiddenInput('job_completed', 'hidden_job_completed');
+        document.getElementById('job_completed{{ $index }}').addEventListener('input', function() {
+            updateHiddenInput('job_completed{{ $index }}', 'hidden_job_completed{{ $index }}');
         });
 
-        document.getElementById('issue_resolved').addEventListener('input', function() {
-            updateHiddenInput('issue_resolved', 'hidden_issue_resolved');
+        document.getElementById('issue_resolved{{ $index }}').addEventListener('input', function() {
+            updateHiddenInput('issue_resolved{{ $index }}', 'hidden_issue_resolved{{ $index }}');
         });
     });
 

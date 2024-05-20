@@ -105,93 +105,228 @@ class CustomerDataController extends Controller
 
         return view('customerdata.show', compact('users', 'ticketNumbers', 'tccValues', 'username'));
     }
-    public function update(Request $request)
+    // public function update(Request $request)
+    // {
+    //     dd($request->all());
+    //     $jobCode = $request->input('ticket_number');
+    //     $tcc = $request->input('tcc');
+    //     $scheduleDate = $request->input('schedule_date');
+    //     $technicianName = $request->input('technician');
+    //     $service_name = $request->input('service_name');
+    //     $amount = $request->input('amount');
+    //     $notes_by = $request->input('notes_by');
+    //     $notes = $request->input('notes');
+    //     $jobId = $request->input('job_id');
+    //     $no_of_visits = $request->input('no_of_visits');
+    //     $job_completed = $request->input('job_completed');
+    //     $issue_resolved = $request->input('issue_resolved');
+
+    //     $job = CustomerDataJob::find($jobId);
+    //     if (!$job) {
+    //         return redirect()->back()->with('error', 'Service not found, Please add new job ..');
+    //     }
+
+    //     if ($jobCode !== null) {
+    //         $job->ticket_number = $jobCode;
+    //     }
+    //     if ($scheduleDate !== null) {
+    //         $job->schedule_date = $scheduleDate;
+    //     }
+
+    //     if ($tcc !== null) {
+    //         $job->tcc = $tcc;
+    //     }
+
+    //     if ($technicianName !== null) {
+    //         $job->technician = $technicianName;
+    //         $job->save();
+    //     }
+
+    //     $job->save();
+
+    //     $customerData = CustomerData::updateOrCreate(['user_id' => $job->user_id], []);
+    //     $customerData->updated_at = now();
+
+
+    //     if ($no_of_visits !== null) {
+    //         $customerData->no_of_visits = $no_of_visits;
+    //     }
+    //     if ($job_completed !== null) {
+    //         $customerData->job_completed = $job_completed;
+    //     }
+    //     if ($issue_resolved !== null) {
+    //         $customerData->issue_resolved = $issue_resolved;
+    //     }
+    //     $customerData->save();
+
+    //     // $service = CustomerDataServices::updateOrCreate(['job_id' => $job->job_id], []);
+    //     // if ($service_name !== null) {
+    //     //     $service->service_name = $service_name;
+    //     // }
+    //     // if ($amount !== null) {
+    //     //     $service->amount = $amount;
+    //     // }
+    //     // $service->save();
+
+    //     // $note = CustomerDataNotes::updateOrCreate(['job_id' => $job->job_id], []);
+    //     // if ($notes_by !== null) {
+    //     //     $note->notes_by = $notes_by;
+    //     // }
+    //     // if ($notes !== null) {
+    //     //     $note->notes = $notes;
+    //     //     $note->save();
+    //     // }
+    //     $ticketNumbers = CustomerDataJob::pluck('ticket_number')->toArray();
+    //     $tccValues = CustomerDataJob::pluck('tcc')->toArray();
+    //     $user_id = $request->input('user_id');
+    //     // Convert array values to comma-separated strings
+    //     $ticketNumbersString = implode(',', $ticketNumbers);
+    //     $tccValuesString = implode(',', $tccValues);
+
+    //     $customerData = CustomerData::updateOrCreate(['user_id' => $job->user_id], []);
+    //     // $customerData->user_id = $job->user_id;
+
+    //     $customerData->ticket_number = $ticketNumbersString;
+    //     $customerData->tcc = $tccValuesString;
+    //     $customerData->save();
+
+
+    //     if (!empty($request->file('files'))) {
+    //         foreach ($request->file('files') as $file) {
+    //             // Generate a unique filename
+    //             $imgname = 'e' . rand(000, 999) . time() . '.' . $file->getClientOriginalExtension();
+
+    //             // Directory path for user's images
+    //             $directoryPath = public_path('images/users/' . $job->user_id);
+
+    //             // Ensure the directory exists; if not, create it
+    //             if (!File::exists($directoryPath)) {
+    //                 File::makeDirectory($directoryPath, 0777, true);
+    //             }
+
+    //             // Move the file to the user's directory
+    //             $file->move($directoryPath, $imgname);
+
+    //             // Create a new entry in the database for the image
+    //             $customerFile = new CustomerFiles();
+    //             $customerFile->user_id = $job->user_id;
+    //             $customerFile->filename = $imgname;
+    //             $customerFile->path = 'images/users/' . $job->user_id; // Store relative path
+    //             $customerFile->type = $file->getClientMimeType();
+    //             $customerFile->storage_location = 'local'; // Assuming storage location is local
+    //             $customerFile->save();
+    //         }
+
+    //         foreach ($service_name as $key => $service) {
+    //             // Check if service name and amount are not null before creating or updating the record
+    //             if (!empty($service) && isset($amount[$key])) {
+    //                 CustomerDataServices::updateOrCreate(
+    //                     ['job_id' => $job->job_id, 'service_name' => $service],
+    //                     ['amount' => $amount[$key]]
+    //                 );
+    //             }
+    //         }
+
+
+
+
+    //         // Create CustomerDataNotes records
+    //         foreach ($notes as $key => $note) {
+    //             // Check if notes and notes_by are not null before creating or updating the record
+    //             if (!empty($note) && isset($notes_by[$key])) {
+    //                 CustomerDataNotes::updateOrCreate(
+    //                     ['job_id' => $job->job_id, 'notes_by' => $notes_by[$key]],
+    //                     ['notes' => $note]
+    //                 );
+    //             }
+    //         }
+    //         //  dd(1);
+    //         return redirect()->back()->with('success', 'Job updated successfully.');
+    //     }
+    // }
+
+     public function update(Request $request)
     {
-        // dd($request->all());
-        $jobCode = $request->input('ticket_number');
-        $tcc = $request->input('tcc');
-        $scheduleDate = $request->input('schedule_date');
-        $technicianName = $request->input('technician');
-        $service_name = $request->input('service_name');
-        $amount = $request->input('amount');
-        $notes_by = $request->input('notes_by');
+        //  dd($request->all());
+        // Validate the incoming request data
+        $request->validate([
+            // 'ticket_number.*' => 'required|string',
+            // 'job_id.*' => 'required|integer',
+            // 'tcc.*' => 'nullable|string',
+            // 'schedule_date.*' => 'nullable|string',
+            // 'technician.*' => 'nullable|string',
+            // 'service_name.*' => 'nullable|string',
+            // 'amount.*' => 'nullable|numeric',
+            // 'notes.*' => 'nullable|string',
+            // 'notes_by.*' => 'nullable|string',
+            // 'no_of_visits' => 'nullable|integer',
+            // 'job_completed' => 'nullable|integer',
+            // 'issue_resolved' => 'nullable|string',
+        ]);
+
+        $jobIds = $request->input('job_id');
+        $ticketNumbers = $request->input('ticket_number');
+        $tccValues = $request->input('tcc');
+        $scheduleDates = $request->input('schedule_date');
+        $technicianNames = $request->input('technician');
+        $serviceNames = $request->input('service_name');
+        $amounts = $request->input('amount');
+        $notesBy = $request->input('notes_by');
         $notes = $request->input('notes');
-        $jobId = $request->input('job_id');
         $no_of_visits = $request->input('no_of_visits');
         $job_completed = $request->input('job_completed');
         $issue_resolved = $request->input('issue_resolved');
 
-        $job = CustomerDataJob::find($jobId);
-        if (!$job) {
-            return redirect()->back()->with('error', 'Service not found, Please add new job ..');
-        }
+        // dd($noOfVisits);
+        foreach ($jobIds as $key => $jobId) {
+            $job = CustomerDataJob::find($jobId);
+            if (!$job) {
+                return redirect()->back()->with('error', 'Service not found, Please add new job ..');
+            }
 
-        if ($jobCode !== null) {
-            $job->ticket_number = $jobCode;
-        }
-        if ($scheduleDate !== null) {
-            $job->schedule_date = $scheduleDate;
-        }
-
-        if ($tcc !== null) {
-            $job->tcc = $tcc;
-        }
-
-        if ($technicianName !== null) {
-            $job->technician = $technicianName;
+            // Update job fields
+            $job->ticket_number = $ticketNumbers[$key] ?? $job->ticket_number;
+            $job->schedule_date = $scheduleDates[$key] ?? $job->schedule_date;
+            $job->tcc = $tccValues[$key] ?? $job->tcc;
+            $job->technician = $technicianNames[$key] ?? $job->technician;
             $job->save();
+
+            $customerData = CustomerData::updateOrCreate(['user_id' => $job->user_id], []);
+            $customerData->updated_at = now();
+
+            if ($no_of_visits !== null) {
+                $customerData->no_of_visits = $no_of_visits;
+            }
+            if ($job_completed !== null) {
+                $customerData->job_completed = $job_completed;
+            }
+            if ($issue_resolved !== null) {
+                $customerData->issue_resolved = $issue_resolved;
+            }
+            $customerData->save();
+
+            // Update or create service records
+            foreach ($serviceNames[$key] as $serviceIndex => $serviceName) {
+                CustomerDataServices::updateOrCreate(
+                    ['job_id' => $jobId, 'service_name' => $serviceName],
+                    ['amount' => $amounts[$key][$serviceIndex] ?? 0]
+                );
+            }
+
+            // Update or create note records
+            foreach ($notes[$key] as $noteIndex => $note) {
+                CustomerDataNotes::updateOrCreate(
+                    ['job_id' => $jobId, 'notes_by' => $notesBy[$key][$noteIndex]],
+                    ['notes' => $note]
+                );
+            }
+
+
+
         }
 
-        $job->save();
-
-        $customerData = CustomerData::updateOrCreate(['user_id' => $job->user_id], []);
-        $customerData->updated_at = now();
-
-
-        if ($no_of_visits !== null) {
-            $customerData->no_of_visits = $no_of_visits;
-        }
-        if ($job_completed !== null) {
-            $customerData->job_completed = $job_completed;
-        }
-        if ($issue_resolved !== null) {
-            $customerData->issue_resolved = $issue_resolved;
-        }
-        $customerData->save();
-
-        // $service = CustomerDataServices::updateOrCreate(['job_id' => $job->job_id], []);
-        // if ($service_name !== null) {
-        //     $service->service_name = $service_name;
-        // }
-        // if ($amount !== null) {
-        //     $service->amount = $amount;
-        // }
-        // $service->save();
-
-        // $note = CustomerDataNotes::updateOrCreate(['job_id' => $job->job_id], []);
-        // if ($notes_by !== null) {
-        //     $note->notes_by = $notes_by;
-        // }
-        // if ($notes !== null) {
-        //     $note->notes = $notes;
-        //     $note->save();
-        // }
-        $ticketNumbers = CustomerDataJob::pluck('ticket_number')->toArray();
-        $tccValues = CustomerDataJob::pluck('tcc')->toArray();
-        $user_id = $request->input('user_id');
-        // Convert array values to comma-separated strings
-        $ticketNumbersString = implode(',', $ticketNumbers);
-        $tccValuesString = implode(',', $tccValues);
-
-        $customerData = CustomerData::updateOrCreate(['user_id' => $job->user_id], []);
-        // $customerData->user_id = $job->user_id;
-
-        $customerData->ticket_number = $ticketNumbersString;
-        $customerData->tcc = $tccValuesString;
-        $customerData->save();
-
-
-        if (!empty($request->file('files'))) {
+        // Handle file uploads
+        if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {
                 // Generate a unique filename
                 $imgname = 'e' . rand(000, 999) . time() . '.' . $file->getClientOriginalExtension();
@@ -211,40 +346,17 @@ class CustomerDataController extends Controller
                 $customerFile = new CustomerFiles();
                 $customerFile->user_id = $job->user_id;
                 $customerFile->filename = $imgname;
-                $customerFile->path = 'images/users/' . $job->user_id; // Store relative path
+                $customerFile->path = 'images/users/' . $job->user_id . '/' . $imgname; // Store full relative path
                 $customerFile->type = $file->getClientMimeType();
                 $customerFile->storage_location = 'local'; // Assuming storage location is local
                 $customerFile->save();
             }
-
-            foreach ($service_name as $key => $service) {
-                // Check if service name and amount are not null before creating or updating the record
-                if (!empty($service) && isset($amount[$key])) {
-                    CustomerDataServices::updateOrCreate(
-                        ['job_id' => $job->job_id, 'service_name' => $service],
-                        ['amount' => $amount[$key]]
-                    );
-                }
-            }
-
-
-
-
-            // Create CustomerDataNotes records
-            foreach ($notes as $key => $note) {
-                // Check if notes and notes_by are not null before creating or updating the record
-                if (!empty($note) && isset($notes_by[$key])) {
-                    CustomerDataNotes::updateOrCreate(
-                        ['job_id' => $job->job_id, 'notes_by' => $notes_by[$key]],
-                        ['notes' => $note]
-                    );
-                }
-            }
-            //  dd(1);
-            return redirect()->back()->with('success', 'Job updated successfully.');
         }
+
+        return redirect()->back()->with('success', 'Job updated successfully.');
     }
 
+  
 
     public function store(Request $request)
     {
@@ -401,7 +513,7 @@ class CustomerDataController extends Controller
         //     }
         //  dd(1);
 
-        if (!empty($request->file('files'))) {
+        if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {
                 // Generate a unique filename
                 $imgname = 'e' . rand(000, 999) . time() . '.' . $file->getClientOriginalExtension();
@@ -421,11 +533,12 @@ class CustomerDataController extends Controller
                 $customerFile = new CustomerFiles();
                 $customerFile->user_id = $job->user_id;
                 $customerFile->filename = $imgname;
-                $customerFile->path = 'images/users/' . $job->user_id; // Store relative path
+                $customerFile->path = 'images/users/' . $job->user_id . '/' . $imgname; // Store full relative path
                 $customerFile->type = $file->getClientMimeType();
                 $customerFile->storage_location = 'local'; // Assuming storage location is local
                 $customerFile->save();
             }
+
 
 
 
