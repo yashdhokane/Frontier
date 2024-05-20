@@ -1086,6 +1086,11 @@ Route::post('/my-profile/account/email-verify', [AdminProfileController::class, 
     Route::get('/get-chat-messages', [ChatSupportController::class, 'get_chats']);
 
     Route::post('/store_reply', [ChatSupportController::class, 'store'])->name('store_reply');
+
+    Route::get('sms/send', [ChatSupportController::class, 'sendSms']);
+
+
+
     // payments
     Route::post('/update-payment-status', [PaymentController::class, 'updatePaymentStatus'])->name('update.payment.status');
 

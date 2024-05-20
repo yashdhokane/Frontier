@@ -19,6 +19,9 @@ use App\Models\ChatConversation;
 
 use App\Models\ChatParticipants;
 use App\Models\SupportMessageReply;
+use Exception;
+use Illuminate\Support\Facades\Auth;
+use Twilio\Rest\Client;
 
 class ChatSupportController extends Controller
 {
@@ -134,7 +137,7 @@ class ChatSupportController extends Controller
 
         return back()->with('success', 'User added to the conversation successfully');
     }
-   
+
     public function store(Request $request)
     {
         $request->validate([
@@ -192,6 +195,28 @@ class ChatSupportController extends Controller
             $message->save();
         }
 
+        $participants = ChatParticipants::where('conversation_id', $request->support_message_id)->get();
+        $authUserId = Auth::id();
+        $filteredParticipants = $participants->where('user_id', '!=', $authUserId);
+
+        foreach ($filteredParticipants as $user) {
+        
+            $receiverNumber = '+917030467187'; // Replace with the recipient's phone number
+            $message =  $request->reply; // Replace with your desired message
+            $formattedMessage = "You have a new message in your chat:\n\n{$message}";
+
+            $sid = env('TWILIO_SID');
+            $token = env('TWILIO_TOKEN');
+            $fromNumber = env('TWILIO_FROM');
+
+
+            $client = new Client($sid, $token);
+            $client->messages->create($receiverNumber, [
+                'from' => $fromNumber,
+                'body' => $formattedMessage
+            ]);
+        }
+
         // Optionally, return a success response
         return response()->json(['message' => 'Reply stored successfully'], 200);
     }
@@ -221,5 +246,25 @@ class ChatSupportController extends Controller
         return back()->with('success', 'User deleted to the conversation successfully');
     }
 
+    public function sendSms()
+    {
+        $receiverNumber = '+917030467187'; // Replace with the recipient's phone number
+        $message = 'hi testing'; // Replace with your desired message
 
+        $sid = env('TWILIO_SID');
+        $token = env('TWILIO_TOKEN');
+        $fromNumber = env('TWILIO_FROM');
+
+        try {
+            $client = new Client($sid, $token);
+            $client->messages->create($receiverNumber, [
+                'from' => $fromNumber,
+                'body' => $message
+            ]);
+
+            return 'SMS Sent Successfully.';
+        } catch (Exception $e) {
+            return 'Error: ' . $e->getMessage();
+        }
+    }
 }
