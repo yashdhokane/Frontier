@@ -127,7 +127,7 @@ use App\Http\Controllers\MapController;
 use App\Http\Controllers\ChatSupportController;
 
 use App\Http\Controllers\PaymentController;
-
+use App\Http\Controllers\StickyNotesController;
 use App\Http\Controllers\TimezoneController;
 
 
@@ -788,6 +788,18 @@ Route::middleware('auth')->group(function () {
     Route::get('events', [EventController::class, 'index'])->name('events');
 
     Route::get('event/delete/{id}', [EventController::class, 'destroy']);
+
+
+    // StickyNotesController
+
+    Route::get('sticky-notes', [StickyNotesController::class, 'index'])->name('sticky_notes');
+    Route::get('sticky-notes-edit/{id}', [StickyNotesController::class, 'edit'])->name('sticky_notes_edit');
+
+    Route::post('sticky-notes-store', [StickyNotesController::class, 'store'])->name('stickynotes.store');
+
+    Route::post('note/update/{id}', [StickyNotesController::class, 'update']);
+
+    Route::get('note/delete/{id}', [StickyNotesController::class, 'destroy']);
 
 
     // FleetController

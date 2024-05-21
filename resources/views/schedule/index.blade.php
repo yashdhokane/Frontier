@@ -290,7 +290,7 @@
                                                                             // dd($assigned_data);
                                                                         }
                                                                     @endphp
-                                                                    <td class="timeslot_td"
+                                                                    <td class="timeslot_td slot_refresh_jobs"
                                                                         data-slot_time="{{ $timeString }}"
                                                                         data-technician_id="{{ $value }}">
                                                                         @if (isset($assigned_data) && !empty($assigned_data))

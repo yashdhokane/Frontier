@@ -104,6 +104,7 @@
                     <a class="sidebar-link has-arrow waves-effect waves-dark ft2" href="#" aria-expanded="false"><i class="fas mdi mdi-book-multiple"></i> <span class="hide-menu">Other</span></a>
                     <ul aria-expanded="false" class="collapse first-level">
 						<li class="sidebar-item"><a href="{{ route('events') }}" class="sidebar-link"><i class="fas fa-calendar-check"></i> <span class="hide-menu"> Event List</span></a></li>
+						<li class="sidebar-item"><a href="{{ route('sticky_notes') }}" class="sidebar-link"><i class="fas fa-paste"></i> <span class="hide-menu"> Sticky Notes</span></a></li>
 						<li class="sidebar-item"><a href="{{ route('vehicles') }}" class="sidebar-link"><i
 						class="ri-truck-line"></i><span class="hide-menu"> Vehicle & Fleet
 						</span></a></li>

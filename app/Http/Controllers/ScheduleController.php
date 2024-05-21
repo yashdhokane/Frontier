@@ -37,15 +37,15 @@ class ScheduleController extends Controller
 {
 
 
-   
+
     public function index(Request $request)
     {
-        
+
         $user_auth = auth()->user();
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
         $module_id = 30;
-        
+
         $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
@@ -188,7 +188,7 @@ class ScheduleController extends Controller
 
         $current_time = Carbon::now($timezone_name)->format('h:i A');
 
-        return view('schedule.index', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate', 'users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', 'cities', 'cities1', 'TodayDate', 'tech', 'schedule_arr', 'hours','current_time'));
+        return view('schedule.index', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate', 'users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', 'cities', 'cities1', 'TodayDate', 'tech', 'schedule_arr', 'hours', 'current_time'));
     }
 
     public function schedule_new(Request $request)
@@ -319,34 +319,35 @@ class ScheduleController extends Controller
         return view('schedule.schedule_new', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate', 'users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', 'cities', 'cities1', 'TodayDate', 'tech', 'schedule_arr'));
     }
 
-    public function refreshSchedule(Request $request)
-    {
-        $filterDate = Carbon::now()->format('Y-m-d');
+ public function refreshSchedule(Request $request)
+{
+    $timezone_name = Session::get('timezone_name');
+    $currentDateTime = Carbon::now('Asia/kolkata')->format('Y-m-d H:i:s');
+    $time_interval = Session::get('time_interval');
 
-        $technician = User::where('role', 'technician')->where('status', 'active')->get();
-        $time_interval = Session::get('time_interval');
+    $technicians = User::where('role', 'technician')->where('status', 'active')->get();
+    $schedule_arr = [];
 
-        $schedule_arr = [];
+    foreach ($technicians as $tech) {
+        $user_id = $tech->id;
+        $schedule_arr[$user_id] = [];
 
-        foreach ($technician as $tech) {
-            $user_id = $tech->id;
-            $schedule_arr[$user_id] = [];
+        $schedules = Schedule::with('JobModel', 'technician')
+            ->where('technician_id', $user_id)
+            ->where('start_date_time', '>=', $currentDateTime)
+            ->orderBy('start_date_time', 'asc')
+            ->get();
 
-            $schedule = Schedule::with('JobModel', 'technician')
-                ->where('technician_id', $user_id)
-                ->where('start_date_time', 'LIKE', "%$filterDate%")
-                ->get();
-
-            foreach ($schedule as $item) {
-                $datetimeString = $item->start_date_time;
-                $newFormattedDateTime = Carbon::parse($datetimeString)->addHours($time_interval)->format('Y-m-d H:i:s');
-                $time = date("h:i A", strtotime($newFormattedDateTime));
-                $schedule_arr[$user_id][$time][] = $item;
-            }
+        foreach ($schedules as $item) {
+            $datetimeString = $item->start_date_time;
+            $newFormattedDateTime = Carbon::parse($datetimeString)->addHours($time_interval)->format('Y-m-d H:i:s');
+            $time = date("h:i A", strtotime($newFormattedDateTime));
+            $schedule_arr[$user_id][$time][] = $item;
         }
-
-        return response()->json(['schedule_arr' => $schedule_arr]);
     }
+
+    return response()->json(['schedule_arr' => $schedule_arr]);
+}
 
 
 
@@ -857,13 +858,13 @@ class ScheduleController extends Controller
                 $customer = User::where('id', $data['customer_id'])->first();
 
                 $newFormattedDateTime = Carbon::parse($data['datetime'])->subHours($time_interval)->format('Y-m-d H:i:s');
-               
+
 
                 $start_date_time = Carbon::parse($newFormattedDateTime);
 
                 $duration = (int) $data['duration'];
 
-                $end_date_time = $start_date_time->copy()->addMinutes($duration); 
+                $end_date_time = $start_date_time->copy()->addMinutes($duration);
 
                 $service_tax = (isset($data['service_tax']) && !empty($data['service_tax'])) ? $data['service_tax'] : 0;
 
@@ -1129,8 +1130,6 @@ class ScheduleController extends Controller
                 ];
             }
         }
-
-
     }
 
     public function edit(Request $request)
