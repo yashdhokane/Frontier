@@ -39,17 +39,17 @@ class ApiController extends Controller
         if (Hash::check($request->password, $user->password)) {
             // Check if user's role is "technician"
             if ($user->role === 'technician') {
-                return response()->json(['status' => true, 'data' => $user, 'message' => 'Login Successful']);
+                return response()->json(['status' => true, 'data' => $user, 'message' => 'Login Successful'],200);
             } else {
-                return response()->json(['status' => false, 'message' => 'Unauthorized access']);
+                return response()->json(['status' => false, 'message' => 'Unauthorized access'],201);
             }
         } else {
             // Password does not match
-            return response()->json(['status' => false, 'message' => 'Invalid email or password']);
+            return response()->json(['status' => false, 'message' => 'Invalid email or password'],201);
         }
     } else {
         // User not found
-        return response()->json(['status' => false, 'message' => 'Invalid email or password']);
+        return response()->json(['status' => false, 'message' => 'Invalid email or password'],201);
     }
 }
 public function reset_password(Request $request)
@@ -63,7 +63,7 @@ public function reset_password(Request $request)
         ->first();
 
     if (!$user) {
-        return response()->json(['status' => false, 'error' => 'User not found.'], 404);
+        return response()->json(['status' => false, 'error' => 'User not found.'], 201);
     }
 
     $newPassword = Str::random(10);
@@ -94,10 +94,10 @@ public function getTechnicianJobs(Request $request)
         ->get();
 
     if ($jobs->isEmpty()) {
-        return response()->json(['status' => false, 'message' => 'Today no jobs are available'], 404);
+        return response()->json(['status' => false, 'message' => 'Today no jobs are available'],201);
     }
 
-    return response()->json(['status' => true, 'data' => $jobs]);
+    return response()->json(['status' => true, 'data' => $jobs],200);
 }
 
 public function getCustomerHistory(Request $request)
@@ -110,10 +110,10 @@ public function getCustomerHistory(Request $request)
                                 ->get();
 
     if ($customerHistory->isEmpty()) {
-        return response()->json(['status' => false, 'message' => 'No customer history found for the specified user'], 404);
+        return response()->json(['status' => false, 'message' => 'No customer history found for the specified user'], 201);
     }
 
-    return response()->json(['status' => true, 'data' => $customerHistory]);
+    return response()->json(['status' => true, 'data' => $customerHistory],200);
 }
 
 
@@ -126,14 +126,14 @@ public function getTechnicianJobsHistory(Request $request)
     // Check if the date is provided
     if (!$date) {
         // If the date is missing, return a 400 Bad Request response
-        return response()->json(['status' => false, 'message' => 'Date is required'], 400);
+        return response()->json(['status' => false, 'message' => 'Date is required'], 201);
     }
 
     // Parse and format the date using Carbon
     try {
         $formattedDate = Carbon::createFromFormat('m-d-Y', $date)->format('Y-m-d');
     } catch (\Exception $e) {
-        return response()->json(['status' => false, 'message' => 'Invalid date format'], 400);
+        return response()->json(['status' => false, 'message' => 'Invalid date format'], 201);
     }
 
     // Filter the jobs by technician_id and the specified date
@@ -142,10 +142,10 @@ public function getTechnicianJobsHistory(Request $request)
         ->get();
 
     if ($jobs->isEmpty()) {
-        return response()->json(['status' => false, 'message' => 'No jobs available for the specified date'], 404);
+        return response()->json(['status' => false, 'message' => 'No jobs available for the specified date'], 201);
     }
 
-    return response()->json(['status' => true, 'data' => $jobs]);
+    return response()->json(['status' => true, 'data' => $jobs],200);
 }
 
 
@@ -159,10 +159,10 @@ public function getcustomerJobsHistory(Request $request)
                     ->get();
 
         if ($jobs->isEmpty()) {
-            return response()->json(['message' => 'Today no  jobs are available '], 404);
+            return response()->json(['status' => false, 'message' => 'Today no  jobs are available '], 201);
         }
 
-        return response()->json($jobs);
+        return response()->json(['status' => true, 'data' => $jobs],200);
     }
 
 // public function jobfileUploadByTechnician(Request $request)
@@ -355,7 +355,7 @@ public function jobfileUploadByTechnician(Request $request)
         $jobNote->save();
     }
 
-    return response()->json(['status' => true, 'message' => 'File uploaded successfully', 'data' => $file], 201);
+    return response()->json(['status' => true, 'message' => 'File uploaded successfully', 'data' => $file], 200);
 }
 
 
@@ -371,11 +371,11 @@ public function jobfileUploadByTechnician(Request $request)
     // Check if any ProductAssigned record found
     if ($productAssigned->isEmpty()) {
         // If no ProductAssigned record found, return a response with status false and error message
-        return response()->json(['status' => false, 'message' => 'No parts assigned to the specified technician'], 404);
+        return response()->json(['status' => false, 'message' => 'No parts assigned to the specified technician'], 201);
     }
 
     // If ProductAssigned record(s) found, return a response with status true and the parts data
-    return response()->json(['status' => true, 'parts' => $productAssigned]);
+    return response()->json(['status' => true, 'parts' => $productAssigned],200);
 }
 
 
@@ -384,7 +384,7 @@ public function technicianLogout(Request $request)
 {
     auth()->logout();
    // $request->session()->invalidate();
-    return response()->json(['message' => 'Technician logged out successfully'], 200);
+    return response()->json(['status' => true,'message' => 'Technician logged out successfully'], 200);
 }
 public function updateTechnicianProfile(Request $request)
 {
@@ -400,7 +400,7 @@ public function updateTechnicianProfile(Request $request)
         $technician = User::where('role','technician')->findOrFail($request->technician_id);
     } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
         // Return a response with status false and error message if technician is not found
-        return response()->json(['status' => false, 'message' => 'Technician not found'], 404);
+        return response()->json(['status' => false, 'message' => 'Technician not found'], 201);
     }
 
     // Update technician's name and email
@@ -440,7 +440,7 @@ public function calculateJobStatusPercentage(Request $request)
     $openPercentage = $totalJobs > 0 ? ($openJobs / $totalJobs) * 100 : 0;
 
     // Return the calculated percentages
-    return response()->json([
+    return response()->json(['status' => true,
         'closed_percentage' => $closedPercentage,
         'open_percentage' => $openPercentage,
         'total_jobs' => $totalJobs,

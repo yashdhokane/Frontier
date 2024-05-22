@@ -15,6 +15,9 @@ use App\Models\SiteSettings;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Carbon\Carbon;
+
 use Illuminate\Support\Facades\Hash;
 
 // use Google\Service\AnalyticsReporting\User;
@@ -30,8 +33,12 @@ class PaymentController extends Controller
         ]);
 
         // Find the payment by ID
+  $timezone_name = Session::get('timezone_name');
+
         $payment = Payment::findOrFail($validatedData['payment_id']);
 
+        // $payment->created_at = Carbon::now($timezoneName);
+        $payment->updated_at = Carbon::now($timezone_name);
         // Update payment status to completed
         $payment->status = 'paid';
         $payment->save();

@@ -41,6 +41,8 @@
 
 <script src="{{ asset('public/admin/dist/js/custom.min.js') }}"></script>
 
+<script src="{{ asset('public/admin/stickynotes/script.js') }}"></script>
+
 <!-- --------------------------------------------------------------- -->
 
 <!-- This page JavaScript -->
@@ -113,8 +115,6 @@
 <script src="{{ asset('public/admin/dist/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
 
 <script src="{{ asset('public/admin/dist/js/pages/datatable/datatable-basic.init.js') }}"></script>
-
-<script src="{{ asset('public/admin/stickynotes/script.js') }}"></script>
 
 
 <script>

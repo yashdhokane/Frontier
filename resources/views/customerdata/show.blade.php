@@ -599,17 +599,17 @@ var currentIndex = $(this).data('index') - 1;
         editCustomerBtn.addEventListener('click', function(event) {
             event.preventDefault(); // Prevent the default behavior of the link
             customerDetails.style.display = 'none'; // Hide customer details
-            customerEditSection.style.display = 'block'; // Show edit section
+            customerEditSection.style.display = 'inline'; // Show edit section
             editCustomerBtn.style.display = 'none'; // Hide the "Edit" button
-            viewAllBtn.style.display = 'block'; // Show the "View All" button
+            viewAllBtn.style.display = 'inline'; // Show the "View All" button
         });
 
         // Event listener for the "View All" button
         viewAllBtn.addEventListener('click', function(event) {
             event.preventDefault(); // Prevent the default behavior of the link
-            customerDetails.style.display = 'block'; // Show customer details
+            customerDetails.style.display = 'inline'; // Show customer details
             customerEditSection.style.display = 'none'; // Hide edit section
-            editCustomerBtn.style.display = 'block'; // Show the "Edit" button
+            editCustomerBtn.style.display = 'inline'; // Show the "Edit" button
             viewAllBtn.style.display = 'none'; // Hide the "View All" button
         });
     });

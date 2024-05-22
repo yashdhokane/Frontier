@@ -531,7 +531,8 @@ class CustomerDataController extends Controller
 
                 // Create a new entry in the database for the image
                 $customerFile = new CustomerFiles();
-                $customerFile->user_id = $job->user_id;
+                $customerFile->user_id = $job->user_id; 
+                   $customerFile->job_id = $job->job_id; 
                 $customerFile->filename = $imgname;
                 $customerFile->path = 'images/users/' . $job->user_id . '/' . $imgname; // Store full relative path
                 $customerFile->type = $file->getClientMimeType();

@@ -45,6 +45,6 @@ class CustomerDataJob extends Model
 
     public function filesmany()
     {
-        return $this->hasMany(CustomerFiles::class, 'user_id', 'user_id');
+        return $this->hasMany(CustomerFiles::class, 'job_id', 'job_id');
     }
 }
