@@ -14,7 +14,7 @@
         <div class="page-breadcrumb" style="padding-top: 0px;">
             <div class="row">
                 <div class="col-5 align-self-center">
-                    <h4 class="page-title">Sticky Notes</h4>
+                    <h4 class="page-title">Notes</h4>
                 </div>
                 <div class="col-7 align-self-center">
                     <div class="d-flex no-block justify-content-end align-items-center">
