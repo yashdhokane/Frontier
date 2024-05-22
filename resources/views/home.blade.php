@@ -37,11 +37,12 @@
     <link href="{{ asset('public/admin/dist/css/style.min.css') }}" rel="stylesheet" />
 
     <link href="{{ asset('public/admin/dist/css/custom.css') }}" rel="stylesheet" />
+    <link href="{{ asset('public/admin/stickynotes/style.css') }}" rel="stylesheet" />
 
     <link href="{{ asset('public/admin/dist/libs/select2/dist/css/select2.min.css') }}" rel="stylesheet" />
 
-	
-	<style>
+
+    <style>
         #main-wrapper[data-layout=vertical][data-boxed-layout=boxed] .page-wrapper>.container-fluid,
         #main-wrapper[data-layout=vertical][data-boxed-layout=boxed] .page-wrapper>.container-lg,
         #main-wrapper[data-layout=vertical][data-boxed-layout=boxed] .page-wrapper>.container-md,
@@ -86,7 +87,7 @@
 
         .preload_img img {
             width: 100%;
-			display: none;
+            display: none;
         }
     </style>
 
@@ -117,8 +118,8 @@
 
     <!-- -------------------------------------------------------------- -->
 
-    <div class="preloader" >
- 
+    <div class="preloader">
+
 
         <div class="preload_img"><img
                 src="https://gaffis.in/frontier/website/public/admin/assets/images/loading-loader2.gif"
@@ -284,7 +285,6 @@
             });
         }
     </script>
-
 
 </body>
 

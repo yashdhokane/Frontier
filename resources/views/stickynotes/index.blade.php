@@ -46,7 +46,8 @@
                                     <label for="" class="my-2"> Color Code </label>
                                     <select name="color_code" class="form-control" id="">
                                         @foreach ($color as $value)
-                                            <option value="{{ $value->color_code }}" style="background: {{ $value->color_code }};">
+                                            <option value="{{ $value->color_code }}"
+                                                style="background: {{ $value->color_code }};">
                                                 {{ $value->color_code }}
                                             </option>
                                         @endforeach
@@ -86,67 +87,36 @@
 
             </div>
         @endif
-        <div class="row">
-            <div class="col-12">
+        <div class="row m-2">
 
-                <div class="card">
-                    <div class="card-body">
-                        <div class="table-responsive table-custom">
-                            <table id="zero_config" class="table table-hover table-striped text-nowrap" data-paging="true"
-                                data-paging-size="7">
+            @foreach ($note as $item)
+                <div class="col-sm-3 col-md-3 my-3">
+                    <div class="card border rounded p-3 h-100 justify-content-between">
+                        <div class="d-flex justify-content-between">
+                            <div> {{ $item->note }} </div>
+                            <div class="btn-group ms-2">
+                                <button type="button" class="btn btn-light-primary text-primary dropdown-toggle"
+                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="{{ url('sticky-notes-edit/' . $item->note_id) }}"><i
+                                            data-feather="edit" class="feather-sm me-2"></i> Edit</a>
+                                    <a class="dropdown-item" href="{{ url('note/delete/' . $item->note_id) }}"><i
+                                            data-feather="trash" class="feather-sm me-2"></i> Delete</a>
 
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Note</th>
-                                        <th>Color Code</th>
-                                        <th>Date</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    @foreach ($note as $item)
-                                        <tr>
-                                            <td>{{ $item->user->name ?? null }} </td>
-                                            <td>{{ $item->note ?? null }} </td>
-                                            <td class="ucfirst">{{ $item->color_code ?? null }} </td>
-                                            <td>
-                                                {{ $item->created_at ?? null }}
-                                            </td>
-                                            <td class="action footable-last-visible" style="display: table-cell;">
-                                                <div class="btn-group">
-                                                    <button type="button"
-                                                        class="btn btn-light-primary text-primary dropdown-toggle"
-                                                        data-bs-toggle="dropdown" aria-haspopup="true"
-                                                        aria-expanded="false">
-                                                        <i class="ri-settings-3-fill align-middle fs-5"></i>
-                                                    </button>
-                                                    <div class="dropdown-menu">
-                                                        <a class="dropdown-item" href="{{ url('sticky-notes-edit/' . $item->note_id) }}"><i data-feather="edit"
-                                                                class="feather-sm me-2"></i> Edit</a>
-                                                        <a class="dropdown-item"
-                                                            href="{{ url('note/delete/' . $item->note_id) }}"><i
-                                                                data-feather="trash" class="feather-sm me-2"></i> Delete</a>
-
-                                                    </div>
-                                                </div>
-
-                                            </td>
-
-
-                                        </tr>
-
-                                    @endforeach
-                                </tbody>
-
-                            </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <div> {{ $item->updated_at }} </div>
+                            <div> <i class="fa fa-circle" style="color:{{ $item->color_code }} ;"></i> </div>
 
                         </div>
                     </div>
                 </div>
+            @endforeach
 
-            </div>
+
         </div>
 
 

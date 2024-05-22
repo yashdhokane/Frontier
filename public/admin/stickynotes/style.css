@@ -1,0 +1,36 @@
+
+	.stickyMainSection{
+	   transition: all .5s ease;
+	}
+        .sticky-note {
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #e8eef3;
+            height: 100vh;
+            position: fixed;
+            right: -320px;
+            top: 0;
+            transition: all .5s ease;
+            width: 240px;
+            z-index: 3;
+        }
+
+        .close-task-detail.in {
+            display: block !important;
+            opacity: 1;
+            transition: width .7s;
+            z-index: 1;
+        }
+
+        .close-task-detail {
+            background-color: #f64e60;
+            border-radius: 22px 0 0 22px;
+            color: #fff;
+            font-size: 12px;
+            left: -55px;
+            opacity: 0;
+            padding: 9px 17px !important;
+            top: 17px;
+            transition: width .7s;
+            margin-left: 270px;
+        }
