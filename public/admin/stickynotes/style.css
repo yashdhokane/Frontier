@@ -34,3 +34,8 @@
             transition: width .7s;
             margin-left: 270px;
         }
+
+        .actionBtnNote {
+            cursor: pointer;
+             height: 30px;
+        }

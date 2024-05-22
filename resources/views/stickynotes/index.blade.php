@@ -20,7 +20,7 @@
                     <div class="d-flex no-block justify-content-end align-items-center">
                         <div class="me-2">
                             <a href="javascript:void(0)" id="btn-add-contact" class="btn btn-info" data-bs-toggle="modal"
-                                data-bs-target="#add-contact"><i class=" fas fa-user-plus "></i> Add Sticky Notes</a>
+                                data-bs-target="#add-contact"><i class=" fas fa-user-plus "></i> Add Notes</a>
                         </div>
                     </div>
                 </div>
@@ -33,7 +33,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header d-flex align-items-center">
-                        <h4 class="modal-title" id="myModalLabel">Add Sticky Notes</h4>
+                        <h4 class="modal-title" id="myModalLabel">Add Notes</h4>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                             fdprocessedid="k7jfjv"></button>
                     </div>
@@ -95,7 +95,7 @@
                         <div class="row d-flex justify-content-between">
                             <div class="col-9"> {{ $item->note }} </div>
                             <div class="col-2 btn-group ms-2">
-                                <div class="text-primary fw-bold fs-7" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;">
+                                <div class="text-primary fw-bold fs-7 actionBtnNote" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                    ...
                                 </div>
                                 <div class="dropdown-menu">

@@ -144,8 +144,8 @@
                                     <div class="row d-flex justify-content-between">
                                         <div class="col-9"> {{ $item->note }} </div>
                                         <div class="col-2 btn-group ms-2">
-                                            <div class="text-primary fw-bold fs-7" data-bs-toggle="dropdown"
-                                                aria-haspopup="true" aria-expanded="false" style="cursor: pointer;">
+                                            <div class="text-primary fw-bold fs-7 actionBtnNote" data-bs-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false">
                                                 ...
                                             </div>
                                             <div class="dropdown-menu">
