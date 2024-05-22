@@ -41,6 +41,7 @@ $(document).ready(function () {
 
                 // Append each sticky note to the list
                 response.forEach(function (item) {
+                    console.log(item);
                     var newNote = `
                         <div class="col-sm-4 col-md-4 my-3">
                             <div class="card border rounded p-3 h-100 justify-content-between">
@@ -50,11 +51,11 @@ $(document).ready(function () {
                                         <button type="button" class="btn btn-light-primary text-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         </button>
                                         <div class="dropdown-menu">
-                                        <a class="dropdown-item editStckyNoteBtn" data-note-id="${item.id}"><i
+                                        <a class="dropdown-item editStckyNoteBtn" data-note-id="${item.note_id}"><i
                                         data-feather="edit" class="feather-sm me-2"></i> Edit</a>
-                                        <input type="hidden" class="edit_note_id" value="${item.id}">
+                                        <input type="hidden" class="edit_note_id" value="${item.note_id}">
                                 <a class="dropdown-item deleteStckyNoteBtn"
-                                     data-note-id="${item.id}"><i
+                                     data-note-id="${item.note_id}"><i
                                         data-feather="trash" class="feather-sm me-2"></i> Delete</a>
                                         </div>
                                     </div>
@@ -149,11 +150,11 @@ $(document).ready(function () {
                                         <button type="button" class="btn btn-light-primary text-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         </button>
                                         <div class="dropdown-menu">
-                                        <a class="dropdown-item editStckyNoteBtn" data-note-id="${item.id}"><i
+                                        <a class="dropdown-item editStckyNoteBtn" data-note-id="${item.note_id}"><i
                                         data-feather="edit" class="feather-sm me-2"></i> Edit</a>
-                                        <input type="hidden" class="edit_note_id" value="${item.id}">
+                                        <input type="hidden" class="edit_note_id" value="${item.note_id}">
                                 <a class="dropdown-item deleteStckyNoteBtn"
-                                     data-note-id="${item.id}"><i
+                                     data-note-id="${item.note_id}"><i
                                         data-feather="trash" class="feather-sm me-2"></i> Delete</a>
                                         </div>
                                     </div>
@@ -205,11 +206,11 @@ $(document).ready(function () {
                                         <button type="button" class="btn btn-light-primary text-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         </button>
                                         <div class="dropdown-menu">
-                                        <a class="dropdown-item editStckyNoteBtn" data-note-id="${item.id}"><i
+                                        <a class="dropdown-item editStckyNoteBtn" data-note-id="${item.note_id}"><i
                                         data-feather="edit" class="feather-sm me-2"></i> Edit</a>
-                                        <input type="hidden" class="edit_note_id" value="${item.id}">
+                                        <input type="hidden" class="edit_note_id" value="${item.note_id}">
                                 <a class="dropdown-item deleteStckyNoteBtn"
-                                     data-note-id="${item.id}"><i
+                                     data-note-id="${item.note_id}"><i
                                         data-feather="trash" class="feather-sm me-2"></i> Delete</a>
                                         </div>
                                     </div>
