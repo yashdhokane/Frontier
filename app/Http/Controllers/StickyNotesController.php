@@ -72,4 +72,72 @@ class StickyNotesController extends Controller
         return view('stickynotes.edit', compact('color','note'));
     }
 
+    public function storeColorNote(Request $request)
+    {
+        
+        $user_auth = auth()->user()->id;
+
+        // Create a new StickyNote (or handle it as needed)
+        $stickyNote = new StickyNotes();
+
+        $stickyNote->color_code = $request->color_code;
+        $stickyNote->note = $request->note;
+        $stickyNote->user_id = $user_auth;
+
+        $stickyNote->save();
+        $stickyNotes = StickyNotes::all();
+        // Return a response
+        return response()->json($stickyNotes);
+    }
+
+
+        public function getNote(Request $request)
+        {
+            // Fetch the note details by ID
+            $note = StickyNotes::where('note_id', $request->id)->first();
+
+            // Assuming you want to include color options in the response
+            $color = ColorCode::all();
+
+            // Return the note details and color options as JSON
+            return response()->json([
+                'note_id' => $note->note_id,
+                'note' => $note->note,
+                'color_code' => $note->color_code,
+                'color' => $color
+            ]);
+        }
+
+
+        public function updateColorNote(Request $request)
+        {
+            
+            $user_auth = auth()->user()->id;
+    
+            // Create a new StickyNote (or handle it as needed)
+            $stickyNote = StickyNotes::find($request->input('note_id'));
+    
+            $stickyNote->color_code = $request->color_code;
+            $stickyNote->note = $request->note;
+            $stickyNote->user_id = $user_auth;
+    
+            $stickyNote->save();
+            $stickyNotes = StickyNotes::all();
+            // Return a response
+            return response()->json($stickyNotes);
+        }
+    
+
+        public function deleteNote(Request $request)
+        {
+            
+            $stickyNote = StickyNotes::find($request->input('id'));
+    
+            $stickyNote->delete();
+
+            $stickyNotes = StickyNotes::all();
+            // Return a response
+            return response()->json($stickyNotes);
+        }
+
 }

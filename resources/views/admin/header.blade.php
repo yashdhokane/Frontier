@@ -137,7 +137,7 @@
                 @endphp
 
                 <div class="col-sm-9 col-md-9">
-                    <div class="row">
+                    <div class="row sticknoteslist">
                         @foreach ($stickyNote as $item)
                             <div class="col-sm-4 col-md-4 my-3">
                                 <div class="card border rounded p-3 h-100 justify-content-between">
@@ -149,11 +149,11 @@
                                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             </button>
                                             <div class="dropdown-menu">
-                                                <a class="dropdown-item"
-                                                    href="{{ url('sticky-notes-edit/' . $item->note_id) }}"><i
+                                                <a class="dropdown-item editStckyNoteBtn" data-note-id="{{ $item->note_id }}"><i
                                                         data-feather="edit" class="feather-sm me-2"></i> Edit</a>
-                                                <a class="dropdown-item"
-                                                    href="{{ url('note/delete/' . $item->note_id) }}"><i
+														<input type="hidden" class="edit_note_id" value="{{ $item->note_id }}">
+                                                <a class="dropdown-item deleteStckyNoteBtn"
+                                                     data-note-id="{{ $item->note_id }}"><i
                                                         data-feather="trash" class="feather-sm me-2"></i> Delete</a>
 
                                             </div>
@@ -187,7 +187,7 @@
                 @endphp
 
                 <div class="col-sm-9 col-md-9">
-                    <form action="{{ route('stickynotes.store') }}" method="post" class="form-horizontal form-material"
+                    <form id="colorNoteForm" method="post" class="form-horizontal form-material"
                         enctype="multipart/form-data">
                         @csrf
                         <div class="modal-body">
@@ -229,6 +229,58 @@
 
             </div>
 
+            <div class="row m-2 editStickyNote" style="display: none;">
+                <div class="col-sm-12 col-md-12">
+                    <h3 class="p-1 mt-2">Edit Steaky Note </h3><hr>
+                </div>
+                <div class="col-sm-12 col-md-12">
+                    <h4>Note Details</h4>
+                </div>
+
+
+                <div class="col-sm-9 col-md-9">
+                    <form id="editNoteForm" method="post" class="form-horizontal form-material"
+                        enctype="multipart/form-data">
+                        @csrf
+						<input type="hidden" name="note_id" id="edit_note_id2" value="">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <div class="col-md-12 mb-4">
+                                    <label for="" class="my-2"> Color Code </label>
+                                    <select name="color_code" class="form-control" id="edit_color_code">
+                                        @foreach ($color as $value)
+                                            <option value="{{ $value->color_code }}"
+                                                style="background: {{ $value->color_code }};">
+                                                {{ $value->color_code }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="col-md-12 mb-3">
+                                    <div class="">
+                                        <label for="" class="my-2">Note </label>
+                                        <textarea name="note" class="form-control" id="edit_note"></textarea>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="">
+                            <button type="submit" class="btn btn-info ">
+                                Update
+                            </button>
+                            <button type="button" class="btn btn-info waves-effect closeStickyAdd">
+                                Cancel
+                            </button>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="col-sm-3 col-md-3"> </div>
+
+            </div>
 
 
         </div>
@@ -238,6 +290,12 @@
 </header>
 
 <script>
+  const storeColorNoteUrl = "{{ route('store.colorNote') }}";
+  const updateColorNoteUrl = "{{ route('update.colorNote') }}";
+  const storeEditNoteUrl = "{{ route('note.get') }}";
+  const deleteNoteUrl = "{{ route('note.delete') }}";
+    const csrfToken = "{{ csrf_token() }}";
+
     function updateTime() {
         const timezoneName = '{{ $timezoneName }}'; // Dynamic timezone from backend
         const options = {

@@ -801,6 +801,15 @@ Route::middleware('auth')->group(function () {
 
     Route::get('note/delete/{id}', [StickyNotesController::class, 'destroy']);
 
+    Route::post('/store-color-note', [StickyNotesController::class, 'storeColorNote'])->name('store.colorNote');
+
+    Route::post('/update-color-note', [StickyNotesController::class, 'updateColorNote'])->name('update.colorNote');
+
+    Route::get('/note_get', [StickyNotesController::class, 'getNote'])->name('note.get');
+
+    Route::get('/note_delete', [StickyNotesController::class, 'deleteNote'])->name('note.delete');
+
+
 
     // FleetController
 
