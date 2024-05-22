@@ -118,7 +118,7 @@
 
     </nav>
 
-    
+
     <div class="stickyMainSection" style="display: none;">
         <a href="#." class="close-task-detail in" id="close-task-detail" style="display: ;">
             X
@@ -129,8 +129,8 @@
                 <div class="col-sm-12 col-md-12">
                     <h3 class="p-3 mt-2"> Steaky Notes </h3>
                 </div>
-                <div class="col-sm-12 col-md-12"><button type="button" class="btn btn-primary ms-3 addStickyNoteBtn"> <i
-                            class="fa fa-plus"></i> Add Note</button></div>
+                <div class="col-sm-12 col-md-12"><button type="button" class="btn btn-primary ms-3 addStickyNoteBtn">
+                        <i class="fa fa-plus"></i> Add Note</button></div>
 
                 @php
                     $stickyNote = \App\Models\StickyNotes::all();
@@ -141,26 +141,28 @@
                         @foreach ($stickyNote as $item)
                             <div class="col-sm-4 col-md-4 my-3">
                                 <div class="card border rounded p-3 h-100 justify-content-between">
-                                    <div class="d-flex justify-content-between">
-                                        <div> {{ $item->note }} </div>
-                                        <div class="btn-group ms-2">
-                                            <button type="button"
-                                                class="btn btn-light-primary text-primary dropdown-toggle"
-                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            </button>
+                                    <div class="row d-flex justify-content-between">
+                                        <div class="col-9"> {{ $item->note }} </div>
+                                        <div class="col-2 btn-group ms-2">
+                                            <div class="text-primary fw-bold fs-7" data-bs-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false" style="cursor: pointer;">
+                                                ...
+                                            </div>
                                             <div class="dropdown-menu">
-                                                <a class="dropdown-item editStckyNoteBtn" data-note-id="{{ $item->note_id }}"><i
-                                                        data-feather="edit" class="feather-sm me-2"></i> Edit</a>
-														<input type="hidden" class="edit_note_id" value="{{ $item->note_id }}">
+                                                <a class="dropdown-item editStckyNoteBtn"
+                                                    data-note-id="{{ $item->note_id }}"><i data-feather="edit"
+                                                        class="feather-sm me-2"></i> Edit</a>
+                                                <input type="hidden" class="edit_note_id" value="{{ $item->note_id }}">
                                                 <a class="dropdown-item deleteStckyNoteBtn"
-                                                     data-note-id="{{ $item->note_id }}"><i
-                                                        data-feather="trash" class="feather-sm me-2"></i> Delete</a>
+                                                    data-note-id="{{ $item->note_id }}"><i data-feather="trash"
+                                                        class="feather-sm me-2"></i> Delete</a>
 
                                             </div>
                                         </div>
                                     </div>
                                     <div class="d-flex justify-content-between">
-                                        <div> {{ $item->updated_at }} </div>
+                                        <div> {{ \Carbon\Carbon::parse($item->updated_at)->format('Y-m-d h:i A') }}
+                                        </div>
                                         <div> <i class="fa fa-circle" style="color:{{ $item->color_code }} ;"></i>
                                         </div>
 
@@ -176,7 +178,8 @@
 
             <div class="row m-2 addStickyNote" style="display: none;">
                 <div class="col-sm-12 col-md-12">
-                    <h3 class="p-1 mt-2">Add Steaky Notes </h3><hr>
+                    <h3 class="p-1 mt-2">Add Steaky Notes </h3>
+                    <hr>
                 </div>
                 <div class="col-sm-12 col-md-12">
                     <h4>Note Details</h4>
@@ -218,7 +221,8 @@
                             <button type="submit" class="btn btn-info " data-bs-dismiss="modal">
                                 Save
                             </button>
-                            <button type="button" class="btn btn-info waves-effect closeStickyAdd" data-bs-dismiss="modal">
+                            <button type="button" class="btn btn-info waves-effect closeStickyAdd"
+                                data-bs-dismiss="modal">
                                 Cancel
                             </button>
 
@@ -231,7 +235,8 @@
 
             <div class="row m-2 editStickyNote" style="display: none;">
                 <div class="col-sm-12 col-md-12">
-                    <h3 class="p-1 mt-2">Edit Steaky Note </h3><hr>
+                    <h3 class="p-1 mt-2">Edit Steaky Note </h3>
+                    <hr>
                 </div>
                 <div class="col-sm-12 col-md-12">
                     <h4>Note Details</h4>
@@ -242,7 +247,7 @@
                     <form id="editNoteForm" method="post" class="form-horizontal form-material"
                         enctype="multipart/form-data">
                         @csrf
-						<input type="hidden" name="note_id" id="edit_note_id2" value="">
+                        <input type="hidden" name="note_id" id="edit_note_id2" value="">
                         <div class="modal-body">
                             <div class="form-group">
                                 <div class="col-md-12 mb-4">
@@ -286,14 +291,14 @@
         </div>
 
     </div>
-	
+
 </header>
 
 <script>
-  const storeColorNoteUrl = "{{ route('store.colorNote') }}";
-  const updateColorNoteUrl = "{{ route('update.colorNote') }}";
-  const storeEditNoteUrl = "{{ route('note.get') }}";
-  const deleteNoteUrl = "{{ route('note.delete') }}";
+    const storeColorNoteUrl = "{{ route('store.colorNote') }}";
+    const updateColorNoteUrl = "{{ route('update.colorNote') }}";
+    const storeEditNoteUrl = "{{ route('note.get') }}";
+    const deleteNoteUrl = "{{ route('note.delete') }}";
     const csrfToken = "{{ csrf_token() }}";
 
     function updateTime() {

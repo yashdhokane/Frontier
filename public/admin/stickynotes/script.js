@@ -41,15 +41,19 @@ $(document).ready(function () {
 
                 // Append each sticky note to the list
                 response.forEach(function (item) {
-                    console.log(item);
+                    var formattedDate = moment(item.updated_at).format(
+                        "YYYY-MM-DD hh:mm A"
+                    );
+
                     var newNote = `
                         <div class="col-sm-4 col-md-4 my-3">
                             <div class="card border rounded p-3 h-100 justify-content-between">
-                                <div class="d-flex justify-content-between">
-                                    <div> ${item.note} </div>
-                                    <div class="btn-group ms-2">
-                                        <button type="button" class="btn btn-light-primary text-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        </button>
+                            <div class="row d-flex justify-content-between">
+                            <div class="col-9">${item.note} </div>
+                            <div class="col-2 btn-group ms-2">
+                                <div class="text-primary fw-bold fs-7" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;">
+                                   ...
+                                </div>
                                         <div class="dropdown-menu">
                                         <a class="dropdown-item editStckyNoteBtn" data-note-id="${item.note_id}"><i
                                         data-feather="edit" class="feather-sm me-2"></i> Edit</a>
@@ -61,7 +65,7 @@ $(document).ready(function () {
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-between">
-                                    <div> ${item.updated_at} </div>
+                                    <div> ${formattedDate} </div>
                                     <div> <i class="fa fa-circle" style="color:${item.color_code} ;"></i> </div>
                                 </div>
                             </div>
@@ -139,16 +143,20 @@ $(document).ready(function () {
                 $("#editNoteForm")[0].reset(); // Reset the form
                 $(".sticknoteslist").empty();
 
+                var formattedDate = moment(response.updated_at).format(
+                    "YYYY-MM-DD hh:mm A"
+                );
                 // Append each sticky note to the list
                 response.forEach(function (item) {
                     var newNote = `
                         <div class="col-sm-4 col-md-4 my-3">
                             <div class="card border rounded p-3 h-100 justify-content-between">
-                                <div class="d-flex justify-content-between">
-                                    <div> ${item.note} </div>
-                                    <div class="btn-group ms-2">
-                                        <button type="button" class="btn btn-light-primary text-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        </button>
+                            <div class="row d-flex justify-content-between">
+                            <div class="col-9">${item.note} </div>
+                            <div class="col-2 btn-group ms-2">
+                                <div class="text-primary fw-bold fs-7" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;">
+                                   ...
+                                </div>
                                         <div class="dropdown-menu">
                                         <a class="dropdown-item editStckyNoteBtn" data-note-id="${item.note_id}"><i
                                         data-feather="edit" class="feather-sm me-2"></i> Edit</a>
@@ -160,7 +168,7 @@ $(document).ready(function () {
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-between">
-                                    <div> ${item.updated_at} </div>
+                                    <div> ${formattedDate} </div>
                                     <div> <i class="fa fa-circle" style="color:${item.color_code} ;"></i> </div>
                                 </div>
                             </div>
@@ -195,16 +203,20 @@ $(document).ready(function () {
                 $(".stickyNotesList").show();
                 $(".addStickyNote").hide();
                 $(".sticknoteslist").empty();
+                var formattedDate = moment(response.updated_at).format(
+                    "YYYY-MM-DD hh:mm A"
+                );
                 // Append each sticky note to the list
                 response.forEach(function (item) {
                     var newNote = `
                         <div class="col-sm-4 col-md-4 my-3">
                             <div class="card border rounded p-3 h-100 justify-content-between">
-                                <div class="d-flex justify-content-between">
-                                    <div> ${item.note} </div>
-                                    <div class="btn-group ms-2">
-                                        <button type="button" class="btn btn-light-primary text-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        </button>
+                            <div class="row d-flex justify-content-between">
+                            <div class="col-9">${item.note} </div>
+                            <div class="col-2 btn-group ms-2">
+                                <div class="text-primary fw-bold fs-7" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;">
+                                   ...
+                                </div>
                                         <div class="dropdown-menu">
                                         <a class="dropdown-item editStckyNoteBtn" data-note-id="${item.note_id}"><i
                                         data-feather="edit" class="feather-sm me-2"></i> Edit</a>
@@ -216,7 +228,7 @@ $(document).ready(function () {
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-between">
-                                    <div> ${item.updated_at} </div>
+                                    <div> ${formattedDate} </div>
                                     <div> <i class="fa fa-circle" style="color:${item.color_code} ;"></i> </div>
                                 </div>
                             </div>
