@@ -795,7 +795,7 @@ Route::middleware('auth')->group(function () {
 
     // StickyNotesController
 
-    Route::get('sticky-notes', [StickyNotesController::class, 'index'])->name('sticky_notes');
+    Route::get('notes', [StickyNotesController::class, 'index'])->name('sticky_notes');
     Route::get('sticky-notes-edit/{id}', [StickyNotesController::class, 'edit'])->name('sticky_notes_edit');
 
     Route::post('sticky-notes-store', [StickyNotesController::class, 'store'])->name('stickynotes.store');
