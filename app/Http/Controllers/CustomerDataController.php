@@ -95,9 +95,9 @@ class CustomerDataController extends Controller
         $ticketNumbers = CustomerDataJob::where('user_id', $id)->pluck('ticket_number')->toArray();
         $tccValues = CustomerDataJob::where('user_id', $id)->pluck('tcc')->toArray();
 
-        $users = CustomerData::with('userdata', 'Jobdata', 'Jobdata.Customerservice', 'Jobdata.Customernote')->where('user_id', $id)->first();
+        $users = CustomerData::with('userdata', 'Jobdata', 'Jobdata.Customerservice', 'Jobdata.Customernote', 'Jobdata.filesmany')->where('user_id', $id)->first();
 
-        //dd($users);
+       // dd($users);
         // $Job = JobModel::with('schedule', 'technician', 'Customerservice', 'Customerdata', 'Customernote')->where('customer_id', $user->user_id)->get();
         // $visitcount = JobModel::where('customer_id', $user->user_id)->where('status', 'open')->count();
         // // dd($visitcount);
@@ -246,24 +246,8 @@ class CustomerDataController extends Controller
     // }
 
      public function update(Request $request)
-    {
-        //  dd($request->all());
-        // Validate the incoming request data
-        $request->validate([
-            // 'ticket_number.*' => 'required|string',
-            // 'job_id.*' => 'required|integer',
-            // 'tcc.*' => 'nullable|string',
-            // 'schedule_date.*' => 'nullable|string',
-            // 'technician.*' => 'nullable|string',
-            // 'service_name.*' => 'nullable|string',
-            // 'amount.*' => 'nullable|numeric',
-            // 'notes.*' => 'nullable|string',
-            // 'notes_by.*' => 'nullable|string',
-            // 'no_of_visits' => 'nullable|integer',
-            // 'job_completed' => 'nullable|integer',
-            // 'issue_resolved' => 'nullable|string',
-        ]);
-
+    {         
+    
         $jobIds = $request->input('job_id');
         $ticketNumbers = $request->input('ticket_number');
         $tccValues = $request->input('tcc');
@@ -277,7 +261,6 @@ class CustomerDataController extends Controller
         $job_completed = $request->input('job_completed');
         $issue_resolved = $request->input('issue_resolved');
 
-        // dd($noOfVisits);
         foreach ($jobIds as $key => $jobId) {
             $job = CustomerDataJob::find($jobId);
             if (!$job) {
@@ -321,38 +304,37 @@ class CustomerDataController extends Controller
                 );
             }
 
+          // Handle file uploads
+            if ($request->hasFile("files.$key")) {
+                foreach ($request->file("files.$key") as $file) {
+                    // Generate a unique filename
+                    $imgname = 'e' . rand(000, 999) . time() . '.' . $file->getClientOriginalExtension();
 
+                    // Directory path for user's images
+                    $directoryPath = public_path('images/users/' . $job->user_id);
 
-        }
+                    // Ensure the directory exists; if not, create it
+                    if (!File::exists($directoryPath)) {
+                        File::makeDirectory($directoryPath, 0777, true);
+                    }
 
-        // Handle file uploads
-        if ($request->hasFile('files')) {
-            foreach ($request->file('files') as $file) {
-                // Generate a unique filename
-                $imgname = 'e' . rand(000, 999) . time() . '.' . $file->getClientOriginalExtension();
+                    // Move the file to the user's directory
+                    $file->move($directoryPath, $imgname);
 
-                // Directory path for user's images
-                $directoryPath = public_path('images/users/' . $job->user_id);
-
-                // Ensure the directory exists; if not, create it
-                if (!File::exists($directoryPath)) {
-                    File::makeDirectory($directoryPath, 0777, true);
+                    // Create a new entry in the database for the image
+                    $customerFile = new CustomerFiles();
+                    $customerFile->user_id = $job->user_id;
+                    $customerFile->job_id = $jobId;
+                    $customerFile->filename = $imgname;
+                    $customerFile->path = 'images/users/' . $job->user_id . '/' . $imgname; // Store full relative path
+                    $customerFile->type = $file->getClientMimeType();
+                    $customerFile->storage_location = 'local'; // Assuming storage location is local
+                    $customerFile->save();
                 }
-
-                // Move the file to the user's directory
-                $file->move($directoryPath, $imgname);
-
-                // Create a new entry in the database for the image
-                $customerFile = new CustomerFiles();
-                $customerFile->user_id = $job->user_id;
-                $customerFile->filename = $imgname;
-                $customerFile->path = 'images/users/' . $job->user_id . '/' . $imgname; // Store full relative path
-                $customerFile->type = $file->getClientMimeType();
-                $customerFile->storage_location = 'local'; // Assuming storage location is local
-                $customerFile->save();
             }
         }
 
+       
         return redirect()->back()->with('success', 'Job updated successfully.');
     }
 
