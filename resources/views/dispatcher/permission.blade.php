@@ -64,7 +64,14 @@
                     <input type="hidden" name="user_id" value="{{ $commonUser->id }}">
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Save Permissions</button>
+
+          @if(auth()->user()->role == 'admin' || auth()->user()->role == 'superadmin')
+                <button type="submit" class="btn btn-primary">Save Permissions</button>
+            @else
+                <button type="button" class="btn btn-primary disabled">Save Permissions</button><br>
+                <small class="text-white bg-danger px-2 mt-2">Dispatcher can't change the permission</small>
+            @endif
+
         </form>
     </div>
 </div>
