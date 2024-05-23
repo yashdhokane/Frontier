@@ -78,7 +78,7 @@
                         </div>
                         <div class="col-md-12">
                             <div class="mb-2"><strong>Files & Attachments:</strong><br>
-                               @foreach($job->filesmany as $file)
+                                @foreach($job->filesmany as $file)
                                     @if (is_object($file))
                                         <a href="{{ asset('images/users/' . $job->user_id . '/' . $file->filename) }}" target="_blank">
                                             {{ $file->filename }}

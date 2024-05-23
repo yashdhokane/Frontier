@@ -6,7 +6,9 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Payment;
 use App\Models\JobModel;
+use App\Models\Schedule;
 use Illuminate\Http\Request;
+use App\Models\UserNotification;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -19,10 +21,9 @@ class HomeController extends Controller
     public function index()
     {
         $timezone_name = Session::get('timezone_name');
-        $job = JobModel::with('JobAppliances', 'user', 'technician', 'jobassignname', 'JobAssign', 'jobDetails')
-            ->where('created_at', '>', Carbon::now($timezone_name))
+        $job = Schedule::with('JobModel', 'technician')
+            ->where('start_date_time', '>', Carbon::now($timezone_name))
             ->latest()->limit(5)->get();
-
 
         $paymentopen = Payment::with('JobAppliances', 'user', 'JobModel')->where('status', 'paid')->orderBy('id', 'desc')
 
@@ -32,6 +33,8 @@ class HomeController extends Controller
         $paymentclose = Payment::with('JobAppliances', 'user', 'JobModel')->where('status', 'unpaid')->orderBy('id', 'desc')
 
             ->limit(5)->get();
+
+
         $totalCalls = JobModel::count();
         $inProgress = JobModel::where('status', 'in_progress')->count();
         $opened = JobModel::where('status', 'open')->count();
@@ -81,6 +84,40 @@ class HomeController extends Controller
             ->limit(9)
             ->get();
 
+
+        $jobActivity = DB::table('job_activity')
+            ->select(
+                'job_activity.user_id',
+                'job_activity.activity',
+                'job_activity.created_at as activity_date',
+                DB::raw("'job_activity' as activity_type"),
+                'users.*' // Select all columns from the users table
+            )
+            ->join('users', 'job_activity.user_id', '=', 'users.id')
+            ->join('user_login_history', 'job_activity.user_id', '=', 'user_login_history.user_id');
+
+        // Fetch user activities for all users
+        $userActivity = DB::table('user_activity')
+            ->select(
+                'user_activity.user_id',
+                'user_activity.activity',
+                'user_activity.created_at as activity_date',
+                DB::raw("'user_activity' as activity_type"),
+                'users.*' // Select all columns from the users table
+            )
+            ->join('users', 'user_activity.user_id', '=', 'users.id');
+
+        // Combine and order the activities by activity_date
+        $activity = $jobActivity->union($userActivity)
+            ->orderBy('activity_date', 'desc')->limit(10)
+            ->get();
+
+        // Fetch notifications for all users
+        $userNotifications = UserNotification::with('notice')
+            ->orderBy('id', 'desc')->limit(10)
+            ->get();
+
+
         foreach ($technicianuser as $key => $user) {
             $areaName = [];
             if (isset($user->service_areas) && !empty($user->service_areas)) {
@@ -111,13 +148,13 @@ class HomeController extends Controller
             $role = Auth()->user()->role;
 
             if ($role == 'technician') {
-                return view('admin.main', compact('job', 'paymentopen', 'paymentclose', 'customeruser', 'technicianuser', 'customerCount', 'dispatcherCount', 'technicianCount', 'adminCount', 'users', 'totalCalls', 'inProgress', 'opened', 'complete'));
+                return view('admin.main', compact('job', 'paymentopen', 'userNotifications', 'activity', 'paymentclose', 'customeruser', 'technicianuser', 'customerCount', 'dispatcherCount', 'technicianCount', 'adminCount', 'users', 'totalCalls', 'inProgress', 'opened', 'complete'));
             } else if ($role == 'dispatcher') {
-                return view('admin.main', compact('job', 'paymentopen', 'paymentclose', 'customeruser', 'technicianuser', 'customerCount', 'dispatcherCount', 'technicianCount', 'adminCount', 'users', 'totalCalls', 'inProgress', 'opened', 'complete'));
+                return view('admin.main', compact('job', 'paymentopen', 'userNotifications', 'activity', 'paymentclose', 'customeruser', 'technicianuser', 'customerCount', 'dispatcherCount', 'technicianCount', 'adminCount', 'users', 'totalCalls', 'inProgress', 'opened', 'complete'));
             } else if ($role == 'admin') {
-                return view('admin.main', compact('job', 'paymentopen', 'paymentclose', 'customeruser', 'technicianuser', 'customerCount', 'dispatcherCount', 'technicianCount', 'adminCount', 'users', 'totalCalls', 'inProgress', 'opened', 'complete'));
+                return view('admin.main', compact('job', 'paymentopen', 'userNotifications', 'activity', 'paymentclose', 'customeruser', 'technicianuser', 'customerCount', 'dispatcherCount', 'technicianCount', 'adminCount', 'users', 'totalCalls', 'inProgress', 'opened', 'complete'));
             } else if ($role == 'superadmin') {
-                return view('admin.main', compact('job', 'paymentopen', 'paymentclose', 'customeruser', 'technicianuser', 'customerCount', 'dispatcherCount', 'technicianCount', 'adminCount', 'users', 'totalCalls', 'inProgress', 'opened', 'complete'));
+                return view('admin.main', compact('job', 'paymentopen', 'userNotifications', 'activity', 'paymentclose', 'customeruser', 'technicianuser', 'customerCount', 'dispatcherCount', 'technicianCount', 'adminCount', 'users', 'totalCalls', 'inProgress', 'opened', 'complete'));
             }
 
 

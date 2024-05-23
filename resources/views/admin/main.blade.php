@@ -110,25 +110,26 @@
                                         @foreach ($job as $item)
                                         <tr>
                                             <td>
-                                                <a href="{{ url('tickets/' . $item->id) }}" class="font-medium link">{{
-                                                    $item->job_title ?? null }}</a><br />
-                                                {{ $item->description ?? null }}
+                                                <a href="{{ url('tickets/' . $item->JobModel->id) }}"
+                                                    class="font-medium link">{{
+                                                    $item->JobModel->job_title ?? null }}</a><br />
+                                                {{ $item->JobModel->description ?? null }}
                                             </td>
-                                            <td>{{ $item->user->name ?? null }}</td>
+                                            <td>{{ $item->JobModel->user->name ?? null }}</td>
                                             <td>{{ $item->technician->name ?? null }}</td>
                                             <td>
-                                                @if ($item->jobassignname && $item->jobassignname->start_date_time)
+                                                @if ($item && $item->start_date_time)
                                                 <div class="font-medium link ft12">{{
-                                                    $convertDateToTimezone($item->jobassignname->start_date_time ??
+                                                    $convertDateToTimezone($item->start_date_time ??
                                                     null) }}</div>
                                                 @else
                                                 <div></div>
                                                 @endif
                                                 <div class="ft12">
-                                                    {{ $convertTimeToTimezone($item->JobAssign->start_date_time ?? null,
+                                                    {{ $convertTimeToTimezone($item->start_date_time ?? null,
                                                     'H:i:a')
                                                     }}
-                                                    to {{ $convertTimeToTimezone($item->JobAssign->end_date_time ??
+                                                    to {{ $convertTimeToTimezone($item->end_date_time ??
                                                     null, 'H:i:a')
                                                     }}
                                                 </div>
@@ -155,7 +156,7 @@
 
                             <div class="d-md-flex align-items-center mt-2">
                                 <div>
-                                    <h5 class="card-title text-info uppercase mb-1">Upcoming Open invoices </h5>
+                                    <h5 class="card-title text-info uppercase mb-1"> Open invoices </h5>
                                     {{-- <h5 class="ft12">Overview of Upcoming Open invoices </h5> --}}
                                 </div>
                             </div>
@@ -212,7 +213,7 @@
 
                             <div class="d-md-flex align-items-center mt-2">
                                 <div>
-                                    <h5 class="card-title text-info uppercase mb-1">Upcoming Paid invoices </h5>
+                                    <h5 class="card-title text-info uppercase mb-1"> Paid invoices </h5>
                                     {{-- <h5 class="ft12">Overview of Upcoming Paid invoices </h5> --}}
                                 </div>
                             </div>
@@ -263,6 +264,75 @@
 
 
 
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card card-border shadow mb-4">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table customize-table mb-0 v-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>MY ACTIVITY</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($activity as $record)
+                                        <tr>
+                                            <td>
+                                                <div>{{ $record->activity }}</div>
+                                                <div class="text-muted">{{
+                                                    \Carbon\Carbon::parse($record->created_at)->format('D
+                                                    n/j/y
+                                                    g:ia') ?? 'null' }}</div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            <a class="nav-link text-dark" href="{{ route('myprofile.activity') }}">
+                                <strong>View All</strong>
+                                <i data-feather="chevron-right" class="feather-sm"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card card-border shadow mb-4">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table customize-table mb-0 v-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>MY NOTIFICATIONS</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($userNotifications as $record)
+                                        <tr>
+                                            <td @if($record->is_read == 0) class="text-muted" @endif>
+                                                <div class="fw-normal">{{ $record->notice->notice_title
+                                                    ?? '' }}
+                                                </div>
+                                                <div class="text-muted">{{
+                                                    \Carbon\Carbon::parse($record->notice->notice_date)->format('D
+                                                    n/j/y g:ia') ?? 'null' }}</div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            <a class="nav-link text-dark" href="{{ route('myprofile.activity') }}">
+                                <strong>View All </strong>
+                                <i data-feather="chevron-right" class="feather-sm"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
 

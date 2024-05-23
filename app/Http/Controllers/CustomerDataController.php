@@ -96,8 +96,7 @@ class CustomerDataController extends Controller
         $tccValues = CustomerDataJob::where('user_id', $id)->pluck('tcc')->toArray();
 
         $users = CustomerData::with('userdata', 'Jobdata', 'Jobdata.Customerservice', 'Jobdata.Customernote', 'Jobdata.filesmany')->where('user_id', $id)->first();
-
-       // dd($users);
+        //dd($users);
         // $Job = JobModel::with('schedule', 'technician', 'Customerservice', 'Customerdata', 'Customernote')->where('customer_id', $user->user_id)->get();
         // $visitcount = JobModel::where('customer_id', $user->user_id)->where('status', 'open')->count();
         // // dd($visitcount);
@@ -246,8 +245,24 @@ class CustomerDataController extends Controller
     // }
 
      public function update(Request $request)
-    {         
-    
+    {
+        //  dd($request->all());
+        // Validate the incoming request data
+        $request->validate([
+            // 'ticket_number.*' => 'required|string',
+            // 'job_id.*' => 'required|integer',
+            // 'tcc.*' => 'nullable|string',
+            // 'schedule_date.*' => 'nullable|string',
+            // 'technician.*' => 'nullable|string',
+            // 'service_name.*' => 'nullable|string',
+            // 'amount.*' => 'nullable|numeric',
+            // 'notes.*' => 'nullable|string',
+            // 'notes_by.*' => 'nullable|string',
+            // 'no_of_visits' => 'nullable|integer',
+            // 'job_completed' => 'nullable|integer',
+            // 'issue_resolved' => 'nullable|string',
+        ]);
+
         $jobIds = $request->input('job_id');
         $ticketNumbers = $request->input('ticket_number');
         $tccValues = $request->input('tcc');
@@ -261,6 +276,7 @@ class CustomerDataController extends Controller
         $job_completed = $request->input('job_completed');
         $issue_resolved = $request->input('issue_resolved');
 
+        // dd($noOfVisits);
         foreach ($jobIds as $key => $jobId) {
             $job = CustomerDataJob::find($jobId);
             if (!$job) {
@@ -303,8 +319,7 @@ class CustomerDataController extends Controller
                     ['notes' => $note]
                 );
             }
-
-          // Handle file uploads
+              // Handle file uploads
             if ($request->hasFile("files.$key")) {
                 foreach ($request->file("files.$key") as $file) {
                     // Generate a unique filename
@@ -332,9 +347,11 @@ class CustomerDataController extends Controller
                     $customerFile->save();
                 }
             }
+
+
         }
 
-       
+
         return redirect()->back()->with('success', 'Job updated successfully.');
     }
 
