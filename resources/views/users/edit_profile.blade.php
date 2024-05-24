@@ -84,7 +84,8 @@
 
                     @csrf
 
-                    <input type="hidden" class="form-control" name="id" value="{{$user->id}}" placeholder="" required />
+                    <input type="hidden" class="form-control" name="id" value="{{$commonUser->id}}" placeholder=""
+                        required />
 
                     <div class="form-group">
 
@@ -122,7 +123,7 @@
 
 
 
-<form method="POST" action="{{route('users.update', $user->id) }}" enctype="multipart/form-data">
+<form method="POST" action="{{route('users.update', $commonUser->id) }}" enctype="multipart/form-data">
 
     @csrf
 
@@ -137,14 +138,14 @@
     <!-- Page wrapper  -->
 
     <!-- -------------------------------------------------------------- -->
- 
+
 
     <!-- Container fluid  -->
 
     <!-- -------------------------------------------------------------- -->
     <div class="container-inline">
 
-       
+
         <!-- row -->
 
 
@@ -164,7 +165,8 @@
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
 
-                                    <label for="first_name" class="control-label bold mb5 col-form-label required-field">First
+                                    <label for="first_name"
+                                        class="control-label bold mb5 col-form-label required-field">First
                                         Name</label>
 
                                     <input type="text" class="form-control" name="first_name" id="first_name"
@@ -175,7 +177,8 @@
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
 
-                                    <label for="last_name" class="control-label bold mb5 col-form-label required-field">Last
+                                    <label for="last_name"
+                                        class="control-label bold mb5 col-form-label required-field">Last
                                         Name</label>
 
                                     <input type="text" class="form-control" name="last_name" id="last_name"
@@ -192,7 +195,7 @@
                                         on invoice)</label>
 
                                     <input type="text" class="form-control" name="display_name" id="display_name"
-                                        value="{{old('display_name', $user->name )}}" placeholder="" required />
+                                        value="{{old('display_name', $commonUser->name )}}" placeholder="" required />
 
                                 </div>
                             </div>
@@ -202,12 +205,13 @@
                                 <div class="mb-3">
                                     <label for="email" class="control-label bold mb5  col-form-label ">Email</label>
                                     <input type="email" class="form-control" id="email" name="email"
-                                        value="{{old('email', $user->email )}}" placeholder="" />
+                                        value="{{old('email', $commonUser->email )}}" placeholder="" />
                                 </div>
                             </div>
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
-                                    <label for="email" class="control-label bold mb5  col-form-label ">Additional Email</label>
+                                    <label for="email" class="control-label bold mb5  col-form-label ">Additional
+                                        Email</label>
                                     <input type="email" class="form-control" id="additional_email"
                                         name="additional_email" value="{{$UsersDetails->additional_email }}"
                                         placeholder="" />
@@ -216,11 +220,12 @@
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
 
-                                    <label for="mobile_phone" class="control-label bold mb5 col-form-label required-field">Mobile
+                                    <label for="mobile_phone"
+                                        class="control-label bold mb5 col-form-label required-field">Mobile
                                         Phone</label>
 
                                     <input type="number" maxlength="10" class="form-control" name="mobile_phone"
-                                        value="{{ $user->mobile ?? null }}" placeholder="" required />
+                                        value="{{ $commonUser->mobile ?? null }}" placeholder="" required />
                                     <small id="name" class="form-text text-muted">Don’t add +1. Only add mobile number
                                         without space.</small>
 
@@ -235,7 +240,8 @@
                             <div class="col-sm-12 col-md-12">
                                 <div class="mb-3">
 
-                                    <label for="address1" class="control-label bold mb5 col-form-label required-field">Address
+                                    <label for="address1"
+                                        class="control-label bold mb5 col-form-label required-field">Address
                                         Line 1
 
                                         (Street)</label>
@@ -270,7 +276,7 @@
                                     <select class="form-select me-sm-2" id="address_type" name="address_type">
                                         <option value="">Select Address Type...</option>
                                         <option value="general" selected>General</option>
-                                     </select>
+                                    </select>
 
 
                                 </div>
@@ -287,7 +293,8 @@
                                         <option selected disabled value="">Select City...</option>
                                     </select> --}}
                                     <input type="text" class="form-control" id="city" name="city"
-                                        value="{{ $user->Location->city ?? null }}" oninput="searchCity()" required />
+                                        value="{{ $commonUser->Location->city ?? null }}" oninput="searchCity()"
+                                        required />
                                     {{-- <input type="hidden" class="form-control" id="city_id" name="city_id"
                                         oninput="searchCity1()" required /> --}}
                                     <div id="autocomplete-results"></div>
@@ -339,7 +346,8 @@
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
 
-                                    <label for="home_phone" class="control-label bold mb5 col-form-label">Home Phone</label>
+                                    <label for="home_phone" class="control-label bold mb5 col-form-label">Home
+                                        Phone</label>
 
                                     <input type="number" maxlength="10" class="form-control" name="home_phone"
                                         placeholder="" value="{{ $UsersDetails->home_phone ?? null }}" />
@@ -349,7 +357,8 @@
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
 
-                                    <label for="work_phone" class="control-label bold mb5 col-form-label">Work Phone</label>
+                                    <label for="work_phone" class="control-label bold mb5 col-form-label">Work
+                                        Phone</label>
 
                                     <input type="number" maxlength="10" class="form-control" name="work_phone"
                                         value="{{ $UsersDetails->work_phone ?? null }}" placeholder="" />
@@ -359,7 +368,8 @@
                             <div class="col-sm-12 col-md-4" style="display:none;">
                                 <div class="mb-3">
 
-                                    <label for="source_id" class="control-label bold mb5 col-form-label">Lead Source</label>
+                                    <label for="source_id" class="control-label bold mb5 col-form-label">Lead
+                                        Source</label>
 
                                     <select class="form-select me-sm-2" id="source_id" name="source_id">
 
@@ -367,7 +377,8 @@
 
                                         @foreach($leadSources as $leadSource)
 
-                                        <option value="{{ $leadSource->source_id }}" {{ ($user->source_id ?? null) ==
+                                        <option value="{{ $leadSource->source_id }}" {{ ($commonUser->source_id ?? null)
+                                            ==
 
                                             $leadSource->source_id ?
 
@@ -408,31 +419,34 @@
                             <div class="col-sm-12 col-md-4">
                                 <div class="mb-3">
 
-                                    <label for="inputcontact" class="control-label bold mb5 col-form-label">Customer Type</label>
-									
-									<div class="row">
-										<div class="col-sm-12 col-md-6">
-											<div class="form-check">
- 												<input class="form-check-input" type="radio" name="user_type"
-													id="exampleRadios1" value="Homeowner" {{ ($UsersDetails->customer_type ??
-												null) == 
+                                    <label for="inputcontact" class="control-label bold mb5 col-form-label">Customer
+                                        Type</label>
 
-												'Homeowner' ? 'checked' : '' }}>
- 												<label class="form-check-label" for="exampleRadios1">Homeowner</label>
- 											</div>
-										</div>
-										<div class="col-sm-12 col-md-6">
-											<div class="form-check">
- 												<input class="form-check-input" type="radio" name="user_type"
-													id="exampleRadios2" value="Business" {{ ($UsersDetails->customer_type ??
-												null) ==
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-6">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="user_type"
+                                                    id="exampleRadios1" value="Homeowner" {{
+                                                    ($UsersDetails->customer_type ??
+                                                null) ==
 
-												'Business' ? 'checked' : '' }}>
- 												<label class="form-check-label" for="exampleRadios2">Business</label>
- 											</div>
-										</div>
+                                                'Homeowner' ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="exampleRadios1">Homeowner</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="user_type"
+                                                    id="exampleRadios2" value="Business" {{
+                                                    ($UsersDetails->customer_type ??
+                                                null) ==
+
+                                                'Business' ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="exampleRadios2">Business</label>
+                                            </div>
+                                        </div>
                                     </div>
-                                     
+
 
                                 </div>
                             </div>
@@ -442,10 +456,11 @@
 
                                 <div class="mb-3">
 
-                                    <label for="image" class="control-label bold mb5 col-form-label">Display Picture</label>
+                                    <label for="image" class="control-label bold mb5 col-form-label">Display
+                                        Picture</label>
 
                                     <input type="file" class="form-control" name="image"
-                                        value="{{old('user_image', $user->image )}}" accept="image/*" />
+                                        value="{{old('user_image', $commonUser->image )}}" accept="image/*" />
 
                                 </div>
                             </div>
@@ -475,7 +490,7 @@
 
                                 </div>
                             </div>
-    
+
                         </div>
                         <div class="row mt-2" style="display:none">
                             <div class="col-sm-12 col-md-12">
@@ -564,7 +579,7 @@
 
     </div>
 
-  
+
 
 
 
@@ -615,7 +630,7 @@
 
     <!-- -------------------------------------------------------------- -->
 
-  
+
 
     <!-- -------------------------------------------------------------- -->
 
@@ -623,8 +638,8 @@
 
 
 
-   
 
-   
+
+
 
 </form>

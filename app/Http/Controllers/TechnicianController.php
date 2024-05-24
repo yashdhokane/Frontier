@@ -331,8 +331,8 @@ class TechnicianController extends Controller
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
         $module_id = 11;
-        
-        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
         } else {
@@ -340,30 +340,32 @@ class TechnicianController extends Controller
         }
 
 
-        $technician = User::with('Location')->find($id);
 
-        if (!$technician) {
+        $commonUser = User::where('role', 'technician')->where('id', $id)->first();
+        if (!$commonUser) {
             return view('404');
         }
+
+
         $vehicleDescriptions = FleetVehicle::pluck('vehicle_description')->toArray();
         //dd($vehicleDescriptions);
-        $vehiclefleet = FleetVehicle::where('technician_id', $technician->id)->first();
+        $vehiclefleet = FleetVehicle::where('technician_id', $commonUser->id)->first();
         $colorcode = ColorCode::all();
         //dd($vehiclefleet);
-        $schedule = Schedule::with('JobModel.user', 'JobModel.addresscustomer', 'JobModel', 'event')->where('technician_id', $technician->id)->orderBy('created_at', 'desc')->get();
+        $schedule = Schedule::with('JobModel.user', 'JobModel.addresscustomer', 'JobModel', 'event')->where('technician_id', $commonUser->id)->orderBy('created_at', 'desc')->get();
 
 
-        $notename = DB::table('user_notes')->where('user_id', $technician->id)->get();
-        $meta = $technician->meta;
-        $home_phone = $technician->meta()->where('meta_key', 'home_phone')->value('meta_value') ?? '';
-        $location = CustomerUserAddress::where('user_id', $technician->id)->get();
+        $notename = DB::table('user_notes')->where('user_id', $commonUser->id)->get();
+        $meta = $commonUser->meta;
+        $home_phone = $commonUser->meta()->where('meta_key', 'home_phone')->value('meta_value') ?? '';
+        $location = CustomerUserAddress::where('user_id', $commonUser->id)->get();
 
         $jobasigndate = DB::table('job_assigned')
-            ->where('technician_id', $technician->id)
+            ->where('technician_id', $commonUser->id)
             ->orderBy('created_at', 'desc')
             ->first();
         $jobasign = DB::table('jobs')
-            ->where('technician_id', $technician->id)
+            ->where('technician_id', $commonUser->id)
             ->get();
 
 
@@ -373,10 +375,10 @@ class TechnicianController extends Controller
         // ->where('job_id', $technician->id)
         // ->get();
         $payments = DB::table('payments')
-            ->whereIn('job_id', function ($query) use ($technician) {
+            ->whereIn('job_id', function ($query) use ($commonUser) {
                 $query->select('id')
                     ->from('jobs')
-                    ->where('technician_id', $technician->id);
+                    ->where('technician_id', $commonUser->id);
             })
             ->get();
 
@@ -386,7 +388,7 @@ class TechnicianController extends Controller
 
 
         $customerimage = DB::table('user_files')
-            ->where('user_id', $technician->id)
+            ->where('user_id', $commonUser->id)
             ->get();
 
         // $userAddresscity = DB::table('user_address')
@@ -396,41 +398,41 @@ class TechnicianController extends Controller
         $userAddresscity = DB::table('user_address')
             ->leftJoin('location_cities', 'user_address.city_id', '=', 'location_cities.city_id')
             ->leftJoin('location_states', 'user_address.state_id', '=', 'location_states.state_id')
-            ->where('user_address.user_id', $technician->id)
+            ->where('user_address.user_id', $commonUser->id)
             ->get();
         $latitude = DB::table('user_address')
             ->leftJoin('location_cities', 'user_address.city', '=', 'location_cities.city_id')
-            ->where('user_address.user_id', $technician->id)
+            ->where('user_address.user_id', $commonUser->id)
             ->value('location_cities.latitude');
         $longitude = DB::table('user_address')
             ->leftJoin('location_cities', 'user_address.city', '=', 'location_cities.city_id')
-            ->where('user_address.user_id', $technician->id)
+            ->where('user_address.user_id', $commonUser->id)
             ->value('location_cities.longitude');
-        $fleets = $technician->fleet;
+        $fleets = $commonUser->fleet;
         if ($fleets) {
-            $oil_change = $technician->fleet()->where('fleet_key', 'oil_change')->value('fleet_value') ?? '';
-            $tune_up = $technician->fleet()->where('fleet_key', 'tune_up')->value('fleet_value') ?? '';
-            $tire_rotation = $technician->fleet()->where('fleet_key', 'tire_rotation')->value('fleet_value') ?? '';
-            $breaks = $technician->fleet()->where('fleet_key', 'breaks')->value('fleet_value') ?? '';
-            $inspection_codes = $technician->fleet()->where('fleet_key', 'inspection_codes')->value('fleet_value') ?? '';
-            $mileage = $technician->fleet()->where('fleet_key', 'mileage')->value('fleet_value') ?? '';
-            $registration_expiration_date = $technician->fleet()->where('fleet_key', 'registration_expiration_date')->value('fleet_value') ?? '';
-            $vehicle_coverage = $technician->fleet()->where('fleet_key', 'vehicle_coverage')->value('fleet_value') ?? '';
-            $license_plate = $technician->fleet()->where('fleet_key', 'license_plate')->value('fleet_value') ?? '';
-            $vin_number = $technician->fleet()->where('fleet_key', 'vin_number')->value('fleet_value') ?? '';
-            $make = $technician->fleet()->where('fleet_key', 'make')->value('fleet_value') ?? '';
-            $model = $technician->fleet()->where('fleet_key', 'model')->value('fleet_value') ?? '';
-            $year = $technician->fleet()->where('fleet_key', 'year')->value('fleet_value') ?? '';
-            $color = $technician->fleet()->where('fleet_key', 'color')->value('fleet_value') ?? '';
-            $vehicle_weight = $technician->fleet()->where('fleet_key', 'vehicle_weight')->value('fleet_value') ?? '';
-            $vehicle_cost = $technician->fleet()->where('fleet_key', 'vehicle_cost')->value('fleet_value') ?? '';
-            $use_of_vehicle = $technician->fleet()->where('fleet_key', 'use_of_vehicle')->value('fleet_value') ?? '';
-            $repair_services = $technician->fleet()->where('fleet_key', 'repair_services')->value('fleet_value') ?? '';
-            $ezpass = $technician->fleet()->where('fleet_key', 'ezpass')->value('fleet_value') ?? '';
-            $service = $technician->fleet()->where('fleet_key', 'service')->value('fleet_value') ?? '';
-            $additional_service_notes = $technician->fleet()->where('fleet_key', 'additional_service_notes')->value('fleet_value') ?? '';
-            $last_updated = $technician->fleet()->where('fleet_key', 'last_updated')->value('fleet_value') ?? '';
-            $epa_certification = $technician->fleet()->where('fleet_key', 'epa_certification')->value('fleet_value') ?? '';
+            $oil_change = $commonUser->fleet()->where('fleet_key', 'oil_change')->value('fleet_value') ?? '';
+            $tune_up = $commonUser->fleet()->where('fleet_key', 'tune_up')->value('fleet_value') ?? '';
+            $tire_rotation = $commonUser->fleet()->where('fleet_key', 'tire_rotation')->value('fleet_value') ?? '';
+            $breaks = $commonUser->fleet()->where('fleet_key', 'breaks')->value('fleet_value') ?? '';
+            $inspection_codes = $commonUser->fleet()->where('fleet_key', 'inspection_codes')->value('fleet_value') ?? '';
+            $mileage = $commonUser->fleet()->where('fleet_key', 'mileage')->value('fleet_value') ?? '';
+            $registration_expiration_date = $commonUser->fleet()->where('fleet_key', 'registration_expiration_date')->value('fleet_value') ?? '';
+            $vehicle_coverage = $commonUser->fleet()->where('fleet_key', 'vehicle_coverage')->value('fleet_value') ?? '';
+            $license_plate = $commonUser->fleet()->where('fleet_key', 'license_plate')->value('fleet_value') ?? '';
+            $vin_number = $commonUser->fleet()->where('fleet_key', 'vin_number')->value('fleet_value') ?? '';
+            $make = $commonUser->fleet()->where('fleet_key', 'make')->value('fleet_value') ?? '';
+            $model = $commonUser->fleet()->where('fleet_key', 'model')->value('fleet_value') ?? '';
+            $year = $commonUser->fleet()->where('fleet_key', 'year')->value('fleet_value') ?? '';
+            $color = $commonUser->fleet()->where('fleet_key', 'color')->value('fleet_value') ?? '';
+            $vehicle_weight = $commonUser->fleet()->where('fleet_key', 'vehicle_weight')->value('fleet_value') ?? '';
+            $vehicle_cost = $commonUser->fleet()->where('fleet_key', 'vehicle_cost')->value('fleet_value') ?? '';
+            $use_of_vehicle = $commonUser->fleet()->where('fleet_key', 'use_of_vehicle')->value('fleet_value') ?? '';
+            $repair_services = $commonUser->fleet()->where('fleet_key', 'repair_services')->value('fleet_value') ?? '';
+            $ezpass = $commonUser->fleet()->where('fleet_key', 'ezpass')->value('fleet_value') ?? '';
+            $service = $commonUser->fleet()->where('fleet_key', 'service')->value('fleet_value') ?? '';
+            $additional_service_notes = $commonUser->fleet()->where('fleet_key', 'additional_service_notes')->value('fleet_value') ?? '';
+            $last_updated = $commonUser->fleet()->where('fleet_key', 'last_updated')->value('fleet_value') ?? '';
+            $epa_certification = $commonUser->fleet()->where('fleet_key', 'epa_certification')->value('fleet_value') ?? '';
         } else {
             $oil_change = '';
             $tune_up = '';
@@ -457,7 +459,7 @@ class TechnicianController extends Controller
             $epa_certification = '';
         }
 
-        $UsersDetails = UsersDetails::where('user_id', $technician->id)->first();
+        $UsersDetails = UsersDetails::where('user_id', $commonUser->id)->first();
 
         $serviceAreas = LocationServiceArea::all();
         $locationStates = LocationState::all();
@@ -466,11 +468,11 @@ class TechnicianController extends Controller
 
 
         // Assuming you have a 'tags' relationship defined in your User model
-        $userTags = $technician->tags;
+        $userTags = $commonUser->tags;
 
         // Convert the comma-separated tag_id string to an array
         $selectedTags = explode(',', $userTags->pluck('tag_id')->implode(','));
-        $location = $technician->location;
+        $location = $commonUser->location;
 
 
         // Check if the technician has a location
@@ -481,8 +483,8 @@ class TechnicianController extends Controller
             $cities = collect(); // No cities if no location is set
         }
 
-        $Note = $technician->Note;
-        $source = $technician->source;
+        $Note = $commonUser->Note;
+        $source = $commonUser->source;
         $technicianpart = User::where('role', 'technician')->find($id);
 
 
@@ -496,21 +498,21 @@ class TechnicianController extends Controller
 
         $tech = User::where('role', 'technician')->get();
         $activity = UsersActivity::with('user')
-            ->where('user_id', $technician->id)
+            ->where('user_id', $commonUser->id)
             ->get();
 
-        $setting = UsersSettings::where('user_id', $technician->id)
+        $setting = UsersSettings::where('user_id', $commonUser->id)
             ->first();
         $login_history = DB::table('user_login_history')
-            ->where('user_login_history.user_id', $technician->id)
+            ->where('user_login_history.user_id', $commonUser->id)
             ->first();
         $estimates = DB::table('estimates')->where(
             'technician_id',
-            $technician->id
+            $commonUser->id
         )->get();
         //dd($login_history);
 
-        return view('technicians.show', compact('vehiclefleet', 'vehicleDescriptions', 'colorcode', 'schedule', 'estimates', 'activity', 'setting', 'login_history', 'technician', 'oil_change', 'tune_up', 'tire_rotation', 'breaks', 'inspection_codes', 'mileage', 'registration_expiration_date', 'vehicle_coverage', 'license_plate', 'vin_number', 'make', 'model', 'year', 'color', 'vehicle_weight', 'vehicle_cost', 'use_of_vehicle', 'repair_services', 'ezpass', 'service', 'additional_service_notes', 'last_updated', 'epa_certification', 'notename', 'payments', 'longitude', 'latitude', 'userAddresscity', 'jobasign', 'customerimage', 'location', 'jobasigndate', 'serviceAreas', 'locationStates', 'tags', 'cities', 'selectedTags', 'userTags', 'product', 'assign', 'technicianpart', 'tickets', 'payment', 'manufacturer', 'tech', 'UsersDetails'));
+        return view('technicians.show', compact('vehiclefleet', 'vehicleDescriptions', 'colorcode', 'schedule', 'estimates', 'activity', 'setting', 'login_history', 'commonUser', 'oil_change', 'tune_up', 'tire_rotation', 'breaks', 'inspection_codes', 'mileage', 'registration_expiration_date', 'vehicle_coverage', 'license_plate', 'vin_number', 'make', 'model', 'year', 'color', 'vehicle_weight', 'vehicle_cost', 'use_of_vehicle', 'repair_services', 'ezpass', 'service', 'additional_service_notes', 'last_updated', 'epa_certification', 'notename', 'payments', 'longitude', 'latitude', 'userAddresscity', 'jobasign', 'customerimage', 'location', 'jobasigndate', 'serviceAreas', 'locationStates', 'tags', 'cities', 'selectedTags', 'userTags', 'product', 'assign', 'technicianpart', 'tickets', 'payment', 'manufacturer', 'tech', 'UsersDetails'));
     }
 
     public function edit($id)

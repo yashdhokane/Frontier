@@ -50,9 +50,9 @@
 </style>
 
 
-<form action="{{ route('technicians.updateservice', $technician->id) }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('technicians.updateservice', $commonUser->id) }}" method="POST" enctype="multipart/form-data">
     @csrf
-    <input type="hidden" name="technician_id" value="{{ $technician->id }}">
+    <input type="hidden" name="technician_id" value="{{ $commonUser->id }}">
 
     
   
@@ -71,8 +71,8 @@
 					<div class="col-sm-12 col-md-12">
 						<div class="mb-3">
  							@php
-							if (isset($technician->service_areas) && !empty($technician->service_areas)) {
-							$service_areas = explode(',', $technician->service_areas);
+							if (isset($commonUser->service_areas) && !empty($commonUser->service_areas)) {
+							$service_areas = explode(',', $commonUser->service_areas);
 							} else {
 							$service_areas = [];
 							}

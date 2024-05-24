@@ -57,8 +57,8 @@ class UserController extends Controller
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
         $module_id = 2;
-        
-        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
         } else {
@@ -146,12 +146,12 @@ class UserController extends Controller
      */
     public function create()
     {
-       $user_auth = auth()->user();
+        $user_auth = auth()->user();
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
-        $module_id =3;
-        
-        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        $module_id = 3;
+
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
         } else {
@@ -365,8 +365,8 @@ class UserController extends Controller
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
         $module_id = 4;
-        
-        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
         } else {
@@ -374,18 +374,22 @@ class UserController extends Controller
         }
 
         //$roles = Role::all();
-        $user = User::with('Location')->find($id);
-        if (!$user) {
+
+        $commonUser = User::with('Location')->where('role', 'customer')->where('id', $id)->first();
+        if (!$commonUser) {
+            return view('404');
+        }
+        if (!$commonUser) {
             return view('404');
         }
         $customer_tag = SiteTags::all();
         $notename = DB::table('user_notes')->where(
             'user_id',
-            $user->id
+            $commonUser->id
         )->get();
         $estimates = DB::table('estimates')->where(
             'customer_id',
-            $user->id
+            $commonUser->id
         )->get();
         // $userId = $user->id;
         // $attr = [
@@ -398,46 +402,46 @@ class UserController extends Controller
         $userAddresscity = DB::table('user_address')
             ->leftJoin('location_cities', 'user_address.city_id', '=', 'location_cities.city_id')
             ->leftJoin('location_states', 'user_address.state_id', '=', 'location_states.state_id')
-            ->where('user_address.user_id', $user->id)
+            ->where('user_address.user_id', $commonUser->id)
             ->get();
         //dd($userAddresscity);
 
 
-        $workAddress = CustomerUserAddress::where('user_id', $user->id)
+        $workAddress = CustomerUserAddress::where('user_id', $commonUser->id)
             ->where('address_type', 'office')
             ->first();
 
 
-        $location = CustomerUserAddress::where('user_id', $user->id)->get();
+        $location = CustomerUserAddress::where('user_id', $commonUser->id)->get();
 
 
 
 
         $jobasigndate = DB::table('job_assigned')
-            ->where('customer_id', $user->id)
+            ->where('customer_id', $commonUser->id)
             ->orderBy('created_at', 'desc')
             ->first();
 
 
         $jobasign = DB::table('jobs')
-            ->where('customer_id', $user->id)
+            ->where('customer_id', $commonUser->id)
             ->get();
 
 
         $payments = DB::table('payments')
-            ->where('customer_id', $user->id)
+            ->where('customer_id', $commonUser->id)
             ->get();
 
 
 
         $customerimage = DB::table('user_files')
-            ->where('user_id', $user->id)
+            ->where('user_id', $commonUser->id)
             ->get();
         // dd($jobasign);
 
         $tickets = JobModel::orderBy('created_at', 'desc')->get();
         $payment = Payment::with('user', 'JobModel')->latest()->get();
-        $UsersDetails = UsersDetails::where('user_id', $user->id)->first();
+        $UsersDetails = UsersDetails::where('user_id', $commonUser->id)->first();
         // dd($UsersDetails);
 
         // Fetch the $locationStates from wherever you are fetching it
@@ -452,11 +456,11 @@ class UserController extends Controller
         $tags = SiteTags::all();
 
 
-        $location = CustomerUserAddress::where('user_id', $user->id)
+        $location = CustomerUserAddress::where('user_id', $commonUser->id)
             ->whereIn('address_type', ['home', 'work', 'other'])
             ->first();
 
-        $location1 = CustomerUserAddress::where('user_id', $user->id)
+        $location1 = CustomerUserAddress::where('user_id', $commonUser->id)
             ->whereIn('address_type', ['home', 'work', 'other'])
             ->where('address_id', '>', $location ? $location->address_id : 0)
             ->orderBy('address_id')
@@ -467,7 +471,7 @@ class UserController extends Controller
 
 
 
-        $location = $user->location;
+        $location = $commonUser->location;
         if ($location) {
             // Fetch cities associated with the technician's state
             $cities = LocationCity::where('state_id', $location->state_id)->get();
@@ -480,26 +484,26 @@ class UserController extends Controller
         //   dd($location);
 
 
-        $Notes = UserNotesCustomer::where('user_id', $user->id)->first();
+        $Notes = UserNotesCustomer::where('user_id', $commonUser->id)->first();
 
         // Assuming you have a 'tags' relationship defined in your User model
-        $userTags = $user->tags;
+        $userTags = $commonUser->tags;
 
         // Convert the comma-separated tag_id string to an array
         $selectedTags = explode(',', $userTags->pluck('tag_id')->implode(','));
 
-        $source = $user->source;
+        $source = $commonUser->source;
 
         $activity = UsersActivity::with('user')
-            ->where('user_id', $user->id)
+            ->where('user_id', $commonUser->id)
             ->get();
-        $leadsourcename = Leadsource::where('user_id', $user->id)
+        $leadsourcename = Leadsource::where('user_id', $commonUser->id)
             ->get();
         //  dd($leadsourcename);
-        $setting = UsersSettings::where('user_id', $user->id)
+        $setting = UsersSettings::where('user_id', $commonUser->id)
             ->first();
         $login_history = DB::table('user_login_history')
-            ->where('user_login_history.user_id', $user->id)
+            ->where('user_login_history.user_id', $commonUser->id)
             ->first();
         $tickets = JobModel::orderBy('created_at', 'desc')->get();
         $payment = Payment::with('user', 'JobModel')->latest()->get();
@@ -508,7 +512,7 @@ class UserController extends Controller
 
 
         $leadsource = SiteLeadSource::all();
-        return view('users.show', compact('customer_tag', 'estimates', 'notename', 'leadsourcename', 'leadsource', 'selectedTags', 'tickets', 'payment', 'activity', 'setting', 'login_history', 'location1', 'tags', 'leadSources', 'cities', 'locationStates', 'user',  'payments', 'payment', 'userAddresscity', 'jobasigndate', 'customerimage', 'jobasign', 'userTags', 'location', 'tickets', 'UsersDetails', 'Notes'));
+        return view('users.show', compact('customer_tag', 'estimates', 'notename', 'leadsourcename', 'leadsource', 'selectedTags', 'tickets', 'payment', 'activity', 'setting', 'login_history', 'location1', 'tags', 'leadSources', 'cities', 'locationStates', 'commonUser', 'payments', 'payment', 'userAddresscity', 'jobasigndate', 'customerimage', 'jobasign', 'userTags', 'location', 'tickets', 'UsersDetails', 'Notes'));
     }
 
 
@@ -1254,7 +1258,7 @@ class UserController extends Controller
         $customers = '';
 
         if (isset($phone) && !empty($phone)) {
-            $filterCustomer = User::where('mobile',  $phone)
+            $filterCustomer = User::where('mobile', $phone)
                 ->where('role', 'customer')
                 ->get();
 
@@ -1439,7 +1443,7 @@ class UserController extends Controller
 
     public function customercomment(Request $request)
     {
-       
+
 
         $addedByUserId = auth()->user()->id;
         $user = User::findOrFail($request->user_id);

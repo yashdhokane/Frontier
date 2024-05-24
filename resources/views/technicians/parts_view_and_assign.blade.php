@@ -25,7 +25,7 @@
 									<option value="{{ $item->id }}">{{ $item->name }}</option>
 									@endforeach
 								</select> --}}
-								<input type="hidden" name="technician_id[]" value="{{ $technician->id }}">
+								<input type="hidden" name="technician_id[]" value="{{ $commonUser->id }}">
 							</div>
 
 							<div class="col-md-4">

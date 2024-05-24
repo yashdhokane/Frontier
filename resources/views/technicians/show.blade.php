@@ -28,7 +28,7 @@
     <div class="page-breadcrumb">
         <div class="row">
             <div class="col-9 align-self-center">
-                <h4 class="page-title">{{ $technician->name }} <small class="text-muted"
+                <h4 class="page-title">{{ $commonUser->name }} <small class="text-muted"
                         style="font-size: 10px;">Technician</small></h4>
             </div>
             <div class="col-3 text-end px-4">
@@ -148,14 +148,14 @@
 
                                             <div class="col-12">
                                                 <center class="mt-1">
-                                                    @if ($technician->user_image)
-                                                        <img src="{{ asset('public/images/Uploads/users/' . $technician->id . '/' . $technician->user_image) }}"
+                                                    @if ($commonUser->user_image)
+                                                        <img src="{{ asset('public/images/Uploads/users/' . $commonUser->id . '/' . $commonUser->user_image) }}"
                                                             class="rounded-circle" width="150" />
                                                     @else
                                                         <img src="{{ asset('public/images/login_img_bydefault.png') }}"
                                                             alt="avatar" class="rounded-circle" width="150" />
                                                     @endif
-                                                    <h5 class="card-title uppercase mt-1">{{ $technician->name }}</h5>
+                                                    <h5 class="card-title uppercase mt-1">{{ $commonUser->name }}</h5>
                                                     <h6 class="card-subtitle">Technician</h6>
                                                 </center>
                                             </div>
@@ -164,8 +164,8 @@
                                             <div class="col-12">
                                                 <h5 class="card-title uppercase mt-4">Tags</h5>
                                                 <div class="mt-0">
-                                                    @if ($technician->tags->isNotEmpty())
-                                                        @foreach ($technician->tags as $tag)
+                                                    @if ($commonUser->tags->isNotEmpty())
+                                                        @foreach ($commonUser->tags as $tag)
                                                             <span class="badge bg-dark">{{ $tag->tag_name }}</span>
                                                         @endforeach
                                                     @else
@@ -207,9 +207,9 @@
                                                 <div class="col-12">
                                                     <h5 class="card-title uppercase mt-4">Contact info</h5>
                                                     <h6 style="font-weight: normal;"><i class="fas fa-mobile-alt"></i>
-                                                        {{ $technician->mobile }}</h6>
+                                                        {{ $commonUser->mobile }}</h6>
                                                     <h6 style="font-weight: normal;"><i class="fas fa-envelope"></i>
-                                                        {{ $technician->email }}</h6>
+                                                        {{ $commonUser->email }}</h6>
 
                                                         <h5 class="card-title uppercase mt-5">Address</h5>
                                                         <h6 style="font-weight: normal;"><i class="ri-map-pin-line"></i>
@@ -233,7 +233,7 @@
                                                         </div>
                                                         <div class="col-12">
                                                             <small class="text-muted pt-1 db">Profile Created</small>
-                                                            <h6>{{ $technician->created_at ? \Carbon\Carbon::parse($technician->created_at)->format('m-d-Y') : null }}
+                                                            <h6>{{ $commonUser->created_at ? \Carbon\Carbon::parse($commonUser->created_at)->format('m-d-Y') : null }}
                                                             </h6>
                                                         </div>
                                                         <div class="col-12">
@@ -246,7 +246,7 @@
                                                         </div>
                                                         <div class="col-12">
                                                             <small class="text-muted pt-1 db">Status</small>
-                                                            <h6 class="ucfirst">{{ $technician->status ?? null }}</h6>
+                                                            <h6 class="ucfirst">{{ $commonUser->status ?? null }}</h6>
                                                         </div>
                                                     </div>
 
@@ -283,9 +283,9 @@
                             <div class="card-body card-border shadow">
                                 <h5 class="card-title uppercase">Jobs / Calls</h5>
 
-                                @if ($tickets->where('technician_id', $technician->id)->isEmpty())
+                                @if ($tickets->where('technician_id', $commonUser->id)->isEmpty())
                                     <div class="alert alert-info mt-4 col-md-12" role="alert">Calls not available for
-                                        {{ $technician->name ?? '' }}. <strong><a href="{{ route('schedule') }}">Add
+                                        {{ $commonUser->name ?? '' }}. <strong><a href="{{ route('schedule') }}">Add
                                                 New</a></strong></div>
                                 @else
                                     <div class="table-responsive table-custom2 mt-2">
@@ -301,7 +301,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($tickets->where('technician_id', $technician->id) as $ticket)
+                                                @foreach ($tickets->where('technician_id', $commonUser->id) as $ticket)
                                                     <tr>
                                                         <td>
                                                             <a href="{{ route('tickets.show', $ticket->id) }}"
@@ -375,7 +375,7 @@
                                 <h5 class="card-title uppercase">Payments & Invoices</h5>
                                 @if ($payments->isEmpty())
                                     <div class="alert alert-info mt-4" role="alert">
-                                        Payments not available for {{ $technician->name ?? '' }}.
+                                        Payments not available for {{ $commonUser->name ?? '' }}.
                                         <strong><a href="{{ route('schedule') }}">Add New</a></strong>
                                     </div>
                                 @else
@@ -423,8 +423,8 @@
                                                                     $technician1 = DB::table('users')
                                                                         ->where('id', $job->technician_id)
                                                                         ->first(); // Retrieve technician details
-                                                                    $technician_name = $technician
-                                                                        ? $technician->name
+                                                                    $technician_name = $commonUser
+                                                                        ? $commonUser->name
                                                                         : 'Unknown';
                                                                     // Get technician's name or set to 'Unknown' if not found
 } else {
@@ -471,7 +471,7 @@
                                         @if (empty($vehiclefleet->technician_id))
                                             <div class="alert alert-info mt-4 col-md-12" role="alert">
                                                 Please go to the Vehicle section and assign a vehicle to a
-                                                {{ $technician->name ?? '' }}. <strong><a
+                                                {{ $commonUser->name ?? '' }}. <strong><a
                                                         href="{{ route('vehicles') }}">Add New</a></strong>
                                             </div>
                                         @else
@@ -500,7 +500,7 @@
 
                                                         </div>
                                                         <input type="hidden" class="form-control" name="technician_id"
-                                                            value="{{ $technician->id }}" />
+                                                            value="{{ $commonUser->id }}" />
 
                                                         <div class="mb-3">
                                                             <button type="submit" class="btn btn-primary">Update</button>
@@ -516,7 +516,7 @@
 
                                         <form class="form" method="post" action="{{ route('updatefleet') }}">
                                             @csrf
-                                            <input class="form-control" type="hidden" value="{{ $technician->id }}"
+                                            <input class="form-control" type="hidden" value="{{ $commonUser->id }}"
                                                 name="id">
 
                                             <div class="mb-3 row">
@@ -723,62 +723,8 @@
 
                         <div class="tab-pane fade" id="others_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
                             <div class="card-body card-border shadow">
-                                <h5 class="card-title uppercase">Notes </h5>
-                                <div class="profiletimeline mt-2">
-                                    @foreach ($notename as $notename)
-                                        <div class="sl-item mb-4">
-                                            <div class="sl-left">
-                                                @php
-                                                    $username = DB::table('users')
-                                                        ->where('id', $notename->added_by)
-                                                        ->first();
-                                                @endphp
-                                                @if ($username && $username->user_image)
-                                                    <img src="{{ asset('public/images/Uploads/users/' . $username->id . '/' . $username->user_image) }}"
-                                                        class="rounded-circle" alt="user" />
-                                                @else
-                                                    <img src="{{ asset('public/images/login_img_bydefault.png') }}"
-                                                        alt="user" class=" rounded-circle" />
-                                                @endif
+                                    @include('commonfiles.notes_for_profiles')
 
-                                            </div>
-
-                                            <div class="sl-right">
-                                                <div>
-                                                    <a href="javascript:void(0)" class="link ucfirst ft17">
-                                                        {{ $username->name ?? null }}</a>
-                                                    <span class="sl-date">
-                                                        {{ \Carbon\Carbon::parse($notename->created_at)->diffForHumans() }}
-                                                    </span>
-                                                    <div class="row">
-                                                        <div class="col-lg-12 col-md-12 ft15">
-                                                            {{ $notename->note }}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                                <div class="row mt-2">
-                                    <div class="col-lg-6 col-xlg-6">
-                                        <form id="commentForm" action="{{ route('techniciancomment.store') }}"
-                                            method="POST">
-                                            @csrf
-                                            <div class="mb-3">
-                                                <label for="tag_id"
-                                                    class="control-label bold col-form-label uppercase">Add New
-                                                    Comment</label>
-                                                <input type="hidden" name="id" value="{{ $technician->id }}">
-                                                <textarea class="form-control" id="comment" name="note" rows="3"></textarea>
-                                            </div>
-                                            <div class="mb-3 d-flex align-items-center">
-                                                <button type="submit" id="submitButton"
-                                                    class="btn btn-primary ms-2">Submit</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
                             </div>
                         </div>
 

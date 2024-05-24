@@ -20,7 +20,7 @@
 							</div>
 						</div>
 						<div class="form-check form-switch mb-0">
-							<input type="hidden" value="{{ $technician->id }}" name="id">
+							<input type="hidden" value="{{ $commonUser->id }}" name="id">
 							<input type="hidden" name="switch_email"
 								value="{{ $setting->email_notifications ?? null }}">
 						  <input class="form-check-input" type="checkbox" role="switch" id="emailSwitch" name="email_switch"

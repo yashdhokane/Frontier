@@ -72,7 +72,7 @@
                 <div id="passwordMatchMessage" class="alert" style="display:none; margin-bottom:5px;"></div>
                 <form id="changePasswordForm" method="get" action="{{route('update-customer-password')}}">
                     @csrf
-                    <input type="hidden" class="form-control" name="id" value="{{$technician->id}}" placeholder=""
+                    <input type="hidden" class="form-control" name="id" value="{{$commonUser->id}}" placeholder=""
                         required />
                     <div class="form-group">
                         <label for="newPassword">New Password</label>
@@ -91,7 +91,7 @@
     </div>
 </div>
 {{-- -- end model --}}
-<form action="{{ route('technicians.update', $technician->id) }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('technicians.update', $commonUser->id) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     <!-- End Left Sidebar - style you can find in sidebar.scss  -->
@@ -135,7 +135,7 @@
                                         class="control-label bold mb5 col-form-label required-field">Display Name (shown
                                         on invoice)</label>
                                     <input type="text" class="form-control" id="display_name" name="display_name"
-                                        value="{{ old('display_name', $technician->name) }}" placeholder="" required />
+                                        value="{{ old('display_name', $commonUser->name) }}" placeholder="" required />
                                 </div>
                             </div>
                         </div>
@@ -146,7 +146,7 @@
                                     <label for="mobile_phone" class="control-label bold mb5 col-form-label required-field">Mobile
                                         Phone</label>
                                     <input type="number" maxlength="10" class="form-control" id="mobile_phone"
-                                        name="mobile_phone" value="{{ old('mobile_phone', $technician->mobile) }}"
+                                        name="mobile_phone" value="{{ old('mobile_phone', $commonUser->mobile) }}"
                                         placeholder="" required />
                                     <small id="name" class="form-text text-muted">Don’t add +1. Only add mobile number
                                         without space.</small>
@@ -173,7 +173,7 @@
                                     <label for="email"
                                         class="control-label bold mb5 col-form-label required-field">Email</label>
                                     <input type="text" class="form-control" id="email" name="email"
-                                        value="{{ old('email', $technician->email) }}" placeholder="" required />
+                                        value="{{ old('email', $commonUser->email) }}" placeholder="" required />
                                 </div>
                             </div>
                         </div>
@@ -213,7 +213,7 @@
                                         <option selected disabled value="">Select City...</option>
                                     </select> --}}
                                     <input type="text" class="form-control" id="city" name="city"
-                                        value="{{ $technician->Location->city ?? null }}" oninput="searchCity()"
+                                        value="{{ $commonUser->Location->city ?? null }}" oninput="searchCity()"
                                         required />
                                     {{-- <input type="hidden" class="form-control" id="city_id" name="city_id"
                                         oninput="searchCity1()" required /> --}}
@@ -293,7 +293,7 @@
                                         value="{{ $UsersDetails->ssn ?? null  }}" />
 
                                     <input type="hidden" class="form-control" id="role"
-                                        value="{{ old('role', $technician->role) }}" name="role" placeholder=""
+                                        value="{{ old('role', $commonUser->role) }}" name="role" placeholder=""
                                         value="technician" />
                                 </div>
                             </div>
@@ -304,7 +304,7 @@
                                 <div class="mb-3">
                                     <label for="image" class="control-label bold mb5 col-form-label">Display Picture</label>
                                     <input type="file" class="form-control" id="image"
-                                        value="{{ old('image', $technician->user_image) }}" name="image"
+                                        value="{{ old('image', $commonUser->user_image) }}" name="image"
                                         accept="image/*" />
                                 </div>
                             </div>
@@ -343,7 +343,7 @@
 					@foreach ($colorcode as $colorCode)
 						<div class="col-sm-12 col-md-4">
 							<div class="form-check">
-								<input class="form-check-input success check-outline outline-success" type="radio" name="color_code" id="{{ $colorCode->color_code }}" value="{{ $colorCode->color_code }}" @if ($colorCode->color_code == $technician->color_code) checked @endif>
+								<input class="form-check-input success check-outline outline-success" type="radio" name="color_code" id="{{ $colorCode->color_code }}" value="{{ $colorCode->color_code }}" @if ($colorCode->color_code == $commonUser->color_code) checked @endif>
 								<label class="form-check-label" for="{{ $colorCode->color_code }}">
 									<div class="color_box" style="background-color: {{ $colorCode->color_code }};"></div>
 								</label>
