@@ -272,6 +272,18 @@
                 var form = $('.rescheduleForm')[0];
                 var params = new FormData(form);
                 var technician = $('.technician option:selected').val();
+                
+                 // Validation check for technician selection
+                if (!technician) {
+                    // Display validation message if technician is not selected
+                    if (!$('.technician').next('.validation-error').length) {
+                        $('.technician').after('<small class="validation-error text-danger">Please select a technician.</small>');
+                    }
+                    return; // Prevent form submission
+                } else {
+                    // Remove validation message if technician is selected
+                    $('.technician').next('.validation-error').remove();
+                }
 
                 params.append('technician_id', technician);
 
