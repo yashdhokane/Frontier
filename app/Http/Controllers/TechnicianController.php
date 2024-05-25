@@ -48,13 +48,13 @@ class TechnicianController extends Controller
 
     public function index($status = null)
     {
-        
+
         $user_auth = auth()->user();
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
         $module_id = 9;
-        
-        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
         } else {
@@ -96,8 +96,8 @@ class TechnicianController extends Controller
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
         $module_id = 10;
-        
-        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
         } else {
@@ -150,8 +150,8 @@ class TechnicianController extends Controller
 
         $user->email = $request['email'];
         $user->mobile = $request['mobile_phone'];
-        $user->color_code  = $request['color_code'];
-        $user->role  = $request['role'];
+        $user->color_code = $request['color_code'];
+        $user->role = $request['role'];
 
         $user->password = Hash::make($request['password']);
         // $user->service_areas = implode(',', $request['service_areas']);
@@ -605,7 +605,7 @@ class TechnicianController extends Controller
         $user->email = $request['email'];
         $user->mobile = $request['mobile_phone'];
         $user->role = $request['role'];
-        $user->color_code  = $request['color_code'];
+        $user->color_code = $request['color_code'];
 
         // $user->service_areas = $request['service_areas'];
         if ($request->filled('password')) {
@@ -797,7 +797,7 @@ class TechnicianController extends Controller
         $permissions_type = $user_auth->permissions_type;
         $module_id = 5;
 
-        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
         } else {
@@ -825,12 +825,12 @@ class TechnicianController extends Controller
 
     public function technicianstaus(Request $request)
     {
-       $user_auth = auth()->user();
+        $user_auth = auth()->user();
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
         $module_id = 6;
-        
-        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
         } else {

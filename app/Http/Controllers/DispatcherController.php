@@ -292,11 +292,12 @@ class DispatcherController extends Controller
             ->value('location_cities.longitude');
 
         $location = CustomerUserAddress::where('user_id', $commonUser->id)->get();
-        $payment = Payment::whereHas('JobModel', function ($query) use ($commonUser) {
+        $payments = Payment::whereHas('JobModel', function ($query) use ($commonUser) {
             $query->where('added_by', $commonUser->id);
         })
             ->latest()
             ->get();
+
 
         $UsersDetails = UsersDetails::where('user_id', $commonUser->id)->first();
 
@@ -352,10 +353,13 @@ class DispatcherController extends Controller
         $parentModules = PermissionModel::where('parent_id', 0)
             ->orderBy('module_id', 'ASC')
             ->get();
-
+        $estimates = DB::table('estimates')->where(
+            'added_by',
+            $commonUser->id
+        )->get();
         // echo json_encode($jobActivity);
         // exit();
-        return view('dispatcher.show', compact('commonUser', 'access_array', 'parentModules', 'activity', 'setting', 'UsersDetails', 'locationStates', 'Note', 'source', 'selectedTags', 'userTags', 'tags', 'payment', 'tickets', 'customerimage', 'notename', 'activity', 'jobasign', 'location', 'latitude', 'longitude', 'userAddresscity', 'home_phone'));
+        return view('dispatcher.show', compact('commonUser', 'access_array', 'parentModules', 'activity', 'setting', 'UsersDetails', 'locationStates', 'Note', 'source', 'selectedTags', 'userTags', 'tags', 'payments', 'tickets', 'customerimage', 'notename', 'activity', 'jobasign', 'location', 'latitude', 'longitude', 'userAddresscity', 'estimates', 'home_phone'));
     }
     public function permission(Request $request)
     {

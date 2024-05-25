@@ -320,7 +320,7 @@ class MultiAdminController extends Controller
             ->where('user_id', $commonUser->id)
             ->get();
         $tickets = JobModel::orderBy('created_at', 'desc')->get();
-        $payment = Payment::whereHas('JobModel', function ($query) use ($commonUser) {
+        $payments = Payment::whereHas('JobModel', function ($query) use ($commonUser) {
             $query->where('added_by', $commonUser->id);
         })
             ->latest()
@@ -368,7 +368,12 @@ class MultiAdminController extends Controller
             ->orderBy('activity_date', 'desc') // Order by created_at in descending order
             ->get();
 
-        return view('multiadmin.show', compact('UsersDetails', 'activity', 'Note', 'source', 'commonUser', 'tags', 'userTags', 'selectedTags', 'locationStates', 'setting', 'payment', 'tickets', 'customerimage', 'notename', 'activity', 'jobasign', 'longitude', 'latitude', 'userAddresscity', 'location', 'home_phone'));
+        $estimates = DB::table('estimates')->where(
+            'added_by',
+            $commonUser->id
+        )->get();
+
+        return view('multiadmin.show', compact('UsersDetails', 'activity', 'Note', 'source', 'commonUser', 'tags', 'userTags', 'selectedTags', 'locationStates', 'setting', 'payments', 'tickets', 'customerimage', 'notename', 'activity', 'jobasign', 'longitude', 'latitude', 'userAddresscity', 'location', 'home_phone', 'estimates'));
     }
 
 

@@ -231,8 +231,10 @@ Route::get('/getSiteSettings', [HomeController::class, 'getSiteSettings'])->midd
 
 
 
+//comment role:admin previous
+//comment auth new
 
-Route::group(['middleware' => 'role:admin'], function () {
+Route::group(['middleware' => 'auth'], function () {
 
 
 
@@ -250,7 +252,7 @@ Route::group(['middleware' => 'role:admin'], function () {
 
     Route::get('/admins/create', [AdminController::class, 'create'])->name('admins.create');
 
-Route::post('/update-notification', [AdminController::class, 'updateNotification'])->name('update.notification');
+    Route::post('/update-notification', [AdminController::class, 'updateNotification'])->name('update.notification');
 
 
     // Store - Save a new admin to the database
@@ -293,10 +295,11 @@ Route::post('/update-notification', [AdminController::class, 'updateNotification
 });
 
 
+//comment role:customer previous
+//comment auth new
 
 
-
-Route::group(['middleware' => 'role:customer'], function () {
+Route::group(['middleware' => 'auth'], function () {
 
 
 
@@ -313,7 +316,7 @@ Route::group(['middleware' => 'role:customer'], function () {
 
     Route::get('/customer/create', [UserController::class, 'create'])->name('users.create');
 
-Route::post('/get-user-status', [UserController::class, 'getUserStatus'])->name('get.user.status');
+    Route::post('/get-user-status', [UserController::class, 'getUserStatus'])->name('get.user.status');
     Route::get('/autocomplete/city', [UserController::class, 'autocomplete'])->name('autocomplete.city');
 
     Route::POST('/customers/store', [UserController::class, 'store'])->name('users.store');
@@ -338,8 +341,12 @@ Route::post('/get-user-status', [UserController::class, 'getUserStatus'])->name(
 });
 
 
+//comment role:customer previous
+//comment auth new
 
-Route::group(['middleware' => 'role:customer'], function () {
+
+
+Route::group(['middleware' => 'auth'], function () {
 
 
 
@@ -348,7 +355,7 @@ Route::group(['middleware' => 'role:customer'], function () {
 
 
     // Route::resource('/technicians', TechnicianController::class,);
-        Route::get('/technicians', [TechnicianController::class, 'index'])->name('technicians.index');
+    Route::get('/technicians', [TechnicianController::class, 'index'])->name('technicians.index');
 
     Route::get('/technicians/{status?}', [TechnicianController::class, 'index'])->name('technicians.status');
 
@@ -473,7 +480,7 @@ Route::middleware('auth')->group(function () {
     Route::post('add/customer_tags/{id}', [TicketController::class, 'addCustomerTags']);
 
     Route::post('add/job_tags/{id}', [TicketController::class, 'job_tags']);
-    
+
     Route::post('add/attachment/{id}', [TicketController::class, 'attachment']);
 
     Route::post('add/leadsource/{id}', [TicketController::class, 'leadSource']);
@@ -547,7 +554,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/tasks/{id}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 
 
-//Reports
+    //Reports
 
     Route::get('/reports/technician', [ReportsController::class, 'technicianreport'])->name('technicianreport.index');
 
@@ -744,7 +751,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('schedule/update/post', [ScheduleController::class, 'update'])->name('schedule.update.post');
 
-   Route::get('schedule/edit', [ScheduleController::class, 'edit'])->name('schedule.edit');
+    Route::get('schedule/edit', [ScheduleController::class, 'edit'])->name('schedule.edit');
 
     Route::post('schedule/update', [ScheduleController::class, 'updateSchedule'])->name('schedule.update');
 
@@ -779,10 +786,10 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/refresh-schedule', [ScheduleController::class, 'refreshSchedule'])->name('refresh-schedule');
 
-    // MailController  
+    // MailController
 
     Route::get('get/mail/schedule', [MailController::class, 'index']);
-    
+
 
 
     // EventController
@@ -815,7 +822,7 @@ Route::middleware('auth')->group(function () {
     // FleetController
 
     Route::get('vehicles', [FleetController::class, 'index'])->name('vehicles');
-    
+
     Route::post('fleet/store', [FleetController::class, 'store'])->name('fleet.store');
 
     Route::get('vehicle/details/{id}', [FleetController::class, 'edit']);
@@ -830,7 +837,7 @@ Route::middleware('auth')->group(function () {
     Route::get('addvehicle', [FleetController::class, 'addvehicle'])->name('addvehicle');
 
     Route::post('updatefleetdetails', [FleetController::class, 'updatefleetdetails'])->name('updatefleetdetails');
-Route::post('fleet-update/{id}', [FleetController::class, 'update'])->name('fleetupdate');
+    Route::post('fleet-update/{id}', [FleetController::class, 'update'])->name('fleetupdate');
 
 
 
@@ -842,7 +849,7 @@ Route::post('fleet-update/{id}', [FleetController::class, 'update'])->name('flee
 
 
 
-   
+
     Route::get('parts', [ProductCategoryController::class, 'index'])->name('product.index');
 
     Route::post('book-list/partscategory-store', [ProductCategoryController::class, 'storeproductcategory'])->name('productcategory.store');
@@ -873,9 +880,9 @@ Route::post('fleet-update/{id}', [FleetController::class, 'update'])->name('flee
     Route::get('book-list/parts/{id}/destroy', [productController::class, 'destroy'])->name('product.destroy');
 
     Route::get('assign_product', [ProductCategoryController::class, 'assign_product'])->name('assign_product');
-    
+
     Route::post('store/assign-product', [ProductCategoryController::class, 'store_assign_product']);
-    
+
     Route::get('partCategory', [ProductController::class, 'listingproduct'])->name('partCategory');
 
 
@@ -1024,17 +1031,17 @@ Route::post('fleet-update/{id}', [FleetController::class, 'update'])->name('flee
 
     //adminprofile
 
-Route::get('/my-profile', [AdminProfileController::class, 'index'])->name('myprofile.index')->middleware('auth');
-Route::get('/my-profile/notification', [AdminProfileController::class, 'notification'])->name('myprofile.notification')->middleware('auth');
+    Route::get('/my-profile', [AdminProfileController::class, 'index'])->name('myprofile.index')->middleware('auth');
+    Route::get('/my-profile/notification', [AdminProfileController::class, 'notification'])->name('myprofile.notification')->middleware('auth');
 
-Route::get('/my-profile/activity', [AdminProfileController::class, 'activity'])->name('myprofile.activity')->middleware('auth');
+    Route::get('/my-profile/activity', [AdminProfileController::class, 'activity'])->name('myprofile.activity')->middleware('auth');
 
-Route::get('/my-profile/account', [AdminProfileController::class, 'account'])->name('myprofile.account')->middleware('auth');
-Route::post('/my-profile/account/email', [AdminProfileController::class, 'email'])->name('myprofile.email')->middleware('auth');
+    Route::get('/my-profile/account', [AdminProfileController::class, 'account'])->name('myprofile.account')->middleware('auth');
+    Route::post('/my-profile/account/email', [AdminProfileController::class, 'email'])->name('myprofile.email')->middleware('auth');
 
-Route::post('/my-profile/account/sms', [AdminProfileController::class, 'sms'])->name('myprofile.sms')->middleware('auth');
+    Route::post('/my-profile/account/sms', [AdminProfileController::class, 'sms'])->name('myprofile.sms')->middleware('auth');
 
-Route::post('/my-profile/account/email-verify', [AdminProfileController::class, 'email_verified'])->name('myprofile.email_verified')->middleware('auth');
+    Route::post('/my-profile/account/email-verify', [AdminProfileController::class, 'email_verified'])->name('myprofile.email_verified')->middleware('auth');
 
     Route::post('/my-profile-store', [AdminProfileController::class, 'store'])->name('user.adminprofileimg');
 
@@ -1094,7 +1101,7 @@ Route::post('/my-profile/account/email-verify', [AdminProfileController::class, 
 
 
     //chat
-    
+
     //chat
     Route::post('/add-user-to-conversation', [ChatSupportController::class, 'addUserToConversation'])->name('addUserToConversation');
 
@@ -1111,21 +1118,21 @@ Route::post('/my-profile/account/email-verify', [AdminProfileController::class, 
 
     Route::get('sms/send', [ChatSupportController::class, 'sendSms']);
 
-    
+
     // payments
     Route::post('/update-payment-status', [PaymentController::class, 'updatePaymentStatus'])->name('update.payment.status');
 
-Route::post('/create-payment-invoice', [PaymentController::class, 'createPaymentInvoice'])->name('create.payment.invoice');
+    Route::post('/create-payment-invoice', [PaymentController::class, 'createPaymentInvoice'])->name('create.payment.invoice');
 
     Route::get('/payment-list', [PaymentController::class, 'index'])->name('payment-list');
 
     Route::get('/invoice-detail/{id}', [PaymentController::class, 'invoice_detail'])->name('invoicedetail');
 
     Route::get('/update/payment/{id}', [PaymentController::class, 'update']);
-    
+
     Route::post('/store/comment/{id}', [PaymentController::class, 'comment']);
 
-    // timezone 
+    // timezone
 
     Route::post('/change_timezone', [TimezoneController::class, 'store']);
 
@@ -1136,7 +1143,7 @@ Route::post('/create-payment-invoice', [PaymentController::class, 'createPayment
 
 
 
-Route::get('/performance-matrix', [PerformanceMatrix::class, 'performanncematrix'])->name('performanncematrix');
+    Route::get('/performance-matrix', [PerformanceMatrix::class, 'performanncematrix'])->name('performanncematrix');
 
 
     Route::get('/customers-data', [CustomerDataController::class, 'index'])->name('customersdata.index');
@@ -1148,8 +1155,8 @@ Route::get('/performance-matrix', [PerformanceMatrix::class, 'performanncematrix
     Route::get('/customers-data-view/{id}', [CustomerDataController::class, 'show'])->name('customersdata.show');
     Route::get('/customers-data-search', [CustomerDataController::class, 'search'])->name('customerData.search');
 
-    // pages controller 
-    
+    // pages controller
+
     Route::get('dispatcher/pages/contact', [PagesController::class, 'contact'])->name('contact');
     Route::get('dispatcher/pages/about', [PagesController::class, 'about'])->name('about');
     Route::get('dispatcher/pages/download', [PagesController::class, 'download'])->name('download');
@@ -1157,32 +1164,28 @@ Route::get('/performance-matrix', [PerformanceMatrix::class, 'performanncematrix
     Route::get('dispatcher/pages/documentation', [PagesController::class, 'documentation'])->name('documentation');
     Route::get('dispatcher/pages/reviews', [PagesController::class, 'reviews'])->name('reviews');
 
+    //last route
+    Route::post('/check-mobile', [UserController::class, 'checkMobile'])->name('check-mobile');
+    Route::post('/technician-note-store', [TicketController::class, 'techniciannotestore'])->name('techniciannote');
+
+    Route::get('/permission-index', [AdminController::class, 'permissionindex'])->name('permissionindex');
+
+    Route::post('/permission-store', [AdminController::class, 'permissionstore'])->name('permissions.store');
+
+    Route::post('/permission-delete', [AdminController::class, 'permissiondelete'])->name('permissions.delete');
+
+    Route::post('/customercomment', [UserController::class, 'customercomment'])->name('customercomment');
 
 });
 
 Route::post('/reset-password', [UserController::class, 'resetPassword'])->name('resetPassword');
 
-
-
 Route::get('/cities', [UserController::class, 'getCities'])->name('getcities');
 
 Route::get('/citiesanother', [UserController::class, 'getCitiesanother'])->name('getcitiesanother');
-
-
 
 Route::get('/update-customer-password', [UserController::class, 'updatePassword'])->name('update-customer-password');
 
 Route::get('/getZipCode', [UserController::class, 'getZipCode'])->name('getZipCode');
 
 Route::get('/getZipCodeanother', [UserController::class, 'getZipCodeanother'])->name('getZipCodeanother');
-Route::post('/technician-note-store', [TicketController::class, 'techniciannotestore'])->name('techniciannote');
-
-Route::post('/check-mobile',  [UserController::class, 'checkMobile'])->name('check-mobile');
-
-Route::get('/permission-index',  [AdminController::class, 'permissionindex'])->name('permissionindex');
-
-Route::post('/permission-store',  [AdminController::class, 'permissionstore'])->name('permissions.store');
-
-Route::post('/permission-delete',  [AdminController::class, 'permissiondelete'])->name('permissions.delete');
-
-Route::post('/customercomment',  [UserController::class, 'customercomment'])->name('customercomment');

@@ -280,191 +280,14 @@ $address .= $location->zipcode;
 
                     <div class="tab-pane fade" id="calls_tab" role="tabpanel" aria-labelledby="pills-setting-tab">
                         <div class="card-body card-border shadow">
-                            <h5 class="card-title uppercase">Jobs / Calls</h5>
-
-                            @if($tickets->where('added_by', $commonUser->id)->isEmpty())
-                            <div class="alert alert-info mt-4 col-md-12" role="alert">Calls not available for {{
-                                $commonUser->name ?? '' }}.
-                                <strong><a href="{{route('schedule')}}">Add New</a></strong>
-                            </div>
-                            @else
-                            <div class="table-responsive table-custom2 mt-2">
-                                <table id="zero_config" class="table table-hover table-striped text-nowrap"
-                                    data-paging="true" data-paging-size="7">
-                                    <thead>
-                                        <tr>
-                                            <th>Job No</th>
-                                            <th>Job Details</th>
-                                            <th>Customer</th>
-                                            <th>Technician</th>
-                                            <th>Date & Time</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($tickets->where('added_by', $commonUser->id) as $ticket)
-                                        <tr>
-                                            <td>
-                                                <a href="{{ route('tickets.show', $ticket->id) }}"
-                                                    class="fw-bold link"><span class="mb-1 badge bg-primary">{{
-                                                        $ticket->job_code }}</span></a>
-                                            </td>
-                                            <td>
-                                                <div class="text-wrap2">
-                                                    <a href="{{ route('tickets.show', $ticket->id) }}"
-                                                        class="font-medium link">{{
-                                                        $ticket->job_title ??
-                                                        null }}</a> <span
-                                                        class="badge bg-light-warning text-warning font-medium">{{
-                                                        $ticket->status
-                                                        }}</span>
-                                                </div>
-                                                <div style="font-size:12px;">
-                                                    @if ($ticket->jobdetailsinfo &&
-                                                    $ticket->jobdetailsinfo->apliencename)
-                                                    {{ $ticket->jobdetailsinfo->apliencename->appliance_name }}/
-                                                    @endif
-                                                    @if ($ticket->jobdetailsinfo &&
-                                                    $ticket->jobdetailsinfo->manufacturername)
-                                                    {{
-                                                    $ticket->jobdetailsinfo->manufacturername->manufacturer_name
-                                                    }}/
-                                                    @endif
-                                                    @if ($ticket->jobdetailsinfo &&
-                                                    $ticket->jobdetailsinfo->model_number)
-                                                    {{ $ticket->jobdetailsinfo->model_number }}/
-                                                    @endif
-                                                    @if ($ticket->jobdetailsinfo &&
-                                                    $ticket->jobdetailsinfo->serial_number)
-                                                    {{ $ticket->jobdetailsinfo->serial_number }}
-                                                    @endif
-                                                </div>
-                                            </td>
-                                            <td>
-                                                @if ($ticket->user)
-                                                <a href="{{ route('users.show', $ticket->user->id) }}" class="link">{{
-                                                    $ticket->user->name
-                                                    }}</a>
-                                                @else
-                                                Unassigned
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if ($ticket->technician)
-                                                <a href="{{ route('technicians.show', $ticket->technician->id) }}"
-                                                    class="link">{{
-                                                    $ticket->technician->name }}</a>
-                                                @else
-                                                Unassigned
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if ($ticket->jobassignname &&
-                                                $ticket->jobassignname->start_date_time)
-                                                <div class="font-medium link">{{
-                                                    $convertDateToTimezone($ticket->jobassignname->start_date_time)
-                                                    }}</div>
-                                                @else
-                                                <div></div>
-                                                @endif
-                                                <div style="font-size:12px;">
-                                                    {{
-                                                    $convertTimeToTimezone($ticket->JobAssign->start_date_time
-                                                    ?? null, 'H:i:a') }} to {{
-                                                    $convertTimeToTimezone($ticket->JobAssign->end_date_time ??
-                                                    null, 'H:i:a') }}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            @endif
+                            @include('commonfiles.calls_for_profiles')
 
                         </div>
                     </div>
 
                     <div class="tab-pane fade" id="payment_tab" role="tabpanel" aria-labelledby="pills-payment-tab">
                         <div class="card-body card-border shadow">
-                            <h5 class="card-title uppercase">Payments & Invoices</h5>
-                            @if($payment->isEmpty())
-                            <div class="alert alert-info mt-4" role="alert">
-                                Payments not available for {{ $commonUser->name ?? '' }}.
-                                <strong><a href="{{ route('schedule') }}">Add New</a></strong>
-                            </div>
-                            @else
-                            <div class="table-responsive table-custom2 mt-2">
-                                <table id="zero_config2" class="table table-hover table-striped text-nowrap"
-                                    data-paging="true" data-paging-size="7">
-                                    <thead>
-                                        <tr>
-                                            <th># Invoice No.</th>
-                                            <th>Job Details</th>
-                                            <th>Due Date</th>
-                                            <th>Amount</th>
-                                            <th>Status</th>
-                                            <th>Technician</th>
-                                            <th>Customer</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($payment as $payment)
-                                        <tr>
-                                            {{-- @php
-                                            $jobname = DB::table('jobs')->where('id',
-                                            $payment->job_id)->first();
-                                            @endphp --}}
-                                            <td>
-                                                <a href=" {{ route('invoicedetail', ['id' => $payment->id]) }}"
-                                                    class="font-medium link">{{
-                                                    $payment->id ?? 'N/A'
-                                                    }}</a>
-                                            </td>
-
-                                            <td><a href=" {{ route('invoicedetail', ['id' => $payment->id]) }}"
-                                                    class="font-medium link">{{
-                                                    $payment->JobModel->job_title ?? 'N/A'
-                                                    }}</a>
-                                            </td>
-
-                                            <td>{{ isset($payment->created_at) ?
-                                                \Carbon\Carbon::parse($payment->created_at)->format('m-d-Y @ g:i
-                                                a') : null }}</td>
-                                            <td>{{$payment->total ?? null}}</td>
-                                            <td>{{$payment->status ?? null}} </td>
-                                            <td>
-                                                @php
-                                                if ($payment) {
-                                                $technician1 = DB::table('users')->where('id',
-                                                $payment->JobModel->technician_id)->first(); // Retrieve technician
-
-                                                // $technician_name = $technician ? $technician->name : 'Unknown';
-                                                // Get technician's name or set to 'Unknown' if not found
-                                                } else {
-                                                $technician1 = 'Unknown';
-                                                }
-                                                @endphp
-                                                <a href="{{ route('technicians.show', ['id' => $technician1->id]) }}"
-                                                    class="link">{{$technician1->name ?? null}}</a>
-                                            </td>
-
-
-                                            <td>@php
-                                                $customer = DB::table('users')->where('id',
-                                                $payment->customer_id)->first();
-                                                @endphp
-                                                <a href="{{ route('users.show', ['id' => $customer->id]) }}"
-                                                    class="link">{{ $customer->name
-                                                    ?? null }}</a>
-
-                                            </td>
-
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            @endif
+                            @include('commonfiles.payment_for_profiles')
 
 
                         </div>
@@ -472,19 +295,14 @@ $address .= $location->zipcode;
 
                     <div class="tab-pane fade" id="estimate_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
                         <div class="card-body card-border shadow">
-                            <h5 class="card-title uppercase">Estimates</h5>
-                            <div class="alert alert-info mt-4 col-md-12" role="alert">Estimates details not available
-                                for {{$commonUser->name ?? null}}. <strong><a href="{{route('schedule')}}">Add
-                                        New</a></strong>
-                            </div>
+                            @include('commonfiles.estimate_for_profiles')
                         </div>
                     </div>
 
                     <div class="tab-pane fade" id="settings_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
                         <div class="card-body card-border shadow">
                             {{-- <h5 class="card-title uppercase">Settings</h5> --}}
-                            @include('dispatcher.setting_tab_file')
-                        </div>
+                            @include('commonfiles.setting_for_profiles') </div>
                     </div>
                     <div class="tab-pane fade" id="permission_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
                         <div class="card-body card-border shadow">
