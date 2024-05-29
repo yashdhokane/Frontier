@@ -34,8 +34,6 @@ class ChatSupportController extends Controller
         $users = User::all();
 
 
-        //dd($chatConversion);
-
         return view('chat.app_chats', compact('chatConversion', 'users'));
     }
 
@@ -80,6 +78,26 @@ class ChatSupportController extends Controller
         $term = $request->input('term');
 
         $users = User::where('name', 'like', '%' . $term . '%')->limit(10)->get();
+
+        $formattedUsers = [];
+        foreach ($users as $user) {
+            $formattedUsers[] = [
+                'value' => $user->id,
+                'label' => $user->name,
+            ];
+        }
+
+        return response()->json($formattedUsers);
+    }
+
+    public function participants(Request $request)
+    {
+        $term = $request->input('term');
+
+        $users = User::where('name', 'like', '%' . $term . '%')
+            ->whereOr('role', 'dispatcher')
+            ->whereOr('role', 'customer')
+            ->limit(10)->get();
 
         $formattedUsers = [];
         foreach ($users as $user) {
@@ -200,7 +218,7 @@ class ChatSupportController extends Controller
         $filteredParticipants = $participants->where('user_id', '!=', $authUserId);
 
         foreach ($filteredParticipants as $user) {
-        
+
             $receiverNumber = '+917030467187'; // Replace with the recipient's phone number
             $message =  $request->reply; // Replace with your desired message
             $formattedMessage = "You have a new message in your chat:\n\n{$message}";
@@ -267,4 +285,43 @@ class ChatSupportController extends Controller
             return 'Error: ' . $e->getMessage();
         }
     }
+
+    public function addUserToParticipant(Request $request)
+    {
+        $authId = auth()->id();
+        $currentDate = now()->format('Y-m-d H:i:s');
+
+        // Create a new chat conversation
+        $chatConversation = ChatConversation::create([
+            'created_by' => $authId,
+            'send_to' => $request->user_id,
+            'created_date' => $currentDate,
+            'last_activity' => $currentDate,
+        ]);
+
+        // Prepare participant data
+        $participants = [
+            [
+                'user_id' => $chatConversation->send_to,
+                'conversation_id' => $chatConversation->id,
+                'join_time' => $currentDate,
+                'added_by' => $authId,
+                'is_unread' => 0,
+            ],
+            [
+                'user_id' => $chatConversation->created_by,
+                'conversation_id' => $chatConversation->id,
+                'join_time' => $currentDate,
+                'added_by' => $authId,
+                'is_unread' => 0,
+            ],
+        ];
+
+        // Insert participants
+        ChatParticipants::insert($participants);
+
+        return back()->with('success', 'User added to the conversation successfully');
+    }
+
+    
 }

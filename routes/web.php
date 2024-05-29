@@ -1109,6 +1109,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/autocompleteUser', [ChatSupportController::class, 'autocompleteUser'])->name('autocomplete.user');
 
+    Route::get('/participants', [ChatSupportController::class, 'participants'])->name('autocomplete.participants');
+
+    Route::post('/add-user-to-participants', [ChatSupportController::class, 'addUserToparticipant'])->name('addUserToParticipant');
+
 
     Route::get('/inbox', [ChatSupportController::class, 'index'])->name('app_chats');
 

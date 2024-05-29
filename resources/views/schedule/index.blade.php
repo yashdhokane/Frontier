@@ -546,26 +546,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
     <script src="{{ url('public/admin/schedule/script.js') }}"></script>
-    
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        function fetchAndAppendTable() {
-            fetch("{{ route('get.table.content') }}")
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById("table-container").innerHTML = data;
-                    console.log('done');
-                })
-                .catch(error => console.error("Error fetching table content:", error));
-        }
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            function fetchAndAppendTable() {
+                fetch("{{ route('get.table.content') }}")
+                    .then(response => response.text())
+                    .then(data => {
+                        document.getElementById("table-container").innerHTML = data;
+                        console.log('done');
+                    })
+                    .catch(error => console.error("Error fetching table content:", error));
+            }
 
-        // Fetch and append the table every 30 seconds
-        setInterval(fetchAndAppendTable, 30000);
+            // Fetch and append the table every 30 seconds
+            setInterval(fetchAndAppendTable, 30000);
 
-        // Initial fetch
-        fetchAndAppendTable();
-    });
-</script>
+            // Initial fetch
+            fetchAndAppendTable();
+        });
+    </script>
 
     <script>
         $(document).ready(function() {
