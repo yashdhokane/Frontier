@@ -1,6 +1,6 @@
 $(document).ready(function () {
     // Click event handler for tech_profile links
-    $(".tech_profile").click(function (event) {
+    $(document).on("click", ".tech_profile", function (event) {
         event.preventDefault(); // Prevent default link behavior
 
         var profileLink = $(this);
@@ -26,8 +26,7 @@ $(document).ready(function () {
 
     // Click event handler for profile link images
     $(".tech_profile img").click(function (event) {
-        event.preventDefault(); 
-        
+        event.preventDefault();
     });
 
     // Click event listener for the document
@@ -44,19 +43,16 @@ $(document).ready(function () {
         }
     });
 
-  
-
     // Show job details on hover
-    $(".show_job_details").hover(
-        function () {
+    $(document)
+        .on("mouseenter", ".show_job_details", function () {
             // Show the corresponding popup
             $(this).next(".open_job_details").fadeIn();
-        },
-        function () {
+        })
+        .on("mouseleave", ".show_job_details", function () {
             // Hide the popup when mouse leaves
             $(this).next(".open_job_details").fadeOut();
-        }
-    );
+        });
 
     // Close the popup when mouse leaves
     $(".open_job_details").mouseleave(function () {
@@ -79,72 +75,85 @@ $(document).ready(function () {
         }
     }
 });
-$(document).ready(function() {
+
+$(document).ready(function () {
     // Click event handler for both message option in popup and document
-    $(document).on('click', '.message-popup', function(event) {
+    $(document).on("click", ".message-popup", function (event) {
         event.preventDefault(); // Prevent default link behavior
 
         // Toggle visibility of the smscontainer associated with the clicked "Message" option
-        var smscontainer = $(this).closest('th').find('.smscontainer');
+        var smscontainer = $(this).closest("th").find(".smscontainer");
         var messagePopup = $(this);
-        
+
         // Calculate the position of the smscontainer relative to the message popup option
         var position = messagePopup.offset();
         var topPosition = position.top;
         var leftPosition = position.left + messagePopup.outerWidth(); // Position to the right of the message popup
 
-        smscontainer.css({
-            'top': 100 + 'px',
-            'left': 105 + 'px'
-        }).fadeToggle();
+        smscontainer
+            .css({
+                top: 100 + "px",
+                left: 105 + "px",
+            })
+            .fadeToggle();
 
         // Hide all other open smscontainers
-        $('.settingcontainer').fadeOut();
-        $('.smscontainer').not(smscontainer).fadeOut();
+        $(".settingcontainer").fadeOut();
+        $(".smscontainer").not(smscontainer).fadeOut();
     });
 
-    $(document).on('click', function(event) {
+    $(document).on("click", function (event) {
         var target = $(event.target);
 
         // Check if the clicked element is not within any popup container, message popup option, or smscontainer
-        if (!target.closest('.popupContainer').length && !target.is('.message-popup') && !target.closest('.smscontainer').length) {
+        if (
+            !target.closest(".popupContainer").length &&
+            !target.is(".message-popup") &&
+            !target.closest(".smscontainer").length
+        ) {
             // Hide all smscontainers if clicked outside of them, the message popup option, or smscontainer
-            $('.smscontainer').fadeOut();
+            $(".smscontainer").fadeOut();
         }
     });
 });
-$(document).ready(function() {
+
+$(document).ready(function () {
     // Click event handler for both message option in popup and document
-    $(document).on('click', '.setting-popup', function(event) {
+    $(document).on("click", ".setting-popup", function (event) {
         event.preventDefault(); // Prevent default link behavior
 
         // Toggle visibility of the smscontainer associated with the clicked "Message" option
-        var smscontainer = $(this).closest('th').find('.settingcontainer');
+        var smscontainer = $(this).closest("th").find(".settingcontainer");
         var messagePopup = $(this);
-        
+
         // Calculate the position of the smscontainer relative to the message popup option
         var position = messagePopup.offset();
         var topPosition = position.top;
         var leftPosition = position.left + messagePopup.outerWidth(); // Position to the right of the message popup
 
-        smscontainer.css({
-            'top': 90 + 'px',
-            'left': 105 + 'px'
-        }).fadeToggle();
+        smscontainer
+            .css({
+                top: 90 + "px",
+                left: 105 + "px",
+            })
+            .fadeToggle();
 
         // Hide all other open smscontainers
-        $('.smscontainer').fadeOut();
-        $('.settingcontainer').not(smscontainer).fadeOut();
+        $(".smscontainer").fadeOut();
+        $(".settingcontainer").not(smscontainer).fadeOut();
     });
 
-    $(document).on('click', function(event) {
+    $(document).on("click", function (event) {
         var target = $(event.target);
 
         // Check if the clicked element is not within any popup container, message popup option, or smscontainer
-        if (!target.closest('.popupContainer').length && !target.is('.setting-popup') && !target.closest('.settingcontainer').length) {
+        if (
+            !target.closest(".popupContainer").length &&
+            !target.is(".setting-popup") &&
+            !target.closest(".settingcontainer").length
+        ) {
             // Hide all smscontainers if clicked outside of them, the message popup option, or smscontainer
-            $('.settingcontainer').fadeOut();
+            $(".settingcontainer").fadeOut();
         }
     });
 });
-

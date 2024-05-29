@@ -13,7 +13,7 @@
             font-size: 10px;
             letter-spacing: 0.5px;
         }
- 
+
 
         .container-schedule {
             padding: 0px !important;
@@ -30,7 +30,7 @@
             color: white;
             padding: 10px 7px;
             display: none;
-			border-radius: 5px;
+            border-radius: 5px;
         }
 
         .popup-option {
@@ -40,12 +40,14 @@
             font-size: 12px;
             text-decoration: none;
         }
-		.popup-option.setting-popup{
-			margin-bottom: 0px;
-		}
-		.popup-option i {
-		  font-size: 11px;
-		}
+
+        .popup-option.setting-popup {
+            margin-bottom: 0px;
+        }
+
+        .popup-option i {
+            font-size: 11px;
+        }
 
         .tech_th {
             position: relative;
@@ -83,7 +85,7 @@
             padding: 7px;
             display: none;
             width: 250px;
-			border-radius: 4px;
+            border-radius: 4px;
         }
 
         .smscontainer::after {
@@ -100,17 +102,20 @@
             border-color: transparent #1777d3 transparent transparent;
             /* Change border-color */
         }
-		.smscontainer .message_content {
-		  width: 75%;
-		  display: inline-block;
-		  border-radius: 0px;
-		}
-		.smscontainer .btn {
-		  width: 25%;
-		  height: 31px;
-		  border-radius: 0px;
-		  background:#3699ff;
-		}
+
+        .smscontainer .message_content {
+            width: 75%;
+            display: inline-block;
+            border-radius: 0px;
+        }
+
+        .smscontainer .btn {
+            width: 25%;
+            height: 31px;
+            border-radius: 0px;
+            background: #3699ff;
+        }
+
         .settingcontainer {
             position: absolute;
             z-index: 999;
@@ -118,7 +123,7 @@
             color: white;
             padding: 7px;
             display: none;
-			border-radius: 5px;
+            border-radius: 5px;
         }
 
         .settingcontainer::after {
@@ -153,21 +158,28 @@
                             <div class="col-lg-12">
                                 <div class="mt-3 mb-4 calender-sidebar app-calendar">
                                     <div class="row">
-										<div class="col-md-4">
- 											<div class="cal_title_left text-start"><a href="schedule?date={{ $previousDate }}"><i class="fas fa-arrow-left"></i></a></div>
-                                            <div class="cal_title_center text-center"><h4 class="fc-toolbar-title" id="fc-dom-1">{{ $formattedDate }}</h4></div>
-											<div class="cal_title_right text-end"><a href="schedule?date={{ $tomorrowDate }}"><i class="fas fa-arrow-right"></i></a></div>
+                                        <div class="col-md-4">
+                                            <div class="cal_title_left text-start"><a
+                                                    href="schedule?date={{ $previousDate }}"><i
+                                                        class="fas fa-arrow-left"></i></a></div>
+                                            <div class="cal_title_center text-center">
+                                                <h4 class="fc-toolbar-title" id="fc-dom-1">{{ $formattedDate }}</h4>
+                                            </div>
+                                            <div class="cal_title_right text-end"><a
+                                                    href="schedule?date={{ $tomorrowDate }}"><i
+                                                        class="fas fa-arrow-right"></i></a></div>
                                         </div>
-										<div class="col-md-4"></div>
-										<div class="col-md-4 text-start">
-                                            <a id="selectDates" style="margin-right: 10px; font-size: 13px;cursor: pointer;"><i
+                                        <div class="col-md-4"></div>
+                                        <div class="col-md-4 text-start">
+                                            <a id="selectDates"
+                                                style="margin-right: 10px; font-size: 13px;cursor: pointer;"><i
                                                     class="fas fa-calendar-alt"></i>Select Dates</a>
 
                                             <a href="schedule?date={{ $TodayDate }}"
                                                 style=" margin-right: 10px;font-size: 13px;color: #ee9d01;font-weight: bold;"><i
                                                     class="fas fa-calendar-check"></i> Today</a>
                                         </div>
-                                        
+
                                     </div>
                                     <div class="dat schedule_section_box" id="table-container">
                                         <table id="demo-foo-addrow"
@@ -178,26 +190,36 @@
                                                     <th></th>
                                                     @if (isset($user_array) && !empty($user_array))
                                                         @foreach ($user_array as $value)
-                                                            <th class="tech_th" data-tech-id="{{ $value }}" style="width:100px">
+                                                            <th class="tech_th" data-tech-id="{{ $value }}"
+                                                                style="width:100px">
                                                                 <a href="#" class="link user_head_link tech_profile"
                                                                     style="color: {{ $user_data_array[$value]['color_code'] }} !important;">
                                                                     @if (isset($user_data_array[$value]['user_image']) && !empty($user_data_array[$value]['user_image']))
                                                                         <img src="{{ asset('public/images/technician/' . $user_data_array[$value]['user_image']) }}"
                                                                             alt="user" width="48"
-                                                                            class="rounded-circle tech_profile" onerror="this.onerror=null; this.src='{{ $defaultImage }}';" /><br>
+                                                                            class="rounded-circle tech_profile"
+                                                                            onerror="this.onerror=null; this.src='{{ $defaultImage }}';" /><br>
                                                                     @else
-                                                                        <img src="{{ $defaultImage }}"
-                                                                            alt="user" width="48"
+                                                                        <img src="{{ $defaultImage }}" alt="user"
+                                                                            width="48"
                                                                             class="rounded-circle tech_profile" /><br>
                                                                     @endif
-                                                                     
-                                                                   @if (isset($user_data_array[$value]) && !empty($user_data_array[$value]))
+
+                                                                    @if (isset($user_data_array[$value]) && !empty($user_data_array[$value]))
                                                                         @php
                                                                             $name = $user_data_array[$value]['name'];
                                                                             $nameParts = explode(' ', $name);
                                                                             $firstName = $nameParts[0];
-                                                                            $lastInitial = count($nameParts) > 1 ? strtoupper($nameParts[count($nameParts) - 1][0]) : '';
-                                                                            $formattedName = $firstName . ' ' . $lastInitial;
+                                                                            $lastInitial =
+                                                                                count($nameParts) > 1
+                                                                                    ? strtoupper(
+                                                                                        $nameParts[
+                                                                                            count($nameParts) - 1
+                                                                                        ][0],
+                                                                                    )
+                                                                                    : '';
+                                                                            $formattedName =
+                                                                                $firstName . ' ' . $lastInitial;
                                                                         @endphp
                                                                         {{ $formattedName }}
                                                                     @endif
@@ -226,8 +248,8 @@
 
                                                                 </div>
                                                                 <div class="settingcontainer">
-																	<div style="width:150px; height:100px;">
-																	</div>
+                                                                    <div style="width:150px; height:100px;">
+                                                                    </div>
                                                                 </div>
 
                                                             </th>
@@ -236,10 +258,10 @@
                                                 </tr>
                                             </thead>
                                             <tbody class="slot_time_60_span">
-                                            @php
-                                                $start_time = (int) $hours->start_time; 
-                                                $end_time = (int) $hours->end_time;
-                                            @endphp
+                                                @php
+                                                    $start_time = (int) $hours->start_time;
+                                                    $end_time = (int) $hours->end_time;
+                                                @endphp
                                                 @for ($i = $start_time; $i <= $end_time; $i++)
                                                     @for ($minute = 0; $minute < 60; $minute += 30)
                                                         <tr>
@@ -322,33 +344,41 @@
                                                                                                 data-date="{{ $filterDate }}"
                                                                                                 style="cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->JobModel->technician->color_code ?? null }};"
                                                                                                 data-id="{{ $value2->job_id }}">
-																								@if($value2->JobModel && $value2->JobModel->is_confirmed == 'yes')
-                                                                                                    
-																								<div class="cls_is_confirmed">
-																									<i class="ri-thumb-up-fill"></i>
-                                                                                                </div>
-																								
+                                                                                                @if ($value2->JobModel && $value2->JobModel->is_confirmed == 'yes')
+                                                                                                    <div
+                                                                                                        class="cls_is_confirmed">
+                                                                                                        <i
+                                                                                                            class="ri-thumb-up-fill"></i>
+                                                                                                    </div>
                                                                                                 @endif
-                                                                                                 <div class="cls_slot_title">
-                                                                                                    <i class="ri-tools-line"></i>
+                                                                                                <div class="cls_slot_title">
+                                                                                                    <i
+                                                                                                        class="ri-tools-line"></i>
                                                                                                     {{ $value2->JobModel->user->name ?? null }}
                                                                                                 </div>
-                                                                                                <div class="cls_slot_time"><i class="ri-truck-line"></i> {{ $timeString }}
+                                                                                                <div class="cls_slot_time">
+                                                                                                    <i
+                                                                                                        class="ri-truck-line"></i>
+                                                                                                    {{ $timeString }}
                                                                                                 </div>
-                                                                                                <div class="cls_slot_job_card">{{ $value2->JobModel->job_title ?? null }}
+                                                                                                <div
+                                                                                                    class="cls_slot_job_card">
+                                                                                                    {{ $value2->JobModel->job_title ?? null }}
                                                                                                 </div>
-                                                                                                <div class="cls_slot_job_card">
+                                                                                                <div
+                                                                                                    class="cls_slot_job_card">
                                                                                                     {{ $value2->JobModel->city ?? null }},
                                                                                                     {{ $value2->JobModel->state ?? null }}
                                                                                                 </div>
-																								
-																								
+
+
                                                                                             </div>
                                                                                         </a>
-                                                                                        <div
-                                                                                            class="open_job_details rounded shadow py-3 px-2" style="background: {{ $value2->JobModel->technician->color_code ?? null }};">
+                                                                                        <div class="open_job_details rounded shadow py-3 px-2"
+                                                                                            style="background: {{ $value2->JobModel->technician->color_code ?? null }};">
                                                                                             <div class="popup-content">
-                                                                                                <h5><i class="fas fa-id-badge px-2"></i>
+                                                                                                <h5><i
+                                                                                                        class="fas fa-id-badge px-2"></i>
                                                                                                     <strong>Job
                                                                                                         #{{ $value2->JobModel->job_code ?? null }}</strong>
                                                                                                 </h5>
@@ -356,27 +386,34 @@
                                                                                                     {{ $value2->start_date_time ? date('M d Y g:i a', strtotime($value2->start_date_time)) : null }}
                                                                                                     -
                                                                                                     {{ \Carbon\Carbon::parse($value2->end_date_time)->format('g:i A') }}
-																								</p>
+                                                                                                </p>
                                                                                                 <div class="py-1">
-																									<i class="fas fa-ticket-alt px-2"></i>
+                                                                                                    <i
+                                                                                                        class="fas fa-ticket-alt px-2"></i>
                                                                                                     <strong>{{ $value2->JobModel->job_title ?? null }}</strong>
                                                                                                 </div>
                                                                                                 <div class="py-1">
-																									<i class="fas fa-user px-2"></i>
+                                                                                                    <i
+                                                                                                        class="fas fa-user px-2"></i>
                                                                                                     <strong>{{ $value2->JobModel->user->name ?? null }}</strong>
-                                                                                                    <p class="ps-4 m-0 ms-2">
+                                                                                                    <p
+                                                                                                        class="ps-4 m-0 ms-2">
                                                                                                         {{ $value2->JobModel->addresscustomer->address_line1 ?? null }}
                                                                                                         {{ $value2->JobModel->addresscustomer->zipcode ?? null }}
                                                                                                     </p>
-                                                                                                    <p class="ps-4 m-0 ms-2">
+                                                                                                    <p
+                                                                                                        class="ps-4 m-0 ms-2">
                                                                                                         {{ $value2->JobModel->user->mobile ?? null }}
                                                                                                     </p>
                                                                                                 </div>
-                                                                                                <div class="py-1"><i class="fas fa-user-secret px-2"></i>
+                                                                                                <div class="py-1"><i
+                                                                                                        class="fas fa-user-secret px-2"></i>
                                                                                                     <strong>{{ $value2->JobModel->technician->name ?? null }}</strong>
-                                                                                                    <div class="py-1"><i class="fas fa-tag px-2"></i>
-                                                                                                        <span class="mb-1 badge bg-primary">{{ $value2->JobModel->status ?? null }}</span>
-                                                                                                     </div>
+                                                                                                    <div class="py-1"><i
+                                                                                                            class="fas fa-tag px-2"></i>
+                                                                                                        <span
+                                                                                                            class="mb-1 badge bg-primary">{{ $value2->JobModel->status ?? null }}</span>
+                                                                                                    </div>
                                                                                                 </div>
                                                                                             </div>
                                                                                     @endif
@@ -532,421 +569,6 @@
         </div>
     </div>
     <!-- Modal -->
-
-
-
-@section('script')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <!-- Bootstrap Datepicker CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
-        rel="stylesheet">
-
-    <!-- Bootstrap Datepicker JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-
-    <script src="{{ url('public/admin/schedule/script.js') }}"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            function fetchAndAppendTable() {
-                fetch("{{ route('get.table.content') }}")
-                    .then(response => response.text())
-                    .then(data => {
-                        document.getElementById("table-container").innerHTML = data;
-                        console.log('done');
-                    })
-                    .catch(error => console.error("Error fetching table content:", error));
-            }
-
-            // Fetch and append the table every 30 seconds
-            setInterval(fetchAndAppendTable, 30000);
-
-            // Initial fetch
-            fetchAndAppendTable();
-        });
-    </script>
-
-    <script>
-        $(document).ready(function() {
-            $('.event_start_time').hide();
-            $('.event_end_time').hide();
-            $('.f_start').hide();
-            $('.s_to').hide();
-
-            $(document).on('change', '.event_type', function() {
-                 var event_type = $(this).val();
-                if (event_type == 'full') {
-                    $('.event_start_date').show();
-                    $('.event_end_date').show();
-                    $('.event_start_time').hide();
-                    $('.event_end_time').hide();
-                    $('.f_start').hide();
-                    $('.s_to').hide();
-                }else{
-                 $('.event_start_date').show();
-                $('.event_start_time').show();
-                $('.event_end_date').hide();
-                $('.event_end_time').show();
-                    $('.f_start').show();
-                    $('.s_to').show();
-                }
-            });
-        });
-
-        $(document).ready(function() {
-
-            $('#datepicker').hide(); // Hide the input field initially
-            $('#datepicker-container').datepicker({
-                format: 'yyyy-mm-dd', // Specify the format
-                autoclose: true, // Close the datepicker when a date is selected
-                todayHighlight: true // Highlight today's date
-            }).on('changeDate', function(selected) {
-                var selectedDate = new Date(selected.date);
-                var formattedDate = selectedDate.getFullYear() + '-' + (selectedDate.getMonth() + 1) + '-' +
-                    selectedDate.getDate();
-                var scheduleLink = 'schedule?date=' + formattedDate; // Direct path
-                window.location.href = scheduleLink;
-            }); // Initialize the date picker on the container
-
-
-            $('#searchTechnician').on('input', function() {
-                var searchText = $(this).val().toLowerCase().trim();
-                $('.technician-item').each(function() {
-                    var technicianName = $(this).find('label').text().toLowerCase();
-
-                    if (technicianName.includes(searchText)) {
-                        $(this).removeClass('d-none');
-                        $(this).addClass('d-flex');
-                    } else {
-                        $(this).addClass('d-none');
-                        $(this).removeClass('d-flex');
-                    }
-                });
-            });
-
-            $(document).on('change', '.technician_check', function() {
-                var isChecked = $(this).prop('checked');
-                var id = $(this).data('id'); // Retrieve the value of the data-id attribute
-
-                if (isChecked) {
-                    // Hide elements with class tech_th that match the id
-                    $('.tech_th[data-tech-id="' + id + '"]').show();
-                    $('.timeslot_td[data-technician_id="' + id + '"]').show();
-                } else {
-                    // Show elements with class tech_th that match the id
-                    $('.tech_th[data-tech-id="' + id + '"]').hide();
-                    $('.timeslot_td[data-technician_id="' + id + '"]').hide();
-                }
-            });
-
-
-
-        });
-
-
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const timeDropdowns = document.querySelectorAll('.time-dropdown');
-
-            // Function to generate time options
-            function generateTimeOptions(dropdown) {
-                const options = [];
-                const now = new Date();
-                const currentHour = now.getHours();
-                const currentMinute = now.getMinutes();
-                const halfHour = (currentMinute < 30) ? '00' : '30';
-
-                // Start from the current half-hour interval
-                for (let hour = currentHour; hour < 24; hour++) {
-                    for (let minute of ['00', '30']) {
-                        // Skip if the current time has passed
-                        if ((hour === currentHour && minute < halfHour) || hour < currentHour) {
-                            continue;
-                        }
-                        const formattedHour = (hour % 12 === 0) ? 12 : hour % 12; // Convert to 12-hour format
-                        const ampm = (hour < 12) ? 'AM' : 'PM'; // Determine AM or PM
-                        const formattedMinute = minute;
-                        const formattedTime = `${formattedHour}:${formattedMinute} ${ampm}`;
-                        options.push(`<option value="${formattedTime}">${formattedTime}</option>`);
-                    }
-                }
-
-                // Append options to the dropdown
-                dropdown.innerHTML = options.join('');
-            }
-
-            // Call the function to generate time options for each dropdown
-            timeDropdowns.forEach(function(dropdown) {
-                generateTimeOptions(dropdown);
-            });
-        });
-
-        $('.eventSchedule').on('click', function() {
-            var id = $(this).attr('data-id');
-            console.log(id);
-            $('#event_technician_id').val(id);
-        });
-
-        $('#cancelBtn').on('click', function() {
-
-            $('#newCustomer').modal('hide');
-            $('#create').modal('show');
-
-        });
-
-        $('#addEvent').submit(function(e) {
-            e.preventDefault(); // Prevent default form submission
-
-            var formData = new FormData(this); // 'this' refers to the form DOM element
-
-            // Make an AJAX request to submit the form data
-            $.ajax({
-                url: $(this).attr('action'), // Get the form action attribute
-                type: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                dataType: 'json',
-                success: function(data) {
-                    // Handle success response here
-
-                    if (data.success === true) {
-                        // If success is true, close the current modal
-                        $('#event').modal('hide');
-                        // Display a success message using SweetAlert
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: 'Event added successfully.'
-                        }).then(function() {
-                            // Reset form fields
-                            $('#addEvent')[0].reset();
-                            location.reload();
-
-                        });
-                    }
-                },
-
-                error: function(xhr, status, error) {
-                    console.error('Error submitting form data:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Operation failed. Please try again.' + error
-                    });
-                }
-            });
-        });
-    </script>
-
-
-    {{-- this for the schedule page --}}
-    <script>
-        $(document).ready(function() {
-            var timezoneName = '{{$timezoneName}}'
-            $('#selectDates').datepicker({
-                format: 'yyyy-mm-dd', // Specify the format
-                autoclose: true, // Close the datepicker when a date is selected
-                todayHighlight: true // Highlight today's date
-            }).on('changeDate', function(selected) {
-                var selectedDate = new Date(selected.date);
-                var formattedDate = selectedDate.getFullYear() + '-' + (selectedDate.getMonth() + 1) + '-' +
-                    selectedDate.getDate();
-                var scheduleLink = 'schedule?date=' + formattedDate; // Direct path
-                window.location.href = scheduleLink;
-            });
-
-            $('.clickPoint').click(function(e) {
-                e.stopPropagation();
-                var popupDiv = $(this).next('.popupDiv');
-
-                // Hide any previously displayed popupDiv elements
-                $('.popupDiv').not(popupDiv).hide();
-
-                // Position and show the clicked popupDiv
-                var mouseX = e.clientX;
-                var mouseY = e.clientY;
-
-                // Calculate the distance from the clicked point to the edges of the window
-                var distanceTop = mouseY;
-                var distanceBottom = $(window).height();
-                var distanceLeft = mouseX;
-                var distanceRight = $(window).width();
-
-                // Calculate the margin values in pixels
-                var topMargin = 30;
-                var bottomMargin = 30;
-                var leftMargin = 20;
-                var rightMargin = 20;
-
-                // Calculate the position of the popupDiv based on margins and distances
-                var position = {};
-                if (distanceTop > distanceBottom && distanceTop > popupDiv.outerHeight() + bottomMargin) {
-                    position.top = popupDiv.outerHeight() - bottomMargin;
-                } else {
-                    position.top = topMargin;
-                }
-
-                if (distanceLeft > distanceRight && distanceLeft > popupDiv.outerWidth() + rightMargin) {
-                    position.left = popupDiv.outerWidth() - rightMargin;
-                } else {
-                    position.left = leftMargin;
-                }
-
-                // Set the position and show the popupDiv
-                popupDiv.css(position).toggle();
-            });
-
-            // Hide the popup div when clicking outside of it
-            $(document).click(function() {
-                $('.popupDiv').hide();
-            });
-        });
-    </script>
-    {{-- end this  --}}
-
-
-
-    <script>
-        $(document).ready(function() {
-
-            $('#anotherstate_id').change(function() {
-
-                var stateId = $(this).val();
-
-                var citySelect = $('#anothercity');
-
-                citySelect.html('<option selected disabled value="">Loading...</option>');
-
-
-
-                // Make an AJAX request to fetch the cities based on the selected state
-
-                $.ajax({
-
-                    url: "{{ route('getcitiesanother') }}", // Correct route URL
-
-                    type: 'GET',
-
-                    data: {
-
-                        anotherstate_id: stateId
-
-                    },
-
-                    dataType: 'json',
-
-                    success: function(data) {
-
-                        citySelect.html(
-                            '<option selected disabled value="">Select City...</option>');
-
-                        $.each(data, function(index, city) {
-
-                            citySelect.append('<option value="' + city.city_id + '">' +
-                                city.city + ' - ' + city.zip + '</option>');
-
-                        });
-
-                    },
-
-                    error: function(xhr, status, error) {
-
-                        console.error('Error fetching cities:', error);
-
-                    }
-
-                });
-
-            });
-
-
-
-            // Trigger another function to get zip code after selecting a city
-
-            $('#anothercity').change(function() {
-
-                var cityId = $(this).val();
-
-                var cityName = $(this).find(':selected').text().split(' - ')[
-                    0]; // Extract city name from option text
-
-                getZipCodeanother(cityId, cityName); // Call the function to get the zip code
-
-            });
-
-        });
-
-
-
-        // Function to get zip code
-
-        function getZipCodeanother(cityId, cityName) {
-
-            $.ajax({
-
-                url: "{{ route('getZipCodeanother') }}", // Adjust route URL accordingly
-
-                type: 'GET',
-
-                data: {
-
-                    anothercity_id: cityId,
-
-                    anothercity_name: cityName
-
-                },
-
-                dataType: 'json',
-
-                success: function(data) {
-
-                    var anotherzip_code = data.anotherzip_code; // Assuming the response contains the zip code
-
-                    $('#anotherzip_code').val(anotherzip_code); // Set the zip code in the input field
-
-                },
-
-                error: function(xhr, status, error) {
-
-                    console.error('Error fetching zip code:', error);
-
-                }
-
-            });
-
-        }
-    </script>
-
-    <script>
-        function addNewAddress() {
-
-            var addressCardTwo = document.getElementById("adresscardtwo");
-
-            if (addressCardTwo.style.display === "none") {
-
-                addressCardTwo.style.display = "block";
-
-            } else {
-
-                addressCardTwo.style.display = "none";
-
-            }
-
-            var addressCardTwoone = document.getElementById("adresscardtwo1");
-
-            if (addressCardTwoone.style.display === "none") {
-
-                addressCardTwoone.style.display = "block";
-
-            } else {
-
-                addressCardTwoone.style.display = "none";
-
-            }
-
-        }
-    </script>
-@endsection
+@include('schedule.indexScript')
 
 @endsection
