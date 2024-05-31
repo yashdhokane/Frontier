@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\JobNoteModel;
 use App\Models\JobProduct;
-use App\Models\JobOtherModel;
+use App\Models\JobOtherModel; 
+use App\Models\UserNotesCustomer;
+use App\Models\Event;  
 use App\Models\ProductAssigned;
 use Illuminate\Support\Facades\Auth;
 
@@ -52,6 +54,25 @@ class ApiController extends Controller
         return response()->json(['status' => false, 'message' => 'Invalid email or password'],201);
     }
 }
+
+    public function getNotification(Request $request)
+    {
+        $technicianId = $request->input('technician_id');
+
+        if (!$technicianId) {
+            return response()->json(['status' => false, 'message' => 'Technician ID is required'], 500);
+        }
+
+        $notifications = UserNotesCustomer::where('user_id', $technicianId)->get();
+
+        if ($notifications->isEmpty()) {
+            return response()->json(['status' => false, 'message' => 'No notifications found'], 201);
+        }
+
+        return response()->json(['status' => true, 'message' => 'Notifications found', 'data' => $notifications], 200);
+    }
+
+
 public function reset_password(Request $request)
 {
     $request->validate([
@@ -367,7 +388,11 @@ public function jobfileUploadByTechnician(Request $request)
 
     // Retrieve the ProductAssigned record by technician ID
     $productAssigned = ProductAssigned::with('Product')->where('technician_id', $technicianId)->get();
-
+    $productAssigned = ProductAssigned::with(['Product' => function($query) {
+            $query->where('is_featured', 'yes');
+        }])->whereHas('Product', function($query) {
+            $query->where('is_featured', 'yes');
+        })->where('technician_id', $technicianId)->get();
     // Check if any ProductAssigned record found
     if ($productAssigned->isEmpty()) {
         // If no ProductAssigned record found, return a response with status false and error message
@@ -413,41 +438,105 @@ public function updateTechnicianProfile(Request $request)
 }
 
 
-public function calculateJobStatusPercentage(Request $request)
+ public function calculateJobStatusPercentage(Request $request)
+    {
+        // Validate the incoming request data
+        $request->validate([
+            'technician_id' => 'required',
+        ]);
+
+        $technicianId = $request->technician_id;
+
+        // Get the total number of jobs for the technician
+        $totalJobs = JobModel::where('technician_id', $technicianId)->count();
+
+        // Get the number of closed jobs for the technician
+        $closedJobs = JobModel::where('technician_id', $technicianId)
+                     ->where('status', 'closed')
+                        ->count();
+
+        // Get the number of open jobs for the technician
+        $openJobs = JobModel::where('technician_id', $technicianId)
+                      ->where('status', 'open')
+                      ->count();
+
+        // Calculate the percentage of closed jobs
+        $closedPercentage = $totalJobs > 0 ? ($closedJobs / $totalJobs) * 100 : 0;
+
+        // Calculate the percentage of open jobs
+        $openPercentage = $totalJobs > 0 ? ($openJobs / $totalJobs) * 100 : 0;
+
+        // Calculate present and absent days
+        $technician = User::find($technicianId);
+        if (!$technician) {
+            return response()->json(['status' => false, 'message' => 'Technician not found'], 404);
+        }
+
+        $createdAt = $technician->created_at;
+        $today = Carbon::now();
+
+        // Calculate the number of days from created_at to today, excluding only Sundays
+        $presentDays = $this->calculateWorkingDays($createdAt, $today);
+
+        // Get the number of days the technician was marked as absent in the Event model
+        $absentDays = Event::where('technician_id', $technicianId)
+                        //  ->where('status', 'absent') // Assuming you have a status field to indicate absence
+                          ->count();
+
+        // Calculate the present days by subtracting absent days from total working days
+        $presentDays -= $absentDays;
+
+        // Return the calculated percentages and presence/absence data
+        return response()->json([
+            'status' => true,
+            'closed_percentage' => $closedPercentage,
+            'open_percentage' => $openPercentage,
+            'total_jobs' => $totalJobs,
+            'closed_jobs' => $closedJobs,
+            'open_jobs' => $openJobs,
+            'present_days' => $presentDays,
+            'absent_days' => $absentDays,
+        ], 200);
+    }
+
+    private function calculateWorkingDays(Carbon $startDate, Carbon $endDate)
+    {
+        $workingDays = 0;
+        $currentDate = $startDate->copy();
+
+        while ($currentDate->lte($endDate)) {
+            if ($currentDate->dayOfWeek !== Carbon::SUNDAY) {
+                $workingDays++;
+            }
+            $currentDate->addDay();
+        }
+
+        return $workingDays;
+    }
+
+
+  public function get_products(Request $request)
 {
     // Validate the incoming request data
     $request->validate([
-        'technician_id' => 'required|',
+        'product_name' => 'required|',
     ]);
 
-    // Get the total number of jobs for the technician
-    $totalJobs = JobModel::where('technician_id', $request->technician_id)->count();
+    // Retrieve the product name from the request
+    $productName = $request->input('product_name');
 
-    // Get the number of closed jobs for the technician
-    $closedJobs = JobModel::where('technician_id', $request->technician_id)
-                    ->where('status', 'closed')
-                    ->count();
+    // Search for products containing the product name using the "like" operator
+    $products = Products::where('product_name', 'like', '%' . $productName . '%')->get();
 
-    // Get the number of open jobs for the technician
-    $openJobs = JobModel::where('technician_id', $request->technician_id)
-                  ->where('status', 'open')
-                  ->count();
+    // Check if any products were found
+    if ($products->isEmpty()) {
+        return response()->json(['status' => false, 'message' => 'No product found'], 201);
+    }
 
-    // Calculate the percentage of closed jobs
-    $closedPercentage = $totalJobs > 0 ? ($closedJobs / $totalJobs) * 100 : 0;
-
-    // Calculate the percentage of open jobs
-    $openPercentage = $totalJobs > 0 ? ($openJobs / $totalJobs) * 100 : 0;
-
-    // Return the calculated percentages
-    return response()->json(['status' => true,
-        'closed_percentage' => $closedPercentage,
-        'open_percentage' => $openPercentage,
-        'total_jobs' => $totalJobs,
-        'closed_jobs' => $closedJobs,
-        'open_jobs' => $openJobs,
-    ], 200);
+    // Return the found products
+    return response()->json(['status' => true, 'message' => 'Product name found', 'data' => $products], 200);
 }
+  
 
 
 }

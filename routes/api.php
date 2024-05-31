@@ -19,10 +19,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
+Route::post('get_products', [ApiController::class, 'get_products']);
+
 Route::post('user_login', [ApiController::class, 'user_login']);
 Route::post('reset_password', [ApiController::class, 'reset_password']);
 
 Route::post('getTechnicianJobs', [ApiController::class, 'getTechnicianJobs']);
+Route::post('getNotification', [ApiController::class, 'getNotification']);
 
 Route::post('getTechnicianJobsHistory', [ApiController::class, 'getTechnicianJobsHistory']);
  Route::post('getCustomerHistory', [ApiController::class, 'getCustomerHistory']);

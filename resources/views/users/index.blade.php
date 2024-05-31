@@ -203,10 +203,10 @@
                                                         <i data-feather="message-circle" class="feather-sm me-2"></i>
                                                         Comments
                                                     </a>
-                                                    <a class="dropdown-item" href="{{ route('permissionindex') }}">
+                                                   <!-- <a class="dropdown-item" href="{{ route('permissionindex') }}">
                                                         <i data-feather="user-check" class="feather-sm me-2"></i>
                                                         Permission
-                                                    </a>
+                                                    </a> -->
 
                                                 </div>
                                             </div>

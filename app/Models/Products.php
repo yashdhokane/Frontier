@@ -32,6 +32,7 @@ class Products extends Model
         'total',
         'stock',
         'assigned_to',
+        'is_featured',
     ];
     public function meta()
     {

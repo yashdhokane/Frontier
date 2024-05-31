@@ -65,7 +65,7 @@ class AdminController extends Controller
 
 public function permissionindex()
 {
-    $permissions = DB::table('user_permissions')->orderByDesc('permission_id')->get();
+    $permissions = DB::table('user_permissions')->orderByDesc('module_id')->get();
     return view('permission.permissionindex', compact('permissions'));
 }
 
