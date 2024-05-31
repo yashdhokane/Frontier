@@ -5,22 +5,22 @@
     <!-- -------------------------------------------------------------- -->
     <!-- Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
-     
+
     <div class="page-breadcrumb">
-         <div class="row">
+        <div class="row">
             <div class="col-md-12">
-                <h4 class="page-title">#{{ $technicians->id ?? null }} - {{ $technicians->job_title ?? null }} 
- 					@foreach($jobFields as $jobField)
-					<span class="mb-1 badge bg-warning">{{ $jobField->field_name }}</span> 
-					@endforeach
- 				</h4>
+                <h4 class="page-title">#{{ $technicians->id ?? null }} - {{ $technicians->job_title ?? null }}
+                    @foreach ($jobFields as $jobField)
+                        <span class="mb-1 badge bg-warning">{{ $jobField->field_name }}</span>
+                    @endforeach
+                </h4>
             </div>
             <div class="col-md-8">
             </div>
         </div>
-     </div>
-	
-    
+    </div>
+
+
     <!-- -------------------------------------------------------------- -->
     <!-- End Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
@@ -28,24 +28,24 @@
     <!-- Container fluid  -->
     <!-- -------------------------------------------------------------- -->
     <div class="container-fluid">
-	
-		@if (Session::has('success'))
-<div class="alert_wrap">
-    <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
-        {{ Session::get('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert"
-            aria-label="Close"></button>
-    </div>
-</div>
-@endif
 
-@if (Session::has('error'))
-<div class="alert_wrap">
-    <div class="alert alert-danger">
-        {{ Session::get('error') }}
-    </div>
-</div>
-@endif
-		
+        @if (Session::has('success'))
+            <div class="alert_wrap">
+                <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
+                    {{ Session::get('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert"
+                        aria-label="Close"></button>
+                </div>
+            </div>
+        @endif
+
+        @if (Session::has('error'))
+            <div class="alert_wrap">
+                <div class="alert alert-danger">
+                    {{ Session::get('error') }}
+                </div>
+            </div>
+        @endif
+
         <!-- -------------------------------------------------------------- -->
         <!-- Start Page Content -->
         <!-- -------------------------------------------------------------- -->
@@ -61,10 +61,10 @@
                     <div class="card">
                         <div class="card-body card-border shadow">
                             <div class="">
-								<h5 class="card-title uppercase mt-1 mb-2"><a class="text-dark"
+                                <h5 class="card-title uppercase mt-1 mb-2"><a class="text-dark"
                                         href="{{ url('users/show/' . $technicians->user->id) }}">{{ $technicians->user->name ?? null }}</a>
                                 </h5>
-								<div>Address</div>
+                                <div>Address</div>
                                 <h5 class="todo-desc mb-2 fs-3 font-weight-medium">
                                     @if (isset($technicians->address) && $technicians->address !== '')
                                         {{ $technicians->address }},
@@ -83,7 +83,7 @@
                                     @endif
                                 </h5>
 
-                                 <iframe id="map238" width="100%" height="150" frameborder="0" style="border: 0"
+                                <iframe id="map238" width="100%" height="150" frameborder="0" style="border: 0"
                                     allowfullscreen=""></iframe>
 
                             </div>
@@ -97,22 +97,24 @@
                             <div class="profile-pic mb-3 mt-3">
                                 <h5 class="card-title uppercase mt-3 mb-0">Contact Details</h5>
                                 @if (!empty($technicians->user->email))
-                                    <a href="mailto:{{ $technicians->user->email ?? '' }}">{{ $technicians->user->email ?? null }}</a><br>
+                                    <a
+                                        href="mailto:{{ $technicians->user->email ?? '' }}">{{ $technicians->user->email ?? null }}</a><br>
                                 @endif
                                 @if (!empty($technicians->user->mobile))
-                                    {{ $technicians->user->mobile ?? null }}<br /> 
+                                    {{ $technicians->user->mobile ?? null }}<br />
                                 @endif
- 								
+
                             </div>
-							<div>Address</div>
-							<div class="">
-								<iframe id="map" width="100%" height="150" frameborder="0" style="border: 0" allowfullscreen=""></iframe>
-							</div>
+                            <div>Address</div>
+                            <div class="">
+                                <iframe id="map" width="100%" height="150" frameborder="0" style="border: 0"
+                                    allowfullscreen=""></iframe>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                 
+
                 <div class="mb-4">
                     <div class="card">
                         <div class="card-body card-border shadow">
@@ -121,7 +123,7 @@
                                     <i class="fas fas fa-tag "></i>
                                 </div>
                                 <div class="col-md-9">
-                                   <h5 class="card-title uppercase">Customer Tags</h5>
+                                    <h5 class="card-title uppercase">Customer Tags</h5>
                                 </div>
                                 <div class="col-md-2 addCustomerTags" style="cursor: pointer;">
                                     <i class="fas fa-plus "></i>
@@ -166,7 +168,7 @@
                                     <i class="fas fas fa-tag "></i>
                                 </div>
                                 <div class="col-md-9">
-                                   <h5 class="card-title uppercase">Job Tags</h5>
+                                    <h5 class="card-title uppercase">Job Tags</h5>
                                 </div>
                                 <div class="col-md-1 addJobTags" style="cursor: pointer;">
                                     <i class="fas fa-plus "></i>
@@ -211,7 +213,7 @@
                                     <i class="fas fa-paperclip"></i>
                                 </div>
                                 <div class="col-md-9">
-                                   <h5 class="card-title uppercase">Attachments</h5>
+                                    <h5 class="card-title uppercase">Attachments</h5>
                                 </div>
                                 <div class="col-md-1 addAttachment" style="cursor: pointer;">
                                     <i class="fas fa-plus "></i>
@@ -249,7 +251,7 @@
                                     <i class="fas fa-bullseye "></i>
                                 </div>
                                 <div class="col-md-9">
-                                   <h5 class="card-title uppercase">Lead Source</h5>
+                                    <h5 class="card-title uppercase">Lead Source</h5>
                                 </div>
                                 <div class="col-md-1 addSource" style="cursor: pointer;">
                                     <i class="fas fa-plus "></i>
@@ -289,7 +291,7 @@
                 <div class="mb-4">
                     <div class="card">
                         <div class="card-body card-border shadow text-center">
-                           <h5 class="card-title uppercase">Technician Assigned</h5>
+                            <h5 class="card-title uppercase">Technician Assigned</h5>
                             <div class="profile-pic mb-3 mt-3">
                                 @isset($technicians->usertechnician->user_image)
                                     <img src="{{ asset('public/images/Uploads/users/' . $technicians->usertechnician->id . '/' . $technicians->usertechnician->user_image) ?? null }}"
@@ -298,7 +300,8 @@
                                 @else
                                     <img src="{{ $defaultImage }}" width="150" class="rounded-circle" alt="user" />
                                 @endisset
-                               <h5 class="card-title uppercase mt-3 mb-0">{{ $technicians->usertechnician->name ?? null }}</h5>
+                                <h5 class="card-title uppercase mt-3 mb-0">
+                                    {{ $technicians->usertechnician->name ?? null }}</h5>
                                 <a
                                     href="mailto:{{ $technicians->usertechnician->email ?? '' }}">{{ $technicians->usertechnician->email ?? null }}</a><br><small
                                     class="text-muted">{{ $technicians->usertechnician->mobile ?? null }}<br />{{ $technicians->usertechnician->Locationareaname->area_name ?? null }}</small>
@@ -309,7 +312,7 @@
                 <div class="mb-4">
                     <div class="card">
                         <div class="card-body card-border shadow text-center">
-                           <h5 class="card-title uppercase">Ticket Creator</h5>
+                            <h5 class="card-title uppercase">Ticket Creator</h5>
                             <div class="profile-pic mb-3 mt-3">
                                 @isset($technicians->addedby->user_image)
                                     <img src="{{ asset('public/images/Uploads/users/' . $technicians->addedby->id . '/' . $technicians->addedby->user_image) ?? null }}"
@@ -345,12 +348,14 @@
                             <div class="row">
                                 <div class="col-sm-2">
                                     <div class="flowchart">
-                                        
+
                                         <div class="icwrap">
-                                           @php
+                                            @php
                                                 use Carbon\Carbon;
                                                 $timeSchedule = $jobTimings['time_schedule'];
-                                                $shTimeOver = $timeSchedule ? Carbon::parse($timeSchedule,$timezoneName)->isPast() : false;
+                                                $shTimeOver = $timeSchedule
+                                                    ? Carbon::parse($timeSchedule, $timezoneName)->isPast()
+                                                    : false;
                                             @endphp
 
                                             <div class="ictop {{ $shTimeOver ? 'bg-info text-white' : 'icblank' }}">
@@ -368,11 +373,13 @@
 
                                 <div class="col-sm-2">
                                     <div class="flowchart">
-                                        
+
                                         <div class="icwrap">
-                                        @php
+                                            @php
                                                 $time_omw = $jobTimings['time_omw'];
-                                                $omwTimeOver = $time_omw ? Carbon::parse($time_omw,$timezoneName)->isPast() : false;
+                                                $omwTimeOver = $time_omw
+                                                    ? Carbon::parse($time_omw, $timezoneName)->isPast()
+                                                    : false;
                                             @endphp
                                             <div class="ictop {{ $shTimeOver ? 'bg-info text-white' : 'icblank' }}">
                                                 <i class="ri-truck-line"></i>
@@ -381,7 +388,7 @@
                                         </div>
                                         <div class="dtwrap">
                                             <div class="date">
-                                               {{ $jobTimings['time_omw'] }}
+                                                {{ $jobTimings['time_omw'] }}
                                             </div>
                                         </div>
                                     </div>
@@ -389,13 +396,17 @@
 
                                 <div class="col-sm-2">
                                     <div class="flowchart">
-                                        
+
                                         <div class="icwrap">
-                                          @php
-                                                $travel_time = intval(preg_replace('/[^0-9]/', '', $travelTime)); 
-                                                $newTime = Carbon::parse($jobTimings['time_start'])->addMinutes($travel_time);
+                                            @php
+                                                $travel_time = intval(preg_replace('/[^0-9]/', '', $travelTime));
+                                                $newTime = Carbon::parse($jobTimings['time_start'])->addMinutes(
+                                                    $travel_time,
+                                                );
                                                 $time_omw = $newTime;
-                                                $startTimeOver = $time_omw ? Carbon::parse($time_omw,$timezoneName)->isPast() : false;
+                                                $startTimeOver = $time_omw
+                                                    ? Carbon::parse($time_omw, $timezoneName)->isPast()
+                                                    : false;
                                             @endphp
                                             <div class="ictop {{ $startTimeOver ? 'bg-info text-white' : 'icblank' }}">
                                                 <i class="ri-play-line"></i>
@@ -403,8 +414,8 @@
                                             <span class="cht">Start</span>
                                         </div>
                                         <div class="dtwrap">
-                                              <div class="date">
-                                              {{ $newTime->format('Y-m-d h:i a') }}
+                                            <div class="date">
+                                                {{ $newTime->format('Y-m-d h:i a') }}
                                             </div>
                                         </div>
                                     </div>
@@ -412,13 +423,16 @@
 
                                 <div class="col-sm-2">
                                     <div class="flowchart">
-                                        
+
                                         <div class="icwrap">
                                             @php
                                                 $timeFinish = $jobTimings['time_finish'] ?? null;
-                                                $isTimeOver = $timeFinish ? Carbon::parse($timeFinish,$timezoneName)->isPast() : false;
+                                                $isTimeOver = $timeFinish
+                                                    ? Carbon::parse($timeFinish, $timezoneName)->isPast()
+                                                    : false;
                                             @endphp
-                                            <div class="ictop {{ $isTimeOver ? 'bg-info text-white' : 'icblank text-primary' }}">
+                                            <div
+                                                class="ictop {{ $isTimeOver ? 'bg-info text-white' : 'icblank text-primary' }}">
                                                 <i class="ri-stop-circle-line"></i>
                                             </div>
                                             <span class="cht">Finish</span>
@@ -436,7 +450,9 @@
                                         <div class="icwrap">
                                             @php
                                                 $time_invoice = $jobTimings['time_invoice'] ?? null;
-                                                $invoiceTimeOver = $time_invoice ? Carbon::parse($time_invoice,$timezoneName)->isPast() : false;
+                                                $invoiceTimeOver = $time_invoice
+                                                    ? Carbon::parse($time_invoice, $timezoneName)->isPast()
+                                                    : false;
                                             @endphp
                                             <div class="ictop {{ $invoiceTimeOver ? 'bg-info text-white' : 'icblank' }}">
                                                 <i class="ri-bill-line"></i>
@@ -445,7 +461,7 @@
                                         </div>
                                         <div class="dtwrap">
                                             <div class="date">
-                                               @if(isset($jobTimings['time_invoice']))
+                                                @if (isset($jobTimings['time_invoice']))
                                                     {{ $jobTimings['time_invoice'] }}
                                                 @endif
 
@@ -457,10 +473,12 @@
                                 <div class="col-sm-2">
                                     <div class="flowchart">
                                         <!--<button class="bl"></button>-->
-                                        <div class="icwrap"> 
-                                             @php
+                                        <div class="icwrap">
+                                            @php
                                                 $payment_date = $Payment->payment_date ?? null;
-                                                $payTimeOver = $payment_date ? Carbon::parse($payment_date,$timezoneName)->isPast() : false;
+                                                $payTimeOver = $payment_date
+                                                    ? Carbon::parse($payment_date, $timezoneName)->isPast()
+                                                    : false;
                                             @endphp
                                             <div class="ictop  {{ $payTimeOver ? 'bg-info text-white' : 'icblank' }}">
                                                 <i class="ri-currency-line"></i>
@@ -469,9 +487,9 @@
                                         </div>
                                         <div class="dtwrap">
                                             <div class="date">
-                                            @if(isset($Payment) && $Payment->status === 'paid')
-                                                  {{Carbon::parse( $Payment->payment_date ?? null)->format('Y-m-d h:i a')}}
-                                              @endif
+                                                @if (isset($Payment) && $Payment->status === 'paid')
+                                                    {{ Carbon::parse($Payment->payment_date ?? null)->format('Y-m-d h:i a') }}
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -489,12 +507,16 @@
                             <div class="row">
                                 <div class="col-md-7">
                                     <div class="mb-2">
-                                        <h5 class="card-title uppercase">#{{ $technicians->id ?? null }} - {{ $technicians->job_title ?? null }} <span class="mb-1 badge bg-warning">{{ $technicians->status ?? null }} </span> </h5>
+                                        <h5 class="card-title uppercase">#{{ $technicians->id ?? null }} -
+                                            {{ $technicians->job_title ?? null }} <span
+                                                class="mb-1 badge bg-warning">{{ $technicians->status ?? null }} </span>
+                                        </h5>
                                     </div>
                                 </div>
                                 <div class="col-md-5">
                                     <div class="mb-2">
-                                        <h5 class="card-title uppercase"><i class="fa fa-calendar" aria-hidden="true"></i>
+                                        <h5 class="card-title uppercase"><i class="fa fa-calendar"
+                                                aria-hidden="true"></i>
                                             {{ \Carbon\Carbon::parse($technicians->jobassignname->start_date_time ?? null)->format('jS F Y, h:i A') }}
                                         </h5>
                                     </div>
@@ -504,7 +526,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-2">
-										<strong>Duration:</strong>
+                                        <strong>Duration:</strong>
                                         @if ($technicians->jobassignname->duration ?? null)
                                             <?php
                                             $durationInMinutes = $technicians->jobassignname->duration ?? null;
@@ -513,24 +535,33 @@
                                             {{ $durationInHours ?? null }} Hours
                                         @endif
                                     </div>
-									<div class="mb-2"><strong>Priority:</strong> {{ $technicians->priority ?? null }}</div>
-									<div class="mb-2"><strong>Date: </strong>{{ \Carbon\Carbon::parse($technicians->jobassignname->start_date_time ?? null)->format('jS F Y') }}</div>
-									<div class="mb-2"><strong>From: </strong>{{ $convertTimeToTimezone($technicians->JobAssign->start_date_time ?? null, 'H:i:a')
-									}}</div>
-									<div class="mb-2"><strong>To: </strong>{{ $convertTimeToTimezone($technicians->JobAssign->end_date_time ?? null, 'H:i:a')
-									}}</div>
+                                    <div class="mb-2"><strong>Priority:</strong> {{ $technicians->priority ?? null }}
+                                    </div>
+                                    <div class="mb-2"><strong>Date:
+                                        </strong>{{ \Carbon\Carbon::parse($technicians->jobassignname->start_date_time ?? null)->format('jS F Y') }}
+                                    </div>
+                                    <div class="mb-2"><strong>From:
+                                        </strong>{{ $convertTimeToTimezone($technicians->JobAssign->start_date_time ?? null, 'H:i:a') }}
+                                    </div>
+                                    <div class="mb-2"><strong>To:
+                                        </strong>{{ $convertTimeToTimezone($technicians->JobAssign->end_date_time ?? null, 'H:i:a') }}
+                                    </div>
                                 </div>
                                 <div class="col-md-6">
-									<div class="mb-2"><strong>Appliances: </strong> {{ $technicians->JobAppliances->Appliances->appliance->appliance_name ??
-									null }}</div>
-									<div class="mb-2"><strong>Manufacturer:</strong> {{ $technicians->JobAppliances->Appliances->manufacturer->manufacturer_name ?? null }}
-									</div>
-									<div class="mb-2"><strong>Model Number: </strong>{{ $technicians->JobAppliances->Appliances->model_number ?? null }}</div>
-									<div class="mb-2"><strong>Serial Number: </strong> {{ $technicians->JobAppliances->Appliances->serial_number ?? null }} </div>
+                                    <div class="mb-2"><strong>Appliances: </strong>
+                                        {{ $technicians->JobAppliances->Appliances->appliance->appliance_name ?? null }}
+                                    </div>
+                                    <div class="mb-2"><strong>Manufacturer:</strong>
+                                        {{ $technicians->JobAppliances->Appliances->manufacturer->manufacturer_name ?? null }}
+                                    </div>
+                                    <div class="mb-2"><strong>Model Number:
+                                        </strong>{{ $technicians->JobAppliances->Appliances->model_number ?? null }}</div>
+                                    <div class="mb-2"><strong>Serial Number: </strong>
+                                        {{ $technicians->JobAppliances->Appliances->serial_number ?? null }} </div>
                                 </div>
                             </div>
-  
-                               
+
+
                         </div>
                     </div>
                 </div>
@@ -569,8 +600,9 @@
                                                     class="badge bg-light-success text-success fw-normal">{{ $technicians->usertechnician->status ?? null }}</span>
                                             </td>
                                             <td>&nbsp;{{ $technicians->JobAssign->driving_hours ?? null }} minutes</td>
-<td>&nbsp;{{ number_format((($technicians->JobAssign->driving_hours ?? 0) + ($technicians->JobAssign->duration ?? 0)) / 60, 2) }} hours</td>
-</td>
+                                            <td>&nbsp;{{ number_format((($technicians->JobAssign->driving_hours ?? 0) + ($technicians->JobAssign->duration ?? 0)) / 60, 2) }}
+                                                hours</td>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -594,24 +626,24 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        
-                                            @foreach($jobproduct as $product)
-<tr>
-    <td>{{ $product->product->product_name ?? null }}</td>
-    <td>${{ $product->base_price ?? null }}</td>
-    <td>${{ $product->discount ?? null }}</td>
-    <td>${{ $product->sub_total ?? null }}</td>
-</tr>
-@endforeach
 
-@foreach($jobservice as $service)
-<tr>
-    <td>{{ $service->service->service_name ?? null }} </td>
-    <td>${{ $service->base_price ?? null }}</td>
-    <td>${{ $service->discount ?? null }}</td>
-    <td>${{ $service->sub_total ?? null }}</td>
-</tr>
-@endforeach
+                                        @foreach ($jobproduct as $product)
+                                            <tr>
+                                                <td>{{ $product->product->product_name ?? null }}</td>
+                                                <td>${{ $product->base_price ?? null }}</td>
+                                                <td>${{ $product->discount ?? null }}</td>
+                                                <td>${{ $product->sub_total ?? null }}</td>
+                                            </tr>
+                                        @endforeach
+
+                                        @foreach ($jobservice as $service)
+                                            <tr>
+                                                <td>{{ $service->service->service_name ?? null }} </td>
+                                                <td>${{ $service->base_price ?? null }}</td>
+                                                <td>${{ $service->discount ?? null }}</td>
+                                                <td>${{ $service->sub_total ?? null }}</td>
+                                            </tr>
+                                        @endforeach
 
 
 
@@ -619,12 +651,16 @@
                                 </table>
                                 <div class="row mb-2 justify-content-end" style="border-top: 1px solid #343434;">
                                     <div class="col-md-5 mt-2 text-right" style="text-align: right;padding-right: 36px;">
-                                        
-										<div class="price_h5">Subtotal: <span>${{ $technicians->subtotal ?? null }}</span></div>
-										<div class="price_h5">Discount: <span>${{ $technicians->discount ?? null }}</span></div>
-										<div class="price_h5">Tax ({{ $technicians->tax_details ?? null }}): <span>${{ $technicians->tax ?? null }}</span> </div>
-										<div class="price_h5">Total: <span>${{ $technicians->gross_total ?? null }}</span></div>
-                                        
+
+                                        <div class="price_h5">Subtotal: <span>${{ $technicians->subtotal ?? null }}</span>
+                                        </div>
+                                        <div class="price_h5">Discount: <span>${{ $technicians->discount ?? null }}</span>
+                                        </div>
+                                        <div class="price_h5">Tax ({{ $technicians->tax_details ?? null }}):
+                                            <span>${{ $technicians->tax ?? null }}</span> </div>
+                                        <div class="price_h5">Total: <span>${{ $technicians->gross_total ?? null }}</span>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -636,7 +672,8 @@
                             <div class="card-body card-border shadow">
                                 <div class="row open_items">
                                     <div class="col-md-10">
-                                       <h5 class="card-title uppercase"><i class="fas fa-sticky-note px-1"></i> Job Note</h5>
+                                        <h5 class="card-title uppercase"><i class="fas fa-sticky-note px-1"></i> Job Note
+                                        </h5>
                                     </div>
                                     <div class="col-md-2 text-center addnotes" style="cursor: pointer;">
                                         <i class="fas fa-plus "></i>
@@ -701,267 +738,120 @@
                             <div class="card-body card-border shadow">
                                 <div class="row mb-3 open_items">
                                     <div class="col-md-7">
-                                       <h5 class="card-title uppercase"><i class="fas fas fa-dollar-sign px-1"></i> Payment & Invoice</h5>
+                                        <h5 class="card-title uppercase"><i class="fas fas fa-dollar-sign px-1"></i>
+                                            Payment & Invoice</h5>
                                     </div>
- @if ($technicians->invoice_status == 'created')
-    <div class="col-md-5 text-center">
-        @php
-            $payment = \App\Models\Payment::where('job_id', $technicians->id)->first();
-        @endphp
-        @if ($payment)
-            <a href="{{ route('invoicedetail', ['id' => $payment->id]) }}" class="btn waves-effect waves-light btn-primary">View & Send Invoice</a>
-        @endif
-    </div>
-@else
-    <div class="col-md-5 text-center">
-        <form action="{{ route('create.payment.invoice') }}" method="POST">
-            @csrf
-            <input type="hidden" name="job_id" value="{{ $technicians->id }}">
-            <button type="submit" class="btn waves-effect waves-light btn-primary">View & Send Invoice</button>
-        </form>
-    </div>
-@endif
+                                    @if ($technicians->invoice_status == 'created')
+                                        <div class="col-md-5 text-center">
+                                            @php
+                                                $payment = \App\Models\Payment::where(
+                                                    'job_id',
+                                                    $technicians->id,
+                                                )->first();
+                                            @endphp
+                                            @if ($payment)
+                                                <a href="{{ route('invoicedetail', ['id' => $payment->id]) }}"
+                                                    class="btn waves-effect waves-light btn-primary">View & Send
+                                                    Invoice</a>
+                                            @endif
+                                        </div>
+                                    @else
+                                        <div class="col-md-5 text-center">
+                                            <form action="{{ route('create.payment.invoice') }}" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="job_id" value="{{ $technicians->id }}">
+                                                <button type="submit"
+                                                    class="btn waves-effect waves-light btn-primary">View & Send
+                                                    Invoice</button>
+                                            </form>
+                                        </div>
+                                    @endif
 
                                 </div>
                                 <div class="row mb-3">
-                                   @if ($technicians->invoice_status == 'created' || $technicians->invoice_status == 'complete' )
-<div class="col-md-12">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Invoice Number</th>
-                <th>Total Payment</th>
-                <th>Status</th>
-                <th>Due Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>{{ $Payment->invoice_number ?? null }}</td>
-                <td>${{ $Payment->total ?? null }}</td>
-                <td>{{ $Payment->status ?? null }}</td>
-                <td>{{ $convertDateToTimezone($Payment->due_date ?? null) }}</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-@endif
+                                    @if ($technicians->invoice_status == 'created' || $technicians->invoice_status == 'complete')
+                                        <div class="col-md-12">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Invoice Number</th>
+                                                        <th>Total Payment</th>
+                                                        <th>Status</th>
+                                                        <th>Due Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>{{ $Payment->invoice_number ?? null }}</td>
+                                                        <td>${{ $Payment->total ?? null }}</td>
+                                                        <td>{{ $Payment->status ?? null }}</td>
+                                                        <td>{{ $convertDateToTimezone($Payment->due_date ?? null) }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    @endif
 
 
-                                        
-                                    </div>
+
                                 </div>
-
                             </div>
+
                         </div>
                     </div>
+                </div>
 
-                    <div class="mb-4">
-                        <div class="card">
-                            <div class="card-body card-border shadow">
-                                <h5 class="card-title uppercase">ACTIVITY FEED</h5>
+                <div class="mb-4">
+                    <div class="card">
+                        <div class="card-body card-border shadow">
+                            <h5 class="card-title uppercase">ACTIVITY FEED</h5>
 
-                                <div class="table-responsive">
-                                    <table class="table customize-table mb-0 v-middle">
-                                        <tbody>
-                                            @foreach ($activity as $item)
-                                                <tr>
-                                                    <td style="width:20%">
-                                                        <div class="d-flex align-items-center">
-                                                            <img src="{{ url('public/images/Uploads/users/' . $item->user_id . '/' . $item->user->user_image) }}"
-                                                                class="rounded-circle" width="40"
-                                                                onerror="this.onerror=null; this.src='{{ $defaultImage }}';"
-                                                                alt="Image">
-                                                            <span
-                                                                class="ms-2 fw-normal">{{ $item->user->name ?? null }}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td style="width:60%">{{ $item->activity ?? null }}</td>
-                                                    <td style="width:20%">
-                                                        {{ $item->created_at ? $item->created_at->format('D n/j/y g:ia') : null }}
-
-
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-
-                                        </tbody>
-                                    </table>
-                                </div>
+                            <div class="table-responsive">
+                                <table class="table customize-table mb-0 v-middle">
+                                    <tbody>
+                                        @foreach ($activity as $item)
+                                            <tr>
+                                                <td style="width:20%">
+                                                    <div class="d-flex align-items-center">
+                                                        <img src="{{ url('public/images/Uploads/users/' . $item->user_id . '/' . $item->user->user_image) }}"
+                                                            class="rounded-circle" width="40"
+                                                            onerror="this.onerror=null; this.src='{{ $defaultImage }}';"
+                                                            alt="Image">
+                                                        <span
+                                                            class="ms-2 fw-normal">{{ $item->user->name ?? null }}</span>
+                                                    </div>
+                                                </td>
+                                                <td style="width:60%">{{ $item->activity ?? null }}</td>
+                                                <td style="width:20%">
+                                                    {{ $item->created_at ? $item->created_at->format('D n/j/y g:ia') : null }}
 
 
+                                                </td>
+                                            </tr>
+                                        @endforeach
 
-
-
-
-
-
+                                    </tbody>
+                                </table>
                             </div>
+
+
+
+
+
+
+
+
                         </div>
                     </div>
-
                 </div>
 
             </div>
 
         </div>
-        <!-- -------------------------------------------------------------- -->
-        <!-- End Container fluid  -->
 
+    </div>
+    <!-- -------------------------------------------------------------- -->
+    <!-- End Container fluid  -->
 
-    @section('script')
-        <!-- This page JavaScript -->
-        <!-- --------------------------------------------------------------- -->
-        <script src="https://gaffis.in/frontier/website/public/admin/dist/libs/tinymce/tinymce.min.js"></script>
-        <!--c3 charts -->
-        <script src="https://gaffis.in/frontier/website/public/admin/dist/libs/c3/htdocs/js/d3-3.5.6.js"></script>
-
-
-        <script src="https://gaffis.in/frontier/website/public/admin/dist/libs/c3/htdocs/js/c3-0.4.9.min.js"></script>
-
-        <script>
-            $(document).ready(function() {
-
-                $('#manufacturer_ids').select2();
-
-
-                $('.addnotes').click(function() {
-                    $('.shownotes').toggle('fade', function() {
-                        if ($(this).is(':visible')) { // Check if the element is visible after toggle
-                            $('html, body').animate({
-                                scrollTop: $(this).offset()
-                                    .top // Scroll to the top position of the element
-                            }, 'fast');
-                        }
-                    });
-                });
-                $('.addCustomerTags').click(function() {
-                    $('.showCustomerTags').toggle('fade');
-
-                });
-                $('.addJobTags').click(function() {
-                    $('.showJobTags').toggle('fade');
-
-                });
-                $('.addAttachment').click(function() {
-                    $('.showAttachment').toggle('fade');
-
-                });
-                $('.addSource').click(function() {
-                    $('.showSource').toggle('fade');
-
-                });
-            });
-        </script>
-
-        <script>
-            $(function() {
-                tinymce.init({
-                    selector: 'textarea#mymce'
-                });
-                $('#submitBtn').click(function() {
-                    // Check if the TinyMCE textarea is empty
-                    if (tinymce.activeEditor.getContent().trim() === '') {
-                        // If textarea is empty, prevent form submission
-                        alert('Please enter a Job note.');
-                        return false;
-                    }
-                });
-                // ==============================================================
-                // Our Visitor
-                // ==============================================================
-
-                var chart = c3.generate({
-                    bindto: '#visitor',
-                    data: {
-                        columns: [
-                            ['Open', 4],
-                            ['Closed', 2],
-                            ['In progress', 2],
-                            ['Other', 0],
-                        ],
-
-                        type: 'donut',
-                        tooltip: {
-                            show: true,
-                        },
-                    },
-                    donut: {
-                        label: {
-                            show: false,
-                        },
-                        title: 'Tickets',
-                        width: 35,
-                    },
-
-                    legend: {
-                        hide: true,
-                        //or hide: 'data1'
-                        //or hide: ['data1', 'data2']
-                    },
-                    color: {
-                        pattern: ['#40c4ff', '#2961ff', '#ff821c', '#7e74fb'],
-                    },
-                });
-            });
-        </script>
-        <script>
-            // Get latitude and longitude values from your data or variables
-            var latitude = {{ $technicianlocation->latitude ?? null }}; // Example latitude
-            var longitude = {{ $technicianlocation->longitude ?? null }}; // Example longitude
-
-            // Construct the URL with the latitude and longitude values
-            var mapUrl = 'https://www.google.com/maps/embed/v1/view?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&center=' +
-                latitude + ',' + longitude + '&zoom=13';
-
-            document.getElementById('map').src = mapUrl;
-            // var streetViewUrl =
-            //   'https://www.google.com/maps/embed/v1/streetview?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&location=' +
-            //   latitude + ',' + longitude + '&heading=210&pitch=10&fov=35';
-
-            // Set the source of the iframe to the Street View URL
-            //  document.getElementById('map').src = streetViewUrl;
-        </script>
-        <script>
-            setTimeout(function() {
-                $('#successMessage').fadeOut('fast');
-            }, 5000); // 5000 milliseconds = 5 seconds
-        </script>
-        <script>
-            // Get latitude and longitude values from your data or variables
-            var latitude = {{ $technicians->latitude ?? null }}; // Example latitude
-            var longitude = {{ $technicians->longitude ?? null }}; // Example longitude
-
-            // Construct the URL with the latitude and longitude values
-            // var mapUrl = 'https://www.google.com/maps/embed/v1/view?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&center=' +
-            //     latitude + ',' + longitude + '&zoom=18';
-            var streetViewUrl =
-                'https://www.google.com/maps/embed/v1/streetview?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&location=' +
-                latitude + ',' + longitude + '&heading=210&pitch=10&fov=35';
-
-            // Set the source of the iframe to the Street View URL
-            document.getElementById('map238').src = streetViewUrl;
-
-            // document.getElementById('map238').src = mapUrl;
-        </script>
-        <script>
-            // Get latitude and longitude values from your data or variables
-            var latitude = {!! isset($technicians->addresscustomer->latitude) ? $technicians->addresscustomer->latitude : 'null' !!}; // Example latitude
-            var longitude = {!! isset($technicians->addresscustomer->longitude) ? $technicians->addresscustomer->longitude : 'null' !!}; // Example longitude
-
-
-            // Construct the URL with the latitude and longitude values
-             var mapUrl = 'https://www.google.com/maps/embed/v1/view?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&center=' +
-                latitude + ',' + longitude + '&zoom=18';
-           //  var streetViewUrl =
-             //    'https://www.google.com/maps/embed/v1/streetview?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&location=' +
-             //    latitude + ',' + longitude + '&heading=210&pitch=10&fov=35';
-
-            // Set the source of the iframe to the Street View URL
-            //document.getElementById('map').src = streetViewUrl;
-             document.getElementById('map').src = mapUrl;
-
-            // document.getElementById('map238').src = mapUrl;
-        </script>
-    @endsection
+    @include('tickets.scriptShow')
 @endsection
