@@ -15,39 +15,39 @@
 
 
       <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            function getDateFromUrl() {
-                const urlParams = new URLSearchParams(window.location.search);
-                return urlParams.get('date');
-            }
+        // document.addEventListener("DOMContentLoaded", function() {
+        //     function getDateFromUrl() {
+        //         const urlParams = new URLSearchParams(window.location.search);
+        //         return urlParams.get('date');
+        //     }
 
-            function isCurrentDate(dateStr) {
-                const currentDate = new Date();
-                const urlDate = new Date(dateStr);
-                return currentDate.toISOString().split('T')[0] === urlDate.toISOString().split('T')[0];
-            }
+        //     function isCurrentDate(dateStr) {
+        //         const currentDate = new Date();
+        //         const urlDate = new Date(dateStr);
+        //         return currentDate.toISOString().split('T')[0] === urlDate.toISOString().split('T')[0];
+        //     }
 
-            function fetchAndAppendTable() {
-                fetch("{{ route('get.table.content') }}")
-                    .then(response => response.text())
-                    .then(data => {
-                        document.getElementById("table-container").innerHTML = data;
-                        console.log('done');
-                    })
-                    .catch(error => console.error("Error fetching table content:", error));
-            }
+        //     function fetchAndAppendTable() {
+        //         fetch("{{ route('get.table.content') }}")
+        //             .then(response => response.text())
+        //             .then(data => {
+        //                 document.getElementById("table-container").innerHTML = data;
+        //                 console.log('done');
+        //             })
+        //             .catch(error => console.error("Error fetching table content:", error));
+        //     }
 
-            const dateFromUrl = getDateFromUrl();
-            const currentDateStr = new Date().toISOString().split('T')[0];
+        //     const dateFromUrl = getDateFromUrl();
+        //     const currentDateStr = new Date().toISOString().split('T')[0];
 
-            if (!dateFromUrl || isCurrentDate(dateFromUrl)) {
-                // Fetch and append the table every 30 seconds
-                setInterval(fetchAndAppendTable, 30000);
+        //     if (!dateFromUrl || isCurrentDate(dateFromUrl)) {
+        //         // Fetch and append the table every 30 seconds
+        //         setInterval(fetchAndAppendTable, 30000);
 
-                // Initial fetch
-                fetchAndAppendTable();
-            }
-        });
+        //         // Initial fetch
+        //         fetchAndAppendTable();
+        //     }
+        // });
     </script>
 
     <script>
