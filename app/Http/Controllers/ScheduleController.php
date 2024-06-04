@@ -13,6 +13,7 @@ use App\Models\LocationCity;
 use App\Models\LocationServiceArea;
 use App\Models\LocationState;
 use App\Models\Manufacturer;
+use App\Models\JobTechEvent;
 use App\Models\User;
 use App\Models\Service;
 use App\Models\Products;
@@ -318,7 +319,7 @@ class ScheduleController extends Controller
                 $schedule_arr[$value] = [];
 
                 $schedule = Schedule::with('JobModel', 'technician')->where('technician_id', $value)
-                    ->where('start_date_time', 'LIKE', "%$filterDate%") ->where('end_date_time', '>=', $nowTime)->get();
+                    ->where('start_date_time', 'LIKE', "%$filterDate%")->where('end_date_time', '>=', $nowTime)->get();
                 if (isset($schedule) && !empty($schedule->count())) {
                     foreach ($schedule as $k => $item) {
                         $datetimeString = $item->start_date_time;
@@ -805,7 +806,15 @@ class ScheduleController extends Controller
 
                 $jobId = DB::table('jobs')->where('id', $data['job_id'])->update($jobsData);
 
+                $jobtech = JobTechEvent::where('job_id', $data['job_id'])->first();
+                $jobtech->job_schedule = $start_date_time;
+                $jobtech->job_enroute = null;
+                $jobtech->job_start = null;
+                $jobtech->job_end = null;
+                $jobtech->job_invoice = null;
+                $jobtech->job_payment = null;
 
+                $jobtech->update();
 
                 $jobNotes = [
                     'note' => (isset($data['technician_notes']) && !empty($data['technician_notes'])) ? $data['technician_notes'] : '',
@@ -1044,7 +1053,11 @@ class ScheduleController extends Controller
 
                 $jobId = DB::table('jobs')->insertGetId($jobsData);
 
+                $jobtech = new JobTechEvent();
+                $jobtech->job_id = $jobId;
+                $jobtech->job_schedule = $start_date_time;
 
+                $jobtech->save();
 
                 $jobNotes = [
                     'job_id' => $jobId,

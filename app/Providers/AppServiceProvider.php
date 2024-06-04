@@ -6,6 +6,7 @@ use Carbon\Carbon;
 
 use App\Models\JobActivity;
 use App\Models\JobAssign;
+use App\Models\JobTechEvent;
 use App\Models\Payment;
 use App\Models\PermissionModel;
 
@@ -31,9 +32,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        
+
         $this->app->singleton('UserPermissionChecker', function () {
-            return new class {
+            return new class
+            {
                 public function checkUserPermission($user_id, $permissions_type, $module_id)
                 {
                     if ($permissions_type == 'all') {
@@ -81,15 +83,16 @@ class AppServiceProvider extends ServiceProvider
             {
                 public function getJobTimings($jobId)
                 {
-                    $job = JobAssign::where('job_id', $jobId)->first();
-                    $invoice = Payment::where('job_id', $jobId)->first();
+                    $job = JobTechEvent::where('job_id', $jobId)->first();
+
 
                     return [
-                        'time_schedule' => Carbon::parse($job->start_date_time ?? null)->format('Y-m-d h:i a'),
-                        'time_omw' => Carbon::parse($job->start_date_time ?? null)->format('Y-m-d h:i a'),
-                        'time_start' => Carbon::parse($job->start_date_time ?? null)->format('Y-m-d h:i a'),
-                        'time_finish' => Carbon::parse($job->end_date_time ?? null)->format('Y-m-d h:i a'),
-                        'time_invoice' => isset($invoice->issue_date) ? Carbon::parse($invoice->issue_date)->format('Y-m-d') : null,
+                        'time_schedule' => isset($job->job_schedule) ?  Carbon::parse($job->job_schedule ?? null)->format('Y-m-d h:i a') : null,
+                        'time_omw' => isset($job->job_enroute) ?  Carbon::parse($job->job_enroute ?? null)->format('Y-m-d h:i a') : null,
+                        'time_start' => isset($job->job_start) ?  Carbon::parse($job->job_start ?? null)->format('Y-m-d h:i a') : null,
+                        'time_finish' => isset($job->job_end) ?  Carbon::parse($job->job_end ?? null)->format('Y-m-d h:i a') : null,
+                        'time_invoice' => isset($job->job_invoice) ? Carbon::parse($job->job_invoice)->format('Y-m-d') : null,
+                        'time_payment' => isset($job->job_payment) ? Carbon::parse($job->job_payment)->format('Y-m-d') : null,
 
                     ];
                 }
@@ -240,8 +243,8 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-          view()->share('getPermissionsByParentId', function ($parentId) {
-                return PermissionModel::with('module')->where('parent_id', $parentId)->get();
-            });
+        view()->share('getPermissionsByParentId', function ($parentId) {
+            return PermissionModel::with('module')->where('parent_id', $parentId)->get();
+        });
     }
 }

@@ -350,15 +350,7 @@
                                     <div class="flowchart">
 
                                         <div class="icwrap">
-                                            @php
-                                                use Carbon\Carbon;
-                                                $timeSchedule = $jobTimings['time_schedule'];
-                                                $shTimeOver = $timeSchedule
-                                                    ? Carbon::parse($timeSchedule, $timezoneName)->isPast()
-                                                    : false;
-                                            @endphp
-
-                                            <div class="ictop {{ $shTimeOver ? 'bg-info text-white' : 'icblank' }}">
+                                            <div class="ictop bg-info text-white">
                                                 <i class="ri-calendar-event-line"></i>
                                             </div>
                                             <span class="cht">Schedule</span>
@@ -375,13 +367,8 @@
                                     <div class="flowchart">
 
                                         <div class="icwrap">
-                                            @php
-                                                $time_omw = $jobTimings['time_omw'];
-                                                $omwTimeOver = $time_omw
-                                                    ? Carbon::parse($time_omw, $timezoneName)->isPast()
-                                                    : false;
-                                            @endphp
-                                            <div class="ictop {{ $shTimeOver ? 'bg-info text-white' : 'icblank' }}">
+                                            <div
+                                                class="ictop @if ($jobTimings['time_omw'] !== null) bg-info text-white @else icblank @endif">
                                                 <i class="ri-truck-line"></i>
                                             </div>
                                             <span class="cht">OMW</span>
@@ -398,24 +385,15 @@
                                     <div class="flowchart">
 
                                         <div class="icwrap">
-                                            @php
-                                                $travel_time = intval(preg_replace('/[^0-9]/', '', $travelTime));
-                                                $newTime = Carbon::parse($jobTimings['time_start'])->addMinutes(
-                                                    $travel_time,
-                                                );
-                                                $time_omw = $newTime;
-                                                $startTimeOver = $time_omw
-                                                    ? Carbon::parse($time_omw, $timezoneName)->isPast()
-                                                    : false;
-                                            @endphp
-                                            <div class="ictop {{ $startTimeOver ? 'bg-info text-white' : 'icblank' }}">
+                                            <div
+                                                class="ictop @if ($jobTimings['time_start'] !== null) bg-info text-white @else icblank @endif">
                                                 <i class="ri-play-line"></i>
                                             </div>
                                             <span class="cht">Start</span>
                                         </div>
                                         <div class="dtwrap">
                                             <div class="date">
-                                                {{ $newTime->format('Y-m-d h:i a') }}
+                                                {{ $jobTimings['time_start'] }}
                                             </div>
                                         </div>
                                     </div>
@@ -425,14 +403,8 @@
                                     <div class="flowchart">
 
                                         <div class="icwrap">
-                                            @php
-                                                $timeFinish = $jobTimings['time_finish'] ?? null;
-                                                $isTimeOver = $timeFinish
-                                                    ? Carbon::parse($timeFinish, $timezoneName)->isPast()
-                                                    : false;
-                                            @endphp
                                             <div
-                                                class="ictop {{ $isTimeOver ? 'bg-info text-white' : 'icblank text-primary' }}">
+                                                class="ictop @if ($jobTimings['time_finish'] !== null) bg-info text-white @else icblank @endif">
                                                 <i class="ri-stop-circle-line"></i>
                                             </div>
                                             <span class="cht">Finish</span>
@@ -448,22 +420,15 @@
                                     <div class="flowchart">
                                         <!--<button class="bl"></button>-->
                                         <div class="icwrap">
-                                            @php
-                                                $time_invoice = $jobTimings['time_invoice'] ?? null;
-                                                $invoiceTimeOver = $time_invoice
-                                                    ? Carbon::parse($time_invoice, $timezoneName)->isPast()
-                                                    : false;
-                                            @endphp
-                                            <div class="ictop {{ $invoiceTimeOver ? 'bg-info text-white' : 'icblank' }}">
+                                            <div
+                                                class="ictop @if ($jobTimings['time_invoice'] !== null) bg-info text-white @else icblank @endif">
                                                 <i class="ri-bill-line"></i>
                                             </div>
                                             <span class="cht">Invoice</span>
                                         </div>
                                         <div class="dtwrap">
                                             <div class="date">
-                                                @if (isset($jobTimings['time_invoice']))
-                                                    {{ $jobTimings['time_invoice'] }}
-                                                @endif
+                                                {{ $jobTimings['time_invoice'] }}
 
                                             </div>
                                         </div>
@@ -474,22 +439,15 @@
                                     <div class="flowchart">
                                         <!--<button class="bl"></button>-->
                                         <div class="icwrap">
-                                            @php
-                                                $payment_date = $Payment->payment_date ?? null;
-                                                $payTimeOver = $payment_date
-                                                    ? Carbon::parse($payment_date, $timezoneName)->isPast()
-                                                    : false;
-                                            @endphp
-                                            <div class="ictop  {{ $payTimeOver ? 'bg-info text-white' : 'icblank' }}">
+                                            <div
+                                                class="ictop @if ($jobTimings['time_payment'] !== null) bg-info text-white @else icblank @endif">
                                                 <i class="ri-currency-line"></i>
                                             </div>
                                             <span class="cht">Pay</span>
                                         </div>
                                         <div class="dtwrap">
                                             <div class="date">
-                                                @if (isset($Payment) && $Payment->status === 'paid')
-                                                    {{ Carbon::parse($Payment->payment_date ?? null)->format('Y-m-d h:i a') }}
-                                                @endif
+                                                {{ $jobTimings['time_payment'] }}
                                             </div>
                                         </div>
                                     </div>
@@ -657,7 +615,8 @@
                                         <div class="price_h5">Discount: <span>${{ $technicians->discount ?? null }}</span>
                                         </div>
                                         <div class="price_h5">Tax ({{ $technicians->tax_details ?? null }}):
-                                            <span>${{ $technicians->tax ?? null }}</span> </div>
+                                            <span>${{ $technicians->tax ?? null }}</span>
+                                        </div>
                                         <div class="price_h5">Total: <span>${{ $technicians->gross_total ?? null }}</span>
                                         </div>
 
