@@ -371,7 +371,7 @@
                                                 class="ictop @if ($jobTimings['time_omw'] !== null) bg-info text-white @else icblank @endif">
                                                 <i class="ri-truck-line"></i>
                                             </div>
-                                            <span class="cht">OMW</span>
+                                            <span class="cht"> Enroute</span>
                                         </div>
                                         <div class="dtwrap">
                                             <div class="date">
