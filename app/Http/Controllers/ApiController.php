@@ -8,6 +8,9 @@ use App\Models\JobProduct;
 use App\Models\JobOtherModel; 
 use App\Models\UserNotesCustomer;
 use App\Models\Event;  
+use App\Models\JobTechEvents; 
+use App\Models\UserNotification;
+
 use App\Models\ProductAssigned;
 use Illuminate\Support\Facades\Auth;
 
@@ -63,7 +66,7 @@ class ApiController extends Controller
             return response()->json(['status' => false, 'message' => 'Technician ID is required'], 500);
         }
 
-        $notifications = UserNotesCustomer::where('user_id', $technicianId)->get();
+        $notifications = UserNotification::with('notice')->where('user_id', $technicianId)->get();
 
         if ($notifications->isEmpty()) {
             return response()->json(['status' => false, 'message' => 'No notifications found'], 201);
@@ -109,7 +112,7 @@ public function getTechnicianJobs(Request $request)
     $currentDate = Carbon::now()->toDateString();
     //   dd($currentDate);
     // Check if there are any jobs for the specified technician (user_id) with the current date
-    $jobs = JobModel::with('user', 'JobAssign', 'addresscustomer', 'usertechnician', 'jobdetailsinfo.manufacturername')
+    $jobs = JobModel::with('user','JobNote', 'JobAssign', 'addresscustomer', 'usertechnician', 'jobdetailsinfo.manufacturername')
         ->where('technician_id', $userId)
         ->whereDate('created_at', $currentDate)
         ->get();
@@ -158,7 +161,7 @@ public function getTechnicianJobsHistory(Request $request)
     }
 
     // Filter the jobs by technician_id and the specified date
-    $jobs = JobModel::with('user', 'JobAssign', 'addresscustomer', 'usertechnician', 'jobdetailsinfo.manufacturername')->where('technician_id', $userId)
+    $jobs = JobModel::with('user','JobNote', 'JobAssign', 'addresscustomer', 'usertechnician', 'jobdetailsinfo.manufacturername')->where('technician_id', $userId)
         ->whereDate('created_at', $formattedDate)
         ->get();
 
@@ -537,6 +540,58 @@ public function updateTechnicianProfile(Request $request)
     return response()->json(['status' => true, 'message' => 'Product name found', 'data' => $products], 200);
 }
   
+
+
+  public function updateEnroute(Request $request)
+    {
+        $data = $request->validate([
+            'job_id' => 'required|',
+            'job_enroute' => 'required|',
+        ]);
+
+        $event = JobTechEvents::where('job_id', $data['job_id'])->first();
+        if ($event) {
+            $event->job_enroute = $data['job_enroute'];
+            $event->save();
+            return response()->json(['status' => true, 'data' => $event], 201);
+        } else {
+            return response()->json(['status' => false, 'message' => 'Job not found'], 200);
+        }
+    }
+
+    public function updateStart(Request $request)
+    {
+        $data = $request->validate([
+            'job_id' => 'required|',
+            'job_start' => 'required|',
+        ]);
+
+        $event = JobTechEvents::where('job_id', $data['job_id'])->first();
+        if ($event) {
+            $event->job_start = $data['job_start'];
+            $event->save();
+            return response()->json(['status' => true, 'data' => $event], 201);
+        } else {
+            return response()->json(['status' => false, 'message' => 'Job not found'], 200);
+        }
+    }
+
+    public function updateComplete(Request $request)
+    {
+        $data = $request->validate([
+            'job_id' => 'required|',
+            'job_end' => 'required|',
+        ]);
+
+        $event = JobTechEvents::where('job_id', $data['job_id'])->first();
+        if ($event) {
+            $event->job_end = $data['job_end'];
+            $event->save();
+            return response()->json(['status' => true, 'data' => $event], 201);
+        } else {
+            return response()->json(['status' => false, 'message' => 'Job not found'], 200);
+        }
+    }
 
 
 }

@@ -95,86 +95,87 @@
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive table-custom">
-                        <table id="zero_config" class="table table-hover table-striped table-bordered text-nowrap" data-paging="true"
-                            data-paging-size="7">
+                        <table id="zero_config" class="table table-hover table-striped table-bordered text-nowrap"
+                            data-paging="true" data-paging-size="7">
                             <div class="d-flex flex-wrap">
-                            <div class="col-md-12 row" style="margin-bottom:7px;">
-                                <div class="col-md-3">
-                                <div class="d-flex flex-column align-items-baseline">
-                                    <!-- Date filtering input -->
-                                    
-                                
-                                    <label><b>Month:</b></label>
-                                    <select id="month-filter" class="form-control mx-2">
-                                        <option value="">All</option>
-                                        @php
-                                        // Get the current month and year
-                                        $currentMonth = new DateTime();
-                                        // Format the current month and year
-                                        $currentMonthFormatted = $currentMonth->format('F Y');
-                                        // Output the option tag for the current month
-                                        echo "<option value=\"" . strtolower($currentMonthFormatted) . "\">" .
-                                            $currentMonthFormatted . '</option>';
+                                <div class="col-md-12 row" style="margin-bottom:7px;">
+                                    <div class="col-md-3">
+                                        <div class="d-flex flex-column align-items-baseline">
+                                            <!-- Date filtering input -->
 
-                                        // Generate options for the previous 11 months
-                                        for ($i = 0; $i < 12; $i++) { // Modify date to get previous months
-                                            $monthYear=$currentMonth->modify('-1 month')->format('F Y');
-                                            // Output the option tag for the previous months
-                                            echo "<option value=\"" . strtolower($monthYear) . "\">" . $monthYear . '
-                                            </option>';
-                                            }
-                                            @endphp
-                                    </select>
+
+                                            <label><b>Month:</b></label>
+                                            <select id="month-filter" class="form-control mx-2">
+                                                <option value="">All</option>
+                                                @php
+                                                // Get the current month and year
+                                                $currentMonth = new DateTime();
+                                                // Format the current month and year
+                                                $currentMonthFormatted = $currentMonth->format('F Y');
+                                                // Output the option tag for the current month
+                                                echo "<option value=\"" . strtolower($currentMonthFormatted) . "\">" .
+                                                    $currentMonthFormatted . '</option>';
+
+                                                // Generate options for the previous 11 months
+                                                for ($i = 0; $i < 12; $i++) { // Modify date to get previous months
+                                                    $monthYear=$currentMonth->modify('-1 month')->format('F Y');
+                                                    // Output the option tag for the previous months
+                                                    echo "<option value=\"" . strtolower($monthYear) . "\">" .
+                                                        $monthYear . '
+                                                    </option>';
+                                                    }
+                                                    @endphp
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="d-flex flex-column  align-items-baseline">
+                                            <!-- Filter by other column (example: Manufacturer) -->
+                                            <label class="text-nowrap"><b>Manufacturer:</b></label>
+                                            <select id="manufacturer-filter" class="form-control mx-2">
+                                                <option value="">All</option>
+                                                @foreach ($manufacturer as $item)
+                                                <option value="{{ $item->manufacturer_name }}">
+                                                    {{ $item->manufacturer_name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="d-flex flex-column align-items-baseline">
+                                            <!-- Filter by other column (example: Manufacturer) -->
+                                            <label class="text-nowrap"><b>Technician </b></label>
+                                            <select id="technician-filter" class="form-control mx-2">
+                                                <option value="">All</option>
+                                                @foreach ($technicianrole as $item)
+                                                <option value="{{ $item->name }}">
+                                                    {{ $item->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="d-flex flex-column  align-items-baseline">
+                                            <!-- Filter by status -->
+                                            <label class="text-nowrap"><b>Status:</b></label>
+                                            <select id="status-filter" class="form-control mx-2">
+                                                <option value="">All</option>
+                                                <option value="open">Open</option>
+                                                <option value="pending">Pending</option>
+                                                <option value="resolved">Resolved</option>
+                                                <option value="closed">Closed</option>
+                                                <option value="rejected">Rejected</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                <div class="d-flex flex-column  align-items-baseline">
-                                    <!-- Filter by other column (example: Manufacturer) -->
-                                    <label class="text-nowrap"><b>Manufacturer:</b></label>
-                                    <select id="manufacturer-filter" class="form-control mx-2">
-                                        <option value="">All</option>
-                                        @foreach ($manufacturer as $item)
-                                        <option value="{{ $item->manufacturer_name }}">
-                                            {{ $item->manufacturer_name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                </div>
-                                <div class="col-md-3">
-                                <div class="d-flex flex-column align-items-baseline">
-                                    <!-- Filter by other column (example: Manufacturer) -->
-                                    <label class="text-nowrap"><b>Technician </b></label>
-                                    <select id="technician-filter" class="form-control mx-2">
-                                        <option value="">All</option>
-                                        @foreach ($technicianrole as $item)
-                                        <option value="{{ $item->name }}">
-                                            {{ $item->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                </div>
-                                <div class="col-md-3">
-                                <div class="d-flex flex-column  align-items-baseline">
-                                    <!-- Filter by status -->
-                                    <label class="text-nowrap"><b>Status:</b></label>
-                                    <select id="status-filter" class="form-control mx-2">
-                                        <option value="">All</option>
-                                        <option value="open">Open</option>
-                                        <option value="pending">Pending</option>
-                                        <option value="resolved">Resolved</option>
-                                        <option value="closed">Closed</option>
-                                        <option value="rejected">Rejected</option>
-                                    </select>
-                                </div>
-                                </div>
-                              </div>
 
-                               
+
 
                                 <thead>
                                     <tr>
-                                        <th>Ticket ID</th>
-                                        <th>Ticket Details</th>
+                                        <th>Job ID</th>
+                                        <th>Job Details</th>
                                         <th>Customer</th>
                                         <th>Technician</th>
                                         <th>Date & Time</th>
@@ -201,20 +202,23 @@
                                             <div style="font-size:12px;">
                                                 @if ($ticket->JobAppliances && $ticket->JobAppliances->Appliances)
                                                 {{ $ticket->JobAppliances->Appliances->appliance->appliance_name ??
-                                                    null }}/
+                                                null }}/
                                                 @endif
                                                 @if ($ticket->JobAppliances &&
                                                 $ticket->JobAppliances->Appliances)
-                                                {{ $ticket->JobAppliances->Appliances->manufacturer->manufacturer_name ??
-                                                    null }}/
+                                                {{ $ticket->JobAppliances->Appliances->manufacturer->manufacturer_name
+                                                ??
+                                                null }}/
                                                 @endif
-                                                @if ($ticket->JobAppliances && $ticket->JobAppliances->Appliances->model_number)
+                                                @if ($ticket->JobAppliances &&
+                                                $ticket->JobAppliances->Appliances->model_number)
                                                 {{ $ticket->JobAppliances->Appliances->model_number ??
-                                                    null }}/
+                                                null }}/
                                                 @endif
-                                                @if ($ticket->JobAppliances && $ticket->JobAppliances->Appliances->serial_number)
-                                                {{ $ticket->JobAppliances->Appliances->serial_number  ??
-                                                    null}}
+                                                @if ($ticket->JobAppliances &&
+                                                $ticket->JobAppliances->Appliances->serial_number)
+                                                {{ $ticket->JobAppliances->Appliances->serial_number ??
+                                                null}}
                                                 @endif
                                             </div>
                                         </td>
@@ -240,9 +244,11 @@
                                             <div></div>
                                             @endif
                                             <div style="font-size:12px;">
-                                                {{ $convertTimeToTimezone($ticket->JobAssign->start_date_time ?? null, 'H:i:a')
+                                                {{ $convertTimeToTimezone($ticket->JobAssign->start_date_time ?? null,
+                                                'H:i:a')
                                                 }}
-                                                to {{ $convertTimeToTimezone($ticket->JobAssign->end_date_time ?? null, 'H:i:a')
+                                                to {{ $convertTimeToTimezone($ticket->JobAssign->end_date_time ?? null,
+                                                'H:i:a')
                                                 }}
                                             </div>
                                         </td>

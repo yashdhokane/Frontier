@@ -10,7 +10,7 @@
         <thead>
             <tr>
                 <th>#</th>
-                <th>Ticket</th>
+                <th>Job</th>
                 <th>Date</th>
                 <th>Amount</th>
                 <th>Technician</th>

@@ -116,7 +116,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="mt-0 mb-3">
-                                    <h6 class="card-title required-field"><i class="fas fa fa-ticket"></i> Ticket
+                                    <h6 class="card-title required-field"><i class="fas fa fa-ticket"></i> Job
                                         Number </h6>
                                     <div class="form-group">
                                         <input type="text" class="form-control job_code"
@@ -384,9 +384,9 @@
                                 </div>
                                 <input class="service_tax" type="hidden" name="service_tax" value="{{ $job->jobserviceinfo->tax}}">
                             </div>
-                            
+
                             <input class="service_total" type="hidden" name="service_total" value="{{ $job->jobserviceinfo->sub_total}}">
-                           
+
                         </div>
 
                         <div class="row mt-3">
@@ -430,7 +430,7 @@
                                 </div>
                             </div>
                              <input class="product_tax" type="hidden" name="product_tax" value="{{ $job->jobproductinfo->tax}}">
-                           
+
                             <div class="col-md-2">
                                 <div class="mb-2 product_total_text">
                                     ${{ $job->jobproductinfo->sub_total }}
@@ -501,7 +501,7 @@
                                         <div class="col-md-12 reschedule_job">{{ $technician->email }} /
                                             {{ $technician->mobile }}
                                         </div>
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -525,7 +525,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 reschedule_job show_job_information">
-                                            
+
                                         </div>
                                     </div>
                                     <div class="row">

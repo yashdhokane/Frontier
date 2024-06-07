@@ -1,15 +1,15 @@
 @section('script')
-    <!-- This page JavaScript -->
-    <!-- --------------------------------------------------------------- -->
-    <script src="https://gaffis.in/frontier/website/public/admin/dist/libs/tinymce/tinymce.min.js"></script>
-    <!--c3 charts -->
-    <script src="https://gaffis.in/frontier/website/public/admin/dist/libs/c3/htdocs/js/d3-3.5.6.js"></script>
+<!-- This page JavaScript -->
+<!-- --------------------------------------------------------------- -->
+<script src="https://gaffis.in/frontier/website/public/admin/dist/libs/tinymce/tinymce.min.js"></script>
+<!--c3 charts -->
+<script src="https://gaffis.in/frontier/website/public/admin/dist/libs/c3/htdocs/js/d3-3.5.6.js"></script>
 
 
-    <script src="https://gaffis.in/frontier/website/public/admin/dist/libs/c3/htdocs/js/c3-0.4.9.min.js"></script>
+<script src="https://gaffis.in/frontier/website/public/admin/dist/libs/c3/htdocs/js/c3-0.4.9.min.js"></script>
 
-    <script>
-        $(document).ready(function() {
+<script>
+    $(document).ready(function() {
 
             $('#manufacturer_ids').select2();
 
@@ -41,10 +41,10 @@
 
             });
         });
-    </script>
+</script>
 
-    <script>
-        $(function() {
+<script>
+    $(function() {
             tinymce.init({
                 selector: 'textarea#mymce'
             });
@@ -79,7 +79,7 @@
                     label: {
                         show: false,
                     },
-                    title: 'Tickets',
+                    title: 'Job',
                     width: 35,
                 },
 
@@ -93,9 +93,9 @@
                 },
             });
         });
-    </script>
-    <script>
-        // Get latitude and longitude values from your data or variables
+</script>
+<script>
+    // Get latitude and longitude values from your data or variables
         var latitude = {{ $technicianlocation->latitude ?? null }}; // Example latitude
         var longitude = {{ $technicianlocation->longitude ?? null }}; // Example longitude
 
@@ -110,14 +110,14 @@
 
         // Set the source of the iframe to the Street View URL
         //  document.getElementById('map').src = streetViewUrl;
-    </script>
-    <script>
-        setTimeout(function() {
+</script>
+<script>
+    setTimeout(function() {
             $('#successMessage').fadeOut('fast');
         }, 5000); // 5000 milliseconds = 5 seconds
-    </script>
-    <script>
-        // Get latitude and longitude values from your data or variables
+</script>
+<script>
+    // Get latitude and longitude values from your data or variables
         var latitude = {{ $technicians->latitude ?? null }}; // Example latitude
         var longitude = {{ $technicians->longitude ?? null }}; // Example longitude
 
@@ -132,9 +132,9 @@
         document.getElementById('map238').src = streetViewUrl;
 
         // document.getElementById('map238').src = mapUrl;
-    </script>
-    <script>
-        // Get latitude and longitude values from your data or variables
+</script>
+<script>
+    // Get latitude and longitude values from your data or variables
         var latitude = {!! isset($technicians->addresscustomer->latitude) ? $technicians->addresscustomer->latitude : 'null' !!}; // Example latitude
         var longitude = {!! isset($technicians->addresscustomer->longitude) ? $technicians->addresscustomer->longitude : 'null' !!}; // Example longitude
 
@@ -151,5 +151,5 @@
         document.getElementById('map').src = mapUrl;
 
         // document.getElementById('map238').src = mapUrl;
-    </script>
+</script>
 @endsection

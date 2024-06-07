@@ -38,3 +38,6 @@ Route::post('jobfileUploadByTechnician', [ApiController::class, 'jobfileUploadBy
  Route::post('updateTechnicianProfile', [ApiController::class, 'updateTechnicianProfile']);
 
  Route::post('calculateJobStatusPercentage', [ApiController::class, 'calculateJobStatusPercentage']);
+Route::post('updateEnroute', [ApiController::class, 'updateEnroute']);
+Route::post('updateStart', [ApiController::class, 'updateStart']);
+Route::post('updateComplete', [ApiController::class, 'updateComplete']);

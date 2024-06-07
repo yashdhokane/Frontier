@@ -6,7 +6,10 @@ use App\Models\JobModel;
 use App\Models\JobActivity;
 use App\Models\Manufacturer;
 use App\Models\JobProduct;
-use App\Models\JobServices;
+use App\Models\JobServices;  
+use App\Models\JobTechEvents;  
+
+
 
 
 use App\Models\Payment;
@@ -53,6 +56,12 @@ class PaymentController extends Controller
             'activity' => 'Amount Paid (#' . $payment->job_id . ')',
         ]);
 
+        $event = JobTechEvents::where('job_id', $payment->job_id)->first();
+    if ($event) {
+        $event->job_payment = Carbon::now($timezone_name);
+        $event->save();
+    }
+
         app('sendNotices')('New Invoice', ' Amount Paid ' . now(), url()->current(), 'Invoice');
 
         return redirect()->back()->with('success', 'Payment status updated successfully.');
@@ -91,6 +100,13 @@ class PaymentController extends Controller
         JobModel::where('id', $validatedData['job_id'])->update(['invoice_status' => 'created']);
 
         $paymentInvoice = Payment::create($paymentData);
+        $timezone_name = Session::get('timezone_name');
+
+        $event = JobTechEvents::where('job_id', $job->id)->first();
+    if ($event) {
+        $event->job_invoice = Carbon::now($timezone_name);
+        $event->save();
+    }
 
         return redirect()->route('invoicedetail', ['id' => $paymentInvoice->id]);
     }
