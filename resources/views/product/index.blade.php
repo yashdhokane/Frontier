@@ -49,8 +49,8 @@
                 <!-- Column -->
                 <div class="col-lg-12">
                     <!-- ---------------------
-                                                                start Product Orders
-                                                            ---------------- -->
+                                                                        start Product Orders
+                                                                    ---------------- -->
                     <div class="card">
                         <div class="card-body card-border shadow">
                             <div class="table-responsive">
@@ -223,8 +223,8 @@
                         </div>
                     </div>
                     <!-- ---------------------
-                                                                end Product Orders
-                                                            ---------------- -->
+                                                                        end Product Orders
+                                                                    ---------------- -->
                 </div>
                 <!-- Column -->
             </div>
@@ -236,4 +236,19 @@
     </div>
 
     @include('product.scriptIndex')
+
+    <script>
+        $(document).ready(function() {
+            if ($.fn.DataTable.isDataTable('#zero_config')) {
+                $('#zero_config').DataTable().destroy();
+            }
+
+            $('#zero_config').DataTable({
+                "order": [
+                    [0, "desc"]
+                ],
+                "pageLength": 25,
+            });
+        });
+    </script>
 @endsection

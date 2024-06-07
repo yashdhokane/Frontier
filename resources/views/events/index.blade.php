@@ -4,37 +4,38 @@
 
 @section('content')
 
-	<div class="page-breadcrumb">
+    <div class="page-breadcrumb">
         <div class="row">
             <div class="col-6 align-self-center">
                 <h4 class="page-title">Events</h4>
             </div>
             <div class="col-6 text-end">
-                 
+
             </div>
         </div>
     </div>
-	
+
     <div class="container-fluid">
         <!-- -------------------------------------------------------------- -->
         <!-- Start Page Content -->
         <!-- -------------------------------------------------------------- -->
         <!-- basic table -->
-       @if (Session::has('success'))
-<div class="alert_wrap">
-    <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
-        {{ Session::get('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert"
-            aria-label="Close"></button>
-    </div>
-</div>
-@endif
+        @if (Session::has('success'))
+            <div class="alert_wrap">
+                <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
+                    {{ Session::get('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert"
+                        aria-label="Close"></button>
+                </div>
+            </div>
+        @endif
         <div class="row">
             <div class="col-12">
 
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive table-custom">
-                            <table id="zero_config" class="table table-hover table-striped text-nowrap" data-paging="true" data-paging-size="7">
+                            <table id="zero_config" class="table table-hover table-striped text-nowrap" data-paging="true"
+                                data-paging-size="7">
 
                                 <div class="col-md-12 row" style="margin-bottom:7px;">
                                     <div class="col-md-4">
@@ -161,30 +162,31 @@
                                             <div class="modal-dialog">
                                                 <div class="modal-content px-3">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="commentModalLabel">{{ $item->event_name ?? null }}</h5>
+                                                        <h5 class="modal-title" id="commentModalLabel">
+                                                            {{ $item->event_name ?? null }}</h5>
                                                     </div>
                                                     @if ($item->event_description)
                                                         <p class="ps-3"> {{ $item->event_description ?? null }}</p>
                                                     @endif
-													
-													<h6 class="mt-2 ps-3">Date & Location</h6>  
-													<div class="ps-3">
-													@if ($item->event_type == 'full')
-														{{ $item->start_date_time ? \Carbon\Carbon::parse($item->start_date_time)->format('m-d-Y') : null }}
-														to
-														{{ $item->end_date_time ? \Carbon\Carbon::parse($item->end_date_time)->format('m-d-Y') : null }}
-													@else
-														{{ $item->start_date_time ? \Carbon\Carbon::parse($item->start_date_time)->format('m-d-Y ') : null }}
-														,
-														{{ $item->start_date_time ? \Carbon\Carbon::parse($item->start_date_time)->format('h:i:a') : null }}
-														to
-														{{ $item->end_date_time ? \Carbon\Carbon::parse($item->end_date_time)->format('h:i:a') : null }}
-													@endif
- 													@if ($item->event_location)
-                                                        <br/> {{ $item->event_location ?? null }}
-                                                    @endif
-													</div>
-													<hr/>
+
+                                                    <h6 class="mt-2 ps-3">Date & Location</h6>
+                                                    <div class="ps-3">
+                                                        @if ($item->event_type == 'full')
+                                                            {{ $item->start_date_time ? \Carbon\Carbon::parse($item->start_date_time)->format('m-d-Y') : null }}
+                                                            to
+                                                            {{ $item->end_date_time ? \Carbon\Carbon::parse($item->end_date_time)->format('m-d-Y') : null }}
+                                                        @else
+                                                            {{ $item->start_date_time ? \Carbon\Carbon::parse($item->start_date_time)->format('m-d-Y ') : null }}
+                                                            ,
+                                                            {{ $item->start_date_time ? \Carbon\Carbon::parse($item->start_date_time)->format('h:i:a') : null }}
+                                                            to
+                                                            {{ $item->end_date_time ? \Carbon\Carbon::parse($item->end_date_time)->format('h:i:a') : null }}
+                                                        @endif
+                                                        @if ($item->event_location)
+                                                            <br /> {{ $item->event_location ?? null }}
+                                                        @endif
+                                                    </div>
+                                                    <hr />
                                                 </div>
                                             </div>
 
@@ -203,8 +205,6 @@
         </div>
     </div>
 @section('script')
-    {{-- <script src="{{ asset('public/admin/dist/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script> --}}
-
     <script>
         $('#zero_config').DataTable();
     </script>
@@ -213,6 +213,10 @@
         $(document).ready(function() {
 
             $('#file_export').DataTable({
+                "order": [
+                    [0, "desc"]
+                ],
+                "pageLength": 25,
                 dom: 'Bfrtip',
                 buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
             });
