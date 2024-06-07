@@ -6,8 +6,8 @@ use App\Models\JobModel;
 use App\Models\JobActivity;
 use App\Models\Manufacturer;
 use App\Models\JobProduct;
-use App\Models\JobServices;  
-use App\Models\JobTechEvents;  
+use App\Models\JobServices;
+use App\Models\JobTechEvents;
 
 
 
@@ -36,7 +36,7 @@ class PaymentController extends Controller
         ]);
 
         // Find the payment by ID
-  $timezone_name = Session::get('timezone_name');
+        $timezone_name = Session::get('timezone_name');
 
         $payment = Payment::findOrFail($validatedData['payment_id']);
 
@@ -57,10 +57,10 @@ class PaymentController extends Controller
         ]);
 
         $event = JobTechEvents::where('job_id', $payment->job_id)->first();
-    if ($event) {
-        $event->job_payment = Carbon::now($timezone_name);
-        $event->save();
-    }
+        if ($event) {
+            $event->job_payment = Carbon::now($timezone_name);
+            $event->save();
+        }
 
         app('sendNotices')('New Invoice', ' Amount Paid ' . now(), url()->current(), 'Invoice');
 
@@ -103,21 +103,21 @@ class PaymentController extends Controller
         $timezone_name = Session::get('timezone_name');
 
         $event = JobTechEvents::where('job_id', $job->id)->first();
-    if ($event) {
-        $event->job_invoice = Carbon::now($timezone_name);
-        $event->save();
-    }
+        if ($event) {
+            $event->job_invoice = Carbon::now($timezone_name);
+            $event->save();
+        }
 
         return redirect()->route('invoicedetail', ['id' => $paymentInvoice->id]);
     }
     public function index()
     {
-        
+
         $user_auth = auth()->user();
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
         $module_id = 33;
-        
+
         $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
@@ -125,13 +125,13 @@ class PaymentController extends Controller
             return $permissionCheck; // This will handle the redirection
         }
 
-        $payment = Payment::with('JobAppliances', 'user', 'JobModel')->latest()->get();
+        $payments = Payment::with('JobAppliances', 'user', 'JobModel')->latest('id')->get();
 
         $manufacturer = Manufacturer::where('is_active', 'yes')->get();
 
         $tech = User::where('role', 'technician')->get();
 
-        return view('payment.index', compact('payment', 'manufacturer', 'tech'));
+        return view('payment.index', compact('payments', 'manufacturer', 'tech'));
     }
 
     public function invoice_detail(Request $request, $id)
