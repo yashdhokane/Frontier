@@ -272,19 +272,29 @@
             var table = $('#zero_config').DataTable();
 
             // Month filtering
-            $('#month-filter').on('change', function() {
-                var selectedMonth = $(this).val();
-                if (selectedMonth) {
-                    var Month = moment(selectedMonth, 'MMMM YYYY').format('MM'); // Extract the month
-                    var Year = moment(selectedMonth, 'MMMM YYYY').format('YYYY'); // Extract the year
-                    // Perform filtering on the table to include all dates within the selected month and year
-                    table.column(4).search('^' + Month + '-' + '\\d{2}-' + Year, true, false).draw();
-                } else {
-                    // If no month is selected, clear the filter
-                    table.column(4).search('').draw();
-                }
-            });
+                $('#month-filter').on('change', function() {
+                    var selectedMonth = $(this).val();
+                    console.log("Selected month:", selectedMonth);
 
+                    if (selectedMonth) {
+                        var Month = moment(selectedMonth, 'MMMM YYYY').format('MM');
+                        var Year = moment(selectedMonth, 'MMMM YYYY').format('YYYY');
+                        console.log("Formatted Month:", Month);
+                        console.log("Formatted Year:", Year);
+
+                        if (Month && Year) {
+                            // Adjust regex to match month and year only
+                            var dateRegex = '\\d{2}-' + Month + '-' + Year;
+                            console.log("Date Regex:", dateRegex);
+
+                            table.column(4).search(dateRegex, true, false).draw();
+                        } else {
+                            console.error("Invalid Month or Year format.");
+                        }
+                    } else {
+                        table.column(4).search('').draw();
+                    }
+                });
 
             // Manufacturer filtering
             $('#manufacturer-filter').on('change', function() {
