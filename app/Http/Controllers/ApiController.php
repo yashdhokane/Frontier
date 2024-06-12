@@ -8,8 +8,9 @@ use App\Models\JobProduct;
 use App\Models\JobOtherModel; 
 use App\Models\UserNotesCustomer;
 use App\Models\Event;  
+use App\Models\SiteSettings;  
 use App\Models\JobTechEvents; 
-use App\Models\UserNotification;
+use App\Models\UserNotification;  
 
 use App\Models\ProductAssigned;
 use Illuminate\Support\Facades\Auth;
@@ -295,7 +296,7 @@ public function getcustomerJobsHistory(Request $request)
 //                   return response()->json(['message' => 'File uploaded successfully', 'file' => $file], 201);
 //     }}}
 
-public function jobfileUploadByTechnician(Request $request)
+/*public function jobfileUploadByTechnician(Request $request)
 {
     $request->validate([
         'job_id' => 'required',
@@ -381,6 +382,166 @@ public function jobfileUploadByTechnician(Request $request)
 
     return response()->json(['status' => true, 'message' => 'File uploaded successfully', 'data' => $file], 200);
 }
+*/
+
+public function jobfileUploadByTechnician(Request $request)
+{
+    try {
+        // Validate input data
+        $request->validate([
+            'job_id' => 'required|integer',
+            'user_id' => 'required|integer',
+            'product_ids' => 'required|array',
+            //'product_ids.*' => 'integer', // Validate each product_id as an integer
+           // 'attachment' => 'required|array',
+           // 'attachment.*' => 'required|string', // Validate base64 encoded strings
+            'note' => 'required|string',
+            //'sign' => 'required|',
+            'additional_details' => 'required|string',
+            'is_complete' => 'required|string',
+        ]);
+
+        $jobId = $request->input('job_id');
+        $userId = $request->input('user_id');
+        $productIds = $request->input('product_ids');
+        $note = $request->input('note');
+        $sign = $request->input('sign');
+        $additionalDetails = $request->input('additional_details');
+        $isComplete = $request->input('is_complete');
+//dd($productIds);
+        // Save product details for each product ID
+        $productIdsString = implode(',', $productIds);
+
+        // Save product details for each product ID
+       // Save product details for each product ID
+foreach ($productIds as $productIdsString) {
+    // Decode the JSON string to get an array of product IDs
+    $productIdArray = json_decode($productIdsString);
+
+    // Check if decoding was successful and $productIdArray is an array
+    if (is_array($productIdArray)) {
+        foreach ($productIdArray as $productId) {
+            $product = Products::where('product_id', $productId)->first();
+
+            if (!empty($product)) {
+                $jobProduct = new JobProduct();
+                $jobProduct->job_id = $jobId;
+                $jobProduct->product_id = $product->product_id;
+                $jobProduct->product_description = $product->product_description;
+                $jobProduct->product_name = $product->product_name;
+                $jobProduct->base_price = $product->base_price;
+                $jobProduct->quantity = 1; // Assuming quantity is always 1 for each product
+                $jobProduct->tax = $product->tax;
+                $jobProduct->sub_total = $product->base_price * $jobProduct->quantity;
+                $jobProduct->save();
+            }
+        }
+    } else {
+        // Handle invalid product IDs format
+        throw new \Exception("Invalid product IDs format: $productIdsString");
+    }
+}
+
+        // Handle file uploads
+       $directoryPath = public_path('images/users/' . $userId);
+
+        if (!File::exists($directoryPath)) {   
+            File::makeDirectory($directoryPath, 0777, true);
+        }
+
+        foreach ($request->attachment as $image) {
+            // Extract the base64 string and decode it
+            if (preg_match('/^data:image\/(\w+);base64,/', $image, $type)) {
+                $data = substr($image, strpos($image, ',') + 1);
+                $data = base64_decode($data);
+                if ($data === false) {
+                    throw new \Exception('base64_decode failed');
+                }
+                $extension = $type[1]; // Extract the extension from the regex match
+                $imageName = uniqid('IMG') . '.' . $extension;
+                $filePath = $directoryPath . '/' . $imageName;
+
+                // Save the file to the directory
+                if (file_put_contents($filePath, $data)) {
+                    // Create and save job file record
+                    $file = new JobFile();
+                    $file->user_id = $userId;
+                    $file->job_id = $jobId;
+                    $file->filename = $imageName;
+                    $file->path = $filePath;
+                    $file->type = $extension;
+                    $file->storage_location = 'local';
+                    $file->save();
+                } else {
+                    // Handle file save error
+                    throw new \Exception("Failed to save file.");
+                }
+            } else {
+                throw new \Exception("Invalid base64 data");
+            }
+        }
+        // Store additional details in JobOtherModel
+        // $jobOther = new JobOtherModel();
+        // $jobOther->user_id = $userId;
+        // $jobOther->job_id = $jobId;
+        // $jobOther->sign = $sign;
+        // $jobOther->additional_details = $additionalDetails;
+        // $jobOther->is_complete = $isComplete;
+        // $jobOther->save();
+         // Handle sign file upload if it is not empty
+        if (!empty($request->sign)) {
+            if (preg_match('/^data:image\/(\w+);base64,/', $sign, $type)) {
+                $data = substr($sign, strpos($sign, ',') + 1);
+                $data = base64_decode($data);
+                if ($data === false) {
+                    throw new \Exception('base64_decode failed');
+                }
+                $extension = $type[1];
+                $signName = uniqid('SIGN') . '.' . $extension;
+                $signPath = $directoryPath . '/' . $signName;
+
+                if (file_put_contents($signPath, $data)) {
+                    // Store additional details in JobOtherModel
+                    $jobOther = new JobOtherModel();
+                    $jobOther->user_id = $userId;
+                    $jobOther->job_id = $jobId;
+                    $jobOther->sign = $signName;
+                   // $jobOther->sign_path = $signPath; // Store sign file path
+                    $jobOther->additional_details = $additionalDetails;
+                    $jobOther->is_complete = $isComplete;
+   $job = JobModel::with('technician', 'user')
+                ->where('id', $jobId)->first();                     
+                app('sendNotices')("Job Completed","Job Completed (#{$jobId} - {$job->user->name}) added by {$job->technician->name}",url()->current(),'job');
+
+                    $jobOther->save();
+                } else {
+                    throw new \Exception("Failed to save sign file.");
+                }
+            } else {
+                throw new \Exception("Invalid base64 data for sign");
+            }
+        }
+
+        // Store the note in JobNoteModel if provided
+        if (!empty($note)) {
+            $jobNote = new JobNoteModel();
+            $jobNote->user_id = $userId;
+            $jobNote->job_id = $jobId;
+            $jobNote->note = $note;
+            $jobNote->added_by = $userId;
+            $jobNote->updated_by = $userId;
+            $jobNote->save();
+        }
+
+        return response()->json(['status' => true, 'message' => 'Files and products uploaded successfully'], 200);
+    } catch (\Exception $e) {
+        return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
+    }
+}
+
+
+
+
 
 
 
@@ -590,6 +751,20 @@ public function updateTechnicianProfile(Request $request)
             return response()->json(['status' => true, 'data' => $event], 201);
         } else {
             return response()->json(['status' => false, 'message' => 'Job not found'], 200);
+        }
+    }
+
+
+
+     public function getAppDisclaimer()
+    {
+        try {
+            $siteSetting = SiteSettings::findOrFail(1); // Fetch site setting with id 1
+            $appDisclaimer = $siteSetting->app_disclaimer;
+
+            return response()->json(['app_disclaimer' => $appDisclaimer], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Resource not found.'], 201);
         }
     }
 

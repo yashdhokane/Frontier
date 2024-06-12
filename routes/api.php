@@ -41,3 +41,5 @@ Route::post('jobfileUploadByTechnician', [ApiController::class, 'jobfileUploadBy
 Route::post('updateEnroute', [ApiController::class, 'updateEnroute']);
 Route::post('updateStart', [ApiController::class, 'updateStart']);
 Route::post('updateComplete', [ApiController::class, 'updateComplete']);
+Route::post('getAppDisclaimer', [ApiController::class, 'getAppDisclaimer']);
+

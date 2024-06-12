@@ -272,29 +272,29 @@
             var table = $('#zero_config').DataTable();
 
             // Month filtering
-                $('#month-filter').on('change', function() {
-                    var selectedMonth = $(this).val();
-                    console.log("Selected month:", selectedMonth);
+             $('#month-filter').on('change', function() {
+                var selectedMonth = $(this).val();
+                console.log("Selected month:", selectedMonth);
 
-                    if (selectedMonth) {
-                        var Month = moment(selectedMonth, 'MMMM YYYY').format('MM');
-                        var Year = moment(selectedMonth, 'MMMM YYYY').format('YYYY');
-                        console.log("Formatted Month:", Month);
-                        console.log("Formatted Year:", Year);
+                if (selectedMonth) {
+                    var Month = moment(selectedMonth, 'MMMM YYYY').format('MM');
+                    var Year = moment(selectedMonth, 'MMMM YYYY').format('YYYY');
+                    console.log("Formatted Month:", Month);
+                    console.log("Formatted Year:", Year);
 
-                        if (Month && Year) {
-                            // Adjust regex to match month and year only
-                            var dateRegex = '\\d{2}-' + Month + '-' + Year;
-                            console.log("Date Regex:", dateRegex);
+                    if (Month && Year) {
+                        // Adjust regex to match month and year only
+                        var dateRegex = '\\d{2}-' + Month + '-' + Year;
+                        console.log("Date Regex:", dateRegex);
 
-                            table.column(4).search(dateRegex, true, false).draw();
-                        } else {
-                            console.error("Invalid Month or Year format.");
-                        }
+                        table.column(4).search(dateRegex, true, false).draw();
                     } else {
-                        table.column(4).search('').draw();
+                        console.error("Invalid Month or Year format.");
                     }
-                });
+                } else {
+                    table.column(4).search('').draw();
+                }
+            });
 
             // Manufacturer filtering
             $('#manufacturer-filter').on('change', function() {
