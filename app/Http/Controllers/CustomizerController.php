@@ -18,7 +18,8 @@ class CustomizerController extends Controller
     public function index()
     {
         $timezone_name = Session::get('timezone_name');
-        $cardPositions = Customizer::orderBy('position')->get();
+        $variable = Customizer::where('is_active', 'no')->get();
+        $cardPositions = Customizer::where('is_active', 'yes')->orderBy('position')->get();
         $job = Schedule::with('JobModel', 'technician')
             ->where('start_date_time', '>', Carbon::now($timezone_name))
             ->latest()->limit(5)->get();
@@ -37,7 +38,7 @@ class CustomizerController extends Controller
         $technicianCount = User::where('role', 'technician')->count();
         $customerCount = User::where('role', 'customer')->count();
 
-        return view('customizer.dashboard', compact('cardPositions','job','paymentopen','paymentclose','adminCount','dispatcherCount','technicianCount','customerCount'));
+        return view('customizer.dashboard', compact('variable', 'cardPositions', 'job', 'paymentopen', 'paymentclose', 'adminCount', 'dispatcherCount', 'technicianCount', 'customerCount'));
     }
 
     public function savePositions(Request $request)
@@ -54,35 +55,19 @@ class CustomizerController extends Controller
         return redirect()->back()->with('success', 'Positions saved successfully!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function updateStatus(Request $request)
     {
-        //
-    }
+    dd($request);
+        if ($request->has('element_id')) {
+             $section = Customizer::where('element_id',$request->element_id)->first();
+            $section->is_active = 'no';
+        } else {
+            $section = Customizer::findOrFail($request->status);
+            $section->is_active = 'yes';
+        }
+        $section->save();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->back()->with('success', 'Section status updated successfully.');
     }
 }

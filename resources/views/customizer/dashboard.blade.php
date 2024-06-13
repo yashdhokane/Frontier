@@ -8,7 +8,39 @@
         <!-- -------------------------------------------------------------- -->
         <div class="row">
             <div class="col-12">
-                <h4 class="mb-3 page-title text-info fw-bold">DISPATCH CHANNEL INC.</h4>
+                <div class="d-flex justify-content-between pb-2">
+                    <h4 class="mb-3 page-title text-info fw-bold">DISPATCH CHANNEL INC.</h4>
+                    <form action="{{ route('update.status') }}" method="POST" class="d-flex">
+                        @csrf
+                        @php
+                            $titles = [
+                                1 => 'Upcoming Job',
+                                2 => 'Open invoices',
+                                3 => 'Paid invoices',
+                                4 => 'Stats',
+                                5 => 'Title 5',
+                                6 => 'Title 6',
+                                7 => 'Title 7',
+                                8 => 'Title 8',
+                                9 => 'Title 9',
+                                10 => 'Title 10',
+                            ];
+                        @endphp
+                        <select name="status" class="form-control" required>
+                            @if ($variable->isEmpty())
+                                <option value="">All section already exists</option>
+                            @else
+                                <option value="">Select to add section</option>
+                                @foreach ($variable as $value)
+                                    <option value="{{ $value->id }}">
+                                        {{ $titles[$value->element_id] ?? 'All section already exists' }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
+                        <button type="submit" class="btn btn-success mx-2">Add</button>
+                    </form>
+                </div>
                 <form id="positionForm" method="POST" action="{{ route('savePositions') }}">
                     @csrf
                     <input type="hidden" name="positions" id="positions">
@@ -18,7 +50,7 @@
                             @if ($cardPosition->element_id == 1)
                                 <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
-                                        <div class="card-header bg-info">
+                                        <div class="card-header bg-info d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Upcoming Job </h4>
                                         </div>
                                         <div class="card-body">
@@ -219,6 +251,96 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @elseif($cardPosition->element_id == 5)
+                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                    <div class="card card-hover">
+                                        <div class="card-header bg-primary">
+                                            <h4 class="mb-0 text-white">Card Title 5</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <h3 class="card-title">Special title treatment 5</h3>
+                                            <p class="card-text">
+                                                With supporting text below as a natural lead-in to additional content.
+                                            </p>
+                                            <a href="javascript:void(0)" class="btn btn-inverse">Go somewhere 5</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @elseif($cardPosition->element_id == 6)
+                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                    <div class="card card-hover">
+                                        <div class="card-header bg-info">
+                                            <h4 class="mb-0 text-white">Card Title 6</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <h3 class="card-title">Special title treatment 6</h3>
+                                            <p class="card-text">
+                                                With supporting text below as a natural lead-in to additional content.
+                                            </p>
+                                            <a href="javascript:void(0)" class="btn btn-inverse">Go somewhere 6</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @elseif($cardPosition->element_id == 7)
+                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                    <div class="card card-hover">
+                                        <div class="card-header bg-warning">
+                                            <h4 class="mb-0 text-white">Card Title 7</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <h3 class="card-title">Special title treatment 7</h3>
+                                            <p class="card-text">
+                                                With supporting text below as a natural lead-in to additional content.
+                                            </p>
+                                            <a href="javascript:void(0)" class="btn btn-inverse">Go somewhere 7</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @elseif($cardPosition->element_id == 8)
+                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                    <div class="card card-hover">
+                                        <div class="card-header bg-danger">
+                                            <h4 class="mb-0 text-white">Card Title 8</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <h3 class="card-title">Special title treatment 8</h3>
+                                            <p class="card-text">
+                                                With supporting text below as a natural lead-in to additional content.
+                                            </p>
+                                            <a href="javascript:void(0)" class="btn btn-inverse">Go somewhere 8</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @elseif($cardPosition->element_id == 9)
+                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                    <div class="card card-hover">
+                                        <div class="card-header bg-danger">
+                                            <h4 class="mb-0 text-white">Card Title 9</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <h3 class="card-title">Special title treatment 9</h3>
+                                            <p class="card-text">
+                                                With supporting text below as a natural lead-in to additional content.
+                                            </p>
+                                            <a href="javascript:void(0)" class="btn btn-inverse">Go somewhere 9</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @elseif($cardPosition->element_id == 10)
+                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                    <div class="card card-hover">
+                                        <div class="card-header bg-danger">
+                                            <h4 class="mb-0 text-white">Card Title 10</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <h3 class="card-title">Special title treatment 10</h3>
+                                            <p class="card-text">
+                                                With supporting text below as a natural lead-in to additional content.
+                                            </p>
+                                            <a href="javascript:void(0)" class="btn btn-inverse">Go somewhere 10</a>
                                         </div>
                                     </div>
                                 </div>

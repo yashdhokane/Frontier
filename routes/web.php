@@ -1006,6 +1006,8 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/savePositions', [CustomizerController::class, 'savePositions'])->name('savePositions');
 
+    Route::post('/update-status', [CustomizerController::class, 'updateStatus'])->name('update.status');
+
     //Dispatcher
 
     Route::get('/dispatcher-index', [DispatcherController::class, 'index'])->name('dispatcher.index');
