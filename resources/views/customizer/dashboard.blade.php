@@ -52,6 +52,8 @@
                                     <div class="card card-hover">
                                         <div class="card-header bg-info d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Upcoming Job </h4>
+                                            <button class="btn btn-light mx-2 clearSection"
+                                                data-element-id="{{ $cardPosition->element_id }}">X</button>
                                         </div>
                                         <div class="card-body">
                                             <div class="table-responsive mt-1" style="overflow-x: scroll !important;">
@@ -99,8 +101,10 @@
                             @elseif($cardPosition->element_id == 2)
                                 <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
-                                        <div class="card-header bg-danger">
+                                        <div class="card-header bg-danger d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Open invoices</h4>
+                                            <button class="btn btn-light mx-2 clearSection"
+                                                data-element-id="{{ $cardPosition->element_id }}">X</button>
                                         </div>
                                         <div class="card-body">
                                             <div class="table-responsive mt-1" style="overflow-x: scroll !important;">
@@ -148,8 +152,10 @@
                             @elseif($cardPosition->element_id == 3)
                                 <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
-                                        <div class="card-header bg-success">
+                                        <div class="card-header bg-success d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Paid invoices</h4>
+                                            <button class="btn btn-light mx-2 clearSection"
+                                                data-element-id="{{ $cardPosition->element_id }}">X</button>
                                         </div>
                                         <div class="card-body">
                                             <div class="table-responsive mt-1" style="overflow-x: scroll !important;">
@@ -197,8 +203,10 @@
                             @elseif($cardPosition->element_id == 4)
                                 <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
-                                        <div class="card-header bg-warning">
+                                        <div class="card-header bg-warning d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Stats</h4>
+                                            <button class="btn btn-light mx-2 clearSection"
+                                                data-element-id="{{ $cardPosition->element_id }}">X</button>
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
@@ -257,8 +265,10 @@
                             @elseif($cardPosition->element_id == 5)
                                 <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
-                                        <div class="card-header bg-primary">
+                                        <div class="card-header bg-primary d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Card Title 5</h4>
+                                            <button class="btn btn-light mx-2 clearSection"
+                                                data-element-id="{{ $cardPosition->element_id }}">X</button>
                                         </div>
                                         <div class="card-body">
                                             <h3 class="card-title">Special title treatment 5</h3>
@@ -272,8 +282,10 @@
                             @elseif($cardPosition->element_id == 6)
                                 <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
-                                        <div class="card-header bg-info">
+                                        <div class="card-header bg-info d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Card Title 6</h4>
+                                            <button class="btn btn-light mx-2 clearSection"
+                                                data-element-id="{{ $cardPosition->element_id }}">X</button>
                                         </div>
                                         <div class="card-body">
                                             <h3 class="card-title">Special title treatment 6</h3>
@@ -287,8 +299,10 @@
                             @elseif($cardPosition->element_id == 7)
                                 <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
-                                        <div class="card-header bg-warning">
+                                        <div class="card-header bg-warning d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Card Title 7</h4>
+                                            <button class="btn btn-light mx-2 clearSection"
+                                                data-element-id="{{ $cardPosition->element_id }}">X</button>
                                         </div>
                                         <div class="card-body">
                                             <h3 class="card-title">Special title treatment 7</h3>
@@ -302,8 +316,10 @@
                             @elseif($cardPosition->element_id == 8)
                                 <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
-                                        <div class="card-header bg-danger">
+                                        <div class="card-header bg-danger d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Card Title 8</h4>
+                                            <button class="btn btn-light mx-2 clearSection"
+                                                data-element-id="{{ $cardPosition->element_id }}">X</button>
                                         </div>
                                         <div class="card-body">
                                             <h3 class="card-title">Special title treatment 8</h3>
@@ -317,8 +333,10 @@
                             @elseif($cardPosition->element_id == 9)
                                 <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
-                                        <div class="card-header bg-danger">
+                                        <div class="card-header bg-danger d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Card Title 9</h4>
+                                            <button class="btn btn-light mx-2 clearSection"
+                                                data-element-id="{{ $cardPosition->element_id }}">X</button>
                                         </div>
                                         <div class="card-body">
                                             <h3 class="card-title">Special title treatment 9</h3>
@@ -332,8 +350,10 @@
                             @elseif($cardPosition->element_id == 10)
                                 <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
-                                        <div class="card-header bg-danger">
+                                        <div class="card-header bg-danger d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Card Title 10</h4>
+                                            <button class="btn btn-light mx-2 clearSection"
+                                                data-element-id="{{ $cardPosition->element_id }}">X</button>
                                         </div>
                                         <div class="card-body">
                                             <h3 class="card-title">Special title treatment 10</h3>
@@ -393,6 +413,34 @@
             });
         });
     </script>
+<script>
+    $(document).ready(function() {
+        $('.clearSection').on('click', function() {
+            var elementId = $(this).data('element-id');
+            
+            $.ajax({
+                url: '{{ route('changeStatus') }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    element_id: elementId
+                },
+                success: function(response) {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText);
+                    alert('An error occurred. Please try again.');
+                }
+            });
+        });
+    });
+</script>
+
 @endsection
 
 @endsection

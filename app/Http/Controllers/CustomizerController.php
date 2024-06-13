@@ -58,9 +58,8 @@ class CustomizerController extends Controller
 
     public function updateStatus(Request $request)
     {
-    dd($request);
         if ($request->has('element_id')) {
-             $section = Customizer::where('element_id',$request->element_id)->first();
+            $section = Customizer::where('element_id', $request->element_id)->first();
             $section->is_active = 'no';
         } else {
             $section = Customizer::findOrFail($request->status);
@@ -69,5 +68,21 @@ class CustomizerController extends Controller
         $section->save();
 
         return redirect()->back()->with('success', 'Section status updated successfully.');
+    }
+
+    public function changeStatus(Request $request)
+    {
+        $elementId = $request->input('element_id');
+
+        // Assuming you have a model named CardPosition
+        $cardPosition = Customizer::where('element_id', $elementId)->first();
+        if ($cardPosition) {
+            $cardPosition->is_active = 'no'; // or true based on your requirement
+            $cardPosition->save();
+
+            return response()->json(['success' => true, 'message' => 'Status updated successfully']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Element not found']);
     }
 }

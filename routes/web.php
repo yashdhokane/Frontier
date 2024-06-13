@@ -1007,6 +1007,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/savePositions', [CustomizerController::class, 'savePositions'])->name('savePositions');
 
     Route::post('/update-status', [CustomizerController::class, 'updateStatus'])->name('update.status');
+    
+    Route::post('/changeStatus', [CustomizerController::class, 'changeStatus'])->name('changeStatus');
+
 
     //Dispatcher
 
