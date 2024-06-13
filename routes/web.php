@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PerformanceMatrix;
 use App\Http\Controllers\CustomerDataController;
 use App\Http\Controllers\ProductController;
-
+use App\Http\Controllers\CustomizerController;
 use App\Http\Controllers\MultiAdminController;
 use App\Http\Controllers\ReportsController;
 
@@ -1001,8 +1001,10 @@ Route::middleware('auth')->group(function () {
     Route::put('/setting/update-service-area', [ServiceAreaController::class, 'update'])->name('servicearea.update');
 
 
+    // customizer 
+    Route::get('/dash', [CustomizerController::class, 'index'])->name('dash');
 
-
+    Route::post('/savePositions', [CustomizerController::class, 'savePositions'])->name('savePositions');
 
     //Dispatcher
 

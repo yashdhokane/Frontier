@@ -40,6 +40,8 @@
     <link href="{{ asset('public/admin/stickynotes/style.css') }}" rel="stylesheet" />
 
     <link href="{{ asset('public/admin/dist/libs/select2/dist/css/select2.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('public/admin/dist/libs/dragula/dist/dragula.min.js') }}" rel="stylesheet" />
+    <link href="{{ asset('public/admin/dist/libs/prismjs/themes/prism-okaidia.min.css') }}" rel="stylesheet">
 
 	
 	<style>
