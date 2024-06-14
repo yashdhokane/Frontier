@@ -26,7 +26,7 @@
                                 10 => 'Title 10',
                             ];
                         @endphp
-                        <select name="status" class="form-control" required>
+                        <select name="status" class="form-control select2" required>
                             @if ($variable->isEmpty())
                                 <option value="">All section already exists</option>
                             @else
