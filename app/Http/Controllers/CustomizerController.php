@@ -24,6 +24,9 @@ class CustomizerController extends Controller
         } else {
             $Id = auth()->user()->id;
             $layout = LayoutCustomizer::where('added_by', $Id)->first();
+            if (!$layout) {
+                $layout = LayoutCustomizer::first();
+            }
         }
 
         $timezone_name = Session::get('timezone_name');
