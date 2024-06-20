@@ -12,5 +12,5 @@ class Customizer extends Model
     protected $table = 'customizers';
     protected $primaryKey = 'id';
 
-    protected $fillable = ['element_id','position'];
+    protected $fillable = ['element_id','layout_id','position','updated_by'];
 }

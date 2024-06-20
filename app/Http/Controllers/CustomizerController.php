@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customizer;
+use App\Models\LayoutCustomizer;
 use App\Models\Payment;
 use App\Models\Schedule;
 use App\Models\User;
@@ -15,11 +16,26 @@ class CustomizerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->has('id')) {
+            $Id = $request->id;
+            $layout = LayoutCustomizer::where('id', $Id)->first();
+        } else {
+            $Id = auth()->user()->id;
+            $layout = LayoutCustomizer::where('added_by', $Id)->first();
+        }
+
         $timezone_name = Session::get('timezone_name');
-        $variable = Customizer::where('is_active', 'no')->get();
-        $cardPositions = Customizer::where('is_active', 'yes')->orderBy('position')->get();
+
+        if (!$layout) {
+            return view('404');
+        }
+        $variable = Customizer::where('layout_id', $layout->id)->where('is_active', 'no')->get();
+        $cardPositions = Customizer::where('layout_id', $layout->id)->where('is_active', 'yes')->orderBy('position')->get();
+
+        $layoutList = LayoutCustomizer::all();
+
         $job = Schedule::with('JobModel', 'technician')
             ->where('start_date_time', '>', Carbon::now($timezone_name))
             ->latest()->limit(5)->get();
@@ -38,17 +54,18 @@ class CustomizerController extends Controller
         $technicianCount = User::where('role', 'technician')->count();
         $customerCount = User::where('role', 'customer')->count();
 
-        return view('customizer.dashboard', compact('variable', 'cardPositions', 'job', 'paymentopen', 'paymentclose', 'adminCount', 'dispatcherCount', 'technicianCount', 'customerCount'));
+        return view('customizer.dashboard', compact('variable', 'cardPositions', 'job', 'paymentopen', 'paymentclose', 'adminCount', 'dispatcherCount', 'technicianCount', 'customerCount', 'layout', 'layoutList'));
     }
 
     public function savePositions(Request $request)
     {
         $positions = json_decode($request->positions, true);
+        $userId = auth()->user()->id;
 
         foreach ($positions as $position) {
             Customizer::updateOrCreate(
                 ['element_id' => $position['element_id']],
-                ['position' => $position['position']]
+                ['position' => $position['position'], 'updated_by' => $userId]
             );
         }
 
@@ -84,5 +101,21 @@ class CustomizerController extends Controller
         }
 
         return response()->json(['success' => false, 'message' => 'Element not found']);
+    }
+
+    public function updateLayoutName(Request $request, $id)
+    {
+        // Validate request
+
+        // Find layout by ID
+        $layout = LayoutCustomizer::findOrFail($id);
+
+        // Update layout name
+        $layout->layout_name = $request->layout_name;
+        $layout->updated_by = auth()->user()->id;
+        $layout->save();
+
+        // Redirect back with success message or any other response
+        return redirect()->back()->with('success', 'Layout name updated successfully.');
     }
 }

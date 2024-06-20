@@ -1011,6 +1011,9 @@ Route::middleware('auth')->group(function () {
     
     Route::post('/changeStatus', [CustomizerController::class, 'changeStatus'])->name('changeStatus');
 
+    Route::post('/update-layout-name/{id}', [CustomizerController::class, 'updateLayoutName'])->name('updateLayoutName');
+
+
 
 
 

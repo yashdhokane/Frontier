@@ -9,7 +9,51 @@
         <div class="row">
             <div class="col-12">
                 <div class="d-flex justify-content-between pb-2">
-                    <h4 class="mb-3 page-title text-info fw-bold">DISPATCH CHANNEL INC.</h4>
+                    <h4 class="mb-3 page-title text-info fw-bold">{{ $layout->layout_name ?? null }}
+                        <a href="#" class="edit-layout" data-bs-toggle="modal" data-bs-target="#editModal">
+                            <i class="fa fa-edit align-top fs-1 text-danger"></i>
+                        </a>
+                    </h4>
+                    <form id="urlForm" class="d-flex" action="{{ route('dash') }}" method="GET">
+                        <select id="urlSelect" name="id" class="form-select">
+                            <option value="">--Select a Layout--</option>
+                            @foreach ($layoutList as $value)
+                                <option value="{{ $value->id }}">{{ $value->layout_name }}</option>
+                            @endforeach
+                        </select>
+                        <button type="submit" id="showButton" class="btn btn-info ms-2">Show</button>
+                    </form>
+
+                    <!-- Edit Layout Name Modal -->
+                    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form id="editForm" action="{{ route('updateLayoutName', ['id' => $layout->id]) }}" method="POST">
+                                    @csrf
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editModalLabel">Edit Layout Name</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="hidden" id="editLayoutId" name="id" value="">
+                                        <div class="mb-3">
+                                            <label for="editLayoutName" class="form-label">Layout Name</label>
+                                            <input type="text" class="form-control" id="editLayoutName"
+                                                name="layout_name" value="{{ $layout->layout_name ?? null }}" required>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
                     <form action="{{ route('update.status') }}" method="POST" class="d-flex">
                         @csrf
                         @php
@@ -47,7 +91,7 @@
                     <div class="row draggable-cards" id="draggable-area">
 
                         @foreach ($cardPositions as $cardPosition)
-                            @if ($cardPosition->element_id == 1)
+                            @if ($cardPosition->layout_id == 1 && $cardPosition->element_id == 1)
                                 <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-info d-flex justify-content-between">
@@ -98,7 +142,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            @elseif($cardPosition->element_id == 2)
+                            @elseif($cardPosition->layout_id == 1 && $cardPosition->element_id == 2)
                                 <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-danger d-flex justify-content-between">
@@ -149,7 +193,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            @elseif($cardPosition->element_id == 3)
+                            @elseif($cardPosition->layout_id == 1 && $cardPosition->element_id == 3)
                                 <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-success d-flex justify-content-between">
@@ -200,7 +244,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            @elseif($cardPosition->element_id == 4)
+                            @elseif($cardPosition->layout_id == 1 && $cardPosition->element_id == 4)
                                 <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-warning d-flex justify-content-between">
@@ -262,7 +306,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            @elseif($cardPosition->element_id == 5)
+                            @elseif($cardPosition->layout_id == 1 && $cardPosition->element_id == 5)
                                 <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-primary d-flex justify-content-between">
@@ -279,7 +323,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            @elseif($cardPosition->element_id == 6)
+                            @elseif($cardPosition->layout_id == 1 && $cardPosition->element_id == 6)
                                 <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-info d-flex justify-content-between">
@@ -296,7 +340,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            @elseif($cardPosition->element_id == 7)
+                            @elseif($cardPosition->layout_id == 1 && $cardPosition->element_id == 7)
                                 <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-warning d-flex justify-content-between">
@@ -313,7 +357,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            @elseif($cardPosition->element_id == 8)
+                            @elseif($cardPosition->layout_id == 2 && $cardPosition->element_id == 8)
                                 <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-danger d-flex justify-content-between">
@@ -330,10 +374,10 @@
                                         </div>
                                     </div>
                                 </div>
-                            @elseif($cardPosition->element_id == 9)
+                            @elseif($cardPosition->layout_id == 2 && $cardPosition->element_id == 9)
                                 <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
-                                        <div class="card-header bg-danger d-flex justify-content-between">
+                                        <div class="card-header bg-warning d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Card Title 9</h4>
                                             <button class="btn btn-light mx-2 clearSection"
                                                 data-element-id="{{ $cardPosition->element_id }}">X</button>
@@ -347,10 +391,10 @@
                                         </div>
                                     </div>
                                 </div>
-                            @elseif($cardPosition->element_id == 10)
+                            @elseif($cardPosition->layout_id == 2 && $cardPosition->element_id == 10)
                                 <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
-                                        <div class="card-header bg-danger d-flex justify-content-between">
+                                        <div class="card-header bg-info d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Card Title 10</h4>
                                             <button class="btn btn-light mx-2 clearSection"
                                                 data-element-id="{{ $cardPosition->element_id }}">X</button>
@@ -366,8 +410,11 @@
                                 </div>
                             @endif
                         @endforeach
+
                     </div>
-                    <button type="submit" class="btn btn-primary mt-3">Save Positions</button>
+                    @if ($layout->added_by == auth()->user()->id)
+                        <button type="submit" class="btn btn-primary mt-3">Save Positions</button>
+                    @endif
                 </form>
             </div>
         </div>
@@ -387,6 +434,26 @@
             pointer-events: none;
         }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('urlForm');
+            const select = document.getElementById('urlSelect');
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // prevent the form from submitting normally
+
+                // Get the selected value from the dropdown
+                const selectedValue = select.value;
+
+                if (selectedValue) {
+                    // Construct the URL and redirect
+                    const url = `{{ route('dash') }}?id=${selectedValue}`;
+                    window.location.href = url;
+                }
+            });
+        });
+    </script>
+    </script>
     <script>
         $(function() {
             dragula([document.getElementById('draggable-area')])
@@ -413,34 +480,33 @@
             });
         });
     </script>
-<script>
-    $(document).ready(function() {
-        $('.clearSection').on('click', function() {
-            var elementId = $(this).data('element-id');
-            
-            $.ajax({
-                url: '{{ route('changeStatus') }}',
-                type: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    element_id: elementId
-                },
-                success: function(response) {
-                    if (response.success) {
-                        location.reload();
-                    } else {
-                        alert(response.message);
+    <script>
+        $(document).ready(function() {
+            $('.clearSection').on('click', function() {
+                var elementId = $(this).data('element-id');
+
+                $.ajax({
+                    url: '{{ route('changeStatus') }}',
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        element_id: elementId
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
+                        alert('An error occurred. Please try again.');
                     }
-                },
-                error: function(xhr) {
-                    console.log(xhr.responseText);
-                    alert('An error occurred. Please try again.');
-                }
+                });
             });
         });
-    });
-</script>
-
+    </script>
 @endsection
 
 @endsection
