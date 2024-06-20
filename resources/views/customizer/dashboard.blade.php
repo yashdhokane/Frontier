@@ -9,7 +9,11 @@
         <div class="row">
             <div class="col-12">
                 <div class="d-flex justify-content-between pb-2">
-                    <h4 class="mb-3 page-title text-info fw-bold">{{ $layout->layout_name ?? null }}
+                    <h4 class="mb-3 page-title text-info fw-bold">
+                          <a href="#" class="create-layout" data-bs-toggle="modal" data-bs-target="#createModal">
+                                <i class="fa fa-plus-circle me-1 text-success"></i>
+                            </a>
+                            {{ $layout->layout_name ?? null }}
                         @if ($layout->added_by == auth()->user()->id)
                             <a href="#" class="edit-layout" data-bs-toggle="modal" data-bs-target="#editModal">
                                 <i class="fa fa-edit align-top fs-1 text-danger"></i>
@@ -17,6 +21,36 @@
                         @endif
                     </h4>
 
+                    <!-- Create Layout Name Modal -->
+                    <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form id="editForm" action="{{ route('createLayout') }}"
+                                    method="POST">
+                                    @csrf
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editModalLabel">Add New Layout</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="hidden" id="editLayoutId" name="id" value="">
+                                        <div class="mb-3">
+                                            <label for="editLayoutName" class="form-label">Layout Name</label>
+                                            <input type="text" class="form-control" id="editLayoutName"
+                                                name="layout_name" required>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                     <!-- Edit Layout Name Modal -->
                     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel"
                         aria-hidden="true">
@@ -47,6 +81,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="d-flex">
                         @if ($layout->added_by == auth()->user()->id)
                             <form action="{{ route('update.status') }}" method="POST" class="d-flex">

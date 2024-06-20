@@ -121,4 +121,21 @@ class CustomizerController extends Controller
         // Redirect back with success message or any other response
         return redirect()->back()->with('success', 'Layout name updated successfully.');
     }
+
+    public function createLayout(Request $request)
+    {
+        // Validate request
+
+        // Find layout by ID
+        $layout = new LayoutCustomizer();
+
+        // Update layout name
+        $layout->layout_name = $request->layout_name;
+        $layout->added_by = auth()->user()->id;
+        $layout->updated_by = auth()->user()->id;
+        $layout->save();
+
+        // Redirect back with success message or any other response
+        return redirect()->back()->with('success', 'Layout added successfully.');
+    }
 }

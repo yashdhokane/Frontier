@@ -1013,6 +1013,8 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/update-layout-name/{id}', [CustomizerController::class, 'updateLayoutName'])->name('updateLayoutName');
 
+    Route::post('createLayout', [CustomizerController::class, 'createLayout'])->name('createLayout');
+
 
 
 
