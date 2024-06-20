@@ -16,5 +16,6 @@ class JobNoteModel extends Model
         'added_by',
         'updated_by',
         'note_read',
+        'source_type', 
     ];
 }

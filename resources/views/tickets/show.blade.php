@@ -459,6 +459,120 @@
                 </div>
             </div>
 
+              <div class="mb-4">
+                <div class="card">
+                    <div class="card-body card-border shadow">
+						<div class="row">
+						<div class="col-md-8"><h5 class="card-title uppercase">Field Tech Status</h5></div>
+@if(!empty($technicians->JobTechEvent))
+    @if($technicians->JobTechEvent->tech_completed == 'yes')
+        <div class="col-md-4 bold">JOB IS COMPLETE</div>
+    @else
+        <div class="col-md-4 bold">JOB IS PENDING</div>
+    @endif
+@else
+    <div class="col-md-4 bold">JOB IS PENDING</div>
+@endif
+						</div>
+												
+                        <div class="table-responsive">
+                            <table class="table customize-table mb-0 v-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="border-bottom border-top">Technician</th>
+                                        <th class="border-bottom border-top">Travel time</th>
+                                        <th class="border-bottom border-top">Time on job</th>
+                                        <th class="border-bottom border-top">Total Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                @isset($technicians->usertechnician->user_image)
+                                                <img src="{{ asset('public/images/Uploads/users/' . $technicians->usertechnician->id . '/' . $technicians->usertechnician->user_image) }}"
+                                                    class="rounded-circle" width="40"
+                                                    onerror="this.onerror=null; this.src='{{ $defaultImage }}';">
+                                                @else
+                                                <img src="{{ $defaultImage }}" class="rounded-circle" width="40">
+                                                @endisset
+                                                <span class="ms-3 fw-normal">{{ $technicians->usertechnician->name ??
+                                                    null }}</span>
+                                            </div>
+                                        </td>
+										<td>&nbsp;{{ $technicians->JobAssign->driving_hours ? $technicians->JobAssign->driving_hours . ' Hrs' : 'N/A' }} (Approx)</td>
+                                        <td>&nbsp;{{ $technicians->JobAssign->duration ? number_format(($technicians->JobAssign->duration ?? 0) / 60, 2) . ' Hrs' : 'N/A' }} (Approx)</td>
+
+                                        @php
+                                         // Calculate the sum of driving_hours and duration in minutes
+                                         $drivingHours = $technicians->JobAssign->driving_hours ?? 0;
+                                            $duration = $technicians->JobAssign->duration ?? 0;
+    
+                                            if ($drivingHours !== null && $duration !== null) {
+                                              $totalMinutes = $drivingHours * 60 + $duration;
+
+                                                 // Calculate hours and minutes
+                                                 $hours = floor($totalMinutes / 60);
+                                                    $minutes = $totalMinutes % 60;
+        
+                                                 $totalTime = sprintf('%02d', $hours) . ':' . sprintf('%02d', $minutes);
+                                             } else {
+                                                 $totalTime = '0';
+                                             }
+                                            @endphp
+
+                                     <td>{{ $totalTime }} Hrs (Approx)</td>
+
+                                    </tr>
+									<tr>
+										<td>&nbsp;</td>
+							@php
+    $jobTechEvent = $technicians->JobTechEvent ?? null;
+
+    // Function to convert time in HH:MM:SS format to decimal hours
+    function convertToDecimalHours($time) {
+        if ($time == '00:00:00' || empty($time)) {
+            return '0.00';
+        }
+        
+        list($hours, $minutes, $seconds) = explode(':', $time);
+        $decimalHours = $hours + ($minutes / 60) + ($seconds / 3600);
+        
+        return number_format($decimalHours, 2);
+    }
+@endphp
+
+@if($jobTechEvent)
+    <td>{{ convertToDecimalHours($jobTechEvent->enroute_time) }} Hrs</td>
+    <td>{{ convertToDecimalHours($jobTechEvent->job_time) }} Hrs</td>
+    <td>{{ convertToDecimalHours($jobTechEvent->total_time_on_job) }} Hrs</td>
+@else
+    <td>0.00 Hrs</td>
+    <td>0.00 Hrs</td>
+    <td>0.00 Hrs</td>
+@endif
+
+                                      </tr>
+                                </tbody>
+							</table>
+                        </div>
+						<div class="mt-3 mb-2"><strong>Repair Complete:</strong> {{ $jobTechEvent->is_repair_complete ?? null }}</div>
+						<div class="mb-2"><strong>Additional Details:</strong> {{ $jobTechEvent->additional_details ?? null }}</div>
+<div class="mb-2">
+    <strong>Customer Signature:</strong>
+    @if ($technicians->JobTechEvent && !empty($technicians->JobTechEvent->customer_signature))
+        <div>
+            <a href="{{ url('public/images/users/' . $technicians->user->id . '/' . $technicians->JobTechEvent->customer_signature) }}" target="_blank">
+                <img src="{{ url('public/images/users/' . $technicians->user->id . '/' . $technicians->JobTechEvent->customer_signature) }}" alt="Customer Signature" width="100px" onerror="this.onerror=null; this.src='{{ $defaultImage }}';">
+            </a>
+        </div>
+    @else
+        <div>No signature available.</div>
+    @endif
+</div>
+                    </div>
+                </div>
+            </div>
 
             <div class="mb-4">
                 <div class="card">
@@ -530,50 +644,7 @@
                 </div>
             </div>
 
-            <div class="mb-4">
-                <div class="card">
-                    <div class="card-body card-border shadow">
-                        <h5 class="card-title uppercase">Field Tech Status</h5>
-                        <div class="table-responsive">
-                            <table class="table customize-table mb-0 v-middle">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th class="border-bottom border-top">Technician</th>
-                                        <th class="border-bottom border-top">Status</th>
-                                        <th class="border-bottom border-top">Total travel time</th>
-                                        <th class="border-bottom border-top">Total time on job</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                @isset($technicians->usertechnician->user_image)
-                                                <img src="{{ asset('public/images/Uploads/users/' . $technicians->usertechnician->id . '/' . $technicians->usertechnician->user_image) }}"
-                                                    class="rounded-circle" width="40"
-                                                    onerror="this.onerror=null; this.src='{{ $defaultImage }}';">
-                                                @else
-                                                <img src="{{ $defaultImage }}" class="rounded-circle" width="40">
-                                                @endisset
-                                                <span class="ms-3 fw-normal">{{ $technicians->usertechnician->name ??
-                                                    null }}</span>
-                                            </div>
-                                        </td>
-                                        <td><span class="badge bg-light-success text-success fw-normal">{{
-                                                $technicians->usertechnician->status ?? null }}</span>
-                                        </td>
-                                        <td>&nbsp;{{ $technicians->JobAssign->driving_hours ?? null }} minutes</td>
-                                        <td>&nbsp;{{ number_format((($technicians->JobAssign->driving_hours ?? 0) +
-                                            ($technicians->JobAssign->duration ?? 0)) / 60, 2) }}
-                                            hours</td>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          
 
             <div class="mb-4">
                 <div class="card">

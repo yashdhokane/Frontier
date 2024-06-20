@@ -116,9 +116,7 @@
 
 <script src="{{ asset('public/admin/dist/js/pages/datatable/datatable-basic.init.js') }}"></script>
 
-
 <script src="{{ asset('public/admin/dist/libs/dragula/dist/dragula.min.js') }}"></script>
-
 
 <script>
     $(document).on('click', '.viewinfo', function() {

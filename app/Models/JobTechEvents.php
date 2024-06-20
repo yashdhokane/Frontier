@@ -24,7 +24,16 @@ class JobTechEvents extends Model
         'job_start',
         'job_end',
         'job_invoice',
-        'job_payment'
+        'job_payment',
+        'enroute_time',
+        'job_time',
+        'total_time_on_job',
+        'is_repair_complete',
+        'additional_details',
+        'customer_signature',
+        'tech_completed',
+        'created_at',
+        'updated_at',
     ];
 
     protected $casts = [

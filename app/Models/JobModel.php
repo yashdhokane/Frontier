@@ -52,6 +52,11 @@ class JobModel extends Model
         'updated_at',
     ];
    
+
+   public function JobTechEvent()
+    {
+        return $this->hasOne(JobTechEvents::class, 'job_id', 'id');
+    }
    public function Customerservice()
     {
         return $this->hasOne(CustomerDataServices::class, 'job_id', 'id');
@@ -60,6 +65,12 @@ class JobModel extends Model
     {
         return $this->hasOne(CustomerDataNotes::class, 'job_id', 'id');
     }
+      public function JobOtherModelData()
+    {
+        return $this->hasOne(JobOtherModel::class, 'user_id', 'technician_id');
+    }
+
+    
       public function Customerdata()
     {
         return $this->hasOne(CustomerData::class, 'user_id', 'customer_id');

@@ -6,6 +6,7 @@ use App\Http\Controllers\PerformanceMatrix;
 use App\Http\Controllers\CustomerDataController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CustomizerController;
+
 use App\Http\Controllers\MultiAdminController;
 use App\Http\Controllers\ReportsController;
 
@@ -1009,6 +1010,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/update-status', [CustomizerController::class, 'updateStatus'])->name('update.status');
     
     Route::post('/changeStatus', [CustomizerController::class, 'changeStatus'])->name('changeStatus');
+
+
+
 
 
     //Dispatcher

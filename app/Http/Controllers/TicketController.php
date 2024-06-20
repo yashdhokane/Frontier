@@ -7,7 +7,9 @@ use App\Models\JobActivity;
 use App\Models\JobAssign;
 use App\Models\Jobfields;
 use App\Models\JobFile;
-use App\Models\Payment;
+use App\Models\Payment; 
+use App\Models\JobTechEvents; 
+
 
 use Illuminate\Support\Facades\Auth;
 
@@ -133,7 +135,7 @@ class TicketController extends Controller
             return $permissionCheck; // This will handle the redirection
         }
 
-        $technicians = JobModel::with('jobassignname', 'JobAssign', 'usertechnician', 'addedby', 'jobfieldname')->find($id);
+        $technicians = JobModel::with('jobassignname','JobTechEvent', 'JobAssign', 'usertechnician', 'addedby', 'jobfieldname')->find($id);
 
         if (!$technicians) {
             return view('404');
