@@ -10,9 +10,11 @@
             <div class="col-12">
                 <div class="d-flex justify-content-between pb-2">
                     <h4 class="mb-3 page-title text-info fw-bold">{{ $layout->layout_name ?? null }}
-                        <a href="#" class="edit-layout" data-bs-toggle="modal" data-bs-target="#editModal">
-                            <i class="fa fa-edit align-top fs-1 text-danger"></i>
-                        </a>
+                        @if ($layout->added_by == auth()->user()->id)
+                            <a href="#" class="edit-layout" data-bs-toggle="modal" data-bs-target="#editModal">
+                                <i class="fa fa-edit align-top fs-1 text-danger"></i>
+                            </a>
+                        @endif
                     </h4>
 
                     <!-- Edit Layout Name Modal -->
