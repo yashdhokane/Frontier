@@ -14,22 +14,14 @@
                             <i class="fa fa-edit align-top fs-1 text-danger"></i>
                         </a>
                     </h4>
-                    <form id="urlForm" class="d-flex" action="{{ route('dash') }}" method="GET">
-                        <select id="urlSelect" name="id" class="form-select">
-                            <option value="">--Select a Layout--</option>
-                            @foreach ($layoutList as $value)
-                                <option value="{{ $value->id }}">{{ $value->layout_name }}</option>
-                            @endforeach
-                        </select>
-                        <button type="submit" id="showButton" class="btn btn-info ms-2">Show</button>
-                    </form>
 
                     <!-- Edit Layout Name Modal -->
                     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel"
                         aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
-                                <form id="editForm" action="{{ route('updateLayoutName', ['id' => $layout->id]) }}" method="POST">
+                                <form id="editForm" action="{{ route('updateLayoutName', ['id' => $layout->id]) }}"
+                                    method="POST">
                                     @csrf
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="editModalLabel">Edit Layout Name</h5>
@@ -53,37 +45,51 @@
                             </div>
                         </div>
                     </div>
-
-                    <form action="{{ route('update.status') }}" method="POST" class="d-flex">
-                        @csrf
-                        @php
-                            $titles = [
-                                1 => 'Upcoming Job',
-                                2 => 'Open invoices',
-                                3 => 'Paid invoices',
-                                4 => 'Stats',
-                                5 => 'Title 5',
-                                6 => 'Title 6',
-                                7 => 'Title 7',
-                                8 => 'Title 8',
-                                9 => 'Title 9',
-                                10 => 'Title 10',
-                            ];
-                        @endphp
-                        <select name="status" class="form-control select2" required>
-                            @if ($variable->isEmpty())
-                                <option value="">All section already exists</option>
-                            @else
-                                <option value="">Select to add section</option>
-                                @foreach ($variable as $value)
-                                    <option value="{{ $value->id }}">
-                                        {{ $titles[$value->element_id] ?? 'All section already exists' }}
-                                    </option>
+                    <div class="d-flex">
+                        @if ($layout->added_by == auth()->user()->id)
+                            <form action="{{ route('update.status') }}" method="POST" class="d-flex">
+                                @csrf
+                                @php
+                                    $titles = [
+                                        1 => 'Upcoming Job',
+                                        2 => 'Open invoices',
+                                        3 => 'Paid invoices',
+                                        4 => 'Stats',
+                                        5 => 'Title 5',
+                                        6 => 'Title 6',
+                                        7 => 'Title 7',
+                                        8 => 'Title 8',
+                                        9 => 'Title 9',
+                                        10 => 'Title 10',
+                                    ];
+                                @endphp
+                                <select name="status" class="form-select" required>
+                                    @if ($variable->isEmpty())
+                                        <option value="">All section already exists</option>
+                                    @else
+                                        <option value="">Select to add section</option>
+                                        @foreach ($variable as $value)
+                                            <option value="{{ $value->id }}">
+                                                {{ $titles[$value->element_id] ?? 'All section already exists' }}
+                                            </option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                                <button type="submit" class="btn btn-info mx-2">Add</button>
+                            </form>
+                        @endif
+                        <form id="urlForm" class="d-flex" action="{{ route('dash') }}" method="GET">
+                            <select id="urlSelect" name="id" class="form-select">
+                                <option value="">--Select a Layout--</option>
+                                @foreach ($layoutList as $value)
+                                    <option value="{{ $value->id }}">{{ $value->layout_name }}</option>
                                 @endforeach
-                            @endif
-                        </select>
-                        <button type="submit" class="btn btn-success mx-2">Add</button>
-                    </form>
+                            </select>
+                            <button type="submit" id="showButton" class="btn btn-info ms-2">Show</button>
+                        </form>
+
+
+                    </div>
                 </div>
                 <form id="positionForm" method="POST" action="{{ route('savePositions') }}">
                     @csrf
