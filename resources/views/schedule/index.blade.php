@@ -195,7 +195,7 @@
                                                                 <a href="#" class="link user_head_link tech_profile"
                                                                     style="color: {{ $user_data_array[$value]['color_code'] }} !important;">
                                                                     @if (isset($user_data_array[$value]['user_image']) && !empty($user_data_array[$value]['user_image']))
-                                                                        <img src="{{ asset('public/images/technician/' . $user_data_array[$value]['user_image']) }}"
+                                                                        <img src="{{ asset('public/images/Uploads/users/'.$value.'/' . $user_data_array[$value]['user_image']) }}"
                                                                             alt="user" width="48"
                                                                             class="rounded-circle tech_profile"
                                                                             onerror="this.onerror=null; this.src='{{ $defaultImage }}';" /><br>
