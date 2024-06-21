@@ -664,6 +664,63 @@
                                         </div>
                                     </div>
                                 </div>
+                            @elseif($cardPosition->layout_id == 4 && $cardPosition->element_id == 15)
+                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                    <div class="card card-hover">
+                                        <div class="card-header bg-danger d-flex justify-content-between">
+                                            <h4 class="mb-0 text-white">Card Title 8</h4>
+                                            @if ($layout->added_by == auth()->user()->id)
+                                                <button class="btn btn-light mx-2 clearSection"
+                                                    data-element-id="{{ $cardPosition->element_id }}">X</button>
+                                            @endif
+                                        </div>
+                                        <div class="card-body">
+                                            <h3 class="card-title">Special title treatment 8</h3>
+                                            <p class="card-text">
+                                                With supporting text below as a natural lead-in to additional content.
+                                            </p>
+                                            <a href="javascript:void(0)" class="btn btn-inverse">Go somewhere 8</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @elseif($cardPosition->layout_id == 4 && $cardPosition->element_id == 16)
+                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                    <div class="card card-hover">
+                                        <div class="card-header bg-warning d-flex justify-content-between">
+                                            <h4 class="mb-0 text-white">Card Title 9</h4>
+                                            @if ($layout->added_by == auth()->user()->id)
+                                                <button class="btn btn-light mx-2 clearSection"
+                                                    data-element-id="{{ $cardPosition->element_id }}">X</button>
+                                            @endif
+                                        </div>
+                                        <div class="card-body">
+                                            <h3 class="card-title">Special title treatment 9</h3>
+                                            <p class="card-text">
+                                                With supporting text below as a natural lead-in to additional content.
+                                            </p>
+                                            <a href="javascript:void(0)" class="btn btn-inverse">Go somewhere 9</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @elseif($cardPosition->layout_id == 4 && $cardPosition->element_id == 17)
+                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                    <div class="card card-hover">
+                                        <div class="card-header bg-info d-flex justify-content-between">
+                                            <h4 class="mb-0 text-white">Card Title 10</h4>
+                                            @if ($layout->added_by == auth()->user()->id)
+                                                <button class="btn btn-light mx-2 clearSection"
+                                                    data-element-id="{{ $cardPosition->element_id }}">X</button>
+                                            @endif
+                                        </div>
+                                        <div class="card-body">
+                                            <h3 class="card-title">Special title treatment 10</h3>
+                                            <p class="card-text">
+                                                With supporting text below as a natural lead-in to additional content.
+                                            </p>
+                                            <a href="javascript:void(0)" class="btn btn-inverse">Go somewhere 10</a>
+                                        </div>
+                                    </div>
+                                </div>
                             @endif
                         @endforeach
 
