@@ -188,6 +188,10 @@
                                             <thead>
                                                 <tr>
                                                     <th></th>
+                                                    @php
+
+                                                        use Carbon\Carbon;
+                                                    @endphp
                                                     @if (isset($user_array) && !empty($user_array))
                                                         @foreach ($user_array as $value)
                                                             <th class="tech_th" data-tech-id="{{ $value }}"
@@ -195,7 +199,7 @@
                                                                 <a href="#" class="link user_head_link tech_profile"
                                                                     style="color: {{ $user_data_array[$value]['color_code'] }} !important;">
                                                                     @if (isset($user_data_array[$value]['user_image']) && !empty($user_data_array[$value]['user_image']))
-                                                                        <img src="{{ asset('public/images/Uploads/users/'.$value.'/' . $user_data_array[$value]['user_image']) }}"
+                                                                        <img src="{{ asset('public/images/Uploads/users/' . $value . '/' . $user_data_array[$value]['user_image']) }}"
                                                                             alt="user" width="48"
                                                                             class="rounded-circle tech_profile"
                                                                             onerror="this.onerror=null; this.src='{{ $defaultImage }}';" /><br>
@@ -383,9 +387,42 @@
                                                                                                         #{{ $value2->JobModel->job_code ?? null }}</strong>
                                                                                                 </h5>
                                                                                                 <p class="ps-4 m-0 ms-2">
-                                                                                                    {{ $value2->start_date_time ? date('M d Y g:i a', strtotime($value2->start_date_time)) : null }}
-                                                                                                    -
-                                                                                                    {{ \Carbon\Carbon::parse($value2->end_date_time)->format('g:i A') }}
+                                                                                                    @php
+
+                                                                                                        $startDateTime = $value2->start_date_time
+                                                                                                            ? Carbon::parse(
+                                                                                                                $value2->start_date_time,
+                                                                                                            )
+                                                                                                            : null;
+                                                                                                        $endDateTime = $value2->end_date_time
+                                                                                                            ? Carbon::parse(
+                                                                                                                $value2->end_date_time,
+                                                                                                            )
+                                                                                                            : null;
+                                                                                                        $interval = session(
+                                                                                                            'time_interval',
+                                                                                                        ); // Retrieve the time interval from the session
+
+                                                                                                        if (
+                                                                                                            $startDateTime &&
+                                                                                                            $endDateTime &&
+                                                                                                            $interval
+                                                                                                        ) {
+                                                                                                            // Add the interval to both start and end times
+                                                                                                            $startDateTime->addHours(
+                                                                                                                $interval,
+                                                                                                            );
+                                                                                                            $endDateTime->addHours(
+                                                                                                                $interval,
+                                                                                                            );
+                                                                                                        }
+                                                                                                    @endphp
+
+                                                                                                    @if ($startDateTime && $endDateTime)
+                                                                                                        {{ $startDateTime->format('M d Y g:i a') }}
+                                                                                                        -
+                                                                                                        {{ $endDateTime->format('g:i A') }}
+                                                                                                    @endif
                                                                                                 </p>
                                                                                                 <div class="py-1">
                                                                                                     <i
@@ -569,6 +606,6 @@
         </div>
     </div>
     <!-- Modal -->
-@include('schedule.indexScript')
+    @include('schedule.indexScript')
 
 @endsection

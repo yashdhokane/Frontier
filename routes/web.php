@@ -787,6 +787,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/get-table-content', [ScheduleController::class, 'getTableContent'])->name('get.table.content');
 
+    Route::post('/check-serial-number', [ScheduleController::class, 'checkSerialNumber'])->name('check.serial.number');
+
     // MailController
 
     Route::get('get/mail/schedule', [MailController::class, 'index']);

@@ -8,6 +8,7 @@ use App\Models\BusinessHours;
 use App\Models\CustomerUserAddress;
 use App\Models\Event;
 use App\Models\JobActivity;
+use App\Models\JobDetails;
 use App\Models\JobModel;
 use App\Models\LocationCity;
 use App\Models\LocationServiceArea;
@@ -1027,6 +1028,7 @@ class ScheduleController extends Controller
                     'appliances_id' => (isset($data['appliances']) && !empty($data['appliances'])) ? $data['appliances'] : $data['exist_appl_id'],
                     'job_title' => (isset($data['job_title']) && !empty($data['job_title'])) ? $data['job_title'] : '',
                     'warranty_type' => (isset($data['job_type']) && !empty($data['job_type'])) ? $data['job_type'] : '',
+                    'warranty_ticket' => (isset($data['warranty_ticket']) && !empty($data['warranty_ticket'])) ? $data['warranty_ticket'] : '',
                     'description' => (isset($data['job_description']) && !empty($data['job_description'])) ? trim($data['job_description']) : '',
                     'priority' => (isset($data['priority']) && !empty($data['priority'])) ? $data['priority'] : '',
                     'service_area_id' => (isset($data['service_area_id']) && !empty($data['service_area_id'])) ? $data['service_area_id'] : 0,
@@ -2011,5 +2013,19 @@ class ScheduleController extends Controller
         }
 
         return response()->json(['available' => true, 'message' => 'Time slot is available.']);
+    }
+
+     public function checkSerialNumber(Request $request)
+    {
+        $serialNumber = $request->input('serial_number');
+        $jobDetails = JobDetails::where('serial_number', $serialNumber)->get();
+        
+        // $jobDetails = JobDetails::where('serial_number', 'LIKE', '%' . $serialNumber . '%')->get();
+
+        if ($jobDetails->count() > 0) {
+            return response()->json(['status' => 'success', 'data' => $jobDetails]);
+        } else {
+            return response()->json(['status' => 'error', 'message' => 'Serial number not found']);
+        }
     }
 }
