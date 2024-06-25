@@ -357,7 +357,23 @@
                                         </div>
                                         <div class="dtwrap">
                                             <div class="date">
-                                                {{ $jobTimings['time_schedule'] }}
+                                                @php
+                                                    use Carbon\Carbon;
+
+                                                    // Parse the original time if it exists
+                                                    $time_schedule = $jobTimings['time_schedule']
+                                                        ? Carbon::parse($jobTimings['time_schedule'])
+                                                        : null;
+                                                    $interval = session('time_interval'); // Retrieve the time interval from the session
+
+                                                    if ($time_schedule && $interval) {
+                                                        // Add the interval to the parsed time
+                                                        $time_schedule->addHours($interval);
+                                                    }
+                                                @endphp
+                                                @if ($time_schedule)
+                                                    {{ $time_schedule->format('M d Y g:i a') }}
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -375,7 +391,21 @@
                                         </div>
                                         <div class="dtwrap">
                                             <div class="date">
-                                                {{ $jobTimings['time_omw'] }}
+                                                @php
+
+                                                    // Parse the original time if it exists
+                                                    $newTimeOmw = $jobTimings['time_omw']
+                                                        ? Carbon::parse($jobTimings['time_omw'])
+                                                        : null;
+
+                                                    if ($newTimeOmw && $interval) {
+                                                        // Add the interval to the parsed time
+                                                        $newTimeOmw->addHours($interval);
+                                                    }
+                                                @endphp
+                                                @if ($newTimeOmw)
+                                                    {{ $newTimeOmw->format('M d Y g:i a') }}
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -393,7 +423,20 @@
                                         </div>
                                         <div class="dtwrap">
                                             <div class="date">
-                                                {{ $jobTimings['time_start'] }}
+                                                @php
+                                                    // Parse the original time if it exists
+                                                    $time_start = $jobTimings['time_start']
+                                                        ? Carbon::parse($jobTimings['time_start'])
+                                                        : null;
+
+                                                    if ($time_start && $interval) {
+                                                        // Add the interval to the parsed time
+                                                        $time_start->addHours($interval);
+                                                    }
+                                                @endphp
+                                                @if ($time_start)
+                                                    {{ $time_start->format('M d Y g:i a') }}
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -411,7 +454,20 @@
                                         </div>
                                         <div class="dtwrap">
                                             <div class="date">
-                                                {{ $jobTimings['time_finish'] }}
+                                                @php
+                                                    // Parse the original time if it exists
+                                                    $time_finish = $jobTimings['time_finish']
+                                                        ? Carbon::parse($jobTimings['time_finish'])
+                                                        : null;
+
+                                                    if ($time_finish && $interval) {
+                                                        // Add the interval to the parsed time
+                                                        $time_finish->addHours($interval);
+                                                    }
+                                                @endphp
+                                                @if ($time_finish)
+                                                    {{ $time_finish->format('M d Y g:i a') }}
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -428,8 +484,20 @@
                                         </div>
                                         <div class="dtwrap">
                                             <div class="date">
-                                                {{ $jobTimings['time_invoice'] }}
+                                                @php
+                                                    // Parse the original time if it exists
+                                                    $time_invoice = $jobTimings['time_invoice']
+                                                        ? Carbon::parse($jobTimings['time_invoice'])
+                                                        : null;
 
+                                                    if ($time_invoice && $interval) {
+                                                        // Add the interval to the parsed time
+                                                        $time_invoice->addHours($interval);
+                                                    }
+                                                @endphp
+                                                @if ($time_invoice)
+                                                    {{ $time_invoice->format('M d Y g:i a') }}
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -447,7 +515,20 @@
                                         </div>
                                         <div class="dtwrap">
                                             <div class="date">
-                                                {{ $jobTimings['time_payment'] }}
+                                                @php
+                                                    // Parse the original time if it exists
+                                                    $time_payment = $jobTimings['time_payment']
+                                                        ? Carbon::parse($jobTimings['time_payment'])
+                                                        : null;
+
+                                                    if ($time_payment && $interval) {
+                                                        // Add the interval to the parsed time
+                                                        $time_payment->addHours($interval);
+                                                    }
+                                                @endphp
+                                                @if ($time_payment)
+                                                    {{ $time_payment->format('M d Y g:i a') }}
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -701,12 +782,12 @@
                                     <div class="mb-2"><strong>Warranty Type: </strong>
                                         {{ $technicians->warranty_type ?? null }}
                                     </div>
-                                    @if($technicians->warranty_type === 'in_warranty')
-                                     <div class="mb-2"><strong>Warranty Number: </strong>
-                                        {{ $technicians->warranty_ticket ?? null }}
-                                    </div>
+                                    @if ($technicians->warranty_type === 'in_warranty')
+                                        <div class="mb-2"><strong>Warranty Number: </strong>
+                                            {{ $technicians->warranty_ticket ?? null }}
+                                        </div>
                                     @endif
-                                   
+
                                     <div class="mb-2"><strong>Appliances: </strong>
                                         {{ $technicians->JobAppliances->Appliances->appliance->appliance_name ?? null }}
                                     </div>
