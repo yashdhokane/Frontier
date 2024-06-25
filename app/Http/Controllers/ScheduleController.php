@@ -874,26 +874,11 @@ class ScheduleController extends Controller
 
                     $serviceDataInsert = DB::table('job_service_items')->where('job_id', $data['job_id'])->update($serviceData);
                 }
-                if (isset($data['new_service']) && !empty($data['new_service'])) {
-                    $serviceData = [
-                        'service_id' => (isset($data['new_service']) && !empty($data['new_service'])) ? $data['new_service'] : '',
-                    ];
-
-                    $serviceDataInsert = DB::table('job_service_items')->where('job_id', $data['job_id'])->update($serviceData);
-                }
 
                 if (isset($data['product_id']) && !empty($data['product_id'])) {
 
                     $productData = [
                         'product_id' => (isset($data['product_id']) && !empty($data['product_id'])) ? $data['product_id'] : '',
-                    ];
-
-                    $productDataInsert = DB::table('job_product_items')->where('job_id', $data['job_id'])->update($productData);
-                }
-
-                if (isset($data['new_product']) && !empty($data['new_product'])) {
-                    $productData = [
-                        'product_id' => (isset($data['new_product']) && !empty($data['new_product'])) ? $data['new_product'] : '',
                     ];
 
                     $productDataInsert = DB::table('job_product_items')->where('job_id', $data['job_id'])->update($productData);
@@ -1117,64 +1102,36 @@ class ScheduleController extends Controller
                     $addAppliancesUser = DB::table('job_appliance')->insertGetId($userappl);
                 }
 
+               
                 if (isset($data['services']) && !empty($data['services'])) {
+                    foreach ($data['services'] as $index => $serviceId) {
+                        $serviceData = [
+                            'service_id' => $serviceId,
+                            'job_id' => $jobId,
+                            'base_price' => isset($data['service_cost'][$index]) ? $data['service_cost'][$index] : 0,
+                            'tax' => isset($data['service_tax'][$index]) ? $data['service_tax'][$index] : 0,
+                            'discount' => isset($data['service_discount_amount'][$index]) ? $data['service_discount_amount'][$index] : 0,
+                            'sub_total' => isset($data['service_total'][$index]) ? $data['service_total'][$index] : 0,
+                        ];
 
-                    $serviceData = [
-                        'service_id' => (isset($data['services']) && !empty($data['services'])) ? $data['services'] : '',
-                        'job_id' => $jobId,
-                        'base_price' => (isset($data['service_cost']) && !empty($data['service_cost'])) ? $data['service_cost'] : 0,
-                        'tax' => $service_tax,
-                        'discount' => (isset($data['service_discount_amount']) && !empty($data['service_discount_amount'])) ? $data['service_discount_amount'] : 0,
-                        'sub_total' => (isset($data['service_total']) && !empty($data['service_total'])) ? $data['service_total'] : 0,
-                    ];
-
-                    $serviceDataInsert = DB::table('job_service_items')->insertGetId($serviceData);
+                        $serviceDataInsert = DB::table('job_service_items')->insertGetId($serviceData);
+                    }
                 }
-
-                if (isset($data['new_service']) && !empty($data['new_service'])) {
-
-                    $serviceData = [
-                        'service_id' => (isset($data['new_service']) && !empty($data['new_service'])) ? $data['new_service'] : '',
-                        'job_id' => $jobId,
-                        'base_price' => (isset($data['new_service_cost']) && !empty($data['new_service_cost'])) ? $data['new_service_cost'] : 0,
-                        'tax' => $service_tax,
-                        'discount' => (isset($data['new_service_discount_amount']) && !empty($data['new_service_discount_amount'])) ? $data['new_service_discount_amount'] : 0,
-                        'sub_total' => (isset($data['new_service_total']) && !empty($data['new_service_total'])) ? $data['new_service_total'] : 0,
-                    ];
-
-                    $serviceDataInsert = DB::table('job_service_items')->insertGetId($serviceData);
-                }
-
-
 
                 if (isset($data['products']) && !empty($data['products'])) {
+                    foreach ($data['products'] as $index => $productId) {
+                        $productData = [
+                            'product_id' => $productId,
+                            'job_id' => $jobId,
+                            'base_price' => isset($data['product_cost'][$index]) ? $data['product_cost'][$index] : 0,
+                            'tax' => isset($data['product_tax'][$index]) ? $data['product_tax'][$index] : 0,
+                            'discount' => isset($data['product_discount_amount'][$index]) ? $data['product_discount_amount'][$index] : 0,
+                            'sub_total' => isset($data['product_total'][$index]) ? $data['product_total'][$index] : 0,
+                        ];
 
-                    $productData = [
-                        'product_id' => (isset($data['products']) && !empty($data['products'])) ? $data['products'] : '',
-                        'job_id' => $jobId,
-                        'base_price' => (isset($data['product_cost']) && !empty($data['product_cost'])) ? $data['product_cost'] : 0,
-                        'tax' => $product_tax,
-                        'discount' => (isset($data['product_discount_amount']) && !empty($data['product_discount_amount'])) ? $data['product_discount_amount'] : 0,
-                        'sub_total' => (isset($data['product_total']) && !empty($data['product_total'])) ? $data['product_total'] : 0,
-                    ];
-
-                    $productDataInsert = DB::table('job_product_items')->insertGetId($productData);
+                        $productDataInsert = DB::table('job_product_items')->insertGetId($productData);
+                    }
                 }
-
-                if (isset($data['new_product']) && !empty($data['new_product'])) {
-
-
-                    $newproductData = [
-                        'product_id' => (isset($data['new_product']) && !empty($data['new_product'])) ? $data['new_product'] : '',
-                        'job_id' => $jobId,
-                        'base_price' => (isset($data['new_product_cost']) && !empty($data['new_product_cost'])) ? $data['new_product_cost'] : 0,
-                        'tax' => $service_tax,
-                        'discount' => (isset($data['new_product_discount_amount']) && !empty($data['new_product_discount_amount'])) ? $data['new_product_discount_amount'] : 0,
-                        'sub_total' => (isset($data['new_product_total']) && !empty($data['new_product_total'])) ? $data['new_product_total'] : 0,
-                    ];
-                    $newproductDataInsert = DB::table('job_product_items')->insertGetId($newproductData);
-                }
-
 
 
                 if ($request->hasFile('photos')) {
@@ -2015,11 +1972,11 @@ class ScheduleController extends Controller
         return response()->json(['available' => true, 'message' => 'Time slot is available.']);
     }
 
-     public function checkSerialNumber(Request $request)
+    public function checkSerialNumber(Request $request)
     {
         $serialNumber = $request->input('serial_number');
         $jobDetails = JobDetails::where('serial_number', $serialNumber)->get();
-        
+
         // $jobDetails = JobDetails::where('serial_number', 'LIKE', '%' . $serialNumber . '%')->get();
 
         if ($jobDetails->count() > 0) {
