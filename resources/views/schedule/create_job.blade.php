@@ -385,13 +385,16 @@
                                             <div class="col-md-4">
                                                 <div class="mb-2">
                                                     <div class="form-group">
-                                                        <select class="form-control services" id="services" name="services[]">
+                                                        <select class="form-control services" id="services"
+                                                            name="services[]">
                                                             <option value="" selected>-- Select Services --</option>
                                                             @foreach ($serviceCat as $category)
-                                                                <option class="fw-bold" disabled>{{ $category->category_name }}</option>
+                                                                <option class="fw-bold" disabled>
+                                                                    {{ $category->category_name }}</option>
                                                                 @if (isset($category->Services) && count($category->Services) > 0)
                                                                     @foreach ($category->Services as $service)
-                                                                        <option class="ps-3" value="{{ $service->service_id }}"
+                                                                        <option class="ps-3"
+                                                                            value="{{ $service->service_id }}"
                                                                             data-code="{{ $service->service_code }}">
                                                                             {{ $service->service_name }}
                                                                         </option>
@@ -405,24 +408,29 @@
                                             </div>
                                             <div class="col-md-2">
                                                 <div class="mb-2">
-                                                    <input type="number" class="form-control service_cost" placeholder="$0.00" name="service_cost[]" value="" />
+                                                    <input type="number" class="form-control service_cost"
+                                                        placeholder="$0.00" name="service_cost[]" value="" />
                                                     <input type="hidden" class="pre_service_cost" value="">
                                                     <small class="form-text text-muted">Price</small>
                                                 </div>
                                             </div>
                                             <div class="col-md-2">
                                                 <div class="mb-2">
-                                                    <input class="form-control service_discount" type="number" name="service_discount[]" value="" placeholder="$0.00">
+                                                    <input class="form-control service_discount" type="number"
+                                                        name="service_discount[]" value="" placeholder="$0.00">
                                                     <input type="hidden" class="pre_service_discount" value="">
-                                                    <input type="hidden" class="service_discount_amount" name="service_discount_amount[]" value="">
+                                                    <input type="hidden" class="service_discount_amount"
+                                                        name="service_discount_amount[]" value="">
                                                     <small class="form-text text-muted">Discount(%)</small>
                                                 </div>
                                             </div>
-                                            <input class="service_tax" type="hidden" name="service_tax[]" value="">
+                                            <input class="service_tax" type="hidden" name="service_tax[]"
+                                                value="">
                                             <div class="col-md-2">
                                                 <div class="mb-2 service_total_text">$0</div>
                                                 <small class="form-text text-muted">Line Total</small>
-                                                <input class="service_total" type="hidden" name="service_total[]" value="">
+                                                <input class="service_total" type="hidden" name="service_total[]"
+                                                    value="">
                                             </div>
                                             <div class="col-md-2">
                                                 <button type="button" class="btn btn-danger remove-row">Remove</button>
@@ -430,7 +438,8 @@
                                         </div>
                                     </div>
 
-                                    <button type="button" id="addRow" class="btn btn-primary mt-2">Add Service</button>
+                                    <button type="button" id="addRow" class="btn btn-primary mt-2">Add
+                                        Service</button>
                                 </div>
 
                                 <div class="row mt-3">
@@ -448,7 +457,8 @@
                                                             <option value="" selected>-- Select Parts --</option>
                                                             @if (isset($getProduct) && !empty($getProduct))
                                                                 @foreach ($getProduct as $value)
-                                                                    <option value="{{ $value->product_id }}" data-code="{{ $value->product_code }}">
+                                                                    <option value="{{ $value->product_id }}"
+                                                                        data-code="{{ $value->product_code }}">
                                                                         {{ $value->product_name }}
                                                                     </option>
                                                                 @endforeach
@@ -460,27 +470,33 @@
                                             </div>
                                             <div class="col-md-2">
                                                 <div class="mb-2">
-                                                    <input type="number" class="form-control product_cost" placeholder="$0.00" name="product_cost[]" value="" />
+                                                    <input type="number" class="form-control product_cost"
+                                                        placeholder="$0.00" name="product_cost[]" value="" />
                                                     <input type="hidden" class="pre_product_cost" value="">
                                                     <small class="form-text text-muted">Price</small>
                                                 </div>
                                             </div>
                                             <div class="col-md-2">
                                                 <div class="mb-2">
-                                                    <input class="form-control product_discount" type="number" name="product_discount[]" value="" placeholder="$0.00">
+                                                    <input class="form-control product_discount" type="number"
+                                                        name="product_discount[]" value="" placeholder="$0.00">
                                                     <input type="hidden" class="pre_product_discount" value="">
-                                                    <input type="hidden" class="product_discount_amount" name="product_discount_amount[]" value="">
+                                                    <input type="hidden" class="product_discount_amount"
+                                                        name="product_discount_amount[]" value="">
                                                     <small class="form-text text-muted">Discount(%)</small>
                                                 </div>
                                             </div>
-                                            <input class="product_tax" type="hidden" name="product_tax[]" value="">
+                                            <input class="product_tax" type="hidden" name="product_tax[]"
+                                                value="">
                                             <div class="col-md-2">
                                                 <div class="mb-2 product_total_text">$0</div>
                                                 <small class="form-text text-muted">Line Total</small>
-                                                <input class="product_total" type="hidden" name="product_total[]" value="">
+                                                <input class="product_total" type="hidden" name="product_total[]"
+                                                    value="">
                                             </div>
                                             <div class="col-md-2">
-                                                <button type="button" class="btn btn-danger remove-part-row">Remove</button>
+                                                <button type="button"
+                                                    class="btn btn-danger remove-part-row">Remove</button>
                                             </div>
                                         </div>
                                     </div>
@@ -546,7 +562,7 @@
                                         <input class="service_total" type="hidden" name="service_total" value="">
                                     </div>
                                 </div> --}}
-                                
+
                                 {{-- <div class="row" id="new-service" style="display: none;">
                                     <div class="col-md-4">
                                         <div class="mb-2">
@@ -605,7 +621,7 @@
                                     </div>
                                 </div> --}}
 
-                               
+
 
                                 {{-- <div class="row">
                                     <div class="col-md-4">
@@ -830,7 +846,7 @@
                                                 </div>
                                             </div>
 
-                                           <div id="service-container">
+                                            <div id="service-container">
                                                 <!-- Dynamically added service rows will go here -->
                                             </div>
                                             <div id="product-container">
@@ -839,7 +855,7 @@
 
 
 
-                                            
+
                                             {{-- <div class="row mb-2" id="new_service_list" style="display: none;">
                                                 <div class="col-md-7">
                                                     <div class="mt-1" style="display: inline-flex;">
@@ -954,11 +970,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
     <script>
-
-        $(document).ready(function () {
+        $(document).ready(function() {
 
             // Function to add a new service row
-            $(document).on('click', '#addRow', function () {
+            $(document).on('click', '#addRow', function() {
                 let newServiceRow = $('.service-row:first').clone();
                 newServiceRow.find('input').val('');
                 newServiceRow.find('select').prop('selectedIndex', 0);
@@ -968,7 +983,7 @@
             });
 
             // Function to remove a service row
-            $(document).on('click', '.remove-row', function () {
+            $(document).on('click', '.remove-row', function() {
                 if ($('.service-row').length > 1) {
                     $(this).closest('.service-row').remove();
                     calculateServiceTotal();
@@ -978,7 +993,7 @@
             // Function to gather services data into an array and save
             function gatherServicesData() {
                 let services = [];
-                $('#serviceRows .service-row').each(function () {
+                $('#serviceRows .service-row').each(function() {
                     let service = {
                         service_id: $(this).find('.services').val(),
                         service_cost: $(this).find('.service_cost').val(),
@@ -993,7 +1008,7 @@
 
             // Calculate and update line totals for services
             function calculateServiceTotal() {
-                $('#serviceRows .service-row').each(function () {
+                $('#serviceRows .service-row').each(function() {
                     let cost = parseFloat($(this).find('.service_cost').val()) || 0;
                     let discount = parseFloat($(this).find('.service_discount').val()) || 0;
                     let discountAmount = (cost * discount) / 100;
@@ -1014,7 +1029,7 @@
                 var productTotalVal = 0;
                 var newProductTotalVal = 0;
 
-                $('#serviceRows .service-row').each(function () {
+                $('#serviceRows .service-row').each(function() {
                     serviceTotalVal += parseFloat($(this).find('.service_total').val()) || 0;
                 });
 
@@ -1030,7 +1045,7 @@
                         customerId: customerId,
                     },
                     type: 'GET',
-                    success: function (data) {
+                    success: function(data) {
                         $('.taxcodetext').empty();
                         var taxpercent = data.state_tax;
                         var total_amount = subTotal * (taxpercent / 100);
@@ -1051,7 +1066,7 @@
                 });
 
                 var discount = 0;
-                $('#serviceRows .service-row').each(function () {
+                $('#serviceRows .service-row').each(function() {
                     discount += parseFloat($(this).find('.service_discount_amount').val()) || 0;
                 });
 
@@ -1064,7 +1079,7 @@
                         customerId: customerId,
                     },
                     type: 'GET',
-                    success: function (data) {
+                    success: function(data) {
                         $('.taxcodetext').empty();
                         $('.service_area_id').val(data.service_area_id);
 
@@ -1090,9 +1105,10 @@
             }
 
             // Event listener for service cost change
-            $(document).on('change', '.service_cost', function () {
+            $(document).on('change', '.service_cost', function() {
                 var service_cost = parseFloat($(this).val()) || 0;
-                var service_discount = parseFloat($(this).closest('.service-row').find('.service_discount').val()) || 0;
+                var service_discount = parseFloat($(this).closest('.service-row').find('.service_discount')
+                    .val()) || 0;
 
                 $(this).closest('.service-row').find('.service_cost').val(service_cost);
                 $(this).closest('.service-row').find('.pre_service_cost').val(service_cost);
@@ -1107,7 +1123,7 @@
             });
 
             // Event listener for service discount change
-            $(document).on('change', '.service_discount', function () {
+            $(document).on('change', '.service_discount', function() {
                 var service_discount = parseFloat($(this).val()) || 0;
                 var s_cost = parseFloat($(this).closest('.service-row').find('.service_cost').val()) || 0;
 
@@ -1116,24 +1132,23 @@
 
                 $(this).closest('.service-row').find('.service_total_text').text('$' + s_total.toFixed(2));
                 $(this).closest('.service-row').find('.service_total').val(s_total.toFixed(2));
-                $(this).closest('.service-row').find('.service_discount_amount').val(service_discount_amount.toFixed(2));
+                $(this).closest('.service-row').find('.service_discount_amount').val(service_discount_amount
+                    .toFixed(2));
 
                 calculateSubTotalAndTax();
             });
 
             // Example save button click event to gather service data
-            $('#finish').click(function () {
+            $('#finish').click(function() {
                 gatherServicesData();
             });
         });
-
     </script>
 
     <script>
-
-        $(document).ready(function () {
+        $(document).ready(function() {
             // Function to add a new part row
-            $(document).on('click', '#addPartRow', function () {
+            $(document).on('click', '#addPartRow', function() {
                 let newPartRow = $('.parts-row:first').clone();
                 newPartRow.find('input').val('');
                 newPartRow.find('select').prop('selectedIndex', 0);
@@ -1143,7 +1158,7 @@
             });
 
             // Function to remove a part row
-            $(document).on('click', '.remove-part-row', function () {
+            $(document).on('click', '.remove-part-row', function() {
                 if ($('.parts-row').length > 1) {
                     $(this).closest('.parts-row').remove();
                     calculateTotal();
@@ -1151,7 +1166,7 @@
             });
 
             // Event listener for product change
-            $(document).on('change', '.products', function (event) {
+            $(document).on('change', '.products', function(event) {
                 event.stopPropagation();
                 var customerId = $('.selectCustomer').data('customer-id');
                 var row = $(this).closest('.parts-row');
@@ -1165,14 +1180,17 @@
                             customerId: customerId,
                         },
                         type: 'GET',
-                        success: function (data) {
+                        success: function(data) {
                             if (data) {
                                 row.find('.product_cost').val(data.product.base_price);
                                 row.find('.product_discount').val(data.product.discount);
                                 row.find('.product_tax').val(data.product.tax);
-                                var productDiscountAmount = data.product.base_price * (data.product.discount / 100);
-                                var productTotal = data.product.base_price - productDiscountAmount;
-                                row.find('.product_total_text').text('$' + productTotal.toFixed(2));
+                                var productDiscountAmount = data.product.base_price * (data
+                                    .product.discount / 100);
+                                var productTotal = data.product.base_price -
+                                    productDiscountAmount;
+                                row.find('.product_total_text').text('$' + productTotal.toFixed(
+                                    2));
                                 row.find('.product_total').val(productTotal.toFixed(2));
                                 calculateTotal();
                             }
@@ -1189,14 +1207,14 @@
             });
 
             // Event listeners for dynamic calculation
-            $(document).on('input', '.product_cost, .product_discount', function () {
+            $(document).on('input', '.product_cost, .product_discount', function() {
                 calculateTotal();
             });
 
             // Calculate and update line totals
             function calculateTotal() {
                 var subtotal = 0;
-                $('.parts-row').each(function () {
+                $('.parts-row').each(function() {
                     var cost = parseFloat($(this).find('.product_cost').val()) || 0;
                     var discount = parseFloat($(this).find('.product_discount').val()) || 0;
                     var discountAmount = (cost * discount) / 100;
@@ -1214,13 +1232,16 @@
                 var customerId = $('.selectCustomer').data('customer-id');
                 $.ajax({
                     url: "{{ route('usertax') }}",
-                    data: { customerId: customerId },
+                    data: {
+                        customerId: customerId
+                    },
                     type: 'GET',
-                    success: function (data) {
+                    success: function(data) {
                         var taxpercent = data.state_tax;
                         var taxAmount = allSubTotal * (taxpercent / 100);
                         $('.tax_total').val(taxAmount.toFixed(2));
-                        $('.taxcodetext').empty().append('' + data.state_tax + '% for ' + data.state_code + ': $' + taxAmount.toFixed(2));
+                        $('.taxcodetext').empty().append('' + data.state_tax + '% for ' + data
+                            .state_code + ': $' + taxAmount.toFixed(2));
 
                         var total = allSubTotal + taxAmount;
                         $('.total').val(total.toFixed(2));
@@ -1233,7 +1254,7 @@
             calculateTotal();
 
             // Example save button click event to gather data
-            $('#finish').click(function () {
+            $('#finish').click(function() {
                 // Example function to gather and save parts data
                 gatherPartsData();
             });
@@ -1241,7 +1262,7 @@
             // Function to gather parts data into an array
             function gatherPartsData() {
                 var parts = [];
-                $('.parts-row').each(function () {
+                $('.parts-row').each(function() {
                     var part = {
                         product_id: $(this).find('.products').val(),
                         product_cost: $(this).find('.product_cost').val(),
@@ -1254,7 +1275,6 @@
                 // Here you can send 'parts' array to your server for further processing
             }
         });
-
     </script>
 
 
@@ -1537,14 +1557,17 @@
                     finish: 'Submit Job',
                 },
                 onStepChanging: function(event, currentIndex, newIndex) {
+                    // Allow navigation to the previous step without validation
+                    if (newIndex < currentIndex) {
+                        return true;
+                    }
+
                     // Check if navigating forward to the next step
                     if (currentIndex === 1) {
-                        // checkTechnicianSchedule();
-
                         function checkAllConditions() {
                             var isValid = validateStep2Fields(); // Validate required fields in step 2
                             var isStatusSlotAvailable = $('.status_slot')
-                                .val(); // Get the value from the input field
+                        .val(); // Get the value from the input field
 
                             // Convert to a boolean to handle potential falsy values
                             var isStatusSlotBool = isStatusSlotAvailable === "true" ||
@@ -1559,6 +1582,7 @@
                                 });
                                 return false; // Prevent further action
                             }
+
                             {{-- 
                             if (!isStatusSlotBool) { // If status slot is false or not "true"
                                 Swal.fire({
@@ -1571,11 +1595,12 @@
 
                             return true; // All conditions are met
                         }
+
                         // Validate the conditions
                         if (!checkAllConditions()) {
                             // If false, do not proceed to the next step and show an error
                             console.log("Validation failed. Staying on the same step.");
-                            return; // Stop further action to prevent navigation
+                            return false; // Stop further action to prevent navigation
                         }
                     } else if (currentIndex === 2) {
                         // Check if all required fields are filled for step 3
@@ -1591,17 +1616,15 @@
                         }
                     }
 
-                    if (newIndex < currentIndex) {
-                        return true;
-                    }
-
+                    // If navigating to step 3, call showAllInformation function
                     if (newIndex == 3) {
                         showAllInformation(newIndex);
                     }
 
-                    // Allow navigation to the previous step or to step 3
+                    // Allow navigation to the next step
                     return true;
                 },
+
 
                 onFinished: function(event, currentIndex) {
 
@@ -2180,35 +2203,35 @@
         $.ucfirst = function(str) {
             return str.charAt(0).toUpperCase() + str.slice(1);
         };
-    //   this function for showing all details in last step 
-     
-            function showAllInformation() {
-                // Clear existing rows
-                $('#service-container').empty();
-                $('#product-container').empty();
+        //   this function for showing all details in last step 
 
-                // Fetch customer and job information
-                var customer_address = $('.customer_address').find(':selected').data('city');
-                var selectedText = $('.customer_address').find(':selected').text();
-                $('.show_customer_area').text(customer_address + ' Area');
-                $('.show_customer_adderss').text(selectedText);
-                $('.show_job_title').text($('.job_title').val());
-                $('.show_job_code').text($('.job_code').val());
-                $('.show_job_information').text($('.appliances').val() + ' / Model No.: ' + $('.model_number').val() +
-                    ' / Serial Number: ' + $('.serial_number').val());
-                $('.show_job_description').text($('.job_description').val());
-                $('.show_job_duration').text('Duration: ' + $('.duration option:selected').text());
+        function showAllInformation() {
+            // Clear existing rows
+            $('#service-container').empty();
+            $('#product-container').empty();
 
-                // Fetch and display service information
-                var services = $('.services').find(':selected');
-                services.each(function(index) {
-                    var service_code = $(this).data('code');
-                    var serviceText = $(this).text();
-                    var service_cost = $('.service_cost').eq(index).val();
-                    var service_discount = $('.service_discount').eq(index).val();
-                    var service_total = $('.service_total').eq(index).val();
+            // Fetch customer and job information
+            var customer_address = $('.customer_address').find(':selected').data('city');
+            var selectedText = $('.customer_address').find(':selected').text();
+            $('.show_customer_area').text(customer_address + ' Area');
+            $('.show_customer_adderss').text(selectedText);
+            $('.show_job_title').text($('.job_title').val());
+            $('.show_job_code').text($('.job_code').val());
+            $('.show_job_information').text($('.appliances').val() + ' / Model No.: ' + $('.model_number').val() +
+                ' / Serial Number: ' + $('.serial_number').val());
+            $('.show_job_description').text($('.job_description').val());
+            $('.show_job_duration').text('Duration: ' + $('.duration option:selected').text());
 
-                    var serviceRow = `
+            // Fetch and display service information
+            var services = $('.services').find(':selected');
+            services.each(function(index) {
+                var service_code = $(this).data('code');
+                var serviceText = $(this).text();
+                var service_cost = $('.service_cost').eq(index).val();
+                var service_discount = $('.service_discount').eq(index).val();
+                var service_total = $('.service_total').eq(index).val();
+
+                var serviceRow = `
                         <div class="row mb-2">
                             <div class="col-md-7">
                                 <div class="mt-1" style="display: inline-flex;">
@@ -2229,19 +2252,19 @@
                         </div>
                     `;
 
-                    $('#service-container').append(serviceRow);
-                });
+                $('#service-container').append(serviceRow);
+            });
 
-                // Fetch and display product information
-                var products = $('.products').find(':selected');
-                products.each(function(index) {
-                    var product_code = $(this).data('code');
-                    var productText = $(this).text();
-                    var product_cost = $('.product_cost').eq(index).val();
-                    var product_discount = $('.product_discount').eq(index).val();
-                    var product_total = $('.product_total').eq(index).val();
+            // Fetch and display product information
+            var products = $('.products').find(':selected');
+            products.each(function(index) {
+                var product_code = $(this).data('code');
+                var productText = $(this).text();
+                var product_cost = $('.product_cost').eq(index).val();
+                var product_discount = $('.product_discount').eq(index).val();
+                var product_total = $('.product_total').eq(index).val();
 
-                    var productRow = `
+                var productRow = `
                         <div class="row mb-2">
                             <div class="col-md-7">
                                 <div class="mt-1">
@@ -2260,23 +2283,23 @@
                         </div>
                     `;
 
-                    $('#product-container').append(productRow);
-                });
+                $('#product-container').append(productRow);
+            });
 
-                // Fetch additional service and product information
-                var newservices = $('#new_service').val();
-                var newproducts = $('#new_product').val();
+            // Fetch additional service and product information
+            var newservices = $('#new_service').val();
+            var newproducts = $('#new_product').val();
 
-                $.ajax({
-                    url: "{{ url('get/service/product') }}",
-                    data: {
-                        newservices: newservices,
-                        newproducts: newproducts,
-                    },
-                    type: 'GET',
-                    success: function(data) {
-                        // Populate additional costs, discounts, and totals for new services and products
-                        var newServiceRow = `
+            $.ajax({
+                url: "{{ url('get/service/product') }}",
+                data: {
+                    newservices: newservices,
+                    newproducts: newproducts,
+                },
+                type: 'GET',
+                success: function(data) {
+                    // Populate additional costs, discounts, and totals for new services and products
+                    var newServiceRow = `
                             <div class="row mb-2">
                                 <div class="col-md-7">
                                     <div class="mt-1" style="display: inline-flex;">
@@ -2297,9 +2320,9 @@
                             </div>
                         `;
 
-                        $('#service-container').append(newServiceRow);
+                    $('#service-container').append(newServiceRow);
 
-                        var newProductRow = `
+                    var newProductRow = `
                             <div class="row mb-2">
                                 <div class="col-md-7">
                                     <div class="mt-1">
@@ -2318,10 +2341,10 @@
                             </div>
                         `;
 
-                        $('#product-container').append(newProductRow);
-                    },
-                });
-            }
+                    $('#product-container').append(newProductRow);
+                },
+            });
+        }
 
         //   new changes  
         // on clicking on pendingJobs 
