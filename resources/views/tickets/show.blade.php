@@ -748,7 +748,24 @@
                                     <div class="mb-2">
                                         <h5 class="card-title uppercase"><i class="fa fa-calendar"
                                                 aria-hidden="true"></i>
-                                            {{ \Carbon\Carbon::parse($technicians->jobassignname->start_date_time ?? null)->format('jS F Y, h:i A') }}
+
+                                            @php
+
+                                                // Parse the original time if it exists
+                                                $startDateTime = $technicians->jobassignname->start_date_time
+                                                    ? Carbon::parse($technicians->jobassignname->start_date_time)
+                                                    : null;
+
+                                                if ($startDateTime && $interval) {
+                                                    // Add the interval to the parsed time
+                                                    $startDateTime->addHours($interval);
+                                                }
+                                            @endphp
+
+                                            @if ($startDateTime)
+                                                {{ $startDateTime->format('jS F Y, h:i A') }}
+                                            @endif
+
                                         </h5>
                                     </div>
                                 </div>

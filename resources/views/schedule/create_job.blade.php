@@ -385,8 +385,7 @@
                                             <div class="col-md-4">
                                                 <div class="mb-2">
                                                     <div class="form-group">
-                                                        <select class="form-control services" id="services"
-                                                            name="services[]">
+                                                        <select class="form-control services w-100" name="services[]">
                                                             <option value="" selected>-- Select Services --</option>
                                                             @foreach ($serviceCat as $category)
                                                                 <option class="fw-bold" disabled>
@@ -438,7 +437,7 @@
                                         </div>
                                     </div>
 
-                                    <button type="button" id="addRow" class="btn btn-primary mt-2">Add
+                                    <button type="button" id="addRow" class="btn btn-primary">Add
                                         Service</button>
                                 </div>
 
@@ -453,7 +452,7 @@
                                             <div class="col-md-4">
                                                 <div class="mb-2">
                                                     <div class="form-group">
-                                                        <select class="form-control products" name="products[]">
+                                                        <select class="form-control products w-100" name="products[]">
                                                             <option value="" selected>-- Select Parts --</option>
                                                             @if (isset($getProduct) && !empty($getProduct))
                                                                 @foreach ($getProduct as $value)
@@ -501,233 +500,8 @@
                                         </div>
                                     </div>
 
-                                    <button type="button" id="addPartRow" class="btn btn-primary mt-2">Add Part</button>
+                                    <button type="button" id="addPartRow" class="btn btn-primary mb-2">Add Part</button>
                                 </div>
-
-
-                                {{-- <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="mb-2">
-                                            <div class="form-group">
-                                                <select class="form-control services" id="services" name="services">
-                                                    <option value="" selected>-- Select Services --</option>
-                                                    @foreach ($serviceCat as $category)
-                                                        <option class="fw-bold" disabled>{{ $category->category_name }}
-                                                        </option>
-                                                        @if (isset($category->Services) && count($category->Services) > 0)
-                                                            @foreach ($category->Services as $service)
-                                                                <option class="ps-3" value="{{ $service->service_id }}"
-                                                                    data-code="{{ $service->service_code }}">
-                                                                    {{ $service->service_name }}
-                                                                </option>
-                                                            @endforeach
-                                                        @endif
-                                                    @endforeach
-                                                </select>
-
-
-                                                <input type="hidden" class="pre_service_id" value="">
-                                            </div>
-                                        </div>
-                                        <div class="mb-2">
-                                            <div class="input-link" id="addnewservice"><a href="#"
-                                                    class="card-link">+ Add New</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="mb-2">
-                                            <input type="number" class="form-control service_cost" id="videoUrl1"
-                                                placeholder="$0.00" name="service_cost" value="" />
-                                            <input type="hidden" class="pre_service_cost" value="">
-                                            <small id="name" class="form-text text-muted">Price</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="mb-2">
-                                            <input class="form-control service_discount" type="number"
-                                                name="service_discount" value="" placeholder="$0.00">
-                                            <input type="hidden" class="pre_service_discount" value="">
-                                            <input type="hidden" class="service_discount_amount"
-                                                name="service_discount_amount" value="">
-                                            <small id="name" class="form-text text-muted">Discount(%)</small>
-                                        </div>
-                                    </div>
-                                    <input class="service_tax" type="hidden" name="service_tax" value="">
-                                    <div class="col-md-2">
-                                        <div class="mb-2 service_total_text">
-                                            $0
-                                        </div>
-                                        <small id="name" class="form-text text-muted">Line Total</small>
-                                        <input class="service_total" type="hidden" name="service_total" value="">
-                                    </div>
-                                </div> --}}
-
-                                {{-- <div class="row" id="new-service" style="display: none;">
-                                    <div class="col-md-4">
-                                        <div class="mb-2">
-                                            <div class="form-group">
-                                                <select class="form-control new_service" id="new_service"
-                                                    name="new_service">
-                                                    <option value="" selected>-- Select Services --</option>
-                                                    @foreach ($serviceCat as $category)
-                                                        <option class="fw-bold" disabled>{{ $category->category_name }}
-                                                        </option>
-                                                        @if (isset($category->Services) && count($category->Services) > 0)
-                                                            @foreach ($category->Services as $service)
-                                                                <option class="ps-3" value="{{ $service->service_id }}"
-                                                                    data-code="{{ $service->service_code }}">
-                                                                    {{ $service->service_name }}
-                                                                </option>
-                                                            @endforeach
-                                                        @endif
-                                                    @endforeach
-                                                </select>
-
-                                            </div>
-                                        </div>
-                                        <div class="mb-2">
-                                            <div class="input-link" id="removenewservice"><a href="#"
-                                                    class="card-link text-danger">- Remove</a>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="mb-2">
-                                            <input type="text" class="form-control new_service_cost"
-                                                id="new_service_cost" placeholder="$0.00" name="new_service_cost"
-                                                value="" />
-                                            <small id="name" class="form-text text-muted">Price</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="mb-2">
-                                            <input class="form-control new_service_discount" id="new_service_discount"
-                                                type="number" name="new_service_discount" value=""
-                                                placeholder="$0.00">
-                                            <input type="hidden" class="new_service_discount_amount"
-                                                name="new_service_discount_amount" value="">
-                                            <small id="" class="form-text text-muted">Discount(%)</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="mb-2 new_service_total_text">
-                                            $0
-                                        </div>
-                                        <input class="form-control new_service_total" id="new_service_total"
-                                            type="hidden" name="new_service_total" value="">
-                                        <small id="name" class="form-text text-muted">Line Total</small>
-                                    </div>
-                                </div> --}}
-
-
-
-                                {{-- <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="mb-2">
-                                            <div class="form-group">
-                                                <select class="form-control products" id="exampleFormControlSelect1"
-                                                    name="products">
-                                                    <option value="" selected>-- Select Parts --</option>
-                                                    @if (isset($getProduct) && !empty($getProduct))
-                                                        @foreach ($getProduct as $value)
-                                                            <option value="{{ $value->product_id }}"
-                                                                data-code="{{ $value->product_code }}">
-                                                                {{ $value->product_name }}
-                                                            </option>
-                                                        @endforeach
-                                                    @endif
-                                                </select>
-                                                <input type="hidden" class="pre_product_id" value="">
-                                            </div>
-                                        </div>
-                                        <div class="mb-2">
-                                            <div class="input-link" id="addnewpart"><a href="#"
-                                                    class="card-link">+ Add New</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="mb-2">
-                                            <input type="number" class="form-control product_cost" id="videoUrl1"
-                                                placeholder="$0.00" name="product_cost" value="" />
-                                            <input type="hidden" class="pre_product_cost" value="">
-                                            <small id="name" class="form-text text-muted">Price</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="mb-2">
-                                            <input class="form-control product_discount" type="number"
-                                                name="product_discount" value="" placeholder="$0.00">
-                                            <input type="hidden" class="pre_product_discount" value="">
-                                            <input type="hidden" class="product_discount_amount"
-                                                name="product_discount_amount" value="">
-                                            <small id="name" class="form-text text-muted">Discount(%)</small>
-                                        </div>
-                                    </div>
-                                    <input class="product_tax" type="hidden" name="product_tax" value="">
-
-                                    <div class="col-md-2">
-                                        <div class="mb-2 product_total_text">
-                                            $0
-                                        </div>
-                                        <small id="name" class="form-text text-muted">Line Total</small>
-                                        <input class="product_total" type="hidden" name="product_total" value="">
-                                    </div>
-                                </div>
-                                <div class="row" id="new-part" style="display: none;">
-                                    <div class="col-md-4">
-                                        <div class="mb-2">
-                                            <div class="form-group">
-                                                <select class="form-control new_product" id="new_product"
-                                                    name="new_product">
-                                                    <option value="" selected>-- Select Parts --</option>
-                                                    @if (isset($getProduct) && !empty($getProduct))
-                                                        @foreach ($getProduct as $value)
-                                                            <option value="{{ $value->product_id }}"
-                                                                data-code="{{ $value->product_code }}">
-                                                                {{ $value->product_name }}
-                                                            </option>
-                                                        @endforeach
-                                                    @endif
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="mb-2">
-                                            <div class="input-link" id="removenewpart"><a href="#"
-                                                    class="card-link text-danger">- Remove</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="mb-2">
-                                            <input type="text" class="form-control new_product_cost"
-                                                id="new_product_cost" placeholder="$0.00" name="new_product_cost"
-                                                value="" />
-                                            <small id="name" class="form-text text-muted">Price</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="mb-2">
-                                            <input class="form-control new_product_discount" type="number"
-                                                id="new_product_discount" name="new_product_discount" value=""
-                                                placeholder="$0.00">
-                                            <input type="hidden" class="new_product_discount_amount"
-                                                name="new_product_discount_amount" value="">
-                                            <small id="name" class="form-text text-muted">Discount(%)</small>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <div class="mb-2 new_product_total_text">
-                                            $0
-                                        </div>
-                                        <input class="form-control new_product_total" type="hidden"
-                                            id="new_product_total" name="new_product_total" value="">
-                                        <small id="name" class="form-text text-muted">Line Total</small>
-                                    </div>
-                                </div> --}}
 
                                 <div class="row mb-2" style="border-top: 1px solid #343434;">
                                     <div class="col-md-4 mt-2">&nbsp;</div>
@@ -855,39 +629,6 @@
 
 
 
-
-                                            {{-- <div class="row mb-2" id="new_service_list" style="display: none;">
-                                                <div class="col-md-7">
-                                                    <div class="mt-1" style="display: inline-flex;">
-                                                        <h6 class="font-weight-medium mb-0 show_service_code_new"> </h6>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-1 service_css">
-                                                    <div class="mt-1 show_service_cost_new"></div>
-                                                </div>
-                                                <div class="col-md-1 service_css">
-                                                    <div class="mt-1 show_service_discount_new"></div>
-                                                </div>
-                                                <div class="col-md-2 service_css">
-                                                    <div class="mt-1 show_service_total_new"></div>
-                                                </div>
-                                            </div>
-                                            <div class="row mb-2" id="new_product_list" style="display: none;">
-                                                <div class="col-md-7">
-                                                    <div class="mt-1">
-                                                        <h6 class="font-weight-medium mb-0 show_product_code_new"></h6>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-1 service_css">
-                                                    <div class="mt-1 show_product_cost_new"></div>
-                                                </div>
-                                                <div class="col-md-1 service_css">
-                                                    <div class="mt-1 show_product_discount_new"></div>
-                                                </div>
-                                                <div class="col-md-2 service_css">
-                                                    <div class="mt-1 show_product_total_new"></div>
-                                                </div>
-                                            </div> --}}
                                             <div class="row" style="border-top: 2px dotted #343434">
                                                 <div class="col-md-7 align-self-end d-flex">
                                                     <h4> Do you want to Confirm the job ?</h4>
@@ -972,15 +713,39 @@
     <script>
         $(document).ready(function() {
 
+            function showAndInitSelect2() {
+                $('.services').show().select2(); // Show and initialize Select2
+            }
+
+            function showproductAndInitSelect2() {
+                $('.products').show().select2(); // Show and initialize Select2
+            }
+            setTimeout(function() {
+              $('.services:first').select2();
+              $('.products:first').select2();
+                showAndInitSelect2(); // Example: Show and initialize Select2 after some time
+                showproductAndInitSelect2(); // Example: Show and initialize Select2 after some time
+            }, 2000);
+
             // Function to add a new service row
             $(document).on('click', '#addRow', function() {
                 let newServiceRow = $('.service-row:first').clone();
                 newServiceRow.find('input').val('');
-                newServiceRow.find('select').prop('selectedIndex', 0);
+                newServiceRow.find('select').prop('selectedIndex', 0); // Reset selected index
                 newServiceRow.find('.service_total_text').text('$0');
                 newServiceRow.find('.service_total').val('');
+
+                // Remove select2 from the cloned row to prevent duplicates
+                 newServiceRow.find('.services').removeClass('select2-hidden-accessible').next(
+                     '.select2-container').remove();
+                      $('.services:first').select2();
+
                 $('#serviceRows').append(newServiceRow);
+
+                // Initialize select2 only for the newly appended row
+                newServiceRow.find('.services').select2();
             });
+
 
             // Function to remove a service row
             $(document).on('click', '.remove-row', function() {
@@ -1154,7 +919,14 @@
                 newPartRow.find('select').prop('selectedIndex', 0);
                 newPartRow.find('.product_total_text').text('$0');
                 newPartRow.find('.product_total').val('');
+                newPartRow.find('.products').removeClass('select2-hidden-accessible').next(
+                    '.select2-container').remove();
+                     $('.products:first').select2();
+
                 $('#partsRows').append(newPartRow);
+                
+                // Initialize select2 only for the newly appended row
+                newPartRow.find('.products').select2();
             });
 
             // Function to remove a part row
@@ -1567,7 +1339,7 @@
                         function checkAllConditions() {
                             var isValid = validateStep2Fields(); // Validate required fields in step 2
                             var isStatusSlotAvailable = $('.status_slot')
-                        .val(); // Get the value from the input field
+                                .val(); // Get the value from the input field
 
                             // Convert to a boolean to handle potential falsy values
                             var isStatusSlotBool = isStatusSlotAvailable === "true" ||
