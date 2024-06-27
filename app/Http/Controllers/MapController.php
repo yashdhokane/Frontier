@@ -194,9 +194,9 @@ class MapController extends Controller
             $technician = null;
 
             if (isset($request->area_id) && !empty($request->area_id)) {
-                $technician = User::select('id', 'name')->where('role', 'technician')->where('service_areas', 'LIKE', '%' . $request->area_id . '%')->get();
+                $technician = User::select('id', 'name')->where('role', 'technician')->where('status', 'active')->where('service_areas', 'LIKE', '%' . $request->area_id . '%')->get();
             } elseif (isset($locationServiceSouthWest->area_id) && !empty($locationServiceSouthWest->area_id)) {
-                $technician = User::select('id', 'name')->where('role', 'technician')->where('service_areas', 'LIKE', '%' . $locationServiceSouthWest->area_id . '%')->get();
+                $technician = User::select('id', 'name')->where('role', 'technician')->where('status', 'active')->where('service_areas', 'LIKE', '%' . $locationServiceSouthWest->area_id . '%')->get();
             }
 
             return view('maps.reschedule_list', compact('getData', 'count', 'technician'));

@@ -7,7 +7,29 @@
 
 
 <script src="https://gaffis.in/frontier/website/public/admin/dist/libs/c3/htdocs/js/c3-0.4.9.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var checkbox = document.getElementById('approve_pending_job');
 
+        checkbox.addEventListener('change', function() {
+            var status = this.checked ? 'closed' : 'open';
+            // Assuming you have an input field for status in your form
+            document.getElementById('status').value = status;
+        });
+    });
+</script>
+
+<script>
+function confirmAndCheck() {
+    var checkbox = document.getElementById('approve_pending_job');
+    if (confirm('Do you confirm that the job is complete?')) {
+        checkbox.checked = true;
+        return true; // Allow the form to be submitted
+    } else {
+        return false; // Prevent the form from being submitted
+    }
+}
+</script>
 <script>
     $(document).ready(function() {
 

@@ -7,6 +7,8 @@ use App\Models\JobActivity;
 use App\Models\JobAssign;
 use App\Models\Jobfields;
 use App\Models\JobFile;
+use Illuminate\Support\Facades\Session;
+
 use App\Models\Payment; 
 use App\Models\JobTechEvents; 
 
@@ -499,4 +501,40 @@ class TicketController extends Controller
 
         return redirect()->back()->with('success', 'Job tags added successfully');
     }
+
+
+public function update_approval_for_pending_job(Request $request) {
+    // Find the JobModel by ID
+    $jobModel = JobModel::find($request->job_id);
+    
+    // Find the JobTechEvents model by the same job_id
+    $jobTechEvents = JobTechEvents::where('job_id', $request->job_id)->first();
+
+    if ($request->has('approve_pending_job') && $request->approve_pending_job == 'on') {
+        $jobModel->status = 'closed'; 
+        $jobModel->closed_by = Auth::id();
+          $timezone_name = Session::get('timezone_name');
+         $jobModel->closed_date = Carbon::now($timezone_name);
+
+
+
+    } elseif (!$request->has('approve_pending_job') && $request->has('job_id')) {
+        $jobModel->status = 'open'; 
+    }
+
+    // Add the comment to the JobTechEvents model
+    if ($jobTechEvents) {
+        $jobTechEvents->closed_job_comment = $request->comment;
+        $jobTechEvents->save();
+    }
+
+    // Save the updated status for JobModel
+    $jobModel->save();
+
+    // Redirect back with success message
+    return redirect()->back()->with('success', 'Approve Job status updated successfully.');
+}
+
+
+
 }

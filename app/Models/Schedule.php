@@ -25,4 +25,9 @@ class Schedule extends Model
     {
         return $this->belongsTo(Event::class, 'event_id');
     }
+
+      public function JobTechEvent()
+    {
+        return $this->hasOne(JobTechEvents::class, 'job_id', 'job_id');
+    }
 }

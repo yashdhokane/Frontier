@@ -21,6 +21,8 @@
                     </div>
                 </div>
                 <div class="col-7 text-end">
+                 <a href="{{ route('tool.createtool') }}" id="btn-show-categories" class="btn btn-primary mx-3"><i
+                            class="fas fa-plus "></i> New Tool</a>
                     <a href="{{ route('product.createproduct') }}" id="btn-show-categories" class="btn btn-primary mx-3"><i
                             class="fas fa-plus "></i> New Part</a>
                     <a href="{{ route('partCategory') }}" id="btn-show-categories" class="btn btn-info"><i
@@ -35,11 +37,21 @@
         <!-- -------------------------------------------------------------- -->
         <!-- -------------------------------------------------------------- -->
         <!-- Container fluid  -->
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
+          @if (Session::has('success'))
+                <div class="alert_wrap">
+					<div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
+					{{ Session::get('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+					</div>
+                </div>
+            @endif
+
+            @if (Session::has('error'))
+				<div class="alert_wrap">
+					<div class="alert alert-danger">
+						{{ Session::get('error') }}
+					</div>
+                </div>
+            @endif
         <!-- -------------------------------------------------------------- -->
         <div class="container-fluid">
             <!-- -------------------------------------------------------------- -->

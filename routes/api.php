@@ -18,6 +18,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('jobdetailsfetch', [ApiController::class, 'jobdetailsfetch']);
 
 Route::post('get_products', [ApiController::class, 'get_products']);
 

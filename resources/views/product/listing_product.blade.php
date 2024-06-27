@@ -10,12 +10,21 @@
         <!-- Bread crumb and right sidebar toggle -->
         <!-- -------------------------------------------------------------- -->
 
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
+           @if (Session::has('success'))
+                <div class="alert_wrap">
+					<div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
+					{{ Session::get('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+					</div>
+                </div>
+            @endif
 
-            </div>
-        @endif
+            @if (Session::has('error'))
+				<div class="alert_wrap">
+					<div class="alert alert-danger">
+						{{ Session::get('error') }}
+					</div>
+                </div>
+            @endif
         <!-- ------------------------------------------------------------ -->
         <!-- End Bread crumb and right sidebar toggle -->
         <!-- -------------------------------------------------------------- -->
@@ -29,7 +38,7 @@
                 <div class="card card-body">
                     <div class="row">
                         <div class="col-md-4 col-xl-2">
-                            <h4 class="page-title">Parts</h4>
+                            <h4 class="page-title">Tool & Parts Categories</h4>
                         </div>
                         <div
                             class="col-md-8 col-xl-10 text-end d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">

@@ -34,9 +34,9 @@
 
 <!-- -------------------------------------------------------------- -->
 
-<div class="container-fluid">
+                        <div class="container-fluid">
 
-    <div class="row">
+                           <div class="row">
 
         <div class="col-8">
 
@@ -49,46 +49,86 @@
                 </div>
             </div>
 
+
+                <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-border shadow">
+                        <div class="card-body">
+                          
+
+                            
+
+                            <div class="d-md-flex align-items-center mt-2">
+                                <div>
+                                    <h5 class="card-title text-info uppercase mb-1">Approval Pending to Close the Job  </h5>
+                                    <h5 class="ft12">Technician marked the job as closed
+ </h5>
+                                </div>
+                            </div>
+                            <div class="table-responsive mt-1">
+                                <table id="" class="table table-bordered text-nowrap">
+                                    <thead class="uppercase">
+                                        <tr>
+                                            <th>Jobs Details</th>
+                                            <th>Customer</th>
+                                            <th>Technician</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($jobcompleteyes as $item)
+                                        <tr>
+                                         <td>
+                                                      <a href="{{ url('tickets/' . $item->JobModel->id) }}" class="font-medium link">
+                                                         {{ $item->JobModel->job_title ?? null }}
+                                                      </a><br />
+                                              {{ Str::limit($item->JobModel->description ?? '', 20) }}
+
+                                                    </td>
+
+                                            <td>{{ $item->JobModel->user->name ?? null }}</td>
+                                            <td>{{ $item->technician->name ?? null }}</td>
+                                            <td>
+                                                @if ($item && $item->start_date_time)
+                                                <div class="font-medium link ft12">{{
+                                                    $convertDateToTimezone($item->start_date_time ??
+                                                    null) }}</div>
+                                                @else
+                                                <div></div>
+                                                @endif
+                                                <div class="ft12">
+                                                    {{ $convertTimeToTimezone($item->start_date_time ?? null,
+                                                    'H:i:a')
+                                                    }}
+                                                    to {{ $convertTimeToTimezone($item->end_date_time ??
+                                                    null, 'H:i:a')
+                                                    }}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+                    </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+
+
+
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card card-border shadow">
                         <div class="card-body">
-                            {{-- <div class="row mt-1">
-                                <div class="col-md-6 col-lg-3 col-xlg-3">
-                                    <div class="card card-hover">
-                                        <div class="p-2 rounded bg-light-primary text-center">
-                                            <h1 class="fw-light text-primary">{{$totalCalls}}</h1>
-                                            <h6 class="text-primary">Total Jobs</h6>
-                                        </div>
-                                    </div>
-                                </div>
+                          
 
-                                <div class="col-md-6 col-lg-3 col-xlg-3">
-                                    <div class="card card-hover">
-                                        <div class="p-2 rounded bg-light-warning text-center">
-                                            <h1 class="fw-light text-warning">{{$opened}}</h1>
-                                            <h6 class="text-warning">Open Jobs</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-lg-3 col-xlg-3">
-                                    <div class="card card-hover">
-                                        <div class="p-2 rounded bg-light-success text-center">
-                                            <h1 class="fw-light text-success">{{$complete}}</h1>
-                                            <h6 class="text-success">Closed Jobs</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-lg-3 col-xlg-3">
-                                    <div class="card card-hover">
-                                        <div class="p-2 rounded bg-light-danger text-center">
-                                            <h1 class="fw-light text-danger">{{$inProgress}}</h1>
-                                            <h6 class="text-danger">Canceled Jobs</h6>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div> --}}
+                            
 
                             <div class="d-md-flex align-items-center mt-2">
                                 <div>
@@ -109,12 +149,13 @@
                                     <tbody>
                                         @foreach ($job as $item)
                                         <tr>
-                                            <td>
-                                                <a href="{{ url('tickets/' . $item->JobModel->id) }}"
-                                                    class="font-medium link">{{
-                                                    $item->JobModel->job_title ?? null }}</a><br />
-                                                {{ $item->JobModel->description ?? null }}
-                                            </td>
+                                         <td>
+                                                      <a href="{{ url('tickets/' . $item->JobModel->id) }}" class="font-medium link">
+                                                         {{ $item->JobModel->job_title ?? null }}
+                                                      </a><br />
+                                              {{ Str::limit($item->JobModel->description ?? '', 20) }}
+                                                    </td>
+
                                             <td>{{ $item->JobModel->user->name ?? null }}</td>
                                             <td>{{ $item->technician->name ?? null }}</td>
                                             <td>

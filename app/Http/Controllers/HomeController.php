@@ -21,7 +21,17 @@ class HomeController extends Controller
     public function index()
     {
         $timezone_name = Session::get('timezone_name');
-        $job = Schedule::with('JobModel', 'technician')
+        $jobcompleteyes = Schedule::with(['JobModel', 'JobTechEvent', 'technician'])
+    //->where('start_date_time', '>', Carbon::now($timezone_name))
+    ->whereHas('JobTechEvent', function($query) {
+        $query->where('tech_completed', 'yes');
+    })
+    // ->latest()
+    // ->limit(5)
+    ->get();
+   // dd($job);
+
+        $job = Schedule::with('JobModel','JobTechEvent', 'technician')
             ->where('start_date_time', '>', Carbon::now($timezone_name))
             ->latest()->limit(5)->get();
 
@@ -148,13 +158,13 @@ class HomeController extends Controller
             $role = Auth()->user()->role;
 
             if ($role == 'technician') {
-                return view('admin.main', compact('job', 'paymentopen', 'userNotifications', 'activity', 'paymentclose', 'customeruser', 'technicianuser', 'customerCount', 'dispatcherCount', 'technicianCount', 'adminCount', 'users', 'totalCalls', 'inProgress', 'opened', 'complete'));
+                return view('admin.main', compact('job','jobcompleteyes', 'paymentopen', 'userNotifications', 'activity', 'paymentclose', 'customeruser', 'technicianuser', 'customerCount', 'dispatcherCount', 'technicianCount', 'adminCount', 'users', 'totalCalls', 'inProgress', 'opened', 'complete'));
             } else if ($role == 'dispatcher') {
-                return view('admin.main', compact('job', 'paymentopen', 'userNotifications', 'activity', 'paymentclose', 'customeruser', 'technicianuser', 'customerCount', 'dispatcherCount', 'technicianCount', 'adminCount', 'users', 'totalCalls', 'inProgress', 'opened', 'complete'));
+                return view('admin.main', compact('job','jobcompleteyes', 'paymentopen', 'userNotifications', 'activity', 'paymentclose', 'customeruser', 'technicianuser', 'customerCount', 'dispatcherCount', 'technicianCount', 'adminCount', 'users', 'totalCalls', 'inProgress', 'opened', 'complete'));
             } else if ($role == 'admin') {
-                return view('admin.main', compact('job', 'paymentopen', 'userNotifications', 'activity', 'paymentclose', 'customeruser', 'technicianuser', 'customerCount', 'dispatcherCount', 'technicianCount', 'adminCount', 'users', 'totalCalls', 'inProgress', 'opened', 'complete'));
+                return view('admin.main', compact('job','jobcompleteyes', 'paymentopen', 'userNotifications', 'activity', 'paymentclose', 'customeruser', 'technicianuser', 'customerCount', 'dispatcherCount', 'technicianCount', 'adminCount', 'users', 'totalCalls', 'inProgress', 'opened', 'complete'));
             } else if ($role == 'superadmin') {
-                return view('admin.main', compact('job', 'paymentopen', 'userNotifications', 'activity', 'paymentclose', 'customeruser', 'technicianuser', 'customerCount', 'dispatcherCount', 'technicianCount', 'adminCount', 'users', 'totalCalls', 'inProgress', 'opened', 'complete'));
+                return view('admin.main', compact('job','jobcompleteyes', 'paymentopen', 'userNotifications', 'activity', 'paymentclose', 'customeruser', 'technicianuser', 'customerCount', 'dispatcherCount', 'technicianCount', 'adminCount', 'users', 'totalCalls', 'inProgress', 'opened', 'complete'));
             }
 
 

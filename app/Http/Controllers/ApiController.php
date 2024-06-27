@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 use App\Models\JobNoteModel;
 use App\Models\JobProduct;
@@ -109,11 +110,37 @@ public function reset_password(Request $request)
 }
 
 
+public function jobdetailsfetch(Request $request)
+{
+    $jobId = $request->input('job_id');
+
+    // Check if the specified job_id exists in both JobModel and schedule
+    $job = JobModel::with('user', 'JobNote', 'JobOtherModelData', 'JobAssign', 'addresscustomer', 'usertechnician', 'jobdetailsinfo.manufacturername')
+        ->where('id', $jobId)
+        ->whereExists(function ($query) use ($jobId) {
+            $query->select(DB::raw(1))
+                ->from('schedule')
+                ->whereRaw('schedule.job_id = jobs.id')
+                ->where('jobs.id', $jobId);
+        })
+        ->first();
+
+    if (!$job) {
+        return response()->json(['status' => false, 'message' => 'The specified job is not available in both JobModel and schedule'], 201);
+    }
+
+    return response()->json(['status' => true, 'data' => $job, 'message' => 'The specified job is available in both JobModel and schedule'], 200);
+}
+
+
 public function getTechnicianJobs(Request $request)
 {
     $userId = $request->input('user_id');
-    $currentDate = Carbon::now()->toDateString();
-    //   dd($currentDate);
+
+   $timezone_name = Session::get('timezone_name');
+
+    $currentDate = Carbon::now($timezone_name)->toDateString();
+   // dd($currentDate);
     // Check if there are any jobs for the specified technician (user_id) with the current date
     $jobs = JobModel::with('user','JobNote','JobOtherModelData', 'JobAssign', 'addresscustomer', 'usertechnician', 'jobdetailsinfo.manufacturername')
          ->where('technician_id', $userId)
@@ -121,7 +148,7 @@ public function getTechnicianJobs(Request $request)
              $query->select(DB::raw(1))
             ->from('schedule')
             ->whereRaw('schedule.job_id = jobs.id')
-            ->where('schedule.start_date_time', $currentDate);
+            ->whereDate('schedule.start_date_time', $currentDate);
     })
     ->get();
 
@@ -129,7 +156,7 @@ public function getTechnicianJobs(Request $request)
         return response()->json(['status' => false, 'message' => 'Today no jobs are available'],201);
     }
 
-    return response()->json(['status' => true, 'data' => $jobs],200);
+    return response()->json(['status' => true, 'data' => $jobs , 'message' => 'Today jobs are available'],200);
 }
 
 public function getCustomerHistory(Request $request)
@@ -175,7 +202,7 @@ public function getTechnicianJobsHistory(Request $request)
         $query->select(DB::raw(1))
             ->from('schedule')
             ->whereRaw('schedule.job_id = jobs.id')
-            ->where('schedule.start_date_time', $formattedDate);
+            ->whereDate('schedule.start_date_time', $formattedDate);
     })
     ->get();
         //->where('technician_id', $userId)
@@ -186,7 +213,7 @@ public function getTechnicianJobsHistory(Request $request)
         return response()->json(['status' => false, 'message' => 'No jobs available for the specified date'], 201);
     }
 
-    return response()->json(['status' => true, 'data' => $jobs],200);
+    return response()->json(['status' => true, 'data' => $jobs , 'message' => 'History jobs are available'],200);
 }
 
 
@@ -536,12 +563,8 @@ public function getcustomerJobsHistory(Request $request)
 
                           
 
-                            // Retrieve the job details
-                            $job = JobModel::with('technician', 'user')
-                                ->where('id', $jobId)->first();
 
                             // Send notice about job completion
-                            app('sendNotices')("Job Completed", "Job Completed (#{$jobId} - {$job->user->name}) added by {$job->technician->name}", url()->current(), 'job');
 
                             // Save the event
                             $event->save();
@@ -763,6 +786,32 @@ public function updateTechnicianProfile(Request $request)
         'job_id' => 'required',
         'job_start' => 'required|',
     ]);
+ $job = JobModel::with('technician', 'user')
+                                ->where('id', $request->job_id)->first();
+
+app('sendNoticesapp')(
+    "Job started", 
+    "Job started (#{$job->id} - {$job->user->name}) started by {$job->technician->name}", 
+    url()->current(), 
+    'job', 
+    $job->technician_id, 
+    $job->id
+);
+app('sendNoticesapp')(
+    "Job started", 
+    "Job started (#{$job->id} - {$job->user->name}) started by {$job->technician->name}", 
+    url()->current(), 
+    'job', 
+    
+    $job->added_by,
+     $job->id
+);
+
+
+    $activity = 'Job started';
+    $userId=$job->technician_id;
+    $jobID = $job->id;  
+    app('JobActivityManagerapp')->addJobActivity($jobID, $activity, $userId);
 
     $event = JobTechEvents::where('job_id', $data['job_id'])->first();
 
@@ -801,7 +850,30 @@ public function updateComplete(Request $request)
         'job_id' => 'required',
         'job_end' => 'required|',
     ]);
+     $job = JobModel::with('technician', 'user')
+                                ->where('id', $request->job_id)->first();
 
+                                app('sendNoticesapp')(
+    "Job Completed", 
+    "Job Completed (#{$job->id} - {$job->user->name}) completed by {$job->technician->name}", 
+    url()->current(), 
+    'job', 
+    $job->technician->id, 
+    $job->id
+);
+app('sendNoticesapp')(
+    "Job Completed", 
+    "Job Completed (#{$job->id} - {$job->user->name}) completed by {$job->technician->name}", 
+    url()->current(), 
+    'job', 
+    
+    $job->added_by,
+     $job->id
+);
+    $activity = 'Job completed';
+    $userId = $job->technician->id; 
+    $jobID = $job->id;  
+    app('JobActivityManagerapp')->addJobActivity($jobID, $activity, $userId);
     // Retrieve the event associated with the job ID
     $event = JobTechEvents::where('job_id', $data['job_id'])->first();
 

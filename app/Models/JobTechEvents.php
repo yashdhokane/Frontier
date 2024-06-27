@@ -32,6 +32,7 @@ class JobTechEvents extends Model
         'additional_details',
         'customer_signature',
         'tech_completed',
+        'closed_job_comment',
         'created_at',
         'updated_at',
     ];

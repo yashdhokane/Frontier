@@ -47,6 +47,8 @@ class JobModel extends Model
         'service_area_id',
         'tag_ids',
         'close_date',
+         'closed_by',
+
         'deleted_at',
         'created_at',
         'updated_at',
@@ -67,7 +69,7 @@ class JobModel extends Model
     }
       public function JobOtherModelData()
     {
-        return $this->hasOne(JobOtherModel::class, 'user_id', 'technician_id');
+        return $this->hasOne(JobTechEvent::class, 'job_id', 'id');
     }
 
     
@@ -118,7 +120,11 @@ public function jobfieldname()
     {
         return $this->belongsTo(User::class, 'customer_id'); // Assuming 'assigned_user_id' is the foreign key
     }
-
+    
+  public function close()
+    {
+        return $this->belongsTo(User::class, 'closed_by'); 
+    }
     public function addresscustomer()
     {
         return $this->hasOne(CustomerUserAddress::class, 'user_id', 'customer_id');

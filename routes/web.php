@@ -12,8 +12,8 @@ use App\Http\Controllers\ReportsController;
 
 
 use App\Http\Controllers\FleetController;
-
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\ToolController;
 
 use App\Http\Controllers\BuisnessProfileController;
 
@@ -436,6 +436,7 @@ Route::middleware('auth')->group(function () {
 
 
     Route::get('/tickets/create', [TicketController::class, 'create'])->name('tickets.create');
+    Route::post('/approve/job', [TicketController::class, 'update_approval_for_pending_job'])->name('update_approval_for_pending_job');
 
 
 
@@ -1021,7 +1022,6 @@ Route::middleware('auth')->group(function () {
 
 
 
-
     //Dispatcher
 
     Route::get('/dispatcher-index', [DispatcherController::class, 'index'])->name('dispatcher.index');
@@ -1197,6 +1197,28 @@ Route::middleware('auth')->group(function () {
     Route::post('/permission-delete', [AdminController::class, 'permissiondelete'])->name('permissions.delete');
 
     Route::post('/customercomment', [UserController::class, 'customercomment'])->name('customercomment');
+
+
+
+//Tool Controller route
+
+    Route::get('tool', [ToolController::class, 'index'])->name('tool.index');
+
+    Route::get('book-list/tool-create', [ToolController::class, 'createproduct'])->name('tool.createtool');
+
+  Route::post('book-list/tool-store', [ToolController::class, 'store'])->name('tool.store');
+
+    Route::get('book-list/tool/{product_id}/edit', [ToolController::class, 'edit'])->name('tool.edit');
+
+    Route::put('book-list/tool/{id}', [ToolController::class, 'update'])->name('tool.update');
+ Route::get('inactive/tool/{id}', [ToolController::class, 'inactive']);
+
+    Route::get('active/tool/{id}', [ToolController::class, 'active']);
+        Route::get('book-list/tool/{id}/destroy', [ToolController::class, 'destroy'])->name('tool.destroy');
+
+    Route::get('assign_tool', [ToolController::class, 'assign_product'])->name('assign_tool');
+
+    Route::post('store/assign-tool', [ToolController::class, 'store_assign_product']);
 
 });
 

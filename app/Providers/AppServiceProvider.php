@@ -107,6 +107,53 @@ class AppServiceProvider extends ServiceProvider
     {
 
 
+ $this->app->singleton('JobActivityManagerapp', function () {
+    return new class {
+        public function addJobActivity($jobId, $activityDescription, $userId) {
+            $jobActivity = new JobActivity();
+            $jobActivity->job_id = $jobId;
+            $jobActivity->user_id = $userId;  // Use the passed user ID
+            $jobActivity->activity = $activityDescription;
+            $jobActivity->save();
+
+            return $jobActivity;
+        }
+    };
+   });
+//particular  api side
+app()->singleton('sendNoticesapp', function ($app) {
+    return function ($notice_heading, $notice_title, $notice_link, $notice_section, $admin_id, $job_id) {
+        // Step 1: Insert into notifications table
+        $notification = new NotificationModel();
+        $notification->notice_title = $notice_title;
+        $notification->notice_heading = $notice_heading;
+        $notification->notice_date = now();
+        $notification->notice_link = $notice_link;
+        $notification->notice_section = $notice_section;
+       // Adding job_id to the notification
+        $notification->save();
+
+        $notice_id = $notification->id;
+
+        // Step 2: Retrieve the specified admin
+        $admin = User::find($admin_id);
+
+        // Step 3: Insert into user_notifications for the specified admin
+        if ($admin) {
+            $userNotification = new UserNotification();
+            $userNotification->user_id = $admin->id;
+            $userNotification->notice_id = $notice_id;
+            $userNotification->is_read = 0;
+          //  $userNotification->read_at = now();
+              $userNotification->job_id = $job_id;
+            $userNotification->save();
+        }
+    };
+});
+
+
+
+
         app()->singleton('sendNotices', function ($app) {
             return function ($notice_heading, $notice_title, $notice_link, $notice_section) {
                 // Step 1: Insert into notifications table

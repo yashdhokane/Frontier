@@ -8,14 +8,15 @@
 
     <div class="page-breadcrumb">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-10">
                 <h4 class="page-title">#{{ $technicians->id ?? null }} - {{ $technicians->job_title ?? null }}
                     @foreach ($jobFields as $jobField)
                         <span class="mb-1 badge bg-warning">{{ $jobField->field_name }}</span>
                     @endforeach
                 </h4>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-2">
+				<a class="job_set_lnk ft14" id="job_set_lnk" href="#."><i class="far fa-sun"></i> Job Settings</a>
             </div>
         </div>
     </div>
@@ -336,6 +337,57 @@
 
             <div class="col-md-8">
 
+
+
+				<div class="mb-4 flwrap" id="open_job_settings">
+					<div class="card">
+						<div class="card-body card-border shadow">
+							<div class="row">
+								<div class="col-md-8">
+                                    <h5 class="card-title uppercase">Job Settings</h5>
+                                </div>
+								<div class="col-8">
+									<div class="d-flex align-items-center justify-content-between py-3">
+										<div>
+											<h5 class="fs-4 fw-semibold mb-0">Job Confirmed</h5>
+											<p class="mb-0">Whether job confirmed from customer or not</p>
+ 										</div>
+										 <div class="form-check form-switch mb-0">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked4" checked >
+                                        </div>
+									</div>
+ 								</div>
+							</div>
+							<div class="row">
+								<div class="col-8">
+									<div class="d-flex align-items-center justify-content-between py-3 border-top">
+										<div>
+											<h5 class="fs-4 fw-semibold mb-0">Show on Schedule</h5>
+											<p class="mb-0">Display the job on Schedule</p>
+ 										</div>
+										 <div class="form-check form-switch mb-0">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked4" checked >
+                                        </div>
+									</div>
+ 								</div>
+							</div>
+							<div class="row">
+								<div class="col-8">
+									<div class="d-flex align-items-center justify-content-between py-3 border-top">
+										<div>
+											<h5 class="fs-4 fw-semibold mb-0">Job Closed</h5>
+											<p class="mb-0">If job is complete and verified. Mark it as close. </p>
+ 										</div>
+										 <div class="form-check form-switch mb-0">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked4" checked >
+                                        </div>
+									</div>
+ 								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+						
                 <div class="mb-4 flwrap">
                     <div class="card">
                         <div class="card-body card-border shadow">
