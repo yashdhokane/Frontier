@@ -1,37 +1,43 @@
 @section('script')
-<!-- This page JavaScript -->
-<!-- --------------------------------------------------------------- -->
-<script src="https://gaffis.in/frontier/website/public/admin/dist/libs/tinymce/tinymce.min.js"></script>
-<!--c3 charts -->
-<script src="https://gaffis.in/frontier/website/public/admin/dist/libs/c3/htdocs/js/d3-3.5.6.js"></script>
+    <!-- This page JavaScript -->
+    <!-- --------------------------------------------------------------- -->
+    <script src="https://gaffis.in/frontier/website/public/admin/dist/libs/tinymce/tinymce.min.js"></script>
+    <!--c3 charts -->
+    <script src="https://gaffis.in/frontier/website/public/admin/dist/libs/c3/htdocs/js/d3-3.5.6.js"></script>
 
 
-<script src="https://gaffis.in/frontier/website/public/admin/dist/libs/c3/htdocs/js/c3-0.4.9.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var checkbox = document.getElementById('approve_pending_job');
+    <script src="https://gaffis.in/frontier/website/public/admin/dist/libs/c3/htdocs/js/c3-0.4.9.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var checkbox = document.getElementById('approve_pending_job');
 
-        checkbox.addEventListener('change', function() {
-            var status = this.checked ? 'closed' : 'open';
-            // Assuming you have an input field for status in your form
-            document.getElementById('status').value = status;
+            checkbox.addEventListener('change', function() {
+                var status = this.checked ? 'closed' : 'open';
+                // Assuming you have an input field for status in your form
+                document.getElementById('status').value = status;
+            });
         });
-    });
-</script>
+    </script>
 
-<script>
-function confirmAndCheck() {
-    var checkbox = document.getElementById('approve_pending_job');
-    if (confirm('Do you confirm that the job is complete?')) {
-        checkbox.checked = true;
-        return true; // Allow the form to be submitted
-    } else {
-        return false; // Prevent the form from being submitted
-    }
-}
-</script>
-<script>
-    $(document).ready(function() {
+    <script>
+        function confirmAndCheck() {
+            var checkbox = document.getElementById('approve_pending_job');
+            if (confirm('Do you confirm that the job is complete?')) {
+                checkbox.checked = true;
+                return true; // Allow the form to be submitted
+            } else {
+                return false; // Prevent the form from being submitted
+            }
+        }
+    </script>
+    <script>
+        $(document).ready(function() {
+        
+            $('#open_job_settings').hide();
+
+            $(document).on('click', '#job_set_lnk', function(e) {
+                $('#open_job_settings').toggle('fade');
+            });
 
             $('#manufacturer_ids').select2();
 
@@ -63,10 +69,10 @@ function confirmAndCheck() {
 
             });
         });
-</script>
+    </script>
 
-<script>
-    $(function() {
+    <script>
+        $(function() {
             tinymce.init({
                 selector: 'textarea#mymce'
             });
@@ -115,9 +121,9 @@ function confirmAndCheck() {
                 },
             });
         });
-</script>
-<script>
-    // Get latitude and longitude values from your data or variables
+    </script>
+    <script>
+        // Get latitude and longitude values from your data or variables
         var latitude = {{ $technicianlocation->latitude ?? null }}; // Example latitude
         var longitude = {{ $technicianlocation->longitude ?? null }}; // Example longitude
 
@@ -132,14 +138,14 @@ function confirmAndCheck() {
 
         // Set the source of the iframe to the Street View URL
         //  document.getElementById('map').src = streetViewUrl;
-</script>
-<script>
-    setTimeout(function() {
+    </script>
+    <script>
+        setTimeout(function() {
             $('#successMessage').fadeOut('fast');
         }, 5000); // 5000 milliseconds = 5 seconds
-</script>
-<script>
-    // Get latitude and longitude values from your data or variables
+    </script>
+    <script>
+        // Get latitude and longitude values from your data or variables
         var latitude = {{ $technicians->latitude ?? null }}; // Example latitude
         var longitude = {{ $technicians->longitude ?? null }}; // Example longitude
 
@@ -154,9 +160,9 @@ function confirmAndCheck() {
         document.getElementById('map238').src = streetViewUrl;
 
         // document.getElementById('map238').src = mapUrl;
-</script>
-<script>
-    // Get latitude and longitude values from your data or variables
+    </script>
+    <script>
+        // Get latitude and longitude values from your data or variables
         var latitude = {!! isset($technicians->addresscustomer->latitude) ? $technicians->addresscustomer->latitude : 'null' !!}; // Example latitude
         var longitude = {!! isset($technicians->addresscustomer->longitude) ? $technicians->addresscustomer->longitude : 'null' !!}; // Example longitude
 
@@ -173,5 +179,5 @@ function confirmAndCheck() {
         document.getElementById('map').src = mapUrl;
 
         // document.getElementById('map238').src = mapUrl;
-</script>
+    </script>
 @endsection

@@ -242,7 +242,9 @@ class TicketController extends Controller
             $travelTime = 0;
         }
 
-        return view('tickets.show', ['Payment' => $Payment, 'jobservice' => $jobservice, 'jobproduct' => $jobproduct, 'jobFields' => $jobFields, 'ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source, 'activity' => $activity, 'files' => $files, 'schedule' => $schedule, 'jobTimings' => $jobTimings, 'travelTime' => $travelTime]);
+        $checkSchedule = Schedule::where('job_id',$id)->first();
+
+        return view('tickets.show', ['Payment' => $Payment, 'jobservice' => $jobservice, 'jobproduct' => $jobproduct, 'jobFields' => $jobFields, 'ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source, 'activity' => $activity, 'files' => $files, 'schedule' => $schedule, 'jobTimings' => $jobTimings, 'travelTime' => $travelTime, 'checkSchedule' => $checkSchedule]);
     }
 
     // Show the form for editing the specified ticket 

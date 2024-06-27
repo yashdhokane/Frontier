@@ -353,7 +353,11 @@
 											<p class="mb-0">Whether job confirmed from customer or not</p>
  										</div>
 										 <div class="form-check form-switch mb-0">
-                                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked4" checked >
+                                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked4" 
+                                            @if($technicians->is_confirmed == 'yes')
+                                              checked 
+                                            @endif
+                                            >
                                         </div>
 									</div>
  								</div>
@@ -366,7 +370,10 @@
 											<p class="mb-0">Display the job on Schedule</p>
  										</div>
 										 <div class="form-check form-switch mb-0">
-                                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked4" checked >
+                                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked4"  @if($checkSchedule->show_on_schedule == 'yes')
+                                              checked 
+                                            @endif
+                                             >
                                         </div>
 									</div>
  								</div>
@@ -379,7 +386,10 @@
 											<p class="mb-0">If job is complete and verified. Mark it as close. </p>
  										</div>
 										 <div class="form-check form-switch mb-0">
-                                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked4" checked >
+                                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked4"    @if($technicians->status == 'closed')
+                                              checked 
+                                            @endif
+                                             >
                                         </div>
 									</div>
  								</div>
