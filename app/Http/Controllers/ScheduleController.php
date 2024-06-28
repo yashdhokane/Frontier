@@ -178,7 +178,8 @@ class ScheduleController extends Controller
                 $schedule_arr[$value] = [];
 
                 $schedule = Schedule::with('JobModel', 'technician')->where('technician_id', $value)
-                    ->where('start_date_time', 'LIKE', "%$filterDate%")->get();
+                    ->where('start_date_time', 'LIKE', "%$filterDate%")
+                    ->where('show_on_schedule', 'yes')->get();
                 if (isset($schedule) && !empty($schedule->count())) {
                     foreach ($schedule as $k => $item) {
                         $datetimeString = $item->start_date_time;
@@ -298,6 +299,7 @@ class ScheduleController extends Controller
 
                 // For schedules
                 $scheduleResults = Schedule::with('JobModel', 'technician')
+                    ->where('show_on_schedule', 'yes')
                     ->where('technician_id', $value)
                     ->where('start_date_time', 'LIKE', "%$filterDate%")
                     ->get();
