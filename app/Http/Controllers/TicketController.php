@@ -9,8 +9,8 @@ use App\Models\Jobfields;
 use App\Models\JobFile;
 use Illuminate\Support\Facades\Session;
 
-use App\Models\Payment; 
-use App\Models\JobTechEvents; 
+use App\Models\Payment;
+use App\Models\JobTechEvents;
 
 
 use Illuminate\Support\Facades\Auth;
@@ -44,12 +44,12 @@ class TicketController extends Controller
     // Display a listing of the tickets
     public function index()
     {
-        
+
         $user_auth = auth()->user();
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
         $module_id = 32;
-        
+
         $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
@@ -124,12 +124,12 @@ class TicketController extends Controller
     // Display the specified ticket
     public function show($id)
     {
-        
+
         $user_auth = auth()->user();
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
         $module_id = 34;
-        
+
         $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
@@ -137,7 +137,7 @@ class TicketController extends Controller
             return $permissionCheck; // This will handle the redirection
         }
 
-        $technicians = JobModel::with('jobassignname','JobTechEvent', 'JobAssign', 'usertechnician', 'addedby', 'jobfieldname')->find($id);
+        $technicians = JobModel::with('jobassignname', 'JobTechEvent', 'JobAssign', 'usertechnician', 'addedby', 'jobfieldname')->find($id);
 
         if (!$technicians) {
             return view('404');
@@ -200,13 +200,13 @@ class TicketController extends Controller
         $jobTimings = App::make('JobTimingManager')->getJobTimings($id);
 
         // travel time 
-       
+
         $currentJobDate = $technicians->created_at;
 
         // Define the start and end of the current job's date
         $startOfDay = Carbon::parse($currentJobDate)->startOfDay();
         $endOfDay = Carbon::parse($currentJobDate)->endOfDay();
-    
+
         // Find the previous job for the same technician created before the current job's creation time on the same day
         $previousJob = JobModel::where('technician_id', $technicians->technician_id)
             ->whereBetween('created_at', [$startOfDay, $endOfDay])
@@ -242,7 +242,7 @@ class TicketController extends Controller
             $travelTime = 0;
         }
 
-        $checkSchedule = Schedule::where('job_id',$id)->first();
+        $checkSchedule = Schedule::where('job_id', $id)->first();
 
         return view('tickets.show', ['Payment' => $Payment, 'jobservice' => $jobservice, 'jobproduct' => $jobproduct, 'jobFields' => $jobFields, 'ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source, 'activity' => $activity, 'files' => $files, 'schedule' => $schedule, 'jobTimings' => $jobTimings, 'travelTime' => $travelTime, 'checkSchedule' => $checkSchedule]);
     }
@@ -505,38 +505,51 @@ class TicketController extends Controller
     }
 
 
-public function update_approval_for_pending_job(Request $request) {
-    // Find the JobModel by ID
-    $jobModel = JobModel::find($request->job_id);
-    
-    // Find the JobTechEvents model by the same job_id
-    $jobTechEvents = JobTechEvents::where('job_id', $request->job_id)->first();
+    public function update_approval_for_pending_job(Request $request)
+    {
+        // Find the JobModel by ID
+        $jobModel = JobModel::find($request->job_id);
 
-    if ($request->has('approve_pending_job') && $request->approve_pending_job == 'on') {
-        $jobModel->status = 'closed'; 
-        $jobModel->closed_by = Auth::id();
-          $timezone_name = Session::get('timezone_name');
-         $jobModel->closed_date = Carbon::now($timezone_name);
+        // Find the JobTechEvents model by the same job_id
+        $jobTechEvents = JobTechEvents::where('job_id', $request->job_id)->first();
 
+        if ($request->has('approve_pending_job') && $request->approve_pending_job == 'on') {
+            $jobModel->status = 'closed';
+            $jobModel->closed_by = Auth::id();
+            $timezone_name = Session::get('timezone_name');
+            $jobModel->closed_date = Carbon::now($timezone_name);
+        } elseif (!$request->has('approve_pending_job') && $request->has('job_id')) {
+            $jobModel->status = 'open';
+        }
 
+        // Add the comment to the JobTechEvents model
+        if ($jobTechEvents) {
+            $jobTechEvents->closed_job_comment = $request->comment;
+            $jobTechEvents->save();
+        }
 
-    } elseif (!$request->has('approve_pending_job') && $request->has('job_id')) {
-        $jobModel->status = 'open'; 
+        // Save the updated status for JobModel
+        $jobModel->save();
+
+        // Redirect back with success message
+        return redirect()->back()->with('success', 'Approve Job status updated successfully.');
     }
 
-    // Add the comment to the JobTechEvents model
-    if ($jobTechEvents) {
-        $jobTechEvents->closed_job_comment = $request->comment;
-        $jobTechEvents->save();
+
+    public function updateJobSettings(Request $request, $id)
+    {
+        $job = JobModel::find($id);
+        $schedule = Schedule::where('job_id', $id)->first();
+
+        // Update the values based on form submission
+        $job->is_confirmed = $request->input('job_confirmed') === 'on' ? 'yes' : 'no';
+        $job->status = $request->input('job_closed') === 'on' ? 'closed' : 'open';
+        $schedule->show_on_schedule = $request->input('job_schedule') === 'on' ? 'yes' : 'no';
+
+        // Save the changes
+        $job->save();
+        $schedule->save();
+
+        return redirect()->back()->with('success', 'Job settings updated successfully.');
     }
-
-    // Save the updated status for JobModel
-    $jobModel->save();
-
-    // Redirect back with success message
-    return redirect()->back()->with('success', 'Approve Job status updated successfully.');
-}
-
-
-
 }

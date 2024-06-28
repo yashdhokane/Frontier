@@ -487,6 +487,9 @@ Route::middleware('auth')->group(function () {
 
     Route::post('add/leadsource/{id}', [TicketController::class, 'leadSource']);
 
+    Route::post('/update-job-settings/{id}', [TicketController::class, 'updateJobSettings'])->name('updateJobSettings');
+
+
 
 
     // Show tickets assigned to a specific user

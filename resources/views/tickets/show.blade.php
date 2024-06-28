@@ -16,7 +16,7 @@
                 </h4>
             </div>
             <div class="col-md-2">
-				<a class="job_set_lnk ft14" id="job_set_lnk" href="#."><i class="far fa-sun"></i> Job Settings</a>
+                <a class="job_set_lnk ft14" id="job_set_lnk" href="#."><i class="far fa-sun"></i> Job Settings</a>
             </div>
         </div>
     </div>
@@ -339,65 +339,65 @@
 
 
 
-				<div class="mb-4 flwrap" id="open_job_settings">
-					<div class="card">
-						<div class="card-body card-border shadow">
-							<div class="row">
-								<div class="col-md-8">
-                                    <h5 class="card-title uppercase">Job Settings</h5>
+                <div class="mb-4 flwrap" id="open_job_settings">
+                    <div class="card">
+                        <form action="{{ route('updateJobSettings', ['id' => $technicians->id]) }}" method="POST">
+                            @csrf
+                            <div class="card-body card-border shadow">
+                                <div class="row">
+                                    <div class="col-md-8 d-flex">
+                                        <h5 class="card-title uppercase">Job Settings</h5>
+                                        <button type="submit" class="ms-3 btn btn-primary btn-xs">Save</button>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="d-flex align-items-center justify-content-between py-3">
+                                            <div>
+                                                <h5 class="fs-4 fw-semibold mb-0">Job Confirmed</h5>
+                                                <p class="mb-0">Whether job confirmed from customer or not</p>
+                                            </div>
+                                            <div class="form-check form-switch mb-0">
+                                                <input class="form-check-input" type="checkbox" role="switch"
+                                                    id="flexSwitchCheckChecked4" name="job_confirmed"
+                                                    @if ($technicians->is_confirmed == 'yes') checked @endif>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-								<div class="col-8">
-									<div class="d-flex align-items-center justify-content-between py-3">
-										<div>
-											<h5 class="fs-4 fw-semibold mb-0">Job Confirmed</h5>
-											<p class="mb-0">Whether job confirmed from customer or not</p>
- 										</div>
-										 <div class="form-check form-switch mb-0">
-                                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked4" 
-                                            @if($technicians->is_confirmed == 'yes')
-                                              checked 
-                                            @endif
-                                            >
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="d-flex align-items-center justify-content-between py-3 border-top">
+                                            <div>
+                                                <h5 class="fs-4 fw-semibold mb-0">Show on Schedule</h5>
+                                                <p class="mb-0">Display the job on Schedule</p>
+                                            </div>
+                                            <div class="form-check form-switch mb-0">
+                                                <input class="form-check-input" type="checkbox" role="switch"
+                                                    id="flexSwitchCheckChecked4" name="job_schedule"
+                                                    @if ($checkSchedule->show_on_schedule == 'yes') checked @endif>
+                                            </div>
                                         </div>
-									</div>
- 								</div>
-							</div>
-							<div class="row">
-								<div class="col-8">
-									<div class="d-flex align-items-center justify-content-between py-3 border-top">
-										<div>
-											<h5 class="fs-4 fw-semibold mb-0">Show on Schedule</h5>
-											<p class="mb-0">Display the job on Schedule</p>
- 										</div>
-										 <div class="form-check form-switch mb-0">
-                                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked4"  @if($checkSchedule->show_on_schedule == 'yes')
-                                              checked 
-                                            @endif
-                                             >
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="d-flex align-items-center justify-content-between py-3 border-top">
+                                            <div>
+                                                <h5 class="fs-4 fw-semibold mb-0">Job Closed</h5>
+                                                <p class="mb-0">If job is complete and verified. Mark it as close. </p>
+                                            </div>
+                                            <div class="form-check form-switch mb-0">
+                                                <input class="form-check-input" type="checkbox" role="switch"
+                                                    id="flexSwitchCheckChecked4" name="job_closed"
+                                                    @if ($technicians->status == 'closed') checked @endif>
+                                            </div>
                                         </div>
-									</div>
- 								</div>
-							</div>
-							<div class="row">
-								<div class="col-8">
-									<div class="d-flex align-items-center justify-content-between py-3 border-top">
-										<div>
-											<h5 class="fs-4 fw-semibold mb-0">Job Closed</h5>
-											<p class="mb-0">If job is complete and verified. Mark it as close. </p>
- 										</div>
-										 <div class="form-check form-switch mb-0">
-                                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked4"    @if($technicians->status == 'closed')
-                                              checked 
-                                            @endif
-                                             >
-                                        </div>
-									</div>
- 								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-						
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
                 <div class="mb-4 flwrap">
                     <div class="card">
                         <div class="card-body card-border shadow">
