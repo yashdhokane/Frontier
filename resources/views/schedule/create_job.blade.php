@@ -35,10 +35,33 @@
                             <h6>Customer Information </h6>
                             <section>
                                 <div class="row">
+                                    <div class="col-md-12 d-flex justify-content-end pe-5">
+                                        <div class="form-group w-25 text-end">
+                                            <label for="newdatetime">Date and Time</label>
+                                            <div class="d-flex">
+                                                <input type="date" class="form-control" id="newdate" name="newdate"
+                                                    value="{{ $date }}">
+                                                <select class="form-control w-50" id="newtime" name="newtime">
+                                                    @foreach ($timeIntervals as $interval)
+                                                        @php
+                                                            $timeDisplay = date('h:i A', strtotime($interval)); 
+                                                            $selected =
+                                                                substr($dateTime, 11, 5) === substr($interval, 0, 5)
+                                                                    ? 'selected'
+                                                                    : '';
+                                                        @endphp
+                                                        <option value="{{ $interval }}" {{ $selected }}>
+                                                            {{ $timeDisplay }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="col-md-8">
                                         <div class="mt-0">
                                             <h6 class="card-title"><i class="fa fa-search" aria-hidden="true"></i> Search
                                                 Customer OR Pending Jobs</h6>
+
                                         </div>
                                     </div>
                                     <div class="col-md-8">
@@ -663,14 +686,14 @@
                                         </div>
                                     </div>
                                 </div>
-                    </div>
-                    </section>
 
-                    </form>
+                            </section>
+
+                        </form>
+                    </div>
                 </div>
             </div>
-    </div>
-    @endif
+        @endif
 
     </div>
     <!-- Modal -->
@@ -710,8 +733,30 @@
     <!-- Bootstrap Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
+
     <script>
         $(document).ready(function() {
+
+            // Initialize datetime value on page load
+            updateCombinedDateTime();
+
+            // Event listener for date change
+            $(document).on('change', '#newdate', function() {
+                updateCombinedDateTime();
+            });
+
+            // Event listener for time change
+            $(document).on('change', '#newtime', function() {
+                updateCombinedDateTime();
+            });
+
+            // Function to update combined datetime value
+            function updateCombinedDateTime() {
+                var dateValue = $('#newdate').val();
+                var timeValue = $('#newtime').val();
+                var combinedDateTime = dateValue + ' ' + timeValue + ':00';
+                $('#datetime').val(combinedDateTime); // Update hidden input value
+            }
 
             function showAndInitSelect2() {
                 $('.services').show().select2(); // Show and initialize Select2
@@ -721,8 +766,8 @@
                 $('.products').show().select2(); // Show and initialize Select2
             }
             setTimeout(function() {
-              $('.services:first').select2();
-              $('.products:first').select2();
+                $('.services:first').select2();
+                $('.products:first').select2();
                 showAndInitSelect2(); // Example: Show and initialize Select2 after some time
                 showproductAndInitSelect2(); // Example: Show and initialize Select2 after some time
             }, 2000);
@@ -736,9 +781,9 @@
                 newServiceRow.find('.service_total').val('');
 
                 // Remove select2 from the cloned row to prevent duplicates
-                 newServiceRow.find('.services').removeClass('select2-hidden-accessible').next(
-                     '.select2-container').remove();
-                      $('.services:first').select2();
+                newServiceRow.find('.services').removeClass('select2-hidden-accessible').next(
+                    '.select2-container').remove();
+                $('.services:first').select2();
 
                 $('#serviceRows').append(newServiceRow);
 
@@ -921,10 +966,10 @@
                 newPartRow.find('.product_total').val('');
                 newPartRow.find('.products').removeClass('select2-hidden-accessible').next(
                     '.select2-container').remove();
-                     $('.products:first').select2();
+                $('.products:first').select2();
 
                 $('#partsRows').append(newPartRow);
-                
+
                 // Initialize select2 only for the newly appended row
                 newPartRow.find('.products').select2();
             });
@@ -1402,6 +1447,7 @@
 
                     var form = $('#createScheduleForm')[0];
                     var params = new FormData(form);
+                    var newdate = $('#newdate').val();
 
                     $.ajax({
                         url: "{{ route('schedule.create.post') }}",
@@ -1431,9 +1477,7 @@
                                         type: 'reschedule',
                                     },
                                     type: 'GET',
-                                    success: function(data) {
-                                        console.log(data);
-                                    },
+                                    success: function(data) {},
                                 });
 
 
@@ -1448,7 +1492,8 @@
                                         .DismissReason.backdrop
                                     ) {
                                         window.location.href =
-                                            "{{ route('schedule') }}";
+                                            "{{ route('schedule') }}?date=" +
+                                            newdate;
                                     }
                                 });
 
@@ -1501,7 +1546,8 @@
                                     if (result.isConfirmed ||
                                         result.isDismissed) {
                                         window.location.href =
-                                            "{{ route('schedule') }}";
+                                            "{{ route('schedule') }}?date=" +
+                                            newdate;
                                     }
                                 });
 

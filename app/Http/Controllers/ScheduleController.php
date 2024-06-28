@@ -482,6 +482,20 @@ class ScheduleController extends Controller
             // Query the business hours for the given day
             $hours = BusinessHours::where('day', $currentDayLower)->first();
 
+             // Calculate time intervals (example)
+            $timeIntervals = [];
+            $current = strtotime($hours->start_time);
+            $end = strtotime($hours->end_time);
+            $interval = 30 * 60; // Interval in seconds (30 minutes)
+
+            while ($current <= $end) {
+                $timeIntervals[] = date('H:i', $current);
+                $current += $interval;
+            }
+
+            // Example existing date and time
+            $date = $dateTime->format('Y-m-d'); // Current date
+
             $tags = SiteTags::all();
 
             $dateTime = $dateTime->format('Y-m-d H:i:s');
@@ -500,7 +514,7 @@ class ScheduleController extends Controller
 
             $site = SiteTags::all();
 
-            return view('schedule.create_job', compact('tags', 'leadSources', 'locationStates', 'technician', 'dateTime', 'manufacturers', 'appliances', 'getServices', 'getProduct', 'tags', 'hours', 'time', 'serviceCat', 'site'));
+            return view('schedule.create_job', compact('tags', 'leadSources', 'locationStates', 'technician', 'dateTime', 'manufacturers', 'appliances', 'getServices', 'getProduct', 'tags', 'hours', 'time', 'serviceCat', 'site','date','timeIntervals'));
         }
     }
     public function create(Request $request)
