@@ -102,6 +102,9 @@
                                         ['element_id' => 12, 'layout_id' => 2, 'title' => 'Title1'],
                                         ['element_id' => 13, 'layout_id' => 2, 'title' => 'Title2'],
                                         ['element_id' => 14, 'layout_id' => 2, 'title' => 'Title3'],
+                                        ['element_id' => 15, 'layout_id' => 4, 'title' => 'Title4'],
+                                        ['element_id' => 16, 'layout_id' => 4, 'title' => 'Title5'],
+                                        ['element_id' => 17, 'layout_id' => 4, 'title' => 'Title6'],
                                     ];
                                 @endphp
                                 <select name="status" class="form-select" required>
