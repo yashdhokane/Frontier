@@ -44,7 +44,7 @@
                                                 <select class="form-control w-50" id="newtime" name="newtime">
                                                     @foreach ($timeIntervals as $interval)
                                                         @php
-                                                            $timeDisplay = date('h:i A', strtotime($interval)); 
+                                                            $timeDisplay = date('h:i A', strtotime($interval));
                                                             $selected =
                                                                 substr($dateTime, 11, 5) === substr($interval, 0, 5)
                                                                     ? 'selected'
@@ -1167,7 +1167,7 @@
         $(document).ready(function() {
             $(document).on('input', '#check_serial_number', function() {
                 var serialNumber = $(this).val();
-
+                  var baseUrl = "{{ url('/') }}";
                 if (serialNumber.length > 0) {
                     $.ajax({
                         url: '{{ route('check.serial.number') }}',
@@ -1180,21 +1180,34 @@
                             if (response.status === 'success') {
                                 var detailsHtml = '';
                                 response.data.forEach(function(detail) {
-                                    detailsHtml += `
-                                    <div class="alert alert-success">
-                                        <strong>Job ID:</strong> ${detail.job_id}<br>
-                                        <strong>Serial No:</strong> ${detail.serial_number}<br>
-                                        <!-- Add more fields as necessary -->
-                                    </div>
-                                `;
+                                    // Check if detail.user exists and is an array
+                                    if (Array.isArray(detail.user) && detail.user
+                                        .length > 0) {
+                                        // Iterate over the users if there are multiple
+                                        detail.user.forEach(function(user) {
+                                            detailsHtml += `
+                        <div class="alert alert-success">
+                            <strong>Serial Number matches with existing customer <a href="${baseUrl}/customers/show/${user.id}">${user.name}</a></strong>
+                            <!-- Add more fields as necessary -->
+                        </div>
+                    `;
+                                        });
+                                    } else {
+                                        // Handle case where detail.user is not an array or is empty
+                                        detailsHtml += `
+                    <div class="alert alert-warning">
+                        No user information available for appliance with serial number: ${detail.serial_number}
+                    </div>
+                `;
+                                    }
                                 });
                                 $('#serial_number_detail').html(detailsHtml);
                             } else {
                                 $('#serial_number_detail').html(`
-                                <div class="alert alert-danger">
-                                    ${response.message}
-                                </div>
-                            `);
+            <div class="alert alert-danger">
+                ${response.message}
+            </div>
+        `);
                             }
                         }
                     });

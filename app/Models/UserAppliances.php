@@ -23,6 +23,10 @@ class UserAppliances extends Model
     {
         return $this->belongsTo(Manufacturer::class,'manufacturer_id','id');
     }
+    public function user()
+    {
+        return $this->hasMany(User::class,'id','user_id');
+    }
 
 
 }

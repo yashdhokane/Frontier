@@ -1987,9 +1987,7 @@ class ScheduleController extends Controller
     public function checkSerialNumber(Request $request)
     {
         $serialNumber = $request->input('serial_number');
-        $jobDetails = JobDetails::where('serial_number', $serialNumber)->get();
-
-        // $jobDetails = JobDetails::where('serial_number', 'LIKE', '%' . $serialNumber . '%')->get();
+        $jobDetails = UserAppliances::with('user')->where('serial_number', $serialNumber)->get();
 
         if ($jobDetails->count() > 0) {
             return response()->json(['status' => 'success', 'data' => $jobDetails]);
