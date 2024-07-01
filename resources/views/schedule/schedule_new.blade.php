@@ -290,7 +290,7 @@
                                                     $start_time = (int) $hours->start_time;
                                                     $end_time = (int) $hours->end_time;
                                                 @endphp
-                                                @for ($i = $start_time; $i <= $end_time; $i++)
+                                                @for ($i = $start_time; $i < $end_time; $i++)
                                                     @for ($minute = 0; $minute < 60; $minute += 30)
                                                         <tr>
                                                             <td class="timeslot_td">

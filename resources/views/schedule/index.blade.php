@@ -266,14 +266,13 @@
                                                     $start_time = (int) $hours->start_time;
                                                     $end_time = (int) $hours->end_time;
                                                 @endphp
-                                                @for ($i = $start_time; $i <= $end_time; $i++)
+                                                @for ($i = $start_time; $i < $end_time; $i++)
                                                     @for ($minute = 0; $minute < 60; $minute += 30)
                                                         <tr>
                                                             <td class="timeslot_td">
                                                                 <div class="timeslot_td_time">
                                                                     @php
-                                                                        $time =
-                                                                            $i >= 12 ? ($i > 12 ? $i - 12 : $i) : $i;
+                                                                        $time = $i >= 12 ? ($i > 12 ? $i - 12 : $i) : $i;
                                                                         $minutes = '00'; // Default minutes
                                                                         if ($i % 1 !== 0) {
                                                                             $minutes = '30'; // Adjust minutes for half-hour intervals
@@ -282,19 +281,10 @@
 
                                                                         $display_hour = $i > 12 ? $i - 12 : $i;
                                                                         $display_minute = $minute == 0 ? '00' : $minute;
-                                                                        $time =
-                                                                            $display_hour .
-                                                                            ':' .
-                                                                            $display_minute .
-                                                                            ' ' .
-                                                                            $date;
-                                                                        $timeString =
-                                                                            $time . ($minutes == '00' ? '' : ':30');
+                                                                        $time = $display_hour .':' .$display_minute .' ' . $date;
+                                                                        $timeString = $time . ($minutes == '00' ? '' : ':30');
                                                                         // Format $time for comparison
-                                                                        $formattedTime = date(
-                                                                            'h:i A',
-                                                                            strtotime($time),
-                                                                        );
+                                                                        $formattedTime = date( 'h:i A',strtotime($time), );
                                                                     @endphp
                                                                     {{ $time }}
                                                                 </div>
