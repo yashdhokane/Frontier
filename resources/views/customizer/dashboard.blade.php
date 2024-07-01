@@ -154,7 +154,7 @@
                         @foreach ($cardPositions as $cardPosition)
                             {{-- first layout --}}
                             @if ($cardPosition->layout_id == 1 && $cardPosition->element_id == 1)
-                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-info d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Upcoming Job </h4>
@@ -207,7 +207,7 @@
                                     </div>
                                 </div>
                             @elseif($cardPosition->layout_id == 1 && $cardPosition->element_id == 2)
-                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-danger d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Open invoices</h4>
@@ -260,7 +260,7 @@
                                     </div>
                                 </div>
                             @elseif($cardPosition->layout_id == 1 && $cardPosition->element_id == 3)
-                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-success d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Paid invoices</h4>
@@ -313,7 +313,7 @@
                                     </div>
                                 </div>
                             @elseif($cardPosition->layout_id == 1 && $cardPosition->element_id == 4)
-                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-warning d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Stats</h4>
@@ -377,7 +377,7 @@
                                     </div>
                                 </div>
                             @elseif($cardPosition->layout_id == 1 && $cardPosition->element_id == 5)
-                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-primary d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Jobs by manufacturer</h4>
@@ -392,7 +392,7 @@
                                     </div>
                                 </div>
                             @elseif($cardPosition->layout_id == 1 && $cardPosition->element_id == 6)
-                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-info d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Jobs by Service Types</h4>
@@ -407,7 +407,7 @@
                                     </div>
                                 </div>
                             @elseif($cardPosition->layout_id == 1 && $cardPosition->element_id == 7)
-                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-warning d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Quick Links</h4>
@@ -445,7 +445,7 @@
                                     </div>
                                 </div>
                             @elseif($cardPosition->layout_id == 1 && $cardPosition->element_id == 8)
-                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-warning d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">MY ACTIVITY</h4>
@@ -482,7 +482,7 @@
                                     </div>
                                 </div>
                             @elseif($cardPosition->layout_id == 1 && $cardPosition->element_id == 9)
-                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-warning d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">MY NOTIFICATIONS</h4>
@@ -522,7 +522,7 @@
                                     </div>
                                 </div>
                             @elseif($cardPosition->layout_id == 1 && $cardPosition->element_id == 10)
-                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-warning d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Active Technicians</h4>
@@ -565,7 +565,7 @@
                                     </div>
                                 </div>
                             @elseif($cardPosition->layout_id == 1 && $cardPosition->element_id == 11)
-                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-warning d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Top Customers</h4>
@@ -608,7 +608,7 @@
 
                                 {{-- end first layout --}}
                             @elseif($cardPosition->layout_id == 2 && $cardPosition->element_id == 12)
-                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-danger d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Card Title 8</h4>
@@ -627,7 +627,7 @@
                                     </div>
                                 </div>
                             @elseif($cardPosition->layout_id == 2 && $cardPosition->element_id == 13)
-                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-warning d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Card Title 9</h4>
@@ -646,7 +646,7 @@
                                     </div>
                                 </div>
                             @elseif($cardPosition->layout_id == 2 && $cardPosition->element_id == 14)
-                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-info d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Card Title 10</h4>
@@ -665,7 +665,7 @@
                                     </div>
                                 </div>
                             @elseif($cardPosition->layout_id == 4 && $cardPosition->element_id == 15)
-                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                <div class="col-md-8 col-sm-12 draggable-items" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-danger d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Card Title 8</h4>
@@ -684,7 +684,7 @@
                                     </div>
                                 </div>
                             @elseif($cardPosition->layout_id == 4 && $cardPosition->element_id == 16)
-                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                <div class="col-md-12 col-sm-12 draggable-items" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-warning d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Card Title 9</h4>
@@ -703,7 +703,7 @@
                                     </div>
                                 </div>
                             @elseif($cardPosition->layout_id == 4 && $cardPosition->element_id == 17)
-                                <div class="col-md-6 col-sm-12" data-id="{{ $cardPosition->element_id }}">
+                                <div class="col-md-4 col-sm-12 draggable-items" data-id="{{ $cardPosition->element_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-info d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Card Title 10</h4>
