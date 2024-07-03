@@ -1,7 +1,20 @@
 @extends('home')
 
 @section('content')
+<style>
+      .newLayout {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+          .draggable-items {
+            padding: 10px;
+            text-align: center;
+            width:fit-content; /* Set a fixed width for masonry items */
+            box-sizing: border-box;
+        }
 
+</style>
     <div class="container-fluid">
         <!-- -------------------------------------------------------------- -->
         <!-- Start Page Content -->
@@ -152,7 +165,7 @@
                 <form id="positionForm" method="POST" action="{{ route('savePositions') }}">
                     @csrf
                     <input type="hidden" name="positions" id="positions">
-                    <div class="row draggable-cards" id="draggable-area">
+                    <div class="newLayout draggable-cards" id="draggable-area">
 
                         @foreach ($cardPositions as $cardPosition)
                             {{-- first layout --}}
