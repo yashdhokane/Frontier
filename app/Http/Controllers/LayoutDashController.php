@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customizer;
 use App\Models\JobModel;
-use App\Models\LayoutCustomizer;
+use App\Models\LayoutDash;
+use App\Models\LayoutDashModule;
+use App\Models\LayoutDashModuleList;
 use App\Models\Payment;
 use App\Models\Schedule;
 use App\Models\User;
@@ -14,21 +15,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
-class CustomizerController extends Controller
+class LayoutDashController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         if ($request->has('id')) {
             $Id = $request->id;
-            $layout = LayoutCustomizer::where('id', $Id)->first();
+            $layout = LayoutDash::where('id', $Id)->first();
         } else {
             $Id = auth()->user()->id;
             $user = User::where('id', $Id)->first();
-           $layout = LayoutCustomizer::where('id', $user->layout_id)->first();
-           
+            $layout = LayoutDash::where('id', $user->layout_id)->first();
         }
 
         $timezone_name = Session::get('timezone_name');
@@ -36,10 +33,17 @@ class CustomizerController extends Controller
         if (!$layout) {
             return view('404');
         }
-        $variable = Customizer::where('layout_id', $layout->id)->where('is_active', 'no')->get();
-        $cardPositions = Customizer::where('layout_id', $layout->id)->where('is_active', 'yes')->orderBy('position')->get();
 
-        $layoutList = LayoutCustomizer::all();
+        $allVariable = LayoutDashModule::where('layout_id', $layout->id)->get();
+        $moduleIds = $allVariable->pluck('module_id')->toArray();
+        $List = LayoutDashModuleList::whereNotIn('module_id', $moduleIds)->get();
+
+
+        $variable = LayoutDashModule::with('ModuleList')->where('layout_id', $layout->id)->where('is_active', 'no')->get();
+
+        $cardPositions = LayoutDashModule::where('layout_id', $layout->id)->where('is_active', 'yes')->orderBy('position')->get();
+
+        $layoutList = LayoutDash::all();
 
         $job = Schedule::with('JobModel', 'technician')
             ->where('start_date_time', '>', Carbon::now($timezone_name))
@@ -150,49 +154,62 @@ class CustomizerController extends Controller
             // dd($user->user_addresses );
             $user->jobs = $jobs;
             $user->gross_total = $grossTotal ? $grossTotal->grosstotal : 0;
-
         }
 
 
-        return view('customizer.dashboard', compact('variable', 'cardPositions', 'job', 'paymentopen', 'paymentclose', 'adminCount', 'dispatcherCount', 'technicianCount', 'customerCount', 'layout', 'layoutList', 'activity', 'userNotifications','technicianuser','customeruser'));
+        return view('dashboard.index', compact('variable', 'cardPositions', 'job', 'paymentopen', 'paymentclose', 'adminCount', 'dispatcherCount', 'technicianCount', 'customerCount', 'layout', 'layoutList', 'activity', 'userNotifications', 'technicianuser', 'customeruser', 'List'));
     }
-
     public function savePositions(Request $request)
     {
         $positions = json_decode($request->positions, true);
         $userId = auth()->user()->id;
 
-        foreach ($positions as $position) {
-            Customizer::updateOrCreate(
-                ['element_id' => $position['element_id']],
-                ['position' => $position['position'], 'updated_by' => $userId]
-            );
-        }
+        \DB::transaction(function () use ($positions, $request, $userId) {
+            foreach ($positions as $position) {
+                LayoutDashModule::updateOrCreate(
+                    [
+                        'layout_id' => $request->layout_id,
+                        'module_id' => $position['module_id']
+                    ],
+                    [
+                        'position' => $position['position'],
+                        'updated_by' => $userId
+                    ]
+                );
+            }
+        });
 
         return redirect()->back()->with('success', 'Positions saved successfully!');
     }
 
-
     public function updateStatus(Request $request)
     {
-        if ($request->has('element_id')) {
-            $section = Customizer::where('element_id', $request->element_id)->first();
-            $section->is_active = 'no';
-        } else {
-            $section = Customizer::findOrFail($request->status);
+
+        $section = LayoutDashModule::where('layout_id', $request->layout_id)->where('module_id', $request->module_id)->first();
+
+        if ($section) {
             $section->is_active = 'yes';
+            $section->save();
+        } else {
+            $addSection = new LayoutDashModule();
+            $addSection->layout_id = $request->layout_id;
+            $addSection->module_id = $request->module_id;
+            $addSection->updated_by = auth()->user()->id;
+            $addSection->is_active = 'yes';
+
+            $addSection->save();
         }
-        $section->save();
+
 
         return redirect()->back()->with('success', 'Section status updated successfully.');
     }
-
+    
     public function changeStatus(Request $request)
     {
-        $elementId = $request->input('element_id');
+        $elementId = $request->input('module_id');
 
         // Assuming you have a model named CardPosition
-        $cardPosition = Customizer::where('element_id', $elementId)->first();
+        $cardPosition = LayoutDashModule::where('layout_id',$request->layout_id)->where('module_id', $elementId)->first();
         if ($cardPosition) {
             $cardPosition->is_active = 'no'; // or true based on your requirement
             $cardPosition->save();
@@ -200,7 +217,7 @@ class CustomizerController extends Controller
             return response()->json(['success' => true, 'message' => 'Status updated successfully']);
         }
 
-        return response()->json(['success' => false, 'message' => 'Element not found']);
+        return response()->json(['success' => false, 'message' => 'Module not found']);
     }
 
     public function updateLayoutName(Request $request, $id)
@@ -208,7 +225,7 @@ class CustomizerController extends Controller
         // Validate request
 
         // Find layout by ID
-        $layout = LayoutCustomizer::findOrFail($id);
+        $layout = LayoutDash::findOrFail($id);
 
         // Update layout name
         $layout->layout_name = $request->layout_name;
@@ -219,12 +236,13 @@ class CustomizerController extends Controller
         return redirect()->back()->with('success', 'Layout name updated successfully.');
     }
 
+   
     public function createLayout(Request $request)
     {
         // Validate request
 
         // Find layout by ID
-        $layout = new LayoutCustomizer();
+        $layout = new LayoutDash();
 
         // Update layout name
         $layout->layout_name = $request->layout_name;
@@ -234,5 +252,37 @@ class CustomizerController extends Controller
 
         // Redirect back with success message or any other response
         return redirect()->back()->with('success', 'Layout added successfully.');
+    }
+
+    public function createNewLayout(Request $request)
+    {
+        // Retrieve the layout name from the request
+        $layoutName = $request->input('layout_name');
+
+        // Create and save the new layout
+        $layout = new LayoutDash();
+        $layout->layout_name = $layoutName;
+        $layout->added_by = auth()->user()->id;
+        $layout->updated_by = auth()->user()->id;
+        $layout->save();
+
+        // Retrieve the existing card positions
+        $cardPositions = LayoutDashModule::where('layout_id', 1)->get();
+
+        // Iterate over each card position and update the layout_id field
+        foreach ($cardPositions as $cardPosition) {
+           $newMOdule = new LayoutDashModule();
+
+           $newMOdule->layout_id = $layout->id;
+           $newMOdule->module_id = $cardPosition->module_id;
+           $newMOdule->position = $cardPosition->position;
+           $newMOdule->is_active = $cardPosition->is_active;
+           $newMOdule->updated_by = auth()->user()->id;
+
+           $newMOdule->save();
+        }
+
+        // Redirect or return a response
+        return redirect()->back()->with('success', 'Layout saved successfully!');
     }
 }

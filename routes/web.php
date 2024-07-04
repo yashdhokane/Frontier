@@ -2,10 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\LayoutDashController;
 use App\Http\Controllers\PerformanceMatrix;
 use App\Http\Controllers\CustomerDataController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CustomizerController;
 
 use App\Http\Controllers\MultiAdminController;
 use App\Http\Controllers\ReportsController;
@@ -1009,17 +1009,20 @@ Route::middleware('auth')->group(function () {
 
 
     // customizer 
-    Route::get('/dash', [CustomizerController::class, 'index'])->name('dash');
 
-    Route::post('/savePositions', [CustomizerController::class, 'savePositions'])->name('savePositions');
-
-    Route::post('/update-status', [CustomizerController::class, 'updateStatus'])->name('update.status');
+    Route::get('/dash', [LayoutDashController::class, 'index'])->name('dash');
     
-    Route::post('/changeStatus', [CustomizerController::class, 'changeStatus'])->name('changeStatus');
+    Route::post('/savePositions', [LayoutDashController::class, 'savePositions'])->name('savePositions');
 
-    Route::post('/update-layout-name/{id}', [CustomizerController::class, 'updateLayoutName'])->name('updateLayoutName');
+    Route::post('/update-status', [LayoutDashController::class, 'updateStatus'])->name('update.status');
+    
+    Route::post('/changeStatus', [LayoutDashController::class, 'changeStatus'])->name('changeStatus');
 
-    Route::post('createLayout', [CustomizerController::class, 'createLayout'])->name('createLayout');
+    Route::post('/update-layout-name/{id}', [LayoutDashController::class, 'updateLayoutName'])->name('updateLayoutName');
+
+    Route::post('createLayout', [LayoutDashController::class, 'createLayout'])->name('createLayout');
+
+    Route::post('/createNewLayout', [LayoutDashController::class, 'createNewLayout'])->name('createNewLayout');
 
 
 
