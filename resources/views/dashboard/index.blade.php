@@ -355,7 +355,7 @@
 
                     </div>
                     @if ($layout->added_by == auth()->user()->id)
-                        <button type="submit" class="btn btn-primary mt-3">Save Positions</button>
+                        <button type="submit" class="btn btn-primary mt-3" id="savePosition">Save Positions</button>
                     @endif
                 </form>
 
@@ -398,12 +398,15 @@
                 })
                 .on('out', function(e, t) {
                     t.className = t.className.replace('card-over', '');
+                })
+                .on('drop', function() {
+                    $('#savePosition').show();
                 });
 
 
             $('#positionForm').on('submit', function(event) {
                 var positions = [];
-                $('#draggable-area .col-md-6').each(function(index, element) {
+                $('#draggable-area .draggable-items').each(function(index, element) {
                     positions.push({
                         module_id: $(element).data('id'),
                         position: index
@@ -415,6 +418,7 @@
     </script>
     <script>
         $(document).ready(function() {
+            $('#savePosition').hide();
             $('#customShow').hide();
 
             $(document).on('click', '#customAdd', function() {
