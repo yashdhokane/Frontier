@@ -1,20 +1,21 @@
 @extends('home')
 
 @section('content')
-<style>
-      .newLayout {
+    <style>
+        .newLayout {
             display: flex;
             flex-wrap: wrap;
             gap: 5px;
         }
-          .draggable-items {
+
+        .draggable-items {
             padding: 10px;
             text-align: center;
-            width:fit-content; /* Set a fixed width for masonry items */
+            width: fit-content;
+            /* Set a fixed width for masonry items */
             box-sizing: border-box;
         }
-
-</style>
+    </style>
     <div class="container-fluid">
         <!-- -------------------------------------------------------------- -->
         <!-- Start Page Content -->
@@ -27,7 +28,7 @@
                             <i class="fa fa-plus-circle me-1 text-success"></i>
                         </a>
                         {{ $layout->layout_name ?? null }}
-                        @if ($layout->added_by == auth()->user()->id && $layout->is_editable == 'yes' )
+                        @if ($layout->added_by == auth()->user()->id && $layout->is_editable == 'yes')
                             <a href="#" class="edit-layout" data-bs-toggle="modal" data-bs-target="#editModal">
                                 <i class="fa fa-edit align-top fs-1 text-danger"></i>
                             </a>
@@ -98,9 +99,9 @@
                         @if ($layout->added_by == auth()->user()->id)
                             <form action="{{ route('update.status') }}" method="POST" class="d-flex">
                                 @csrf
-                               <input type="hidden" name="layout_id" id="layout_id_val" value="{{ $layout->id }}">
+                                <input type="hidden" name="layout_id" id="layout_id_val" value="{{ $layout->id }}">
                                 <select name="module_id" class="form-select" required>
-                                    @if ($variable->isEmpty() && $List->isEmpty()) 
+                                    @if ($variable->isEmpty() && $List->isEmpty())
                                         <option value="">All section already exists</option>
                                     @else
                                         <option value="">Select to add section</option>
@@ -136,54 +137,54 @@
                 <form id="positionForm" method="POST" action="{{ route('savePositions') }}">
                     @csrf
                     <input type="hidden" name="positions" id="positions">
-                               <input type="hidden" name="layout_id" value="{{ $layout->id }}">
+                    <input type="hidden" name="layout_id" value="{{ $layout->id }}">
                     <div class="newLayout draggable-cards" id="draggable-area">
 
                         @foreach ($cardPositions as $cardPosition)
                             {{-- first layout --}}
                             @if ($cardPosition->module_id == 1)
                                 <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
-                                  @include('widgets.upcoming-jobs')
+                                    @include('widgets.upcoming-jobs')
                                 </div>
                             @elseif($cardPosition->module_id == 2)
                                 <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
-                                        @include('widgets.open-invoices')
+                                    @include('widgets.open-invoices')
                                 </div>
                             @elseif($cardPosition->module_id == 3)
                                 <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
-                                        @include('widgets.paid-invoices')
+                                    @include('widgets.paid-invoices')
                                 </div>
                             @elseif($cardPosition->module_id == 4)
                                 <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
-                                        @include('widgets.stats')
+                                    @include('widgets.stats')
                                 </div>
                             @elseif($cardPosition->module_id == 5)
                                 <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
-                                        @include('widgets.jobs-manufacturer')
+                                    @include('widgets.jobs-manufacturer')
                                 </div>
                             @elseif($cardPosition->module_id == 6)
                                 <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
-                                        @include('widgets.jobs-service-type')
+                                    @include('widgets.jobs-service-type')
                                 </div>
                             @elseif($cardPosition->module_id == 7)
                                 <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
-                                        @include('widgets.quick-links')
+                                    @include('widgets.quick-links')
                                 </div>
                             @elseif($cardPosition->module_id == 8)
                                 <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
-                                        @include('widgets.my-activity')
+                                    @include('widgets.my-activity')
                                 </div>
                             @elseif($cardPosition->module_id == 9)
                                 <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
-                                        @include('widgets.my-notifications')
+                                    @include('widgets.my-notifications')
                                 </div>
                             @elseif($cardPosition->module_id == 10)
                                 <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
-                                        @include('widgets.active-technicians')
+                                    @include('widgets.active-technicians')
                                 </div>
                             @elseif($cardPosition->module_id == 11)
                                 <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
-                                        @include('widgets.top-customers')
+                                    @include('widgets.top-customers')
                                 </div>
 
                                 {{-- end first layout --}}
@@ -264,7 +265,8 @@
                                     </div>
                                 </div>
                             @elseif($cardPosition->module_id == 16)
-                                <div class="col-md-12 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
+                                <div class="col-md-12 col-sm-12 draggable-items"
+                                    data-id="{{ $cardPosition->module_id }}">
                                     <div class="card card-hover">
                                         <div class="card-header bg-warning d-flex justify-content-between">
                                             <h4 class="mb-0 text-white">Card Title 9</h4>
@@ -309,10 +311,10 @@
                         <button type="submit" class="btn btn-primary mt-3">Save Positions</button>
                     @endif
                 </form>
-                <form action="{{route('createNewLayout')}}" method="POST">
-                @csrf
-                   <input type="hidden" name="layout_name" value="New Dashboard">
-                   <button type="submit" class="btn btn-danger mt-3">Save As</button>
+                <form action="{{ route('createNewLayout') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="layout_name" value="New Dashboard">
+                    <button type="submit" class="btn btn-danger mt-3">Save As</button>
                 </form>
             </div>
         </div>
@@ -379,9 +381,17 @@
     </script>
     <script>
         $(document).ready(function() {
-            $(document).on('click','.clearSection', function() {
+            $(document).on('click', '.clearSection', function() {
                 var elementId = $(this).data('module-id');
-                var layID = $('#layout_id_val').val();
+
+                function getUrlParameter(name) {
+                    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+                    var results = regex.exec(window.location.search);
+                    return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, ' '));
+                }
+
+                // Get the 'id' parameter from the URL or fallback to the value from the DOM element
+                var layoutId = getUrlParameter('id') || $('#layout_id_val').val();
 
                 $.ajax({
                     url: '{{ route('changeStatus') }}',
@@ -389,7 +399,7 @@
                     data: {
                         _token: '{{ csrf_token() }}',
                         module_id: elementId,
-                        layout_id: layID
+                        layout_id: layoutId
                     },
                     success: function(response) {
                         if (response.success) {
