@@ -15,6 +15,13 @@
             /* Set a fixed width for masonry items */
             box-sizing: border-box;
         }
+
+        .gu-mirror {
+            opacity: 0.6;
+            position: fixed;
+            z-index: 9999;
+            pointer-events: none;
+        }
     </style>
     <div class="container-fluid">
         <!-- -------------------------------------------------------------- -->
@@ -24,9 +31,6 @@
             <div class="col-12">
                 <div class="d-flex justify-content-between pb-2">
                     <h4 class="mb-3 page-title text-info fw-bold">
-                        <a href="#" class="create-layout" data-bs-toggle="modal" data-bs-target="#createModal">
-                            <i class="fa fa-plus-circle me-1 text-success"></i>
-                        </a>
                         {{ $layout->layout_name ?? null }}
                         @if ($layout->added_by == auth()->user()->id && $layout->is_editable == 'yes')
                             <a href="#" class="edit-layout" data-bs-toggle="modal" data-bs-target="#editModal">
@@ -34,70 +38,29 @@
                             </a>
                         @endif
                     </h4>
+                    <button type="button" class="btn btn-info" id="customAdd">Add Custom</button>
 
-                    <!-- Create Layout Name Modal -->
-                    <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel"
-                        aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <form id="editForm" action="{{ route('createLayout') }}" method="POST">
-                                    @csrf
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="editModalLabel">Add New Layout</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <input type="hidden" id="editLayoutId" name="id" value="">
-                                        <div class="mb-3">
-                                            <label for="editLayoutName" class="form-label">Layout Name</label>
-                                            <input type="text" class="form-control" id="editLayoutName"
-                                                name="layout_name" required>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Save</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Edit Layout Name Modal -->
-                    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel"
-                        aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <form id="editForm" action="{{ route('updateLayoutName', ['id' => $layout->id]) }}"
-                                    method="POST">
-                                    @csrf
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="editModalLabel">Edit Layout Name</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <input type="hidden" id="editLayoutId" name="id" value="">
-                                        <div class="mb-3">
-                                            <label for="editLayoutName" class="form-label">Layout Name</label>
-                                            <input type="text" class="form-control" id="editLayoutName"
-                                                name="layout_name" value="{{ $layout->layout_name ?? null }}" required>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Save changes</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
+                </div>
+                <div id="customShow">
+                    <div class="d-flex justify-content-end pb-2">
 
-                    <div class="d-flex">
+                        <a href="#" class="create-layout" data-bs-toggle="modal" data-bs-target="#createModal">
+                            <button type="button" class="btn btn-info">Add New</button>
+                        </a>
+                        <a href="#" class="create-layout mx-2" data-bs-toggle="modal" data-bs-target="#saveAsModal">
+                            <button type="button" class="btn btn-danger ">Save As Current</button>
+                        </a>
+                        <form id="urlForm" class="d-flex mx-2" action="{{ route('dash') }}" method="GET">
+                            <select id="urlSelect" name="id" class="form-select">
+                                <option value="">--Select a Layout--</option>
+                                @foreach ($layoutList as $value)
+                                    <option value="{{ $value->id }}">{{ $value->layout_name }}</option>
+                                @endforeach
+                            </select>
+                            <button type="submit" id="showButton" class="btn btn-info ms-2">Show</button>
+                        </form>
                         @if ($layout->added_by == auth()->user()->id)
-                            <form action="{{ route('update.status') }}" method="POST" class="d-flex">
+                            <form action="{{ route('update.status') }}" method="POST" class="d-flex pe-5">
                                 @csrf
                                 <input type="hidden" name="layout_id" id="layout_id_val" value="{{ $layout->id }}">
                                 <select name="module_id" class="form-select" required>
@@ -121,19 +84,103 @@
                             </form>
 
                         @endif
-                        <form id="urlForm" class="d-flex" action="{{ route('dash') }}" method="GET">
-                            <select id="urlSelect" name="id" class="form-select">
-                                <option value="">--Select a Layout--</option>
-                                @foreach ($layoutList as $value)
-                                    <option value="{{ $value->id }}">{{ $value->layout_name }}</option>
-                                @endforeach
-                            </select>
-                            <button type="submit" id="showButton" class="btn btn-info ms-2">Show</button>
-                        </form>
+
+                        <!-- Create Layout Name Modal -->
+                        <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form id="editForm" action="{{ route('createLayout') }}" method="POST">
+                                        @csrf
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editModalLabel">Add New Layout</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="hidden" id="editLayoutId" name="id" value="">
+                                            <div class="mb-3">
+                                                <label for="editLayoutName" class="form-label">Layout Name</label>
+                                                <input type="text" class="form-control" id="editLayoutName"
+                                                    name="layout_name" required>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Edit Layout Name Modal -->
+                        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form id="editForm" action="{{ route('updateLayoutName', ['id' => $layout->id]) }}"
+                                        method="POST">
+                                        @csrf
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editModalLabel">Edit Layout Name</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="hidden" id="editLayoutId" name="id" value="">
+                                            <div class="mb-3">
+                                                <label for="editLayoutName" class="form-label">Layout Name</label>
+                                                <input type="text" class="form-control" id="editLayoutName"
+                                                    name="layout_name" value="{{ $layout->layout_name ?? null }}"
+                                                    required>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Save changes</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Save as current Layout Name Modal -->
+                        <div class="modal fade" id="saveAsModal" tabindex="-1" aria-labelledby="editModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form id="editForm" action="{{ route('createNewLayout') }}" method="POST">
+                                        @csrf
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editModalLabel">Save as current layout</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="hidden" id="editLayoutId" name="id" value="">
+                                            <div class="mb-3">
+                                                <label for="editLayoutName" class="form-label">Layout Name</label>
+                                                <input type="text" class="form-control" id="editLayoutName"
+                                                    name="layout_name" required>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
 
 
                     </div>
                 </div>
+
                 <form id="positionForm" method="POST" action="{{ route('savePositions') }}">
                     @csrf
                     <input type="hidden" name="positions" id="positions">
@@ -311,11 +358,7 @@
                         <button type="submit" class="btn btn-primary mt-3">Save Positions</button>
                     @endif
                 </form>
-                <form action="{{ route('createNewLayout') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="layout_name" value="New Dashboard">
-                    <button type="submit" class="btn btn-danger mt-3">Save As</button>
-                </form>
+
             </div>
         </div>
         <!-- -------------------------------------------------------------- -->
@@ -326,14 +369,6 @@
     <div class="chat-windows"></div>
 
 @section('script')
-    <style>
-        .gu-mirror {
-            opacity: 0.6;
-            position: fixed;
-            z-index: 9999;
-            pointer-events: none;
-        }
-    </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('urlForm');
@@ -352,8 +387,7 @@
                 }
             });
         });
-    </script>
-    <script>
+
         $(function() {
             dragula([document.getElementById('draggable-area')])
                 .on('drag', function(e) {
@@ -381,6 +415,17 @@
     </script>
     <script>
         $(document).ready(function() {
+            $('#customShow').hide();
+
+            $(document).on('click', '#customAdd', function() {
+                console.log('hey');
+                $('#customShow').toggle();
+            });
+        });
+
+        $(document).ready(function() {
+
+
             $(document).on('click', '.clearSection', function() {
                 var elementId = $(this).data('module-id');
 
