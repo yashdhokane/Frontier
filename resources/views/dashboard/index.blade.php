@@ -106,12 +106,12 @@
                                         <option value="">Select to add section</option>
                                         @foreach ($variable as $value)
                                             <option value="{{ $value->module_id }}">
-                                                {{ $value->ModuleList->module_name }}
+                                                {{ $value->ModuleList->module_name ?? null }}
                                             </option>
                                         @endforeach
                                         @foreach ($List as $item)
                                             <option value="{{ $item->module_id }}">
-                                                {{ $item->module_name }}
+                                                {{ $item->module_name ?? null }}
                                             </option>
                                         @endforeach
                                     @endif
