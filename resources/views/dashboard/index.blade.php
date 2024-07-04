@@ -38,27 +38,27 @@
                             </a>
                         @endif
                     </h4>
-                    <button type="button" class="btn btn-info" id="customAdd">Add Custom</button>
+                    <button type="button" class="btn btn-info" id="customAdd">Custom Dashboard </button>
 
                 </div>
                 <div id="customShow">
                     <div class="d-flex justify-content-end pb-2">
 
                         <a href="#" class="create-layout" data-bs-toggle="modal" data-bs-target="#createModal">
-                            <button type="button" class="btn btn-info">Add New</button>
+                            <button type="button" class="btn btn-info">Add New Dashboard</button>
                         </a>
                         <a href="#" class="create-layout mx-2" data-bs-toggle="modal" data-bs-target="#saveAsModal">
                             <button type="button" class="btn btn-danger ">Save As Current</button>
                         </a>
                         <form id="urlForm" class="d-flex mx-2" action="{{ route('dash') }}" method="GET">
                             <select id="urlSelect" name="id" class="form-select">
-                                <option value="">--Select a Layout--</option>
+                                <option value="">--Select Dashboard--</option>
                                 @foreach ($layoutList as $value)
                                     <option value="{{ $value->id }}">{{ $value->layout_name }}</option>
                                 @endforeach
                             </select>
-                            <button type="submit" id="showButton" class="btn btn-info ms-2">Show</button>
                         </form>
+
                         @if ($layout->added_by == auth()->user()->id)
                             <form action="{{ route('update.status') }}" method="POST" class="d-flex pe-5">
                                 @csrf
@@ -93,14 +93,14 @@
                                     <form id="editForm" action="{{ route('createLayout') }}" method="POST">
                                         @csrf
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="editModalLabel">Add New Layout</h5>
+                                            <h5 class="modal-title" id="editModalLabel">Add New Dashboard</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
                                             <input type="hidden" id="editLayoutId" name="id" value="">
                                             <div class="mb-3">
-                                                <label for="editLayoutName" class="form-label">Layout Name</label>
+                                                <label for="editLayoutName" class="form-label">Dashboard Name</label>
                                                 <input type="text" class="form-control" id="editLayoutName"
                                                     name="layout_name" required>
                                             </div>
@@ -124,14 +124,14 @@
                                         method="POST">
                                         @csrf
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="editModalLabel">Edit Layout Name</h5>
+                                            <h5 class="modal-title" id="editModalLabel">Edit Dashboard Name</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
                                             <input type="hidden" id="editLayoutId" name="id" value="">
                                             <div class="mb-3">
-                                                <label for="editLayoutName" class="form-label">Layout Name</label>
+                                                <label for="editLayoutName" class="form-label">Dashboard Name</label>
                                                 <input type="text" class="form-control" id="editLayoutName"
                                                     name="layout_name" value="{{ $layout->layout_name ?? null }}"
                                                     required>
@@ -155,14 +155,14 @@
                                     <form id="editForm" action="{{ route('createNewLayout') }}" method="POST">
                                         @csrf
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="editModalLabel">Save as current layout</h5>
+                                            <h5 class="modal-title" id="editModalLabel">Save as current Dashboard</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
                                             <input type="hidden" id="editLayoutId" name="id" value="">
                                             <div class="mb-3">
-                                                <label for="editLayoutName" class="form-label">Layout Name</label>
+                                                <label for="editLayoutName" class="form-label">Dashboard Name</label>
                                                 <input type="text" class="form-control" id="editLayoutName"
                                                     name="layout_name" required>
                                             </div>
@@ -374,10 +374,7 @@
             const form = document.getElementById('urlForm');
             const select = document.getElementById('urlSelect');
 
-            form.addEventListener('submit', function(event) {
-                event.preventDefault(); // prevent the form from submitting normally
-
-                // Get the selected value from the dropdown
+            select.addEventListener('change', function() {
                 const selectedValue = select.value;
 
                 if (selectedValue) {
@@ -431,7 +428,7 @@
 
 
             $(document).on('click', '.clearSection', function() {
-                var elementId = $(this).data('module-id');
+                var elementId = $(this).closest('.draggable-items').data('id');
 
                 function getUrlParameter(name) {
                     var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -441,7 +438,6 @@
 
                 // Get the 'id' parameter from the URL or fallback to the value from the DOM element
                 var layoutId = getUrlParameter('id') || $('#layout_id_val').val();
-
                 $.ajax({
                     url: '{{ route('changeStatus') }}',
                     type: 'POST',
