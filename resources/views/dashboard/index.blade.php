@@ -415,6 +415,7 @@
     </script>
     <script>
         $(document).ready(function() {
+
             $('#savePosition').hide();
             $('#customShow').hide();
 
@@ -422,9 +423,6 @@
                 console.log('hey');
                 $('#customShow').toggle();
             });
-        });
-
-        $(document).ready(function() {
 
 
             $(document).on('click', '.clearSection', function() {
