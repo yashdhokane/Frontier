@@ -105,7 +105,14 @@ public function jobfieldname()
         return $this->hasOne(JobProduct::class, 'job_id', 'id');
     }
 
-
+    public function jobserviceinfohasmany()
+    {
+        return $this->hasMany(JobServices::class, 'job_id', 'id');
+    }
+    public function jobproductinfohasmany()
+    {
+        return $this->hasMany(JobProduct::class, 'job_id', 'id');
+    }
     public function jobdetailsinfo()
     {
         return $this->hasOne(JobDetails::class, 'job_id', 'id');

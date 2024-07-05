@@ -18,12 +18,54 @@
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                                <li class="breadcrumb-item"><a href="https://dispatchannel.com/portal/tool">Tool</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('tool.index') }}">Tool</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">Assign Tool to Technician</li>
                             </ol>
                         </nav>
                     </div>
                 </div>
+                    <div class="col-7 text-end px-4">
+                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                    <a href="{{ route('product.index') }}"
+                        class="btn {{ Route::currentRouteName() === 'product.index' ? 'btn-info' : 'btn-light-info text-info' }}">Parts</a>
+                    <a href="{{ route('tool.index') }}"
+                        class="btn {{ Route::currentRouteName() === 'tool.index' ? 'btn-info' : 'btn-light-info text-info' }}">Tools</a>
+                         <a href="{{ route('vehicles') }}"
+                        class="btn {{ Route::currentRouteName() === 'vehicles' ? 'btn-info' : 'btn-light-info text-info' }}">Vehicles</a>
+                    <div class="btn-group" role="group">
+                        <button id="btnGroupDrop1" type="button"
+                            class="btn {{ Route::currentRouteName() === 'assign_product' || Route::currentRouteName() === 'assign_tool' ? 'btn-info' : 'btn-light-info text-info' }} dropdown-toggle"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Assign
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                            <a class="dropdown-item {{ Route::currentRouteName() === 'assign_product' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('assign_product') }}">Parts</a>
+                            <a class="dropdown-item {{ Route::currentRouteName() === 'assign_tool' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('assign_tool') }}">Tools</a>  
+                                
+                        </div>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button id="btnGroupDrop2" type="button"
+                            class="btn {{ Route::currentRouteName() === 'addvehicle' || Route::currentRouteName() === 'product.createproduct' || Route::currentRouteName() === 'tool.createtool' ? 'btn-info' : 'btn-light-info text-info' }} dropdown-toggle"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Add New
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop2">
+                            <a class="dropdown-item {{ Route::currentRouteName() === 'product.createproduct' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('product.createproduct') }}">Parts</a>
+                            <a class="dropdown-item {{ Route::currentRouteName() === 'tool.createtool' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('tool.createtool') }}">Tools</a>
+                                <a class="dropdown-item {{ Route::currentRouteName() === 'addvehicle' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('addvehicle') }}">Vehicles</a>
+                        </div>
+                    </div>
+                    <a href="{{ route('partCategory') }}"
+                        class="btn {{ Route::currentRouteName() === 'partCategory' ? 'btn-info' : 'btn-light-info text-info' }}">Categories</a>
+                </div>
+            </div>
+                
              
             </div>
         </div>

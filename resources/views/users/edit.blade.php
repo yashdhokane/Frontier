@@ -66,62 +66,33 @@
 {{-- model change password --}}
 
 <div id="changePasswordModal" class="modal fade" tabindex="-1" role="dialog">
-
     <div class="modal-dialog modal-dialog-centered" role="document">
-
         <div class="modal-content">
-
             <div class="modal-header">
-
                 <h4 class="modal-title">Change Password</h4>
-
-                <button type="button" class="close btn btn-danger" data-dismiss="modal" style="opacity: 1; "
-                    aria-label="Close">
-
+                <button type="button" class="close btn btn-danger" data-dismiss="modal" style="opacity: 1;" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
-
                 </button>
-
             </div>
-
             <div class="modal-body">
-
                 <div id="passwordMatchMessage" class="alert" style="display:none; margin-bottom:5px;"></div>
-
-                <form id="changePasswordForm" method="get" action="{{route('update-customer-password')}}">
-
+                <div id="passwordStrengthMessage" class="alert" style="display:none; margin-bottom:5px;"></div>
+                <form id="changePasswordForm" method="get" action="{{ route('update-customer-password') }}">
                     @csrf
-
-                    <input type="hidden" class="form-control" name="id" value="{{$user->id}}" placeholder="" required />
-
+                    <input type="hidden" class="form-control" name="id" value="{{ $commonUser->id }}" placeholder="" required />
                     <div class="form-group">
-
                         <label for="newPassword">New Password</label>
-
                         <input type="password" class="form-control" id="newPassword" name="password" required>
-
                     </div>
-
-                    <div class="form-group " style="margin-top:15px;">
-
+                    <div class="form-group" style="margin-top:15px;">
                         <label for="confirmPassword">Confirm Password</label>
-
-                        <input type="password" class="form-control" id="confirmPassword" name="confirm_password"
-                            required>
-
+                        <input type="password" class="form-control" id="confirmPassword" name="confirm_password" required>
                     </div>
-
-                    <button style="margin-top:15px;" type="submit" class="btn btn-primary btn-block">Change
-                        Password</button>
-
+                    <button style="margin-top:15px;" type="submit" class="btn btn-primary btn-block">Change Password</button>
                 </form>
-
             </div>
-
         </div>
-
     </div>
-
 </div>
 
 {{-- -- end model --}}

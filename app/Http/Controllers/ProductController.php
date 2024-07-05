@@ -151,6 +151,8 @@ class ProductController extends Controller
             'product_description' => $request->input('product_description'),
             'updated_by' => $adminId,
             'created_by' => $adminId,
+             'assigned_to' => $request->input('assigned_to'),
+            
         ]);
 
         // Update associated product meta data

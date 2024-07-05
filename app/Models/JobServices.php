@@ -27,5 +27,9 @@ class JobServices extends Model
     {
         return $this->hasOne(Services::class, 'service_id', 'service_id');
     }
+ public function servicehasmany()
+    {
+        return $this->hasMany(Services::class, 'service_id', 'service_id');
+    }
 
 }

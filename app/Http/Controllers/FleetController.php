@@ -19,13 +19,13 @@ class FleetController extends Controller
      */
     public function index()
     {
-        
+
         $user_auth = auth()->user();
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
         $module_id = 50;
-        
-        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        $technician = User::where('role', 'technician')->get();
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
         } else {
@@ -34,7 +34,7 @@ class FleetController extends Controller
 
         $vehicle = FleetVehicle::orderBy('created_at', 'desc')->get();
 
-        return view('fleet.index', compact('vehicle'));
+        return view('fleet.index', compact('vehicle', 'technician'));
     }
 
     public function inactive(Request $request, $id)
@@ -75,7 +75,19 @@ class FleetController extends Controller
 
     public function store(Request $request)
     { // dd($request->all());
+
+        if ($request->hasFile('vehicle_image')) {
+            $categoryImage = $request->file('vehicle_image');
+            $imageName = time() . '_' . $categoryImage->getClientOriginalName();
+            $categoryImage->move(public_path('vehicle_image'), $imageName);
+        } else {
+            $imageName = null;
+        }
         $vehicle = new FleetVehicle();
+        $vehicle->vehicle_image = $imageName;
+        $vehicle->vehicle_no = $request->vehicle_no;
+        $vehicle->vehicle_name = $request->vehicle_name;
+
 
         $vehicle->vehicle_summary = $request->vehicle_summary;
         $vehicle->vehicle_description = $request->vehicle_description;
@@ -99,10 +111,91 @@ class FleetController extends Controller
         $users = User::where('role', 'technician')
             ->whereNotIn('id', $technicianIds)
             ->get();
+        $fleet = FleetDetails::where('vehicle_id', $id)->get();
 
-        // Return the edit view with the FleetModel and users data
-        return view('fleet.edit', compact('fleetModel', 'users'));
+        // dd($fleet);
+        if ($fleet) {
+            $oil_change = $fleet->where('fleet_key', 'oil_change')->value('fleet_value') ?? '';
+            $tune_up = $fleet->where('fleet_key', 'tune_up')->value('fleet_value') ?? '';
+            $tire_rotation = $fleet->where('fleet_key', 'tire_rotation')->value('fleet_value') ?? '';
+            $breaks = $fleet->where('fleet_key', 'breaks')->value('fleet_value') ?? '';
+            $inspection_codes = $fleet->where('fleet_key', 'inspection_codes')->value('fleet_value') ?? '';
+            $mileage = $fleet->where('fleet_key', 'mileage')->value('fleet_value') ?? '';
+            $registration_expiration_date = $fleet->where('fleet_key', 'registration_expiration_date')->value('fleet_value') ?? '';
+            $vehicle_coverage = $fleet->where('fleet_key', 'vehicle_coverage')->value('fleet_value') ?? '';
+            $license_plate = $fleet->where('fleet_key', 'license_plate')->value('fleet_value') ?? '';
+            $vin_number = $fleet->where('fleet_key', 'vin_number')->value('fleet_value') ?? '';
+            $make = $fleet->where('fleet_key', 'make')->value('fleet_value') ?? '';
+            $model = $fleet->where('fleet_key', 'model')->value('fleet_value') ?? '';
+            $year = $fleet->where('fleet_key', 'year')->value('fleet_value') ?? '';
+            $color = $fleet->where('fleet_key', 'color')->value('fleet_value') ?? '';
+            $vehicle_weight = $fleet->where('fleet_key', 'vehicle_weight')->value('fleet_value') ?? '';
+            $vehicle_cost = $fleet->where('fleet_key', 'vehicle_cost')->value('fleet_value') ?? '';
+            $use_of_vehicle = $fleet->where('fleet_key', 'use_of_vehicle')->value('fleet_value') ?? '';
+            $repair_services = $fleet->where('fleet_key', 'repair_services')->value('fleet_value') ?? '';
+            $ezpass = $fleet->where('fleet_key', 'ezpass')->value('fleet_value') ?? '';
+            $service = $fleet->where('fleet_key', 'service')->value('fleet_value') ?? '';
+            $additional_service_notes = $fleet->where('fleet_key', 'additional_service_notes')->value('fleet_value') ?? '';
+            $last_updated = $fleet->where('fleet_key', 'last_updated')->value('fleet_value') ?? '';
+            $epa_certification = $fleet->where('fleet_key', 'epa_certification')->value('fleet_value') ?? '';
+        } else {
+            $oil_change = '';
+            $tune_up = '';
+            $tire_rotation = '';
+            $breaks = '';
+            $inspection_codes = '';
+            $mileage = '';
+            $registration_expiration_date = '';
+            $vehicle_coverage = '';
+            $license_plate = '';
+            $vin_number = '';
+            $make = '';
+            $model = '';
+            $year = '';
+            $color = '';
+            $vehicle_weight = '';
+            $vehicle_cost = '';
+            $use_of_vehicle = '';
+            $repair_services = '';
+            $ezpass = '';
+            $service = '';
+            $additional_service_notes = '';
+            $last_updated = '';
+            $epa_certification = '';
+        }
+
+
+
+
+
+        return view('fleet.edit', compact('fleet', 'fleetModel', 'users', 'technicianIds', 'oil_change', 'tune_up', 'tire_rotation', 'breaks', 'inspection_codes', 'mileage', 'registration_expiration_date', 'vehicle_coverage', 'license_plate', 'vin_number', 'make', 'model', 'year', 'color', 'vehicle_weight', 'vehicle_cost', 'use_of_vehicle', 'repair_services', 'ezpass', 'service', 'additional_service_notes', 'last_updated', 'epa_certification'));
     }
+    public function fleetupdated(Request $request)
+    {
+        $userId = $request->input('id');
+        $vehicle_id = $request->input('vehicle_id');
+
+        // Validate the incoming request data as needed
+
+        foreach ($request->except('_token', 'id') as $key => $value) {
+            // Delete the existing record if it exists
+            FleetDetails::where('user_id', $userId)
+                ->where('vehicle_id', $vehicle_id)
+                ->where('fleet_key', $key)
+                ->delete();
+
+            // Create a new record
+            FleetDetails::create([
+                'user_id' => $userId,
+                'vehicle_id' => $vehicle_id,
+                'fleet_key' => $key,
+                'fleet_value' => $value
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Fleet data updated successfully!');
+    }
+
     public function edit(Request $request, $id)
     {
         $vehicle_id = $id;
@@ -199,19 +292,40 @@ class FleetController extends Controller
     {
         // Validate the form data
         $request->validate([
-            'vehicle_description' => 'required|string',
-            'vehicle_summary' => 'required|string',
+            'vehicle_description' => 'required|',
+            //'vehicle_summary' => 'required|string',
             'technician_id' => 'required|', // Assuming technicians are stored in the users table
         ]);
 
         // Find the FleetModel by its ID
         $fleetModel = FleetVehicle::findOrFail($id);
+        if ($request->hasFile('vehicle_image')) {
+            $categoryImage = $request->file('vehicle_image');
+            $imageName = time() . '_' . $categoryImage->getClientOriginalName();
+            $categoryImage->move(public_path('vehicle_image'), $imageName);
 
+            // Delete the previous image if it exists
+            if ($fleetModel->vehicle_image) {
+                $imagePath = public_path('vehicle_image') . '/' . $fleetModel->vehicle_image;
+                if (file_exists($imagePath)) {
+                    unlink($imagePath);
+                }
+            }
+
+            // Update the fleetModel with the new image
+            $fleetModel->update([
+                'vehicle_image' => $imageName,
+            ]);
+        }
         // Update the FleetModel with the form data
         $fleetModel->update([
             'vehicle_description' => $request->input('vehicle_description'),
-            'vehicle_summary' => $request->input('vehicle_summary'),
+            //  'vehicle_summary' => $request->input('vehicle_summary'),
             'technician_id' => $request->input('technician_id'),
+            'vehicle_no' => $request->input('vehicle_no'),
+            'vehicle_name' => $request->input('vehicle_name'),
+
+
             'updated_at' => now(), // Update the updated_at timestamp
             'updated_by' => Auth::id(), // Set the updated_by column to the authenticated user's ID
         ]);

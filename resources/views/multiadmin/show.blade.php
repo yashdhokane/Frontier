@@ -485,113 +485,55 @@ $address .= $location->zipcode;
 
 <script>
     $(document).ready(function() {
-
-
-        $(document).on('click', '.updatevalue', function() {
-            var updatevalue = $(this).val();
-            if (this.checked) {
-                $(this).val(1);
-            } else {
-                $(this).val(0);
-            }
-        });
-
-        // Select the password and new password input fields
-
-
-
         var passwordField = $('input[name="password"]');
-
-
-
-        var newPasswordField = $('input[name="confirm_password"]');
-
-
-
+        var confirmPasswordField = $('input[name="confirm_password"]');
         var passwordMatchMessage = $('#passwordMatchMessage');
+        var passwordStrengthMessage = $('#passwordStrengthMessage');
 
+        function checkPasswordStrength(password) {
+            var strongPasswordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#^$!%*?&])[A-Za-z\d@#^$!%*?&]{8,}$/;
+            return strongPasswordPattern.test(password);
+        }
 
+        function showMessage(element, type, message) {
+            element.removeClass('alert-success alert-danger').addClass('alert-' + type).html(message).show();
+            setTimeout(function() {
+                element.hide();
+            }, 5000);
+        }
 
-
-
-
-
-        // Select the form and attach a submit event listener
-
-
-
-        $('form').submit(function(event){
-
-
-
-            // Prevent the form from submitting
-
-
-
-            event.preventDefault();
-
-
-
-
-
-
-
-            // Get the values of the password and new password fields
-
-
-
+        passwordField.on('keyup', function() {
             var passwordValue = passwordField.val();
-
-
-
-            var newPasswordValue = newPasswordField.val();
-
-
-
-
-
-
-
-            // Check if the passwords match
-
-
-
-            if(passwordValue === newPasswordValue){
-
-
-
-                // If passwords match, submit the form
-
-
-
-                this.submit();
-
-
-
+            if (checkPasswordStrength(passwordValue)) {
+                showMessage(passwordStrengthMessage, 'success', 'Strong password.');
             } else {
-
-
-
-                // Show danger message
-
-
-
-                passwordMatchMessage.removeClass('alert-success').addClass('alert-danger').html('Passwords do not match. Please enter matching passwords.').show();
-
-
-
+                showMessage(passwordStrengthMessage, 'danger', 'Password must be at least 8 characters and contain special character (@#^$!%*?&).');
             }
-
-
-
         });
 
+        $('form').submit(function(event) {
+            event.preventDefault();
+            var passwordValue = passwordField.val();
+            var confirmPasswordValue = confirmPasswordField.val();
 
+            if (passwordValue === confirmPasswordValue) {
+                if (checkPasswordStrength(passwordValue)) {
+                    this.submit();
+                } else {
+                    showMessage(passwordStrengthMessage, 'danger', 'Password must be at least 8 characters and contain special character (@#^$!%*?&).');
+                }
+            } else {
+                showMessage(passwordMatchMessage, 'danger', 'Passwords do not match.');
+            }
+        });
 
+        $('#changePasswordModal').on('hidden.bs.modal', function() {
+            passwordField.val('');
+            confirmPasswordField.val('');
+            passwordMatchMessage.hide();
+            passwordStrengthMessage.hide();
+        });
     });
-
-
-
 </script>
 
 

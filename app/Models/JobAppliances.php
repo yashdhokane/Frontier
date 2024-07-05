@@ -19,4 +19,9 @@ class JobAppliances extends Model
     {
         return $this->belongsTo(UserAppliances::class, 'appliance_id', 'appliance_id');
     }
+
+    // public function apliencename()
+    // {
+    //     return $this->belongsTo(UserAppliances::class, 'appliance_id', 'appliance_id');
+    // }
 }

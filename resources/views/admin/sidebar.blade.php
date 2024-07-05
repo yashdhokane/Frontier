@@ -69,6 +69,9 @@
                          <li class="sidebar-item">
 							<a href="{{ route('estimate.index') }}" class="sidebar-link"><i class="ri-article-line"></i> <span class="hide-menu">Estimate Templates </span></a>
 						</li>
+							<li class="sidebar-item"><a href="{{ route('vehicles') }}" class="sidebar-link"><i
+						class="ri-truck-line"></i><span class="hide-menu"> Vehicle & Fleet
+						</span></a></li>
                      </ul>
                 </li>
 
@@ -105,9 +108,7 @@
                     <ul aria-expanded="false" class="collapse first-level">
 						<li class="sidebar-item"><a href="{{ route('events') }}" class="sidebar-link"><i class="fas fa-calendar-check"></i> <span class="hide-menu"> Event List</span></a></li>
 						<li class="sidebar-item"><a href="{{ route('sticky_notes') }}" class="sidebar-link"><i class="fas fa-sticky-note"></i> <span class="hide-menu"> Notes</span></a></li>
-						<li class="sidebar-item"><a href="{{ route('vehicles') }}" class="sidebar-link"><i
-						class="ri-truck-line"></i><span class="hide-menu"> Vehicle & Fleet
-						</span></a></li>
+					
 						<li class="sidebar-item">
 							<a href="{{route('manufacturer.index')}}" class="sidebar-link"><i class="ri-building-3-line"></i> <span class="hide-menu"> Manufacturers</span></a>
 						</li>

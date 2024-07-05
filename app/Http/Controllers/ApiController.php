@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use App\Models\JobAppliances;
+
+use App\Models\UserAppliances;
 
 use App\Models\JobNoteModel;
 use App\Models\JobProduct;
@@ -115,7 +118,7 @@ public function jobdetailsfetch(Request $request)
     $jobId = $request->input('job_id');
 
     // Check if the specified job_id exists in both JobModel and schedule
-    $job = JobModel::with('user', 'JobNote', 'JobOtherModelData', 'JobAssign', 'addresscustomer', 'usertechnician', 'jobdetailsinfo.manufacturername')
+    $job = JobModel::with('user','JobNote','JobOtherModelData', 'JobAssign', 'addresscustomer','jobproductinfohasmany.producthasmany', 'jobserviceinfohasmany.servicehasmany','usertechnician', 'jobdetailsinfo.apliencename','jobdetailsinfo.manufacturername')
         ->where('id', $jobId)
         ->whereExists(function ($query) use ($jobId) {
             $query->select(DB::raw(1))
@@ -124,12 +127,53 @@ public function jobdetailsfetch(Request $request)
                 ->where('jobs.id', $jobId);
         })
         ->first();
+       
+       $html = '<div>';
 
-    if (!$job) {
-        return response()->json(['status' => false, 'message' => 'The specified job is not available in both JobModel and schedule'], 201);
+    if (!$job->job_other_model_data || !($job->job_other_model_data->tech_completed == "no" && $job->job_other_model_data->customer_signature == null)) {
+        $html .= '
+            <h3>Job Details - ' .'#'. ($job->id ?? '') . '</h3>
+            <p>Phone No.: ' . ($job->user->mobile ?? '') . '</p>
+            <p>Email: ' . ($job->user->email ?? '') . '</p>
+            <p>Address: ' . ($job->addresscustomer->address_line1 ?? '') . ', ' . ($job->addresscustomer->city ?? '') . ', ' . ($job->addresscustomer->state_name ?? '') . ', ' . ($job->addresscustomer->zipcode ?? '') . '</p>
+            <p>View Location: </p>';
     }
 
-    return response()->json(['status' => true, 'data' => $job, 'message' => 'The specified job is available in both JobModel and schedule'], 200);
+    $html .= '
+        <p>Job: ' . ($job->job_title ?? '') . '</p>
+        <p>Appliance: ' . ($job->jobdetailsinfo->apliencename->appliance_name ?? '') . ' / ' . ($job->jobdetailsinfo->manufacturername->manufacturer_name ?? '') . ' / ' . ($job->jobdetailsinfo->model_number ?? '') . ' / ' . ($job->jobdetailsinfo->serial_number ?? '') . '</p>
+        <p>Warranty: ' . ($job->warranty_type ?? '') . '</p>
+        <p>Priority: ' . ($job->priority ?? '') . '</p>
+        <p>Job is complete</p>
+        <p>Schedule: ' . ($job->job_other_model_data->job_schedule ?? '') . '</p>
+        <p>Enroute: ' . ($job->job_other_model_data->job_enroute ?? '') . '</p>
+        <p>Start: ' . ($job->job_other_model_data->job_start ?? '') . '</p>
+        <p>Finish: ' . ($job->job_other_model_data->job_end ?? '') . '</p>
+        <p>Repair Complete: ' . ($job->job_other_model_data->tech_completed ?? '') . '</p>
+        <p>Additional Details: ' . ($job->job_other_model_data->additional_details ?? '') . '</p>
+        <p>Admin\'s Remark: ' . ($job->job_other_model_data->closed_job_comment ?? '') . '</p>
+        <div>
+            <h4>Services & Parts</h4>';
+
+    foreach ($job->jobserviceinfohasmany as $serviceInfo) {
+        foreach ($serviceInfo->servicehasmany as $service) {
+            $html .= '<p>' . ($service->service_name ?? '') . '</p>';
+        }
+    }
+
+    foreach ($job->jobproductinfohasmany as $productInfo) {
+        foreach ($productInfo->producthasmany as $product) {
+            $html .= '<p>' . ($product->product_name ?? '') . '</p>';
+        }
+    }
+
+    $html .= '
+        </div>
+        <p>Note For Technician: ' . ($job->JobNote->note ?? '') . '</p>
+    </div>';
+
+
+    return response()->json(['status' => true, 'html' => $html,'data' => $job, 'message' => 'The specified job is available in both JobModel and schedule'], 200);
 }
 
 
@@ -142,8 +186,8 @@ public function getTechnicianJobs(Request $request)
     $currentDate = Carbon::now($timezone_name)->toDateString();
    // dd($currentDate);
     // Check if there are any jobs for the specified technician (user_id) with the current date
-    $jobs = JobModel::with('user','JobNote','JobOtherModelData', 'JobAssign', 'addresscustomer', 'usertechnician', 'jobdetailsinfo.manufacturername')
-         ->where('technician_id', $userId)
+    $jobs = JobModel::with('user','JobNote','JobOtherModelData', 'JobAssign', 'addresscustomer','jobproductinfohasmany.producthasmany', 'jobserviceinfohasmany.servicehasmany','usertechnician', 'jobdetailsinfo.apliencename','jobdetailsinfo.manufacturername')
+         ->where('technician_id', $userId)    
     ->whereExists(function ($query) use ($currentDate) {
              $query->select(DB::raw(1))
             ->from('schedule')
@@ -152,8 +196,10 @@ public function getTechnicianJobs(Request $request)
     })
     ->get();
 
+    
+
     if ($jobs->isEmpty()) {
-        return response()->json(['status' => false, 'message' => 'Today no jobs are available'],201);
+        return response()->json(['status' => false,  'message' => 'Today no jobs are available'],201);
     }
 
     return response()->json(['status' => true, 'data' => $jobs , 'message' => 'Today jobs are available'],200);
@@ -164,7 +210,7 @@ public function getCustomerHistory(Request $request)
     $userId = $request->input('user_id');
 
     // Retrieve customer history where user_id matches customer_id in JobModel
-    $customerHistory = JobModel::with('usertechnician','JobOtherModelData')
+    $customerHistory = JobModel::with('usertechnician', 'JobOtherModelData')
                                 ->where('customer_id', $userId)
                                 ->get();
 
@@ -172,8 +218,24 @@ public function getCustomerHistory(Request $request)
         return response()->json(['status' => false, 'message' => 'No customer history found for the specified user'], 201);
     }
 
-    return response()->json(['status' => true, 'data' => $customerHistory],200);
+    // Prepare HTML output
+    $html = '<h3>Customer History</h3>';
+    $html .= '<ul>';
+    
+    foreach ($customerHistory as $index => $history) {
+        $html .= '<li>';
+        $html .= 'Sr No: ' . ($index + 1) . '<br>';
+        $html .= 'Technician: ' . $history->usertechnician->name . '<br>';
+        $html .= 'Job Schedule: ' . $history->JobOtherModelData->job_schedule . '<br>';
+        $html .= 'Description: ' . $history->description . '<br>';
+        $html .= '</li>';
+    }
+
+    $html .= '</ul>';
+
+    return response()->json(['status' => true, 'html' => $html, 'data' => $customerHistory], 200);
 }
+
 
 
 public function getTechnicianJobsHistory(Request $request)

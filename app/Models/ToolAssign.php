@@ -24,4 +24,8 @@ class ToolAssign extends Model
     {
         return $this->belongsTo(User::class, 'technician_id', 'id');
     }
+     public function TechnicianName()
+    {
+        return $this->hasMany(User::class, 'id', 'technician_id');
+    }
 }

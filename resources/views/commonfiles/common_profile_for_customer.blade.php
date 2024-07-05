@@ -1,14 +1,14 @@
 <h5 class="card-title uppercase">Jobs</h5>
 
-@if ($tickets->where('technician_id', $commonUser->id)->isEmpty())
-<div class="alert alert-info mt-4 col-md-12" role="alert">Calls not available for
+@if ($tickets->where('customer_id', $commonUser->id)->isEmpty())
+<div class="alert alert-info mt-4 col-md-12" role="alert">Jobs not available for
     {{ $commonUser->name ?? '' }}. <strong><a href="{{ route('schedule') }}">Add
             New</a></strong></div>
 @else
 <div class="table-responsive table-custom2 mt-2">
     <table id="zero_config" class="table table-hover table-striped text-nowrap" data-paging="true" data-paging-size="7">
         <thead>
-            <tr>
+            <tr>          
                 <th>Job No</th>
                 <th>Job Details</th>
                 <th>Customer</th>
@@ -17,7 +17,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($tickets->where('technician_id', $commonUser->id) as $ticket)
+            @foreach ($tickets->where('customer_id', $commonUser->id) as $ticket)
             <tr>
                 <td>
                     <a href="{{ route('tickets.show', $ticket->id) }}" class="fw-bold link"><span
@@ -60,7 +60,7 @@
                     Unassigned
                     @endif
                 </td>
-                <td>
+               <td>
     @php
         // Original datetime strings
         $datetimeString = $ticket->JobAssign->start_date_time;

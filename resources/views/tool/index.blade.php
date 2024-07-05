@@ -9,23 +9,57 @@
     <div class="page-breadcrumb" style="padding-top: 0px;">
         <div class="row">
             <div class="col-5 align-self-center">
-                <h4 class="page-title">Tools and Accessories</h4>
+                <h4 class="page-title">Tool</h4>
                 <div class="d-flex align-items-center">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('tool.index') }}">Price Book</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('tool.index') }}">Tools </a></li>
+                           <li class="breadcrumb-item"><a href="{{route('home')}}">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{route('tool.index')}}">Tools </a></li>
 
                         </ol>
                     </nav>
                 </div>
             </div>
-            <div class="col-7 text-end">
-                <a href="{{ route('tool.createtool') }}" id="btn-show-categories" class="btn btn-primary mx-3"><i
-                        class="fas fa-plus "></i> New Tool</a>
-                <a href="{{ route('partCategory') }}" id="btn-show-categories" class="btn btn-info"><i
-                        class="fas fa-eye"></i> Tool & Parts Categories</a>
+            <div class="col-7 text-end px-4">
+                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                    <a href="{{ route('product.index') }}"
+                        class="btn {{ Route::currentRouteName() === 'product.index' ? 'btn-info' : 'btn-light-info text-info' }}">Parts</a>
+                    <a href="{{ route('tool.index') }}"
+                        class="btn {{ Route::currentRouteName() === 'tool.index' ? 'btn-info' : 'btn-light-info text-info' }}">Tools</a>
+                    <a href="{{ route('vehicles') }}"
+                        class="btn {{ Route::currentRouteName() === 'vehicles' ? 'btn-info' : 'btn-light-info text-info' }}">Vehicles</a>
+                    <div class="btn-group" role="group">
+                        <button id="btnGroupDrop1" type="button"
+                            class="btn {{ Route::currentRouteName() === 'assign_product' || Route::currentRouteName() === 'assign_tool' ? 'btn-info' : 'btn-light-info text-info' }} dropdown-toggle"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Assign
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                            <a class="dropdown-item {{ Route::currentRouteName() === 'assign_product' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('assign_product') }}">Parts</a>
+                            <a class="dropdown-item {{ Route::currentRouteName() === 'assign_tool' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('assign_tool') }}">Tools</a>
 
+                        </div>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button id="btnGroupDrop2" type="button"
+                            class="btn {{ Route::currentRouteName() === 'addvehicle' || Route::currentRouteName() === 'product.createproduct' || Route::currentRouteName() === 'tool.createtool' ? 'btn-info' : 'btn-light-info text-info' }} dropdown-toggle"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Add New
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop2">
+                            <a class="dropdown-item {{ Route::currentRouteName() === 'product.createproduct' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('product.createproduct') }}">Parts</a>
+                            <a class="dropdown-item {{ Route::currentRouteName() === 'tool.createtool' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('tool.createtool') }}">Tools</a>
+                            <a class="dropdown-item {{ Route::currentRouteName() === 'addvehicle' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('addvehicle') }}">Vehicles</a>
+                        </div>
+                    </div>
+                    <a href="{{ route('partCategory') }}"
+                        class="btn {{ Route::currentRouteName() === 'partCategory' ? 'btn-info' : 'btn-light-info text-info' }}">Categories</a>
+                </div>
             </div>
 
         </div>
@@ -35,21 +69,22 @@
     <!-- -------------------------------------------------------------- -->
     <!-- -------------------------------------------------------------- -->
     <!-- Container fluid  -->
-     @if (Session::has('success'))
-                <div class="alert_wrap">
-					<div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
-					{{ Session::get('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-					</div>
-                </div>
-            @endif
+    @if (Session::has('success'))
+    <div class="alert_wrap">
+        <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
+            {{ Session::get('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert"
+                aria-label="Close"></button>
+        </div>
+    </div>
+    @endif
 
-            @if (Session::has('error'))
-				<div class="alert_wrap">
-					<div class="alert alert-danger">
-						{{ Session::get('error') }}
-					</div>
-                </div>
-            @endif
+    @if (Session::has('error'))
+    <div class="alert_wrap">
+        <div class="alert alert-danger">
+            {{ Session::get('error') }}
+        </div>
+    </div>
+    @endif
     <!-- -------------------------------------------------------------- -->
     <div class="container-fluid">
         <!-- -------------------------------------------------------------- -->
@@ -64,36 +99,17 @@
                 <div class="card">
                     <div class="card-body card-border shadow">
                         <div class="table-responsive">
-
                             <table class="table product-overview" id="zero_config">
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="mb-3">
-                                            <label for="service"
-                                                class="control-label bold md5 col-form-label required-field">Category</label>
-                                            <select class="form-select me-sm-2" id="category_name"
-                                                name="product_category_id" required>
-                                                <option value="">All
-                                                </option>
-                                                @foreach ($product as $product)
-                                                <option value="{{ $product->category_name }}">
-                                                    {{ $product->category_name }}
-                                                </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="mb-3">
-                                            <label for="service"
-                                                class="control-label bold md5  col-form-label required-field">Manufacturer</label>
-                                            <select class="form-select" name="manufacturer" id="manufacturer_filter"
-                                                data-placeholder="Choose a Manufacturer" tabindex="1">
+                                            <label for="technician"
+                                                class="control-label bold md5 col-form-label required-field">Technician</label>
+                                            <select class="form-select" name="technician" id="technician_filter"
+                                                data-placeholder="Choose a technician" tabindex="1">
                                                 <option value="">All</option>
-                                                @foreach ($manufacture as $manufacturer)
-                                                <option value="{{ $manufacturer->manufacturer_name }}">
-                                                    {{ $manufacturer->manufacturer_name }}
-                                                </option>
+                                                @foreach ($technician as $technician)
+                                                <option value="{{ $technician->name }}">{{ $technician->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -101,7 +117,7 @@
                                     <div class="col-md-3">
                                         <div class="mb-3">
                                             <label for="service"
-                                                class="control-label bold md5  col-form-label required-field">Stock</label>
+                                                class="control-label bold md5 col-form-label required-field">Stock</label>
                                             <select class="form-select" name="manufacturer" id="stock_filter"
                                                 data-placeholder="Choose a Manufacturer" tabindex="1">
                                                 <option value="">All</option>
@@ -113,7 +129,7 @@
                                     <div class="col-md-3">
                                         <div class="mb-3">
                                             <label for="service"
-                                                class="control-label bold md5  col-form-label required-field">Status</label>
+                                                class="control-label bold md5 col-form-label required-field">Status</label>
                                             <select class="form-select" name="manufacturer" id="status_filter"
                                                 data-placeholder="Choose a Manufacturer" tabindex="1">
                                                 <option value="">All</option>
@@ -123,18 +139,15 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <thead>
                                     <tr>
                                         <th>ID</th>
                                         <th>Tools</th>
                                         <th>Category</th>
-                                        <th>Manufacturer</th>
-                                        <th>Sold</th>
                                         <th>Quantity</th>
                                         <th>Price</th>
                                         <th>Stock</th>
-                                        <th>status</th>
+                                        <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -144,7 +157,6 @@
                                         <td>{{ $index + 1 }}</td>
                                         <td>
                                             <div class="d-flex align-items-center">
-
                                                 @if ($item->product_image)
                                                 <img src="{{ asset('public/product_image/' . $item->product_image) }}"
                                                     alt="{{ $item->product_name }}" class="rounded-circle" width="45" />
@@ -152,21 +164,33 @@
                                                 <img src="{{ asset('public/images/default-part-image.png') }}"
                                                     alt="{{ $item->product_name }}" class="rounded-circle" width="45" />
                                                 @endif
-
-
                                                 <div class="ms-2">
-                                                    <div class="user-meta-info"><a href="#.">
+                                                    <div class="user-meta-info">
+                                                        <a
+                                                            href="{{ route('tool.edit', ['product_id' => $item->product_id]) }}">
+                                                            @if($item->toolassign->isNotEmpty())
+                                                            @php
+                                                            $technicianNames =
+                                                            $item->toolassign->pluck('Technician.name')->unique()->filter()->implode('<br>');
+                                                            @endphp
+                                                            <h6 class="user-name mb-0" data-name="name"
+                                                                data-bs-toggle="tooltip" data-bs-html="true"
+                                                                title="{!! $technicianNames !!}">
+                                                                {{ $item->product_name }}
+                                                            </h6>
+                                                            @else
                                                             <h6 class="user-name mb-0" data-name="name">
-                                                                {{ $item->product_name }}</h6>
-                                                        </a></div>
+                                                                {{ $item->product_name }}
+                                                            </h6>
+                                                            @endif
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>{{ $item->categoryProduct->category_name ?? null }}</td>
-                                        <td>{{ $item->manufacturername->manufacturer_name ?? null }}</td>
-                                        <td>{{ $item->sold }}</td>
                                         <td>{{ $item->stock }}</td>
-                                        <td>${{ $item->total }}</td>
+                                        <td>${{ $item->base_price }}</td>
                                         <td>
                                             @if ($item->stock_status == 'in_stock')
                                             <span class="status_icons status_icon1"><i class="ri-check-fill"></i></span>
@@ -192,14 +216,14 @@
                                                 <div class="dropdown-menu">
                                                     @if ($item->status == 'Publish')
                                                     <a class="dropdown-item"
-                                                        href="{{ url('inactive/tool/' . $item->product_id) }}"><i
-                                                            data-feather="edit-2" class="feather-sm me-2"></i>
-                                                        Inactive</a>
+                                                        href="{{ url('inactive/tool/' . $item->product_id) }}">
+                                                        <i data-feather="edit-2" class="feather-sm me-2"></i> Inactive
+                                                    </a>
                                                     @else
                                                     <a class="dropdown-item"
-                                                        href="{{ url('active/tool/' . $item->product_id) }}"><i
-                                                            data-feather="edit-2" class="feather-sm me-2"></i>
-                                                        Active</a>
+                                                        href="{{ url('active/tool/' . $item->product_id) }}">
+                                                        <i data-feather="edit-2" class="feather-sm me-2"></i> Active
+                                                    </a>
                                                     @endif
                                                     <a href="{{ route('tool.edit', ['product_id' => $item->product_id]) }}"
                                                         class="text-dark pe-2 dropdown-item">
@@ -209,7 +233,6 @@
                                                         action="{{ route('tool.destroy', ['id' => $item->product_id]) }}">
                                                         @csrf
                                                         @method('DELETE')
-
                                                         <a href="{{ route('tool.destroy', ['id' => $item->product_id]) }}"
                                                             class="text-dark dropdown-item">
                                                             <i data-feather="trash-2" class="feather-sm fill-white"></i>
@@ -219,12 +242,10 @@
                                                 </div>
                                             </div>
                                         </td>
-
                                     </tr>
                                     @endforeach
                                 </tbody>
                             </table>
-
                         </div>
                     </div>
                 </div>
@@ -241,7 +262,7 @@
 </div>
 </div>
 
-@include('product.scriptIndex')
+@include('tool.scriptIndex')
 
 <script>
     $(document).ready(function() {

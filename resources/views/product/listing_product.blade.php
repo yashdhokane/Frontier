@@ -5,7 +5,71 @@
     <!-- -------------------------------------------------------------- -->
     <div class="page-wrapper" style="display:inline;">
         <!-- -------------------------------------------------------------- -->
+     <div class="page-breadcrumb">
+            <div class="row">
+                 <div class="col-5 align-self-center">
+                <h4 class="page-title">Tool & Parts Categories </h4>
+                <div class="d-flex align-items-center">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{{ route('tool.index') }}">Price Book</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('partCategory') }}">Categories </a></li>
 
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+                    <div class="col-7 text-end px-4">
+                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                    <a href="{{ route('product.index') }}"
+                        class="btn {{ Route::currentRouteName() === 'product.index' ? 'btn-info' : 'btn-light-info text-info' }}">Parts</a>
+                    <a href="{{ route('tool.index') }}"
+                        class="btn {{ Route::currentRouteName() === 'tool.index' ? 'btn-info' : 'btn-light-info text-info' }}">Tools</a>
+                         <a href="{{ route('vehicles') }}"
+                        class="btn {{ Route::currentRouteName() === 'vehicles' ? 'btn-info' : 'btn-light-info text-info' }}">Vehicles</a>
+                    <div class="btn-group" role="group">
+                        <button id="btnGroupDrop1" type="button"
+                            class="btn {{ Route::currentRouteName() === 'assign_product' || Route::currentRouteName() === 'assign_tool' ? 'btn-info' : 'btn-light-info text-info' }} dropdown-toggle"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Assign
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                            <a class="dropdown-item {{ Route::currentRouteName() === 'assign_product' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('assign_product') }}">Parts</a>
+                            <a class="dropdown-item {{ Route::currentRouteName() === 'assign_tool' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('assign_tool') }}">Tools</a>  
+                                
+                        </div>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button id="btnGroupDrop2" type="button"
+                            class="btn {{ Route::currentRouteName() === 'addvehicle' || Route::currentRouteName() === 'product.createproduct' || Route::currentRouteName() === 'tool.createtool' ? 'btn-info' : 'btn-light-info text-info' }} dropdown-toggle"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Add New
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop2">
+                            <a class="dropdown-item {{ Route::currentRouteName() === 'product.createproduct' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('product.createproduct') }}">Parts</a>
+                            <a class="dropdown-item {{ Route::currentRouteName() === 'tool.createtool' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('tool.createtool') }}">Tools</a>
+                                <a class="dropdown-item {{ Route::currentRouteName() === 'addvehicle' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('addvehicle') }}">Vehicles</a>
+
+                                 <div
+                            class="dropdown-item">
+                            <a href="javascript:void(0)" id="btn-add-contact"  data-bs-toggle="modal"
+                                data-bs-target="#add-contact">Category</a>
+                        </div>
+                        </div>
+                    </div>
+                    <a href="{{ route('partCategory') }}"
+                        class="btn {{ Route::currentRouteName() === 'partCategory' ? 'btn-info' : 'btn-light-info text-info' }}">Categories</a>
+                </div>
+            </div>
+                
+             
+            </div>
+        </div>
         <!-- -------------------------------------------------------------- -->
         <!-- Bread crumb and right sidebar toggle -->
         <!-- -------------------------------------------------------------- -->
@@ -35,15 +99,14 @@
 
             <div class="container-fluid">
 
-                <div class="card card-body">
+                <div class="">
                     <div class="row">
                         <div class="col-md-4 col-xl-2">
-                            <h4 class="page-title">Tool & Parts Categories</h4>
+                            <h4 class="page-title"></h4>
                         </div>
                         <div
-                            class="col-md-8 col-xl-10 text-end d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
-                            <a href="javascript:void(0)" id="btn-add-contact" class="btn btn-info" data-bs-toggle="modal"
-                                data-bs-target="#add-contact"><i class=" fas fa-user-plus "></i> New Category</a>
+                           >
+                            
                         </div>
 
                         <!-- Add Popup Model  1 latest -->
@@ -208,7 +271,7 @@
         <!-- -------------------------------------------------------------- -->
         <!-- Recent comment and chats -->
         <!-- -------------------------------------------------------------- -->
-    </div>
+    </div>  </div>
 @section('script')
 
     <script>

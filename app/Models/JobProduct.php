@@ -26,7 +26,10 @@ class JobProduct extends Model
     {
         return $this->hasOne(Products::class, 'product_id', 'product_id');
     }
-   
+        public function producthasmany()
+    {
+        return $this->hasMany(Products::class, 'product_id', 'product_id');
+    }
         public $timestamps = false;
 
 }

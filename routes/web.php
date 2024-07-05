@@ -2,10 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\LayoutDashController;
 use App\Http\Controllers\PerformanceMatrix;
 use App\Http\Controllers\CustomerDataController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\LayoutDashController;
 
 use App\Http\Controllers\MultiAdminController;
 use App\Http\Controllers\ReportsController;
@@ -361,6 +361,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/technicians/{status?}', [TechnicianController::class, 'index'])->name('technicians.status');
 
     Route::POST('/update-technician-fleet', [TechnicianController::class, 'update_fleet_technician'])->name('update_fleet_technician');
+    Route::POST('/fleetupdated', [FleetController::class, 'fleetupdated'])->name('fleetupdated');
 
     Route::POST('/technicians/updatefleet', [TechnicianController::class, 'updatefleet'])->name('updatefleet');
     Route::post('/technicians/sms/', [TechnicianController::class, 'smstechnician'])->name('smstechnician');
@@ -488,7 +489,6 @@ Route::middleware('auth')->group(function () {
     Route::post('add/leadsource/{id}', [TicketController::class, 'leadSource']);
 
     Route::post('/update-job-settings/{id}', [TicketController::class, 'updateJobSettings'])->name('updateJobSettings');
-
 
 
 
@@ -1008,7 +1008,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/setting/update-service-area', [ServiceAreaController::class, 'update'])->name('servicearea.update');
 
 
-    // customizer 
+   // customizer 
 
     Route::get('/dash', [LayoutDashController::class, 'index'])->name('dash');
     
@@ -1023,6 +1023,8 @@ Route::middleware('auth')->group(function () {
     Route::post('createLayout', [LayoutDashController::class, 'createLayout'])->name('createLayout');
 
     Route::post('/createNewLayout', [LayoutDashController::class, 'createNewLayout'])->name('createNewLayout');
+
+
 
 
 
@@ -1208,7 +1210,7 @@ Route::middleware('auth')->group(function () {
 
 //Tool Controller route
 
-    Route::get('tool', [ToolController::class, 'index'])->name('tool.index');
+    Route::get('tools', [ToolController::class, 'index'])->name('tool.index');
 
     Route::get('book-list/tool-create', [ToolController::class, 'createproduct'])->name('tool.createtool');
 
@@ -1223,8 +1225,8 @@ Route::middleware('auth')->group(function () {
         Route::get('book-list/tool/{id}/destroy', [ToolController::class, 'destroy'])->name('tool.destroy');
 
     Route::get('assign_tool', [ToolController::class, 'assign_product'])->name('assign_tool');
+    Route::post('store/assign-tool', [ToolController::class, 'store_assign_tool']);
 
-    Route::post('store/assign-tool', [ToolController::class, 'store_assign_product']);
 
 });
 

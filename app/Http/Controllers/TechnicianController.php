@@ -3,33 +3,34 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Role;
+use App\Models\Tool;
 use App\Models\User;
-use App\Models\FleetVehicle;
-
-use App\Models\ColorCode;
 use App\Models\Payment;
+
 use App\Models\UserTag;
 use App\Models\JobModel;
-use App\Models\JobActivity;
 use App\Models\Products;
-use App\Models\UsersActivity;
-use App\Models\UsersDetails;
 use App\Models\Schedule;
-
-
-
 use App\Models\SiteTags;
-
-use App\Models\UsersSettings;
-
+use App\Models\ColorCode;
 use App\Models\Technician;
+use App\Models\ToolAssign;
+use App\Models\JobActivity;
+
+
+
 use App\Models\FleetDetails;
+
+use App\Models\FleetVehicle;
+
 use App\Models\LocationCity;
 use App\Models\Manufacturer;
+use App\Models\UsersDetails;
 use Illuminate\Http\Request;
 use App\Models\LocationState;
+use App\Models\UsersActivity;
+use App\Models\UsersSettings;
 use App\Models\ProductAssigned;
 use App\Models\CustomerUserMeta;
 use App\Models\UserNotesCustomer;
@@ -38,6 +39,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\CustomerUserAddress;
 use App\Models\LocationServiceArea;
 use App\Models\UserTagsTechnicians;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use App\Models\UserLeadSourceCustomer;
@@ -491,6 +493,11 @@ class TechnicianController extends Controller
         $product = Products::all();
 
         $assign = ProductAssigned::with('Technician', 'Product')->get();
+
+
+        $tool = Tool::all();
+
+        $toolassign = ToolAssign::with('Technician', 'Product')->get();
         $tickets = JobModel::orderBy('created_at', 'desc')->get();
         $payment = Payment::with('user', 'JobModel')->latest()->get();
 
@@ -512,7 +519,7 @@ class TechnicianController extends Controller
         )->get();
         //dd($login_history);
 
-        return view('technicians.show', compact('vehiclefleet', 'vehicleDescriptions', 'colorcode', 'schedule', 'estimates', 'activity', 'setting', 'login_history', 'commonUser', 'oil_change', 'tune_up', 'tire_rotation', 'breaks', 'inspection_codes', 'mileage', 'registration_expiration_date', 'vehicle_coverage', 'license_plate', 'vin_number', 'make', 'model', 'year', 'color', 'vehicle_weight', 'vehicle_cost', 'use_of_vehicle', 'repair_services', 'ezpass', 'service', 'additional_service_notes', 'last_updated', 'epa_certification', 'notename', 'payments', 'longitude', 'latitude', 'userAddresscity', 'jobasign', 'customerimage', 'location', 'jobasigndate', 'serviceAreas', 'locationStates', 'tags', 'cities', 'selectedTags', 'userTags', 'product', 'assign', 'technicianpart', 'tickets', 'payment', 'manufacturer', 'tech', 'UsersDetails'));
+        return view('technicians.show', compact('vehiclefleet', 'toolassign', 'tool', 'vehicleDescriptions', 'colorcode', 'schedule', 'estimates', 'activity', 'setting', 'login_history', 'commonUser', 'oil_change', 'tune_up', 'tire_rotation', 'breaks', 'inspection_codes', 'mileage', 'registration_expiration_date', 'vehicle_coverage', 'license_plate', 'vin_number', 'make', 'model', 'year', 'color', 'vehicle_weight', 'vehicle_cost', 'use_of_vehicle', 'repair_services', 'ezpass', 'service', 'additional_service_notes', 'last_updated', 'epa_certification', 'notename', 'payments', 'longitude', 'latitude', 'userAddresscity', 'jobasign', 'customerimage', 'location', 'jobasigndate', 'serviceAreas', 'locationStates', 'tags', 'cities', 'selectedTags', 'userTags', 'product', 'assign', 'technicianpart', 'tickets', 'payment', 'manufacturer', 'tech', 'UsersDetails'));
     }
 
     public function edit($id)

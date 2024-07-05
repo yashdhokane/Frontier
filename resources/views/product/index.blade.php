@@ -9,7 +9,7 @@
         <div class="page-breadcrumb" style="padding-top: 0px;">
             <div class="row">
                 <div class="col-5 align-self-center">
-                    <h4 class="page-title">Parts and Accessories</h4>
+                    <h4 class="page-title">Parts</h4>
                     <div class="d-flex align-items-center">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
@@ -20,18 +20,47 @@
                         </nav>
                     </div>
                 </div>
-                <div class="col-7 text-end">
-                 <a href="{{ route('tool.createtool') }}" id="btn-show-categories" class="btn btn-primary mx-3"><i
-                            class="fas fa-plus "></i> New Tool</a>
-                    <a href="{{ route('product.createproduct') }}" id="btn-show-categories" class="btn btn-primary mx-3"><i
-                            class="fas fa-plus "></i> New Part</a>
-                    <a href="{{ route('partCategory') }}" id="btn-show-categories" class="btn btn-info"><i
-                            class="fas fa-eye"></i> Part Categories</a>
-
+                   <div class="col-7 text-end px-4">
+                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                    <a href="{{ route('product.index') }}"
+                        class="btn {{ Route::currentRouteName() === 'product.index' ? 'btn-info' : 'btn-light-info text-info' }}">Parts</a>
+                    <a href="{{ route('tool.index') }}"
+                        class="btn {{ Route::currentRouteName() === 'tool.index' ? 'btn-info' : 'btn-light-info text-info' }}">Tools</a>
+                         <a href="{{ route('vehicles') }}"
+                        class="btn {{ Route::currentRouteName() === 'vehicles' ? 'btn-info' : 'btn-light-info text-info' }}">Vehicles</a>
+                    <div class="btn-group" role="group">
+                        <button id="btnGroupDrop1" type="button"
+                            class="btn {{ Route::currentRouteName() === 'assign_product' || Route::currentRouteName() === 'assign_tool' ? 'btn-info' : 'btn-light-info text-info' }} dropdown-toggle"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Assign
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                            <a class="dropdown-item {{ Route::currentRouteName() === 'assign_product' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('assign_product') }}">Parts</a>
+                            <a class="dropdown-item {{ Route::currentRouteName() === 'assign_tool' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('assign_tool') }}">Tools</a>  
+                                
+                        </div>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button id="btnGroupDrop2" type="button"
+                            class="btn {{ Route::currentRouteName() === 'addvehicle' || Route::currentRouteName() === 'product.createproduct' || Route::currentRouteName() === 'tool.createtool' ? 'btn-info' : 'btn-light-info text-info' }} dropdown-toggle"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Add New
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop2">
+                            <a class="dropdown-item {{ Route::currentRouteName() === 'product.createproduct' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('product.createproduct') }}">Parts</a>
+                            <a class="dropdown-item {{ Route::currentRouteName() === 'tool.createtool' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('tool.createtool') }}">Tools</a>
+                                <a class="dropdown-item {{ Route::currentRouteName() === 'addvehicle' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('addvehicle') }}">Vehicles</a>
+                        </div>
+                    </div>
+                    <a href="{{ route('partCategory') }}"
+                        class="btn {{ Route::currentRouteName() === 'partCategory' ? 'btn-info' : 'btn-light-info text-info' }}">Categories</a>
                 </div>
-
-            </div>
-        </div>
+            </div>        </div>
         <!-- -------------------------------------------------------------- -->
         <!-- End Bread crumb and right sidebar toggle -->
         <!-- -------------------------------------------------------------- -->
@@ -100,7 +129,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <!-- <div class="col-md-3" >
                                             <div class="mb-3">
                                                 <label for="service"
                                                     class="control-label bold md5  col-form-label required-field">Stock</label>
@@ -111,7 +140,7 @@
                                                     <option value="out_of_stock">Out of stock</option>
                                                 </select>
                                             </div>
-                                        </div>
+                                        </div> -->
                                         <div class="col-md-3">
                                             <div class="mb-3">
                                                 <label for="service"
@@ -132,10 +161,10 @@
                                             <th>Parts</th>
                                             <th>Category</th>
                                             <th>Manufacturer</th>
-                                            <th>Sold</th>
-                                            <th>Quantity</th>
+                                          <!--  <th>Sold</th>
+                                            <th>Quantity</th> -->
                                             <th>Price</th>
-                                            <th>Stock</th>
+                                           <!-- <th>Stock</th> -->
                                             <th>status</th>
                                             <th>Actions</th>
                                         </tr>
@@ -159,7 +188,7 @@
 
 
                                                         <div class="ms-2">
-                                                            <div class="user-meta-info"><a href="#.">
+                                                            <div class="user-meta-info"><a href="{{ route('product.edit', ['product_id' => $item->product_id]) }}">
                                                                     <h6 class="user-name mb-0" data-name="name">
                                                                         {{ $item->product_name }}</h6>
                                                                 </a></div>
@@ -168,10 +197,10 @@
                                                 </td>
                                                 <td>{{ $item->categoryProduct->category_name ?? null }}</td>
                                                 <td>{{ $item->manufacturername->manufacturer_name ?? null }}</td>
-                                                <td>{{ $item->sold }}</td>
-                                                <td>{{ $item->stock }}</td>
-                                                <td>${{ $item->total }}</td>
-                                                <td>
+                                               <!-- <td>{{ $item->sold }}</td>
+                                                <td>{{ $item->stock }}</td> --> 
+                                                <td>${{ $item->base_price ?? '' }}</td>
+                                              <!--  <td>
                                                     @if ($item->stock_status == 'in_stock')
                                                         <span class="status_icons status_icon1"><i
                                                                 class="ri-check-fill"></i></span>
@@ -179,7 +208,7 @@
                                                         <span class="status_icons status_icon2"><i
                                                                 class="ri-close-line"></i></span>
                                                     @endif
-                                                </td>
+                                                </td> -->
                                                 <td>
                                                     @if ($item->status == 'Publish')
                                                         Active

@@ -39,6 +39,11 @@ class Tool extends Model
         return $this->hasOne(ToolMeta::class, 'product_id', 'product_id');
     }
 
+    public function toolassign()
+    {
+        return $this->hasMany(ToolAssign::class, 'product_id');
+    }
+
     public function manufacturername()
     {
         return $this->hasOne(manufacturer::class, 'id', 'product_manu_id');

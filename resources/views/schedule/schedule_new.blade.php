@@ -387,7 +387,7 @@
                                                                                                         data-time="{{ $timeString }}"
                                                                                                         data-date="{{ $filterDate }}"
                                                                                                         style="cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->JobModel->technician->color_code ?? null }};">
-                                                                                                        @if ($value2->JobModel && $value2->JobModel->is_confirmed == 'yes')
+                                                                                                        @if ($value2->JobModel && $value2->JobModel->is_confirmed == 'yess')
                                                                                                             <div
                                                                                                                 class="cls_is_confirmed">
                                                                                                                 <i

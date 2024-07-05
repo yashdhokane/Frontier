@@ -15,20 +15,57 @@
     <div class="page-breadcrumb" style="padding-top:0px;">
         <div class="row">
             <div class="col-5 align-self-center">
-                <h4 class="page-title">Add Tool  </h4>
+                <h4 class="page-title">Add Tool </h4>
                 <div class="d-flex align-items-center">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="#">Price Book</a></li>
-                            <li class="breadcrumb-item"><a href="#">Tools </a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Add New Tool </li>
+                            <li class="breadcrumb-item"><a href="{{route('home')}}">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{route('tool.index')}}">Tools </a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><a href="">Add
+                                    New </a></li>
                         </ol>
                     </nav>
                 </div>
             </div>
-            <div class="col-7 align-self-center">
-                <div class="d-flex no-block justify-content-end align-items-center">
+            <div class="col-7 text-end px-4">
+                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                    <a href="{{ route('product.index') }}"
+                        class="btn {{ Route::currentRouteName() === 'product.index' ? 'btn-info' : 'btn-light-info text-info' }}">Parts</a>
+                    <a href="{{ route('tool.index') }}"
+                        class="btn {{ Route::currentRouteName() === 'tool.index' ? 'btn-info' : 'btn-light-info text-info' }}">Tools</a>
+                    <a href="{{ route('vehicles') }}"
+                        class="btn {{ Route::currentRouteName() === 'vehicles' ? 'btn-info' : 'btn-light-info text-info' }}">Vehicles</a>
+                    <div class="btn-group" role="group">
+                        <button id="btnGroupDrop1" type="button"
+                            class="btn {{ Route::currentRouteName() === 'assign_product' || Route::currentRouteName() === 'assign_tool' ? 'btn-info' : 'btn-light-info text-info' }} dropdown-toggle"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Assign
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                            <a class="dropdown-item {{ Route::currentRouteName() === 'assign_product' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('assign_product') }}">Parts</a>
+                            <a class="dropdown-item {{ Route::currentRouteName() === 'assign_tool' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('assign_tool') }}">Tools</a>
 
+                        </div>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button id="btnGroupDrop2" type="button"
+                            class="btn {{ Route::currentRouteName() === 'addvehicle' || Route::currentRouteName() === 'product.createproduct' || Route::currentRouteName() === 'tool.createtool' ? 'btn-info' : 'btn-light-info text-info' }} dropdown-toggle"
+                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Add New
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop2">
+                            <a class="dropdown-item {{ Route::currentRouteName() === 'product.createproduct' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('product.createproduct') }}">Parts</a>
+                            <a class="dropdown-item {{ Route::currentRouteName() === 'tool.createtool' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('tool.createtool') }}">Tools</a>
+                            <a class="dropdown-item {{ Route::currentRouteName() === 'addvehicle' ? 'btn-info' : 'text-info' }}"
+                                href="{{ route('addvehicle') }}">Vehicles</a>
+                        </div>
+                    </div>
+                    <a href="{{ route('partCategory') }}"
+                        class="btn {{ Route::currentRouteName() === 'partCategory' ? 'btn-info' : 'btn-light-info text-info' }}">Categories</a>
                 </div>
             </div>
         </div>
@@ -78,13 +115,13 @@
                                             <input type="text" name="product_code" class="form-control" required />
                                         </div>
                                     </div>
-                                    <div class="col-md-12">
+                                    {{-- <div class="col-md-12">
                                         <div class="mb-3">
                                             <label class="control-label required-field bold mb5">Short
                                                 Description</label>
                                             <input type="text" name="product_short" class="form-control" required />
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     <div class="col-md-12">
                                         <div class="mb-3">
                                             <label class="control-label required-field bold mb5">Long
@@ -161,7 +198,7 @@
 
                     </div>
 
-                    <div class="card">
+                    {{-- <div class="card">
                         <div class="card-body card-border">
                             <h5 class="card-title">GENERAL INFO</h5>
                             <div class="table-responsive">
@@ -197,7 +234,7 @@
                                 </table>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
 
 
@@ -223,23 +260,23 @@
                                         <label class="control-label required-field bold mb5">Quantity</label>
                                         <input type="number" name="stock" class="form-control" required />
                                     </div>
+
+                                    <div class="mb-2">
+                                        <label class="control-label required-field bold mb5">Unit Price</label>
+
+                                        <input type="text" class="form-control" name="base_price" placeholder=""
+                                            aria-label="price" aria-describedby="basic-addon1" required />
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="card">
+                    {{-- <div class="card">
                         <div class="card-body card-border">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="mb-4">
-                                        <label class="required-field bold mb5">Unit Price</label>
-                                        <div class="input-group mb-3">
 
-                                            <input type="text" class="form-control" name="base_price" placeholder=""
-                                                aria-label="price" aria-describedby="basic-addon1" required />
-                                        </div>
-                                    </div>
                                     <div class="mb-4">
                                         <label class="required-field bold mb5">Discount (In Percentage)</label>
                                         <div class="input-group mb-3">
@@ -257,7 +294,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <div class="card">
                         <div class="card-body card-border">
