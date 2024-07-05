@@ -1,6 +1,10 @@
 @extends('home')
 @section('content')
-
+<style>
+    .select2-results__option--disabled{
+    font-weight: 900;
+    }
+</style>
     <link rel="stylesheet" href="{{ url('public/admin/schedule/style.css') }}">
 
     <link href="{{ asset('public/admin/dist/css/style.min.css') }}" rel="stylesheet" />
@@ -339,9 +343,10 @@
                                                     aria-describedby="basic-addon1" name="serial_number"
                                                     id="check_serial_number">
                                             </div>
-                                            <div id="serial_number_detail"></div>
+                                            
                                         </div>
                                     </div>
+                                    <div class="col-md-3 w-100" id="serial_number_detail"></div>
                                 </div>
 
                                 <div class="row">
@@ -411,7 +416,7 @@
                                                         <select class="form-control services w-100" name="services[]">
                                                             <option value="" selected>-- Select Services --</option>
                                                             @foreach ($serviceCat as $category)
-                                                                <option class="fw-bold" disabled>
+                                                                <option class="text-black fw-bold" disabled>
                                                                     {{ $category->category_name }}</option>
                                                                 @if (isset($category->Services) && count($category->Services) > 0)
                                                                     @foreach ($category->Services as $service)
@@ -455,13 +460,12 @@
                                                     value="">
                                             </div>
                                             <div class="col-md-2">
-                                                <button type="button" class="btn btn-danger remove-row">Remove</button>
+                                                <a type="button" class="text-danger remove-row"><i class="ri-delete-bin-line ft15"></i> </a>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <button type="button" id="addRow" class="btn btn-primary">Add
-                                        Service</button>
+                                        <a type="button" id="addRow" class="text-primary"><i class="ri-add-line"></i> Add More Service</a>
                                 </div>
 
                                 <div class="row mt-3">
@@ -517,13 +521,12 @@
                                                     value="">
                                             </div>
                                             <div class="col-md-2">
-                                                <button type="button"
-                                                    class="btn btn-danger remove-part-row">Remove</button>
+                                                    <a type="button" class="text-danger remove-part-row"><i class="ri-delete-bin-line ft15"></i> </a>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <button type="button" id="addPartRow" class="btn btn-primary mb-2">Add Part</button>
+                                    <a type="button" id="addPartRow" class="text-primary mb-2"><i class="ri-add-line"></i> Add More Part</a>
                                 </div>
 
                                 <div class="row mb-2" style="border-top: 1px solid #343434;">
