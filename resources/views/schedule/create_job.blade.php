@@ -4,6 +4,9 @@
     .select2-results__option--disabled{
     font-weight: 900;
     }
+    .select2-container {
+  width: 100% !important;
+}
 </style>
     <link rel="stylesheet" href="{{ url('public/admin/schedule/style.css') }}">
 

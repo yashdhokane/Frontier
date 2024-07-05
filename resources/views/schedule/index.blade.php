@@ -374,7 +374,7 @@
                                                                                                 <h5><i
                                                                                                         class="fas fa-id-badge px-2"></i>
                                                                                                     <strong>Job
-                                                                                                        #{{ $value2->JobModel->job_code ?? null }}</strong>
+                                                                                                        #{{ $value2->JobModel->id ?? null }}</strong>
                                                                                                 </h5>
                                                                                                 <p class="ps-4 m-0 ms-2">
                                                                                                     @php
