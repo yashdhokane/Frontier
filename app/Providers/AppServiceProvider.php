@@ -107,49 +107,51 @@ class AppServiceProvider extends ServiceProvider
     {
 
 
- $this->app->singleton('JobActivityManagerapp', function () {
-    return new class {
-        public function addJobActivity($jobId, $activityDescription, $userId) {
-            $jobActivity = new JobActivity();
-            $jobActivity->job_id = $jobId;
-            $jobActivity->user_id = $userId;  // Use the passed user ID
-            $jobActivity->activity = $activityDescription;
-            $jobActivity->save();
+        $this->app->singleton('JobActivityManagerapp', function () {
+            return new class
+            {
+                public function addJobActivity($jobId, $activityDescription, $userId)
+                {
+                    $jobActivity = new JobActivity();
+                    $jobActivity->job_id = $jobId;
+                    $jobActivity->user_id = $userId;  // Use the passed user ID
+                    $jobActivity->activity = $activityDescription;
+                    $jobActivity->save();
 
-            return $jobActivity;
-        }
-    };
-   });
-//particular  api side
-app()->singleton('sendNoticesapp', function ($app) {
-    return function ($notice_heading, $notice_title, $notice_link, $notice_section, $admin_id, $job_id) {
-        // Step 1: Insert into notifications table
-        $notification = new NotificationModel();
-        $notification->notice_title = $notice_title;
-        $notification->notice_heading = $notice_heading;
-        $notification->notice_date = now();
-        $notification->notice_link = $notice_link;
-        $notification->notice_section = $notice_section;
-       // Adding job_id to the notification
-        $notification->save();
+                    return $jobActivity;
+                }
+            };
+        });
+        //particular  api side
+        app()->singleton('sendNoticesapp', function ($app) {
+            return function ($notice_heading, $notice_title, $notice_link, $notice_section, $admin_id, $job_id) {
+                // Step 1: Insert into notifications table
+                $notification = new NotificationModel();
+                $notification->notice_title = $notice_title;
+                $notification->notice_heading = $notice_heading;
+                $notification->notice_date = now();
+                $notification->notice_link = $notice_link;
+                $notification->notice_section = $notice_section;
+                // Adding job_id to the notification
+                $notification->save();
 
-        $notice_id = $notification->id;
+                $notice_id = $notification->id;
 
-        // Step 2: Retrieve the specified admin
-        $admin = User::find($admin_id);
+                // Step 2: Retrieve the specified admin
+                $admin = User::find($admin_id);
 
-        // Step 3: Insert into user_notifications for the specified admin
-        if ($admin) {
-            $userNotification = new UserNotification();
-            $userNotification->user_id = $admin->id;
-            $userNotification->notice_id = $notice_id;
-            $userNotification->is_read = 0;
-          //  $userNotification->read_at = now();
-              $userNotification->job_id = $job_id;
-            $userNotification->save();
-        }
-    };
-});
+                // Step 3: Insert into user_notifications for the specified admin
+                if ($admin) {
+                    $userNotification = new UserNotification();
+                    $userNotification->user_id = $admin->id;
+                    $userNotification->notice_id = $notice_id;
+                    $userNotification->is_read = 0;
+                    //  $userNotification->read_at = now();
+                    $userNotification->job_id = $job_id;
+                    $userNotification->save();
+                }
+            };
+        });
 
 
 
@@ -181,6 +183,13 @@ app()->singleton('sendNoticesapp', function ($app) {
                 }
             };
         });
+
+        $this->app->singleton('addHoursToDateTime', function ($app) {
+            return function ($dateTime, $hours) {
+                return Carbon::parse($dateTime)->addHours($hours)->format('Y-m-d H:i:s');
+            };
+        });
+
 
 
         // Define the functions in the View Composer
@@ -264,6 +273,21 @@ app()->singleton('sendNoticesapp', function ($app) {
                 $userTimezone = auth()->user()->TimeZone->timezone_name ?? 'Asia/Kolkata';
                 // Convert the time to the user's preferred timezone
                 return $time ? \Carbon\Carbon::parse($time)->timezone($userTimezone)->format($format) : null;
+            });
+
+            View::composer('*', function ($view) {
+                $view->with('getTimeZoneDate', function ($date, $timezone = null, $format = 'm-d-Y H:i:s', $param = []) {
+                    if ($date) {
+                        $timezone = $timezone ?: session('timezone_name', 'UTC');
+                        return Carbon::parse($date)->setTimezone($timezone)->format($format);
+                    } else {
+                        return null;
+                    }
+                });
+            });
+
+            View::composer('*', function ($view) {
+                $view->with('addHoursToDateTime', app('addHoursToDateTime'));
             });
 
             // Function to format date
