@@ -151,12 +151,8 @@
         }
 
         .flexibleslot {
-            margin-right: 5px;
-            /* Adjust margin between jobs as needed */
-            flex: 1 1 auto;
-            /* Let items grow and shrink, and take the remaining space */
-            max-width: 100%;
-            /* Ensure items don't exceed container width */
+          flex: 1 1 auto;
+           margin-right: 0px;
         }
 
         .show_job_details {
@@ -357,10 +353,11 @@
                                                                                 @foreach ($groupedJobs as $startDateTime => $jobs)
                                                                                     @php
                                                                                         $jobCount = count($jobs);
-                                                                                        $jobWidth = 100 / $jobCount; // Calculate the width for each job
+                                                                                        $jobWidth = 90 / $jobCount;
+                                                                                        $jobWidth2 = 85 / $jobCount;
                                                                                     @endphp
                                                                                     <div class="job-group"
-                                                                                        style="display: flex;">
+                                                                                        style="display: flex; width:100%;">
                                                                                         @foreach ($jobs as $value2)
                                                                                             {{-- For schedule type job --}}
                                                                                             @if ($value2->schedule_type == 'job')
@@ -386,7 +383,7 @@
                                                                                                         data-id="{{ $value2->job_id }}"
                                                                                                         data-time="{{ $timeString }}"
                                                                                                         data-date="{{ $filterDate }}"
-                                                                                                        style="cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->JobModel->technician->color_code ?? null }};">
+                                                                                                        style="max-width: {{ $jobWidth2 }}%;cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->JobModel->technician->color_code ?? null }};">
                                                                                                         @if ($value2->JobModel && $value2->JobModel->is_confirmed == 'yess')
                                                                                                             <div
                                                                                                                 class="cls_is_confirmed">
@@ -424,7 +421,7 @@
                                                                                                         <h5><i
                                                                                                                 class="fas fa-id-badge px-2"></i>
                                                                                                             <strong>Job
-                                                                                                                #{{ $value2->JobModel->job_code ?? null }}</strong>
+                                                                                                                #{{ $value2->JobModel->id ?? null }}</strong>
                                                                                                         </h5>
                                                                                                         <p
                                                                                                             class="ps-4 m-0 ms-2">
