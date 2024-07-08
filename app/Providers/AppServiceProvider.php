@@ -184,9 +184,17 @@ class AppServiceProvider extends ServiceProvider
             };
         });
 
-        $this->app->singleton('addHoursToDateTime', function ($app) {
-            return function ($dateTime, $hours) {
-                return Carbon::parse($dateTime)->addHours($hours)->format('Y-m-d H:i:s');
+         $this->app->singleton('modifyDateTime', function ($app) {
+            return function ($dateTime, $hours, $operation = 'add') {
+                $date = Carbon::parse($dateTime);
+
+                if ($operation === 'add') {
+                    return $date->addHours($hours)->format('Y-m-d H:i:s');
+                } elseif ($operation === 'subtract') {
+                    return $date->subHours($hours)->format('Y-m-d H:i:s');
+                } else {
+                    throw new \InvalidArgumentException("Invalid operation. Use 'add' or 'subtract'.");
+                }
             };
         });
 
