@@ -295,7 +295,7 @@ class AppServiceProvider extends ServiceProvider
             });
 
             View::composer('*', function ($view) {
-                $view->with('addHoursToDateTime', app('addHoursToDateTime'));
+                $view->with('modifyDateTime', app('modifyDateTime'));
             });
 
             // Function to format date
