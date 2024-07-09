@@ -285,6 +285,15 @@ class MapController extends Controller
                             url()->current(),
                             'job'
                         );
+
+                        app('sendNoticesapp')(
+                            "Job started",
+                            "Job started (#{$value['job_id']} - {$value['customer_name']}) started by {$technician_name->name}",
+                            url()->current(),
+                            'job',
+                            $technician_name->id,
+                            $value['job_id']
+                        );
                     }
                 }
             }

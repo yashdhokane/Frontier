@@ -2056,6 +2056,14 @@ class ScheduleController extends Controller
                 url()->current(),
                 'job'
             );
+            app('sendNoticesapp')(
+                "Job started",
+                "Job #{$jobId} moved from {$old_tech->technician->name} and assigned to {$schedule->technician->name}",
+                url()->current(),
+                'job',
+                $techId,
+                $jobId
+            );
 
 
             // Update JobAssign
