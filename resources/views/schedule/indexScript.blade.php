@@ -72,6 +72,9 @@
                                                         timer: 1500
                                                     });
                                                     location.reload();
+                                                } else {
+                                                    console.log(response
+                                                    .error);
                                                 }
                                             },
                                             error: function(error) {
@@ -112,6 +115,11 @@
                                                             });
                                                             location
                                                                 .reload();
+                                                        } else {
+                                                            console.log(
+                                                                response
+                                                                .error
+                                                                );
                                                         }
                                                     },
                                                     error: function(error) {
