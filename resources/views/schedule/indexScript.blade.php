@@ -47,8 +47,8 @@
                                 title: `Do you want to move job from ${techName} to ${name}?`,
                                 icon: 'question',
                                 showCancelButton: true,
-                                confirmButtonText: 'Yes, move it!',
-                                cancelButtonText: 'No, cancel!',
+                                confirmButtonText: 'Yes',
+                                cancelButtonText: 'No',
                                 reverseButtons: true
                             }).then((result) => {
                                 if (result.isConfirmed) {
@@ -71,18 +71,12 @@
                                                         showConfirmButton: false,
                                                         timer: 1500
                                                     });
-                                                      location.reload();
+                                                    location.reload();
                                                 }
                                             },
                                             error: function(error) {
                                                 console.error(error);
-                                                Swal.fire({
-                                                    position: 'top-end',
-                                                    icon: 'error',
-                                                    title: 'Error Updating Schedule',
-                                                    showConfirmButton: false,
-                                                    timer: 1500
-                                                });
+
                                             }
                                         });
                                     } else {
@@ -90,8 +84,8 @@
                                             title: `Do you want to change the Job from ${timezone} to ${zoneName}?`,
                                             icon: 'question',
                                             showCancelButton: true,
-                                            confirmButtonText: 'Yes, move it!',
-                                            cancelButtonText: 'No, cancel!',
+                                            confirmButtonText: 'Yes',
+                                            cancelButtonText: 'No',
                                             reverseButtons: true
                                         }).then((innerResult) => {
                                             if (innerResult.isConfirmed) {
@@ -106,7 +100,8 @@
                                                     },
                                                     success: function(
                                                         response) {
-                                                        if (response.success ==
+                                                        if (response
+                                                            .success ==
                                                             true) {
                                                             Swal.fire({
                                                                 position: 'top-end',
@@ -115,53 +110,25 @@
                                                                 showConfirmButton: false,
                                                                 timer: 1500
                                                             });
-                                                              location.reload();
+                                                            location
+                                                                .reload();
                                                         }
                                                     },
                                                     error: function(error) {
                                                         console.error(
                                                             error);
-                                                        Swal.fire({
-                                                            position: 'top-end',
-                                                            icon: 'error',
-                                                            title: 'Error Updating Schedule',
-                                                            showConfirmButton: false,
-                                                            timer: 1500
-                                                        });
+
                                                     }
-                                                });
-                                            } else if (innerResult.dismiss === Swal
-                                                .DismissReason.cancel) {
-                                                Swal.fire({
-                                                    position: 'top-end',
-                                                    icon: 'error',
-                                                    title: 'Action cancelled',
-                                                    showConfirmButton: false,
-                                                    timer: 1500
                                                 });
                                             }
                                         });
                                     }
-                                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                                    Swal.fire({
-                                        position: 'top-end',
-                                        icon: 'error',
-                                        title: 'Action cancelled',
-                                        showConfirmButton: false,
-                                        timer: 1500
-                                    });
                                 }
                             });
                         },
                         error: function(error) {
                             console.error(error);
-                            Swal.fire({
-                                position: 'top-end',
-                                icon: 'error',
-                                title: 'Error Updating Schedule',
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
+
                         }
                     });
 
