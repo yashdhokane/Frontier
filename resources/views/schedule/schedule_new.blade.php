@@ -161,7 +161,19 @@
         }
 
 
-        /* Add more styles as needed */
+        .draggable-items {
+            text-align: center;
+            width: fit-content;
+            /* Set a fixed width for masonry items */
+            box-sizing: border-box;
+        }
+
+        .gu-mirror {
+            opacity: 0.6;
+            position: fixed;
+            z-index: 9999;
+            pointer-events: none;
+        }
     </style>
 
     <div class="page-wrapper p-0 ms-2" style="display:flex;">
@@ -281,14 +293,14 @@
                                                     @endif
                                                 </tr>
                                             </thead>
-                                            <tbody class="slot_time_60_span">
+                                            <tbody class="slot_time_60_span" id="draggable-area">
                                                 @php
                                                     $start_time = (int) $hours->start_time;
                                                     $end_time = (int) $hours->end_time;
                                                 @endphp
                                                 @for ($i = $start_time; $i < $end_time; $i++)
                                                     @for ($minute = 0; $minute < 60; $minute += 30)
-                                                        <tr>
+                                                        <tr class="draggable-area">
                                                             <td class="timeslot_td">
                                                                 <div class="timeslot_td_time">
                                                                     @php
@@ -333,14 +345,14 @@
                                                                         ) {
                                                                             $assigned_data =
                                                                                 $schedule_arr[$value][$formattedTime];
-                                                                            // dd($assigned_data);
                                                                         }
                                                                     @endphp
-                                                                    <td class="timeslot_td slot_refresh_jobs"
+                                                                    <td class="timeslot_td slot_refresh_jobs draggable-items"
                                                                         data-slot_time="{{ $timeString }}"
+                                                                        data-technician-name="{{ $value }}"
                                                                         data-technician_id="{{ $value }}">
                                                                         @if (isset($assigned_data) && !empty($assigned_data))
-                                                                            <div class="testclass">
+                                                                            <div class="testclass ">
                                                                                 @php
                                                                                     // Ensure $assigned_data is a collection
                                                                                     $groupedJobs = collect(
@@ -359,6 +371,7 @@
                                                                                     <div class="job-group"
                                                                                         style="display: flex; width:100%;">
                                                                                         @foreach ($jobs as $value2)
+                                                                                       
                                                                                             {{-- For schedule type job --}}
                                                                                             @if ($value2->schedule_type == 'job')
                                                                                                 @php
@@ -381,6 +394,9 @@
                                                                                                     style="width: {{ $jobWidth }}%;">
                                                                                                     <div class="dts mb-1 flexibleslot"
                                                                                                         data-id="{{ $value2->job_id }}"
+                                                                                                        data-duration="{{ $value2->JobModel->jobassignname->duration }}"
+                                                                                                        data-technician-name="{{ $value2->technician->name }}"
+                                                                                                        data-timezone-name="{{ $value2->technician->TimeZone->timezone_name }}"
                                                                                                         data-time="{{ $timeString }}"
                                                                                                         data-date="{{ $filterDate }}"
                                                                                                         style="max-width: {{ $jobWidth2 }}%;cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->JobModel->technician->color_code ?? null }};">

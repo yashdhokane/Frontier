@@ -793,6 +793,10 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/check-serial-number', [ScheduleController::class, 'checkSerialNumber'])->name('check.serial.number');
 
+    Route::get('/get_techName', [ScheduleController::class, 'get_techName'])->name('get.techName');
+
+    Route::get('/drag_update', [ScheduleController::class, 'drag_update'])->name('schedule.drag_update');
+
     // MailController
 
     Route::get('get/mail/schedule', [MailController::class, 'index']);

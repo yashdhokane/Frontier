@@ -8,6 +8,7 @@ use App\Models\BusinessHours;
 use App\Models\CustomerUserAddress;
 use App\Models\Event;
 use App\Models\JobActivity;
+use App\Models\JobAssign;
 use App\Models\JobDetails;
 use App\Models\JobModel;
 use App\Models\LocationCity;
@@ -484,7 +485,7 @@ class ScheduleController extends Controller
             // Query the business hours for the given day
             $hours = BusinessHours::where('day', $currentDayLower)->first();
 
-             // Calculate time intervals (example)
+            // Calculate time intervals (example)
             $timeIntervals = [];
             $current = strtotime($hours->start_time);
             $end = strtotime($hours->end_time);
@@ -516,7 +517,7 @@ class ScheduleController extends Controller
 
             $site = SiteTags::all();
 
-            return view('schedule.create_job', compact('tags', 'leadSources', 'locationStates', 'technician', 'dateTime', 'manufacturers', 'appliances', 'getServices', 'getProduct', 'tags', 'hours', 'time', 'serviceCat', 'site','date','timeIntervals'));
+            return view('schedule.create_job', compact('tags', 'leadSources', 'locationStates', 'technician', 'dateTime', 'manufacturers', 'appliances', 'getServices', 'getProduct', 'tags', 'hours', 'time', 'serviceCat', 'site', 'date', 'timeIntervals'));
         }
     }
     public function create(Request $request)
@@ -1995,4 +1996,59 @@ class ScheduleController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Serial number not found']);
         }
     }
+
+    public function get_techName(Request $request)
+    {
+        $techId = $request->input('techId');
+        $user = User::with('TimeZone')->where('id', $techId)->first();
+
+        if ($user->count() > 0) {
+            return response()->json($user);
+        } else {
+            return response()->json(['status' => 'error', 'message' => 'Technician not found']);
+        }
+    }
+
+
+    public function drag_update(Request $request)
+    {
+        $jobId = $request->jobId;
+        $techId = $request->techId;
+        $duration = $request->duration;
+        $start_time = $request->time;
+
+        // Update Schedule
+        $schedule = Schedule::where('job_id', $jobId)->first();
+        if ($schedule) {
+            $start = Carbon::parse($schedule->start_date_time)->setTimeFromTimeString($start_time);
+            $end = $start->copy()->addMinutes($duration);
+
+            $schedule->technician_id = $techId;
+            $schedule->start_date_time = $start->toDateTimeString();
+            $schedule->end_date_time = $end->toDateTimeString();
+            $schedule->save();
+        }
+
+        // Update JobAssign
+        $jobAssigned = JobAssign::where('job_id', $jobId)->first();
+        if ($jobAssigned) {
+            $start = Carbon::parse($jobAssigned->start_date_time)->setTimeFromTimeString($start_time);
+            $end = $start->copy()->addMinutes($duration);
+
+            $jobAssigned->technician_id = $techId;
+            $jobAssigned->start_date_time = $start->toDateTimeString();
+            $jobAssigned->end_date_time = $end->toDateTimeString();
+            $jobAssigned->save();
+        }
+
+        // Update job
+        $job = JobModel::where('id', $jobId)->first();
+        if ($job) {
+            $job->technician_id = $techId;
+            $job->save();
+        }
+
+        return response()->json(['success' => true]);
+    }
+    
 }

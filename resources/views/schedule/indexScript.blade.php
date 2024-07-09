@@ -1,6 +1,3 @@
-
-
-
 @section('script')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -12,9 +9,167 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
     <script src="{{ url('public/admin/schedule/script.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            // Initialize Dragula with only .draggable-items elements
+            var drake = dragula(Array.from(document.getElementsByClassName('draggable-items')), {
+                    // Specify options or callbacks if needed
+                })
+                .on('drag', function(el) {
+                    el.classList.remove('card-moved');
+                })
+                .on('over', function(el, container) {
+                    container.classList.add('card-over');
+                })
+                .on('out', function(el, container) {
+                    container.classList.remove('card-over');
+                })
+                .on('drop', function(el, target, source, sibling) {
+                    var time = $(target).closest('.draggable-items').data('slot_time');
+                    var techId = $(target).closest('.draggable-items').data('technician_id');
+                    var jobId = $(target).find('.flexibleslot').data('id');
+                    var duration = $(target).find('.flexibleslot').data('duration');
+                    var techName = $(target).find('.flexibleslot').data('technician-name');
+                    var timezone = $(target).find('.flexibleslot').data('timezone-name');
 
+                    // Update the schedule
+                    $.ajax({
+                        url: "{{ route('get.techName') }}",
+                        type: 'GET',
+                        data: {
+                            techId: techId,
+                        },
+                        success: function(response) {
+                            var name = response.name;
+                            var zoneName = response.time_zone.timezone_name;
 
-      <script>
+                            Swal.fire({
+                                title: `Do you want to move job from ${techName} to ${name}?`,
+                                icon: 'question',
+                                showCancelButton: true,
+                                confirmButtonText: 'Yes, move it!',
+                                cancelButtonText: 'No, cancel!',
+                                reverseButtons: true
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    if (timezone == zoneName) {
+                                        $.ajax({
+                                            url: "{{ route('schedule.drag_update') }}",
+                                            type: 'GET',
+                                            data: {
+                                                jobId: jobId,
+                                                techId: techId,
+                                                time: time,
+                                                duration: duration,
+                                            },
+                                            success: function(response) {
+                                                if (response.success == true) {
+                                                    Swal.fire({
+                                                        position: 'top-end',
+                                                        icon: 'success',
+                                                        title: 'Job moved successfully',
+                                                        showConfirmButton: false,
+                                                        timer: 1500
+                                                    });
+                                                      location.reload();
+                                                }
+                                            },
+                                            error: function(error) {
+                                                console.error(error);
+                                                Swal.fire({
+                                                    position: 'top-end',
+                                                    icon: 'error',
+                                                    title: 'Error Updating Schedule',
+                                                    showConfirmButton: false,
+                                                    timer: 1500
+                                                });
+                                            }
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: `Do you want to change the Job from ${timezone} to ${zoneName}?`,
+                                            icon: 'question',
+                                            showCancelButton: true,
+                                            confirmButtonText: 'Yes, move it!',
+                                            cancelButtonText: 'No, cancel!',
+                                            reverseButtons: true
+                                        }).then((innerResult) => {
+                                            if (innerResult.isConfirmed) {
+                                                $.ajax({
+                                                    url: "{{ route('schedule.drag_update') }}",
+                                                    type: 'GET',
+                                                    data: {
+                                                        jobId: jobId,
+                                                        techId: techId,
+                                                        time: time,
+                                                        duration: duration,
+                                                    },
+                                                    success: function(
+                                                        response) {
+                                                        if (response.success ==
+                                                            true) {
+                                                            Swal.fire({
+                                                                position: 'top-end',
+                                                                icon: 'success',
+                                                                title: 'Job moved successfully',
+                                                                showConfirmButton: false,
+                                                                timer: 1500
+                                                            });
+                                                              location.reload();
+                                                        }
+                                                    },
+                                                    error: function(error) {
+                                                        console.error(
+                                                            error);
+                                                        Swal.fire({
+                                                            position: 'top-end',
+                                                            icon: 'error',
+                                                            title: 'Error Updating Schedule',
+                                                            showConfirmButton: false,
+                                                            timer: 1500
+                                                        });
+                                                    }
+                                                });
+                                            } else if (innerResult.dismiss === Swal
+                                                .DismissReason.cancel) {
+                                                Swal.fire({
+                                                    position: 'top-end',
+                                                    icon: 'error',
+                                                    title: 'Action cancelled',
+                                                    showConfirmButton: false,
+                                                    timer: 1500
+                                                });
+                                            }
+                                        });
+                                    }
+                                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                                    Swal.fire({
+                                        position: 'top-end',
+                                        icon: 'error',
+                                        title: 'Action cancelled',
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    });
+                                }
+                            });
+                        },
+                        error: function(error) {
+                            console.error(error);
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'error',
+                                title: 'Error Updating Schedule',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        }
+                    });
+
+                });
+        });
+    </script>
+
+    <script>
         // document.addEventListener("DOMContentLoaded", function() {
         //     function getDateFromUrl() {
         //         const urlParams = new URLSearchParams(window.location.search);
@@ -240,7 +395,7 @@
                 window.location.href = scheduleLink;
             });
 
-              $(document).on('click', '.clickPoint', function (e) {
+            $(document).on('click', '.clickPoint', function(e) {
                 e.stopPropagation();
                 var popupDiv = $(this).next('.popupDiv');
 
