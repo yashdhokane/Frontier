@@ -2016,39 +2016,45 @@ class ScheduleController extends Controller
         $techId = $request->techId;
         $duration = $request->duration;
         $start_time = $request->time;
+        $time_interval = Session::get('time_interval'); // Assuming this is set correctly elsewhere
 
-        // Update Schedule
-        $schedule = Schedule::where('job_id', $jobId)->first();
-        if ($schedule) {
-            $start = Carbon::parse($schedule->start_date_time)->setTimeFromTimeString($start_time);
-            $end = $start->copy()->addMinutes($duration);
+        try {
+            // Update Schedule
+            $schedule = Schedule::where('job_id', $jobId)->first();
+            if ($schedule) {
+                $newFormattedDateTime = Carbon::parse($schedule->start_date_time)->setTimeFromTimeString($start_time);
+                $start = Carbon::parse($newFormattedDateTime)->subHours($time_interval);
+                $end = $start->copy()->addMinutes($duration);
 
-            $schedule->technician_id = $techId;
-            $schedule->start_date_time = $start->toDateTimeString();
-            $schedule->end_date_time = $end->toDateTimeString();
-            $schedule->save();
+                $schedule->technician_id = $techId;
+                $schedule->start_date_time = $start->toDateTimeString();
+                $schedule->end_date_time = $end->toDateTimeString();
+                $schedule->save();
+            }
+
+            // Update JobAssign
+            $jobAssigned = JobAssign::where('job_id', $jobId)->first();
+            if ($jobAssigned) {
+                $newFormattedDateTime = Carbon::parse($jobAssigned->start_date_time)->setTimeFromTimeString($start_time);
+                $start = Carbon::parse($newFormattedDateTime)->subHours($time_interval);
+                $end = $start->copy()->addMinutes($duration);
+
+                $jobAssigned->technician_id = $techId;
+                $jobAssigned->start_date_time = $start->toDateTimeString();
+                $jobAssigned->end_date_time = $end->toDateTimeString();
+                $jobAssigned->save();
+            }
+
+            // Update Job
+            $job = JobModel::where('id', $jobId)->first();
+            if ($job) {
+                $job->technician_id = $techId;
+                $job->save();
+            }
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
         }
-
-        // Update JobAssign
-        $jobAssigned = JobAssign::where('job_id', $jobId)->first();
-        if ($jobAssigned) {
-            $start = Carbon::parse($jobAssigned->start_date_time)->setTimeFromTimeString($start_time);
-            $end = $start->copy()->addMinutes($duration);
-
-            $jobAssigned->technician_id = $techId;
-            $jobAssigned->start_date_time = $start->toDateTimeString();
-            $jobAssigned->end_date_time = $end->toDateTimeString();
-            $jobAssigned->save();
-        }
-
-        // Update job
-        $job = JobModel::where('id', $jobId)->first();
-        if ($job) {
-            $job->technician_id = $techId;
-            $job->save();
-        }
-
-        return response()->json(['success' => true]);
     }
-    
 }
