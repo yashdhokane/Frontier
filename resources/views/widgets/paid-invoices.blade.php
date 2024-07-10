@@ -1,12 +1,13 @@
 <div class="card card-hover">
-    <div class="card-header bg-success d-flex justify-content-between">
-        <h4 class="mb-0 text-white">Paid invoices</h4>
-        @if ($layout->added_by == auth()->user()->id)
-            <button class="btn btn-light mx-2 clearSection"
-                data-element-id="{{ $cardPosition->element_id }}">X</button>
-        @endif
-    </div>
-    <div class="card-body">
+
+    <div class="p-3">
+        <div class="d-flex justify-content-between mb-1">
+            <h4 class="">Paid invoices</h4>
+            @if ($layout->added_by == auth()->user()->id)
+                <button class="btn btn-light mx-2 clearSection"
+                    data-element-id="{{ $cardPosition->element_id }}">X</button>
+            @endif
+        </div>
         <div class="table-responsive mt-1" style="overflow-x: scroll !important;">
             <table id="" class="table table-bordered text-nowrap">
                 <thead>

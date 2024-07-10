@@ -190,27 +190,27 @@
                         @foreach ($cardPositions as $cardPosition)
                             {{-- first layout --}}
                             @if ($cardPosition->module_id == 1)
-                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
+                                <div class="draggable-items" data-id="{{ $cardPosition->module_id }}">
                                     @include('widgets.upcoming-jobs')
                                 </div>
                             @elseif($cardPosition->module_id == 2)
-                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
+                                <div class="draggable-items" data-id="{{ $cardPosition->module_id }}">
                                     @include('widgets.open-invoices')
                                 </div>
                             @elseif($cardPosition->module_id == 3)
-                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
+                                <div class="draggable-items" data-id="{{ $cardPosition->module_id }}">
                                     @include('widgets.paid-invoices')
                                 </div>
                             @elseif($cardPosition->module_id == 4)
-                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
+                                <div class="draggable-items" data-id="{{ $cardPosition->module_id }}">
                                     @include('widgets.stats')
                                 </div>
                             @elseif($cardPosition->module_id == 5)
-                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
+                                <div class="draggable-items" data-id="{{ $cardPosition->module_id }}">
                                     @include('widgets.jobs-manufacturer')
                                 </div>
                             @elseif($cardPosition->module_id == 6)
-                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
+                                <div class="draggable-items" data-id="{{ $cardPosition->module_id }}">
                                     @include('widgets.jobs-service-type')
                                 </div>
                             @elseif($cardPosition->module_id == 7)
@@ -218,34 +218,35 @@
                                     @include('widgets.quick-links')
                                 </div>
                             @elseif($cardPosition->module_id == 8)
-                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
+                                <div class="draggable-items" data-id="{{ $cardPosition->module_id }}">
                                     @include('widgets.my-activity')
                                 </div>
                             @elseif($cardPosition->module_id == 9)
-                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
+                                <div class="draggable-items" data-id="{{ $cardPosition->module_id }}">
                                     @include('widgets.my-notifications')
                                 </div>
                             @elseif($cardPosition->module_id == 10)
-                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
+                                <div class="draggable-items" data-id="{{ $cardPosition->module_id }}">
                                     @include('widgets.active-technicians')
                                 </div>
                             @elseif($cardPosition->module_id == 11)
-                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
+                                <div class="draggable-items" data-id="{{ $cardPosition->module_id }}">
                                     @include('widgets.top-customers')
                                 </div>
 
                                 {{-- end first layout --}}
                             @elseif($cardPosition->module_id == 12)
-                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
+                                <div class="draggable-items" data-id="{{ $cardPosition->module_id }}">
                                     <div class="card card-hover">
-                                        <div class="card-header bg-danger d-flex justify-content-between">
-                                            <h4 class="mb-0 text-white">Card Title 8</h4>
-                                            @if ($layout->added_by == auth()->user()->id)
-                                                <button class="btn btn-light mx-2 clearSection"
-                                                    data-module-id="{{ $cardPosition->module_id }}">X</button>
-                                            @endif
-                                        </div>
-                                        <div class="card-body">
+
+                                        <div class="p-3">
+                                            <div class="mb-1 d-flex justify-content-between">
+                                                <h4 class="">Card Title 8</h4>
+                                                @if ($layout->added_by == auth()->user()->id)
+                                                    <button class="btn btn-light mx-2 clearSection"
+                                                        data-module-id="{{ $cardPosition->module_id }}">X</button>
+                                                @endif
+                                            </div>
                                             <h3 class="card-title">Special title treatment 8</h3>
                                             <p class="card-text">
                                                 With supporting text below as a natural lead-in to additional content.
@@ -255,16 +256,17 @@
                                     </div>
                                 </div>
                             @elseif($cardPosition->module_id == 13)
-                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
+                                <div class="draggable-items" data-id="{{ $cardPosition->module_id }}">
                                     <div class="card card-hover">
-                                        <div class="card-header bg-warning d-flex justify-content-between">
-                                            <h4 class="mb-0 text-white">Card Title 9</h4>
-                                            @if ($layout->added_by == auth()->user()->id)
-                                                <button class="btn btn-light mx-2 clearSection"
-                                                    data-module-id="{{ $cardPosition->module_id }}">X</button>
-                                            @endif
-                                        </div>
-                                        <div class="card-body">
+
+                                        <div class="p-3">
+                                            <div class="mb-1 d-flex justify-content-between">
+                                                <h4 class="">Card Title 9</h4>
+                                                @if ($layout->added_by == auth()->user()->id)
+                                                    <button class="btn btn-light mx-2 clearSection"
+                                                        data-module-id="{{ $cardPosition->module_id }}">X</button>
+                                                @endif
+                                            </div>
                                             <h3 class="card-title">Special title treatment 9</h3>
                                             <p class="card-text">
                                                 With supporting text below as a natural lead-in to additional content.
@@ -274,16 +276,17 @@
                                     </div>
                                 </div>
                             @elseif($cardPosition->module_id == 14)
-                                <div class="col-md-6 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
+                                <div class="draggable-items" data-id="{{ $cardPosition->module_id }}">
                                     <div class="card card-hover">
-                                        <div class="card-header bg-info d-flex justify-content-between">
-                                            <h4 class="mb-0 text-white">Card Title 10</h4>
-                                            @if ($layout->added_by == auth()->user()->id)
-                                                <button class="btn btn-light mx-2 clearSection"
-                                                    data-module-id="{{ $cardPosition->module_id }}">X</button>
-                                            @endif
-                                        </div>
-                                        <div class="card-body">
+
+                                        <div class="p-3">
+                                            <div class="mb-1 d-flex justify-content-between">
+                                                <h4 class="">Card Title 10</h4>
+                                                @if ($layout->added_by == auth()->user()->id)
+                                                    <button class="btn btn-light mx-2 clearSection"
+                                                        data-module-id="{{ $cardPosition->module_id }}">X</button>
+                                                @endif
+                                            </div>
                                             <h3 class="card-title">Special title treatment 10</h3>
                                             <p class="card-text">
                                                 With supporting text below as a natural lead-in to additional content.
@@ -293,16 +296,17 @@
                                     </div>
                                 </div>
                             @elseif($cardPosition->module_id == 15)
-                                <div class="col-md-8 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
+                                <div class="draggable-items" data-id="{{ $cardPosition->module_id }}">
                                     <div class="card card-hover">
-                                        <div class="card-header bg-danger d-flex justify-content-between">
-                                            <h4 class="mb-0 text-white">Card Title 8</h4>
-                                            @if ($layout->added_by == auth()->user()->id)
-                                                <button class="btn btn-light mx-2 clearSection"
-                                                    data-module-id="{{ $cardPosition->module_id }}">X</button>
-                                            @endif
-                                        </div>
-                                        <div class="card-body">
+
+                                        <div class="p-3">
+                                            <div class="mb-1 d-flex justify-content-between">
+                                                <h4 class="">Card Title 8</h4>
+                                                @if ($layout->added_by == auth()->user()->id)
+                                                    <button class="btn btn-light mx-2 clearSection"
+                                                        data-module-id="{{ $cardPosition->module_id }}">X</button>
+                                                @endif
+                                            </div>
                                             <h3 class="card-title">Special title treatment 8</h3>
                                             <p class="card-text">
                                                 With supporting text below as a natural lead-in to additional content.
@@ -312,17 +316,17 @@
                                     </div>
                                 </div>
                             @elseif($cardPosition->module_id == 16)
-                                <div class="col-md-12 col-sm-12 draggable-items"
-                                    data-id="{{ $cardPosition->module_id }}">
+                                <div class="cdraggable-items" data-id="{{ $cardPosition->module_id }}">
                                     <div class="card card-hover">
-                                        <div class="card-header bg-warning d-flex justify-content-between">
-                                            <h4 class="mb-0 text-white">Card Title 9</h4>
-                                            @if ($layout->added_by == auth()->user()->id)
-                                                <button class="btn btn-light mx-2 clearSection"
-                                                    data-module-id="{{ $cardPosition->module_id }}">X</button>
-                                            @endif
-                                        </div>
-                                        <div class="card-body">
+
+                                        <div class="p-3">
+                                            <div class="mb-1 d-flex justify-content-between">
+                                                <h4 class="">Card Title 9</h4>
+                                                @if ($layout->added_by == auth()->user()->id)
+                                                    <button class="btn btn-light mx-2 clearSection"
+                                                        data-module-id="{{ $cardPosition->module_id }}">X</button>
+                                                @endif
+                                            </div>
                                             <h3 class="card-title">Special title treatment 9</h3>
                                             <p class="card-text">
                                                 With supporting text below as a natural lead-in to additional content.
@@ -332,16 +336,17 @@
                                     </div>
                                 </div>
                             @elseif($cardPosition->module_id == 17)
-                                <div class="col-md-4 col-sm-12 draggable-items" data-id="{{ $cardPosition->module_id }}">
+                                <div class="draggable-items" data-id="{{ $cardPosition->module_id }}">
                                     <div class="card card-hover">
-                                        <div class="card-header bg-info d-flex justify-content-between">
-                                            <h4 class="mb-0 text-white">Card Title 10</h4>
-                                            @if ($layout->added_by == auth()->user()->id)
-                                                <button class="btn btn-light mx-2 clearSection"
-                                                    data-module-id="{{ $cardPosition->module_id }}">X</button>
-                                            @endif
-                                        </div>
-                                        <div class="card-body">
+
+                                        <div class="p-3">
+                                            <div class="mb-1 d-flex justify-content-between">
+                                                <h4 class="">Card Title 10</h4>
+                                                @if ($layout->added_by == auth()->user()->id)
+                                                    <button class="btn btn-light mx-2 clearSection"
+                                                        data-module-id="{{ $cardPosition->module_id }}">X</button>
+                                                @endif
+                                            </div>
                                             <h3 class="card-title">Special title treatment 10</h3>
                                             <p class="card-text">
                                                 With supporting text below as a natural lead-in to additional content.
