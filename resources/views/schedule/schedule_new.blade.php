@@ -174,6 +174,9 @@
             z-index: 9999;
             pointer-events: none;
         }
+        .schedulJob{
+         font-size: 9px;
+        }
     </style>
 
     <div class="page-wrapper p-0 ms-2" style="display:flex;">
@@ -367,6 +370,7 @@
                                                                                         $jobCount = count($jobs);
                                                                                         $jobWidth = 90 / $jobCount;
                                                                                         $jobWidth2 = 85 / $jobCount;
+                                                                                         $additionalClass = $jobCount > 1 ? 'schedulJob' : '';
                                                                                     @endphp
                                                                                     <div class="job-group"
                                                                                         style="display: flex; width:100%;">
@@ -392,7 +396,7 @@
                                                                                                 <a class="show_job_details"
                                                                                                     href="{{ $value2->job_id ? route('tickets.show', $value2->job_id) : '#' }}"
                                                                                                     style="width: {{ $jobWidth }}%;">
-                                                                                                    <div class="dts mb-1 flexibleslot"
+                                                                                                    <div class="dts mb-1 flexibleslot {{ $additionalClass }}"
                                                                                                         data-id="{{ $value2->job_id }}"
                                                                                                         data-duration="{{ $value2->JobModel->jobassignname->duration }}"
                                                                                                         data-technician-name="{{ $value2->technician->name }}"
