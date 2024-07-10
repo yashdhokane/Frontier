@@ -49,7 +49,7 @@ class ScheduleController extends Controller
         $permissions_type = $user_auth->permissions_type;
         $module_id = 30;
 
-        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
         } else {
@@ -115,7 +115,7 @@ class ScheduleController extends Controller
 
         $technician = User::where('role', 'technician')->where('status', 'active')->get();
 
-        $tech = User::where('role', 'technician')->get();
+        $tech = User::where('role', 'technician')->where('status', 'active')->get();
 
         if (isset($technician) && !empty($technician->count())) {
             foreach ($technician as $key => $value) {
@@ -240,7 +240,7 @@ class ScheduleController extends Controller
         $schedule_arr = [];
 
         $technician = User::where('role', 'technician')->where('status', 'active')->get();
-        $tech = User::where('role', 'technician')->get();
+        $tech = User::where('role', 'technician')->where('status', 'active')->get();
 
         if (isset($technician) && !empty($technician->count())) {
             foreach ($technician as $key => $value) {
@@ -385,7 +385,7 @@ class ScheduleController extends Controller
 
         $technician = User::where('role', 'technician')->where('status', 'active')->get();
 
-        $tech = User::where('role', 'technician')->get();
+        $tech = User::where('role', 'technician')->where('status', 'active')->get();
 
         if (isset($technician) && !empty($technician->count())) {
             foreach ($technician as $key => $value) {
@@ -578,7 +578,7 @@ class ScheduleController extends Controller
                 foreach ($filterCustomer as $key => $value) {
 
                     $getCustomerAddress = DB::table('user_address')
-                        ->select('user_address.address_line1', 'user_address.address_line2', 'user_address.city', 'location_states.state_name',  'location_states.state_code', 'user_address.zipcode')
+                        ->select('user_address.address_line1', 'user_address.address_line2', 'user_address.city', 'location_states.state_name', 'location_states.state_code', 'user_address.zipcode')
                         ->join('location_states', 'location_states.state_id', 'user_address.state_id')
                         ->where('user_id', $value->id)
                         ->first();
@@ -607,7 +607,7 @@ class ScheduleController extends Controller
                         $customers .= '<br />';
                     }
                     if (isset($getCustomerAddress->address_line1) && !empty($getCustomerAddress->address_line1)) {
-                        $customers .=  $getCustomerAddress->address_line1 . ', ';
+                        $customers .= $getCustomerAddress->address_line1 . ', ';
                     }
                     if (isset($getCustomerAddress->address_line2) && !empty($getCustomerAddress->address_line2)) {
                         $customers .= $getCustomerAddress->address_line2 . ', ';
@@ -1184,7 +1184,7 @@ class ScheduleController extends Controller
                     // Insert file data into the database
                     $fileDataInsert = DB::table('job_files')->insert($fileData);
                 }
-                // for job activity 
+                // for job activity
 
                 if ($jobId && $data['scheduleType']) {
 
@@ -1491,7 +1491,7 @@ class ScheduleController extends Controller
 
         if (isset($phone) && !empty($phone)) {
 
-            $filterCustomer = User::where('mobile',  $phone)
+            $filterCustomer = User::where('mobile', $phone)
                 ->where('role', 'customer')
                 ->get();
 
@@ -1972,9 +1972,9 @@ class ScheduleController extends Controller
                 $query->whereBetween('start_date_time', [$startDateTime, $endDateTime])
                     ->orWhereBetween('end_date_time', [$startDateTime, $endDateTime])
                     ->orWhere(function ($query) use ($startDateTime, $endDateTime) {
-                        $query->where('start_date_time', '<=', $startDateTime)
-                            ->where('end_date_time', '>=', $endDateTime);
-                    });
+                    $query->where('start_date_time', '<=', $startDateTime)
+                        ->where('end_date_time', '>=', $endDateTime);
+                });
             })
             ->get();
 

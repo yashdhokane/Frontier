@@ -362,7 +362,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::POST('/update-technician-fleet', [TechnicianController::class, 'update_fleet_technician'])->name('update_fleet_technician');
     Route::POST('/fleetupdated', [FleetController::class, 'fleetupdated'])->name('fleetupdated');
-
+    Route::post('vehicles/{id}/update-insurance', [FleetController::class, 'vehicleupdateinsurance'])
+        ->name('vehicle_insurance_policy.update');
     Route::POST('/technicians/updatefleet', [TechnicianController::class, 'updatefleet'])->name('updatefleet');
     Route::post('/technicians/sms/', [TechnicianController::class, 'smstechnician'])->name('smstechnician');
     Route::post('/technicians/customer_tags_store/', [UserController::class, 'customer_tags_store'])->name('customer_tags_store');

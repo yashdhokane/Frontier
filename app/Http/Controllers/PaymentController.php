@@ -118,7 +118,7 @@ class PaymentController extends Controller
         $permissions_type = $user_auth->permissions_type;
         $module_id = 33;
 
-        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
         } else {
@@ -129,7 +129,7 @@ class PaymentController extends Controller
 
         $manufacturer = Manufacturer::where('is_active', 'yes')->get();
 
-        $tech = User::where('role', 'technician')->get();
+        $tech = User::where('role', 'technician')->where('status', 'active')->get();
 
         return view('payment.index', compact('payments', 'manufacturer', 'tech'));
     }

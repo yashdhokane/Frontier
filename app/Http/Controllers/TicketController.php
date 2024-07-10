@@ -50,7 +50,7 @@ class TicketController extends Controller
         $permissions_type = $user_auth->permissions_type;
         $module_id = 32;
 
-        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
         } else {
@@ -59,7 +59,7 @@ class TicketController extends Controller
 
         $servicearea = LocationServiceArea::all();
         $manufacturer = Manufacturer::all();
-        $technicianrole = User::where('role', 'technician')->get();
+        $technicianrole = User::where('role', 'technician')->where('status', 'active')->get();
         $totalCalls = JobModel::count();
         $inProgress = JobModel::where('status', 'in_progress')->count();
         $opened = JobModel::where('status', 'open')->count();
@@ -130,7 +130,7 @@ class TicketController extends Controller
         $permissions_type = $user_auth->permissions_type;
         $module_id = 34;
 
-        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
         } else {
@@ -199,7 +199,7 @@ class TicketController extends Controller
 
         $jobTimings = App::make('JobTimingManager')->getJobTimings($id);
 
-        // travel time 
+        // travel time
 
         $currentJobDate = $technicians->created_at;
 
@@ -247,7 +247,7 @@ class TicketController extends Controller
         return view('tickets.show', ['Payment' => $Payment, 'jobservice' => $jobservice, 'jobproduct' => $jobproduct, 'jobFields' => $jobFields, 'ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source, 'activity' => $activity, 'files' => $files, 'schedule' => $schedule, 'jobTimings' => $jobTimings, 'travelTime' => $travelTime, 'checkSchedule' => $checkSchedule]);
     }
 
-    // Show the form for editing the specified ticket 
+    // Show the form for editing the specified ticket
     public function edit($id)
     {
         $technicians = Technician::all(); // Fetch all users

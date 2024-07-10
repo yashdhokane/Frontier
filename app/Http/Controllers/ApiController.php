@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\TimeZone;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use App\Models\JobAppliances;
@@ -40,7 +42,7 @@ use Carbon\Carbon;
 class ApiController extends Controller
 {
   
-   public function user_login(Request $request)
+  /* public function user_login(Request $request)
 {
     // Find user by email
     $user = User::where('email', '=', $request->email)->first();
@@ -51,6 +53,8 @@ class ApiController extends Controller
         if (Hash::check($request->password, $user->password)) {
             // Check if user's role is "technician"
             if ($user->role === 'technician') {
+                  Auth::login($user);
+                
                 return response()->json(['status' => true, 'data' => $user, 'message' => 'Login Successful'],200);
             } else {
                 return response()->json(['status' => false, 'message' => 'Unauthorized access'],201);
@@ -63,6 +67,61 @@ class ApiController extends Controller
         // User not found
         return response()->json(['status' => false, 'message' => 'Invalid email or password'],201);
     }
+}*/
+public function user_login(Request $request)
+{
+    // Validate request data
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
+
+    // Find user by email
+    $user = User::where('email', $request->email)->first();
+
+    // Check if user exists
+    if (!$user) {
+        return response()->json(['status' => false, 'message' => 'Invalid email or password'], 401);
+    }
+
+    // Check if password matches
+    if (!Hash::check($request->password, $user->password)) {
+        return response()->json(['status' => false, 'message' => 'Invalid email or password'], 401);
+    }
+
+    // Check if user's role is "technician"
+    if ($user->role !== 'technician') {
+        return response()->json(['status' => false, 'message' => 'Unauthorized access'], 401);
+    }
+
+    // Update user's last login timestamp
+    $user->update(['last_login' => now()]);
+
+    // Store user's timezone information in session
+    $timezoneId = $user->timezone_id;
+    $timezone = TimeZone::where('timezone_id', $timezoneId)->first();
+    Session::put('timezone_id', $timezoneId);
+    Session::put('timezone_name', $timezone->timezone_name);
+    Session::put('time_interval', $timezone->time_interval);
+
+    // Log user login history
+    $ipAddress = $request->ip();
+    DB::table('user_login_history')->updateOrInsert(
+        ['user_id' => $user->id],
+        ['ip_address' => $ipAddress, 'login' => now()]
+    );
+
+    // Authenticate user
+    Auth::login($user);
+
+    return response()->json([
+        'status' => true,
+        'data' => $user,
+        'timezone_id' => $timezoneId,
+        'timezone_name' => $timezone->timezone_name,
+        'time_interval' => $timezone->time_interval,
+        'message' => 'Login Successful'
+    ], 200);
 }
 
     public function getNotification(Request $request)
@@ -113,12 +172,14 @@ public function reset_password(Request $request)
 }
 
 
+
+
 public function jobdetailsfetch(Request $request)
 {
     $jobId = $request->input('job_id');
 
     // Check if the specified job_id exists in both JobModel and schedule
-    $job = JobModel::with('user','JobNote','JobOtherModelData', 'JobAssign', 'addresscustomer','jobproductinfohasmany.producthasmany', 'jobserviceinfohasmany.servicehasmany','usertechnician', 'jobdetailsinfo.apliencename','jobdetailsinfo.manufacturername')
+    $job = JobModel::with('user','JobNote','JobOtherModelData', 'JobAssign', 'addresscustomer','jobproductinfohasmany.producthasmany', 'jobserviceinfohasmany.servicehasmany','usertechnician', 'jobdetailsinfo.apliencename','jobdetailsinfo.manufacturername','jobdetailsinfo1.Appliances','jobdetailsinfo1.Appliances.appliance','jobdetailsinfo1.Appliances.manufacturer')
         ->where('id', $jobId)
         ->whereExists(function ($query) use ($jobId) {
             $query->select(DB::raw(1))
@@ -130,29 +191,36 @@ public function jobdetailsfetch(Request $request)
        
        $html = '<div>';
 
-    if (!$job->job_other_model_data || !($job->job_other_model_data->tech_completed == "no" && $job->job_other_model_data->customer_signature == null)) {
         $html .= '
             <h3>Job Details - ' .'#'. ($job->id ?? '') . '</h3>
             <p>Phone No.: ' . ($job->user->mobile ?? '') . '</p>
             <p>Email: ' . ($job->user->email ?? '') . '</p>
             <p>Address: ' . ($job->addresscustomer->address_line1 ?? '') . ', ' . ($job->addresscustomer->city ?? '') . ', ' . ($job->addresscustomer->state_name ?? '') . ', ' . ($job->addresscustomer->zipcode ?? '') . '</p>
             <p>View Location: </p>';
-    }
+  
 
     $html .= '
         <p>Job: ' . ($job->job_title ?? '') . '</p>
-        <p>Appliance: ' . ($job->jobdetailsinfo->apliencename->appliance_name ?? '') . ' / ' . ($job->jobdetailsinfo->manufacturername->manufacturer_name ?? '') . ' / ' . ($job->jobdetailsinfo->model_number ?? '') . ' / ' . ($job->jobdetailsinfo->serial_number ?? '') . '</p>
+ <p>Appliance: ' . 
+        ($job->jobdetailsinfo1->appliances->appliance->appliance_name ?? '') . ' / ' . 
+        ($job->jobdetailsinfo1->appliances->manufacturer->manufacturer_name ?? '') . ' / ' . 
+        ($job->jobdetailsinfo1->appliances->model_number ?? '') . ' / ' . 
+        ($job->jobdetailsinfo1->appliances->serial_number ?? '') . 
+    '</p>
         <p>Warranty: ' . ($job->warranty_type ?? '') . '</p>
-        <p>Priority: ' . ($job->priority ?? '') . '</p>
-        <p>Job is complete</p>
-        <p>Schedule: ' . ($job->job_other_model_data->job_schedule ?? '') . '</p>
-        <p>Enroute: ' . ($job->job_other_model_data->job_enroute ?? '') . '</p>
-        <p>Start: ' . ($job->job_other_model_data->job_start ?? '') . '</p>
-        <p>Finish: ' . ($job->job_other_model_data->job_end ?? '') . '</p>
-        <p>Repair Complete: ' . ($job->job_other_model_data->tech_completed ?? '') . '</p>
-        <p>Additional Details: ' . ($job->job_other_model_data->additional_details ?? '') . '</p>
-        <p>Admin\'s Remark: ' . ($job->job_other_model_data->closed_job_comment ?? '') . '</p>
-        <div>
+        <p>Priority: ' . ($job->priority ?? '') . '</p>';
+            if (!$job->JobOtherModelData || !($job->JobOtherModelData->tech_completed == "no" && $job->JobOtherModelData->customer_signature == null)) {
+  $html .= '
+                <p>Job is complete</p>';
+            $html .= '<p>Schedule: ' . ($job->JobOtherModelData->job_schedule ? Carbon::parse($job->JobOtherModelData->job_schedule)->format('m-d-y h:i A') : '') . '</p>';
+            $html .= '<p>Enroute: ' . ($job->JobOtherModelData->job_enroute ? Carbon::parse($job->JobOtherModelData->job_enroute)->format('m-d-y h:i A') : '') . '</p>';
+            $html .= '<p>Start: ' . ($job->JobOtherModelData->job_start ? Carbon::parse($job->JobOtherModelData->job_start)->format('m-d-y h:i A') : '') . '</p>';
+            $html .= '<p>Finish: ' . ($job->JobOtherModelData->job_end ? Carbon::parse($job->JobOtherModelData->job_end)->format('m-d-y h:i A') : '') . '</p>';
+            $html .= '<p>Repair Complete: ' . ($job->JobOtherModelData->tech_completed ?? '') . '</p>';
+            $html .= '<p>Additional Details: ' . ($job->JobOtherModelData->additional_details ?? '') . '</p>';
+            $html .= '<p>Admin\'s Remark: ' . ($job->JobOtherModelData->closed_job_comment ?? '') . '</p>';
+  }
+       $html .= '  <div>
             <h4>Services & Parts</h4>';
 
     foreach ($job->jobserviceinfohasmany as $serviceInfo) {
@@ -489,63 +557,261 @@ public function getcustomerJobsHistory(Request $request)
 }
 */
 
- public function jobfileUploadByTechnician(Request $request)
-    {
-        try {
-            // Validate input data
-            $request->validate([
-                'job_id' => 'required|integer',
-                'user_id' => 'required|integer',
-                'product_ids' => 'required|',
-                //'product_ids.*' => 'integer', // Validate each product_id as an integer
-                // 'attachment' => 'required|array',
-                // 'attachment.*' => 'required|string', // Validate base64 encoded strings
-                'note' => 'required|string',
-                //'sign' => 'required|',
-                'additional_details' => 'required|string',
-                'is_complete' => 'required|string',
-                 'tech_completed' => 'required|string',
+//  public function jobfileUploadByTechnician(Request $request)
+//     {
+//         try {
+//             // Validate input data
+//             $request->validate([
+//                 'job_id' => 'required|integer',
+//                 'user_id' => 'required|integer',
+//                 'product_ids' => 'required|',
+//                 //'product_ids.*' => 'integer', // Validate each product_id as an integer
+//                 // 'attachment' => 'required|array',
+//                 // 'attachment.*' => 'required|string', // Validate base64 encoded strings
+//                 'note' => 'required|string',
+//                 //'sign' => 'required|',
+//                 'additional_details' => 'required|string',
+//                 'is_complete' => 'required|string',
+//                  'tech_completed' => 'required|string',
 
                 
-            ]);
-            $tech_completed=$request->input('is_complete');
-            $jobId = $request->input('job_id');
-            $userId = $request->input('user_id');
-            $productIdsString = $request->input('product_ids');
-            $note = $request->input('note');
-            $sign = $request->input('sign');
-            $additionalDetails = $request->input('additional_details');
-            $isComplete = $request->input('tech_completed');
-            //dd($productIds);
-            // Save product details for each product ID
+//             ]);
+//             $tech_completed=$request->input('is_complete');
+//             $jobId = $request->input('job_id');
+//             $userId = $request->input('user_id');
+//             $productIdsString = $request->input('product_ids');
+//             $note = $request->input('note');
+//             $sign = $request->input('sign');
+//             $additionalDetails = $request->input('additional_details');
+//             $isComplete = $request->input('tech_completed');
+//             //dd($productIds);
+//             // Save product details for each product ID
+//             $productIdsArray = explode(',', $productIdsString);
+
+//             // Save product details for each product ID
+//             foreach ($productIdsArray as $productId) {
+//                 // Fetch the product details from the Products model
+//                 $product = Products::where('product_id', $productId)->first();
+
+//                 if ($product) {
+//                     // Create and save a new JobProduct instance
+//                     $jobProduct = new JobProduct();
+//                     $jobProduct->job_id = $jobId;
+//                     $jobProduct->product_id = $product->product_id;
+//                     $jobProduct->product_description = $product->product_description;
+//                     $jobProduct->product_name = $product->product_name;
+//                     $jobProduct->base_price = $product->base_price;
+//                     $jobProduct->quantity = 1; // Assuming quantity is always 1 for each product
+//                     $jobProduct->tax = $product->tax;
+//                     $jobProduct->discount = $product->discount;
+
+//                     $jobProduct->sub_total = $product->base_price * $jobProduct->quantity;
+//                     $jobProduct->save();
+//                 } else {
+//                     // Handle case where product is not found
+//                     throw new \Exception("Product not found: $productId");
+//                     }
+//             }
+
+//             // Handle file uploads
+//             $directoryPath = public_path('images/users/' . $userId);
+
+//             if (!File::exists($directoryPath)) {
+//                 File::makeDirectory($directoryPath, 0777, true);
+//             }
+
+//            /* foreach ($request->attachment as $image) {
+//                 // Extract the base64 string and decode it
+//                 if (preg_match('/^data:image\/(\w+);base64,/', $image, $type)) {
+//                     $data = substr($image, strpos($image, ',') + 1);
+//                     $data = base64_decode($data);
+//                     if ($data === false) {
+//                         throw new \Exception('base64_decode failed');
+//                     }
+//                     $extension = $type[1]; // Extract the extension from the regex match
+//                     $imageName = uniqid('IMG') . '.' . $extension;
+//                     $filePath = $directoryPath . '/' . $imageName;
+
+//                     // Save the file to the directory
+//                     if (file_put_contents($filePath, $data)) {
+//                         // Create and save job file record
+//                         $file = new JobFile();
+//                         $file->user_id = $userId;
+//                         $file->job_id = $jobId;
+//                         $file->filename = $imageName;
+//                         $file->path = $filePath;
+//                         $file->type = $extension;
+//                         $file->storage_location = 'local';
+//                         $file->save();
+//                     } else {
+//                         // Handle file save error
+//                         throw new \Exception("Failed to save file.");
+//                     }
+//                 } else {
+//                     throw new \Exception("Invalid base64 data");
+//                 }
+//             }
+//      */
+//        if ($request->has('attachment') && is_array($request->attachment)) {
+//             foreach ($request->attachment as $image) {
+//                 if (preg_match('/^data:image\/(\w+);base64,/', $image, $type)) {
+//                     $data = substr($image, strpos($image, ',') + 1);
+//                     $data = base64_decode($data);
+//                     if ($data === false) {
+//                         throw new \Exception('base64_decode failed');
+//                     }
+//                     $extension = $type[1];
+//                     $imageName = uniqid('IMG') . '.' . $extension;
+//                     $filePath = $directoryPath . '/' . $imageName;
+
+//                     if (file_put_contents($filePath, $data)) {
+//                         $file = new JobFile();
+//                         $file->user_id = $userId;
+//                         $file->job_id = $jobId;
+//                         $file->filename = $imageName;
+//                         $file->path = $filePath;
+//                         $file->type = $extension;
+//                         $file->storage_location = 'local';
+//                         $file->save();
+//                     } else {
+//                         throw new \Exception("Failed to save file.");
+//                     }
+//                 } else {
+//                     throw new \Exception("Invalid base64 data");
+//                 }
+//             }
+//         }
+
+
+//             $event = JobTechEvents::where('job_id', $jobId)->first();
+//             $customer = JobModel::where('id', $jobId)->first();
+
+
+//             if ($event) {
+//                 // Define the directory path for storing images
+//                 $directoryPath = public_path('images/users/' . $customer->customer_id);
+
+//                 // Create the directory if it doesn't exist
+//                 if (!File::exists($directoryPath)) {
+//                     File::makeDirectory($directoryPath, 0777, true);
+//                 }
+
+//                 if (!empty($request->sign)) {
+//                     $sign = $request->sign; // Assuming $sign is coming from the request
+
+//                     // Extract the base64 string and decode it
+//                     if (preg_match('/^data:image\/(\w+);base64,/', $sign, $type)) {
+//                         $data = substr($sign, strpos($sign, ',') + 1);
+//                         $data = base64_decode($data);
+//                         if ($data === false) {
+//                             throw new \Exception('base64_decode failed');
+//                         }
+//                         $extension = $type[1]; // Extract the extension from the regex match
+//                         $signName = uniqid('SIGN') . '.' . $extension;
+//                         $signPath = $directoryPath . '/' . $signName;
+
+//                         // Save the sign file to the directory
+//                         if (file_put_contents($signPath, $data)) {
+//                             // Update the event with the new details
+//                             // $event->user_id = $userId;
+//                             // $event->job_id = $jobId;
+//                             $event->customer_signature = $signName;
+//                             // $event->sign_path = $signPath; // Store sign file path if needed
+//                             $event->additional_details = $additionalDetails;
+//                             $event->is_repair_complete = $isComplete;
+//                             $event->tech_completed = $tech_completed;
+
+                          
+
+
+//                             // Send notice about job completion
+
+//                             // Save the event
+//                             $event->save();
+//                         } else {
+//                             throw new \Exception("Failed to save sign file.");
+//                         }
+//                     } else {
+//                         throw new \Exception("Invalid base64 data for sign");
+//                     }
+//                 }
+//             } else {
+//                 throw new \Exception("Event not found for the given job ID.");
+//             }
+
+//             // Store the note in JobNoteModel if provided
+//             if (!empty($note)) {
+//                 $jobNote = new JobNoteModel();
+//                 $jobNote->user_id = $userId;
+//                 $jobNote->job_id = $jobId;
+//                 $jobNote->note = $note;
+//                 $jobNote->added_by = $userId;
+//                 $jobNote->source_type = 'app';
+
+//                 $jobNote->updated_by = $userId;
+//                 $jobNote->save();
+//             }
+
+//             return response()->json(['status' => true, 'message' => 'Files and products uploaded successfully'], 200);
+//         } catch (\Exception $e) {
+//             return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
+//         }
+//     }
+
+
+public function jobfileUploadByTechnician(Request $request)
+{
+    try {
+        // Validate input data
+        $request->validate([
+            'job_id' => 'integer|nullable',
+            'user_id' => 'integer|nullable',
+            'product_ids' => 'string|nullable',
+            'note' => 'string|nullable',
+            'sign' => 'string|nullable',
+            'additional_details' => 'string|nullable',
+            'is_complete' => 'string|nullable',
+            'tech_completed' => 'string|nullable',
+            'attachment' => 'array|nullable',
+            'attachment.*' => 'string|nullable', // Validate base64 encoded strings
+        ]);
+
+        $jobId = $request->input('job_id');
+        $userId = $request->input('user_id');
+        $productIdsString = $request->input('product_ids');
+        $note = $request->input('note');
+        $sign = $request->input('sign');
+        $additionalDetails = $request->input('additional_details');
+        $isComplete = $request->input('is_complete');
+        $techCompleted = $request->input('tech_completed');
+
+        // Process product IDs if provided
+        if ($productIdsString) {
             $productIdsArray = explode(',', $productIdsString);
 
-            // Save product details for each product ID
             foreach ($productIdsArray as $productId) {
-                // Fetch the product details from the Products model
                 $product = Products::where('product_id', $productId)->first();
 
                 if ($product) {
-                    // Create and save a new JobProduct instance
                     $jobProduct = new JobProduct();
                     $jobProduct->job_id = $jobId;
                     $jobProduct->product_id = $product->product_id;
                     $jobProduct->product_description = $product->product_description;
                     $jobProduct->product_name = $product->product_name;
                     $jobProduct->base_price = $product->base_price;
-                    $jobProduct->quantity = 1; // Assuming quantity is always 1 for each product
+                    $jobProduct->quantity = 1;
                     $jobProduct->tax = $product->tax;
                     $jobProduct->discount = $product->discount;
-
                     $jobProduct->sub_total = $product->base_price * $jobProduct->quantity;
                     $jobProduct->save();
                 } else {
-                    // Handle case where product is not found
                     throw new \Exception("Product not found: $productId");
-                    }
+                }
             }
+        }
 
-            // Handle file uploads
+        // Handle file uploads if provided
+        if ($userId && $request->has('attachment') && is_array($request->attachment)) {
             $directoryPath = public_path('images/users/' . $userId);
 
             if (!File::exists($directoryPath)) {
@@ -553,20 +819,17 @@ public function getcustomerJobsHistory(Request $request)
             }
 
             foreach ($request->attachment as $image) {
-                // Extract the base64 string and decode it
                 if (preg_match('/^data:image\/(\w+);base64,/', $image, $type)) {
                     $data = substr($image, strpos($image, ',') + 1);
                     $data = base64_decode($data);
                     if ($data === false) {
                         throw new \Exception('base64_decode failed');
                     }
-                    $extension = $type[1]; // Extract the extension from the regex match
+                    $extension = $type[1];
                     $imageName = uniqid('IMG') . '.' . $extension;
                     $filePath = $directoryPath . '/' . $imageName;
 
-                    // Save the file to the directory
                     if (file_put_contents($filePath, $data)) {
-                        // Create and save job file record
                         $file = new JobFile();
                         $file->user_id = $userId;
                         $file->job_id = $jobId;
@@ -576,59 +839,42 @@ public function getcustomerJobsHistory(Request $request)
                         $file->storage_location = 'local';
                         $file->save();
                     } else {
-                        // Handle file save error
                         throw new \Exception("Failed to save file.");
                     }
                 } else {
                     throw new \Exception("Invalid base64 data");
                 }
             }
-     
+        }
 
+        // Process job tech events if jobId is provided
+        if ($jobId) {
             $event = JobTechEvents::where('job_id', $jobId)->first();
             $customer = JobModel::where('id', $jobId)->first();
 
-
             if ($event) {
-                // Define the directory path for storing images
                 $directoryPath = public_path('images/users/' . $customer->customer_id);
 
-                // Create the directory if it doesn't exist
                 if (!File::exists($directoryPath)) {
                     File::makeDirectory($directoryPath, 0777, true);
                 }
 
-                if (!empty($request->sign)) {
-                    $sign = $request->sign; // Assuming $sign is coming from the request
-
-                    // Extract the base64 string and decode it
+                if ($sign) {
                     if (preg_match('/^data:image\/(\w+);base64,/', $sign, $type)) {
                         $data = substr($sign, strpos($sign, ',') + 1);
                         $data = base64_decode($data);
                         if ($data === false) {
                             throw new \Exception('base64_decode failed');
                         }
-                        $extension = $type[1]; // Extract the extension from the regex match
+                        $extension = $type[1];
                         $signName = uniqid('SIGN') . '.' . $extension;
                         $signPath = $directoryPath . '/' . $signName;
 
-                        // Save the sign file to the directory
                         if (file_put_contents($signPath, $data)) {
-                            // Update the event with the new details
-                            // $event->user_id = $userId;
-                            // $event->job_id = $jobId;
                             $event->customer_signature = $signName;
-                            // $event->sign_path = $signPath; // Store sign file path if needed
                             $event->additional_details = $additionalDetails;
                             $event->is_repair_complete = $isComplete;
-                            $event->tech_completed = $tech_completed;
-
-                          
-
-
-                            // Send notice about job completion
-
-                            // Save the event
+                            $event->tech_completed = $techCompleted;
                             $event->save();
                         } else {
                             throw new \Exception("Failed to save sign file.");
@@ -636,31 +882,34 @@ public function getcustomerJobsHistory(Request $request)
                     } else {
                         throw new \Exception("Invalid base64 data for sign");
                     }
+                } else {
+                    $event->additional_details = $additionalDetails;
+                    $event->is_repair_complete = $isComplete;
+                    $event->tech_completed = $techCompleted;
+                    $event->save();
                 }
             } else {
                 throw new \Exception("Event not found for the given job ID.");
             }
-
-            // Store the note in JobNoteModel if provided
-            if (!empty($note)) {
-                $jobNote = new JobNoteModel();
-                $jobNote->user_id = $userId;
-                $jobNote->job_id = $jobId;
-                $jobNote->note = $note;
-                $jobNote->added_by = $userId;
-                $jobNote->source_type = 'app';
-
-                $jobNote->updated_by = $userId;
-                $jobNote->save();
-            }
-
-            return response()->json(['status' => true, 'message' => 'Files and products uploaded successfully'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
         }
+
+        // Store the note in JobNoteModel if provided
+        if ($note) {
+            $jobNote = new JobNoteModel();
+            $jobNote->user_id = $userId;
+            $jobNote->job_id = $jobId;
+            $jobNote->note = $note;
+            $jobNote->added_by = $userId;
+            $jobNote->source_type = 'app';
+            $jobNote->updated_by = $userId;
+            $jobNote->save();
+        }
+
+        return response()->json(['status' => true, 'message' => 'Files and products uploaded successfully'], 200);
+    } catch (\Exception $e) {
+        return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
     }
-
-
+}
 
 
 
@@ -823,7 +1072,7 @@ public function updateTechnicianProfile(Request $request)
   
 
 
-  public function updateEnroute(Request $request)
+ /* public function updateEnroute(Request $request)
     {
         $data = $request->validate([
             'job_id' => 'required|',
@@ -833,6 +1082,28 @@ public function updateTechnicianProfile(Request $request)
         $event = JobTechEvents::where('job_id', $data['job_id'])->first();
         if ($event) {
             $event->job_enroute = $data['job_enroute'];
+           // $event->enroute_time =Carbon::now()->format('H:i:s');
+
+            $event->save();
+            return response()->json(['status' => true, 'data' => $event], 201);
+        } else {
+            return response()->json(['status' => false, 'message' => 'Job not found'], 200);
+        }
+    } */
+public function updateEnroute(Request $request)
+    {
+        $data = $request->validate([
+            'job_id' => 'required|',
+            'job_enroute' => 'required|',
+        ]);
+        //  $modifyDateTime = app('modifyDateTime');
+         //   $time_interval = Session::get('time_interval');
+         //    $newFormattedDateTimeSubtract = $modifyDateTime($data['job_enroute'], $time_interval, 'subtract');
+
+           // dd($newFormattedDateTimeSubtract,$time_interval);
+             $event = JobTechEvents::where('job_id', $data['job_id'])->first();
+             if ($event) {
+               $event->job_enroute =$data['job_enroute'];
            // $event->enroute_time =Carbon::now()->format('H:i:s');
 
             $event->save();

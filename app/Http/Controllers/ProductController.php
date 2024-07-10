@@ -25,7 +25,7 @@ class ProductController extends Controller
     {
         $manufacture = Manufacturer::all();
         $product = ProductCategory::get();
-        $technicians = User::where('role', 'technician')->get();
+        $technicians = User::where('role', 'technician')->where('status', 'active')->get();
         return view('product.create_product', compact('product', 'manufacture', 'technicians'));
     }
 
@@ -151,8 +151,8 @@ class ProductController extends Controller
             'product_description' => $request->input('product_description'),
             'updated_by' => $adminId,
             'created_by' => $adminId,
-             'assigned_to' => $request->input('assigned_to'),
-            
+            'assigned_to' => $request->input('assigned_to'),
+
         ]);
 
         // Update associated product meta data
@@ -202,12 +202,12 @@ class ProductController extends Controller
         // Find the product by ID
         $product = Products::find($id);
 
-        if(!$product){
-          return view('404');
+        if (!$product) {
+            return view('404');
         }
 
         $manufacture = Manufacturer::all();
-        $technicians = User::where('role', 'technician')->get();
+        $technicians = User::where('role', 'technician')->where('status', 'active')->get();
 
         // Retrieve selected technicians for the product
         $selectedTechnicians = DB::table('products_assigned')
@@ -253,7 +253,7 @@ class ProductController extends Controller
         // Delete the product
         $product->delete();
         // Redirect or respond as needed
-        return redirect()->route('product.listingproduct')->with('success', 'Product deleted successfully');
+        return redirect()->route('product.index')->with('success', 'Product deleted successfully');
     }
 
 

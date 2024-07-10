@@ -178,7 +178,7 @@ class ProductCategoryController extends Controller
             return $permissionCheck; // This will handle the redirection
         }
 
-        $technician = User::where('role', 'technician')->get();
+        $technician = User::where('role', 'technician')->where('status', 'active')->get();
 
         $product = Products::all();
 

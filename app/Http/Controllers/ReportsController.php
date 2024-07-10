@@ -23,14 +23,14 @@ class ReportsController extends Controller
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
         $module_id = 43;
-        
-        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
         } else {
             return $permissionCheck; // This will handle the redirection
         }
-        $technician = User::where('role', 'technician')->get();
+        $technician = User::where('role', 'technician')->where('status', 'active')->get();
 
         $job = JobModel::sum('gross_total');
         $totalHours = JobAssign::sum('duration');
@@ -86,8 +86,8 @@ class ReportsController extends Controller
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
         $module_id = 44;
-        
-        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
         } else {
@@ -183,8 +183,8 @@ class ReportsController extends Controller
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
         $module_id = 42;
-        
-        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
         } else {
@@ -329,16 +329,17 @@ class ReportsController extends Controller
             ->get();
 
 
-        return view('reports.data_report', compact('data', 'customerDetails', 'zipCodeDetails', 'cityDetails', 'stateDetails', 'jobs', 'monthJobs', 'monthJobscount', 'daily', 'weekly', 'monthly', 'tagCounts', 'priorityCounts', 'leadSourceCounts', 'CountsManufacturer', 'CountsAppliance','jobstatus'));
+        return view('reports.data_report', compact('data', 'customerDetails', 'zipCodeDetails', 'cityDetails', 'stateDetails', 'jobs', 'monthJobs', 'monthJobscount', 'daily', 'weekly', 'monthly', 'tagCounts', 'priorityCounts', 'leadSourceCounts', 'CountsManufacturer', 'CountsAppliance', 'jobstatus'));
     }
-    public function fleetreport() {
-    
+    public function fleetreport()
+    {
+
         $user_auth = auth()->user();
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
         $module_id = 46;
-        
-        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
         } else {
@@ -347,7 +348,7 @@ class ReportsController extends Controller
 
         // Fetch users with fleet details where the role is 'technician'
         $users = User::with('fleetDetails')->where('role', 'technician')->get();
-        
+
         // Extract fleet keys if there are fleet details for at least one user
         $fleetKeys = [];
         foreach ($users as $user) {
@@ -355,10 +356,10 @@ class ReportsController extends Controller
                 $fleetKeys = array_merge($fleetKeys, $user->fleetDetails->pluck('fleet_key')->toArray());
             }
         }
-    
+
         // Remove duplicates from the $fleetKeys array
         $fleetKeys = array_unique($fleetKeys);
-        
+
         return view('reports.fleetreport', compact('users', 'fleetKeys'));
     }
 }

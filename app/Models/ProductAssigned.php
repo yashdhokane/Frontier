@@ -22,8 +22,9 @@ class ProductAssigned extends Model
 
     public function Technician()
     {
-        return $this->belongsTo(User::class, 'technician_id','id');
+    return $this->belongsTo(User::class, 'technician_id', 'id')->where('status', 'active');
     }
+
 
 
 }

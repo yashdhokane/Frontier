@@ -503,7 +503,7 @@ class TechnicianController extends Controller
 
         $manufacturer = Manufacturer::where('is_active', 'yes')->get();
 
-        $tech = User::where('role', 'technician')->get();
+        $tech = User::where('role', 'technician')->where('status', 'active')->get();
         $activity = UsersActivity::with('user')
             ->where('user_id', $commonUser->id)
             ->get();

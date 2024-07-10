@@ -79,7 +79,8 @@
 
                 <div class="card">
                     <form class="form" method="post"
-                        action="{{ route('fleetupdate', ['id' => $fleetModel->vehicle_id]) }}">
+                        action="{{ route('fleetupdate', ['id' => $fleetModel->vehicle_id]) }}"
+                        enctype="multipart/form-data">
                         @csrf
                         <div class="card-body card-border shadow">
 
@@ -92,15 +93,16 @@
                                             class="control-label bold col-form-label required-field">Vehicle
                                             Name</label>
                                         <input name="vehicle_name" id="vehicle_name"
-                                            value="{{ $fleetModel->vehicle_name }}" class="form-control"
+                                            value="{{ $fleetModel->vehicle_name ?? '' }}" class="form-control"
                                             required></input>
                                     </div>
                                     <div class="mb-2">
                                         <label for="vehicle_no"
                                             class="control-label bold col-form-label required-field">Vehicle
                                             No.</label>
-                                        <input name="vehicle_no" id="vehicle_no" value="{{ $fleetModel->vehicle_no }}"
-                                            class="form-control" required></input>
+                                        <input name="vehicle_no" id="vehicle_no"
+                                            value="{{ $fleetModel->vehicle_no ?? '' }}" class="form-control"
+                                            required></input>
                                     </div>
                                     <div class="mb-2">
                                         <label for="vehicle_description"
@@ -108,7 +110,62 @@
                                             Details</label>
                                         <textarea rows="3" name="vehicle_description" id="vehicle_description"
                                             class="form-control" placeholder="Add Vehicle Details"
-                                            required>{{ $fleetModel->vehicle_description }}</textarea>
+                                            required>{{ $fleetModel->vehicle_description ?? '' }}</textarea>
+                                    </div>
+                                    <div class="mb-2 ">
+                                        <label for="vin_number"
+                                            class="control-label bold col-form-label required-field">VIN
+                                            NUMBER</label>
+
+                                        <input class="form-control" type="text" value="{{ $vin_number ?? '' }}"
+                                            name="vin_number">
+
+                                    </div>
+                                    <div class="mb-2 ">
+                                        <label for="make"
+                                            class="control-label bold col-form-label required-field">MAKE</label>
+
+                                        <input class="form-control" type="text" value="{{ $make ?? '' }}" name="make">
+
+                                    </div>
+                                    <div class="mb-2 ">
+                                        <label for="model"
+                                            class="control-label bold col-form-label required-field">MODEL</label>
+
+                                        <input class="form-control" type="text" value="{{ $model ?? '' }}" name="model">
+
+                                    </div>
+                                    <div class="mb-2 ">
+                                        <label for="year"
+                                            class="control-label bold col-form-label required-field">YEAR</label>
+
+                                        <input class="form-control" type="text" value="{{ $year ?? '' }}" name="year">
+
+                                    </div>
+                                    <div class="mb-2 ">
+                                        <label for="color"
+                                            class="control-label bold col-form-label required-field">COLOR</label>
+
+                                        <input class="form-control" type="text" value="{{ $color ?? '' }}" name="color">
+
+                                    </div>
+                                    <div class="mb-2 ">
+                                        <label for="vehicle_weight"
+                                            class="control-label bold col-form-label required-field">VEHICLE
+                                            WEIGHT</label>
+
+                                        <input class="form-control" type="text" value="{{ $vehicle_weight ?? '' }}"
+                                            name="vehicle_weight">
+
+                                    </div>
+                                    <div class="mb-2 ">
+                                        <label for="vehicle_cost"
+                                            class="control-label bold col-form-label required-field">VEHICLE
+                                            COST</label>
+
+                                        <input class="form-control" type="text" value="{{ $vehicle_cost ?? '' }}"
+                                            name="vehicle_cost">
+
                                     </div>
                                     {{-- <div class="mb-2">
                                         <label for="vehicle_summary"
@@ -139,11 +196,11 @@
                                 <div class="col-md-8">
                                     <div class="mb-3">
                                         <label class="control-label  bold mb5">Upload Image</label>
-                                        <input id="file" value="{{ $fleetModel->vehicle_image }}" type="file"
-                                            onchange="showImagePreview()" name="vehicle_image"
+                                        <input type="file" id="file" onchange="showImagePreview()" name="vehicle_image"
                                             class="upload form-control" />
                                     </div>
                                 </div>
+
                                 <div class="col-md-4">
                                     <div class="el-element-overlay">
                                         <div class="el-card-item">
@@ -171,10 +228,10 @@
 
             </div>
             <div class="col-lg-6 col-xlg-6">
-                <div class="card">
+                <div class="card card-border shadow">
                     <h5 style="margin-top:3%;margin-left:2%;" class="card-title uppercase">Vehicle / Fleet Management
                     </h5>
-                    <div class="card-body">
+                    <div class="card-body ">
                         <form id="fleetForm" class="form" method="post" action="{{ route('fleetupdated') }}"> @csrf
                             <input class="form-control" type="hidden" value="{{ $fleetModel->technician_id ?? '' }}"
                                 name="id">
@@ -249,7 +306,7 @@
                                         name="license_plate">
                                 </div>
                             </div>
-                            <div class="mb-3 row">
+                            {{-- <div class="mb-3 row">
                                 <label for="vin_number" class="col-md-3 col-form-label">VIN
                                     NUMBER</label>
                                 <div class="col-md-9">
@@ -296,7 +353,7 @@
                                     <input class="form-control" type="text" value="{{ $vehicle_cost ?? '' }}"
                                         name="vehicle_cost">
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="mb-3 row">
                                 <label for="use_of_vehicle" class="col-md-3 col-form-label">USE OF
                                     VEHICLE</label>
@@ -360,6 +417,96 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-6">
+
+                <div class="card">
+                    <form method="post" action="{{ route('vehicle_insurance_policy.update', ['id' => $policy->id]) }}"
+                        enctype="multipart/form-data">
+                        @csrf
+                        <div class="card-body card-border shadow">
+
+
+                            <div class="mb-2">
+                                <label for="name" class="control-label bold col-form-label required-field">Policyholder
+                                    Name</label>
+                                <input name="name" id="name" value="{{ $policy->name ?? '' }}" class="form-control"
+                                    required></input>
+                            </div>
+                            <div class="mb-2">
+                                <label for="valid_upto" class="control-label bold col-form-label required-field">Valid
+                                    Upto</label>
+                                <input type="date" name="valid_upto" id="valid_upto"
+                                    value="{{ $policy->valid_upto ?? '' }}" class="form-control" required></input>
+                            </div>
+                            <div class="mb-2">
+                                <label for="company" class="control-label bold col-form-label required-field">Insurance
+                                    Company</label>
+                                <input name="company" id="company" value="{{ $policy->company ?? '' }}"
+                                    class="form-control" required></input>
+                            </div>
+                            <div class="mb-2">
+                                <label for="document" class="control-label bold col-form-label">Document</label>
+                                <input type="file" name="document" id="document" class="form-control" />
+                            </div>
+                            <div class="mb-2">
+                                <label for="premium"
+                                    class="control-label bold col-form-label required-field">Premium</label>
+                                <input type="number" step="0.01" name="premium" id="premium"
+                                    value="{{ $policy->premium ?? '' }}" class="form-control" required></input>
+                            </div>
+                            <div class="mb-2">
+                                <label for="cover" class="control-label bold col-form-label required-field">Cover
+                                    Amount</label>
+                                <input type="number" step="0.01" name="cover" id="cover"
+                                    value="{{ $policy->cover ?? '' }}" class="form-control" required></input>
+                            </div>
+                            <div class="mb-2">
+                                <label for="vehicle_registration_number"
+                                    class="control-label bold col-form-label required-field">Vehicle Registration
+                                    Number</label>
+                                <input name="vehicle_registration_number" id="vehicle_registration_number"
+                                    value="{{ $policy->vehicle_registration_number ?? '' }}" class="form-control"
+                                    required></input>
+                            </div>
+                            <div class="mb-2">
+                                <label for="vehicle_make"
+                                    class="control-label bold col-form-label required-field">Vehicle
+                                    Make</label>
+                                <input name="vehicle_make" id="vehicle_make" value="{{ $policy->vehicle_make ?? '' }}"
+                                    class="form-control" required></input>
+                            </div>
+                            <div class="mb-2">
+                                <label for="vehicle_model"
+                                    class="control-label bold col-form-label required-field">Vehicle
+                                    Model</label>
+                                <input name="vehicle_model" id="vehicle_model"
+                                    value="{{ $policy->vehicle_model ?? '' }}" class="form-control" required></input>
+                            </div>
+                            <div class="mb-2">
+                                <label for="vehicle_year"
+                                    class="control-label bold col-form-label required-field">Vehicle
+                                    Year</label>
+                                <input type="number" name="vehicle_year" id="vehicle_year"
+                                    value="{{ $policy->vehicle_year ?? '' }}" class="form-control" required></input>
+                            </div>
+                            <div class="mb-2">
+                                <label for="policy_no" class="control-label bold col-form-label required-field">Policy
+                                    No</label>
+                                <input type="number" name="policy_no" id="policy_no"
+                                    value="{{ $policy->policy_no ?? '' }}" class="form-control" required></input>
+                            </div>
+
+                            <input type="hidden" name="vehicle_id" value="{{ $policy->vehicle_id ?? '' }}">
+                            <div class="mb-2"> <button type="submit" class="btn btn-primary">Update</button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+
+
+            </div>
+
         </div>
 
     </div>

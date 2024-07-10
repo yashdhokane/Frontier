@@ -127,7 +127,7 @@
                                             <img src="{{ asset('public/vehicle_image/' . $item->vehicle_image) }}"
                                                 alt="{{ $item->vehicle_name }}" class="rounded-circle" width="45" />
                                             @else
-                                            <img src="{{ asset('public/images/default-part-image.png') }}"
+                                            <img src="{{ asset('public/images/vehicle.jfif') }}"
                                                 alt="{{ $item->vehicle_name }}" class="rounded-circle" width="45" />
                                             @endif
                                             <div class="ms-2">

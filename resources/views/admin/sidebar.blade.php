@@ -57,25 +57,36 @@
                         <li class="sidebar-item">
 							<a href="{{ route('services.index') }}" class="sidebar-link"><i class="ri-book-line"></i> <span class="hide-menu">Services </span></a>
 						</li>
-                        <li class="sidebar-item">
-							<a href="{{ route('product.index') }}" class="sidebar-link"><i class="ri-book-mark-line"></i> <span class="hide-menu">Parts </span></a>
-						</li>
-                        <li class="sidebar-item">
-							<a href="{{route('assign_product')}}" class="sidebar-link"><i class="ri-book-2-line"></i> <span class="hide-menu">Assign Parts </span></a>
-                        </li>
+                     
+                     
 						<li class="sidebar-item">
 							<a href="#." class="sidebar-link"><i class="far ri-price-tag-2-line"></i><span class="hide-menu">Estimates</span></a>
 						</li>
                          <li class="sidebar-item">
 							<a href="{{ route('estimate.index') }}" class="sidebar-link"><i class="ri-article-line"></i> <span class="hide-menu">Estimate Templates </span></a>
-						</li>
-							<li class="sidebar-item"><a href="{{ route('vehicles') }}" class="sidebar-link"><i
-						class="ri-truck-line"></i><span class="hide-menu"> Vehicle & Fleet
-						</span></a></li>
+						
                      </ul>
                 </li>
 
- 
+     <li class="sidebar-item">
+                    <a class="sidebar-link has-arrow waves-effect waves-dark ft6" href="#" aria-expanded="false"><i class="fas fa-chart-line" style="font-size: 16px;"></i><span class="hide-menu">Asset Management </span></a>
+                    <ul aria-expanded="false" class="collapse first-level">
+						
+						
+						<li class="sidebar-item">
+							<a href="{{route('product.index')}}" class="sidebar-link"><i class="ri-file-chart-line"></i> <span class="hide-menu">Parts </span></a>
+						</li>
+						   <li class="sidebar-item">
+							<a href="{{route('assign_product')}}" class="sidebar-link"><i class="ri-book-2-line"></i> <span class="hide-menu">Assign Parts </span></a>
+                        </li>
+                         <li class="sidebar-item">
+							<a href="{{route('tool.index')}}" class="sidebar-link"><i class="ri-file-chart-line"></i> <span class="hide-menu">Tools </span></a>
+						</li>
+                         <li class="sidebar-item">
+							<a href="{{route('vehicles')}}" class="sidebar-link"><i class="ri-file-chart-line"></i> <span class="hide-menu">Vehicle </span></a>
+						</li>
+                     </ul>
+                </li>
                 <li class="sidebar-item">
                     <a class="sidebar-link has-arrow waves-effect waves-dark ft6" href="#" aria-expanded="false"><i class="fas fa-chart-line" style="font-size: 16px;"></i><span class="hide-menu">Reports</span></a>
                     <ul aria-expanded="false" class="collapse first-level">

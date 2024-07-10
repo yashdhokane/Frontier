@@ -14,7 +14,9 @@
     <!-- -------------------------------------------------------------- -->
     <div class="page-breadcrumb" style="padding-top: 0px;">
         <div class="row">
+
             <div class="col-5 align-self-center">
+                            <h4 class="page-title">Edit Tool </h4>
 
                 <div class="d-flex align-items-center">
                     <nav aria-label="breadcrumb">
@@ -27,6 +29,7 @@
                         </ol>
                     </nav>
                 </div>
+                
             </div>
             <div class="col-7 text-end px-4">
                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">

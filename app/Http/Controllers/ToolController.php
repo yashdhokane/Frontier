@@ -34,7 +34,7 @@ class ToolController extends Controller
 
         $products = Tool::with(['toolassign.Technician'])->orderBy('created_at', 'desc')->get();
         $manufacture = Manufacturer::all();
-        $technician = User::where('role', 'technician')->get();
+        $technician = User::where('role', 'technician')->where('status', 'active')->get();
 
         $product = ProductCategory::get();
 
@@ -45,7 +45,7 @@ class ToolController extends Controller
     {
         $manufacture = Manufacturer::all();
         $product = ProductCategory::get();
-        $technicians = User::where('role', 'technician')->get();
+        $technicians = User::where('role', 'technician')->where('status', 'active')->get();
         return view('tool.create_tool', compact('product', 'manufacture', 'technicians'));
     }
     public function store(Request $request)
@@ -313,7 +313,7 @@ class ToolController extends Controller
         }
 
         $manufacture = Manufacturer::all();
-        $technicians = User::where('role', 'technician')->get();
+        $technicians = User::where('role', 'technician')->where('status', 'active')->get();
 
         // Retrieve selected technicians for the product
         $selectedTechnicians = DB::table('tool_assigned')
@@ -430,7 +430,7 @@ class ToolController extends Controller
             return $permissionCheck; // This will handle the redirection
         }
 
-        $technician = User::where('role', 'technician')->get();
+        $technician = User::where('role', 'technician')->where('status', 'active')->get();
 
         $product = Tool::all();
 

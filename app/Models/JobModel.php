@@ -117,7 +117,10 @@ public function jobfieldname()
     {
         return $this->hasOne(JobDetails::class, 'job_id', 'id');
     }
-
+ public function jobdetailsinfo1()
+    {
+        return $this->hasOne(JobAppliances::class, 'job_id', 'id');
+    }
 
 
 

@@ -7,9 +7,19 @@
 
     <div class="page-breadcrumb" style="padding: 0px 0px 10px 0px;">
         <div class="row">
-            <div class="col-5 align-self-center">
-                <h4 class="page-title">Add New Vehicles</h4>
-            </div>
+          
+             <div class="col-5 align-self-center">
+                    <h4 class="page-title">Add New Vehicles </h4>
+                    <div class="d-flex align-items-center">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="{{route('home')}}">Home</a></li>
+                                <li class="breadcrumb-item"><a href="{{route('vehicles')}}">Vehicles </a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Add New Vehicle </li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
             <div class="col-7 text-end px-4">
                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                     <a href="{{ route('product.index') }}"
@@ -120,7 +130,7 @@
                             <div class="row">
                                 <div class="col-md-8">
                                     <div class="mb-3">
-                                        <label class="control-label col-form-label required-field bold">Product
+                                        <label class="control-label col-form-label required-field bold">Vehicle
                                             Image</label>
                                         <div class="btn waves-effect waves-light">
                                             <input id="file" type="file" onchange="showImagePreview()"

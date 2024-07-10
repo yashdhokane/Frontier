@@ -61,32 +61,8 @@
                     @endif
                 </td>
                 <td>
-    @php
-        // Original datetime strings
-        $datetimeString = $ticket->JobAssign->start_date_time;
-        $datetimeString1 = $ticket->JobAssign->end_date_time;
-
-        // Time interval from session
-        $time_interval = Session::get('time_interval');
-
-        // Calculate the new date and time
-        $newFormattedDateTime = \Carbon\Carbon::parse($datetimeString)->addHours($time_interval);
-        $newFormattedDateTime1 = \Carbon\Carbon::parse($datetimeString1)->addHours($time_interval);
-    @endphp
-
-    @if ($ticket->jobassignname && $ticket->jobassignname->start_date_time)
-        <div class="font-medium link">
-            {{ $newFormattedDateTime->format('m-d-Y') }}
-        </div>
-        <div style="font-size: 12px;">
-            {{ $newFormattedDateTime->format('h:i A') }}
-            to
-            {{ $newFormattedDateTime1->format('h:i A') }}
-        </div>
-    @else
-        <div></div>
-    @endif
-</td>
+					 
+				</td>
 
             </tr>
             @endforeach
