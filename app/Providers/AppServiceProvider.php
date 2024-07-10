@@ -98,6 +98,20 @@ class AppServiceProvider extends ServiceProvider
                 }
             };
         });
+
+        $this->app->singleton('modifyDateTime', function ($app) {
+            return function ($dateTime, $hours, $operation = 'add', $format = 'Y-m-d H:i:s') {
+                $date = Carbon::parse($dateTime);
+
+                if ($operation === 'add') {
+                    return $date->addHours($hours)->format($format);
+                } elseif ($operation === 'subtract') {
+                    return $date->subHours($hours)->format($format);
+                } else {
+                    throw new \InvalidArgumentException("Invalid operation. Use 'add' or 'subtract'.");
+                }
+            };
+        });
     }
 
     /**
@@ -106,6 +120,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
 
+        View::composer('*', function ($view) {
+            $view->with('modifyDateTime', app('modifyDateTime'));
+        });
 
         $this->app->singleton('JobActivityManagerapp', function () {
             return new class
@@ -184,19 +201,6 @@ class AppServiceProvider extends ServiceProvider
             };
         });
 
-         $this->app->singleton('modifyDateTime', function ($app) {
-            return function ($dateTime, $hours, $operation = 'add') {
-                $date = Carbon::parse($dateTime);
-
-                if ($operation === 'add') {
-                    return $date->addHours($hours)->format('Y-m-d H:i:s');
-                } elseif ($operation === 'subtract') {
-                    return $date->subHours($hours)->format('Y-m-d H:i:s');
-                } else {
-                    throw new \InvalidArgumentException("Invalid operation. Use 'add' or 'subtract'.");
-                }
-            };
-        });
 
 
 
@@ -294,9 +298,7 @@ class AppServiceProvider extends ServiceProvider
                 });
             });
 
-            View::composer('*', function ($view) {
-                $view->with('modifyDateTime', app('modifyDateTime'));
-            });
+
 
             // Function to format date
             $view->with('formatDate', function ($date, $format = 'm-d-Y') {
