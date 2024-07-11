@@ -153,6 +153,10 @@
         .flexibleslot {
           flex: 1 1 auto;
            margin-right: 0px;
+            max-width: 100%; 
+            overflow: hidden; 
+            /* white-space: nowrap;  */
+            text-overflow: ellipsis; /* Shows ellipsis (...) for overflow text */
         }
 
         .show_job_details {
@@ -432,6 +436,19 @@
                                                                                                             {{ $value2->JobModel->city ?? null }},
                                                                                                             {{ $value2->JobModel->state ?? null }}
                                                                                                         </div>
+                                                                                                        <div class="round bg-cyan">
+                                                                                                    @php
+                                                                                                        $name = $value2->technician->name ?? null;
+                                                                                                        $initials = '';
+                                                                                                        if ($name) {
+                                                                                                            $names = explode(' ', $name);
+                                                                                                            foreach ($names as $part) {
+                                                                                                                $initials .= strtoupper(substr($part, 0, 1));
+                                                                                                            }
+                                                                                                        }
+                                                                                                    @endphp
+                                                                                                    {{ $initials }}
+                                                                                                </div>
                                                                                                     </div>
                                                                                                 </a>
                                                                                                 <div class="open_job_details rounded shadow py-3 px-2"

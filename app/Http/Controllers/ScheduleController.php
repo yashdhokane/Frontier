@@ -2043,6 +2043,17 @@ class ScheduleController extends Controller
                 $job->save();
             }
 
+            // Update Job tech event
+            $jobTechEvent = JobTechEvent::where('job_id', $jobId)->first();
+            if ($jobTechEvent) {
+            
+                $newFormattedDateTime = Carbon::parse($schedule->start_date_time)->setTimeFromTimeString($start_time);
+                $start = Carbon::parse($newFormattedDateTime)->subHours($time_interval);
+
+                $jobTechEvent->job_schedule = $start->toDateTimeString();
+                $jobTechEvent->save();
+            }
+
             $now = Carbon::now($timezone_name);
             $formattedDate = $start->format('D, M j');
             $formattedTime = $now->format('g:ia');

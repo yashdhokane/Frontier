@@ -195,7 +195,7 @@ class TicketController extends Controller
 
         $files = JobFile::where('job_id', $id)->latest()->get();
 
-        $schedule = JobAssign::where('job_id', $id)->first();
+        $schedule = JobAssign::where('job_id', $id)->where('assign_status', 'active')->first();
 
         $jobTimings = App::make('JobTimingManager')->getJobTimings($id);
 
@@ -244,7 +244,10 @@ class TicketController extends Controller
 
         $checkSchedule = Schedule::where('job_id', $id)->first();
 
-        return view('tickets.show', ['Payment' => $Payment, 'jobservice' => $jobservice, 'jobproduct' => $jobproduct, 'jobFields' => $jobFields, 'ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source, 'activity' => $activity, 'files' => $files, 'schedule' => $schedule, 'jobTimings' => $jobTimings, 'travelTime' => $travelTime, 'checkSchedule' => $checkSchedule]);
+        $jobAssigns = JobAssign::where('job_id', $id)->get();
+        $assignedJobs = $jobAssigns->count() > 1 ? $jobAssigns : null;
+
+        return view('tickets.show', ['Payment' => $Payment, 'jobservice' => $jobservice, 'jobproduct' => $jobproduct, 'jobFields' => $jobFields, 'ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source, 'activity' => $activity, 'files' => $files, 'schedule' => $schedule, 'jobTimings' => $jobTimings, 'travelTime' => $travelTime, 'checkSchedule' => $checkSchedule, 'assignedJobs' => $assignedJobs]);
     }
 
     // Show the form for editing the specified ticket

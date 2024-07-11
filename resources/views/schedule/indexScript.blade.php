@@ -11,137 +11,147 @@
     <script src="{{ url('public/admin/schedule/script.js') }}"></script>
     <script>
         $(document).ready(function() {
-            // Initialize Dragula with only .draggable-items elements
-            var drake = dragula(Array.from(document.getElementsByClassName('draggable-items')), {
-                    // Specify options or callbacks if needed
-                })
-                .on('drag', function(el) {
-                    el.classList.remove('card-moved');
-                })
-                .on('over', function(el, container) {
-                    container.classList.add('card-over');
-                })
-                .on('out', function(el, container) {
-                    container.classList.remove('card-over');
-                })
-                .on('drop', function(el, target, source, sibling) {
-                    var time = $(target).closest('.draggable-items').data('slot_time');
-                    var techId = $(target).closest('.draggable-items').data('technician_id');
-                    var jobId = $(target).find('.flexibleslot').data('id');
-                    var duration = $(target).find('.flexibleslot').data('duration');
-                    var techName = $(target).find('.flexibleslot').data('technician-name');
-                    var timezone = $(target).find('.flexibleslot').data('timezone-name');
+    // Initialize Dragula with only .draggable-items elements
+    var drake = dragula(Array.from(document.getElementsByClassName('draggable-items')), {
+        // Specify options or callbacks if needed
+    });
 
-                    // Update the schedule
-                    $.ajax({
-                        url: "{{ route('get.techName') }}",
-                        type: 'GET',
-                        data: {
-                            techId: techId,
-                        },
-                        success: function(response) {
-                            var name = response.name;
-                            var zoneName = response.time_zone.timezone_name;
+    // Store original position
+    var originalParent, originalNextSibling;
 
+    drake.on('drag', function(el) {
+        el.classList.remove('card-moved');
+        originalParent = el.parentElement;
+        originalNextSibling = el.nextElementSibling;
+    });
+
+    drake.on('drop', function(el, target, source, sibling) {
+        var time = $(el).closest('.draggable-items').data('slot_time');
+        var techId = $(el).closest('.draggable-items').data('technician_id');
+        var jobId = $(el).find('.flexibleslot').data('id');
+        var duration = $(el).find('.flexibleslot').data('duration');
+        var techName = $(el).find('.flexibleslot').data('technician-name');
+        var timezone = $(el).find('.flexibleslot').data('timezone-name');
+
+        // Update the schedule
+        $.ajax({
+            url: "{{ route('get.techName') }}",
+            type: 'GET',
+            data: {
+                techId: techId,
+            },
+            success: function(response) {
+                var name = response.name;
+                var zoneName = response.time_zone.timezone_name;
+
+                Swal.fire({
+                    title: `Do you want to move job from ${techName} to ${name}?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        if (timezone == zoneName) {
+                            $.ajax({
+                                url: "{{ route('schedule.drag_update') }}",
+                                type: 'GET',
+                                data: {
+                                    jobId: jobId,
+                                    techId: techId,
+                                    time: time,
+                                    duration: duration,
+                                },
+                                success: function(response) {
+                                    if (response.success == true) {
+                                        Swal.fire({
+                                            position: 'top-end',
+                                            icon: 'success',
+                                            title: 'Job moved successfully',
+                                            showConfirmButton: false,
+                                            timer: 1500
+                                        });
+                                        location.reload();
+                                    } else {
+                                        console.log(response.error);
+                                        revertDrag(el); // Revert the drag operation
+                                    }
+                                },
+                                error: function(error) {
+                                    console.error(error);
+                                    revertDrag(el); // Revert the drag operation
+                                }
+                            });
+                        } else {
                             Swal.fire({
-                                title: `Do you want to move job from ${techName} to ${name}?`,
+                                title: `Do you want to change the Job from ${timezone} to ${zoneName}?`,
                                 icon: 'question',
                                 showCancelButton: true,
                                 confirmButtonText: 'Yes',
                                 cancelButtonText: 'No',
                                 reverseButtons: true
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    if (timezone == zoneName) {
-                                        $.ajax({
-                                            url: "{{ route('schedule.drag_update') }}",
-                                            type: 'GET',
-                                            data: {
-                                                jobId: jobId,
-                                                techId: techId,
-                                                time: time,
-                                                duration: duration,
-                                            },
-                                            success: function(response) {
-                                                if (response.success == true) {
-                                                    Swal.fire({
-                                                        position: 'top-end',
-                                                        icon: 'success',
-                                                        title: 'Job moved successfully',
-                                                        showConfirmButton: false,
-                                                        timer: 1500
-                                                    });
-                                                    location.reload();
-                                                } else {
-                                                    console.log(response
-                                                    .error);
-                                                }
-                                            },
-                                            error: function(error) {
-                                                console.error(error);
-
-                                            }
-                                        });
-                                    } else {
-                                        Swal.fire({
-                                            title: `Do you want to change the Job from ${timezone} to ${zoneName}?`,
-                                            icon: 'question',
-                                            showCancelButton: true,
-                                            confirmButtonText: 'Yes',
-                                            cancelButtonText: 'No',
-                                            reverseButtons: true
-                                        }).then((innerResult) => {
-                                            if (innerResult.isConfirmed) {
-                                                $.ajax({
-                                                    url: "{{ route('schedule.drag_update') }}",
-                                                    type: 'GET',
-                                                    data: {
-                                                        jobId: jobId,
-                                                        techId: techId,
-                                                        time: time,
-                                                        duration: duration,
-                                                    },
-                                                    success: function(
-                                                        response) {
-                                                        if (response
-                                                            .success ==
-                                                            true) {
-                                                            Swal.fire({
-                                                                position: 'top-end',
-                                                                icon: 'success',
-                                                                title: 'Job moved successfully',
-                                                                showConfirmButton: false,
-                                                                timer: 1500
-                                                            });
-                                                            location
-                                                                .reload();
-                                                        } else {
-                                                            console.log(
-                                                                response
-                                                                .error
-                                                                );
-                                                        }
-                                                    },
-                                                    error: function(error) {
-                                                        console.error(
-                                                            error);
-
-                                                    }
+                            }).then((innerResult) => {
+                                if (innerResult.isConfirmed) {
+                                    $.ajax({
+                                        url: "{{ route('schedule.drag_update') }}",
+                                        type: 'GET',
+                                        data: {
+                                            jobId: jobId,
+                                            techId: techId,
+                                            time: time,
+                                            duration: duration,
+                                        },
+                                        success: function(response) {
+                                            if (response.success == true) {
+                                                Swal.fire({
+                                                    position: 'top-end',
+                                                    icon: 'success',
+                                                    title: 'Job moved successfully',
+                                                    showConfirmButton: false,
+                                                    timer: 1500
                                                 });
+                                                location.reload();
+                                            } else {
+                                                console.log(response.error);
+                                                revertDrag(el); // Revert the drag operation
                                             }
-                                        });
-                                    }
+                                        },
+                                        error: function(error) {
+                                            console.error(error);
+                                            revertDrag(el); // Revert the drag operation
+                                        }
+                                    });
+                                } else {
+                                    revertDrag(el); // Revert the drag operation
                                 }
                             });
-                        },
-                        error: function(error) {
-                            console.error(error);
-
                         }
-                    });
-
+                    } else {
+                        revertDrag(el); // Revert the drag operation
+                    }
                 });
+            },
+            error: function(error) {
+                console.error(error);
+                revertDrag(el); // Revert the drag operation
+            }
         });
+    });
+
+    // Function to revert the drag operation
+    function revertDrag(el) {
+        if (originalParent && originalNextSibling) {
+            originalParent.insertBefore(el, originalNextSibling);
+        } else if (originalParent) {
+            originalParent.appendChild(el);
+        }
+    }
+});
+
+
+
+
     </script>
 
     <script>

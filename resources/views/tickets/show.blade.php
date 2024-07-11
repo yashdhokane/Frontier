@@ -814,8 +814,8 @@
                                             @php
 
                                                 // Parse the original time if it exists
-                                                $startDateTime = $technicians->jobassignname->start_date_time
-                                                    ? Carbon::parse($technicians->jobassignname->start_date_time)
+                                                $startDateTime = $technicians->schedule->start_date_time
+                                                    ? Carbon::parse($technicians->schedule->start_date_time)
                                                     : null;
 
                                                 if ($startDateTime && $interval) {
@@ -848,13 +848,13 @@
                                     <div class="mb-2"><strong>Priority:</strong> {{ $technicians->priority ?? null }}
                                     </div>
                                     <div class="mb-2"><strong>Date:
-                                        </strong>{{ \Carbon\Carbon::parse($technicians->jobassignname->start_date_time ?? null)->format('jS F Y') }}
+                                        </strong>{{ \Carbon\Carbon::parse($technicians->schedule->start_date_time ?? null)->format('jS F Y') }}
                                     </div>
                                     <div class="mb-2"><strong>From:
-                                        </strong>{{ $convertTimeToTimezone($technicians->JobAssign->start_date_time ?? null, 'H:i:a') }}
+                                        </strong>{{ $convertTimeToTimezone($technicians->schedule->start_date_time ?? null, 'H:i:a') }}
                                     </div>
                                     <div class="mb-2"><strong>To:
-                                        </strong>{{ $convertTimeToTimezone($technicians->JobAssign->end_date_time ?? null, 'H:i:a') }}
+                                        </strong>{{ $convertTimeToTimezone($technicians->schedule->end_date_time ?? null, 'H:i:a') }}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -1124,6 +1124,49 @@
                 </div>
 
 
+                <div class="mb-4">
+                    <div class="card">
+                        <div class="card-body card-border shadow">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h5 class="card-title uppercase">Job Moved/Reschedule Assignments</h5>
+                                </div>
+                               
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table customize-table mb-0 v-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th class="border-bottom border-top">Technician</th>
+                                            <th class="border-bottom border-top">Start Time</th>
+                                            <th class="border-bottom border-top">End Time</th>
+                                            <th class="border-bottom border-top">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    @php
+                                        $time_interval = Session::get('time_interval');
+                                    @endphp
+                                    @foreach($assignedJobs as $item)
+
+                                        <tr>
+
+                                            <td>{{$item->technician->name}} </td>
+                                            <td>{{ $modifyDateTime($item->start_date_time, $time_interval, 'add','M d Y g:i a') }} </td>
+                                            <td>{{ $modifyDateTime($item->end_date_time, $time_interval, 'add','M d Y g:i a') }} </td>
+                                            <td>{{$item->assign_status}} </td>
+
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+
+                        </div>
+                    </div>
+                </div>
 
 
 

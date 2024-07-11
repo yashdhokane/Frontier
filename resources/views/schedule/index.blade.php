@@ -140,6 +140,28 @@
             border-color: transparent #1777d3 transparent transparent;
             /* Change border-color */
         }
+        .flexibleslot {
+            max-width: 100%; 
+            overflow: hidden; 
+            /* white-space: nowrap;  */
+            text-overflow: ellipsis; /* Shows ellipsis (...) for overflow text */
+        }
+    
+        
+        .draggable-items {
+            text-align: center;
+            width: fit-content;
+            /* Set a fixed width for masonry items */
+            box-sizing: border-box;
+        }
+
+        .gu-mirror {
+            opacity: 0.6;
+            position: fixed;
+            z-index: 9999;
+            pointer-events: none;
+        }
+      
 
         /* Add more styles as needed */
     </style>
@@ -306,8 +328,9 @@
                                                                             // dd($assigned_data);
                                                                         }
                                                                     @endphp
-                                                                    <td class="timeslot_td slot_refresh_jobs"
+                                                                    <td class="timeslot_td slot_refresh_jobs draggable-items"
                                                                         data-slot_time="{{ $timeString }}"
+                                                                        data-technician-name="{{ $value }}"
                                                                         data-technician_id="{{ $value }}">
                                                                         @if (isset($assigned_data) && !empty($assigned_data))
                                                                             <div class="testclass">
@@ -332,10 +355,12 @@
                                                                                             <div class="dts mb-1  flexibleslot"
                                                                                                 {{-- data-bs-toggle="modal" --}}
                                                                                                 {{-- data-bs-target="#edit" --}}
-                                                                                                data-id="{{ $value }}"
-                                                                                                data-job-id="{{ $value2->job_id }}"
-                                                                                                data-time="{{ $timeString }}"
-                                                                                                data-date="{{ $filterDate }}"
+                                                                                                        data-id="{{ $value2->job_id }}"
+                                                                                                        data-duration="{{ $value2->JobModel->jobassignname->duration }}"
+                                                                                                        data-technician-name="{{ $value2->technician->name }}"
+                                                                                                        data-timezone-name="{{ $value2->technician->TimeZone->timezone_name }}"
+                                                                                                        data-time="{{ $timeString }}"
+                                                                                                        data-date="{{ $filterDate }}"
                                                                                                 style="cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->JobModel->technician->color_code ?? null }};"
                                                                                                 data-id="{{ $value2->job_id }}">
                                                                                                 @if ($value2->JobModel && $value2->JobModel->is_confirmed == 'yes')
@@ -363,6 +388,19 @@
                                                                                                     class="cls_slot_job_card">
                                                                                                     {{ $value2->JobModel->city ?? null }},
                                                                                                     {{ $value2->JobModel->state ?? null }}
+                                                                                                </div>
+                                                                                                <div class="round bg-cyan">
+                                                                                                    @php
+                                                                                                        $name = $value2->technician->name ?? null;
+                                                                                                        $initials = '';
+                                                                                                        if ($name) {
+                                                                                                            $names = explode(' ', $name);
+                                                                                                            foreach ($names as $part) {
+                                                                                                                $initials .= strtoupper(substr($part, 0, 1));
+                                                                                                            }
+                                                                                                        }
+                                                                                                    @endphp
+                                                                                                    {{ $initials }}
                                                                                                 </div>
 
 
