@@ -21,6 +21,8 @@
 
         .schedule_section_box {
             overflow-x: scroll;
+            height: 550px;
+
         }
 
         .popupContainer {
@@ -140,14 +142,16 @@
             border-color: transparent #1777d3 transparent transparent;
             /* Change border-color */
         }
+
         .flexibleslot {
-            max-width: 100%; 
-            overflow: hidden; 
+            max-width: 100%;
+            overflow: hidden;
             /* white-space: nowrap;  */
-            text-overflow: ellipsis; /* Shows ellipsis (...) for overflow text */
+            text-overflow: ellipsis;
+            /* Shows ellipsis (...) for overflow text */
         }
-    
-        
+
+
         .draggable-items {
             text-align: center;
             width: fit-content;
@@ -161,7 +165,12 @@
             z-index: 9999;
             pointer-events: none;
         }
-      
+
+        .dat table th {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
         /* Add more styles as needed */
     </style>
@@ -294,7 +303,8 @@
                                                             <td class="timeslot_td">
                                                                 <div class="timeslot_td_time">
                                                                     @php
-                                                                        $time = $i >= 12 ? ($i > 12 ? $i - 12 : $i) : $i;
+                                                                        $time =
+                                                                            $i >= 12 ? ($i > 12 ? $i - 12 : $i) : $i;
                                                                         $minutes = '00'; // Default minutes
                                                                         if ($i % 1 !== 0) {
                                                                             $minutes = '30'; // Adjust minutes for half-hour intervals
@@ -303,10 +313,19 @@
 
                                                                         $display_hour = $i > 12 ? $i - 12 : $i;
                                                                         $display_minute = $minute == 0 ? '00' : $minute;
-                                                                        $time = $display_hour .':' .$display_minute .' ' . $date;
-                                                                        $timeString = $time . ($minutes == '00' ? '' : ':30');
+                                                                        $time =
+                                                                            $display_hour .
+                                                                            ':' .
+                                                                            $display_minute .
+                                                                            ' ' .
+                                                                            $date;
+                                                                        $timeString =
+                                                                            $time . ($minutes == '00' ? '' : ':30');
                                                                         // Format $time for comparison
-                                                                        $formattedTime = date( 'h:i A',strtotime($time), );
+                                                                        $formattedTime = date(
+                                                                            'h:i A',
+                                                                            strtotime($time),
+                                                                        );
                                                                     @endphp
                                                                     {{ $time }}
                                                                 </div>
@@ -355,12 +374,12 @@
                                                                                             <div class="dts mb-1  flexibleslot"
                                                                                                 {{-- data-bs-toggle="modal" --}}
                                                                                                 {{-- data-bs-target="#edit" --}}
-                                                                                                        data-id="{{ $value2->job_id }}"
-                                                                                                        data-duration="{{ $value2->JobModel->jobassignname->duration }}"
-                                                                                                        data-technician-name="{{ $value2->technician->name }}"
-                                                                                                        data-timezone-name="{{ $value2->technician->TimeZone->timezone_name }}"
-                                                                                                        data-time="{{ $timeString }}"
-                                                                                                        data-date="{{ $filterDate }}"
+                                                                                                data-id="{{ $value2->job_id }}"
+                                                                                                data-duration="{{ $value2->JobModel->jobassignname->duration }}"
+                                                                                                data-technician-name="{{ $value2->technician->name }}"
+                                                                                                data-timezone-name="{{ $value2->technician->TimeZone->timezone_name }}"
+                                                                                                data-time="{{ $timeString }}"
+                                                                                                data-date="{{ $filterDate }}"
                                                                                                 style="cursor: pointer; height: {{ $height_slot_px }}px; background: {{ $value2->JobModel->technician->color_code ?? null }};"
                                                                                                 data-id="{{ $value2->job_id }}">
                                                                                                 @if ($value2->JobModel && $value2->JobModel->is_confirmed == 'yes')
@@ -391,12 +410,28 @@
                                                                                                 </div>
                                                                                                 <div class="round bg-cyan">
                                                                                                     @php
-                                                                                                        $name = $value2->technician->name ?? null;
+                                                                                                        $name =
+                                                                                                            $value2
+                                                                                                                ->technician
+                                                                                                                ->name ??
+                                                                                                            null;
                                                                                                         $initials = '';
                                                                                                         if ($name) {
-                                                                                                            $names = explode(' ', $name);
-                                                                                                            foreach ($names as $part) {
-                                                                                                                $initials .= strtoupper(substr($part, 0, 1));
+                                                                                                            $names = explode(
+                                                                                                                ' ',
+                                                                                                                $name,
+                                                                                                            );
+                                                                                                            foreach (
+                                                                                                                $names
+                                                                                                                as $part
+                                                                                                            ) {
+                                                                                                                $initials .= strtoupper(
+                                                                                                                    substr(
+                                                                                                                        $part,
+                                                                                                                        0,
+                                                                                                                        1,
+                                                                                                                    ),
+                                                                                                                );
                                                                                                             }
                                                                                                         }
                                                                                                     @endphp
