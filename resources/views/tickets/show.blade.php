@@ -1131,7 +1131,7 @@
                                 <div class="col-md-8">
                                     <h5 class="card-title uppercase">Job Moved/Reschedule Assignments</h5>
                                 </div>
-                               
+
                             </div>
 
                             <div class="table-responsive">
@@ -1145,24 +1145,30 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    @php
-                                        $time_interval = Session::get('time_interval');
-                                    @endphp
-                                    @foreach($assignedJobs as $item)
+                                        @php
+                                            $time_interval = Session::get('time_interval');
+                                        @endphp
+                                        @if ($assignedJobs && count($assignedJobs) > 0)
+                                            @foreach ($assignedJobs as $item)
+                                                <tr>
+                                                    <td>{{ $item->technician->name }} </td>
+                                                    <td>{{ $modifyDateTime($item->start_date_time, $time_interval, 'add', 'M d Y g:i a') }}
+                                                    </td>
+                                                    <td>{{ $modifyDateTime($item->end_date_time, $time_interval, 'add', 'M d Y g:i a') }}
+                                                    </td>
+                                                    <td>{{ $item->assign_status }} </td>
+                                                </tr>
+                                            @endforeach
+                                        @else
+                                            <tr>
+                                                <td colspan="4">No assigned jobs found.</td>
+                                            </tr>
+                                        @endif
 
-                                        <tr>
-
-                                            <td>{{$item->technician->name}} </td>
-                                            <td>{{ $modifyDateTime($item->start_date_time, $time_interval, 'add','M d Y g:i a') }} </td>
-                                            <td>{{ $modifyDateTime($item->end_date_time, $time_interval, 'add','M d Y g:i a') }} </td>
-                                            <td>{{$item->assign_status}} </td>
-
-                                        </tr>
-                                    @endforeach
                                     </tbody>
                                 </table>
                             </div>
-                            
+
 
                         </div>
                     </div>
