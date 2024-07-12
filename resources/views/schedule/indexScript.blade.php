@@ -9,90 +9,112 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
     <script src="{{ url('public/admin/schedule/script.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+    <script>
+       $(document).ready(function() {
+        $('#addCalendarBtn').on('click', function() {
+            // Check if there are already three calendars visible
+            if ($('.calendar-wrapper1:visible').length < 3) {
+                // Show the first hidden calendar
+                $('.calendar-wrapper1:hidden:first').fadeIn();
+
+                // Adjust calendar widths based on number visible
+                var visibleCalendars = $('.calendar-wrapper1:visible').length;
+                if (visibleCalendars === 2) {
+                    $('.calendar-wrapper1:first').removeClass('col-lg-12').addClass('col-lg-6');
+                    $('.calendar-wrapper1:nth-child(2)').removeClass('col-lg-4').addClass('col-lg-6');
+                } else if (visibleCalendars === 3) {
+                    $('.calendar-wrapper1:first').removeClass('col-lg-6').addClass('col-lg-4');
+                    $('.calendar-wrapper1:nth-child(2)').removeClass('col-lg-6').addClass('col-lg-4');
+                    $('.calendar-wrapper1:nth-child(3)').removeClass('col-lg-4').addClass('col-lg-4');
+                }
+            } else {
+                // Optionally, you can add logic here for handling maximum calendars reached
+                console.log('Maximum calendars reached');
+            }
+        });
+    });
+    </script>
+    <script>
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     interact('.stretchJob').resizable({
+        //             edges: {
+        //                 left: false,
+        //                 right: false,
+        //                 bottom: true,
+        //                 top: false
+        //             }
+        //         })
+        //         .on('resizemove', function(event) {
+        //             let target = event.target;
+        //             let originalHeight = parseFloat(target.dataset.originalHeight) || parseFloat(target.style
+        //                 .height) || 0;
+        //             let heightChange = event.deltaRect.height;
+        //             let heightPer30Min = 36; // height for 30 minutes
+        //             let minDuration = 30; // min duration in minutes
+        //             let maxDuration = 240; // max duration in minutes
+
+        //             // Calculate the new height and duration
+        //             let newHeight = originalHeight + heightChange;
+        //             let newDuration = Math.round(newHeight / heightPer30Min) * 30;
+
+        //             // Restrict the duration within the allowed range
+        //             if (newDuration < minDuration) newDuration = minDuration;
+        //             if (newDuration > maxDuration) newDuration = maxDuration;
+
+        //             // Update the height based on the new duration
+        //             target.style.height = `${(newDuration / 30) * heightPer30Min}px`;
+
+        //             // Update the data-duration attribute
+        //             target.dataset.duration = newDuration;
+        //         });
+        });
+    </script>
     <script>
         $(document).ready(function() {
-    // Initialize Dragula with only .draggable-items elements
-    var drake = dragula(Array.from(document.getElementsByClassName('draggable-items')), {
-        // Specify options or callbacks if needed
-    });
+            // Initialize Dragula with only .draggable-items elements
+            var drake = dragula(Array.from(document.getElementsByClassName('draggable-items')), {
+                // Specify options or callbacks if needed
+            });
 
-    // Store original position
-    var originalParent, originalNextSibling;
+            // Store original position
+            var originalParent, originalNextSibling;
 
-    drake.on('drag', function(el) {
-        el.classList.remove('card-moved');
-        originalParent = el.parentElement;
-        originalNextSibling = el.nextElementSibling;
-    });
+            drake.on('drag', function(el) {
+                el.classList.remove('card-moved');
+                originalParent = el.parentElement;
+                originalNextSibling = el.nextElementSibling;
+            });
 
-    drake.on('drop', function(el, target, source, sibling) {
-        var time = $(el).closest('.draggable-items').data('slot_time');
-        var techId = $(el).closest('.draggable-items').data('technician_id');
-        var jobId = $(el).find('.flexibleslot').data('id');
-        var duration = $(el).find('.flexibleslot').data('duration');
-        var techName = $(el).find('.flexibleslot').data('technician-name');
-        var timezone = $(el).find('.flexibleslot').data('timezone-name');
+            drake.on('drop', function(el, target, source, sibling) {
+                var time = $(el).closest('.draggable-items').data('slot_time');
+                var techId = $(el).closest('.draggable-items').data('technician_id');
+                var jobId = $(el).find('.flexibleslot').data('id');
+                var duration = $(el).find('.flexibleslot').data('duration');
+                var techName = $(el).find('.flexibleslot').data('technician-name');
+                var timezone = $(el).find('.flexibleslot').data('timezone-name');
 
-        // Update the schedule
-        $.ajax({
-            url: "{{ route('get.techName') }}",
-            type: 'GET',
-            data: {
-                techId: techId,
-            },
-            success: function(response) {
-                var name = response.name;
-                var zoneName = response.time_zone.timezone_name;
+                // Update the schedule
+                $.ajax({
+                    url: "{{ route('get.techName') }}",
+                    type: 'GET',
+                    data: {
+                        techId: techId,
+                    },
+                    success: function(response) {
+                        var name = response.name;
+                        var zoneName = response.time_zone.timezone_name;
 
-                Swal.fire({
-                    title: `Do you want to move job from ${techName} to ${name}?`,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Yes',
-                    cancelButtonText: 'No',
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        if (timezone == zoneName) {
-                            $.ajax({
-                                url: "{{ route('schedule.drag_update') }}",
-                                type: 'GET',
-                                data: {
-                                    jobId: jobId,
-                                    techId: techId,
-                                    time: time,
-                                    duration: duration,
-                                },
-                                success: function(response) {
-                                    if (response.success == true) {
-                                        Swal.fire({
-                                            position: 'top-end',
-                                            icon: 'success',
-                                            title: 'Job moved successfully',
-                                            showConfirmButton: false,
-                                            timer: 1500
-                                        });
-                                        location.reload();
-                                    } else {
-                                        console.log(response.error);
-                                        revertDrag(el); // Revert the drag operation
-                                    }
-                                },
-                                error: function(error) {
-                                    console.error(error);
-                                    revertDrag(el); // Revert the drag operation
-                                }
-                            });
-                        } else {
-                            Swal.fire({
-                                title: `Do you want to change the Job from ${timezone} to ${zoneName}?`,
-                                icon: 'question',
-                                showCancelButton: true,
-                                confirmButtonText: 'Yes',
-                                cancelButtonText: 'No',
-                                reverseButtons: true
-                            }).then((innerResult) => {
-                                if (innerResult.isConfirmed) {
+                        Swal.fire({
+                            title: `Do you want to move job from ${techName} to ${name}?`,
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonText: 'Yes',
+                            cancelButtonText: 'No',
+                            reverseButtons: true
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                if (timezone == zoneName) {
                                     $.ajax({
                                         url: "{{ route('schedule.drag_update') }}",
                                         type: 'GET',
@@ -114,44 +136,93 @@
                                                 location.reload();
                                             } else {
                                                 console.log(response.error);
-                                                revertDrag(el); // Revert the drag operation
+                                                revertDrag(
+                                                el); // Revert the drag operation
                                             }
                                         },
                                         error: function(error) {
                                             console.error(error);
-                                            revertDrag(el); // Revert the drag operation
+                                            revertDrag(
+                                            el); // Revert the drag operation
                                         }
                                     });
                                 } else {
-                                    revertDrag(el); // Revert the drag operation
+                                    Swal.fire({
+                                        title: `Do you want to change the Job from ${timezone} to ${zoneName}?`,
+                                        icon: 'question',
+                                        showCancelButton: true,
+                                        confirmButtonText: 'Yes',
+                                        cancelButtonText: 'No',
+                                        reverseButtons: true
+                                    }).then((innerResult) => {
+                                        if (innerResult.isConfirmed) {
+                                            $.ajax({
+                                                url: "{{ route('schedule.drag_update') }}",
+                                                type: 'GET',
+                                                data: {
+                                                    jobId: jobId,
+                                                    techId: techId,
+                                                    time: time,
+                                                    duration: duration,
+                                                },
+                                                success: function(
+                                                    response) {
+                                                    if (response
+                                                        .success ==
+                                                        true) {
+                                                        Swal.fire({
+                                                            position: 'top-end',
+                                                            icon: 'success',
+                                                            title: 'Job moved successfully',
+                                                            showConfirmButton: false,
+                                                            timer: 1500
+                                                        });
+                                                        location
+                                                            .reload();
+                                                    } else {
+                                                        console.log(
+                                                            response
+                                                            .error
+                                                            );
+                                                        revertDrag(
+                                                            el
+                                                            ); // Revert the drag operation
+                                                    }
+                                                },
+                                                error: function(error) {
+                                                    console.error(
+                                                        error);
+                                                    revertDrag(
+                                                    el); // Revert the drag operation
+                                                }
+                                            });
+                                        } else {
+                                            revertDrag(
+                                            el); // Revert the drag operation
+                                        }
+                                    });
                                 }
-                            });
-                        }
-                    } else {
+                            } else {
+                                revertDrag(el); // Revert the drag operation
+                            }
+                        });
+                    },
+                    error: function(error) {
+                        console.error(error);
                         revertDrag(el); // Revert the drag operation
                     }
                 });
-            },
-            error: function(error) {
-                console.error(error);
-                revertDrag(el); // Revert the drag operation
+            });
+
+            // Function to revert the drag operation
+            function revertDrag(el) {
+                if (originalParent && originalNextSibling) {
+                    originalParent.insertBefore(el, originalNextSibling);
+                } else if (originalParent) {
+                    originalParent.appendChild(el);
+                }
             }
         });
-    });
-
-    // Function to revert the drag operation
-    function revertDrag(el) {
-        if (originalParent && originalNextSibling) {
-            originalParent.insertBefore(el, originalNextSibling);
-        } else if (originalParent) {
-            originalParent.appendChild(el);
-        }
-    }
-});
-
-
-
-
     </script>
 
     <script>

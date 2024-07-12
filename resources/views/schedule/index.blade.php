@@ -1,179 +1,6 @@
 @extends('home')
 @section('content')
-    <link rel="stylesheet" href="{{ url('public/admin/schedule/style.css') }}">
 
-    <style>
-        .dts2 {
-            min-height: 36px;
-        }
-
-        .timeslot_td_time {
-            padding: 0px;
-            font-weight: 600;
-            font-size: 10px;
-            letter-spacing: 0.5px;
-        }
-
-
-        .container-schedule {
-            padding: 0px !important;
-        }
-
-        .schedule_section_box {
-            overflow-x: scroll;
-            height: 550px;
-
-        }
-
-        .popupContainer {
-            position: absolute;
-            z-index: 999;
-            background-color: #1777d3;
-            color: white;
-            padding: 10px 7px;
-            display: none;
-            border-radius: 5px;
-        }
-
-        .popup-option {
-            display: block;
-            margin-bottom: 5px;
-            color: white;
-            font-size: 12px;
-            text-decoration: none;
-        }
-
-        .popup-option.setting-popup {
-            margin-bottom: 0px;
-        }
-
-        .popup-option i {
-            font-size: 11px;
-        }
-
-        .tech_th {
-            position: relative;
-        }
-
-        .user_head_link {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        .user_head_link img {
-            width: 48px;
-            border-radius: 50%;
-            margin-bottom: 5px;
-        }
-
-        .popupContainer::after {
-            content: "";
-            position: absolute;
-            bottom: 100%;
-            /* Change top to bottom */
-            left: 50%;
-            margin-left: -5px;
-            border-width: 6px;
-            border-style: solid;
-            border-color: transparent transparent #1777d3 transparent;
-            /* Change border-color */
-        }
-
-        .smscontainer {
-            position: absolute;
-            z-index: 999;
-            background-color: #1777d3;
-            color: white;
-            padding: 7px;
-            display: none;
-            width: 250px;
-            border-radius: 4px;
-        }
-
-        .smscontainer::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            /* Adjust top position as needed */
-            right: 100%;
-            /* Change left to right */
-            margin-top: -5px;
-            /* Adjust margin-top as needed */
-            border-width: 6px;
-            border-style: solid;
-            border-color: transparent #1777d3 transparent transparent;
-            /* Change border-color */
-        }
-
-        .smscontainer .message_content {
-            width: 75%;
-            display: inline-block;
-            border-radius: 0px;
-        }
-
-        .smscontainer .btn {
-            width: 25%;
-            height: 31px;
-            border-radius: 0px;
-            background: #3699ff;
-        }
-
-        .settingcontainer {
-            position: absolute;
-            z-index: 999;
-            background-color: #1777d3;
-            color: white;
-            padding: 7px;
-            display: none;
-            border-radius: 5px;
-        }
-
-        .settingcontainer::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            /* Adjust top position as needed */
-            right: 100%;
-            /* Change left to right */
-            margin-top: -5px;
-            /* Adjust margin-top as needed */
-            border-width: 6px;
-            border-style: solid;
-            border-color: transparent #1777d3 transparent transparent;
-            /* Change border-color */
-        }
-
-        .flexibleslot {
-            max-width: 100%;
-            overflow: hidden;
-            /* white-space: nowrap;  */
-            text-overflow: ellipsis;
-            /* Shows ellipsis (...) for overflow text */
-        }
-
-
-        .draggable-items {
-            text-align: center;
-            width: fit-content;
-            /* Set a fixed width for masonry items */
-            box-sizing: border-box;
-        }
-
-        .gu-mirror {
-            opacity: 0.6;
-            position: fixed;
-            z-index: 9999;
-            pointer-events: none;
-        }
-
-        .dat table th {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        /* Add more styles as needed */
-    </style>
 
     <div class="page-wrapper p-0 ms-2" style="display:flex;">
         <!-- Container fluid  -->
@@ -367,6 +194,8 @@
                                                                                                 $height_slot * 36 +
                                                                                                 $height_slot -
                                                                                                 1;
+                                                                                            $overfloHeight =
+                                                                                                $height_slot_px - 5;
                                                                                         @endphp
                                                                                         <a class="show_job_details"
                                                                                             href="{{ $value2->job_id ? route('tickets.show', $value2->job_id) : '#' }}">
@@ -389,53 +218,60 @@
                                                                                                             class="ri-thumb-up-fill"></i>
                                                                                                     </div>
                                                                                                 @endif
-                                                                                                <div class="cls_slot_title">
-                                                                                                    <i
-                                                                                                        class="ri-tools-line"></i>
-                                                                                                    {{ $value2->JobModel->user->name ?? null }}
-                                                                                                </div>
-                                                                                                <div class="cls_slot_time">
-                                                                                                    <i
-                                                                                                        class="ri-truck-line"></i>
-                                                                                                    {{ $timeString }}
-                                                                                                </div>
                                                                                                 <div
-                                                                                                    class="cls_slot_job_card">
-                                                                                                    {{ $value2->JobModel->job_title ?? null }}
-                                                                                                </div>
-                                                                                                <div
-                                                                                                    class="cls_slot_job_card">
-                                                                                                    {{ $value2->JobModel->city ?? null }},
-                                                                                                    {{ $value2->JobModel->state ?? null }}
-                                                                                                </div>
-                                                                                                <div class="round bg-cyan">
-                                                                                                    @php
-                                                                                                        $name =
-                                                                                                            $value2
-                                                                                                                ->technician
-                                                                                                                ->name ??
-                                                                                                            null;
-                                                                                                        $initials = '';
-                                                                                                        if ($name) {
-                                                                                                            $names = explode(
-                                                                                                                ' ',
-                                                                                                                $name,
-                                                                                                            );
-                                                                                                            foreach (
-                                                                                                                $names
-                                                                                                                as $part
-                                                                                                            ) {
-                                                                                                                $initials .= strtoupper(
-                                                                                                                    substr(
-                                                                                                                        $part,
-                                                                                                                        0,
-                                                                                                                        1,
-                                                                                                                    ),
+                                                                                                    style="overflow:hidden;height: {{ $overfloHeight }}px;">
+                                                                                                    <div
+                                                                                                        class="cls_slot_title">
+                                                                                                        <i
+                                                                                                            class="ri-tools-line"></i>
+                                                                                                        {{ $value2->JobModel->user->name ?? null }}
+                                                                                                    </div>
+                                                                                                    <div
+                                                                                                        class="cls_slot_time">
+                                                                                                        <i
+                                                                                                            class="ri-truck-line"></i>
+                                                                                                        {{ $timeString }}
+                                                                                                    </div>
+                                                                                                    <div
+                                                                                                        class="cls_slot_job_card">
+                                                                                                        {{ $value2->JobModel->job_title ?? null }}
+                                                                                                    </div>
+                                                                                                    <div
+                                                                                                        class="cls_slot_job_card">
+                                                                                                        {{ $value2->JobModel->city ?? null }},
+                                                                                                        {{ $value2->JobModel->state ?? null }}
+                                                                                                    </div>
+                                                                                                    <div
+                                                                                                        class="round bg-cyan">
+                                                                                                        @php
+                                                                                                            $name =
+                                                                                                                $value2
+                                                                                                                    ->technician
+                                                                                                                    ->name ??
+                                                                                                                null;
+                                                                                                            $initials =
+                                                                                                                '';
+                                                                                                            if ($name) {
+                                                                                                                $names = explode(
+                                                                                                                    ' ',
+                                                                                                                    $name,
                                                                                                                 );
+                                                                                                                foreach (
+                                                                                                                    $names
+                                                                                                                    as $part
+                                                                                                                ) {
+                                                                                                                    $initials .= strtoupper(
+                                                                                                                        substr(
+                                                                                                                            $part,
+                                                                                                                            0,
+                                                                                                                            1,
+                                                                                                                        ),
+                                                                                                                    );
+                                                                                                                }
                                                                                                             }
-                                                                                                        }
-                                                                                                    @endphp
-                                                                                                    {{ $initials }}
+                                                                                                        @endphp
+                                                                                                        {{ $initials }}
+                                                                                                    </div>
                                                                                                 </div>
 
 

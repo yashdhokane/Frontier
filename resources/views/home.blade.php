@@ -30,7 +30,11 @@
 
     <!-- Custom CSS -->
 
+    <!-- schedule Custom CSS -->
 
+
+    <link rel="stylesheet" href="{{ url('public/admin/schedule/style.css') }}">
+    <link rel="stylesheet" href="{{ url('public/admin/schedule/custom.css') }}">
 
     <!-- Custom CSS -->
 
