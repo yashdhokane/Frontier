@@ -30,18 +30,39 @@
                 <div class="card">
                     <div>
                         <div class="row gx-0 px-3">
-                            <div class="col-lg-12 d-flex justify-content-end" style="position: absolute; right: 30px; top: -15px;">
-                                <button id="addCalendarBtn" class="btn btn-primary mt-3">Add Calendar</button>
+                            <div class="col-lg-12 d-flex justify-content-end mt-1">
+                                <ul class="nav nav-pills" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-bs-toggle="tab" href="#navpill-1" role="tab">
+                                            <span>Screen 1</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#navpill-2" role="tab">
+                                            <span>Screen 2</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#navpill-3" role="tab">
+                                            <span>Screen 3</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#navpill-4" role="tab">
+                                            <span>Expand All</span>
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
-                            <div class="col-lg-12 mt-3">
+                            <div class="col-lg-12">
                                 <div class="row calendar-container1">
-                                    <div class="col-lg-12 calendar-wrapper1">
+                                    <div class="col-lg-12 screen1">
                                         @include('schedule.scheduleCalender1')
                                     </div>
-                                    <div class="col-lg-4 calendar-wrapper1" style="display: none;">
+                                    <div class="col-lg-12 screen2" style="display: none;">
                                         @include('schedule.scheduleCalender2')
                                     </div>
-                                    <div class="col-lg-4 calendar-wrapper1" style="display: none;">
+                                    <div class="col-lg-12 screen3" style="display: none;">
                                         @include('schedule.scheduleCalender3')
                                     </div>
                                 </div>

@@ -11,29 +11,44 @@
     <script src="{{ url('public/admin/schedule/script.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
     <script>
-       $(document).ready(function() {
-        $('#addCalendarBtn').on('click', function() {
-            // Check if there are already three calendars visible
-            if ($('.calendar-wrapper1:visible').length < 3) {
-                // Show the first hidden calendar
-                $('.calendar-wrapper1:hidden:first').fadeIn();
+        $(document).ready(function() {
+            // Function to toggle active screens based on tab selection
+            $('a[href="#navpill-1"').on('click', function(e) {
+                e.preventDefault();
 
-                // Adjust calendar widths based on number visible
-                var visibleCalendars = $('.calendar-wrapper1:visible').length;
-                if (visibleCalendars === 2) {
-                    $('.calendar-wrapper1:first').removeClass('col-lg-12').addClass('col-lg-6');
-                    $('.calendar-wrapper1:nth-child(2)').removeClass('col-lg-4').addClass('col-lg-6');
-                } else if (visibleCalendars === 3) {
-                    $('.calendar-wrapper1:first').removeClass('col-lg-6').addClass('col-lg-4');
-                    $('.calendar-wrapper1:nth-child(2)').removeClass('col-lg-6').addClass('col-lg-4');
-                    $('.calendar-wrapper1:nth-child(3)').removeClass('col-lg-4').addClass('col-lg-4');
-                }
-            } else {
-                // Optionally, you can add logic here for handling maximum calendars reached
-                console.log('Maximum calendars reached');
-            }
+                // Hide all screens
+                $('.screen2, .screen3').hide();
+                $('.screen1, .screen2, .screen3').removeClass('col-lg-4').addClass('col-lg-12');
+                $('.screen1').show();
+            });
+            $('a[href="#navpill-2"').on('click', function(e) {
+                e.preventDefault();
+
+                // Hide all screens
+                $('.screen1, .screen3').hide();
+                $('.screen1, .screen2, .screen3').removeClass('col-lg-4').addClass('col-lg-12');
+                $('.screen2').show();
+            });
+            $('a[href="#navpill-3"').on('click', function(e) {
+                e.preventDefault();
+
+                // Hide all screens
+                $('.screen2, .screen1').hide();
+                 $('.screen1, .screen2, .screen3').removeClass('col-lg-4').addClass('col-lg-12');
+                $('.screen3').show();
+            });
+
+            // Function to handle "Expand All" functionality
+            $('a[href="#navpill-4"]').on('click', function(e) {
+                e.preventDefault();
+
+                // Remove col-lg-12 and add col-lg-4 to all screen containers
+                $('.screen1, .screen2, .screen3').removeClass('col-lg-12').addClass('col-lg-4');
+
+                // Show all screens
+                $('.screen1, .screen2, .screen3').show();
+            });
         });
-    });
     </script>
     <script>
         // document.addEventListener('DOMContentLoaded', function() {
@@ -137,13 +152,15 @@
                                             } else {
                                                 console.log(response.error);
                                                 revertDrag(
-                                                el); // Revert the drag operation
+                                                    el
+                                                    ); // Revert the drag operation
                                             }
                                         },
                                         error: function(error) {
                                             console.error(error);
                                             revertDrag(
-                                            el); // Revert the drag operation
+                                                el
+                                                ); // Revert the drag operation
                                         }
                                     });
                                 } else {
@@ -183,22 +200,24 @@
                                                         console.log(
                                                             response
                                                             .error
-                                                            );
+                                                        );
                                                         revertDrag(
                                                             el
-                                                            ); // Revert the drag operation
+                                                        ); // Revert the drag operation
                                                     }
                                                 },
                                                 error: function(error) {
                                                     console.error(
                                                         error);
                                                     revertDrag(
-                                                    el); // Revert the drag operation
+                                                        el
+                                                        ); // Revert the drag operation
                                                 }
                                             });
                                         } else {
                                             revertDrag(
-                                            el); // Revert the drag operation
+                                                el
+                                                ); // Revert the drag operation
                                         }
                                     });
                                 }
