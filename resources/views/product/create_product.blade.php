@@ -15,13 +15,13 @@
         <div class="page-breadcrumb" style="padding-top:0px;">
             <div class="row">
                 <div class="col-5 align-self-center">
-                    <h4 class="page-title">Add New Part </h4>
+                    <h4 class="page-title">Add New Part</h4>
                     <div class="d-flex align-items-center">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="#">Price Book</a></li>
-                                <li class="breadcrumb-item"><a href="#">Parts </a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Add New Part </li>
+                                <li class="breadcrumb-item"><a href="#">Asset Management</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('product.index') }}">Parts</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Add </li>
                             </ol>
                         </nav>
                     </div>

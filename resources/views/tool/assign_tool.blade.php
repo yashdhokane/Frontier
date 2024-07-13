@@ -13,13 +13,13 @@
         <div class="page-breadcrumb">
             <div class="row">
                 <div class="col-5 align-self-center">
-                    <h4 class="page-title">Assign Tools to Technician</h4>
+                    <h4 class="page-title">Assign Tools</h4>
                     <div class="d-flex align-items-center">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                                <li class="breadcrumb-item"><a href="{{ route('tool.index') }}">Tool</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Assign Tool to Technician</li>
+                                <li class="breadcrumb-item"><a href="#">Asset Management</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('tool.index') }}">Tools</a></li>
+                                 <li class="breadcrumb-item active" aria-current="page">Assign</li>
                             </ol>
                         </nav>
                     </div>
@@ -69,18 +69,21 @@
              
             </div>
         </div>
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
+         @if (Session::has('success'))
+    <div class="alert_wrap">
+        <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
+            {{ Session::get('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert"
+                aria-label="Close"></button>
+        </div>
+    </div>
+    @endif
         <!-- -------------------------------------------------------------- -->
         <!-- End Bread crumb and right sidebar toggle -->
         <!-- -------------------------------------------------------------- -->
         <!-- -------------------------------------------------------------- -->
         <!-- Container fluid  -->
         <!-- -------------------------------------------------------------- -->
-        <div class="container-fluid">
+        <div class="container-fluid px-3 mt-2">
             <!-- -------------------------------------------------------------- -->
             <!-- Start Page Content -->
             <!-- -------------------------------------------------------------- -->

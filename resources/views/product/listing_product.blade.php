@@ -8,16 +8,16 @@
      <div class="page-breadcrumb">
             <div class="row">
                  <div class="col-5 align-self-center">
-                <h4 class="page-title">Tool & Parts Categories </h4>
-                <div class="d-flex align-items-center">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('tool.index') }}">Price Book</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('partCategory') }}">Categories </a></li>
-
-                        </ol>
-                    </nav>
-                </div>
+                <h4 class="page-title">Parts Category</h4>
+                    <div class="d-flex align-items-center">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+								<li class="breadcrumb-item"><a href="#">Asset Management</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('product.index') }}">Parts</a></li>
+								<li class="breadcrumb-item"><a href="#">Category</a></li>
+                             </ol>
+                        </nav>
+                    </div>
             </div>
                     <div class="col-7 text-end px-4">
                  <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
@@ -97,7 +97,7 @@
         <!-- -------------------------------------------------------------- -->
         <div class="show-categories">
 
-            <div class="container-fluid">
+             <div class="container-fluid px-3 mt-2">
 
                 <div class="">
                     <div class="row">

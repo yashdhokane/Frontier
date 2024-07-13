@@ -97,18 +97,6 @@ class FleetController extends Controller
         $vehicle->updated_by = auth()->user()->id;
 
         $vehicle->save();
-            $policy = new VehicleInsurancePolicy();
-    $policy->name = ''; // Add appropriate data
-    $policy->valid_upto = ''; // Add appropriate data
-    $policy->company = ''; // Add appropriate data
-    $policy->premium = ''; // Add appropriate data
-    $policy->cover = ''; // Add appropriate data
-    $policy->vehicle_registration_number = $request->vehicle_no; // Example: using vehicle_no for registration number
-    $policy->vehicle_make = ''; // Add appropriate data
-    $policy->vehicle_model = ''; // Add appropriate data
-    $policy->vehicle_year = ''; // Add appropriate data
-    $policy->vehicle_id = $vehicle->vehicle_id; // Assign the vehicle_id to the newly created FleetVehicle ID
-    $policy->save();
 
 
 
@@ -184,59 +172,86 @@ class FleetController extends Controller
 
         return view('fleet.edit', compact('fleet', 'vehicles', 'fleetModel', 'users', 'policy', 'technicianIds', 'oil_change', 'tune_up', 'tire_rotation', 'breaks', 'inspection_codes', 'mileage', 'registration_expiration_date', 'vehicle_coverage', 'license_plate', 'vin_number', 'make', 'model', 'year', 'color', 'vehicle_weight', 'vehicle_cost', 'use_of_vehicle', 'repair_services', 'ezpass', 'service', 'additional_service_notes', 'last_updated', 'epa_certification'));
     }
-    public function vehicleupdateinsurance(Request $request, $id)
-    {
-        // Validate the request data
-        $request->validate([
-            'name' => 'required',
-            'valid_upto' => 'required',
-            'company' => 'required',
-            'premium' => 'required',
-            'cover' => 'required',
-            'vehicle_registration_number' => 'required',
-            'vehicle_make' => 'required',
-            'vehicle_model' => 'required',
-            'vehicle_year' => 'required',
-            'vehicle_id' => 'required', // Ensure vehicle_id exists in vehicles table
-            'document' => 'nullable', // Optional file upload validation
-        ]);
+public function vehicleupdateinsurance(Request $request, $id)
+{
+   // dd($request->all());
 
-        // Find the policy by id
-        $policy = VehicleInsurancePolicy::where('vehicle_id', $id)->first();
-        if ($request->hasFile('vehicle_insurance')) {
-            $categoryImage = $request->file('vehicle_insurance');
-            $imageName = time() . '_' . $categoryImage->getClientOriginalName();
-            $categoryImage->move(public_path('vehicle_insurance'), $imageName);
-        } else {
-            $imageName = null;
-        }
-        // Update policy object with request data
-        $policy->name = $request->name;
-        $policy->valid_upto = $request->valid_upto;
-                $policy->policy_no = $request->policy_no;
+    // Validate the request data
+    $request->validate([
+        // 'name' => 'required',
+        // 'valid_upto' => 'required',
+        // 'company' => 'required',
+        // 'premium' => 'required',
+        // 'cover' => 'required',
+        // 'vehicle_registration_number' => 'required',
+        // 'vehicle_make' => 'required',
+        // 'vehicle_model' => 'required',
+        // 'vehicle_year' => 'required',
+        // 'vehicle_id' => 'required', // Ensure vehicle_id exists in vehicles table
+        // 'document' => 'nullable', // Optional file upload validation
+    ]);
 
-        $policy->company = $request->company;
-        $policy->premium = $request->premium;
-        $policy->cover = $request->cover;
-        $policy->vehicle_registration_number = $request->vehicle_registration_number;
-        $policy->vehicle_make = $request->vehicle_make;
-        $policy->vehicle_model = $request->vehicle_model;
-        $policy->vehicle_year = $request->vehicle_year;
-        $policy->vehicle_id = $request->vehicle_id;
-        $policy->document = $imageName;
-
-        // Handle document upload if provided
-
-
-        // Save the updated policy
-        $policy->save();
-
-        // Redirect back with success message
-        return redirect()->route('vehicles')
-            ->with('success', 'Policy updated successfully');
+    // Find the policy by vehicle_id
+    $policy = VehicleInsurancePolicy::where('vehicle_id', $id)->first();
+    if ($request->hasFile('document')) {
+        $categoryImage = $request->file('document');
+$imageName = time() . '_' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT) . '_' . $categoryImage->getClientOriginalName();
+        $categoryImage->move(public_path('document'), $imageName);
+    } else {
+        $imageName = null;
     }
+     
+
+    // Update policy object with request data
+    $policy->name = $request->name;
+    $policy->valid_upto = $request->valid_upto;
+    $policy->company = $request->company;
+    $policy->premium = $request->premium;
+    $policy->cover = $request->cover;
+    $policy->vehicle_registration_number = $request->vehicle_registration_number;
+    $policy->vehicle_make = $request->vehicle_make;
+    $policy->vehicle_model = $request->vehicle_model;
+    $policy->vehicle_year = $request->vehicle_year;
+    $policy->vehicle_id = $request->vehicle_id;
+    $policy->document = $imageName;
+
+    // Save the updated policy
+    $policy->save();
+
+    // Find the FleetVehicle by vehicle_id
+    $fleetVehicle = FleetVehicle::where('vehicle_id', $request->vehicle_id)->firstOrFail();
+ if ($request->hasFile('vehicle_image')) {
+        $categoryImage = $request->file('vehicle_image');
+$imageName = time() . '_' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT) . '_' . $categoryImage->getClientOriginalName();
+        $categoryImage->move(public_path('vehicle_image'), $imageName);
+    } else {
+        $imageName = null;
+    }
+    // Update the FleetVehicle with the provided data
+    $fleetVehicle->update([
+                'vehicle_image' => $imageName,
+
+        'vehicle_name' => $request->vehicle_name,
+        'vehicle_no' => $request->vehicle_no,
+        'vehicle_description' => $request->vehicle_description,
+        'vin_number' => $request->vin_number,
+        'make' => $request->make,
+        'model' => $request->model,
+        'year' => $request->year,
+        'color' => $request->color,
+        'vehicle_weight' => $request->vehicle_weight,
+        'vehicle_cost' => $request->vehicle_cost,
+    ]);
+
+    // Redirect back with success message
+    return redirect()->route('vehicles')
+        ->with('success', 'Policy and Fleet Vehicle updated successfully');
+}
+
+
     public function fleetupdated(Request $request)
     {
+
         $userId = $request->input('id');
         $vehicle_id = $request->input('vehicle_id');
 
@@ -353,9 +368,9 @@ class FleetController extends Controller
         return redirect()->back()->with('success', 'Fleet data updated successfully!');
     }
 
-    public function update(Request $request, $id)
+    public function fleetupdate(Request $request, $id)
     {
-        //dd($request->all());        // Validate the form data
+        // dd($request->all());        // Validate the form data
         $request->validate([
             'vehicle_description' => 'required|',
             //'vehicle_summary' => 'required|string',
@@ -394,6 +409,49 @@ class FleetController extends Controller
             'updated_at' => now(), // Update the updated_at timestamp
             'updated_by' => Auth::id(), // Set the updated_by column to the authenticated user's ID
         ]);
+
+        $policy = VehicleInsurancePolicy::where('vehicle_id', $id)->first();
+        if ($request->hasFile('vehicle_insurance')) {
+            $categoryImage = $request->file('vehicle_insurance');
+            $imageName = time() . '_' . $categoryImage->getClientOriginalName();
+            $categoryImage->move(public_path('vehicle_insurance'), $imageName);
+        } else {
+            $imageName = null;
+        }
+        // Update policy object with request data
+        $policy->name = $request->name;
+        $policy->valid_upto = $request->valid_upto;
+        $policy->company = $request->company;
+        $policy->premium = $request->premium;
+        $policy->cover = $request->cover;
+        $policy->vehicle_registration_number = $request->vehicle_registration_number;
+        $policy->vehicle_make = $request->vehicle_make;
+        $policy->vehicle_model = $request->vehicle_model;
+        $policy->vehicle_year = $request->vehicle_year;
+        $policy->vehicle_id = $request->vehicle_id;
+        $policy->document = $imageName;
+
+        // Handle document upload if provided
+
+
+        // Save the updated policy
+        $policy->save();
+        // foreach ($request->except('_token', 'id') as $key => $value) {
+        // Delete the existing record if it exists
+        // FleetDetails::where('user_id', $userId)
+        //     ->where('vehicle_id', $vehicle_id)
+        //     ->where('fleet_key', $key)
+        //     ->delete();
+
+        // Create a new record
+        // FleetDetails::update([
+        //     'user_id' => $request->technician_id,
+        //     'vehicle_id' => $request->vehicle_id,
+        //     'fleet_key' => $key,
+        //     'fleet_value' => $value
+        // // ]);
+        // }
+
 
         // Redirect back with a success message
         return redirect()->route('vehicles')->with('success', 'Fleet model updated successfully.');

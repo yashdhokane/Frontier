@@ -242,7 +242,7 @@
                                                                                                         {{ $value2->JobModel->state ?? null }}
                                                                                                     </div>
                                                                                                     <div
-                                                                                                        class="round bg-cyan">
+                                                                                                        class="round bg-cyan2" style="color: #000; width: 24px; height: 24px; display: inline-block; font-weight: 400; text-align: center; border-radius: 100%; background: #dbdbdb; line-height: 24px; font-size: 10px !important;">
                                                                                                         @php
                                                                                                             $name =
                                                                                                                 $value2

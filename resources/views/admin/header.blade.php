@@ -34,6 +34,9 @@
                 <li @if (request()->routeIs('schedule')) class="toplinks selected" @else class="toplinks" @endif
                     class="toplinks"><a href="{{ route('schedule') }}"><i class="fas fa-calendar-check"></i>
                         Schedule</a></li>
+						
+						<li class="toplinks selected" class="toplinks"><a href="https://dispatchannel.com/portal/schedule_new"><i class="fas fa-calendar-check"></i>
+                        Schedule New</a></li>
 
                 <li class="toplinks"><a href="{{ route('users.index') }}"><i class="fas fa-users"></i> Customer</a></li>
 

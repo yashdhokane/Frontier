@@ -8,7 +8,15 @@
     <div class="page-breadcrumb" style="padding: 0px 0px 10px 0px;">
         <div class="row">
             <div class="col-5 align-self-center">
-                <h4 class="page-title">Vehicles</h4>
+                 <h4 class="page-title">Vehicles</h4>
+                <div class="d-flex align-items-center">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+							<li class="breadcrumb-item"><a href="#">Asset Management</a></li>
+                             <li class="breadcrumb-item"><a href="#">Vehicles</a></li>
+                        </ol>
+                    </nav>
+                </div>
             </div>
 
             <div class="col-7 text-end px-4">
@@ -73,7 +81,7 @@
 
             <div class="card">
                 <div class="card-body card-border shadow ">
-                    <div class="table-responsive table-custom">
+                    <div class="table-responsive table-custom"style="overflow: auto; ">
                         <table id="zero_config00" class="table table-hover table-striped text-nowrap"
                             style="overflow-x: auto; overflow-y: auto;" data-paging="true" data-paging-size="7">
                             <thead>
@@ -109,7 +117,7 @@
                                     <th>ID</th>
                                     <th>Vehicle Name</th>
                                     <th>Vehicle No.</th>
-                                    <th>Vehicle Description</th>
+									<th>Insurance</th>
                                     <th>Technician Assigned</th>
                                     <th>Last Modified</th>
                                     <th>Status</th>
@@ -140,14 +148,21 @@
                                         </div>
                                     </td>
                                     <td>{{ $item->vehicle_no ?? '' }}</td>
-                                    <td>{{ Str::limit($item->vehicle_description, 50) ?? null }}{{
-                                        strlen($item->vehicle_description) > 200
-                                        ? '...' : '' }}</td>
+                                   
+<td>
+    <div>
+        {{ $item->vin_number ?? '' }}
+        @if ($item->vehicle && $item->vehicle->valid_upto)
+            <br/> <span class="ft11">{{ $item->vehicle->valid_upto->format('n-j-Y') }}</span>
+        @endif
+    </div>
+</td>
+
                                     <td>{{ $item->technician->name ?? null }}</td>
                                     <td>{{ $item->updated_at ? \Carbon\Carbon::parse($item->updated_at)->format('m-d-Y
                                         h:i:a') : null }}
                                     </td>
-                                    <td>{{ $item->status ?? null }}</td>
+                                    <td style="text-transform: capitalize;">{{ $item->status ?? null }}</td>
                                     <td>
                                         <div class="btn-group">
                                             <button type="button"
@@ -156,6 +171,16 @@
                                                 <i class="ri-settings-3-fill align-middle fs-5"></i>
                                             </button>
                                             <div class="dropdown-menu">
+                                              @if ($item->vehicle->document ?? '')
+        <a href="{{ asset('public/document/' . $item->vehicle->document ?? '') }}" target="_blank"
+            class="dropdown-item">
+            <i class="fa fa-file-pdf-o me-2"></i> Download PDF
+        </a>
+        @else
+        <span class="dropdown-item">
+            No PDF available
+        </span>
+        @endif
                                                 @if ($item->status == 'active')
                                                 <a class="dropdown-item"
                                                     href="{{ url('inactive/fleet/' . $item->vehicle_id) }}"><i
@@ -167,6 +192,7 @@
                                                         data-feather="edit-2" class="feather-sm me-2"></i>
                                                     Active</a>
                                                 @endif
+
                                                 @if ($item->vehicle_id)
                                                 <a href="{{ route('fleet.fleetedit', ['id' => $item->vehicle_id]) }}"
                                                     class="text-dark pe-2 dropdown-item">

@@ -9,13 +9,13 @@
         <div class="row">
           
              <div class="col-5 align-self-center">
-                    <h4 class="page-title">Add New Vehicles </h4>
+                    <h4 class="page-title">Asset Management </h4>
                     <div class="d-flex align-items-center">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="{{route('home')}}">Home</a></li>
                                 <li class="breadcrumb-item"><a href="{{route('vehicles')}}">Vehicles </a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Add New Vehicle </li>
+                                <li class="breadcrumb-item active" aria-current="page">Add </li>
                             </ol>
                         </nav>
                     </div>

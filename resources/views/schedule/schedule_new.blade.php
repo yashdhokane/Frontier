@@ -31,7 +31,13 @@
                     <div>
                         <div class="row gx-0 px-3">
                             <div class="col-lg-12 d-flex justify-content-end mt-1">
-                                <ul class="nav nav-pills" role="tablist">
+							
+								<div class="btn-group mt-2" role="group" aria-label="Button group with nested dropdown" style="margin-right:30px;">
+									<a href="#." class="btn btn-info">Calendar</a>
+									<a href="#." class="btn btn-light-info text-info">Map</a>
+								</div>
+
+                                <ul class="nav nav-pills  mt-2" role="tablist">
                                     <li class="nav-item">
                                         <a class="nav-link active" data-bs-toggle="tab" href="#navpill-1" role="tab">
                                             <span>Screen 1</span>

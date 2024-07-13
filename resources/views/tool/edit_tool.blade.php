@@ -16,19 +16,16 @@
         <div class="row">
 
             <div class="col-5 align-self-center">
-                            <h4 class="page-title">Edit Tool </h4>
-
-                <div class="d-flex align-items-center">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('tool.index') }}">Tools </a></li>
-                            <li class="breadcrumb-item">
-                                <a>{{ $product->product_name ?? '' }}</a>
-                            </li>
-                        </ol>
-                    </nav>
-                </div>
+					<h4 class="page-title">{{ $product->product_name }}</h4>
+                    <div class="d-flex align-items-center">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+								<li class="breadcrumb-item"><a href="#">Asset Management</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('tool.index') }}">Tools</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Edit</li>
+                            </ol>
+                        </nav>
+                    </div>
                 
             </div>
             <div class="col-7 text-end px-4">

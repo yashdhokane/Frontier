@@ -13,13 +13,13 @@
         <div class="page-breadcrumb">
             <div class="row">
                 <div class="col-5 align-self-center">
-                    <h4 class="page-title">Assign Parts to Technician</h4>
+                    <h4 class="page-title">Assign Parts</h4>
                     <div class="d-flex align-items-center">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                                <li class="breadcrumb-item"><a href="https://dispatchannel.com/portal/parts">Parts</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Assign Parts to Technician</li>
+                                <li class="breadcrumb-item"><a href="#">Asset Management</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('product.index') }}">Parts</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Assign Parts</li>
                             </ol>
                         </nav>
                     </div>
@@ -81,7 +81,7 @@
         <!-- -------------------------------------------------------------- -->
         <!-- Container fluid  -->
         <!-- -------------------------------------------------------------- -->
-        <div class="container-fluid">
+        <div class="container-fluid px-3 mt-2">
             <!-- -------------------------------------------------------------- -->
             <!-- Start Page Content -->
             <!-- -------------------------------------------------------------- -->

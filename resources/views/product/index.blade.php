@@ -13,8 +13,9 @@
                     <div class="d-flex align-items-center">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{ route('product.index') }}">Price Book</a></li>
-                                <li class="breadcrumb-item"><a href="{{ route('product.index') }}">Parts </a></li>
+                                <li class="breadcrumb-item"><a href="#.">Asset Management</a></li>
+                                <li class="breadcrumb-item"><a href="#">Parts</a></li>
+
 
                             </ol>
                         </nav>
@@ -82,13 +83,13 @@
                 </div>
             @endif
         <!-- -------------------------------------------------------------- -->
-        <div class="container-fluid">
+        <div class="container-fluid mt-3">
             <!-- -------------------------------------------------------------- -->
             <!-- Start Page Content -->
             <!-- -------------------------------------------------------------- -->
             <div class="row">
                 <!-- Column -->
-                <div class="col-lg-12">
+                <div class="col-12" style="margin-left:0px; padding-left:0px;">
                     <!-- ---------------------
                                                                         start Product Orders
                                                                     ---------------- -->

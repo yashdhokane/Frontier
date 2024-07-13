@@ -24,6 +24,17 @@ class VehicleInsurancePolicy extends Model
         'vehicle_year',
         'vehicle_id',
     ];
+      protected $dates = [
+        'valid_upto',
+        // Other date fields
+    ];
+
+    // Or, if using $casts
+    protected $casts = [
+        'valid_upto' => 'datetime',
+        // Other casts
+    ];
+
 
     /**
      * Get the vehicle associated with the insurance policy.
