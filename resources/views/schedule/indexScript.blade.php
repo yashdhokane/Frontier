@@ -25,7 +25,7 @@
             $('a[href="#navCalendar"').on('click', function(e) {
                 e.preventDefault();
 
-                $('#navCalendar').hide();
+                $('#mapSection').hide();
                 $('.mbtn').removeClass('btn-info').addClass('btn-light-info text-info');
                 $('.cbtn').removeClass('btn-light-info text-info').addClass('btn-info');
                 $('#scheduleSection').show();
@@ -741,7 +741,7 @@
         function initMap() {
             // Create a map with default center and zoom
             map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 2,
+                zoom: 5,
                 center: {
                     lat: 0,
                     lng: 0
