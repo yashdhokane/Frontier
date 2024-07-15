@@ -798,6 +798,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/drag_update', [ScheduleController::class, 'drag_update'])->name('schedule.drag_update');
 
+    Route::get('marker-content-schedule', [ScheduleController::class, 'getMarkerDetailSchedule'])->name('schedule.getMarkerDetails');
+
     // MailController
 
     Route::get('get/mail/schedule', [MailController::class, 'index']);

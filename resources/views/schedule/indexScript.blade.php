@@ -12,6 +12,26 @@
     <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
     <script>
         $(document).ready(function() {
+            $('#mapSection').hide();
+            $('a[href="#navMap"').on('click', function(e) {
+                e.preventDefault();
+
+                $('#scheduleSection').hide();
+                $('.cbtn').removeClass('btn-info').addClass('btn-light-info text-info');
+                $('.mbtn').removeClass('btn-light-info text-info').addClass('btn-info');
+                $('#mapSection').show();
+            });
+
+            $('a[href="#navCalendar"').on('click', function(e) {
+                e.preventDefault();
+
+                $('#navCalendar').hide();
+                $('.mbtn').removeClass('btn-info').addClass('btn-light-info text-info');
+                $('.cbtn').removeClass('btn-light-info text-info').addClass('btn-info');
+                $('#scheduleSection').show();
+            });
+
+            //  for split screen 
             // Function to toggle active screens based on tab selection
             $('a[href="#navpill-1"').on('click', function(e) {
                 e.preventDefault();
@@ -34,7 +54,7 @@
 
                 // Hide all screens
                 $('.screen2, .screen1').hide();
-                 $('.screen1, .screen2, .screen3').removeClass('col-lg-4').addClass('col-lg-12');
+                $('.screen1, .screen2, .screen3').removeClass('col-lg-4').addClass('col-lg-12');
                 $('.screen3').show();
             });
 
@@ -83,7 +103,7 @@
         //             // Update the data-duration attribute
         //             target.dataset.duration = newDuration;
         //         });
-        });
+        // });
     </script>
     <script>
         $(document).ready(function() {
@@ -153,14 +173,14 @@
                                                 console.log(response.error);
                                                 revertDrag(
                                                     el
-                                                    ); // Revert the drag operation
+                                                ); // Revert the drag operation
                                             }
                                         },
                                         error: function(error) {
                                             console.error(error);
                                             revertDrag(
                                                 el
-                                                ); // Revert the drag operation
+                                            ); // Revert the drag operation
                                         }
                                     });
                                 } else {
@@ -211,13 +231,13 @@
                                                         error);
                                                     revertDrag(
                                                         el
-                                                        ); // Revert the drag operation
+                                                    ); // Revert the drag operation
                                                 }
                                             });
                                         } else {
                                             revertDrag(
                                                 el
-                                                ); // Revert the drag operation
+                                            ); // Revert the drag operation
                                         }
                                     });
                                 }
@@ -660,5 +680,93 @@
             }
 
         }
+    </script>
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&loading=async&callback=initMap&libraries=marker"
+        async></script>
+    <script>
+        var openInfoWindowpop = null;
+        var map;
+
+        function setMarkers(map) {
+            @if (isset($data) && !empty($data))
+                @foreach ($data as $marker)
+                    @if (!empty($marker->latitude) && !empty($marker->longitude))
+                        var marker{{ $marker->assign_id }} = new google.maps.Marker({
+                            position: {
+                                lat: {{ $marker->latitude }},
+                                lng: {{ $marker->longitude }}
+                            },
+                            map: map,
+                            title: '{{ $marker->name }}'
+                        });
+
+                        marker{{ $marker->assign_id }}.addListener('click', function() {
+                            $.ajax({
+                                url: '{{ route('map.getMarkerDetails') }}',
+                                method: 'GET',
+                                data: {
+                                    id: {{ $marker->job_id }}
+                                },
+                                success: function(response) {
+                                    if (response.content) {
+                                        if (openInfoWindowpop) {
+                                            openInfoWindowpop.close();
+                                        }
+                                        openInfoWindowpop = openInfoWindow(
+                                            marker{{ $marker->assign_id }},
+                                            response.content
+                                        );
+                                    } else {
+                                        console.error('Error fetching marker content.');
+                                    }
+                                },
+                                error: function() {
+                                    console.error('Error fetching marker content.');
+                                }
+                            });
+                        });
+                    @endif
+                @endforeach
+            @endif
+        }
+
+        function openInfoWindow(marker, content) {
+            var infoWindow = new google.maps.InfoWindow({
+                content: content
+            });
+            infoWindow.open(map, marker);
+        }
+
+        function initMap() {
+            // Create a map with default center and zoom
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 2,
+                center: {
+                    lat: 0,
+                    lng: 0
+                }
+            });
+
+            // Set markers on the map
+            setMarkers(map);
+
+            // Calculate bounds based on the markers
+            var bounds = new google.maps.LatLngBounds();
+            @if (isset($data) && !empty($data))
+                @foreach ($data as $marker)
+                    @if (!empty($marker->latitude) && !empty($marker->longitude))
+                        bounds.extend(new google.maps.LatLng({{ $marker->latitude }}, {{ $marker->longitude }}));
+                    @endif
+                @endforeach
+            @endif
+
+            // Fit the map to the bounds
+            map.fitBounds(bounds);
+        }
+
+        $(document).ready(function() {
+            // The map will be initialized by the callback parameter in the Google Maps API script
+        });
     </script>
 @endsection

@@ -315,8 +315,44 @@ class ScheduleController extends Controller
         }
 
         $current_time = Carbon::now($timezone_name)->format('h:i A');
+        $new_currentDate =  $currentDate->format('Y-m-d');
 
-        return view('schedule.schedule_new', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate', 'users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', 'cities', 'cities1', 'TodayDate', 'tech', 'schedule_arr', 'hours', 'current_time'));
+        $data = DB::table('job_assigned')
+            ->select(
+                'job_assigned.id as assign_id',
+                'job_assigned.job_id as job_id',
+                'job_assigned.start_date_time',
+                'job_assigned.end_date_time',
+                'job_assigned.start_slot',
+                'job_assigned.end_slot',
+                'job_assigned.pending_number',
+                'jobs.job_code',
+                'jobs.job_title as subject',
+                'jobs.status',
+                'jobs.address',
+                'jobs.city',
+                'jobs.state',
+                'jobs.zipcode',
+                'jobs.latitude',
+                'jobs.longitude',
+                'users.name',
+                'users.email',
+                'technician.name as technicianname',
+                'technician.email as technicianemail'
+            )
+            ->join('jobs', 'jobs.id', '=', 'job_assigned.job_id')
+            ->join('users', 'users.id', '=', 'jobs.customer_id')
+            ->join('users as technician', 'technician.id', '=', 'job_assigned.technician_id')
+            ->whereNotNull('jobs.latitude')
+            ->whereNotNull('jobs.longitude')
+            ->whereDate('job_assigned.start_date_time', '=', $new_currentDate)
+            ->where('job_assigned.assign_status', 'active')
+            ->orderBy('job_assigned.pending_number', 'asc')
+            ->get();
+
+
+
+        return view('schedule.schedule_new', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate', 'users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', 'cities', 'cities1', 'TodayDate', 'tech', 'schedule_arr', 'hours', 'current_time', 'data'));
     }
 
 
@@ -1972,9 +2008,9 @@ class ScheduleController extends Controller
                 $query->whereBetween('start_date_time', [$startDateTime, $endDateTime])
                     ->orWhereBetween('end_date_time', [$startDateTime, $endDateTime])
                     ->orWhere(function ($query) use ($startDateTime, $endDateTime) {
-                    $query->where('start_date_time', '<=', $startDateTime)
-                        ->where('end_date_time', '>=', $endDateTime);
-                });
+                        $query->where('start_date_time', '<=', $startDateTime)
+                            ->where('end_date_time', '>=', $endDateTime);
+                    });
             })
             ->get();
 
@@ -2046,7 +2082,7 @@ class ScheduleController extends Controller
             // Update Job tech event
             $jobTechEvent = JobTechEvent::where('job_id', $jobId)->first();
             if ($jobTechEvent) {
-            
+
                 $newFormattedDateTime = Carbon::parse($schedule->start_date_time)->setTimeFromTimeString($start_time);
                 $start = Carbon::parse($newFormattedDateTime)->subHours($time_interval);
 
@@ -2105,5 +2141,65 @@ class ScheduleController extends Controller
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
         }
+    }
+
+
+    public function getMarkerDetailSchedule(Request $request)
+    {
+        $data = $request->all();
+
+        $result = DB::table('job_assigned')
+            ->select(
+                'job_assigned.id as assign_id',
+                'job_assigned.job_id as job_id',
+                'job_assigned.start_date_time',
+                'job_assigned.end_date_time',
+                'job_assigned.start_slot',
+                'job_assigned.end_slot',
+                'job_assigned.pending_number',
+                'jobs.job_code',
+                'jobs.job_title as subject',
+                'jobs.status',
+                'jobs.address',
+                'jobs.city',
+                'jobs.state',
+                'jobs.zipcode',
+                'jobs.latitude',
+                'jobs.longitude',
+                'users.name',
+                'users.email',
+                'technician.name as technicianname',
+                'technician.email as technicianemail',
+                'jobs.job_field_ids'
+            )
+            ->join('jobs', 'jobs.id', 'job_assigned.job_id')
+            ->join('users', 'users.id', 'jobs.customer_id')
+            ->join('users as technician', 'technician.id', 'job_assigned.technician_id')
+            ->where('job_assigned.job_id', $data['id'])->first();
+
+        $jobFieldsIds = explode(',', $result->job_field_ids);
+
+        $jobFields = DB::table('site_job_fields')
+            ->whereIn('field_id', $jobFieldsIds)
+            ->get();
+
+        $show_status = '';
+
+        foreach ($jobFields as $item) {
+            $show_status .= '<span class="mb-1 badge bg-success">' . $item->field_name . '</span> ';
+        }
+        if (empty($jobFields)) {
+            $show_status = '<span class="mb-1 badge bg-secondary">No Fields</span>';
+        }
+
+        $content = "
+			<div class='maplocationpopup'>
+			<h4 style='margin-bottom: 0px;'>" . $result->subject . "</h4>
+			<div class='mt-2'><span class='mb-1 badge bg-primary'>" . $result->job_id . "</span> " . $show_status . "</div>
+			<div class='mt-2'>" . $result->name . ", " . $result->address . ", " . $result->city . ", " . $result->state . ", " . $result->zipcode . "</div>
+ 			<div class='mt-2'><a href='tickets/" . $result->job_id . "' class='btn btn-success waves-effect waves-light btn-sm btn-info'>View</a> </div>
+		</div>";
+
+        return response()->json(['content' => $content]);
     }
 }

@@ -31,11 +31,12 @@
                     <div>
                         <div class="row gx-0 px-3">
                             <div class="col-lg-12 d-flex justify-content-end mt-1">
-							
-								<div class="btn-group mt-2" role="group" aria-label="Button group with nested dropdown" style="margin-right:30px;">
-									<a href="#." class="btn btn-info">Calendar</a>
-									<a href="#." class="btn btn-light-info text-info">Map</a>
-								</div>
+
+                                <div class="btn-group mt-2" role="group" aria-label="Button group with nested dropdown"
+                                    style="margin-right:30px;">
+                                    <a href="#navCalendar" class="btn btn-info cbtn">Calendar</a>
+                                    <a href="#navMap" class="btn btn-light-info text-info mbtn">Map</a>
+                                </div>
 
                                 <ul class="nav nav-pills  mt-2" role="tablist">
                                     <li class="nav-item">
@@ -60,7 +61,7 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div class="col-lg-12">
+                            <div class="col-lg-12" id="scheduleSection">
                                 <div class="row calendar-container1">
                                     <div class="col-lg-12 screen1">
                                         @include('schedule.scheduleCalender1')
@@ -72,6 +73,9 @@
                                         @include('schedule.scheduleCalender3')
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-12 bg-light py-2 px-3 mt-3 card-border" id="mapSection">
+                                <div id="map" style="height: 550px !important; width: 100% !important;"></div>
                             </div>
                         </div>
                     </div>
