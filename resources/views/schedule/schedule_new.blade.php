@@ -17,6 +17,25 @@
         .schedulJob {
             font-size: 9px;
         }
+
+        .start-drag-div {
+            position: absolute;
+            top: -9px;
+            left: -10px;
+            color: #fff;
+            width: 25px;
+            height: 25px;
+            display: inline-block;
+            font-weight: 400;
+            text-align: center;
+            border-radius: 100%;
+            background: #343a40;
+            line-height: 30px;
+        }
+
+        .disable-pointer-events {
+            pointer-events: none;
+        }
     </style>
 
     <div class="page-wrapper p-0 ms-2" style="display:flex;">

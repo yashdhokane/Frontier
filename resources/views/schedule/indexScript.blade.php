@@ -71,45 +71,116 @@
         });
     </script>
     <script>
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     interact('.stretchJob').resizable({
-        //             edges: {
-        //                 left: false,
-        //                 right: false,
-        //                 bottom: true,
-        //                 top: false
-        //             }
-        //         })
-        //         .on('resizemove', function(event) {
-        //             let target = event.target;
-        //             let originalHeight = parseFloat(target.dataset.originalHeight) || parseFloat(target.style
-        //                 .height) || 0;
-        //             let heightChange = event.deltaRect.height;
-        //             let heightPer30Min = 36; // height for 30 minutes
-        //             let minDuration = 30; // min duration in minutes
-        //             let maxDuration = 240; // max duration in minutes
+        document.addEventListener('DOMContentLoaded', function() {
+            interact('.stretchJob').resizable({
+                    edges: {
+                        left: false,
+                        right: false,
+                        bottom: true,
+                        top: false
+                    }
+                })
+                .on('resizestart', function(event) {
+                    // Disable pointer events on the parent <a> tag when resizing starts
+                    let parentAnchor = event.target.closest('.show_job_details');
+                    if (parentAnchor) {
+                        parentAnchor.style.pointerEvents = 'none';
+                    }
+                })
+                .on('resizemove', function(event) {
+                    let target = event.target;
+                    let originalHeight = parseFloat(target.dataset.originalHeight) || parseFloat(target.style
+                        .height) || 0;
+                    let heightChange = event.deltaRect.height;
+                    let heightPer30Min = 36; // height for 30 minutes
+                    let minDuration = 30; // min duration in minutes
+                    let maxDuration = 240; // max duration in minutes
 
-        //             // Calculate the new height and duration
-        //             let newHeight = originalHeight + heightChange;
-        //             let newDuration = Math.round(newHeight / heightPer30Min) * 30;
+                    // Calculate the new height and duration
+                    let newHeight = originalHeight + heightChange;
+                    let newDuration = Math.round(newHeight / heightPer30Min) * 30;
 
-        //             // Restrict the duration within the allowed range
-        //             if (newDuration < minDuration) newDuration = minDuration;
-        //             if (newDuration > maxDuration) newDuration = maxDuration;
+                    // Restrict the duration within the allowed range
+                    if (newDuration < minDuration) newDuration = minDuration;
+                    if (newDuration > maxDuration) newDuration = maxDuration;
 
-        //             // Update the height based on the new duration
-        //             target.style.height = `${(newDuration / 30) * heightPer30Min}px`;
+                    // Update the height based on the new duration
+                    target.style.height = `${(newDuration / 30) * heightPer30Min}px`;
 
-        //             // Update the data-duration attribute
-        //             target.dataset.duration = newDuration;
-        //         });
-        // });
+                    // Update the data-duration attribute
+                    target.dataset.duration = newDuration;
+                })
+                .on('resizeend', function(event) {
+                    // Re-enable pointer events on the parent <a> tag when resizing ends
+                    let parentAnchor = event.target.closest('.show_job_details');
+                    if (parentAnchor) {
+                        parentAnchor.style.pointerEvents = 'auto';
+                    }
+
+                    // Get the updated duration
+                    let newDuration = parseInt(event.target.dataset.duration);
+
+                    // Get the job ID
+                    let jobId = event.target.dataset.id; // Assuming you have job ID stored in data-id attribute
+                    let target = event.target;
+                    // AJAX request to update duration in database
+                    updateDurationInDatabase(jobId, newDuration, target);
+                });
+
+            function updateDurationInDatabase(jobId, newDuration, target) {
+                Swal.fire({
+                    title: 'Do you want to change time?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // AJAX POST request to your Laravel endpoint
+                        $.ajax({
+                            url: "{{ route('schedule.update_job_duration') }}",
+                            type: 'POST', // Changed from 'GET' to 'POST'
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Add CSRF token if using Laravel CSRF protection
+                            },
+                            data: {
+                                duration: newDuration,
+                                jobId: jobId
+                            },
+                            success: function(response) {
+                                console.log(response);
+                                // Handle success if needed
+                                Swal.fire('Success', 'Duration updated successfully', 'success')
+                                    .then(() => {
+                                        location.reload();
+                                    });
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error updating duration:', error);
+                                // Handle error if needed
+                                Swal.fire('Error',
+                                    'Failed to update duration. Please try again.', 'error');
+                            }
+                        });
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                // Reset the height to the original height
+                let originalHeight = parseFloat(target.dataset.originalHeight);
+                console.log('Reverting to Original Height:', originalHeight);
+                target.style.height = `${originalHeight}px`;
+            }
+                });
+            }
+        });
     </script>
+
     <script>
         $(document).ready(function() {
             // Initialize Dragula with only .draggable-items elements
             var drake = dragula(Array.from(document.getElementsByClassName('draggable-items')), {
-                // Specify options or callbacks if needed
+                moves: function(el, container, handle) {
+                    return handle.classList.contains('start-drag');
+                }
             });
 
             // Store original position
@@ -703,7 +774,7 @@
 
                         marker{{ $marker->assign_id }}.addListener('click', function() {
                             $.ajax({
-                                url: '{{ route('map.getMarkerDetails') }}',
+                                url: '{{ route('schedule.getMarkerDetails') }}',
                                 method: 'GET',
                                 data: {
                                     id: {{ $marker->job_id }}

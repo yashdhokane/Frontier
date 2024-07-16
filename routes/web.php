@@ -800,6 +800,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('marker-content-schedule', [ScheduleController::class, 'getMarkerDetailSchedule'])->name('schedule.getMarkerDetails');
 
+    Route::post('/update-job-duration/', [ScheduleController::class, 'update_job_duration'])->name('schedule.update_job_duration');
+
     // MailController
 
     Route::get('get/mail/schedule', [MailController::class, 'index']);

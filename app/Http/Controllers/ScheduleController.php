@@ -2202,4 +2202,32 @@ class ScheduleController extends Controller
 
         return response()->json(['content' => $content]);
     }
+
+    public function update_job_duration(Request $request)
+    {
+
+        $duration = (int) $request->duration;
+
+        // Find the active job assignment
+        $job = JobAssign::where('job_id', $request->jobId)
+            ->where('assign_status', 'active')
+            ->firstOrFail();
+
+        // Calculate the new end date time
+        $start_date_time = Carbon::parse($job->start_date_time);
+        $end_date_time = $start_date_time->copy()->addMinutes($duration);
+
+        // Update the job
+        $job->duration = $duration;
+        $job->end_date_time = $end_date_time;
+        $job->save();
+
+        // Find and update the corresponding schedule
+        $schedule = Schedule::where('job_id', $request->jobId)->firstOrFail();
+        $schedule->end_date_time = $start_date_time->copy()->addMinutes($duration);
+        $schedule->save();
+
+        // Return a response as needed
+        return response()->json(['message' => 'Duration updated successfully']);
+    }
 }

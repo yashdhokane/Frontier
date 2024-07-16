@@ -91,10 +91,11 @@ public function jobfieldname()
         return $this->hasOne(LocationServiceArea::class, 'area_id', 'service_area_id');
     }
 
-    public function jobassignname()
-    {
-        return $this->hasOne(JobAssign::class, 'job_id', 'id');
-    }
+        public function jobassignname()
+        {
+            return $this->hasOne(JobAssign::class, 'job_id', 'id')->where('assign_status', 'active');
+        }
+    
 
     public function jobserviceinfo()
     {
@@ -200,7 +201,7 @@ public function jobfieldname()
 
      public function JobAssign()
     {
-        return $this->belongsTo(JobAssign::class, 'id','job_id'); // Assuming 'assigned_job_id' is the foreign key
+        return $this->belongsTo(JobAssign::class, 'id','job_id')->where('assign_status', 'active'); // Assuming 'assigned_job_id' is the foreign key
     }
     
     public function locationStateName()
