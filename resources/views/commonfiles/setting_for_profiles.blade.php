@@ -53,7 +53,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit"  onclick="document.getElementById('settingsForm').submit();" class="btn btn-primary">Submit</button>
                 </div>
             </form>
         </div>

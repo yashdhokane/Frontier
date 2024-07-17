@@ -424,7 +424,7 @@ $address .= $location->zipcode;
 
                     <div class="tab-pane fade" id="calls_tab" role="tabpanel" aria-labelledby="pills-setting-tab">
                         <div class="card-body card-border shadow">
-                            @include('commonfiles.common_profile_for_customer')
+                            @include('commonfiles.calls_for_profiles')
                         </div>
                     </div>
 

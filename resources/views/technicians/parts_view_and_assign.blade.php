@@ -30,7 +30,7 @@
                         <input type="number" class="form-control" name="quantity" required>
                     </div>
                     <div class="col-md-2">
-                        <button type="button" id="submitBtn" class="btn waves-effect waves-light btn-primary"
+                        <button type="button"  class="btn waves-effect waves-light btn-primary"
                             style="margin-top: 25px; margin-left: 20px; width: 140px;"
                             onclick="document.getElementById('assignProductForm').submit();">Assign</button>
                     </div>
@@ -112,7 +112,7 @@
                         <input type="number" class="form-control" name="quantity" required>
                     </div>
                     <div class="col-md-2">
-                        <button type="button" id="submitBtn" class="btn waves-effect waves-light btn-primary"
+                        <button type="button"  class="btn waves-effect waves-light btn-primary"
                             style="margin-top: 25px; margin-left: 20px; width: 140px;"
                             onclick="document.getElementById('assignProductForm1').submit();">Assign</button>
                     </div>

@@ -540,6 +540,20 @@ $address .= $location->zipcode;
 
 <script>
     $(document).ready(function() {
+         $('#toggleNewPassword').click(function() {
+        var newPasswordInput = $('#newPassword');
+        var type = newPasswordInput.attr('type') === 'password' ? 'text' : 'password';
+        newPasswordInput.attr('type', type);
+        $(this).find('i').toggleClass('fa-eye fa-eye-slash');
+    });
+
+    $('#toggleConfirmPassword').click(function() {
+        var confirmPasswordInput = $('#confirmPassword');
+        var type = confirmPasswordInput.attr('type') === 'password' ? 'text' : 'password';
+        confirmPasswordInput.attr('type', type);
+        $(this).find('i').toggleClass('fa-eye fa-eye-slash');
+    });
+        
         var passwordField = $('input[name="password"]');
         var confirmPasswordField = $('input[name="confirm_password"]');
         var passwordMatchMessage = $('#passwordMatchMessage');

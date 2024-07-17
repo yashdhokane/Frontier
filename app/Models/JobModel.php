@@ -91,11 +91,10 @@ public function jobfieldname()
         return $this->hasOne(LocationServiceArea::class, 'area_id', 'service_area_id');
     }
 
-        public function jobassignname()
-        {
-            return $this->hasOne(JobAssign::class, 'job_id', 'id')->where('assign_status', 'active');
-        }
-    
+    public function jobassignname()
+    {
+        return $this->hasOne(JobAssign::class, 'job_id', 'id')->where('assign_status', 'active');
+    }
 
     public function jobserviceinfo()
     {

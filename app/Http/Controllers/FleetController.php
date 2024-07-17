@@ -74,34 +74,64 @@ class FleetController extends Controller
         return view('fleet.create', compact('user', 'users', 'serviceAreas', 'tags', 'locationStates'));
     }
 
-    public function store(Request $request)
-    { // dd($request->all());
+  public function store(Request $request)
+{
+    // dd($request->all());
 
-        if ($request->hasFile('vehicle_image')) {
-            $categoryImage = $request->file('vehicle_image');
-            $imageName = time() . '_' . $categoryImage->getClientOriginalName();
-            $categoryImage->move(public_path('vehicle_image'), $imageName);
-        } else {
-            $imageName = null;
-        }
-        $vehicle = new FleetVehicle();
-        $vehicle->vehicle_image = $imageName;
-        $vehicle->vehicle_no = $request->vehicle_no;
-        $vehicle->vehicle_name = $request->vehicle_name;
-
-
-        // $vehicle->vehicle_summary = $request->vehicle_summary;
-        $vehicle->vehicle_description = $request->vehicle_description;
-        $vehicle->technician_id = $request->technician_id;
-        $vehicle->created_by = auth()->user()->id;
-        $vehicle->updated_by = auth()->user()->id;
-
-        $vehicle->save();
-
-
-
-        return redirect()->route('vehicles')->with('success', 'Fleet Vehicle created successfully');
+    // Handle the vehicle image upload
+    if ($request->hasFile('vehicle_image')) {
+        $categoryImage = $request->file('vehicle_image');
+        $imageName = time() . '_' . $categoryImage->getClientOriginalName();
+        $categoryImage->move(public_path('vehicle_image'), $imageName);
+    } else {
+        $imageName = null;
     }
+
+    // Create a new FleetVehicle instance
+    $vehicle = new FleetVehicle();
+    $vehicle->vehicle_image = $imageName;
+    $vehicle->vehicle_no = $request->vehicle_no;
+    $vehicle->vehicle_name = $request->vehicle_name;
+    $vehicle->vehicle_description = $request->vehicle_description;
+    $vehicle->technician_id = $request->technician_id;
+    $vehicle->vin_number = $request->vin_number;
+    $vehicle->make = $request->make;
+    $vehicle->model = $request->model;
+    $vehicle->year = $request->year;
+    $vehicle->color = $request->color;
+    $vehicle->vehicle_weight = $request->vehicle_weight;
+    $vehicle->vehicle_cost = $request->vehicle_cost;
+    $vehicle->created_by = auth()->user()->id;
+    $vehicle->updated_by = auth()->user()->id;
+
+    // Save the vehicle to the database
+    $vehicle->save();
+     if ($request->hasFile('document')) {
+        $categoryImage = $request->file('document');
+        $documentName = time() . '_' . $categoryImage->getClientOriginalName();
+        $categoryImage->move(public_path('document'), $documentName);
+    } else {
+        $documentName = null;
+    }
+
+    // Create a new VehicleInsurancePolicy instance
+    $policy = new VehicleInsurancePolicy();
+    $policy->vehicle_id = $vehicle->vehicle_id;
+    $policy->name = $request->name; // Policyholder name
+    $policy->valid_upto = $request->valid_upto;
+    $policy->company = $request->company;
+    $policy->premium = $request->premium;
+    $policy->cover = $request->cover;
+    $policy->document = $documentName;
+
+    // Save the policy to the database
+    $policy->save();
+
+
+    // Redirect to the vehicles route with a success message
+    return redirect()->route('vehicles')->with('success', 'Fleet Vehicle created successfully');
+}
+
 
     public function fleetedit($id)
     {
@@ -110,7 +140,7 @@ class FleetController extends Controller
         $technicianIds = $fleetModel->pluck('technician_id');
         $policy = VehicleInsurancePolicy::where('vehicle_id', $id)->first();
         $users = User::where('role', 'technician')->where('status', 'active')
-            ->whereNotIn('id', $technicianIds)
+            //->whereNotIn('id', $technicianIds)
             ->get();
         $fleet = FleetDetails::where('vehicle_id', $id)->get();
         $vehicles = FleetVehicle::all();
@@ -174,7 +204,7 @@ class FleetController extends Controller
     }
 public function vehicleupdateinsurance(Request $request, $id)
 {
-   // dd($request->all());
+  // dd($request->all());
 
     // Validate the request data
     $request->validate([
@@ -192,7 +222,7 @@ public function vehicleupdateinsurance(Request $request, $id)
     ]);
 
     // Find the policy by vehicle_id
-    $policy = VehicleInsurancePolicy::where('vehicle_id', $id)->first();
+    $policy = VehicleInsurancePolicy::where('vehicle_id', $request->vehicle_id)->first();
     if ($request->hasFile('document')) {
         $categoryImage = $request->file('document');
 $imageName = time() . '_' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT) . '_' . $categoryImage->getClientOriginalName();
@@ -230,7 +260,7 @@ $imageName = time() . '_' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT) . '_' .
     // Update the FleetVehicle with the provided data
     $fleetVehicle->update([
                 'vehicle_image' => $imageName,
-
+'technician_id'=>$request->technician_id,
         'vehicle_name' => $request->vehicle_name,
         'vehicle_no' => $request->vehicle_no,
         'vehicle_description' => $request->vehicle_description,

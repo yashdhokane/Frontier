@@ -36,7 +36,7 @@
 </div>
 <div class="row mt-2">
     <div class="col-lg-6 col-xlg-6">
-        <form id="commentForm" action="{{ route('techniciancomment.store') }}" method="POST">
+        <form id="commentcommonform" action="{{ route('techniciancomment.store') }}" method="POST">
             @csrf
             <div class="mb-3">
                 <label for="tag_id" class="control-label bold col-form-label uppercase">Add New
@@ -45,7 +45,7 @@
                 <textarea class="form-control" id="comment" name="note" rows="3"></textarea>
             </div>
             <div class="mb-3 d-flex align-items-center">
-                <button type="submit" id="submitButton" class="btn btn-primary ms-2">Submit</button>
+                <button type="submit"  onclick="document.getElementById('commentcommonform').submit();" class="btn btn-primary ms-2">Submit</button>
             </div>
         </form>
     </div>

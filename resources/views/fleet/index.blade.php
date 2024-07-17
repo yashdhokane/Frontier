@@ -178,7 +178,7 @@
         </a>
         @else
         <span class="dropdown-item">
-            No PDF available
+            Insurance Not Available
         </span>
         @endif
                                                 @if ($item->status == 'active')

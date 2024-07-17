@@ -50,7 +50,7 @@
 </style>
 
 
-<form action="{{ route('technicians.updateservice', $commonUser->id) }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('technicians.updateservice', $commonUser->id) }}" method="POST" id="servicearea" enctype="multipart/form-data">
     @csrf
     <input type="hidden" name="technician_id" value="{{ $commonUser->id }}">
 
@@ -104,7 +104,7 @@
 			<div class="p-3">
 				<div class="action-form">
 					<div class="mb-3 mb-0 text-left">
-						<button type="submit" class="btn btn-info rounded-pill px-4 waves-effect waves-light">Save</button>
+						<button type="submit"  onclick="document.getElementById('servicearea').submit();" class="btn btn-info rounded-pill px-4 waves-effect waves-light">Save</button>
  					</div>
 				</div>
 			</div>

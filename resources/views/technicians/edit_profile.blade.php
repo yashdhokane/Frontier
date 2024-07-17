@@ -77,13 +77,28 @@
                             required />
                         <div class="form-group">
                             <label for="newPassword">New Password</label>
+                                                    <div class="input-group">
+
+
                             <input type="password" class="form-control" id="newPassword" name="password" required>
+                             <button class="btn btn-outline-secondary" type="button" id="toggleNewPassword">
+                                <i class="fa fa-eye"></i>
+                            </button>
                         </div>
+                        </div>
+
                         <div class="form-group" style="margin-top:15px;">
                             <label for="confirmPassword">Confirm Password</label>
+                                                    <div class="input-group">
+
                             <input type="password" class="form-control" id="confirmPassword" name="confirm_password"
                                 required>
+                                 <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                                <i class="fa fa-eye"></i>
+                            </button>
                         </div>
+                        </div>
+
                         <button style="margin-top:15px;" type="submit" class="btn btn-primary btn-block">Change
                             Password</button>
                     </form>
@@ -92,7 +107,7 @@
         </div>
     </div>
 {{-- -- end model --}}
-<form action="{{ route('technicians.update', $commonUser->id) }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('technicians.update', $commonUser->id) }}" id="edittechnicianform" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     <!-- End Left Sidebar - style you can find in sidebar.scss  -->
@@ -362,7 +377,7 @@
             <div class="p-3 border-top">
                 <div class="action-form">
                     <div class="mb-3 mb-0 text-center">
-                        <button type="submit"
+                        <button type="submit"  onclick="document.getElementById('edittechnicianform').submit();"
                             class="btn btn-info rounded-pill px-4 waves-effect waves-light">Save</button>
                         <a href="{{ route('technicians.index') }}"> <button type="button"
                                 class="btn btn-dark rounded-pill px-4 waves-effect waves-light">Cancel</button> </a>

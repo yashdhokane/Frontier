@@ -367,6 +367,8 @@ $address .= $location->zipcode;
                                         @csrf
                                         <input class="form-control" type="hidden" value="{{ $commonUser->id }}"
                                             name="id">
+                                            <input class="form-control" type="hidden" value="{{ $vehiclefleet->vehicle_id ?? '' }}"
+                                            name="vehicle_id">
 
                                         <div class="mb-3 row">
                                             <label for="oil_change" class="col-md-3 col-form-label">OIL
@@ -439,7 +441,7 @@ $address .= $location->zipcode;
                                                     value="{{ $license_plate ?? '' }}" name="license_plate">
                                             </div>
                                         </div>
-                                        <div class="mb-3 row">
+                                        <div class="mb-3 row" style="display:none;">
                                             <label for="vin_number" class="col-md-3 col-form-label">VIN
                                                 NUMBER</label>
                                             <div class="col-md-9">
@@ -447,35 +449,35 @@ $address .= $location->zipcode;
                                                     name="vin_number">
                                             </div>
                                         </div>
-                                        <div class="mb-3 row">
+                                        <div class="mb-3 row" style="display:none;">
                                             <label for="make" class="col-md-3 col-form-label">MAKE</label>
                                             <div class="col-md-9">
                                                 <input class="form-control" type="text" value="{{ $make ?? '' }}"
                                                     name="make">
                                             </div>
                                         </div>
-                                        <div class="mb-3 row">
+                                        <div class="mb-3 row" style="display:none;">
                                             <label for="model" class="col-md-3 col-form-label">MODEL</label>
                                             <div class="col-md-9">
                                                 <input class="form-control" type="text" value="{{ $model ?? '' }}"
                                                     name="model">
                                             </div>
                                         </div>
-                                        <div class="mb-3 row">
+                                        <div class="mb-3 row" style="display:none;">
                                             <label for="year" class="col-md-3 col-form-label">YEAR</label>
                                             <div class="col-md-9">
                                                 <input class="form-control" type="text" value="{{ $year ?? '' }}"
                                                     name="year">
                                             </div>
                                         </div>
-                                        <div class="mb-3 row">
+                                        <div class="mb-3 row" style="display:none;">
                                             <label for="color" class="col-md-3 col-form-label">COLOR</label>
                                             <div class="col-md-9">
                                                 <input class="form-control" type="text" value="{{ $color ?? '' }}"
                                                     name="color">
                                             </div>
                                         </div>
-                                        <div class="mb-3 row">
+                                        <div class="mb-3 row" style="display:none;">
                                             <label for="vehicle_weight" class="col-md-3 col-form-label">VEHICLE
                                                 WEIGHT</label>
                                             <div class="col-md-9">
@@ -483,7 +485,7 @@ $address .= $location->zipcode;
                                                     value="{{ $vehicle_weight ?? '' }}" name="vehicle_weight">
                                             </div>
                                         </div>
-                                        <div class="mb-3 row">
+                                        <div class="mb-3 row" style="display:none;">
                                             <label for="vehicle_cost" class="col-md-3 col-form-label">VEHICLE
                                                 COST</label>
                                             <div class="col-md-9">
@@ -856,6 +858,19 @@ $address .= $location->zipcode;
 </script>
 <script>
     $(document).ready(function() {
+          $('#toggleNewPassword').click(function() {
+        var newPasswordInput = $('#newPassword');
+        var type = newPasswordInput.attr('type') === 'password' ? 'text' : 'password';
+        newPasswordInput.attr('type', type);
+        $(this).find('i').toggleClass('fa-eye fa-eye-slash');
+    });
+
+    $('#toggleConfirmPassword').click(function() {
+        var confirmPasswordInput = $('#confirmPassword');
+        var type = confirmPasswordInput.attr('type') === 'password' ? 'text' : 'password';
+        confirmPasswordInput.attr('type', type);
+        $(this).find('i').toggleClass('fa-eye fa-eye-slash');
+    });
         var passwordField = $('input[name="password"]');
         var confirmPasswordField = $('input[name="confirm_password"]');
         var passwordMatchMessage = $('#passwordMatchMessage');

@@ -87,21 +87,26 @@
                     <input type="hidden" class="form-control" name="id" value="{{$commonUser->id}}" placeholder=""
                         required />
 
-                    <div class="form-group">
-
+                     <div class="form-group">
                         <label for="newPassword">New Password</label>
+                                                <div class="input-group">
 
                         <input type="password" class="form-control" id="newPassword" name="password" required>
-
+                         <button class="btn btn-outline-secondary" type="button" id="toggleNewPassword">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                    </div>
                     </div>
 
-                    <div class="form-group " style="margin-top:15px;">
-
+                    <div class="form-group" style="margin-top:15px;">
                         <label for="confirmPassword">Confirm Password</label>
+                                                <div class="input-group">
 
-                        <input type="password" class="form-control" id="confirmPassword" name="confirm_password"
-                            required>
-
+                        <input type="password" class="form-control" id="confirmPassword" name="confirm_password" required>
+                         <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                    </div>
                     </div>
 
                     <button style="margin-top:15px;" type="submit" class="btn btn-primary btn-block">Change
@@ -123,7 +128,7 @@
 
 
 
-<form method="POST" action="{{route('users.update', $commonUser->id) }}" enctype="multipart/form-data">
+<form method="POST" action="{{route('users.update', $commonUser->id) }}" id="edituserform" enctype="multipart/form-data">
 
     @csrf
 
@@ -543,7 +548,7 @@
 
                     <div class="mb-3 mb-0 text-center">
 
-                        <button type="submit" id="submitBtn"
+                        <button type="submit"  onclick="document.getElementById('edituserform').submit();"
                             class="btn btn-info rounded-pill px-4 waves-effect waves-light">Save</button>
 
                         <a href="{{ route('users.index') }}"> <button type="button"

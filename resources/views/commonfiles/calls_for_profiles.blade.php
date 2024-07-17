@@ -1,6 +1,12 @@
 <h5 class="card-title uppercase">Jobs</h5>
 
-@if ($tickets->where('technician_id', $commonUser->id)->isEmpty())
+@php
+    $technicianTickets = $tickets->where('technician_id', $commonUser->id);
+    $customerTickets = $tickets->where('customer_id', $commonUser->id);
+    $addedByTickets = $tickets->where('added_by', $commonUser->id);
+@endphp
+
+@if ($technicianTickets->isEmpty() && $customerTickets->isEmpty() && $addedByTickets->isEmpty())
 <div class="alert alert-info mt-4 col-md-12" role="alert">Calls not available for
     {{ $commonUser->name ?? '' }}. <strong><a href="{{ route('schedule') }}">Add
             New</a></strong></div>
@@ -17,7 +23,11 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($tickets->where('technician_id', $commonUser->id) as $ticket)
+            @foreach  ($tickets->filter(function($ticket) use ($commonUser) {
+    return $ticket->technician_id == $commonUser->id 
+        || $ticket->customer_id == $commonUser->id 
+        || $ticket->added_by == $commonUser->id;
+}) as $ticket)
             <tr>
                 <td>
                     <a href="{{ route('tickets.show', $ticket->id) }}" class="fw-bold link"><span

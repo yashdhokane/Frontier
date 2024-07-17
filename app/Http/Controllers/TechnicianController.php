@@ -747,7 +747,7 @@ class TechnicianController extends Controller
 
 
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Technician updated successfully');
     }
 
     public function updateservice(Request $request)
@@ -784,7 +784,7 @@ class TechnicianController extends Controller
         $user->save();
 
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'ServiceArea Updated Successfully');
     }
 
 
@@ -870,124 +870,210 @@ class TechnicianController extends Controller
         return redirect()->back()->with('success', 'Status updated successfully');
     }
 
-    public function updatefleet(Request $request)
-    {
-        //dd($request->all());
-        $user = User::find($request->id);
-
-
-        $user->fleet()->updateOrCreate(
-            ['fleet_key' => 'oil_change'],
-            ['fleet_value' => $request->input('oil_change')]
-        );
-
-        $user->fleet()->updateOrCreate(
-            ['fleet_key' => 'tune_up'],
-            ['fleet_value' => $request->input('tune_up')]
-        );
-        $user->fleet()->updateOrCreate(
-            ['fleet_key' => 'tire_rotation'],
-            ['fleet_value' => $request->input('tire_rotation')]
-        );
-        $user->fleet()->updateOrCreate(
-            ['fleet_key' => 'breaks'],
-            ['fleet_value' => $request->input('breaks')]
-        );
-        $user->fleet()->updateOrCreate(
-            ['fleet_key' => 'inspection_codes'],
-            ['fleet_value' => $request->input('inspection_codes')]
-        );
-        $user->fleet()->updateOrCreate(
-            ['fleet_key' => 'mileage'],
-            ['fleet_value' => $request->input('mileage')]
-        );
-        $user->fleet()->updateOrCreate(
-            ['fleet_key' => 'registration_expiration_date'],
-            ['fleet_value' => $request->input('registration_expiration_date')]
-        );
-
-        $user->fleet()->updateOrCreate(
-            ['fleet_key' => 'vehicle_coverage'],
-            ['fleet_value' => $request->input('vehicle_coverage')]
-        );
-        $user->fleet()->updateOrCreate(
-            ['fleet_key' => 'license_plate'],
-            ['fleet_value' => $request->input('license_plate')]
-        );
-        $user->fleet()->updateOrCreate(
-            ['fleet_key' => 'vin_number'],
-            ['fleet_value' => $request->input('vin_number')]
-        );
-
-        $user->fleet()->updateOrCreate(
-            ['fleet_key' => 'make'],
-            ['fleet_value' => $request->input('make')]
-        );
-
-        $user->fleet()->updateOrCreate(
-            ['fleet_key' => 'model'],
-            ['fleet_value' => $request->input('model')]
-        );
-
-        $user->fleet()->updateOrCreate(
-            ['fleet_key' => 'year'],
-            ['fleet_value' => $request->input('year')]
-        );
-
-
-        $user->fleet()->updateOrCreate(
-            ['fleet_key' => 'color'],
-            ['fleet_value' => $request->input('color')]
-        );
-
-
-        $user->fleet()->updateOrCreate(
-            ['fleet_key' => 'vehicle_weight'],
-            ['fleet_value' => $request->input('vehicle_weight')]
-        );
-
-        $user->fleet()->updateOrCreate(
-            ['fleet_key' => 'vehicle_cost'],
-            ['fleet_value' => $request->input('vehicle_cost')]
-        );
-
-        $user->fleet()->updateOrCreate(
-            ['fleet_key' => 'use_of_vehicle'],
-            ['fleet_value' => $request->input('use_of_vehicle')]
-        );
-
-        $user->fleet()->updateOrCreate(
-            ['fleet_key' => 'repair_services'],
-            ['fleet_value' => $request->input('repair_services')]
-        );
-        $user->fleet()->updateOrCreate(
-            ['fleet_key' => 'ezpass'],
-            ['fleet_value' => $request->input('ezpass')]
-        );
-
-        $user->fleet()->updateOrCreate(
-            ['fleet_key' => 'service'],
-            ['fleet_value' => $request->input('service')]
-        );
-
-        $user->fleet()->updateOrCreate(
-            ['fleet_key' => 'additional_service_notes'],
-            ['fleet_value' => $request->input('additional_service_notes')]
-        );
-        $user->fleet()->updateOrCreate(
-            ['fleet_key' => 'last_updated'],
-            ['fleet_value' => $request->input('last_updated')]
-        );
-
-        $user->fleet()->updateOrCreate(
-            ['fleet_key' => 'epa_certification'],
-            ['fleet_value' => $request->input('epa_certification')]
-        );
 
 
 
-        return redirect()->back()->with('success', 'Fleet data updated successfully!');
+public function updatefleet(Request $request)
+{
+    // Retrieve the user using the provided id from the request
+    $user = User::find($request->id);
+
+    if (!$user) {
+        return redirect()->back()->withErrors(['msg' => 'User not found.']);
     }
+
+    $vehicle_id = $request->vehicle_id;
+    $fleetKeys = [
+        'oil_change', 'tune_up', 'tire_rotation', 'breaks', 'inspection_codes',
+        'mileage', 'registration_expiration_date', 'vehicle_coverage', 'license_plate',
+        'vin_number', 'make', 'model', 'year', 'color', 'vehicle_weight',
+        'vehicle_cost', 'use_of_vehicle', 'repair_services', 'ezpass',
+        'service', 'additional_service_notes', 'last_updated', 'epa_certification'
+    ];
+
+    foreach ($fleetKeys as $fleetKey) {
+        $fleetValue = $request->input($fleetKey);
+
+        // Delete the existing fleet record if found
+        \DB::table('fleet_details')->where([
+            'user_id' => $user->id,
+            'vehicle_id' => $vehicle_id,
+            'fleet_key' => $fleetKey
+        ])->delete();
+
+        // Insert a new fleet record
+        \DB::table('fleet_details')->insert([
+            'user_id' => $user->id,
+            'vehicle_id' => $vehicle_id,
+            'fleet_key' => $fleetKey,
+            'fleet_value' => $fleetValue
+        ]);
+    }
+
+    return redirect()->back()->with('success', 'Fleet data updated successfully!');
+}
+
+
+
+    // public function updatefleet(Request $request)
+    // {
+    //     //dd($request->all());
+    //     $user = User::find($request->id);
+
+    //      $vehicle_id = $request->vehicle_id;
+
+    //     $user->fleet()->updateOrCreate(
+    //         ['fleet_key' => 'oil_change'],
+    //        ['vehicle_id' => $vehicle_id],
+
+    //         ['fleet_value' => $request->input('oil_change')]
+    //     );
+
+    //     $user->fleet()->updateOrCreate(
+    //         ['fleet_key' => 'tune_up'],
+    //           ['vehicle_id' => $vehicle_id],
+
+    //         ['fleet_value' => $request->input('tune_up')]
+    //     );
+    //     $user->fleet()->updateOrCreate(
+    //         ['fleet_key' => 'tire_rotation'],
+    //           ['vehicle_id' => $vehicle_id],
+
+    //         ['fleet_value' => $request->input('tire_rotation')]
+    //     );
+    //     $user->fleet()->updateOrCreate(
+    //         ['fleet_key' => 'breaks'],
+    //           ['vehicle_id' => $vehicle_id],
+
+    //         ['fleet_value' => $request->input('breaks')]
+    //     );
+    //     $user->fleet()->updateOrCreate(
+    //         ['fleet_key' => 'inspection_codes'],
+    //           ['vehicle_id' => $vehicle_id],
+
+    //         ['fleet_value' => $request->input('inspection_codes')]
+    //     );
+    //     $user->fleet()->updateOrCreate(
+    //         ['fleet_key' => 'mileage'],
+    //           ['vehicle_id' => $vehicle_id],
+
+    //         ['fleet_value' => $request->input('mileage')]
+    //     );
+    //     $user->fleet()->updateOrCreate(
+    //         ['fleet_key' => 'registration_expiration_date'],
+    //           ['vehicle_id' => $vehicle_id],
+
+    //         ['fleet_value' => $request->input('registration_expiration_date')]
+    //     );
+
+    //     $user->fleet()->updateOrCreate(
+    //         ['fleet_key' => 'vehicle_coverage'],
+    //         ['fleet_value' => $request->input('vehicle_coverage')]
+    //     );
+    //     $user->fleet()->updateOrCreate(
+    //         ['fleet_key' => 'license_plate'],
+    //           ['vehicle_id' => $vehicle_id],
+
+    //         ['fleet_value' => $request->input('license_plate')]
+    //     );
+    //     $user->fleet()->updateOrCreate(
+    //         ['fleet_key' => 'vin_number'],
+    //           ['vehicle_id' => $vehicle_id],
+
+    //         ['fleet_value' => $request->input('vin_number')]
+    //     );
+
+    //     $user->fleet()->updateOrCreate(
+    //         ['fleet_key' => 'make'],
+    //           ['vehicle_id' => $vehicle_id],
+
+    //         ['fleet_value' => $request->input('make')]
+    //     );
+
+    //     $user->fleet()->updateOrCreate(
+    //         ['fleet_key' => 'model'],
+    //           ['vehicle_id' => $vehicle_id],
+
+    //         ['fleet_value' => $request->input('model')]
+    //     );
+
+    //     $user->fleet()->updateOrCreate(
+    //         ['fleet_key' => 'year'],
+    //           ['vehicle_id' => $vehicle_id],
+
+    //         ['fleet_value' => $request->input('year')]
+    //     );
+
+
+    //     $user->fleet()->updateOrCreate(
+    //         ['fleet_key' => 'color'],
+    //           ['vehicle_id' => $vehicle_id],
+
+    //         ['fleet_value' => $request->input('color')]
+    //     );
+
+
+    //     $user->fleet()->updateOrCreate(
+    //         ['fleet_key' => 'vehicle_weight'],
+    //           ['vehicle_id' => $vehicle_id],
+
+    //         ['fleet_value' => $request->input('vehicle_weight')]
+    //     );
+
+    //     $user->fleet()->updateOrCreate(
+    //         ['fleet_key' => 'vehicle_cost'],
+    //         ['fleet_value' => $request->input('vehicle_cost')]
+    //     );
+
+    //     $user->fleet()->updateOrCreate(
+    //         ['fleet_key' => 'use_of_vehicle'],
+    //           ['vehicle_id' => $vehicle_id],
+
+    //         ['fleet_value' => $request->input('use_of_vehicle')]
+    //     );
+
+    //     $user->fleet()->updateOrCreate(
+    //         ['fleet_key' => 'repair_services'],
+    //           ['vehicle_id' => $vehicle_id],
+
+    //         ['fleet_value' => $request->input('repair_services')]
+    //     );
+    //     $user->fleet()->updateOrCreate(
+    //         ['fleet_key' => 'ezpass'],
+    //           ['vehicle_id' => $vehicle_id],
+
+    //         ['fleet_value' => $request->input('ezpass')]
+    //     );
+
+    //     $user->fleet()->updateOrCreate(
+    //         ['fleet_key' => 'service'],
+    //         ['fleet_value' => $request->input('service')]
+    //     );
+
+    //     $user->fleet()->updateOrCreate(
+    //         ['fleet_key' => 'additional_service_notes'],
+    //           ['vehicle_id' => $vehicle_id],
+
+    //         ['fleet_value' => $request->input('additional_service_notes')]
+    //     );
+    //     $user->fleet()->updateOrCreate(
+    //         ['fleet_key' => 'last_updated'],
+    //           ['vehicle_id' => $vehicle_id],
+
+    //         ['fleet_value' => $request->input('last_updated')]
+    //     );
+
+    //     $user->fleet()->updateOrCreate(
+    //         ['fleet_key' => 'epa_certification'],
+    //           ['vehicle_id' => $vehicle_id],
+
+    //         ['fleet_value' => $request->input('epa_certification')]
+    //     );
+
+
+
+    //     return redirect()->back()->with('success', 'Fleet data updated successfully!');
+    // }
     // public function updatefleet(Request $request)
     // {
 

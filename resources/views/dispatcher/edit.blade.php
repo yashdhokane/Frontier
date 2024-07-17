@@ -76,11 +76,26 @@
                     <input type="hidden" class="form-control" name="id" value="{{ $commonUser->id }}" placeholder="" required />
                     <div class="form-group">
                         <label for="newPassword">New Password</label>
+                                                                                                             <div class="input-group">
+  
+
                         <input type="password" class="form-control" id="newPassword" name="password" required>
+                         <button class="btn btn-outline-secondary" type="button" id="toggleNewPassword">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                    </div>
+
                     </div>
                     <div class="form-group" style="margin-top:15px;">
                         <label for="confirmPassword">Confirm Password</label>
+                                                                    <div class="input-group">
+
                         <input type="password" class="form-control" id="confirmPassword" name="confirm_password" required>
+                         <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                                                </div>
+
                     </div>
                     <button style="margin-top:15px;" type="submit" class="btn btn-primary btn-block">Change Password</button>
                 </form>
@@ -99,7 +114,7 @@
 
 
 
-<form action="{{ route('dispatcher.update', $commonUser->id) }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('dispatcher.update', $commonUser->id) }}" method="POST" id="editdispacherform" enctype="multipart/form-data">
 
 
 
@@ -308,7 +323,7 @@
                     <div class="p-3 mt-3 mb-3">
                         <div class="action-form">
                             <div class="mb-3 mb-0 text-center">
-                                <button type="submit"
+                                <button type="submit" onclick="document.getElementById('editdispacherform').submit();"
                                     class="btn btn-info rounded-pill px-4 waves-effect waves-light">Save</button>
                                 <a href="{{route('dispatcher.index')}}"> <button type="button"
                                         class="btn btn-dark rounded-pill px-4 waves-effect waves-light">Cancel</button></a>
