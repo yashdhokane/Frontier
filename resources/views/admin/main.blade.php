@@ -91,26 +91,19 @@
                                                     <td>{{ $item->JobModel->user->name ?? null }}</td>
                                                     <td>{{ $item->technician->name ?? null }}</td>
                                                     <td>
+                                                        @php
+                                                            $time_interval = Session::get('time_interval', 0);
+                                                        @endphp
+
                                                         @if ($item && $item->start_date_time)
-                                                            @php
-
-                                                                $time_interval = Session::get('time_interval', 0);
-                                                                $start_date = Carbon::parse($item->start_date_time)
-                                                                    ->addHours($time_interval)
-                                                                    ->format('Y-m-d H:i:s');
-                                                                $end_date = Carbon::parse($item->end_date_time)
-                                                                    ->addHours($time_interval)
-                                                                    ->format('Y-m-d H:i:s');
-                                                            @endphp
-
                                                             <div class="font-medium link ft12">
-                                                                {{ $convertDateToTimezone($start_date ?? null) }}
+                                                            {{ $modifyDateTime($item->start_date_time ?? null, $time_interval, 'add', 'm-d-Y') }}
                                                             </div>
 
                                                             <div class="ft12">
-                                                                {{ $convertTimeToTimezone($start_date ?? null, 'H:i:a') }}
+                                                               {{ $modifyDateTime($item->start_date_time ?? null, $time_interval, 'add', 'h:i A') }}
                                                                 to
-                                                                {{ $convertTimeToTimezone($end_date ?? null, 'H:i:a') }}
+                                                              {{ $modifyDateTime($item->end_date_time ?? null, $time_interval, 'add', 'h:i A') }}
                                                             </div>
                                                         @else
                                                             <div></div>
@@ -172,25 +165,17 @@
                                                     <td>{{ $item->technician->name ?? null }}</td>
                                                     <td>
                                                         @if ($item && $item->start_date_time)
-                                                          @php
-                                                                $start_date_time = Carbon::parse($item->start_date_time)
-                                                                    ->addHours($time_interval)
-                                                                    ->format('Y-m-d H:i:s');
-                                                                $end_date_time = Carbon::parse($item->end_date_time)
-                                                                    ->addHours($time_interval)
-                                                                    ->format('Y-m-d H:i:s');
-                                                            @endphp
                                                             <div class="font-medium link ft12">
-                                                                {{ $convertDateToTimezone($start_date_time ?? null) }}
+                                                            {{ $modifyDateTime($item->start_date_time ?? null, $time_interval, 'add', 'm-d-Y')}}
                                                             </div>
                                                         @else
                                                             <div></div>
                                                         @endif
-                                                        <div class="ft12">
-                                                            {{ $convertTimeToTimezone($start_date_time ?? null, 'H:i:a') }}
-                                                            to
-                                                            {{ $convertTimeToTimezone($end_date_time ?? null, 'H:i:a') }}
-                                                        </div>
+                                                         <div class="ft12">
+                                                               {{ $modifyDateTime($item->start_date_time ?? null, $time_interval, 'add', 'h:i A') }}
+                                                                to
+                                                              {{ $modifyDateTime($item->end_date_time ?? null, $time_interval, 'add', 'h:i A') }}
+                                                            </div>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -339,8 +324,8 @@
                                                         <div>{{ $record->activity }}</div>
                                                         <div class="text-muted">
                                                             {{ \Carbon\Carbon::parse($record->created_at)->format('D
-                                                                                                                                                                            n/j/y
-                                                                                                                                                                            g:ia') ??
+                                                                                                                                                                                                                                        n/j/y
+                                                                                                                                                                                                                                        g:ia') ??
                                                                 'null' }}
                                                         </div>
                                                     </td>
@@ -376,7 +361,7 @@
                                                         </div>
                                                         <div class="text-muted">
                                                             {{ \Carbon\Carbon::parse($record->notice->notice_date)->format('D
-                                                                                                                                                                            n/j/y g:ia') ??
+                                                                                                                                                                                                                                        n/j/y g:ia') ??
                                                                 'null' }}
                                                         </div>
                                                     </td>

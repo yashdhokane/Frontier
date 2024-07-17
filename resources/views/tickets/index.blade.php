@@ -82,6 +82,7 @@
                                                 <select id="month-filter" class="form-control mx-2">
                                                     <option value="">All</option>
                                                     @php
+                                                        $time_interval = Session::get('time_interval', 0);
                                                         // Get the current month and year
                                                         $currentMonth = new DateTime();
                                                         // Format the current month and year
@@ -213,15 +214,15 @@
                                                 <td>
                                                     @if ($ticket->jobassignname && $ticket->jobassignname->start_date_time)
                                                         <div class="font-medium link">
-                                                            {{ $convertDateToTimezone($ticket->jobassignname->start_date_time) }}
+                                                            {{ $modifyDateTime($ticket->jobassignname->start_date_time ?? null, $time_interval, 'add', 'm-d-Y') }}
                                                         </div>
                                                     @else
                                                         <div></div>
                                                     @endif
                                                     <div style="font-size:12px;">
-                                                        {{ $convertTimeToTimezone($ticket->JobAssign->start_date_time ?? null, 'H:i:a') }}
+                                                        {{ $modifyDateTime($ticket->jobassignname->start_date_time ?? null, $time_interval, 'add', 'h:i A') }}
                                                         to
-                                                        {{ $convertTimeToTimezone($ticket->JobAssign->end_date_time ?? null, 'H:i:a') }}
+                                                        {{ $modifyDateTime($ticket->jobassignname->end_date_time ?? null, $time_interval, 'add', 'h:i A') }}
                                                     </div>
                                                 </td>
                                                 <td>
@@ -272,7 +273,7 @@
             var table = $('#zero_config').DataTable();
 
             // Month filtering
-             $('#month-filter').on('change', function() {
+            $('#month-filter').on('change', function() {
                 var selectedMonth = $(this).val();
                 console.log("Selected month:", selectedMonth);
 
