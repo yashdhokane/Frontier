@@ -193,8 +193,42 @@ class ScheduleController extends Controller
         }
 
         $current_time = Carbon::now($timezone_name)->format('h:i A');
+         $new_currentDate =  $currentDate->format('Y-m-d');
 
-        return view('schedule.index', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate', 'users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', 'cities', 'cities1', 'TodayDate', 'tech', 'schedule_arr', 'hours', 'current_time'));
+        $data = DB::table('job_assigned')
+            ->select(
+                'job_assigned.id as assign_id',
+                'job_assigned.job_id as job_id',
+                'job_assigned.start_date_time',
+                'job_assigned.end_date_time',
+                'job_assigned.start_slot',
+                'job_assigned.end_slot',
+                'job_assigned.pending_number',
+                'jobs.job_code',
+                'jobs.job_title as subject',
+                'jobs.status',
+                'jobs.address',
+                'jobs.city',
+                'jobs.state',
+                'jobs.zipcode',
+                'jobs.latitude',
+                'jobs.longitude',
+                'users.name',
+                'users.email',
+                'technician.name as technicianname',
+                'technician.email as technicianemail'
+            )
+            ->join('jobs', 'jobs.id', '=', 'job_assigned.job_id')
+            ->join('users', 'users.id', '=', 'jobs.customer_id')
+            ->join('users as technician', 'technician.id', '=', 'job_assigned.technician_id')
+            ->whereNotNull('jobs.latitude')
+            ->whereNotNull('jobs.longitude')
+            ->whereDate('job_assigned.start_date_time', '=', $new_currentDate)
+            ->where('job_assigned.assign_status', 'active')
+            ->orderBy('job_assigned.pending_number', 'asc')
+            ->get();
+
+        return view('schedule.index', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate', 'users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', 'cities', 'cities1', 'TodayDate', 'tech', 'schedule_arr', 'hours', 'current_time','data'));
     }
     public function schedule_new(Request $request)
     {
