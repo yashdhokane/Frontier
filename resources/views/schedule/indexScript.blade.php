@@ -102,7 +102,7 @@
 
                     // Restrict the duration within the allowed range
                     if (newDuration < minDuration) newDuration = minDuration;
-                    if (newDuration > maxDuration) newDuration = maxDuration;
+                    // if (newDuration > maxDuration) newDuration = maxDuration;
 
                     // Update the height based on the new duration
                     target.style.height = `${(newDuration / 30) * heightPer30Min}px`;

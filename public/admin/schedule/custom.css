@@ -170,3 +170,38 @@
 .datepicker-dropdown  {
   z-index: 100 !important;
 }
+.show_job_details {
+            text-decoration: none;
+            /* Prevent underline on links */
+        }
+
+        .job-container {
+            display: flex;
+            flex-wrap: wrap;
+            /* Allows jobs to wrap to the next line if necessary */
+            margin-bottom: 10px;
+            /* Adjust margin as needed */
+        }
+
+        .schedulJob {
+            font-size: 9px;
+        }
+
+        .start-drag-div {
+            position: absolute;
+            top: -9px;
+            left: -10px;
+            color: #fff;
+            width: 25px;
+            height: 25px;
+            display: inline-block;
+            font-weight: 400;
+            text-align: center;
+            border-radius: 100%;
+            background: #343a40;
+            line-height: 30px;
+        }
+
+        .disable-pointer-events {
+            pointer-events: none;
+        }
