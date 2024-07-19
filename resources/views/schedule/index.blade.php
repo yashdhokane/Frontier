@@ -49,12 +49,12 @@
                                 <div class="mt-3 mb-4 calender-sidebar app-calendar">
                                     <div class="row">
                                         <div class="col-md-4">
-                                            <div class="cal_title_left text-start"><a href="schedule_new?date={{ $previousDate }}"><i
+                                            <div class="cal_title_left text-start"><a href="schedule?date={{ $previousDate }}"><i
                                                         class="fas fa-arrow-left"></i></a></div>
                                             <div class="cal_title_center text-center">
                                                 <h4 class="fc-toolbar-title" id="fc-dom-1">{{ $formattedDate }}</h4>
                                             </div>
-                                            <div class="cal_title_right text-end"><a href="schedule_new?date={{ $tomorrowDate }}"><i
+                                            <div class="cal_title_right text-end"><a href="schedule?date={{ $tomorrowDate }}"><i
                                                         class="fas fa-arrow-right"></i></a></div>
                                         </div>
                                         <div class="col-md-4"></div>
