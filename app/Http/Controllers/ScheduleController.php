@@ -2052,6 +2052,8 @@ class ScheduleController extends Controller
         $techId = $request->techId;
         $duration = $request->duration;
         $start_time = $request->time;
+        $date = $request->dragDate;
+        $dragNewDate = Carbon::parse($date)->format('Y-m-d H:i:s');
         $time_interval = Session::get('time_interval');
         $timezone_name = Session::get('timezone_name');
 
@@ -2061,7 +2063,7 @@ class ScheduleController extends Controller
             // Update Schedule
             $schedule = Schedule::where('job_id', $jobId)->first();
             if ($schedule) {
-                $newFormattedDateTime = Carbon::parse($schedule->start_date_time)->setTimeFromTimeString($start_time);
+                $newFormattedDateTime = Carbon::parse($dragNewDate)->setTimeFromTimeString($start_time);
                 $start = Carbon::parse($newFormattedDateTime)->subHours($time_interval);
                 $end = $start->copy()->addMinutes($duration);
 
@@ -2083,7 +2085,7 @@ class ScheduleController extends Controller
             $jobTechEvent = JobTechEvent::where('job_id', $jobId)->first();
             if ($jobTechEvent) {
 
-                $newFormattedDateTime = Carbon::parse($schedule->start_date_time)->setTimeFromTimeString($start_time);
+                $newFormattedDateTime = Carbon::parse($dragNewDate)->setTimeFromTimeString($start_time);
                 $start = Carbon::parse($newFormattedDateTime)->subHours($time_interval);
 
                 $jobTechEvent->job_schedule = $start->toDateTimeString();
@@ -2229,5 +2231,486 @@ class ScheduleController extends Controller
 
         // Return a response as needed
         return response()->json(['message' => 'Duration updated successfully']);
+    }
+
+    public function schedule_date_screen1(Request $request)
+    {
+        // Initial setup
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 30;
+
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck !== true) {
+            return $permissionCheck;
+        }
+
+        $timezone_id = Session::get('timezone_id');
+        $timezone_name = Session::get('timezone_name');
+        $time_interval = Session::get('time_interval');
+
+        $users = User::all();
+        $roles = Role::all();
+        $locationStates = LocationState::all();
+        $locationStates1 = LocationState::all();
+        $leadSources = SiteLeadSource::all();
+        $tags = SiteTags::all(); // Fetch all tags
+        $cities = LocationCity::all();
+        $cities1 = LocationCity::all();
+
+        $data = $request->all();
+        $currentDate = isset($data['date']) && !empty($data['date']) ? Carbon::parse($data['date']) : Carbon::now($timezone_name);
+        $currentDay = $currentDate->format('l');
+        $currentDayLower = strtolower($currentDay);
+        $hours = BusinessHours::where('day', $currentDayLower)->first();
+
+        $formattedDate = $currentDate->format('l, F j, Y');
+        $previousDate = $currentDate->copy()->subDay()->format('Y-m-d');
+        $tomorrowDate = $currentDate->copy()->addDay()->format('Y-m-d');
+        $filterDate = $currentDate->format('Y-m-d');
+        $TodayDate = Carbon::now($timezone_name)->format('Y-m-d');
+
+        $user_array = [];
+        $user_data_array = [];
+        $assignment_arr = [];
+        $schedule_arr = [];
+
+        $technician = User::where('role', 'technician')->where('status', 'active')->get();
+        $tech = User::where('role', 'technician')->where('status', 'active')->get();
+
+        if (isset($technician) && !empty($technician->count())) {
+            foreach ($technician as $key => $value) {
+                $user_array[] = $value->id;
+                $user_data_array[$value->id]['name'] = $value->name;
+                $user_data_array[$value->id]['color_code'] = $value->color_code;
+                $user_data_array[$value->id]['user_image'] = $value->user_image;
+            }
+        }
+
+        if (isset($user_array) && !empty($user_array)) {
+            foreach ($user_array as $value) {
+                // For job assignments
+                $assignmentResults = DB::table('job_assigned')
+                    ->select(
+                        'job_assigned.id as assign_id',
+                        'job_assigned.job_id as job_id',
+                        'job_assigned.start_date_time',
+                        'job_assigned.end_date_time',
+                        'job_assigned.start_slot',
+                        'job_assigned.end_slot',
+                        'job_assigned.duration',
+                        'schedule.schedule_type',
+                        'jobs.id as main_id',
+                        'jobs.job_code',
+                        'jobs.job_title',
+                        'jobs.status',
+                        'jobs.address',
+                        'jobs.city',
+                        'jobs.state',
+                        'jobs.zipcode',
+                        'jobs.created_at',
+                        'users.name as customername',
+                        'users.email as customeremail',
+                        'technician.name as technicianname',
+                        'technician.email as technicianemail',
+                        'technician.color_code',
+                        'technician.user_image',
+                        'job_assigned.technician_id'
+                    )
+                    ->join('jobs', 'jobs.id', 'job_assigned.job_id')
+                    ->join('schedule', 'schedule.job_id', 'job_assigned.job_id')
+                    ->join('users', 'users.id', 'jobs.customer_id')
+                    ->join('users as technician', 'technician.id', 'job_assigned.technician_id')
+                    ->where('job_assigned.technician_id', $value)
+                    ->where('job_assigned.start_date_time', 'LIKE', "%$filterDate%")
+                    ->get();
+
+                // Attach JobModel to assignmentResults
+                foreach ($assignmentResults as $assignment) {
+                    $assignment->JobModel = JobModel::with('user', 'technician', 'jobassignname', 'addresscustomer')->find($assignment->job_id);
+                    $datetimeString = $assignment->start_date_time;
+                    $newFormattedDateTime = Carbon::parse($datetimeString)->addHours($time_interval)->format('Y-m-d H:i:s');
+                    $time = date("h:i A", strtotime($newFormattedDateTime));
+                    $assignment_arr[$value][$time][] = $assignment;
+                }
+
+                // For schedules
+                $scheduleResults = Schedule::with('JobModel', 'technician')
+                    ->where('show_on_schedule', 'yes')
+                    ->where('technician_id', $value)
+                    ->where('start_date_time', 'LIKE', "%$filterDate%")
+                    ->get();
+
+                foreach ($scheduleResults as $schedule) {
+                    $datetimeString = $schedule->start_date_time;
+                    $newFormattedDateTime = Carbon::parse($datetimeString)->addHours($time_interval)->format('Y-m-d H:i:s');
+                    $time = date("h:i A", strtotime($newFormattedDateTime));
+                    $schedule_arr[$value][$time][] = $schedule;
+                }
+            }
+        }
+
+        $current_time = Carbon::now($timezone_name)->format('h:i A');
+        $new_currentDate =  $currentDate->format('Y-m-d');
+
+        $data = DB::table('job_assigned')
+            ->select(
+                'job_assigned.id as assign_id',
+                'job_assigned.job_id as job_id',
+                'job_assigned.start_date_time',
+                'job_assigned.end_date_time',
+                'job_assigned.start_slot',
+                'job_assigned.end_slot',
+                'job_assigned.pending_number',
+                'jobs.job_code',
+                'jobs.job_title as subject',
+                'jobs.status',
+                'jobs.address',
+                'jobs.city',
+                'jobs.state',
+                'jobs.zipcode',
+                'jobs.latitude',
+                'jobs.longitude',
+                'users.name',
+                'users.email',
+                'technician.name as technicianname',
+                'technician.email as technicianemail'
+            )
+            ->join('jobs', 'jobs.id', '=', 'job_assigned.job_id')
+            ->join('users', 'users.id', '=', 'jobs.customer_id')
+            ->join('users as technician', 'technician.id', '=', 'job_assigned.technician_id')
+            ->whereNotNull('jobs.latitude')
+            ->whereNotNull('jobs.longitude')
+            ->whereDate('job_assigned.start_date_time', '=', $new_currentDate)
+            ->where('job_assigned.assign_status', 'active')
+            ->orderBy('job_assigned.pending_number', 'asc')
+            ->get();
+
+
+
+        $screen2 = view('schedule.scheduleCalender1', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate', 'users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', 'cities', 'cities1', 'TodayDate', 'tech', 'schedule_arr', 'hours', 'current_time', 'data'))->render();
+
+        return response()->json(['tbody' => $screen2]);
+    }
+    public function schedule_date_screen2(Request $request)
+    {
+        // Initial setup
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 30;
+
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck !== true) {
+            return $permissionCheck;
+        }
+
+        $timezone_id = Session::get('timezone_id');
+        $timezone_name = Session::get('timezone_name');
+        $time_interval = Session::get('time_interval');
+
+        $users = User::all();
+        $roles = Role::all();
+        $locationStates = LocationState::all();
+        $locationStates1 = LocationState::all();
+        $leadSources = SiteLeadSource::all();
+        $tags = SiteTags::all(); // Fetch all tags
+        $cities = LocationCity::all();
+        $cities1 = LocationCity::all();
+
+        $data = $request->all();
+        $currentDate = isset($data['date']) && !empty($data['date']) ? Carbon::parse($data['date']) : Carbon::now($timezone_name);
+        $currentDay = $currentDate->format('l');
+        $currentDayLower = strtolower($currentDay);
+        $hours = BusinessHours::where('day', $currentDayLower)->first();
+
+        $formattedDate = $currentDate->format('l, F j, Y');
+        $previousDate = $currentDate->copy()->subDay()->format('Y-m-d');
+        $tomorrowDate = $currentDate->copy()->addDay()->format('Y-m-d');
+        $filterDate = $currentDate->format('Y-m-d');
+        $TodayDate = Carbon::now($timezone_name)->format('Y-m-d');
+
+        $user_array = [];
+        $user_data_array = [];
+        $assignment_arr = [];
+        $schedule_arr = [];
+
+        $technician = User::where('role', 'technician')->where('status', 'active')->get();
+        $tech = User::where('role', 'technician')->where('status', 'active')->get();
+
+        if (isset($technician) && !empty($technician->count())) {
+            foreach ($technician as $key => $value) {
+                $user_array[] = $value->id;
+                $user_data_array[$value->id]['name'] = $value->name;
+                $user_data_array[$value->id]['color_code'] = $value->color_code;
+                $user_data_array[$value->id]['user_image'] = $value->user_image;
+            }
+        }
+
+        if (isset($user_array) && !empty($user_array)) {
+            foreach ($user_array as $value) {
+                // For job assignments
+                $assignmentResults = DB::table('job_assigned')
+                    ->select(
+                        'job_assigned.id as assign_id',
+                        'job_assigned.job_id as job_id',
+                        'job_assigned.start_date_time',
+                        'job_assigned.end_date_time',
+                        'job_assigned.start_slot',
+                        'job_assigned.end_slot',
+                        'job_assigned.duration',
+                        'schedule.schedule_type',
+                        'jobs.id as main_id',
+                        'jobs.job_code',
+                        'jobs.job_title',
+                        'jobs.status',
+                        'jobs.address',
+                        'jobs.city',
+                        'jobs.state',
+                        'jobs.zipcode',
+                        'jobs.created_at',
+                        'users.name as customername',
+                        'users.email as customeremail',
+                        'technician.name as technicianname',
+                        'technician.email as technicianemail',
+                        'technician.color_code',
+                        'technician.user_image',
+                        'job_assigned.technician_id'
+                    )
+                    ->join('jobs', 'jobs.id', 'job_assigned.job_id')
+                    ->join('schedule', 'schedule.job_id', 'job_assigned.job_id')
+                    ->join('users', 'users.id', 'jobs.customer_id')
+                    ->join('users as technician', 'technician.id', 'job_assigned.technician_id')
+                    ->where('job_assigned.technician_id', $value)
+                    ->where('job_assigned.start_date_time', 'LIKE', "%$filterDate%")
+                    ->get();
+
+                // Attach JobModel to assignmentResults
+                foreach ($assignmentResults as $assignment) {
+                    $assignment->JobModel = JobModel::with('user', 'technician', 'jobassignname', 'addresscustomer')->find($assignment->job_id);
+                    $datetimeString = $assignment->start_date_time;
+                    $newFormattedDateTime = Carbon::parse($datetimeString)->addHours($time_interval)->format('Y-m-d H:i:s');
+                    $time = date("h:i A", strtotime($newFormattedDateTime));
+                    $assignment_arr[$value][$time][] = $assignment;
+                }
+
+                // For schedules
+                $scheduleResults = Schedule::with('JobModel', 'technician')
+                    ->where('show_on_schedule', 'yes')
+                    ->where('technician_id', $value)
+                    ->where('start_date_time', 'LIKE', "%$filterDate%")
+                    ->get();
+
+                foreach ($scheduleResults as $schedule) {
+                    $datetimeString = $schedule->start_date_time;
+                    $newFormattedDateTime = Carbon::parse($datetimeString)->addHours($time_interval)->format('Y-m-d H:i:s');
+                    $time = date("h:i A", strtotime($newFormattedDateTime));
+                    $schedule_arr[$value][$time][] = $schedule;
+                }
+            }
+        }
+
+        $current_time = Carbon::now($timezone_name)->format('h:i A');
+        $new_currentDate =  $currentDate->format('Y-m-d');
+
+        $data = DB::table('job_assigned')
+            ->select(
+                'job_assigned.id as assign_id',
+                'job_assigned.job_id as job_id',
+                'job_assigned.start_date_time',
+                'job_assigned.end_date_time',
+                'job_assigned.start_slot',
+                'job_assigned.end_slot',
+                'job_assigned.pending_number',
+                'jobs.job_code',
+                'jobs.job_title as subject',
+                'jobs.status',
+                'jobs.address',
+                'jobs.city',
+                'jobs.state',
+                'jobs.zipcode',
+                'jobs.latitude',
+                'jobs.longitude',
+                'users.name',
+                'users.email',
+                'technician.name as technicianname',
+                'technician.email as technicianemail'
+            )
+            ->join('jobs', 'jobs.id', '=', 'job_assigned.job_id')
+            ->join('users', 'users.id', '=', 'jobs.customer_id')
+            ->join('users as technician', 'technician.id', '=', 'job_assigned.technician_id')
+            ->whereNotNull('jobs.latitude')
+            ->whereNotNull('jobs.longitude')
+            ->whereDate('job_assigned.start_date_time', '=', $new_currentDate)
+            ->where('job_assigned.assign_status', 'active')
+            ->orderBy('job_assigned.pending_number', 'asc')
+            ->get();
+
+
+
+        $screen2 = view('schedule.scheduleCalender2', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate', 'users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', 'cities', 'cities1', 'TodayDate', 'tech', 'schedule_arr', 'hours', 'current_time', 'data'))->render();
+
+        return response()->json(['tbody' => $screen2]);
+    }
+    public function schedule_date_screen3(Request $request)
+    {
+        // Initial setup
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 30;
+
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck !== true) {
+            return $permissionCheck;
+        }
+
+        $timezone_id = Session::get('timezone_id');
+        $timezone_name = Session::get('timezone_name');
+        $time_interval = Session::get('time_interval');
+
+        $users = User::all();
+        $roles = Role::all();
+        $locationStates = LocationState::all();
+        $locationStates1 = LocationState::all();
+        $leadSources = SiteLeadSource::all();
+        $tags = SiteTags::all(); // Fetch all tags
+        $cities = LocationCity::all();
+        $cities1 = LocationCity::all();
+
+        $data = $request->all();
+        $currentDate = isset($data['date']) && !empty($data['date']) ? Carbon::parse($data['date']) : Carbon::now($timezone_name);
+        $currentDay = $currentDate->format('l');
+        $currentDayLower = strtolower($currentDay);
+        $hours = BusinessHours::where('day', $currentDayLower)->first();
+
+        $formattedDate = $currentDate->format('l, F j, Y');
+        $previousDate = $currentDate->copy()->subDay()->format('Y-m-d');
+        $tomorrowDate = $currentDate->copy()->addDay()->format('Y-m-d');
+        $filterDate = $currentDate->format('Y-m-d');
+        $TodayDate = Carbon::now($timezone_name)->format('Y-m-d');
+
+        $user_array = [];
+        $user_data_array = [];
+        $assignment_arr = [];
+        $schedule_arr = [];
+
+        $technician = User::where('role', 'technician')->where('status', 'active')->get();
+        $tech = User::where('role', 'technician')->where('status', 'active')->get();
+
+        if (isset($technician) && !empty($technician->count())) {
+            foreach ($technician as $key => $value) {
+                $user_array[] = $value->id;
+                $user_data_array[$value->id]['name'] = $value->name;
+                $user_data_array[$value->id]['color_code'] = $value->color_code;
+                $user_data_array[$value->id]['user_image'] = $value->user_image;
+            }
+        }
+
+        if (isset($user_array) && !empty($user_array)) {
+            foreach ($user_array as $value) {
+                // For job assignments
+                $assignmentResults = DB::table('job_assigned')
+                    ->select(
+                        'job_assigned.id as assign_id',
+                        'job_assigned.job_id as job_id',
+                        'job_assigned.start_date_time',
+                        'job_assigned.end_date_time',
+                        'job_assigned.start_slot',
+                        'job_assigned.end_slot',
+                        'job_assigned.duration',
+                        'schedule.schedule_type',
+                        'jobs.id as main_id',
+                        'jobs.job_code',
+                        'jobs.job_title',
+                        'jobs.status',
+                        'jobs.address',
+                        'jobs.city',
+                        'jobs.state',
+                        'jobs.zipcode',
+                        'jobs.created_at',
+                        'users.name as customername',
+                        'users.email as customeremail',
+                        'technician.name as technicianname',
+                        'technician.email as technicianemail',
+                        'technician.color_code',
+                        'technician.user_image',
+                        'job_assigned.technician_id'
+                    )
+                    ->join('jobs', 'jobs.id', 'job_assigned.job_id')
+                    ->join('schedule', 'schedule.job_id', 'job_assigned.job_id')
+                    ->join('users', 'users.id', 'jobs.customer_id')
+                    ->join('users as technician', 'technician.id', 'job_assigned.technician_id')
+                    ->where('job_assigned.technician_id', $value)
+                    ->where('job_assigned.start_date_time', 'LIKE', "%$filterDate%")
+                    ->get();
+
+                // Attach JobModel to assignmentResults
+                foreach ($assignmentResults as $assignment) {
+                    $assignment->JobModel = JobModel::with('user', 'technician', 'jobassignname', 'addresscustomer')->find($assignment->job_id);
+                    $datetimeString = $assignment->start_date_time;
+                    $newFormattedDateTime = Carbon::parse($datetimeString)->addHours($time_interval)->format('Y-m-d H:i:s');
+                    $time = date("h:i A", strtotime($newFormattedDateTime));
+                    $assignment_arr[$value][$time][] = $assignment;
+                }
+
+                // For schedules
+                $scheduleResults = Schedule::with('JobModel', 'technician')
+                    ->where('show_on_schedule', 'yes')
+                    ->where('technician_id', $value)
+                    ->where('start_date_time', 'LIKE', "%$filterDate%")
+                    ->get();
+
+                foreach ($scheduleResults as $schedule) {
+                    $datetimeString = $schedule->start_date_time;
+                    $newFormattedDateTime = Carbon::parse($datetimeString)->addHours($time_interval)->format('Y-m-d H:i:s');
+                    $time = date("h:i A", strtotime($newFormattedDateTime));
+                    $schedule_arr[$value][$time][] = $schedule;
+                }
+            }
+        }
+
+        $current_time = Carbon::now($timezone_name)->format('h:i A');
+        $new_currentDate =  $currentDate->format('Y-m-d');
+
+        $data = DB::table('job_assigned')
+            ->select(
+                'job_assigned.id as assign_id',
+                'job_assigned.job_id as job_id',
+                'job_assigned.start_date_time',
+                'job_assigned.end_date_time',
+                'job_assigned.start_slot',
+                'job_assigned.end_slot',
+                'job_assigned.pending_number',
+                'jobs.job_code',
+                'jobs.job_title as subject',
+                'jobs.status',
+                'jobs.address',
+                'jobs.city',
+                'jobs.state',
+                'jobs.zipcode',
+                'jobs.latitude',
+                'jobs.longitude',
+                'users.name',
+                'users.email',
+                'technician.name as technicianname',
+                'technician.email as technicianemail'
+            )
+            ->join('jobs', 'jobs.id', '=', 'job_assigned.job_id')
+            ->join('users', 'users.id', '=', 'jobs.customer_id')
+            ->join('users as technician', 'technician.id', '=', 'job_assigned.technician_id')
+            ->whereNotNull('jobs.latitude')
+            ->whereNotNull('jobs.longitude')
+            ->whereDate('job_assigned.start_date_time', '=', $new_currentDate)
+            ->where('job_assigned.assign_status', 'active')
+            ->orderBy('job_assigned.pending_number', 'asc')
+            ->get();
+
+
+
+        $screen2 = view('schedule.scheduleCalender3', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate', 'users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', 'cities', 'cities1', 'TodayDate', 'tech', 'schedule_arr', 'hours', 'current_time', 'data'))->render();
+
+        return response()->json(['tbody' => $screen2]);
     }
 }

@@ -176,6 +176,7 @@
                                                                     @endphp
                                                                     <td class="timeslot_td slot_refresh_jobs draggable-items"
                                                                         data-slot_time="{{ $timeString }}"
+                                                                        data-drag-date="{{ $formattedDate }}"
                                                                         data-technician-name="{{ $value }}"
                                                                         data-technician_id="{{ $value }}">
                                                                         @if (isset($assigned_data) && !empty($assigned_data))

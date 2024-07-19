@@ -802,6 +802,10 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/update-job-duration/', [ScheduleController::class, 'update_job_duration'])->name('schedule.update_job_duration');
 
+    Route::get('/schedule_date_screen1/', [ScheduleController::class, 'schedule_date_screen1'])->name('schedule.calender1');
+    Route::get('/schedule_date_screen2/', [ScheduleController::class, 'schedule_date_screen2'])->name('schedule.calender2');
+    Route::get('/schedule_date_screen3/', [ScheduleController::class, 'schedule_date_screen3'])->name('schedule.calender3');
+
     // MailController
 
     Route::get('get/mail/schedule', [MailController::class, 'index']);

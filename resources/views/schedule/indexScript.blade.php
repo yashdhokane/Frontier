@@ -164,11 +164,11 @@
                             }
                         });
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
-                // Reset the height to the original height
-                let originalHeight = parseFloat(target.dataset.originalHeight);
-                console.log('Reverting to Original Height:', originalHeight);
-                target.style.height = `${originalHeight}px`;
-            }
+                        // Reset the height to the original height
+                        let originalHeight = parseFloat(target.dataset.originalHeight);
+                        console.log('Reverting to Original Height:', originalHeight);
+                        target.style.height = `${originalHeight}px`;
+                    }
                 });
             }
         });
@@ -176,200 +176,271 @@
 
     <script>
         $(document).ready(function() {
-            // Initialize Dragula with only .draggable-items elements
-            var drake = dragula(Array.from(document.getElementsByClassName('draggable-items')), {
-                moves: function(el, container, handle) {
-                    return handle.classList.contains('start-drag');
-                }
-            });
+           var drake;
+            function initializeDragula() {
+                drake = dragula(Array.from(document.getElementsByClassName('draggable-items')), {
+                    moves: function(el, container, handle) {
+                        return handle.classList.contains('start-drag');
+                    }
+                });
 
-            // Store original position
-            var originalParent, originalNextSibling;
+                var originalParent, originalNextSibling;
 
-            drake.on('drag', function(el) {
-                el.classList.remove('card-moved');
-                originalParent = el.parentElement;
-                originalNextSibling = el.nextElementSibling;
-            });
+                drake.on('drag', function(el) {
+                    el.classList.remove('card-moved');
+                    originalParent = el.parentElement;
+                    originalNextSibling = el.nextElementSibling;
+                });
 
-            drake.on('drop', function(el, target, source, sibling) {
-                var time = $(el).closest('.draggable-items').data('slot_time');
-                var techId = $(el).closest('.draggable-items').data('technician_id');
-                var jobId = $(el).find('.flexibleslot').data('id');
-                var duration = $(el).find('.flexibleslot').data('duration');
-                var techName = $(el).find('.flexibleslot').data('technician-name');
-                var timezone = $(el).find('.flexibleslot').data('timezone-name');
+                drake.on('drop', function(el, target, source, sibling) {
+                    var time = $(el).closest('.draggable-items').data('slot_time');
+                    var techId = $(el).closest('.draggable-items').data('technician_id');
+                    var dragDate = $(el).closest('.draggable-items').data('drag-date');
+                    var jobId = $(el).find('.flexibleslot').data('id');
+                    var duration = $(el).find('.flexibleslot').data('duration');
+                    console.log(dragDate);
+                    var techName = $(el).find('.flexibleslot').data('technician-name');
+                    var timezone = $(el).find('.flexibleslot').data('timezone-name');
 
-                // Update the schedule
-                $.ajax({
-                    url: "{{ route('get.techName') }}",
-                    type: 'GET',
-                    data: {
-                        techId: techId,
-                    },
-                    success: function(response) {
-                        var name = response.name;
-                        var zoneName = response.time_zone.timezone_name;
+                    // Update the schedule
+                    $.ajax({
+                        url: "{{ route('get.techName') }}",
+                        type: 'GET',
+                        data: {
+                            techId: techId
+                        },
+                        success: function(response) {
+                            var name = response.name;
+                            var zoneName = response.time_zone.timezone_name;
 
-                        Swal.fire({
-                            title: `Do you want to move job from ${techName} to ${name}?`,
-                            icon: 'question',
-                            showCancelButton: true,
-                            confirmButtonText: 'Yes',
-                            cancelButtonText: 'No',
-                            reverseButtons: true
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                if (timezone == zoneName) {
-                                    $.ajax({
-                                        url: "{{ route('schedule.drag_update') }}",
-                                        type: 'GET',
-                                        data: {
-                                            jobId: jobId,
-                                            techId: techId,
-                                            time: time,
-                                            duration: duration,
-                                        },
-                                        success: function(response) {
-                                            if (response.success == true) {
-                                                Swal.fire({
-                                                    position: 'top-end',
-                                                    icon: 'success',
-                                                    title: 'Job moved successfully',
-                                                    showConfirmButton: false,
-                                                    timer: 1500
-                                                });
-                                                location.reload();
-                                            } else {
-                                                console.log(response.error);
+                            Swal.fire({
+                                title: `Do you want to move job from ${techName} to ${name}?`,
+                                icon: 'question',
+                                showCancelButton: true,
+                                confirmButtonText: 'Yes',
+                                cancelButtonText: 'No',
+                                reverseButtons: true
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    if (timezone == zoneName) {
+                                        $.ajax({
+                                            url: "{{ route('schedule.drag_update') }}",
+                                            type: 'GET',
+                                            data: {
+                                                jobId: jobId,
+                                                techId: techId,
+                                                time: time,
+                                                dragDate: dragDate,
+                                                duration: duration
+                                            },
+                                            success: function(response) {
+                                                if (response.success ==
+                                                    true) {
+                                                    Swal.fire({
+                                                        position: 'top-end',
+                                                        icon: 'success',
+                                                        title: 'Job moved successfully',
+                                                        showConfirmButton: false,
+                                                        timer: 1500
+                                                    });
+                                                    location.reload();
+                                                } else {
+                                                    console.log(response
+                                                        .error);
+                                                    revertDrag(
+                                                        el
+                                                        ); // Revert the drag operation
+                                                }
+                                            },
+                                            error: function(error) {
+                                                console.error(error);
                                                 revertDrag(
                                                     el
-                                                ); // Revert the drag operation
+                                                    ); // Revert the drag operation
                                             }
-                                        },
-                                        error: function(error) {
-                                            console.error(error);
-                                            revertDrag(
-                                                el
-                                            ); // Revert the drag operation
-                                        }
-                                    });
-                                } else {
-                                    Swal.fire({
-                                        title: `Do you want to change the Job from ${timezone} to ${zoneName}?`,
-                                        icon: 'question',
-                                        showCancelButton: true,
-                                        confirmButtonText: 'Yes',
-                                        cancelButtonText: 'No',
-                                        reverseButtons: true
-                                    }).then((innerResult) => {
-                                        if (innerResult.isConfirmed) {
-                                            $.ajax({
-                                                url: "{{ route('schedule.drag_update') }}",
-                                                type: 'GET',
-                                                data: {
-                                                    jobId: jobId,
-                                                    techId: techId,
-                                                    time: time,
-                                                    duration: duration,
-                                                },
-                                                success: function(
-                                                    response) {
-                                                    if (response
-                                                        .success ==
-                                                        true) {
-                                                        Swal.fire({
-                                                            position: 'top-end',
-                                                            icon: 'success',
-                                                            title: 'Job moved successfully',
-                                                            showConfirmButton: false,
-                                                            timer: 1500
-                                                        });
-                                                        location
-                                                            .reload();
-                                                    } else {
-                                                        console.log(
-                                                            response
-                                                            .error
-                                                        );
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: `Do you want to change the Job from ${timezone} to ${zoneName}?`,
+                                            icon: 'question',
+                                            showCancelButton: true,
+                                            confirmButtonText: 'Yes',
+                                            cancelButtonText: 'No',
+                                            reverseButtons: true
+                                        }).then((innerResult) => {
+                                            if (innerResult.isConfirmed) {
+                                                $.ajax({
+                                                    url: "{{ route('schedule.drag_update') }}",
+                                                    type: 'GET',
+                                                    data: {
+                                                        jobId: jobId,
+                                                        techId: techId,
+                                                        time: time,
+                                                        dragDate: dragDate,
+                                                        duration: duration
+                                                    },
+                                                    success: function(
+                                                        response) {
+                                                        if (response
+                                                            .success ==
+                                                            true) {
+                                                            Swal.fire({
+                                                                position: 'top-end',
+                                                                icon: 'success',
+                                                                title: 'Job moved successfully',
+                                                                showConfirmButton: false,
+                                                                timer: 1500
+                                                            });
+                                                            location
+                                                                .reload();
+                                                        } else {
+                                                            console
+                                                                .log(
+                                                                    response
+                                                                    .error
+                                                                );
+                                                            revertDrag
+                                                                (
+                                                                    el
+                                                                    ); // Revert the drag operation
+                                                        }
+                                                    },
+                                                    error: function(
+                                                        error) {
+                                                        console
+                                                            .error(
+                                                                error
+                                                            );
                                                         revertDrag(
                                                             el
                                                         ); // Revert the drag operation
                                                     }
-                                                },
-                                                error: function(error) {
-                                                    console.error(
-                                                        error);
-                                                    revertDrag(
-                                                        el
+                                                });
+                                            } else {
+                                                revertDrag(
+                                                    el
                                                     ); // Revert the drag operation
-                                                }
-                                            });
-                                        } else {
-                                            revertDrag(
-                                                el
-                                            ); // Revert the drag operation
-                                        }
-                                    });
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    revertDrag(el); // Revert the drag operation
                                 }
-                            } else {
-                                revertDrag(el); // Revert the drag operation
-                            }
-                        });
-                    },
-                    error: function(error) {
-                        console.error(error);
-                        revertDrag(el); // Revert the drag operation
-                    }
+                            });
+                        },
+                        error: function(error) {
+                            console.error(error);
+                            revertDrag(el); // Revert the drag operation
+                        }
+                    });
                 });
-            });
 
-            // Function to revert the drag operation
-            function revertDrag(el) {
-                if (originalParent && originalNextSibling) {
-                    originalParent.insertBefore(el, originalNextSibling);
-                } else if (originalParent) {
-                    originalParent.appendChild(el);
+                // Function to revert the drag operation
+                function revertDrag(el) {
+                    if (originalParent && originalNextSibling) {
+                        originalParent.insertBefore(el, originalNextSibling);
+                    } else if (originalParent) {
+                        originalParent.appendChild(el);
+                    }
                 }
             }
+
+            function fetchSchedule1(date) {
+                $.ajax({
+                    url: "{{ route('schedule.calender1') }}",
+                    method: "GET",
+                    data: {
+                        date: date
+                    },
+                    success: function(response) {
+                        $('#calender1').empty().html(response.tbody);
+                        reinitializeDatepickers();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+            }
+
+            $(document).on('click', '#preDate1, #tomDate1, #todayDate1', function() {
+                var date = $(this).data('previous-date') || $(this).data('tomorrow-date') || $(this).data(
+                    'today-date');
+                fetchSchedule1(date);
+            });
+
+            function fetchSchedule2(date) {
+                $.ajax({
+                    url: "{{ route('schedule.calender2') }}",
+                    method: "GET",
+                    data: {
+                        date: date
+                    },
+                    success: function(response) {
+                        $('#calender2').empty().html(response.tbody);
+                        reinitializeDatepickers();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+            }
+
+            $(document).on('click', '#preDate2, #tomDate2, #todayDate2', function() {
+                var date = $(this).data('previous-date') || $(this).data('tomorrow-date') || $(this).data(
+                    'today-date');
+                fetchSchedule2(date);
+            });
+
+            function fetchSchedule3(date) {
+                $.ajax({
+                    url: "{{ route('schedule.calender3') }}",
+                    method: "GET",
+                    data: {
+                        date: date
+                    },
+                    success: function(response) {
+                        $('#calender3').empty().html(response.tbody);
+                        reinitializeDatepickers();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+            }
+
+            $(document).on('click', '#preDate3, #tomDate3, #todayDate3', function() {
+                var date = $(this).data('previous-date') || $(this).data('tomorrow-date') || $(this).data(
+                    'today-date');
+                fetchSchedule3(date);
+            });
+
+            function initializeDatepicker(selector, fetchFunction) {
+                $(selector).datepicker({
+                    format: 'yyyy-mm-dd', // Specify the format
+                    autoclose: true, // Close the datepicker when a date is selected
+                    todayHighlight: true // Highlight today's date
+                }).on('changeDate', function(selected) {
+                    var selectedDate = new Date(selected.date);
+                    var date = selectedDate.getFullYear() + '-' +
+                        (selectedDate.getMonth() + 1).toString().padStart(2, '0') + '-' +
+                        selectedDate.getDate().toString().padStart(2, '0');
+                    fetchFunction(date);
+                });
+            }
+
+            function reinitializeDatepickers() {
+                initializeDatepicker('#selectDates1', fetchSchedule1);
+                initializeDatepicker('#selectDates2', fetchSchedule2);
+                initializeDatepicker('#selectDates3', fetchSchedule3);
+                initializeDragula();
+
+            }
+
+            // Initial initialization
+            reinitializeDatepickers();
         });
     </script>
 
-    <script>
-        // document.addEventListener("DOMContentLoaded", function() {
-        //     function getDateFromUrl() {
-        //         const urlParams = new URLSearchParams(window.location.search);
-        //         return urlParams.get('date');
-        //     }
-
-        //     function isCurrentDate(dateStr) {
-        //         const currentDate = new Date();
-        //         const urlDate = new Date(dateStr);
-        //         return currentDate.toISOString().split('T')[0] === urlDate.toISOString().split('T')[0];
-        //     }
-
-        //     function fetchAndAppendTable() {
-        //         fetch("{{ route('get.table.content') }}")
-        //             .then(response => response.text())
-        //             .then(data => {
-        //                 document.getElementById("table-container").innerHTML = data;
-        //                 console.log('done');
-        //             })
-        //             .catch(error => console.error("Error fetching table content:", error));
-        //     }
-
-        //     const dateFromUrl = getDateFromUrl();
-        //     const currentDateStr = new Date().toISOString().split('T')[0];
-
-        //     if (!dateFromUrl || isCurrentDate(dateFromUrl)) {
-        //         // Fetch and append the table every 30 seconds
-        //         setInterval(fetchAndAppendTable, 30000);
-
-        //         // Initial fetch
-        //         fetchAndAppendTable();
-        //     }
-        // });
-    </script>
 
     <script>
         $(document).ready(function() {
@@ -752,9 +823,11 @@
 
         }
     </script>
+
     <script
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&loading=async&callback=initMap&libraries=marker"
         async></script>
+
     <script>
         var openInfoWindowpop = null;
         var map;
@@ -840,4 +913,6 @@
             // The map will be initialized by the callback parameter in the Google Maps API script
         });
     </script>
+
+    <script></script>
 @endsection
