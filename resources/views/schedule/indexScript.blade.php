@@ -71,7 +71,12 @@
         });
     </script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        $(document).ready(function() {
+            var isDragulaInitialized = false;
+            if (!isDragulaInitialized) {
+                initializeDragula();
+                isDragulaInitialized = true;
+            }
             interact('.stretchJob').resizable({
                     edges: {
                         left: false,
@@ -137,6 +142,10 @@
                     reverseButtons: true
                 }).then((result) => {
                     if (result.isConfirmed) {
+
+                        var screen1Date = $('#screen-date1').data('screen1-date');
+                        var screen2Date = $('#screen-date2').data('screen2-date');
+                        var screen3Date = $('#screen-date3').data('screen3-date');
                         // AJAX POST request to your Laravel endpoint
                         $.ajax({
                             url: "{{ route('schedule.update_job_duration') }}",
@@ -153,7 +162,10 @@
                                 // Handle success if needed
                                 Swal.fire('Success', 'Duration updated successfully', 'success')
                                     .then(() => {
-                                        location.reload();
+
+                                        fetchSchedule1(screen1Date);
+                                        fetchSchedule2(screen2Date);
+                                        fetchSchedule3(screen3Date);
                                     });
                             },
                             error: function(xhr, status, error) {
@@ -171,12 +183,9 @@
                     }
                 });
             }
-        });
-    </script>
 
-    <script>
-        $(document).ready(function() {
-           var drake;
+            var drake;
+
             function initializeDragula() {
                 drake = dragula(Array.from(document.getElementsByClassName('draggable-items')), {
                     moves: function(el, container, handle) {
@@ -198,9 +207,11 @@
                     var dragDate = $(el).closest('.draggable-items').data('drag-date');
                     var jobId = $(el).find('.flexibleslot').data('id');
                     var duration = $(el).find('.flexibleslot').data('duration');
-                    console.log(dragDate);
                     var techName = $(el).find('.flexibleslot').data('technician-name');
                     var timezone = $(el).find('.flexibleslot').data('timezone-name');
+                    var screen1Date = $('#screen-date1').data('screen1-date');
+                    var screen2Date = $('#screen-date2').data('screen2-date');
+                    var screen3Date = $('#screen-date3').data('screen3-date');
 
                     // Update the schedule
                     $.ajax({
@@ -243,20 +254,26 @@
                                                         showConfirmButton: false,
                                                         timer: 1500
                                                     });
-                                                    location.reload();
+                                                    fetchSchedule1(
+                                                        screen1Date);
+                                                    fetchSchedule2(
+                                                        screen2Date);
+                                                    fetchSchedule3(
+                                                        screen3Date);
+
                                                 } else {
                                                     console.log(response
                                                         .error);
                                                     revertDrag(
                                                         el
-                                                        ); // Revert the drag operation
+                                                    ); // Revert the drag operation
                                                 }
                                             },
                                             error: function(error) {
                                                 console.error(error);
                                                 revertDrag(
                                                     el
-                                                    ); // Revert the drag operation
+                                                ); // Revert the drag operation
                                             }
                                         });
                                     } else {
@@ -291,8 +308,19 @@
                                                                 showConfirmButton: false,
                                                                 timer: 1500
                                                             });
-                                                            location
-                                                                .reload();
+
+                                                            fetchSchedule1
+                                                                (
+                                                                    screen1Date
+                                                                );
+                                                            fetchSchedule2
+                                                                (
+                                                                    screen2Date
+                                                                );
+                                                            fetchSchedule3
+                                                                (
+                                                                    screen3Date
+                                                                );
                                                         } else {
                                                             console
                                                                 .log(
@@ -302,7 +330,7 @@
                                                             revertDrag
                                                                 (
                                                                     el
-                                                                    ); // Revert the drag operation
+                                                                ); // Revert the drag operation
                                                         }
                                                     },
                                                     error: function(
@@ -319,7 +347,7 @@
                                             } else {
                                                 revertDrag(
                                                     el
-                                                    ); // Revert the drag operation
+                                                ); // Revert the drag operation
                                             }
                                         });
                                     }
@@ -355,6 +383,8 @@
                     success: function(response) {
                         $('#calender1').empty().html(response.tbody);
                         reinitializeDatepickers();
+                        initializeDragula();
+
                     },
                     error: function(xhr, status, error) {
                         console.error('Error:', error);
@@ -378,6 +408,7 @@
                     success: function(response) {
                         $('#calender2').empty().html(response.tbody);
                         reinitializeDatepickers();
+                        initializeDragula();
                     },
                     error: function(xhr, status, error) {
                         console.error('Error:', error);
@@ -401,6 +432,7 @@
                     success: function(response) {
                         $('#calender3').empty().html(response.tbody);
                         reinitializeDatepickers();
+                        initializeDragula();
                     },
                     error: function(xhr, status, error) {
                         console.error('Error:', error);
@@ -432,7 +464,6 @@
                 initializeDatepicker('#selectDates1', fetchSchedule1);
                 initializeDatepicker('#selectDates2', fetchSchedule2);
                 initializeDatepicker('#selectDates3', fetchSchedule3);
-                initializeDragula();
 
             }
 

@@ -1,5 +1,5 @@
 <div class="mt-3 mb-4 calender-sidebar app-calendar" id="calender2">
-    <div class="row">
+    <div class="row" id="screen-date2" data-screen2-date="{{ $formattedDate }}">
         <div class="col-md-4">
             <div class="cal_title_left text-start"><a href="#" id="preDate2"
                     data-previous-date="{{ $previousDate }}"><i class="fas fa-arrow-left"></i></a></div>
@@ -14,9 +14,9 @@
             <a id="selectDates2" style="margin-right: 10px; font-size: 13px;cursor: pointer;"><i
                     class="fas fa-calendar-alt"></i>Select Dates</a>
 
-            <a href="#" id="todayDate2" data-today-date="{{ $TodayDate }}"
+            {{-- <a href="#" id="todayDate2" data-today-date="{{ $TodayDate }}"
                 style=" margin-right: 10px;font-size: 13px;color: #ee9d01;font-weight: bold;"><i
-                    class="fas fa-calendar-check"></i> Today</a>
+                    class="fas fa-calendar-check"></i> Today</a> --}}
         </div>
 
     </div>
