@@ -46,25 +46,25 @@
                             </div>
                             <div class="col-lg-12" id="scheduleSection">
 
-                                <div class="mt-3 mb-4 calender-sidebar app-calendar">
-                                    <div class="row">
+                               <div class="mt-3 mb-4 calender-sidebar app-calendar" id="calender1">
+                                    <div class="row" id="screen-date1" data-screen1-date="{{ $formattedDate }}">
                                         <div class="col-md-4">
-                                            <div class="cal_title_left text-start"><a href="schedule?date={{ $previousDate }}"><i
-                                                        class="fas fa-arrow-left"></i></a></div>
+                                            <div class="cal_title_left text-start"><a href="#" id="preDate1"
+                                                    data-previous-date="{{ $previousDate }}"><i class="fas fa-arrow-left"></i></a></div>
                                             <div class="cal_title_center text-center">
                                                 <h4 class="fc-toolbar-title" id="fc-dom-1">{{ $formattedDate }}</h4>
                                             </div>
-                                            <div class="cal_title_right text-end"><a href="schedule?date={{ $tomorrowDate }}"><i
-                                                        class="fas fa-arrow-right"></i></a></div>
+                                            <div class="cal_title_right text-end"><a href="#" id="tomDate1"
+                                                    data-tomorrow-date="{{ $tomorrowDate }}"><i class="fas fa-arrow-right"></i></a></div>
                                         </div>
                                         <div class="col-md-4"></div>
                                         <div class="col-md-4 text-start">
-                                            <a id="selectDates" style="margin-right: 10px; font-size: 13px;cursor: pointer;"><i
+                                            <a id="selectDates1" style="margin-right: 10px; font-size: 13px;cursor: pointer;"><i
                                                     class="fas fa-calendar-alt"></i>Select Dates</a>
 
-                                            <a href="schedule_new?date={{ $TodayDate }}"
+                                            {{-- <a href="#" id="todayDate1" data-today-date="{{ $TodayDate }}"
                                                 style=" margin-right: 10px;font-size: 13px;color: #ee9d01;font-weight: bold;"><i
-                                                    class="fas fa-calendar-check"></i> Today</a>
+                                                    class="fas fa-calendar-check"></i> Today</a> --}}
                                         </div>
 
                                     </div>
@@ -208,7 +208,7 @@
                                                                                                         $height_slot * 36 + $height_slot - 1;
                                                                                                     $overfloHeight = $height_slot_px - 5;
                                                                                                 @endphp
-                                                                                                
+
                                                                                                 <a class="show_job_details pb-5"
                                                                                                     href="{{ $value2->job_id ? route('tickets.show', $value2->job_id) : '#' }}"
                                                                                                     style="width: {{ $jobWidth }}%;">
@@ -225,7 +225,7 @@
                                                                                                                 <i class="ri-thumb-up-fill"></i>
                                                                                                             </div>
                                                                                                         @endif
-                                                                                                        
+
                                                                                                         <div class="start-drag-div">
                                                                                                             <i class="bi-arrows-move start-drag"></i>
                                                                                                         </div>
@@ -266,7 +266,7 @@
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </a>
-                                                                                            
+
                                                                                                 <div class="open_job_details rounded shadow py-3 px-2"
                                                                                                     style="background: {{ $value2->JobModel->technician->color_code ?? null }};">
                                                                                                     <div class="popup-content">
