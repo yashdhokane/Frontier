@@ -204,7 +204,7 @@
                                                                                 {{ $value2->JobModel->city ?? null }},
                                                                                 {{ $value2->JobModel->state ?? null }}
                                                                             </div>
-                                                                            <div class="round bg-cyan">
+                                                                            <div class="round-init">
                                                                                 @php
                                                                                     $name =
                                                                                         $value2->technician->name ??

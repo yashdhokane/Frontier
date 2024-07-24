@@ -210,3 +210,16 @@
           height: 567px;
           display:none;
         }
+
+        .round-init{
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            display: inline-block;
+            font-weight: 400;
+            text-align: center;
+            border-radius: 100%;
+            background: #b2b4bd !important;
+            line-height: 35px;
+            font-size: 9px;
+        }
