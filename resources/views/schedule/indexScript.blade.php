@@ -10,30 +10,87 @@
 
     <script src="{{ url('public/admin/schedule/script.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&loading=async&callback=initMap&libraries=marker"
+        async></script>
+
     <script>
         $(document).ready(function() {
-            $('#mapSection').hide();
-            $('a[href="#navMap"').on('click', function(e) {
+            // section 1
+            $('#mapSection1').hide();
+            $(document).on('click', 'a[href="#navMap1"]', function(e) {
                 e.preventDefault();
 
-                $('#scheduleSection').hide();
-                $('.cbtn').removeClass('btn-info').addClass('btn-light-info text-info');
-                $('.mbtn').removeClass('btn-light-info text-info').addClass('btn-info');
-                $('#mapSection').show();
+                $('#scheduleSection1').hide();
+                $('.cbtn1').removeClass('btn-info').addClass('btn-light-info text-info');
+                $('.mbtn1').removeClass('btn-light-info text-info').addClass('btn-info');
+
+                $('#mapSection1').show();
+                var date = $('#scheduleSection1').data('map-date');
+                var mapElementId = 'mapSection1'; // Get the map element ID from data attribute
+                initMap(mapElementId, '#scheduleSection1'); // Ensure the map is initialized
+                fetchJobData(mapElementId, date); // Fetch job data for the new date
+
             });
 
-            $('a[href="#navCalendar"').on('click', function(e) {
+            $(document).on('click', 'a[href="#navCalendar1"]', function(e) {
                 e.preventDefault();
 
-                $('#mapSection').hide();
-                $('.mbtn').removeClass('btn-info').addClass('btn-light-info text-info');
-                $('.cbtn').removeClass('btn-light-info text-info').addClass('btn-info');
-                $('#scheduleSection').show();
+                $('#mapSection1').hide();
+                $('.mbtn1').removeClass('btn-info').addClass('btn-light-info text-info');
+                $('.cbtn1').removeClass('btn-light-info text-info').addClass('btn-info');
+                $('#scheduleSection1').show();
+            });
+            // section 2 
+            $('#mapSection2').hide();
+            $(document).on('click', 'a[href="#navMap2"]', function(e) {
+                e.preventDefault();
+
+                $('#scheduleSection2').hide();
+                $('.cbtn2').removeClass('btn-info').addClass('btn-light-info text-info');
+                $('.mbtn2').removeClass('btn-light-info text-info').addClass('btn-info');
+                $('#mapSection2').show();
+                var date = $('#scheduleSection2').data('map-date');
+                var mapElementId = 'mapSection2'; // Get the map element ID from data attribute
+                initMap(mapElementId, '#scheduleSection2'); // Ensure the map is initialized
+                fetchJobData(mapElementId, date); // Fetch job data for the new date
+            });
+
+            $(document).on('click', 'a[href="#navCalendar2"]', function(e) {
+                e.preventDefault();
+
+                $('#mapSection2').hide();
+                $('.mbtn2').removeClass('btn-info').addClass('btn-light-info text-info');
+                $('.cbtn2').removeClass('btn-light-info text-info').addClass('btn-info');
+                $('#scheduleSection2').show();
+            });
+            // section 3 
+            $('#mapSection3').hide();
+            $(document).on('click', 'a[href="#navMap3"]', function(e) {
+                e.preventDefault();
+
+                $('#scheduleSection3').hide();
+                $('.cbtn3').removeClass('btn-info').addClass('btn-light-info text-info');
+                $('.mbtn3').removeClass('btn-light-info text-info').addClass('btn-info');
+                $('#mapSection3').show();
+                var date = $('#scheduleSection3').data('map-date');
+                var mapElementId = 'mapSection3'; // Get the map element ID from data attribute
+                initMap(mapElementId, '#scheduleSection3'); // Ensure the map is initialized
+                fetchJobData(mapElementId, date); // Fetch job data for the new date
+            });
+
+            $(document).on('click', 'a[href="#navCalendar3"]', function(e) {
+                e.preventDefault();
+
+                $('#mapSection3').hide();
+                $('.mbtn3').removeClass('btn-info').addClass('btn-light-info text-info');
+                $('.cbtn3').removeClass('btn-light-info text-info').addClass('btn-info');
+                $('#scheduleSection3').show();
             });
 
             //  for split screen 
             // Function to toggle active screens based on tab selection
-            $('a[href="#navpill-1"').on('click', function(e) {
+            $(document).on('click', 'a[href="#navpill-1"]', function(e) {
                 e.preventDefault();
 
                 // Hide all screens
@@ -41,7 +98,7 @@
                 $('.screen1, .screen2, .screen3').removeClass('col-lg-4').addClass('col-lg-12');
                 $('.screen1').show();
             });
-            $('a[href="#navpill-2"').on('click', function(e) {
+            $(document).on('click', 'a[href="#navpill-2"]', function(e) {
                 e.preventDefault();
 
                 // Hide all screens
@@ -49,7 +106,7 @@
                 $('.screen1, .screen2, .screen3').removeClass('col-lg-4').addClass('col-lg-12');
                 $('.screen2').show();
             });
-            $('a[href="#navpill-3"').on('click', function(e) {
+            $(document).on('click', 'a[href="#navpill-3"]', function(e) {
                 e.preventDefault();
 
                 // Hide all screens
@@ -59,7 +116,7 @@
             });
 
             // Function to handle "Expand All" functionality
-            $('a[href="#navpill-4"]').on('click', function(e) {
+            $(document).on('click', 'a[href="#navpill-4"]', function(e) {
                 e.preventDefault();
 
                 // Remove col-lg-12 and add col-lg-4 to all screen containers
@@ -247,6 +304,12 @@
                                             success: function(response) {
                                                 if (response.success ==
                                                     true) {
+                                                    fetchSchedule1(
+                                                        screen1Date);
+                                                    fetchSchedule2(
+                                                        screen2Date);
+                                                    fetchSchedule3(
+                                                        screen3Date);
                                                     Swal.fire({
                                                         position: 'top-end',
                                                         icon: 'success',
@@ -254,12 +317,7 @@
                                                         showConfirmButton: false,
                                                         timer: 1500
                                                     });
-                                                    fetchSchedule1(
-                                                        screen1Date);
-                                                    fetchSchedule2(
-                                                        screen2Date);
-                                                    fetchSchedule3(
-                                                        screen3Date);
+
 
                                                 } else {
                                                     console.log(response
@@ -301,14 +359,6 @@
                                                         if (response
                                                             .success ==
                                                             true) {
-                                                            Swal.fire({
-                                                                position: 'top-end',
-                                                                icon: 'success',
-                                                                title: 'Job moved successfully',
-                                                                showConfirmButton: false,
-                                                                timer: 1500
-                                                            });
-
                                                             fetchSchedule1
                                                                 (
                                                                     screen1Date
@@ -321,6 +371,15 @@
                                                                 (
                                                                     screen3Date
                                                                 );
+                                                            Swal.fire({
+                                                                position: 'top-end',
+                                                                icon: 'success',
+                                                                title: 'Job moved successfully',
+                                                                showConfirmButton: false,
+                                                                timer: 1500
+                                                            });
+
+
                                                         } else {
                                                             console
                                                                 .log(
@@ -392,11 +451,17 @@
                 });
             }
 
-            $(document).on('click', '#preDate1, #tomDate1, #todayDate1', function() {
-                var date = $(this).data('previous-date') || $(this).data('tomorrow-date') || $(this).data(
-                    'today-date');
+            $(document).on('click', '#preDate1, #tomDate1', function(e) {
+                e.preventDefault(); // Prevent the default anchor behavior
+
+                var date = $(this).data('previous-date') || $(this).data('tomorrow-date')
+
+
                 fetchSchedule1(date);
+
             });
+
+
 
             function fetchSchedule2(date) {
                 $.ajax({
@@ -416,9 +481,8 @@
                 });
             }
 
-            $(document).on('click', '#preDate2, #tomDate2, #todayDate2', function() {
-                var date = $(this).data('previous-date') || $(this).data('tomorrow-date') || $(this).data(
-                    'today-date');
+            $(document).on('click', '#preDate2, #tomDate2', function() {
+                var date = $(this).data('previous-date') || $(this).data('tomorrow-date');
                 fetchSchedule2(date);
             });
 
@@ -440,9 +504,8 @@
                 });
             }
 
-            $(document).on('click', '#preDate3, #tomDate3, #todayDate3', function() {
-                var date = $(this).data('previous-date') || $(this).data('tomorrow-date') || $(this).data(
-                    'today-date');
+            $(document).on('click', '#preDate3, #tomDate3', function() {
+                var date = $(this).data('previous-date') || $(this).data('tomorrow-date');
                 fetchSchedule3(date);
             });
 
@@ -470,6 +533,133 @@
             // Initial initialization
             reinitializeDatepickers();
         });
+
+
+        // map section 
+        var openInfoWindowpop = null;
+        var maps = {};
+
+        $(document).ready(function() {
+            // Initialize the maps
+            initMap('mapScreen1', '#scheduleSection1');
+            initMap('mapScreen2', '#scheduleSection2');
+            initMap('mapScreen3', '#scheduleSection3');
+
+
+        });
+
+        function fetchJobData(mapElementId, date) {
+            $.ajax({
+                url: '{{ route('schedule.getJobsByDate') }}', // Adjust the route accordingly
+                method: 'GET',
+                data: {
+                    date: date
+                },
+                success: function(response) {
+                    console.log(response);
+                    if (response.data) {
+                        setMarkers(mapElementId, response.data);
+                    } else {
+                        console.error('Error: No job data returned.');
+                    }
+                },
+                error: function() {
+                    console.error('Error: AJAX request failed.');
+                }
+            });
+        }
+
+        function setMarkers(mapElementId, markersData) {
+            // Clear existing markers
+            clearMarkers();
+
+            const markers = markersData.filter(marker => marker.latitude && marker.longitude);
+
+            markers.forEach(marker => {
+                var markerInstance = new google.maps.Marker({
+                    position: {
+                        lat: parseFloat(marker.latitude),
+                        lng: parseFloat(marker.longitude)
+                    },
+                    map: maps[mapElementId],
+                    title: marker.name
+                });
+
+                markerInstance.addListener('click', function() {
+                    fetchMarkerDetails(markerInstance, marker.job_id);
+                });
+            });
+
+            // Calculate bounds based on the markers
+            var bounds = new google.maps.LatLngBounds();
+            markers.forEach(marker => {
+                bounds.extend(new google.maps.LatLng(parseFloat(marker.latitude), parseFloat(marker.longitude)));
+            });
+
+            if (markers.length > 0) {
+                maps[mapElementId].fitBounds(bounds);
+            }
+        }
+
+        function fetchMarkerDetails(markerInstance, jobId) {
+            $.ajax({
+                url: '{{ route('schedule.getMarkerDetails') }}',
+                method: 'GET',
+                data: {
+                    id: jobId
+                },
+                success: function(response) {
+                    if (response.content) {
+                        if (openInfoWindowpop) {
+                            openInfoWindowpop.close();
+                        }
+                        openInfoWindowpop = openInfoWindow(markerInstance, response.content);
+                    } else {
+                        console.error('Error: No content returned.');
+                    }
+                },
+                error: function() {
+                    console.error('Error: AJAX request failed.');
+                }
+            });
+        }
+
+        function openInfoWindow(marker, content) {
+            var infoWindow = new google.maps.InfoWindow({
+                content: content
+            });
+            infoWindow.open(maps[marker.map.getDiv().id], marker);
+            return infoWindow;
+        }
+
+        function clearMarkers() {
+            // Implement this function to clear existing markers from the map
+        }
+
+        function initMap(mapElementId, scheduleSectionId) {
+            maps[mapElementId] = new google.maps.Map(document.getElementById(mapElementId), {
+                zoom: 5,
+                center: {
+                    lat: 0,
+                    lng: 0
+                }
+            });
+
+            var selectedDate = $(scheduleSectionId).data('map-date');
+            if (!selectedDate) {
+                selectedDate = new Date().toISOString().split('T')[0];
+                $(scheduleSectionId).data('map-date', selectedDate);
+            }
+
+            fetchJobData(mapElementId, selectedDate);
+        }
+
+        // Initialize the maps when the window loads
+        window.onload = function() {
+            initMap('mapScreen1', '#scheduleSection1');
+            initMap('mapScreen2', '#scheduleSection2');
+            initMap('mapScreen3', '#scheduleSection3');
+        };
     </script>
 
 
@@ -854,96 +1044,4 @@
 
         }
     </script>
-
-    <script
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&loading=async&callback=initMap&libraries=marker"
-        async></script>
-
-    <script>
-        var openInfoWindowpop = null;
-        var map;
-
-        function setMarkers(map) {
-            @if (isset($data) && !empty($data))
-                @foreach ($data as $marker)
-                    @if (!empty($marker->latitude) && !empty($marker->longitude))
-                        var marker{{ $marker->assign_id }} = new google.maps.Marker({
-                            position: {
-                                lat: {{ $marker->latitude }},
-                                lng: {{ $marker->longitude }}
-                            },
-                            map: map,
-                            title: '{{ $marker->name }}'
-                        });
-
-                        marker{{ $marker->assign_id }}.addListener('click', function() {
-                            $.ajax({
-                                url: '{{ route('schedule.getMarkerDetails') }}',
-                                method: 'GET',
-                                data: {
-                                    id: {{ $marker->job_id }}
-                                },
-                                success: function(response) {
-                                    if (response.content) {
-                                        if (openInfoWindowpop) {
-                                            openInfoWindowpop.close();
-                                        }
-                                        openInfoWindowpop = openInfoWindow(
-                                            marker{{ $marker->assign_id }},
-                                            response.content
-                                        );
-                                    } else {
-                                        console.error('Error fetching marker content.');
-                                    }
-                                },
-                                error: function() {
-                                    console.error('Error fetching marker content.');
-                                }
-                            });
-                        });
-                    @endif
-                @endforeach
-            @endif
-        }
-
-        function openInfoWindow(marker, content) {
-            var infoWindow = new google.maps.InfoWindow({
-                content: content
-            });
-            infoWindow.open(map, marker);
-        }
-
-        function initMap() {
-            // Create a map with default center and zoom
-            map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 5,
-                center: {
-                    lat: 0,
-                    lng: 0
-                }
-            });
-
-            // Set markers on the map
-            setMarkers(map);
-
-            // Calculate bounds based on the markers
-            var bounds = new google.maps.LatLngBounds();
-            @if (isset($data) && !empty($data))
-                @foreach ($data as $marker)
-                    @if (!empty($marker->latitude) && !empty($marker->longitude))
-                        bounds.extend(new google.maps.LatLng({{ $marker->latitude }}, {{ $marker->longitude }}));
-                    @endif
-                @endforeach
-            @endif
-
-            // Fit the map to the bounds
-            map.fitBounds(bounds);
-        }
-
-        $(document).ready(function() {
-            // The map will be initialized by the callback parameter in the Google Maps API script
-        });
-    </script>
-
-    <script></script>
 @endsection

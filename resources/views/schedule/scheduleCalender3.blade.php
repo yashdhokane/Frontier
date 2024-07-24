@@ -14,13 +14,19 @@
             <a id="selectDates3" style="margin-right: 10px; font-size: 13px;cursor: pointer;"><i
                     class="fas fa-calendar-alt"></i>Select Dates</a>
 
+                    <div class="btn-group my-2" role="group" aria-label="Button group with nested dropdown"
+                        style="margin-right:30px;">
+                        <a href="#navCalendar3" class="btn btn-info cbtn3">Calendar</a>
+                        <a href="#navMap3" class="btn btn-light-info text-info mbtn3">Map</a>
+                    </div>
+
             {{-- <a href="#" id="todayDate3" data-today-date="{{ $TodayDate }}"
                 style=" margin-right: 10px;font-size: 13px;color: #ee9d01;font-weight: bold;"><i
                     class="fas fa-calendar-check"></i> Today</a> --}}
         </div>
 
     </div>
-    <div class="dat schedule_section_box" id="table-container">
+    <div class="dat schedule_section_box" id="scheduleSection3" data-map-date="{{ $formattedDate }}">
         <table id="demo-foo-addrow" class="table table-bordered m-t-30 table-hover contact-list text-nowrap"
             data-paging="true" data-paging-size="7" style="width: max-content;">
             <thead>
@@ -348,5 +354,8 @@
                 @endfor
             </tbody>
         </table>
+    </div>
+    <div class="col-12 bg-light py-2 px-3 mt-3 card-border mapStyle" id="mapSection3">
+        <div id="mapScreen3" style="height: 550px !important; width: 100% !important;"></div>
     </div>
 </div>

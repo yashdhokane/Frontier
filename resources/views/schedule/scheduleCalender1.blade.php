@@ -1,12 +1,12 @@
 <div class="mt-3 mb-4 calender-sidebar app-calendar" id="calender1">
     <div class="row" id="screen-date1" data-screen1-date="{{ $formattedDate }}">
         <div class="col-md-4">
-            <div class="cal_title_left text-start"><a href="#" id="preDate1"
+            <div class="cal_title_left text-start"><a href="#" id="preDate1"  data-map-id="mapScreen1"
                     data-previous-date="{{ $previousDate }}"><i class="fas fa-arrow-left"></i></a></div>
             <div class="cal_title_center text-center">
                 <h4 class="fc-toolbar-title" id="fc-dom-1">{{ $formattedDate }}</h4>
             </div>
-            <div class="cal_title_right text-end"><a href="#" id="tomDate1"
+            <div class="cal_title_right text-end"><a href="#" id="tomDate1" data-map-id="mapScreen1"
                     data-tomorrow-date="{{ $tomorrowDate }}"><i class="fas fa-arrow-right"></i></a></div>
         </div>
         <div class="col-md-4"></div>
@@ -14,13 +14,19 @@
             <a id="selectDates1" style="margin-right: 10px; font-size: 13px;cursor: pointer;"><i
                     class="fas fa-calendar-alt"></i>Select Dates</a>
 
+            <div class="btn-group my-2" role="group" aria-label="Button group with nested dropdown"
+                style="margin-right:30px;">
+                <a href="#navCalendar1" class="btn btn-info cbtn1">Calendar</a>
+                <a href="#navMap1" class="btn btn-light-info text-info mbtn1">Map</a>
+            </div>
+
             {{-- <a href="#" id="todayDate1" data-today-date="{{ $TodayDate }}"
                 style=" margin-right: 10px;font-size: 13px;color: #ee9d01;font-weight: bold;"><i
                     class="fas fa-calendar-check"></i> Today</a> --}}
         </div>
 
     </div>
-    <div class="dat schedule_section_box" id="table-container">
+    <div class="dat schedule_section_box" id="scheduleSection1" data-map-date="{{ $formattedDate }}">
         <table id="demo-foo-addrow" class="table table-bordered m-t-30 table-hover contact-list text-nowrap"
             data-paging="true" data-paging-size="7" style="width: max-content;">
             <thead>
@@ -127,8 +133,7 @@
                                         }
                                     @endphp
                                     <td class="timeslot_td slot_refresh_jobs draggable-items"
-                                        data-slot_time="{{ $timeString }}"
-                                        data-drag-date="{{ $formattedDate }}"
+                                        data-slot_time="{{ $timeString }}" data-drag-date="{{ $formattedDate }}"
                                         data-technician-name="{{ $value }}"
                                         data-technician_id="{{ $value }}">
                                         @if (isset($assigned_data) && !empty($assigned_data))
@@ -348,5 +353,8 @@
                 @endfor
             </tbody>
         </table>
+    </div>
+    <div class="col-12 bg-light py-2 px-3 mt-3 card-border mapStyle" id="mapSection1">
+        <div id="mapScreen1" style="height: 550px !important; width: 100% !important;"></div>
     </div>
 </div>

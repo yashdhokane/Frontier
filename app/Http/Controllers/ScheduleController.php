@@ -95,7 +95,7 @@ class ScheduleController extends Controller
         // Query the business hours for the given day
         $hours = BusinessHours::where('day', $currentDayLower)->first();
 
-        $formattedDate = $currentDate->format('l, F j, Y');
+        $formattedDate = $currentDate->format('D, F j, Y');
 
         $previousDate = $currentDate->copy()->subDay()->format('Y-m-d');
 
@@ -262,7 +262,7 @@ class ScheduleController extends Controller
         $currentDayLower = strtolower($currentDay);
         $hours = BusinessHours::where('day', $currentDayLower)->first();
 
-        $formattedDate = $currentDate->format('l, F j, Y');
+        $formattedDate = $currentDate->format('D, F j, Y');
         $previousDate = $currentDate->copy()->subDay()->format('Y-m-d');
         $tomorrowDate = $currentDate->copy()->addDay()->format('Y-m-d');
         $filterDate = $currentDate->format('Y-m-d');
@@ -2299,7 +2299,7 @@ class ScheduleController extends Controller
         $currentDayLower = strtolower($currentDay);
         $hours = BusinessHours::where('day', $currentDayLower)->first();
 
-        $formattedDate = $currentDate->format('l, F j, Y');
+        $formattedDate = $currentDate->format('D, F j, Y');
         $previousDate = $currentDate->copy()->subDay()->format('Y-m-d');
         $tomorrowDate = $currentDate->copy()->addDay()->format('Y-m-d');
         $filterDate = $currentDate->format('Y-m-d');
@@ -2459,7 +2459,7 @@ class ScheduleController extends Controller
         $currentDayLower = strtolower($currentDay);
         $hours = BusinessHours::where('day', $currentDayLower)->first();
 
-        $formattedDate = $currentDate->format('l, F j, Y');
+        $formattedDate = $currentDate->format('D, F j, Y');
         $previousDate = $currentDate->copy()->subDay()->format('Y-m-d');
         $tomorrowDate = $currentDate->copy()->addDay()->format('Y-m-d');
         $filterDate = $currentDate->format('Y-m-d');
@@ -2619,7 +2619,7 @@ class ScheduleController extends Controller
         $currentDayLower = strtolower($currentDay);
         $hours = BusinessHours::where('day', $currentDayLower)->first();
 
-        $formattedDate = $currentDate->format('l, F j, Y');
+        $formattedDate = $currentDate->format('D, F j, Y');
         $previousDate = $currentDate->copy()->subDay()->format('Y-m-d');
         $tomorrowDate = $currentDate->copy()->addDay()->format('Y-m-d');
         $filterDate = $currentDate->format('Y-m-d');
@@ -2746,5 +2746,47 @@ class ScheduleController extends Controller
         $screen2 = view('schedule.scheduleCalender3', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate', 'users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', 'cities', 'cities1', 'TodayDate', 'tech', 'schedule_arr', 'hours', 'current_time', 'data'))->render();
 
         return response()->json(['tbody' => $screen2]);
+    }
+    public function getJobsByDate(Request $request)
+    {
+      $new_currentDate = \Carbon\Carbon::parse($request->date)->format('Y-m-d');
+
+
+        $data = DB::table('job_assigned')
+            ->select(
+                'job_assigned.id as assign_id',
+                'job_assigned.job_id as job_id',
+                'job_assigned.start_date_time',
+                'job_assigned.end_date_time',
+                'job_assigned.start_slot',
+                'job_assigned.end_slot',
+                'job_assigned.pending_number',
+                'jobs.job_code',
+                'jobs.job_title as subject',
+                'jobs.status',
+                'jobs.address',
+                'jobs.city',
+                'jobs.state',
+                'jobs.zipcode',
+                'jobs.latitude',
+                'jobs.longitude',
+                'users.name',
+                'users.email',
+                'technician.name as technicianname',
+                'technician.email as technicianemail'
+            )
+            ->join('jobs', 'jobs.id', '=', 'job_assigned.job_id')
+            ->join('users', 'users.id', '=', 'jobs.customer_id')
+            ->join('users as technician', 'technician.id', '=', 'job_assigned.technician_id')
+            ->whereNotNull('jobs.latitude')
+            ->whereNotNull('jobs.longitude')
+            ->whereDate('job_assigned.start_date_time', '=', $new_currentDate)
+            ->where('job_assigned.assign_status', 'active')
+            ->orderBy('job_assigned.pending_number', 'asc')
+            ->get();
+
+
+
+        return response()->json(['data' => $data]);
     }
 }

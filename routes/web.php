@@ -806,6 +806,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/schedule_date_screen2/', [ScheduleController::class, 'schedule_date_screen2'])->name('schedule.calender2');
     Route::get('/schedule_date_screen3/', [ScheduleController::class, 'schedule_date_screen3'])->name('schedule.calender3');
 
+    Route::get('/getJobsByDate/', [ScheduleController::class, 'getJobsByDate'])->name('schedule.getJobsByDate');
+
     // MailController
 
     Route::get('get/mail/schedule', [MailController::class, 'index']);

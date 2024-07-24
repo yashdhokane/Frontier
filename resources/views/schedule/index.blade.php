@@ -15,11 +15,7 @@
                         <div class="row gx-0 px-3">
                             <div class="col-lg-12 d-flex justify-content-end mt-1">
 
-                                <div class="btn-group mt-2" role="group" aria-label="Button group with nested dropdown"
-                                    style="margin-right:30px;">
-                                    <a href="#navCalendar" class="btn btn-info cbtn">Calendar</a>
-                                    <a href="#navMap" class="btn btn-light-info text-info mbtn">Map</a>
-                                </div>
+                                
 
                                 {{-- <ul class="nav nav-pills  mt-2" role="tablist">
                                     <li class="nav-item">
@@ -44,7 +40,7 @@
                                     </li>
                                 </ul> --}}
                             </div>
-                            <div class="col-lg-12" id="scheduleSection">
+                            <div class="col-lg-12">
 
                                <div class="mt-3 mb-4 calender-sidebar app-calendar" id="calender1">
                                     <div class="row" id="screen-date1" data-screen1-date="{{ $formattedDate }}">
@@ -61,6 +57,11 @@
                                         <div class="col-md-4 text-start">
                                             <a id="selectDates1" style="margin-right: 10px; font-size: 13px;cursor: pointer;"><i
                                                     class="fas fa-calendar-alt"></i>Select Dates</a>
+                                                    <div class="btn-group my-2" role="group" aria-label="Button group with nested dropdown"
+                                                        style="margin-right:30px;">
+                                                        <a href="#navCalendar1" class="btn btn-info cbtn1">Calendar</a>
+                                                        <a href="#navMap1" class="btn btn-light-info text-info mbtn1">Map</a>
+                                                    </div>
 
                                             {{-- <a href="#" id="todayDate1" data-today-date="{{ $TodayDate }}"
                                                 style=" margin-right: 10px;font-size: 13px;color: #ee9d01;font-weight: bold;"><i
@@ -68,7 +69,7 @@
                                         </div>
 
                                     </div>
-                                    <div class="dat schedule_section_box" id="table-container">
+                                    <div class="dat schedule_section_box" id="scheduleSection1"">
                                         <table id="demo-foo-addrow" class="table table-bordered m-t-30 table-hover contact-list text-nowrap"
                                             data-paging="true" data-paging-size="7" style="width: max-content;">
                                             <thead>
@@ -397,13 +398,14 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                     <div class="col-12 bg-light py-2 px-3 mt-3 card-border mapStyle" id="mapSection1">
+                                        <div id="mapScreen1" style="height: 550px !important; width: 100% !important;"></div>
+                                    </div>
                                 </div>
 
 
                             </div>
-                            <div class="col-12 bg-light py-2 px-3 mt-3 card-border" id="mapSection">
-                                <div id="map" style="height: 550px !important; width: 100% !important;"></div>
-                            </div>
+                           
 
                         </div>
                     </div>

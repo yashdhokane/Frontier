@@ -205,3 +205,7 @@
         .disable-pointer-events {
             pointer-events: none;
         }
+
+        .mapStyle{
+          height: 567px;
+        }
