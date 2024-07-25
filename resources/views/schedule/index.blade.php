@@ -69,7 +69,7 @@
                                         </div>
 
                                     </div>
-                                    <div class="dat schedule_section_box" id="scheduleSection1"">
+                                    <div class="dat schedule_section_box" id="scheduleSection1" data-map-date="{{ $formattedDate }}">
                                         <table id="demo-foo-addrow" class="table table-bordered m-t-30 table-hover contact-list text-nowrap"
                                             data-paging="true" data-paging-size="7" style="width: max-content;">
                                             <thead>
