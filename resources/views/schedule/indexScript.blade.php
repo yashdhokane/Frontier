@@ -148,28 +148,32 @@
                     if (parentAnchor) {
                         parentAnchor.style.pointerEvents = 'none';
                     }
+                    // Set original height if not already set
+                    if (!event.target.dataset.originalHeight) {
+                        event.target.dataset.originalHeight = event.target.style.height;
+                    }
                 })
                 .on('resizemove', function(event) {
                     let target = event.target;
                     let originalHeight = parseFloat(target.dataset.originalHeight) || parseFloat(target.style
                         .height) || 0;
-                    let heightChange = event.deltaRect.height;
-                    let heightPer30Min = 36; // height for 30 minutes
-                    let minDuration = 30; // min duration in minutes
-                    let maxDuration = 240; // max duration in minutes
+                    let heightChange = event.rect.height - originalHeight;
 
-                    // Calculate the new height and duration
+                    // Update the height directly with the cursor movement
                     let newHeight = originalHeight + heightChange;
+
+                    // Set a minimum height to prevent collapsing too much
+                    let minHeight = 36; // Equivalent to 30 minutes
+                    if (newHeight < minHeight) {
+                        newHeight = minHeight;
+                    }
+
+                    // Update the element's height
+                    target.style.height = `${newHeight}px`;
+
+                    // Calculate and update the new duration
+                    let heightPer30Min = 36; // height for 30 minutes
                     let newDuration = Math.round(newHeight / heightPer30Min) * 30;
-
-                    // Restrict the duration within the allowed range
-                    if (newDuration < minDuration) newDuration = minDuration;
-                    // if (newDuration > maxDuration) newDuration = maxDuration;
-
-                    // Update the height based on the new duration
-                    target.style.height = `${(newDuration / 30) * heightPer30Min}px`;
-
-                    // Update the data-duration attribute
                     target.dataset.duration = newDuration;
                 })
                 .on('resizeend', function(event) {
@@ -184,9 +188,9 @@
 
                     // Get the job ID
                     let jobId = event.target.dataset.id; // Assuming you have job ID stored in data-id attribute
-                    let target = event.target;
+
                     // AJAX request to update duration in database
-                    updateDurationInDatabase(jobId, newDuration, target);
+                    updateDurationInDatabase(jobId, newDuration, event.target);
                 });
 
             function updateDurationInDatabase(jobId, newDuration, target) {
@@ -199,14 +203,13 @@
                     reverseButtons: true
                 }).then((result) => {
                     if (result.isConfirmed) {
-
                         var screen1Date = $('#screen-date1').data('screen1-date');
                         var screen2Date = $('#screen-date2').data('screen2-date');
                         var screen3Date = $('#screen-date3').data('screen3-date');
                         // AJAX POST request to your Laravel endpoint
                         $.ajax({
                             url: "{{ route('schedule.update_job_duration') }}",
-                            type: 'POST', // Changed from 'GET' to 'POST'
+                            type: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}' // Add CSRF token if using Laravel CSRF protection
                             },
@@ -219,7 +222,6 @@
                                 // Handle success if needed
                                 Swal.fire('Success', 'Duration updated successfully', 'success')
                                     .then(() => {
-
                                         fetchSchedule1(screen1Date);
                                         fetchSchedule2(screen2Date);
                                         fetchSchedule3(screen3Date);
@@ -241,24 +243,76 @@
                 });
             }
 
+
             var drake;
 
             function initializeDragula() {
-                drake = dragula(Array.from(document.getElementsByClassName('draggable-items')), {
+                var drake = dragula(Array.from(document.getElementsByClassName('draggable-items')), {
                     moves: function(el, container, handle) {
                         return handle.classList.contains('start-drag');
-                    }
+                    },
+                    mirrorContainer: document.body
                 });
 
                 var originalParent, originalNextSibling;
+                var offsetX, offsetY;
 
-                drake.on('drag', function(el) {
+                drake.on('drag', function(el, source) {
                     el.classList.remove('card-moved');
                     originalParent = el.parentElement;
                     originalNextSibling = el.nextElementSibling;
+
+                    // Calculate the offset of the cursor within the element
+                    var rect = el.getBoundingClientRect();
+                    offsetX = event.clientX - rect.left;
+                    offsetY = event.clientY - rect.top;
+
+                    // Add event listener for mousemove to update the position
+                    document.addEventListener('mousemove', updateElementPosition);
+
+                    // Hide the mirror element
+                    var mirror = document.querySelector('.gu-mirror');
+                    if (mirror) {
+                        mirror.style.display = 'none';
+                    }
+
+                    // Position the dragged element at the cursor's location
+                    el.style.position = 'absolute';
+                    el.style.zIndex = 9999;
+                    el.style.width = `${rect.width}px`;
+                    el.style.height = `${rect.height}px`;
+
+                    document.body.appendChild(el); // Append the dragged element to the body
                 });
 
+                drake.on('dragend', function(el) {
+                    // Remove the event listener after dragging ends
+                    document.removeEventListener('mousemove', updateElementPosition);
+                });
+
+                function updateElementPosition(event) {
+                    var draggedElement = document.querySelector('.gu-transit');
+                    if (draggedElement) {
+                        draggedElement.style.left = (event.clientX - 450) + 'px';
+                        draggedElement.style.top = (event.clientY - 350) + 'px';
+                    }
+                }
+
                 drake.on('drop', function(el, target, source, sibling) {
+                    el.style.position = '';
+                    el.style.zIndex = '';
+                    el.style.width = '';
+                    el.style.height = '';
+
+                    // Append the element to the target container
+                    if (target) {
+                        target.appendChild(el);
+                    } else {
+                        // Revert the drag operation
+                        revertDrag(el);
+                        return;
+                    }
+
                     var time = $(el).closest('.draggable-items').data('slot_time');
                     var techId = $(el).closest('.draggable-items').data('technician_id');
                     var dragDate = $(el).closest('.draggable-items').data('drag-date');
@@ -317,21 +371,17 @@
                                                         showConfirmButton: false,
                                                         timer: 1500
                                                     });
-
-
                                                 } else {
                                                     console.log(response
                                                         .error);
                                                     revertDrag(
-                                                        el
-                                                    ); // Revert the drag operation
+                                                    el); // Revert the drag operation
                                                 }
                                             },
                                             error: function(error) {
                                                 console.error(error);
                                                 revertDrag(
-                                                    el
-                                                ); // Revert the drag operation
+                                                el); // Revert the drag operation
                                             }
                                         });
                                     } else {
@@ -361,16 +411,13 @@
                                                             true) {
                                                             fetchSchedule1
                                                                 (
-                                                                    screen1Date
-                                                                );
+                                                                    screen1Date);
                                                             fetchSchedule2
                                                                 (
-                                                                    screen2Date
-                                                                );
+                                                                    screen2Date);
                                                             fetchSchedule3
                                                                 (
-                                                                    screen3Date
-                                                                );
+                                                                    screen3Date);
                                                             Swal.fire({
                                                                 position: 'top-end',
                                                                 icon: 'success',
@@ -378,18 +425,15 @@
                                                                 showConfirmButton: false,
                                                                 timer: 1500
                                                             });
-
-
                                                         } else {
                                                             console
                                                                 .log(
                                                                     response
                                                                     .error
-                                                                );
+                                                                    );
                                                             revertDrag
                                                                 (
-                                                                    el
-                                                                ); // Revert the drag operation
+                                                                el); // Revert the drag operation
                                                         }
                                                     },
                                                     error: function(
@@ -397,16 +441,15 @@
                                                         console
                                                             .error(
                                                                 error
-                                                            );
+                                                                );
                                                         revertDrag(
                                                             el
-                                                        ); // Revert the drag operation
+                                                            ); // Revert the drag operation
                                                     }
                                                 });
                                             } else {
                                                 revertDrag(
-                                                    el
-                                                ); // Revert the drag operation
+                                                el); // Revert the drag operation
                                             }
                                         });
                                     }
@@ -431,6 +474,8 @@
                     }
                 }
             }
+
+
 
             function fetchSchedule1(date) {
                 $.ajax({

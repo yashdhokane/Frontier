@@ -154,11 +154,13 @@
     box-sizing: border-box;
 }
 
+.draggable-items .dragging {
+    transition: transform 0.1s ease;
+}
+
+
 .gu-mirror {
-    opacity: 0.6;
-    position: fixed;
-    z-index: 9999;
-    pointer-events: none;
+    display: none;
 }
 
 .dat table th {
