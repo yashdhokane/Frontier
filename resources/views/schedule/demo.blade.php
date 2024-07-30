@@ -16,29 +16,29 @@
         }
 
         /* ul,
-        ol {
-            list-style: none;
-            border: 1px solid black;
-            padding: 0;
-        }
+                            ol {
+                                list-style: none;
+                                border: 1px solid black;
+                                padding: 0;
+                            }
 
-        li {
-            padding: 0 10px;
-            height: 25px;
-            line-height: 25px;
-        }
+                            li {
+                                padding: 0 10px;
+                                height: 25px;
+                                line-height: 25px;
+                            }
 
-        li:nth-child(odd) {
-            background-color: #CCC;
-        }
+                            li:nth-child(odd) {
+                                background-color: #CCC;
+                            }
 
-        li:nth-child(even) {
-            background-color: white;
-        }
+                            li:nth-child(even) {
+                                background-color: white;
+                            }
 
-        li:hover {
-            cursor: move;
-        } */
+                            li:hover {
+                                cursor: move;
+                            } */
 
         .box {
             min-height: 100px;
@@ -61,6 +61,7 @@
         }
 
         .day div {
+            cursor: move;
             background-color: #00122f;
             padding-top: 2px;
             padding-bottom: 2px;
@@ -145,41 +146,31 @@
             background-color: white;
         }
     </style>
-
+ <h4 class="fc-toolbar-title px-4 pt-2" id="fc-dom-1">{{ $formattedDate }}</h4>
     <div style="height:500px;">
+        @foreach ($technicians as $key => $item)
+            @php
+                $a = $key + 1;
+                $technicianSchedules = $schedules->where('technician_id', $item->id);
+            @endphp
 
-    <div class='day' id='day1'>
-        <h4>Monday</h4>
-        <div id='3'>Breakfast</div>
-        <div id='4'>Lunch</div>
-        <div id='10'>Dinner</div>
-    </div>
-    <div class='day' id='day2'>
-        <h4>Tuesday</h4>
-        <div id='1'>Meeting with Jack</div>
-        <div id='7'>Working lunch</div>
-        <div id='8'>Phone call with Sarah</div>
-        <div id='9'>Team meeting</div>
-        <div id='12'>HR Review</div>
-    </div>
-    <div class='day' id='day3'>
-        <h4>Wednesday</h4>
-        <div id='5'>Progress update</div>
-        <div id='6'>Call Simon</div>
-    </div>
-    <div class='day' id='day4'>
-        <h4>Thursday</h4>
-        <div id='2'>Drinks with Bob</div>
-        <div id='11'>Weekly report</div>
-    </div>
-    <div class='day' id='day5'>
-        <h4>Friday</h4>
-        <div id='13'>Zoom meeting</div>
-        <div id='14'>Email Jo</div>
-        <div id='15'>Company Meal</div>
-    </div>
+            <div class='day' id='day{{ $a }}'>
+                <h4 class="technicianName" data-technician-id='{{ $item->id }}'>{{ $item->name }}</h4>
+                @foreach ($technicianSchedules as $key2 => $value)
+                    <div id='{{ $value->job_id }}'>
+                        <h5 class="p-1 text-center"><i class="fas fa-id-badge px-2"></i>
+                            <strong>{{ $value->JobModel->job_title ?? null }}
+                                #{{ $value->JobModel->id ?? null }}</strong>
+                        </h5>
+                       
+                    </div>
+                @endforeach
+            </div>
+        @endforeach
 
-</div>
+
+
+    </div>
 
 @section('script')
     <script>
@@ -203,7 +194,6 @@
         });
 
         $(document).ready(function() {
-
             $('.day div').draggable({
                 helper: 'clone',
                 cursor: 'move'
@@ -212,23 +202,40 @@
             $('.day').droppable({
                 tolerance: 'pointer',
                 drop: function(event, ui) {
-                    var id = $(ui.draggable).attr('id');
-                    var eventItem = $(ui.draggable).html();
-                    var day = $(this).attr('id');
+                    var jobId = ui.draggable.attr('id'); // ID of the dragged job
+                    var newTechnicianId = $(this).find('.technicianName').data(
+                        'technician-id'); // ID of the technician where the job is dropped
 
-                    // Here's where am ajax call will go 
+                    console.log('Dropped job ID:', jobId);
+                    console.log('New technician ID:', newTechnicianId);
 
-                    $(ui.draggable).remove();
-                    $('#' + day).append('<div id="' + id + '">' + eventItem + '</div>');
-                    $('div#' + id).draggable({
+                    // Perform the AJAX request to update the technician_id for the job
+                    $.ajax({
+                        url: '{{ route('updateJobTechnician') }}', // Replace with your actual endpoint URL
+                        method: 'POST',
+                        data: {
+                            job_id: jobId,
+                            technician_id: newTechnicianId,
+                            _token: '{{ csrf_token() }}' // CSRF token for Laravel
+                        },
+                        success: function(response) {
+                            console.log('Job updated successfully:', response);
+                        },
+                        error: function(xhr) {
+                            console.error('Failed to update job:', xhr.responseText);
+                        }
+                    });
+
+                    // Optionally, move the job element to the new container
+                    ui.draggable.remove(); // Remove the dragged element from its original position
+                    $(this).append('<div id="' + jobId + '" class="job-item">' + ui.draggable.html() +
+                        '</div>'); // Append it to the new position
+                    $('div#' + jobId).draggable({
                         helper: 'clone',
                         cursor: 'move'
                     });
-                    $(this).css('min-height', 'auto');
-
                 }
             });
-
         });
     </script>
 @endsection

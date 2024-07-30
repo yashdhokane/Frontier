@@ -810,6 +810,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/demo', [ScheduleController::class, 'demo'])->name('demo');
 
+    Route::post('/update-job-technician', [ScheduleController::class, 'updateJobTechnician'])->name('updateJobTechnician');
+
+
     // MailController
 
     Route::get('get/mail/schedule', [MailController::class, 'index']);

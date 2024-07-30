@@ -193,7 +193,7 @@ class ScheduleController extends Controller
         }
 
         $current_time = Carbon::now($timezone_name)->format('h:i A');
-         $new_currentDate =  $currentDate->format('Y-m-d');
+        $new_currentDate =  $currentDate->format('Y-m-d');
 
         $data = DB::table('job_assigned')
             ->select(
@@ -228,7 +228,7 @@ class ScheduleController extends Controller
             ->orderBy('job_assigned.pending_number', 'asc')
             ->get();
 
-        return view('schedule.index', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate', 'users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', 'cities', 'cities1', 'TodayDate', 'tech', 'schedule_arr', 'hours', 'current_time','data'));
+        return view('schedule.index', compact('user_array', 'user_data_array', 'assignment_arr', 'formattedDate', 'previousDate', 'tomorrowDate', 'filterDate', 'users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', 'cities', 'cities1', 'TodayDate', 'tech', 'schedule_arr', 'hours', 'current_time', 'data'));
     }
     public function schedule_new(Request $request)
     {
@@ -2749,7 +2749,7 @@ class ScheduleController extends Controller
     }
     public function getJobsByDate(Request $request)
     {
-      $new_currentDate = \Carbon\Carbon::parse($request->date)->format('Y-m-d');
+        $new_currentDate = \Carbon\Carbon::parse($request->date)->format('Y-m-d');
 
 
         $data = DB::table('job_assigned')
@@ -2792,6 +2792,37 @@ class ScheduleController extends Controller
 
     public function demo(Request $request)
     {
-      return view('schedule.demo');
+
+        $timezone_name = Session::get('timezone_name');
+        $time_interval = Session::get('time_interval');
+        $currentDate = Carbon::now($timezone_name);
+        $filterDate = $currentDate->format('Y-m-d');
+
+        $formattedDate = $currentDate->format('D, F j, Y');
+        // Fetch active technicians
+        $technicians = User::where('role', 'technician')->where('status', 'active')->limit(5)->get();
+
+        // Initialize an empty collection to store schedules
+        $schedules = collect();
+
+        // Loop through each technician and fetch their schedules
+        foreach ($technicians as $technician) {
+            $technicianSchedules = Schedule::where('technician_id', $technician->id)->where('start_date_time', 'LIKE', "%$filterDate%")->get();
+            $schedules = $schedules->merge($technicianSchedules);
+        }
+
+        // Pass both technicians and schedules to the view
+        return view('schedule.demo', compact('technicians', 'schedules','formattedDate'));
+    }
+    public function updateJobTechnician(Request $request)
+    {
+        $jobId = $request->input('job_id');
+        $technicianId = $request->input('technician_id');
+
+        $job = Schedule::where('job_id', $jobId)->first(); // Assuming Job is your model for jobs
+        $job->technician_id = $technicianId;
+        $job->save();
+
+        return response()->json(['success' => true, 'message' => 'Job updated successfully.']);
     }
 }
