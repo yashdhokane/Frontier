@@ -15,31 +15,6 @@
             margin-left: 50px;
         }
 
-        /* ul,
-                            ol {
-                                list-style: none;
-                                border: 1px solid black;
-                                padding: 0;
-                            }
-
-                            li {
-                                padding: 0 10px;
-                                height: 25px;
-                                line-height: 25px;
-                            }
-
-                            li:nth-child(odd) {
-                                background-color: #CCC;
-                            }
-
-                            li:nth-child(even) {
-                                background-color: white;
-                            }
-
-                            li:hover {
-                                cursor: move;
-                            } */
-
         .box {
             min-height: 100px;
             height: auto;
@@ -145,9 +120,48 @@
             border: none;
             background-color: white;
         }
+
+        .schedule-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-row,
+        .time-row {
+            display: flex;
+        }
+
+        .tech-header,
+        .timeslot {
+            width: 100px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .time-slot {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .time-slot div {
+            height: 30px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .tech-profile-img {
+            width: 48px;
+            border-radius: 50%;
+        }
+
+        .tech-name {
+            display: block;
+            margin-top: 5px;
+        }
     </style>
- <h4 class="fc-toolbar-title px-4 pt-2" id="fc-dom-1">{{ $formattedDate }}</h4>
-    <div style="height:500px;">
+    <h4 class="fc-toolbar-title px-4 pt-2" id="fc-dom-1">{{ $formattedDate }}</h4>
+    {{-- <div style="height:200px;">
         @foreach ($technicians as $key => $item)
             @php
                 $a = $key + 1;
@@ -162,7 +176,7 @@
                             <strong>{{ $value->JobModel->job_title ?? null }}
                                 #{{ $value->JobModel->id ?? null }}</strong>
                         </h5>
-                       
+
                     </div>
                 @endforeach
             </div>
@@ -170,7 +184,85 @@
 
 
 
+    </div> --}}
+
+    <div class="mx-4 mt-5 bg-white">
+        <div class="schedule-container">
+            <div class="header-row">
+                <div class="tech-header"></div>
+                <!-- Loop through the user_array to generate technician headers -->
+                @foreach ($technicians as $key => $item)
+                    <div class="tech-header" style="color: #123456;">
+                        <a href="#" class="link user_head_link tech_profile" style="color: #123456 !important;">
+                            <img src="{{ asset('public/images/Uploads/users/' . $item->id . '/' . $item->user_image) }}"
+                                alt="user" width="48" class="rounded-circle tech_profile"
+                                onerror="this.onerror=null; this.src='{{ $defaultImage }}';" />
+                            <span class="tech-name">{{ $item->name ?? null }}</span>
+                        </a>
+                    </div>
+                @endforeach
+                <!-- Repeat the above div for each technician -->
+            </div>
+            <!-- Time slots and technician schedule rows -->
+            <div class="time-slot">
+                @php
+                    $startTime = 8; // 8 AM
+                    $endTime = 19; // 7 PM
+                    $interval = 30; // 30 minutes
+
+                    // Function to format time in 12-hour format
+                    function formatTime($hour, $minute)
+                    {
+                        $ampm = $hour >= 12 ? 'PM' : 'AM';
+                        $formattedHour = $hour % 12 == 0 ? 12 : $hour % 12;
+                        $formattedMinute = str_pad($minute, 2, '0', STR_PAD_LEFT);
+                        return "$formattedHour:$formattedMinute $ampm";
+                    }
+
+                @endphp
+                <!-- Loop through the time slots -->
+                @for ($hour = $startTime; $hour <= $endTime; $hour++)
+                    @for ($minute = 0; $minute < 60; $minute += $interval)
+                        @if ($hour == $endTime && $minute > 0)
+                        @break
+                    @endif
+                    <div class="time-row">
+                        <div class="timeslot">{{ formatTime($hour, $minute) }}</div>
+                        @foreach ($technicians as $key => $item)
+                        @php
+                        $timeSlot = Carbon\Carbon::createFromTime($hour, $minute)->format('H:i');
+                    
+                        // Debug: Output timeSlot and start_date_time format
+                        $technicianSchedules = $schedules->filter(function ($schedule) use ($item, $timeSlot) {
+                            $scheduleTime = Carbon\Carbon::parse($schedule->start_date_time)->format('H:i');
+                            
+                            
+                            return $schedule->technician_id == $item->id && $scheduleTime == $timeSlot;
+                        });
+                    @endphp
+                    
+                    
+                            <div class="timeslot p-0" data-slot_time="{{ formatTime($hour, $minute) }}"
+                                data-technician-name="{{ $item->name }}" data-technician_id="{{ $item->id }}">
+                                @foreach ($technicianSchedules as $key2 => $value)
+                                    <div id='{{ $value->job_id }}' class="dts">
+                                        <h5 class="p-1 text-center"><i class="fas fa-id-badge px-2"></i>
+                                            <strong>{{ $value->JobModel->job_title ?? null }}
+                                                #{{ $value->JobModel->id ?? null }}</strong>
+                                        </h5>
+
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                        <!-- Repeat the above div for each technician's time slot -->
+                    </div>
+                @endfor
+            @endfor
+            <!-- Repeat the above div for each time slot -->
+        </div>
     </div>
+</div>
 
 @section('script')
     <script>

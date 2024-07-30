@@ -2800,7 +2800,7 @@ class ScheduleController extends Controller
 
         $formattedDate = $currentDate->format('D, F j, Y');
         // Fetch active technicians
-        $technicians = User::where('role', 'technician')->where('status', 'active')->limit(5)->get();
+        $technicians = User::where('role', 'technician')->where('status', 'active')->get();
 
         // Initialize an empty collection to store schedules
         $schedules = collect();
@@ -2811,8 +2811,15 @@ class ScheduleController extends Controller
             $schedules = $schedules->merge($technicianSchedules);
         }
 
+        $schedules->transform(function ($schedule) use ($time_interval) {
+            $schedule->start_date_time = Carbon::parse($schedule->start_date_time)
+                ->addHours($time_interval)
+                ->format('Y-m-d H:i:s');
+            return $schedule;
+        });
+
         // Pass both technicians and schedules to the view
-        return view('schedule.demo', compact('technicians', 'schedules','formattedDate'));
+        return view('schedule.demo', compact('technicians', 'schedules', 'formattedDate'));
     }
     public function updateJobTechnician(Request $request)
     {

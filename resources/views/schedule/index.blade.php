@@ -210,7 +210,7 @@
                                                                                                     $overfloHeight = $height_slot_px - 5;
                                                                                                 @endphp
 
-                                                                                                <a class="show_job_details pb-5"
+                                                                                                <a class="show_job_details"
                                                                                                     href="{{ $value2->job_id ? route('tickets.show', $value2->job_id) : '#' }}"
                                                                                                     style="width: {{ $jobWidth }}%;">
                                                                                                     <div class="dts stretchJob mb-1 flexibleslot {{ $additionalClass }}"
