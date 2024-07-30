@@ -2789,4 +2789,9 @@ class ScheduleController extends Controller
 
         return response()->json(['data' => $data]);
     }
+
+    public function demo(Request $request)
+    {
+      return view('schedule.demo');
+    }
 }

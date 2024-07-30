@@ -808,6 +808,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/getJobsByDate/', [ScheduleController::class, 'getJobsByDate'])->name('schedule.getJobsByDate');
 
+    Route::get('/demo', [ScheduleController::class, 'demo'])->name('demo');
+
     // MailController
 
     Route::get('get/mail/schedule', [MailController::class, 'index']);
