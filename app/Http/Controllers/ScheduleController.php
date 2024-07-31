@@ -2798,6 +2798,11 @@ class ScheduleController extends Controller
         $currentDate = Carbon::now($timezone_name);
         $filterDate = $currentDate->format('Y-m-d');
 
+         $currentDay = $currentDate->format('l');
+        $currentDayLower = strtolower($currentDay);
+        // Query the business hours for the given day
+        $hours = BusinessHours::where('day', $currentDayLower)->first();
+
         $formattedDate = $currentDate->format('D, F j, Y');
         // Fetch active technicians
         $technicians = User::where('role', 'technician')->where('status', 'active')->get();
@@ -2819,28 +2824,113 @@ class ScheduleController extends Controller
         });
 
         // Pass both technicians and schedules to the view
-        return view('schedule.demo', compact('technicians', 'schedules', 'formattedDate'));
+        return view('schedule.demo', compact('technicians', 'schedules', 'formattedDate','hours'));
     }
     public function updateJobTechnician(Request $request)
     {
+        $duration = $request->duration;
+        $start_time = $request->time;
+        $date = $request->date;
+        $dragNewDate = Carbon::parse($date)->format('Y-m-d H:i:s');
         $jobId = $request->input('job_id');
         $technicianId = $request->input('technician_id');
+        $time_interval = Session::get('time_interval');
+        $timezone_name = Session::get('timezone_name');
+
+        $old_tech = Schedule::where('job_id', $jobId)->first();
 
         // Validate that both job_id and technician_id are not null
         if (is_null($jobId) || is_null($technicianId)) {
             return response()->json(['success' => false, 'message' => 'Invalid job or technician ID.']);
         }
+        try {
+            // Update Schedule
+            $schedule = Schedule::where('job_id', $jobId)->first();
 
-        $job = Schedule::where('job_id', $jobId)->first();
+            // Check if the schedule exists
+            if (!$schedule) {
+                return response()->json(['success' => false, 'message' => 'Job not found.']);
+            }
+            if ($schedule) {
+                $newFormattedDateTime = Carbon::parse($dragNewDate)->setTimeFromTimeString($start_time);
+                $start = Carbon::parse($newFormattedDateTime)->subHours($time_interval);
+                $end = $start->copy()->addMinutes($duration);
 
-        // Check if the job exists
-        if (!$job) {
-            return response()->json(['success' => false, 'message' => 'Job not found.']);
+                $schedule->technician_id = $technicianId;
+                $schedule->start_date_time = $start->toDateTimeString();
+                $schedule->end_date_time = $end->toDateTimeString();
+                $schedule->save();
+            }
+            // Update Job
+            $job = JobModel::where('id', $jobId)->first();
+            if ($job) {
+                $job->technician_id = $technicianId;
+                $job->save();
+            }
+
+
+            // Update Job tech event
+            $jobTechEvent = JobTechEvent::where('job_id', $jobId)->first();
+            if ($jobTechEvent) {
+
+                $newFormattedDateTime = Carbon::parse($dragNewDate)->setTimeFromTimeString($start_time);
+                $start = Carbon::parse($newFormattedDateTime)->subHours($time_interval);
+
+                $jobTechEvent->job_schedule = $start->toDateTimeString();
+                $jobTechEvent->save();
+            }
+
+            $now = Carbon::now($timezone_name);
+            $formattedDate = $start->format('D, M j');
+            $formattedTime = $now->format('g:ia');
+            $formattedDateTime = "{$formattedDate} at {$formattedTime}";
+
+            $activity = 'Job re-scheduled for ' . $formattedDateTime;
+            app('JobActivityManager')->addJobActivity($jobId, $activity);
+            app('sendNotices')(
+                "New Job",
+                "Job #{$jobId} moved from {$old_tech->technician->name} and assigned to {$schedule->technician->name}",
+                url()->current(),
+                'job'
+            );
+            app('sendNoticesapp')(
+                "Job started",
+                "Job #{$jobId} moved from {$old_tech->technician->name} and assigned to {$schedule->technician->name}",
+                url()->current(),
+                'job',
+                $technicianId,
+                $jobId
+            );
+
+
+            // Update JobAssign
+
+            $jobAssigned = JobAssign::where('job_id', $jobId)->where('assign_status', 'active')->first();
+            if ($jobAssigned) {
+                // Update the original job's status to 'moved'
+                $jobAssigned->assign_status = 'moved';
+                $jobAssigned->save();
+
+                // Copy the updated job and change the status to 'active'
+                $newJobAssign = $jobAssigned->replicate();
+                $newJobAssign->assign_status = 'active';
+
+                // Update the new job's values
+                $newFormattedDateTime = Carbon::parse($jobAssigned->start_date_time)->setTimeFromTimeString($start_time);
+                $start = Carbon::parse($newFormattedDateTime)->subHours($time_interval);
+                $end = $start->copy()->addMinutes($duration);
+
+                $newJobAssign->technician_id = $technicianId;
+                $newJobAssign->start_date_time = $start->toDateTimeString();
+                $newJobAssign->end_date_time = $end->toDateTimeString();
+                $newJobAssign->save();
+            }
+
+
+
+            return response()->json(['success' => true, 'message' => 'Job updated successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
-
-        $job->technician_id = $technicianId;
-        $job->save();
-
-        return response()->json(['success' => true, 'message' => 'Job updated successfully.']);
     }
 }
