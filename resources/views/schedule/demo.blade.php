@@ -2,123 +2,127 @@
 
 @section('content')
     <style>
-        div#left {
-            margin-left: 40px;
-            float: left;
-            width: 220px;
-        }
+        /* div#left {
+                margin-left: 40px;
+                float: left;
+                width: 220px;
+            }
 
-        div#center,
-        div#right {
-            float: left;
-            width: 220px;
-            margin-left: 50px;
-        }
+            div#center,
+            div#right {
+                float: left;
+                width: 220px;
+                margin-left: 50px;
+            }
 
-        .box {
-            min-height: 100px;
-            height: auto;
-            width: 100px;
-            padding: 10px;
-            border-width: 4px;
-            border-style: solid;
-            position: absolute;
-        }
+            .box {
+                min-height: 100px;
+                height: auto;
+                width: 100px;
+                padding: 10px;
+                border-width: 4px;
+                border-style: solid;
+                position: absolute;
+            }
 
-        .day {
-            min-height: 100px;
-            height: auto;
-            width: 100px;
-            padding: 10px;
-            border-width: 4px;
-            border-style: solid;
-            position: absolute;
-        }
+            .day {
+                min-height: 100px;
+                height: auto;
+                width: 100px;
+                padding: 10px;
+                border-width: 4px;
+                border-style: solid;
+                position: absolute;
+            }
+
+            .day div {
+                cursor: move;
+                background-color: #00122f;
+                padding-top: 2px;
+                padding-bottom: 2px;
+                margin-bottom: 5px;
+                border-radius: 3px;
+                padding-right: 1px;
+                color: white;
+                padding-left: 3px;
+            }
+
+            #day1 {
+                border-color: orange;
+                left: 10px;
+                top: 100px;
+                width: 150px;
+            }
+
+            #day2 {
+                border-color: blue;
+                left: 200px;
+                top: 100px;
+                width: 150px;
+            }
+
+            #day3 {
+                border-color: green;
+                left: 390px;
+                top: 100px;
+                width: 150px;
+            }
+
+            #day4 {
+                border-color: red;
+                left: 580px;
+                top: 100px;
+                width: 150px;
+            }
+
+            #day5 {
+                border-color: darkturquoise;
+                left: 770px;
+                top: 100px;
+                width: 150px;
+            }
+
+            .instructions {
+                color: red;
+            }
+
+            #reorder ul {
+                margin-left: 20px;
+                width: 200px;
+                border: 1px solid black;
+                list-style: none;
+                padding: 0;
+            }
+
+            #reorder li {
+                padding: 2px 20px;
+                height: 25px;
+                line-height: 25px;
+            }
+
+            #update-button,
+            #update-message {
+                height: 30px;
+                margin-left: 20px;
+                width: 200px;
+                font-weight: bold;
+            }
+
+            ol.indexpage {
+                margin-top: 30px;
+                font-family: sans-serif;
+                list-style: decimal;
+                border: none;
+                margin-left: 50px;
+            }
+
+            .indexpage li {
+                border: none;
+                background-color: white;
+            } */
 
         .day div {
             cursor: move;
-            background-color: #00122f;
-            padding-top: 2px;
-            padding-bottom: 2px;
-            margin-bottom: 5px;
-            border-radius: 3px;
-            padding-right: 1px;
-            color: white;
-            padding-left: 3px;
-        }
-
-        #day1 {
-            border-color: orange;
-            left: 10px;
-            top: 100px;
-            width: 150px;
-        }
-
-        #day2 {
-            border-color: blue;
-            left: 200px;
-            top: 100px;
-            width: 150px;
-        }
-
-        #day3 {
-            border-color: green;
-            left: 390px;
-            top: 100px;
-            width: 150px;
-        }
-
-        #day4 {
-            border-color: red;
-            left: 580px;
-            top: 100px;
-            width: 150px;
-        }
-
-        #day5 {
-            border-color: darkturquoise;
-            left: 770px;
-            top: 100px;
-            width: 150px;
-        }
-
-        .instructions {
-            color: red;
-        }
-
-        #reorder ul {
-            margin-left: 20px;
-            width: 200px;
-            border: 1px solid black;
-            list-style: none;
-            padding: 0;
-        }
-
-        #reorder li {
-            padding: 2px 20px;
-            height: 25px;
-            line-height: 25px;
-        }
-
-        #update-button,
-        #update-message {
-            height: 30px;
-            margin-left: 20px;
-            width: 200px;
-            font-weight: bold;
-        }
-
-        ol.indexpage {
-            margin-top: 30px;
-            font-family: sans-serif;
-            list-style: decimal;
-            border: none;
-            margin-left: 50px;
-        }
-
-        .indexpage li {
-            border: none;
-            background-color: white;
         }
 
         .schedule-container {
@@ -229,21 +233,20 @@
                     <div class="time-row">
                         <div class="timeslot">{{ formatTime($hour, $minute) }}</div>
                         @foreach ($technicians as $key => $item)
-                        @php
-                        $timeSlot = Carbon\Carbon::createFromTime($hour, $minute)->format('H:i');
-                    
-                        // Debug: Output timeSlot and start_date_time format
-                        $technicianSchedules = $schedules->filter(function ($schedule) use ($item, $timeSlot) {
-                            $scheduleTime = Carbon\Carbon::parse($schedule->start_date_time)->format('H:i');
-                            
-                            
-                            return $schedule->technician_id == $item->id && $scheduleTime == $timeSlot;
-                        });
-                    @endphp
-                    
-                    
-                            <div class="timeslot p-0" data-slot_time="{{ formatTime($hour, $minute) }}"
-                                data-technician-name="{{ $item->name }}" data-technician_id="{{ $item->id }}">
+                            @php
+                                $timeSlot = Carbon\Carbon::createFromTime($hour, $minute)->format('H:i');
+
+                                // Debug: Output timeSlot and start_date_time format
+                                $technicianSchedules = $schedules->filter(function ($schedule) use ($item, $timeSlot) {
+                                    $scheduleTime = Carbon\Carbon::parse($schedule->start_date_time)->format('H:i');
+
+                                    return $schedule->technician_id == $item->id && $scheduleTime == $timeSlot;
+                                });
+                            @endphp
+
+
+                            <div class="timeslot p-0 day technician" data-slot-time="{{ formatTime($hour, $minute) }}"
+                                data-technician-name="{{ $item->name }}" data-technician-id="{{ $item->id }}">
                                 @foreach ($technicianSchedules as $key2 => $value)
                                     <div id='{{ $value->job_id }}' class="dts">
                                         <h5 class="p-1 text-center"><i class="fas fa-id-badge px-2"></i>
@@ -295,8 +298,7 @@
                 tolerance: 'pointer',
                 drop: function(event, ui) {
                     var jobId = ui.draggable.attr('id'); // ID of the dragged job
-                    var newTechnicianId = $(this).find('.technicianName').data(
-                        'technician-id'); // ID of the technician where the job is dropped
+                    var newTechnicianId = $(this).data('technician-id');
 
                     console.log('Dropped job ID:', jobId);
                     console.log('New technician ID:', newTechnicianId);
@@ -320,7 +322,7 @@
 
                     // Optionally, move the job element to the new container
                     ui.draggable.remove(); // Remove the dragged element from its original position
-                    $(this).append('<div id="' + jobId + '" class="job-item">' + ui.draggable.html() +
+                    $(this).append('<div id="' + jobId + '" class="dts">' + ui.draggable.html() +
                         '</div>'); // Append it to the new position
                     $('div#' + jobId).draggable({
                         helper: 'clone',

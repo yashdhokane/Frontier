@@ -2826,7 +2826,18 @@ class ScheduleController extends Controller
         $jobId = $request->input('job_id');
         $technicianId = $request->input('technician_id');
 
-        $job = Schedule::where('job_id', $jobId)->first(); // Assuming Job is your model for jobs
+        // Validate that both job_id and technician_id are not null
+        if (is_null($jobId) || is_null($technicianId)) {
+            return response()->json(['success' => false, 'message' => 'Invalid job or technician ID.']);
+        }
+
+        $job = Schedule::where('job_id', $jobId)->first();
+
+        // Check if the job exists
+        if (!$job) {
+            return response()->json(['success' => false, 'message' => 'Job not found.']);
+        }
+
         $job->technician_id = $technicianId;
         $job->save();
 
