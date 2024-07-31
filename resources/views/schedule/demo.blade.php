@@ -126,7 +126,7 @@
                                     $duration = $value->JobModel->jobassignname->duration ?? null;
                                     $height_slot = $duration ? ($duration / 30) * 40 : 0; // Calculate height in pixels
                                 @endphp
-                                <div id='{{ $value->job_id }}' class="dts"
+                                <div id='{{ $value->job_id }}' class="dts stretchJob"
                                     style="height:{{ $height_slot }}px; position: relative;"
                                     data-duration="{{ $value->JobModel->jobassignname->duration }}">
                                     <h5 class="p-1 text-center"><i class="fas fa-id-badge px-2"></i>
@@ -146,6 +146,8 @@
     </div>
 
     @section('script')
+        <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             $(function() {
                 $(".day").sortable({
@@ -167,11 +169,20 @@
             });
 
             $(document).ready(function() {
+                var isResizing = false;
+
+                // Initialize draggable elements
                 $('.day div').draggable({
                     helper: 'clone',
-                    cursor: 'move'
+                    cursor: 'move',
+                    start: function(event, ui) {
+                        if (isResizing) {
+                            return false; // Prevent dragging if resizing
+                        }
+                    }
                 });
 
+                // Initialize droppable elements
                 $('.day').droppable({
                     tolerance: 'pointer',
                     drop: function(event, ui) {
@@ -207,16 +218,120 @@
 
                         // Optionally, move the job element to the new container
                         ui.draggable.remove(); // Remove the dragged element from its original position
-                        $(this).append('<div id="' + jobId + '" class="dts" style="height:' + height_slot +
+                        $(this).append('<div id="' + jobId + '" class="dts stretchJob" style="height:' +
+                            height_slot +
                             'px; position: relative;" data-duration="' + duration +
                             '">' + ui.draggable.html() +
                             '</div>'); // Append it to the new position
                         $('div#' + jobId).draggable({
                             helper: 'clone',
-                            cursor: 'move'
+                            cursor: 'move',
+                            start: function(event, ui) {
+                                if (isResizing) {
+                                    return false; // Prevent dragging if resizing
+                                }
+                            }
                         });
                     }
                 });
+
+                // Initialize resizable elements with interact.js
+                interact('.stretchJob').resizable({
+                        edges: {
+                            left: false,
+                            right: false,
+                            bottom: true,
+                            top: false
+                        }
+                    })
+                    .on('resizestart', function(event) {
+                        // Disable dragging while resizing
+                        isResizing = true;
+
+                        // Set original height if not already set
+                        if (!event.target.dataset.originalHeight) {
+                            event.target.dataset.originalHeight = event.target.style.height;
+                        }
+                    })
+                    .on('resizemove', function(event) {
+                        let target = event.target;
+                        let originalHeight = parseFloat(target.dataset.originalHeight) || parseFloat(target.style
+                            .height) || 0;
+                        let heightChange = event.rect.height - originalHeight;
+
+                        // Update the height directly with the cursor movement
+                        let newHeight = originalHeight + heightChange;
+
+                        // Set a minimum height to prevent collapsing too much
+                        let minHeight = 40; // Equivalent to 30 minutes
+                        if (newHeight < minHeight) {
+                            newHeight = minHeight;
+                        }
+
+                        // Update the element's height
+                        target.style.height = `${newHeight}px`;
+
+                        // Calculate and update the new duration
+                        let heightPer30Min = 40; // height for 30 minutes
+                        let newDuration = Math.round(newHeight / heightPer30Min) * 30;
+                        target.dataset.duration = newDuration;
+                    })
+                    .on('resizeend', function(event) {
+                        // Re-enable dragging after resizing
+                        isResizing = false;
+
+                        // Get the updated duration
+                        let newDuration = parseInt(event.target.dataset.duration);
+
+                        // Get the job ID
+                        let jobId = event.target.id; // Assuming the element's ID is the job ID
+
+                        // AJAX request to update duration in database
+                        updateDurationInDatabase(jobId, newDuration, event.target);
+                    });
+
+                function updateDurationInDatabase(jobId, newDuration, target) {
+                    Swal.fire({
+                        title: 'Do you want to change time?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes',
+                        cancelButtonText: 'No',
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // AJAX POST request to your Laravel endpoint
+                            $.ajax({
+                                url: "{{ route('schedule.update_job_duration') }}",
+                                type: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}' // Add CSRF token if using Laravel CSRF protection
+                                },
+                                data: {
+                                    duration: newDuration,
+                                    jobId: jobId
+                                },
+                                success: function(response) {
+                                    console.log(response);
+                                    // Handle success if needed
+                                    Swal.fire('Success', 'Duration updated successfully', 'success')
+                                        .then(() => {});
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error('Error updating duration:', error);
+                                    // Handle error if needed
+                                    Swal.fire('Error',
+                                        'Failed to update duration. Please try again.', 'error');
+                                }
+                            });
+                        } else if (result.dismiss === Swal.DismissReason.cancel) {
+                            // Reset the height to the original height
+                            let originalHeight = parseFloat(target.dataset.originalHeight);
+                            console.log('Reverting to Original Height:', originalHeight);
+                            target.style.height = `${originalHeight}px`;
+                        }
+                    });
+                }
             });
         </script>
     @endsection
