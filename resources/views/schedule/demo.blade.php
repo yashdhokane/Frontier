@@ -3,123 +3,123 @@
 @section('content')
     <style>
         /* div#left {
-                        margin-left: 40px;
-                        float: left;
-                        width: 220px;
-                    }
+                            margin-left: 40px;
+                            float: left;
+                            width: 220px;
+                        }
 
-                    div#center,
-                    div#right {
-                        float: left;
-                        width: 220px;
-                        margin-left: 50px;
-                    }
+                        div#center,
+                        div#right {
+                            float: left;
+                            width: 220px;
+                            margin-left: 50px;
+                        }
 
-                    .box {
-                        min-height: 100px;
-                        height: auto;
-                        width: 100px;
-                        padding: 10px;
-                        border-width: 4px;
-                        border-style: solid;
-                        position: absolute;
-                    }
+                        .box {
+                            min-height: 100px;
+                            height: auto;
+                            width: 100px;
+                            padding: 10px;
+                            border-width: 4px;
+                            border-style: solid;
+                            position: absolute;
+                        }
 
-                    .day {
-                        min-height: 100px;
-                        height: auto;
-                        width: 100px;
-                        padding: 10px;
-                        border-width: 4px;
-                        border-style: solid;
-                        position: absolute;
-                    }
+                        .day {
+                            min-height: 100px;
+                            height: auto;
+                            width: 100px;
+                            padding: 10px;
+                            border-width: 4px;
+                            border-style: solid;
+                            position: absolute;
+                        }
 
-                    .day div {
-                        cursor: move;
-                        background-color: #00122f;
-                        padding-top: 2px;
-                        padding-bottom: 2px;
-                        margin-bottom: 5px;
-                        border-radius: 3px;
-                        padding-right: 1px;
-                        color: white;
-                        padding-left: 3px;
-                    }
+                        .day div {
+                            cursor: move;
+                            background-color: #00122f;
+                            padding-top: 2px;
+                            padding-bottom: 2px;
+                            margin-bottom: 5px;
+                            border-radius: 3px;
+                            padding-right: 1px;
+                            color: white;
+                            padding-left: 3px;
+                        }
 
-                    #day1 {
-                        border-color: orange;
-                        left: 10px;
-                        top: 100px;
-                        width: 150px;
-                    }
+                        #day1 {
+                            border-color: orange;
+                            left: 10px;
+                            top: 100px;
+                            width: 150px;
+                        }
 
-                    #day2 {
-                        border-color: blue;
-                        left: 200px;
-                        top: 100px;
-                        width: 150px;
-                    }
+                        #day2 {
+                            border-color: blue;
+                            left: 200px;
+                            top: 100px;
+                            width: 150px;
+                        }
 
-                    #day3 {
-                        border-color: green;
-                        left: 390px;
-                        top: 100px;
-                        width: 150px;
-                    }
+                        #day3 {
+                            border-color: green;
+                            left: 390px;
+                            top: 100px;
+                            width: 150px;
+                        }
 
-                    #day4 {
-                        border-color: red;
-                        left: 580px;
-                        top: 100px;
-                        width: 150px;
-                    }
+                        #day4 {
+                            border-color: red;
+                            left: 580px;
+                            top: 100px;
+                            width: 150px;
+                        }
 
-                    #day5 {
-                        border-color: darkturquoise;
-                        left: 770px;
-                        top: 100px;
-                        width: 150px;
-                    }
+                        #day5 {
+                            border-color: darkturquoise;
+                            left: 770px;
+                            top: 100px;
+                            width: 150px;
+                        }
 
-                    .instructions {
-                        color: red;
-                    }
+                        .instructions {
+                            color: red;
+                        }
 
-                    #reorder ul {
-                        margin-left: 20px;
-                        width: 200px;
-                        border: 1px solid black;
-                        list-style: none;
-                        padding: 0;
-                    }
+                        #reorder ul {
+                            margin-left: 20px;
+                            width: 200px;
+                            border: 1px solid black;
+                            list-style: none;
+                            padding: 0;
+                        }
 
-                    #reorder li {
-                        padding: 2px 20px;
-                        height: 25px;
-                        line-height: 25px;
-                    }
+                        #reorder li {
+                            padding: 2px 20px;
+                            height: 25px;
+                            line-height: 25px;
+                        }
 
-                    #update-button,
-                    #update-message {
-                        height: 30px;
-                        margin-left: 20px;
-                        width: 200px;
-                        font-weight: bold;
-                    }
+                        #update-button,
+                        #update-message {
+                            height: 30px;
+                            margin-left: 20px;
+                            width: 200px;
+                            font-weight: bold;
+                        }
 
-                    ol.indexpage {
-                        margin-top: 30px;
-                        font-family: sans-serif;
-                        list-style: decimal;
-                        border: none;
-                        margin-left: 50px;
-                    }
+                        ol.indexpage {
+                            margin-top: 30px;
+                            font-family: sans-serif;
+                            list-style: decimal;
+                            border: none;
+                            margin-left: 50px;
+                        }
 
-                    .indexpage li {
-                        border: none;
-                        background-color: white;
-                    } */
+                        .indexpage li {
+                            border: none;
+                            background-color: white;
+                        } */
 
         .day div {
             cursor: move;
@@ -154,7 +154,6 @@
         }
 
         .time-slot div {
-            border: 1px solid #ddd;
             text-align: center;
         }
 
@@ -260,7 +259,7 @@
                                         $height_slot = $duration ? ($duration / 30) * 40 : 0; // Calculate height in pixels
                                     @endphp
                                     <div id='{{ $value->job_id }}' class="dts"
-                                        style="max-height:{{ $height_slot }};"
+                                        style="height:{{ $height_slot }}px; position: relative;"
                                         data-duration="{{ $value->JobModel->jobassignname->duration }}">
                                         <h5 class="p-1 text-center"><i class="fas fa-id-badge px-2"></i>
                                             <strong>{{ $value->JobModel->job_title ?? null }}
@@ -316,6 +315,7 @@
                     var date = $(this).data('date');
                     var time = $(this).data('slot-time');
 
+                    var height_slot = duration ? (duration / 30) * 40 : 0; // Calculate height in pixels
                     console.log('Dropped job ID:', jobId);
                     console.log('New technician ID:', newTechnicianId);
 
@@ -341,7 +341,8 @@
 
                     // Optionally, move the job element to the new container
                     ui.draggable.remove(); // Remove the dragged element from its original position
-                    $(this).append('<div id="' + jobId + '" class="dts" data-duration="' + duration +
+                    $(this).append('<div id="' + jobId + '" class="dts" style="height:' + height_slot +
+                        'px; position: relative;" data-duration="' + duration +
                         '">' + ui.draggable.html() +
                         '</div>'); // Append it to the new position
                     $('div#' + jobId).draggable({
