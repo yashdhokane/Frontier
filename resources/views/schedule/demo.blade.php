@@ -117,24 +117,32 @@
                             });
                         @endphp
 
-
-                        <div class="timeslot p-0 day" data-date="{{ $formattedDate }}"
+                        @php
+                            $groupedJobs = collect($technicianSchedules)->groupBy('start_date_time');
+                        @endphp
+                        <div class="timeslot p-0 day d-flex" data-date="{{ $formattedDate }}"
                             data-slot-time="{{ formatTime($hour, $minute) }}" data-technician-name="{{ $item->name }}"
                             data-technician-id="{{ $item->id }}">
-                            @foreach ($technicianSchedules as $key2 => $value)
-                                @php
-                                    $duration = $value->JobModel->jobassignname->duration ?? null;
-                                    $height_slot = $duration ? ($duration / 30) * 40 : 0; // Calculate height in pixels
-                                @endphp
-                                <div id='{{ $value->job_id }}' class="dts stretchJob"
-                                    style="height:{{ $height_slot }}px; position: relative;"
-                                    data-duration="{{ $value->JobModel->jobassignname->duration }}">
-                                    <p class="p-1 text-center"><i class="fas fa-id-badge px-2"></i>
-                                        <strong>{{ $value->JobModel->job_title ?? null }}
-                                            #{{ $value->JobModel->id ?? null }}</strong>
-                                    </p>
 
-                                </div>
+                            @foreach ($groupedJobs as $key2 => $jobs)
+                                @php
+                                    $jobCount = count($jobs);
+                                    $jobWidth = 100 / $jobCount;
+                                @endphp
+                                @foreach ($jobs as $job)
+                                    @php
+                                        $duration = $job->JobModel->jobassignname->duration ?? null;
+                                        $height_slot = $duration ? ($duration / 30) * 40 : 0;
+                                    @endphp
+                                    <div id='{{ $job->job_id }}' class="dts stretchJob border"
+                                        style="height:{{ $height_slot }}px; position: relative; width:{{$jobWidth}}%;"
+                                        data-duration="{{ $job->JobModel->jobassignname->duration }}">
+                                        <p class="p-1 text-center"><i class="fas fa-id-badge px-2"></i>
+                                            <strong>{{ $job->JobModel->job_title ?? null }}
+                                                #{{ $job->JobModel->id ?? null }}</strong>
+                                        </p>
+                                    </div>
+                                @endforeach
                             @endforeach
                         </div>
                     @endforeach
