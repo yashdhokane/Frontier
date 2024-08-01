@@ -129,10 +129,10 @@
                                 <div id='{{ $value->job_id }}' class="dts stretchJob"
                                     style="height:{{ $height_slot }}px; position: relative;"
                                     data-duration="{{ $value->JobModel->jobassignname->duration }}">
-                                    <h5 class="p-1 text-center"><i class="fas fa-id-badge px-2"></i>
+                                    <p class="p-1 text-center"><i class="fas fa-id-badge px-2"></i>
                                         <strong>{{ $value->JobModel->job_title ?? null }}
                                             #{{ $value->JobModel->id ?? null }}</strong>
-                                    </h5>
+                                    </p>
 
                                 </div>
                             @endforeach

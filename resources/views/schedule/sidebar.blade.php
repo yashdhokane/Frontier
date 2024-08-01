@@ -15,7 +15,7 @@
 						<span class="hide-menu">
 							{{-- to show technician in sidebar  --}}
 							@php
-								$tech = DB::table('users')->where('role', 'technician')->get();
+								$tech = DB::table('users')->where('role', 'technician')->where('status', 'active')->get();
 							@endphp
 
 							<div class="bg-white h-100 mx-3" id="filterSchedule">
