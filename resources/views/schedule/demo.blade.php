@@ -48,6 +48,11 @@
             display: block;
             margin-top: 5px;
         }
+
+        .ui-draggable-dragging {
+            z-index: 1000 !important;
+            /* Ensure the helper has a high z-index during dragging */
+        }
     </style>
     <h4 class="fc-toolbar-title px-4 pt-2 mt-3" id="fc-dom-1">{{ $formattedDate }}</h4>
 
@@ -222,6 +227,7 @@
                             }
                         });
 
+                        ui.draggable.remove(); // Remove the dragged element from its original position
                         // Calculate the number of jobs in the target container
                         var jobCount = $(this).children('.dts').length + 1; // Including the dropped job
                         var jobWidth = 100 / jobCount;
@@ -237,7 +243,6 @@
                             'px; position: relative; width:' + jobWidth + 'px;" data-duration="' +
                             duration + '">' + ui.draggable.html() + '</div>');
 
-                        ui.draggable.remove(); // Remove the dragged element from its original position
                         $(this).append(newJobElement);
 
                         // Make the new job element draggable
