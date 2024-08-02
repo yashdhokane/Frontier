@@ -135,7 +135,7 @@
                                         $height_slot = $duration ? ($duration / 30) * 40 : 0;
                                     @endphp
                                     <div id='{{ $job->job_id }}' class="dts stretchJob border"
-                                        style="height:{{ $height_slot }}px; position: relative; width:{{$jobWidth}}%;"
+                                        style="height:{{ $height_slot }}px; position: relative; width:{{ $jobWidth }}px;"
                                         data-duration="{{ $job->JobModel->jobassignname->duration }}">
                                         <p class="p-1 text-center"><i class="fas fa-id-badge px-2"></i>
                                             <strong>{{ $job->JobModel->job_title ?? null }}
@@ -201,8 +201,6 @@
                         var time = $(this).data('slot-time');
 
                         var height_slot = duration ? (duration / 30) * 40 : 0; // Calculate height in pixels
-                        console.log('Dropped job ID:', jobId);
-                        console.log('New technician ID:', newTechnicianId);
 
                         // Perform the AJAX request to update the technician_id for the job
                         $.ajax({
@@ -224,14 +222,26 @@
                             }
                         });
 
-                        // Optionally, move the job element to the new container
+                        // Calculate the number of jobs in the target container
+                        var jobCount = $(this).children('.dts').length + 1; // Including the dropped job
+                        var jobWidth = 100 / jobCount;
+
+                        // Set the width of existing jobs
+                        $(this).children('.dts').each(function() {
+                            $(this).css('width', jobWidth + 'px');
+                        });
+
+                        // Append the new job with the calculated width
+                        var newJobElement = $('<div id="' + jobId +
+                            '" class="dts stretchJob border" style="height:' + height_slot +
+                            'px; position: relative; width:' + jobWidth + 'px;" data-duration="' +
+                            duration + '">' + ui.draggable.html() + '</div>');
+
                         ui.draggable.remove(); // Remove the dragged element from its original position
-                        $(this).append('<div id="' + jobId + '" class="dts stretchJob" style="height:' +
-                            height_slot +
-                            'px; position: relative;" data-duration="' + duration +
-                            '">' + ui.draggable.html() +
-                            '</div>'); // Append it to the new position
-                        $('div#' + jobId).draggable({
+                        $(this).append(newJobElement);
+
+                        // Make the new job element draggable
+                        newJobElement.draggable({
                             helper: 'clone',
                             cursor: 'move',
                             start: function(event, ui) {
@@ -240,6 +250,17 @@
                                 }
                             }
                         });
+
+                        // Update the width of the original container if any jobs remain
+                        var originalContainer = ui.draggable.parent();
+                        var originalJobCount = originalContainer.children('.dts').length;
+
+                        if (originalJobCount > 0) {
+                            var originalJobWidth = 100 / originalJobCount;
+                            originalContainer.children('.dts').each(function() {
+                                $(this).css('width', originalJobWidth + 'px');
+                            });
+                        }
                     }
                 });
 
