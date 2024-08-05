@@ -146,6 +146,59 @@
                                             <strong>{{ $job->JobModel->job_title ?? null }}
                                                 #{{ $job->JobModel->id ?? null }}</strong>
                                         </p>
+                                        <div class="template" style="display: none;">
+                                            <div class="popup-content">
+                                                <h5><i class="fas fa-id-badge px-2"></i>
+                                                    <strong>Job
+                                                        #{{ $job->JobModel->id ?? null }}</strong>
+                                                </h5>
+                                                <p class="ps-4 m-0 ms-2">
+                                                    @php
+                                                        $startDateTime1 = $job->start_date_time
+                                                            ? Carbon\Carbon::parse($job->start_date_time)
+                                                            : null;
+                                                        $endDateTime1 = $job->end_date_time
+                                                            ? Carbon\Carbon::parse($job->end_date_time)
+                                                            : null;
+                                                        $interval1 = session('time_interval'); // Retrieve the time interval from the session
+
+                                                        if ($startDateTime1 && $endDateTime1 && $interval1) {
+                                                            $startDateTime1->addHours($interval1);
+                                                            $endDateTime1->addHours($interval1);
+                                                        }
+                                                    @endphp
+                                                    @if ($startDateTime1 && $endDateTime1)
+                                                        {{ $startDateTime1->format('M d Y g:i a') }}
+                                                        -
+                                                        {{ $endDateTime1->format('g:i A') }}
+                                                    @endif
+                                                </p>
+                                                <div class="py-1">
+                                                    <i class="fas fa-ticket-alt px-2"></i>
+                                                    <strong>{{ $job->JobModel->job_title ?? null }}</strong>
+                                                </div>
+                                                <div class="py-1">
+                                                    <i class="fas fa-user px-2"></i>
+                                                    <strong>{{ $value2->JobModel->user->name ?? null }}</strong>
+                                                    <p class="ps-4 m-0 ms-2">
+                                                        {{ $job->JobModel->addresscustomer->address_line1 ?? null }}
+                                                        {{ $job->JobModel->addresscustomer->zipcode ?? null }}
+                                                    </p>
+                                                    <p class="ps-4 m-0 ms-2">
+                                                        {{ $job->JobModel->user->mobile ?? null }}
+                                                    </p>
+                                                </div>
+                                                <div class="py-1">
+                                                    <i class="fas fa-user-secret px-2"></i>
+                                                    <strong>{{ $job->JobModel->technician->name ?? null }}</strong>
+                                                </div>
+                                                <div class="py-1">
+                                                    <i class="fas fa-tag px-2"></i>
+                                                    <span
+                                                        class="mb-1 badge bg-primary">{{ $job->JobModel->status ?? null }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 @endforeach
                             @endforeach
@@ -161,6 +214,10 @@
     @section('script')
         <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <link rel="stylesheet" href="https://unpkg.com/tippy.js@6.3.1/dist/tippy.css" />
+        <script src="https://unpkg.com/@popperjs/core@2"></script>
+        <script src="https://unpkg.com/tippy.js@6"></script>
+
         <script>
             $(function() {
                 $(".day").sortable({
@@ -366,6 +423,17 @@
                         }
                     });
                 }
+
+                $(document).on('mouseenter', '.stretchJob', function() {
+                    var template = $(this).find('.template');
+                    if (!this._tippy) {
+                        tippy(this, {
+                            content: template.html(),
+                            allowHTML: true,
+                        });
+                    }
+                });
+
             });
         </script>
     @endsection
