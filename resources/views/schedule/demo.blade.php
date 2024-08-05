@@ -179,7 +179,7 @@
                                                 </div>
                                                 <div class="py-1">
                                                     <i class="fas fa-user px-2"></i>
-                                                    <strong>{{ $value2->JobModel->user->name ?? null }}</strong>
+                                                    <strong>{{ $job->JobModel->user->name ?? null }}</strong>
                                                     <p class="ps-4 m-0 ms-2">
                                                         {{ $job->JobModel->addresscustomer->address_line1 ?? null }}
                                                         {{ $job->JobModel->addresscustomer->zipcode ?? null }}
