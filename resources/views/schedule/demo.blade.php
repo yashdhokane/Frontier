@@ -28,6 +28,7 @@
             padding: 5px;
             border: 1px solid #ddd;
             text-align: center;
+            font-size: 12px;
         }
 
         .time-slot {
@@ -64,7 +65,7 @@
             <div class="tech-header"></div>
             <!-- Loop through the user_array to generate technician headers -->
             @foreach ($technicians as $key => $item)
-                <div class="tech-header" style="color: #123456;">
+                <div class="tech-header" style="color: #123456;" data-tech-id="{{ $item->id }}">
                     <a href="#" class="link user_head_link tech_profile" style="color: #123456 !important;">
                         <img src="{{ asset('public/images/Uploads/users/' . $item->id . '/' . $item->user_image) }}"
                             alt="user" width="48" class="rounded-circle tech_profile"
@@ -126,10 +127,11 @@
 
                         @php
                             $groupedJobs = collect($technicianSchedules)->groupBy('start_date_time');
+                            $timeString = formatTime($hour, $minute);
                         @endphp
-                        <div class="timeslot p-0 day d-flex clickPoint1" data-date="{{ $formattedDate }}"
+                        <div class="timeslot p-0 day clickPoint1" data-date="{{ $formattedDate }}" 
                             data-slot-time="{{ formatTime($hour, $minute) }}" data-technician-name="{{ $item->name }}"
-                            data-technician-id="{{ $item->id }}">
+                            data-technician-id="{{ $item->id }}" style="display: flex;">
 
                             @foreach ($groupedJobs as $key2 => $jobs)
                                 @php
@@ -141,14 +143,59 @@
                                         @php
                                             $duration = $job->JobModel->jobassignname->duration ?? null;
                                             $height_slot = $duration ? ($duration / 30) * 40 : 0;
+                                            $overflow_height = $height_slot - 10;
                                         @endphp
                                         <div id='{{ $job->job_id }}' class="dts dragDiv stretchJob border"
                                             style="height:{{ $height_slot }}px; position: relative; width:{{ $jobWidth }}px;"
                                             data-duration="{{ $job->JobModel->jobassignname->duration }}">
-                                            <p class="p-1 text-center"><i class="fas fa-id-badge px-2"></i>
-                                                <strong>{{ $job->JobModel->job_title ?? null }}
-                                                    #{{ $job->JobModel->id ?? null }}</strong>
-                                            </p>
+
+                                            <a class="show_job_details text-white"
+                                                href="{{ $job->job_id ? route('tickets.show', $job->job_id) : '#' }}"
+                                                style="width: {{ $jobWidth }}px;">
+                                                <div class="mb-1" data-id="{{ $job->job_id }}"
+                                                    data-duration="{{ $job->JobModel->jobassignname->duration }}"
+                                                    data-technician-name="{{ $job->technician->name }}"
+                                                    data-timezone-name="{{ $job->technician->TimeZone->timezone_name }}"
+                                                    data-time="{{ $timeString }}" data-date="{{ $formattedDate }}"
+                                                    style="max-width: {{ $jobWidth }}%;cursor: pointer;">
+                                                    @if ($job->JobModel && $job->JobModel->is_confirmed == 'yes')
+                                                        <div class="cls_is_confirmed">
+                                                            <i class="ri-thumb-up-fill"></i>
+                                                        </div>
+                                                    @endif
+                                                    <div style="height: {{ $overflow_height }}px;overflow:hidden;">
+                                                        <div class="cls_slot_title">
+                                                            <i class="ri-tools-line"></i>
+                                                            {{ $job->JobModel->user->name ?? null }}
+                                                        </div>
+                                                        <div class="cls_slot_time">
+                                                            <i class="ri-truck-line"></i>
+                                                            {{ $timeString }}
+                                                        </div>
+                                                        <div class="cls_slot_job_card">
+                                                            {{ $job->JobModel->job_title ?? null }}
+                                                        </div>
+                                                        <div class="cls_slot_job_card">
+                                                            {{ $job->JobModel->city ?? null }},
+                                                            {{ $job->JobModel->state ?? null }}
+                                                        </div>
+                                                        <div class="round-init">
+                                                            @php
+                                                                $name = $job->technician->name ?? null;
+                                                                $initials = '';
+                                                                if ($name) {
+                                                                    $names = explode(' ', $name);
+                                                                    foreach ($names as $part) {
+                                                                        $initials .= strtoupper(substr($part, 0, 1));
+                                                                    }
+                                                                }
+                                                            @endphp
+                                                            {{ $initials }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+
                                             <div class="template" style="display: none;">
                                                 <div class="popup-content">
                                                     <h5><i class="fas fa-id-badge px-2"></i>
@@ -326,6 +373,8 @@
             });
 
             $(document).ready(function() {
+
+                var isDragging = false;
                 var isResizing = false;
 
                 // Initialize draggable elements
@@ -336,6 +385,10 @@
                         if (isResizing) {
                             return false; // Prevent dragging if resizing
                         }
+                        isDragging = true;
+                    },
+                    stop: function(event, ui) {
+                        isDragging = false;
                     }
                 });
 
@@ -397,6 +450,10 @@
                                 if (isResizing) {
                                     return false; // Prevent dragging if resizing
                                 }
+                                isDragging = true;
+                            },
+                            stop: function(event, ui) {
+                                isDragging = false;
                             }
                         });
 
@@ -408,6 +465,19 @@
                             var originalJobWidth = 100 / originalJobCount;
                             originalContainer.children('.dts').each(function() {
                                 $(this).css('width', originalJobWidth + 'px');
+                            });
+                        }
+                    }
+                });
+
+                // Prevent tooltip from showing while dragging
+                $(document).on('mouseenter', '.stretchJob', function() {
+                    if (!isDragging) {
+                        var template = $(this).find('.template');
+                        if (!this._tippy) {
+                            tippy(this, {
+                                content: template.html(),
+                                allowHTML: true,
                             });
                         }
                     }
@@ -511,54 +581,46 @@
                     });
                 }
 
-                $(document).on('mouseenter', '.stretchJob', function() {
-                    var template = $(this).find('.template');
-                    if (!this._tippy) {
-                        tippy(this, {
-                            content: template.html(),
-                            allowHTML: true,
-                        });
-                    }
-                });
-
                 $(document).on('click', '.clickPoint1', function(e) {
-                    console.log('click');
-                    e.stopPropagation();
-                    var popupDiv = $(this).find('.popupDiv1');
+                    if (!isResizing) {
+                        e.stopPropagation();
+                        var popupDiv = $(this).find('.popupDiv1');
 
-                    // Hide any previously displayed popupDiv elements
-                    $('.popupDiv1').not(popupDiv).hide();
+                        // Hide any previously displayed popupDiv elements
+                        $('.popupDiv1').not(popupDiv).hide();
 
-                    // Calculate the position of the popupDiv based on the clicked point
-                    var mouseX = e.pageX - 180;
-                    var mouseY = e.pageY - 100;
+                        // Calculate the position of the popupDiv based on the clicked point
+                        var mouseX = e.pageX - 180;
+                        var mouseY = e.pageY - 100;
 
-                    // Get the dimensions of the popupDiv and the window
-                    var popupWidth = popupDiv.outerWidth();
-                    var popupHeight = popupDiv.outerHeight();
-                    var windowWidth = $(window).width();
-                    var windowHeight = $(window).height();
+                        // Get the dimensions of the popupDiv and the window
+                        var popupWidth = popupDiv.outerWidth();
+                        var popupHeight = popupDiv.outerHeight();
+                        var windowWidth = $(window).width();
+                        var windowHeight = $(window).height();
 
-                    // Calculate the position for the popupDiv, ensuring it stays within the window
-                    var topPosition = mouseY;
-                    var leftPosition = mouseX;
+                        // Calculate the position for the popupDiv, ensuring it stays within the window
+                        var topPosition = mouseY;
+                        var leftPosition = mouseX;
 
-                    // Adjust the position if the popupDiv overflows the window
-                    if (topPosition + popupHeight > windowHeight) {
-                        topPosition = windowHeight - popupHeight - 10; // Add a margin of 10px
+                        // Adjust the position if the popupDiv overflows the window
+                        if (topPosition + popupHeight > windowHeight) {
+                            topPosition = windowHeight - popupHeight - 10; // Add a margin of 10px
+                        }
+                        if (leftPosition + popupWidth > windowWidth) {
+                            leftPosition = windowWidth - popupWidth - 10; // Add a margin of 10px
+                        }
+
+                        // Set the position and show the popupDiv
+                        popupDiv.css({
+                            position: 'absolute',
+                            top: topPosition + 'px',
+                            left: leftPosition + 'px',
+                            zIndex: 1000 // Ensure the popupDiv is above other elements
+                        }).toggle();
                     }
-                    if (leftPosition + popupWidth > windowWidth) {
-                        leftPosition = windowWidth - popupWidth - 10; // Add a margin of 10px
-                    }
-
-                    // Set the position and show the popupDiv
-                    popupDiv.css({
-                        position: 'absolute',
-                        top: topPosition + 'px',
-                        left: leftPosition + 'px',
-                        zIndex: 1000 // Ensure the popupDiv is above other elements
-                    }).toggle();
                 });
+
                 // Hide the popup div when clicking outside of it
                 $(document).click(function() {
                     $('.popupDiv').hide();
@@ -638,6 +700,22 @@
                         }
                     });
                 });
+
+               $(document).on('change', '.technician_check', function() {
+                    var isChecked = $(this).prop('checked');
+                    var id = $(this).data('id'); // Retrieve the value of the data-id attribute
+
+                    if (isChecked) {
+                        // Show elements with class tech-header and day that match the id
+                        $('.tech-header[data-tech-id="' + id + '"]').show();
+                        $('.clickPoint1[data-technician-id="' + id + '"]').show();
+                    } else {
+                        // Hide elements with class tech-header and day that match the id
+                        $('.tech-header[data-tech-id="' + id + '"]').hide();
+                        $('.clickPoint1[data-technician-id="' + id + '"]').hide();
+                    }
+                });
+
 
 
             });

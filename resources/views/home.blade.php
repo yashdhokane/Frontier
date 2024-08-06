@@ -181,6 +181,8 @@
             @include('admin.setting_sidebar')
         @elseif ($prefix == 'schedule')
             @include('schedule.sidebar')
+        @elseif ($prefix == 'demo')
+            @include('schedule.sidebar')
         @else
             @include('admin.sidebar')
         @endif

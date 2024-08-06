@@ -10,7 +10,7 @@
 				
 					<a class="sidebar-link waves-effect waves-dark sidebar-link ft1" href="#."  aria-expanded="false"><i class="fas ri-user-2-fill"></i><span class="hide-menu">Technicians</span></a>
                     
-					@if (request()->is('schedule'))
+					@if (request()->is(['schedule', 'demo']))
 					<div class="sidebar-item"><a href="#" class="sidebar-link">
 						<span class="hide-menu">
 							{{-- to show technician in sidebar  --}}
