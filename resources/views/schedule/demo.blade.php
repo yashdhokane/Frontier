@@ -33,6 +33,8 @@
         .time-slot {
             display: flex;
             flex-direction: column;
+            height: 490px;
+            overflow-y: scroll;
         }
 
         .time-slot div {
@@ -58,7 +60,7 @@
 
 
     <div class="schedule-container mx-4 bg-white">
-        <div class="header-row">
+        <div class="header-row sticky-top">
             <div class="tech-header"></div>
             <!-- Loop through the user_array to generate technician headers -->
             @foreach ($technicians as $key => $item)
@@ -125,7 +127,7 @@
                         @php
                             $groupedJobs = collect($technicianSchedules)->groupBy('start_date_time');
                         @endphp
-                        <div class="timeslot p-0 day d-flex" data-date="{{ $formattedDate }}"
+                        <div class="timeslot p-0 day d-flex clickPoint1" data-date="{{ $formattedDate }}"
                             data-slot-time="{{ formatTime($hour, $minute) }}" data-technician-name="{{ $item->name }}"
                             data-technician-id="{{ $item->id }}">
 
@@ -135,73 +137,128 @@
                                     $jobWidth = 100 / $jobCount;
                                 @endphp
                                 @foreach ($jobs as $job)
-                                    @php
-                                        $duration = $job->JobModel->jobassignname->duration ?? null;
-                                        $height_slot = $duration ? ($duration / 30) * 40 : 0;
-                                    @endphp
-                                    <div id='{{ $job->job_id }}' class="dts stretchJob border"
-                                        style="height:{{ $height_slot }}px; position: relative; width:{{ $jobWidth }}px;"
-                                        data-duration="{{ $job->JobModel->jobassignname->duration }}">
-                                        <p class="p-1 text-center"><i class="fas fa-id-badge px-2"></i>
-                                            <strong>{{ $job->JobModel->job_title ?? null }}
-                                                #{{ $job->JobModel->id ?? null }}</strong>
-                                        </p>
-                                        <div class="template" style="display: none;">
-                                            <div class="popup-content">
-                                                <h5><i class="fas fa-id-badge px-2"></i>
-                                                    <strong>Job
-                                                        #{{ $job->JobModel->id ?? null }}</strong>
-                                                </h5>
-                                                <p class="ps-4 m-0 ms-2">
-                                                    @php
-                                                        $startDateTime1 = $job->start_date_time
-                                                            ? Carbon\Carbon::parse($job->start_date_time)
-                                                            : null;
-                                                        $endDateTime1 = $job->end_date_time
-                                                            ? Carbon\Carbon::parse($job->end_date_time)
-                                                            : null;
-                                                        $interval1 = session('time_interval'); // Retrieve the time interval from the session
+                                    @if ($job->schedule_type == 'job')
+                                        @php
+                                            $duration = $job->JobModel->jobassignname->duration ?? null;
+                                            $height_slot = $duration ? ($duration / 30) * 40 : 0;
+                                        @endphp
+                                        <div id='{{ $job->job_id }}' class="dts dragDiv stretchJob border"
+                                            style="height:{{ $height_slot }}px; position: relative; width:{{ $jobWidth }}px;"
+                                            data-duration="{{ $job->JobModel->jobassignname->duration }}">
+                                            <p class="p-1 text-center"><i class="fas fa-id-badge px-2"></i>
+                                                <strong>{{ $job->JobModel->job_title ?? null }}
+                                                    #{{ $job->JobModel->id ?? null }}</strong>
+                                            </p>
+                                            <div class="template" style="display: none;">
+                                                <div class="popup-content">
+                                                    <h5><i class="fas fa-id-badge px-2"></i>
+                                                        <strong>Job
+                                                            #{{ $job->JobModel->id ?? null }}</strong>
+                                                    </h5>
+                                                    <p class="ps-4 m-0 ms-2">
+                                                        @php
+                                                            $startDateTime1 = $job->start_date_time
+                                                                ? Carbon\Carbon::parse($job->start_date_time)
+                                                                : null;
+                                                            $endDateTime1 = $job->end_date_time
+                                                                ? Carbon\Carbon::parse($job->end_date_time)
+                                                                : null;
+                                                            $interval1 = session('time_interval'); // Retrieve the time interval from the session
 
-                                                        if ($startDateTime1 && $endDateTime1 && $interval1) {
-                                                            $startDateTime1->addHours($interval1);
-                                                            $endDateTime1->addHours($interval1);
-                                                        }
-                                                    @endphp
-                                                    @if ($startDateTime1 && $endDateTime1)
-                                                        {{ $startDateTime1->format('M d Y g:i a') }}
-                                                        -
-                                                        {{ $endDateTime1->format('g:i A') }}
-                                                    @endif
-                                                </p>
-                                                <div class="py-1">
-                                                    <i class="fas fa-ticket-alt px-2"></i>
-                                                    <strong>{{ $job->JobModel->job_title ?? null }}</strong>
-                                                </div>
-                                                <div class="py-1">
-                                                    <i class="fas fa-user px-2"></i>
-                                                    <strong>{{ $job->JobModel->user->name ?? null }}</strong>
-                                                    <p class="ps-4 m-0 ms-2">
-                                                        {{ $job->JobModel->addresscustomer->address_line1 ?? null }}
-                                                        {{ $job->JobModel->addresscustomer->zipcode ?? null }}
+                                                            if ($startDateTime1 && $endDateTime1 && $interval1) {
+                                                                $startDateTime1->addHours($interval1);
+                                                                $endDateTime1->addHours($interval1);
+                                                            }
+                                                        @endphp
+                                                        @if ($startDateTime1 && $endDateTime1)
+                                                            {{ $startDateTime1->format('M d Y g:i a') }}
+                                                            -
+                                                            {{ $endDateTime1->format('g:i A') }}
+                                                        @endif
                                                     </p>
-                                                    <p class="ps-4 m-0 ms-2">
-                                                        {{ $job->JobModel->user->mobile ?? null }}
-                                                    </p>
-                                                </div>
-                                                <div class="py-1">
-                                                    <i class="fas fa-user-secret px-2"></i>
-                                                    <strong>{{ $job->JobModel->technician->name ?? null }}</strong>
-                                                </div>
-                                                <div class="py-1">
-                                                    <i class="fas fa-tag px-2"></i>
-                                                    <span
-                                                        class="mb-1 badge bg-primary">{{ $job->JobModel->status ?? null }}</span>
+                                                    <div class="py-1">
+                                                        <i class="fas fa-ticket-alt px-2"></i>
+                                                        <strong>{{ $job->JobModel->job_title ?? null }}</strong>
+                                                    </div>
+                                                    <div class="py-1">
+                                                        <i class="fas fa-user px-2"></i>
+                                                        <strong>{{ $job->JobModel->user->name ?? null }}</strong>
+                                                        <p class="ps-4 m-0 ms-2">
+                                                            {{ $job->JobModel->addresscustomer->address_line1 ?? null }}
+                                                            {{ $job->JobModel->addresscustomer->zipcode ?? null }}
+                                                        </p>
+                                                        <p class="ps-4 m-0 ms-2">
+                                                            {{ $job->JobModel->user->mobile ?? null }}
+                                                        </p>
+                                                    </div>
+                                                    <div class="py-1">
+                                                        <i class="fas fa-user-secret px-2"></i>
+                                                        <strong>{{ $job->JobModel->technician->name ?? null }}</strong>
+                                                    </div>
+                                                    <div class="py-1">
+                                                        <i class="fas fa-tag px-2"></i>
+                                                        <span
+                                                            class="mb-1 badge bg-primary">{{ $job->JobModel->status ?? null }}</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    @endif
+
+                                    {{-- For schedule type event --}}
+                                    @if ($job->schedule_type == 'event')
+                                        @php
+
+                                            $to = $job->event->start_date_time ?? null;
+                                            $from = $job->event->end_date_time ?? null;
+
+                                            if ($to && $from) {
+                                                $toDateTime = Carbon\Carbon::parse($to);
+                                                $fromDateTime = Carbon\Carbon::parse($from);
+                                                $durationInMinutes = $toDateTime->diffInMinutes($fromDateTime);
+
+                                                $height_slot = $durationInMinutes / 30;
+                                                $height_slot_px = $height_slot * 40.5 - 7;
+                                            } else {
+                                                $height_slot_px = 0; // Default value in case $to or $from is null
+                                            }
+                                        @endphp
+
+                                        <div class="mb-1" data-id="{{ $job->job_id }}"
+                                            data-time="{{ formatTime($hour, $minute) }}"
+                                            data-date="{{ $formattedDate }}"
+                                            style="cursor: pointer; height: {{ $height_slot_px }}px; background: #dadad6; width: {{ $jobWidth }}px;">
+                                            <h5
+                                                style="font-size: 15px; padding-bottom: 0px; margin-bottom: 5px; margin-top: 3px;">
+                                                {{ $job->event->event_name ?? null }}
+                                            </h5>
+                                        </div>
+                                    @endif
                                 @endforeach
                             @endforeach
+
+                            <div class="popupDiv1 fs-4  bg-white shadow p-2" style="display: none;">
+                                <a
+                                    href="{{ url('create_job', [$item->id, formatTime($hour, $minute), $formattedDate]) }}">
+                                    <div class="createSchedule align-items-sm-center d-flex gap-3 fw-semibold"
+                                        style="cursor: pointer;" data-id="{{ $item->id }}"
+                                        data-time="{{ formatTime($hour, $minute) }}" data-date="{{ $formattedDate }}">
+                                        <i class="fa fa-plus-square"></i>
+                                        <span>Job</span>
+                                    </div>
+                                </a>
+                                <hr class="m-0">
+                                <div class="align-items-sm-center d-flex gap-3 fw-semibold" style="cursor: pointer;"><i
+                                        class="fa fa-pen-square"></i>
+                                    <span>Estimate</span>
+                                </div>
+                                <hr class="m-0">
+                                <div class="eventSchedule align-items-sm-center d-flex gap-3 fw-semibold"
+                                    style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#event"
+                                    data-id="{{ $item->id }}"><i class="fa fa-calendar-plus"></i>
+                                    <span>Event</span>
+                                </div>
+                            </div>
                         </div>
                     @endforeach
                     <!-- Repeat the above div for each technician's time slot -->
@@ -211,6 +268,36 @@
         <!-- Repeat the above div for each time slot -->
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="event" tabindex="-1" aria-labelledby="scroll-long-inner-modal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable2 modal-dialog modal-xl">
+            <form action="{{ url('store/event/') }}" method="POST" id="addEvent">
+                <input type="hidden" name="event_technician_id" id="event_technician_id" value="">
+                <input type="hidden" name="scheduleType" id="scheduleType" value="event">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header d-flex align-items-center" style="padding-bottom: 0px;">
+                        <div class="d-flex align-items-center">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                            <h4 class="modal-title" id="myLargeModalLabel" style="margin-left: 28px;">
+                                New Event
+                            </h4>
+                        </div>
+                        <button type="submit" class="btn btn-primary">SAVE EVENT</button>
+
+                    </div>
+                    <hr color="#6a737c">
+                    <div class="modal-body createCustomerData pb-5">
+                        @include('schedule.event')
+
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Modal -->
     @section('script')
         <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -224,7 +311,7 @@
                     connectWith: ".day",
                     cursor: "move",
                     helper: "clone",
-                    items: "> div",
+                    items: "> .dragDiv",
                     stop: function(event, ui) {
                         var $item = ui.item;
                         var eventLabel = $item.text();
@@ -242,7 +329,7 @@
                 var isResizing = false;
 
                 // Initialize draggable elements
-                $('.day div').draggable({
+                $('.day .dragDiv').draggable({
                     helper: 'clone',
                     cursor: 'move',
                     start: function(event, ui) {
@@ -296,7 +383,7 @@
 
                         // Append the new job with the calculated width
                         var newJobElement = $('<div id="' + jobId +
-                            '" class="dts stretchJob border" style="height:' + height_slot +
+                            '" class="dts dragDiv stretchJob border" style="height:' + height_slot +
                             'px; position: relative; width:' + jobWidth + 'px;" data-duration="' +
                             duration + '">' + ui.draggable.html() + '</div>');
 
@@ -433,6 +520,57 @@
                         });
                     }
                 });
+
+                $(document).on('click', '.clickPoint1', function(e) {
+                    console.log('click');
+                    e.stopPropagation();
+                    var popupDiv = $(this).find('.popupDiv1');
+
+                    // Hide any previously displayed popupDiv elements
+                    $('.popupDiv1').not(popupDiv).hide();
+
+                    // Calculate the position of the popupDiv based on the clicked point
+                    var mouseX = e.pageX - 100;
+                    var mouseY = e.pageY - 100;
+
+                    // Get the dimensions of the popupDiv and the window
+                    var popupWidth = popupDiv.outerWidth();
+                    var popupHeight = popupDiv.outerHeight();
+                    var windowWidth = $(window).width();
+                    var windowHeight = $(window).height();
+
+                    // Calculate the position for the popupDiv, ensuring it stays within the window
+                    var topPosition = mouseY;
+                    var leftPosition = mouseX;
+
+                    // Adjust the position if the popupDiv overflows the window
+                    if (topPosition + popupHeight > windowHeight) {
+                        topPosition = windowHeight - popupHeight - 10; // Add a margin of 10px
+                    }
+                    if (leftPosition + popupWidth > windowWidth) {
+                        leftPosition = windowWidth - popupWidth - 10; // Add a margin of 10px
+                    }
+
+                    // Set the position and show the popupDiv
+                    popupDiv.css({
+                        position: 'absolute',
+                        top: topPosition + 'px',
+                        left: leftPosition + 'px',
+                        zIndex: 1000 // Ensure the popupDiv is above other elements
+                    }).toggle();
+                });
+                // Hide the popup div when clicking outside of it
+                $(document).click(function() {
+                    $('.popupDiv').hide();
+                });
+
+
+                $('.eventSchedule').on('click', function() {
+                    var id = $(this).attr('data-id');
+                    console.log(id);
+                    $('#event_technician_id').val(id);
+                });
+
 
             });
         </script>
