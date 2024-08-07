@@ -2795,10 +2795,14 @@ class ScheduleController extends Controller
 
         $timezone_name = Session::get('timezone_name');
         $time_interval = Session::get('time_interval');
-        $currentDate = Carbon::now($timezone_name);
+         $data = $request->all();
+        $currentDate = isset($data['date']) && !empty($data['date']) ? Carbon::parse($data['date']) : Carbon::now($timezone_name);
         $filterDate = $currentDate->format('Y-m-d');
+        $previousDate = $currentDate->copy()->subDay()->format('Y-m-d');
 
-         $currentDay = $currentDate->format('l');
+        $tomorrowDate = $currentDate->copy()->addDay()->format('Y-m-d');
+
+        $currentDay = $currentDate->format('l');
         $currentDayLower = strtolower($currentDay);
         // Query the business hours for the given day
         $hours = BusinessHours::where('day', $currentDayLower)->first();
@@ -2824,7 +2828,7 @@ class ScheduleController extends Controller
         });
 
         // Pass both technicians and schedules to the view
-        return view('schedule.demo', compact('technicians', 'schedules', 'formattedDate','hours'));
+        return view('schedule.demo', compact('technicians', 'schedules', 'formattedDate', 'hours', 'tomorrowDate', 'previousDate'));
     }
     public function updateJobTechnician(Request $request)
     {
@@ -2932,5 +2936,51 @@ class ScheduleController extends Controller
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
+    }
+
+
+    public function demoScheduleupdate(Request $request)
+    {
+        $timezone_name = Session::get('timezone_name');
+        $time_interval = Session::get('time_interval');
+          $data = $request->all();
+        $currentDate = isset($data['date']) && !empty($data['date']) ? Carbon::parse($data['date']) : Carbon::now($timezone_name);
+
+        if ($request->has('date')) {
+            $filterDate = Carbon::parse($request->date)->format('Y-m-d');
+        } else {
+            $filterDate = $currentDate->format('Y-m-d');
+        }
+
+        $previousDate = $currentDate->copy()->subDay()->format('Y-m-d');
+        $tomorrowDate = $currentDate->copy()->addDay()->format('Y-m-d');
+
+        $currentDay = Carbon::parse($filterDate)->format('l');
+        $currentDayLower = strtolower($currentDay);
+
+        $hours = BusinessHours::where('day', $currentDayLower)->first();
+
+        $formattedDate = Carbon::parse($filterDate)->format('D, F j, Y');
+
+        $technicians = User::where('role', 'technician')->where('status', 'active')->get();
+        $schedules = collect();
+
+        foreach ($technicians as $technician) {
+            $technicianSchedules = Schedule::where('technician_id', $technician->id)
+                ->whereDate('start_date_time', $filterDate)
+                ->get();
+            $schedules = $schedules->merge($technicianSchedules);
+        }
+
+        $schedules->transform(function ($schedule) use ($time_interval) {
+            $schedule->start_date_time = Carbon::parse($schedule->start_date_time)
+                ->addHours($time_interval)
+                ->format('Y-m-d H:i:s');
+            return $schedule;
+        });
+
+        $screen2 = view('schedule.demoSchedule', compact('technicians', 'schedules', 'formattedDate', 'hours', 'tomorrowDate', 'previousDate'))->render();
+
+        return response()->json(['tbody' => $screen2]);
     }
 }

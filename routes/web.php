@@ -812,6 +812,8 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/update-job-technician', [ScheduleController::class, 'updateJobTechnician'])->name('updateJobTechnician');
 
+    Route::get('/demoScheduleupdate/', [ScheduleController::class, 'demoScheduleupdate'])->name('schedule.demoScheduleupdate');
+
 
     // MailController
 
