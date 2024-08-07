@@ -456,8 +456,6 @@
                         // Reinitialize map
                         var date = $('#scheduleSection1').data('map-date');
                         var mapElementId = 'mapScreen1';
-                        console.log("Reinitializing map after content update, mapElementId: " +
-                            mapElementId + ", date: " + date);
                         initMap(mapElementId, '#mapSection1');
                     },
                     error: function(xhr, status, error) {
@@ -485,7 +483,6 @@
 
                 var date = $('#scheduleSection1').data('map-date');
                 var mapElementId = 'mapScreen1';
-                console.log("Initializing map on click, mapElementId: " + mapElementId + ", date: " + date);
                 initMap(mapElementId, '#mapSection1');
                 fetchJobData(mapElementId, date);
             });
@@ -505,7 +502,6 @@
 
             function initMap(mapElementId, scheduleSectionId) {
                 if (!maps[mapElementId]) {
-                    console.log("Creating new map instance for: " + mapElementId);
                     maps[mapElementId] = new google.maps.Map(document.getElementById(mapElementId), {
                         zoom: 5,
                         center: {
@@ -513,8 +509,6 @@
                                 lng: -98.5795
                             }
                     });
-                } else {
-                    console.log("Map instance already exists for: " + mapElementId);
                 }
 
                 var selectedDate = $(scheduleSectionId).data('map-date');
@@ -527,7 +521,6 @@
             }
 
             function fetchJobData(mapElementId, date) {
-                console.log("Fetching job data for mapElementId: " + mapElementId + ", date: " + date);
                 $.ajax({
                     url: '{{ route('schedule.getJobsByDate') }}',
                     method: 'GET',
@@ -536,7 +529,6 @@
                     },
                     success: function(response) {
                         if (response.data) {
-                            console.log("Job data fetched successfully");
                             setMarkers(mapElementId, response.data);
                         } else {
                             console.error('Error: No job data returned.');
