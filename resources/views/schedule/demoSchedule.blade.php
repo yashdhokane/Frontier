@@ -337,6 +337,28 @@
                                         @endif
                                     @endforeach
                                 @endforeach
+                                <div class="popupDiv1 fs-4  bg-white shadow p-2" style="display: none;">
+                                    <a
+                                        href="{{ url('create_job', [$item->id, formatTime($hour, $minute), $formattedDate]) }}">
+                                        <div class="createSchedule align-items-sm-center d-flex gap-3 fw-semibold"
+                                            style="cursor: pointer;" data-id="{{ $item->id }}"
+                                            data-time="{{ formatTime($hour, $minute) }}" data-date="{{ $formattedDate }}">
+                                            <i class="fa fa-plus-square"></i>
+                                            <span>Job</span>
+                                        </div>
+                                    </a>
+                                    <hr class="m-0">
+                                    <div class="align-items-sm-center d-flex gap-3 fw-semibold" style="cursor: pointer;"><i
+                                            class="fa fa-pen-square"></i>
+                                        <span>Estimate</span>
+                                    </div>
+                                    <hr class="m-0">
+                                    <div class="eventSchedule align-items-sm-center d-flex gap-3 fw-semibold"
+                                        style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#event"
+                                        data-id="{{ $item->id }}"><i class="fa fa-calendar-plus"></i>
+                                        <span>Event</span>
+                                    </div>
+                                </div>
                             </div>
                         @endforeach
                     </div>

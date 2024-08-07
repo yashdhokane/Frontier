@@ -92,9 +92,6 @@
 @section('script')
     <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
-        rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6.3.1/dist/tippy.css" />
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
@@ -126,6 +123,156 @@
 
             var isDragging = false;
             var isResizing = false;
+
+            // Prevent tooltip from showing while dragging
+            $(document).on('mouseenter', '.stretchJob', function() {
+                if (!isDragging) {
+                    var template = $(this).find('.template');
+                    if (!this._tippy) {
+                        tippy(this, {
+                            content: template.html(),
+                            allowHTML: true,
+                        });
+                    }
+                }
+            });
+
+            $(document).on('click', '.clickPoint1', function(e) {
+                if (!isResizing) {
+                    e.stopPropagation();
+                    var popupDiv = $(this).find('.popupDiv1');
+
+                    // Hide any previously displayed popupDiv elements
+                    $('.popupDiv1').not(popupDiv).hide();
+
+                    // Calculate the position of the popupDiv based on the clicked point
+                    var mouseX = e.pageX - 180;
+                    var mouseY = e.pageY - 100;
+
+                    // Get the dimensions of the popupDiv and the window
+                    var popupWidth = popupDiv.outerWidth();
+                    var popupHeight = popupDiv.outerHeight();
+                    var windowWidth = $(window).width();
+                    var windowHeight = $(window).height();
+
+                    // Calculate the position for the popupDiv, ensuring it stays within the window
+                    var topPosition = mouseY;
+                    var leftPosition = mouseX;
+
+                    // Adjust the position if the popupDiv overflows the window
+                    if (topPosition + popupHeight > windowHeight) {
+                        topPosition = windowHeight - popupHeight - 10; // Add a margin of 10px
+                    }
+                    if (leftPosition + popupWidth > windowWidth) {
+                        leftPosition = windowWidth - popupWidth - 10; // Add a margin of 10px
+                    }
+
+                    // Set the position and show the popupDiv
+                    popupDiv.css({
+                        position: 'absolute',
+                        top: topPosition + 'px',
+                        left: leftPosition + 'px',
+                        zIndex: 1000 // Ensure the popupDiv is above other elements
+                    }).toggle();
+                }
+            });
+
+            // Hide the popup div when clicking outside of it
+            $(document).click(function() {
+                $('.popupDiv').hide();
+            });
+
+
+            $('.eventSchedule').on('click', function() {
+                var id = $(this).attr('data-id');
+                console.log(id);
+                $('#event_technician_id').val(id);
+            });
+
+            $('.event_start_time').hide();
+            $('.event_end_time').hide();
+            $('.f_start').hide();
+            $('.s_to').hide();
+
+            $(document).on('change', '.event_type', function() {
+                var event_type = $(this).val();
+                if (event_type == 'full') {
+                    $('.event_start_date').show();
+                    $('.event_end_date').show();
+                    $('.event_start_time').hide();
+                    $('.event_end_time').hide();
+                    $('.f_start').hide();
+                    $('.s_to').hide();
+                } else {
+                    $('.event_start_date').show();
+                    $('.event_start_time').show();
+                    $('.event_end_date').hide();
+                    $('.event_end_time').show();
+                    $('.f_start').show();
+                    $('.s_to').show();
+                }
+            });
+
+            $('#addEvent').submit(function(e) {
+                e.preventDefault(); // Prevent default form submission
+
+                var formData = new FormData(this); // 'this' refers to the form DOM element
+
+                // Make an AJAX request to submit the form data
+                $.ajax({
+                    url: $(this).attr('action'), // Get the form action attribute
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    dataType: 'json',
+                    success: function(data) {
+                        // Handle success response here
+
+                        if (data.success === true) {
+                            // If success is true, close the current modal
+                            $('#event').modal('hide');
+                            // Display a success message using SweetAlert
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: 'Event added successfully.'
+                            }).then(function() {
+                                // Reset form fields
+                                $('#addEvent')[0].reset();
+                                location.reload();
+
+                            });
+                        }
+                    },
+
+                    error: function(xhr, status, error) {
+                        console.error('Error submitting form data:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Operation failed. Please try again.' + error
+                        });
+                    }
+                });
+            });
+
+            $(document).on('change', '.technician_check', function() {
+                var isChecked = $(this).prop('checked');
+                var id = $(this).data('id'); // Retrieve the value of the data-id attribute
+
+                if (isChecked) {
+                    // Show elements with class tech-header and day that match the id
+                    $('.tech-header[data-tech-id="' + id + '"]').show();
+                    $('.clickPoint1[data-technician-id="' + id + '"]').show();
+                } else {
+                    // Hide elements with class tech-header and day that match the id
+                    $('.tech-header[data-tech-id="' + id + '"]').hide();
+                    $('.clickPoint1[data-technician-id="' + id + '"]').hide();
+                }
+            });
+
+
 
             // Function to initialize draggable elements
             function initializeDraggable() {
@@ -622,6 +769,8 @@
                 });
             }
             initializeDatepicker('#selectDates1', fetchSchedule);
+
+
         });
     </script>
 @endsection
