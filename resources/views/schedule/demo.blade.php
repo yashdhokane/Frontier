@@ -92,6 +92,9 @@
 @section('script')
     <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6.3.1/dist/tippy.css" />
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
@@ -442,27 +445,6 @@
             initializeComponents();
 
             // Fetch new schedule data and reinitialize components
-            function fetchSchedule(date) {
-                $.ajax({
-                    url: "{{ route('schedule.demoScheduleupdate') }}",
-                    method: "GET",
-                    data: {
-                        date: date
-                    },
-                    success: function(response) {
-                        $('#newdemodata').empty().html(response.tbody);
-                        initializeComponents(); // Reinitialize components after appending new content
-
-                        // Reinitialize map
-                        var date = $('#scheduleSection1').data('map-date');
-                        var mapElementId = 'mapScreen1';
-                        initMap(mapElementId, '#mapSection1');
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error:', error);
-                    }
-                });
-            }
 
             $(document).on('click', '#preDate1, #tomDate1', function(e) {
                 e.preventDefault(); // Prevent the default anchor behavior
@@ -480,11 +462,6 @@
                 $('.cbtn1').removeClass('btn-info').addClass('btn-light-info text-info');
                 $('.mbtn1').removeClass('btn-light-info text-info').addClass('btn-info');
                 $('#mapSection1').show();
-
-                var date = $('#scheduleSection1').data('map-date');
-                var mapElementId = 'mapScreen1';
-                initMap(mapElementId, '#mapSection1');
-                fetchJobData(mapElementId, date);
             });
 
             // Event listener for hiding the map
@@ -496,6 +473,26 @@
                 $('#scheduleSection1').show();
             });
 
+            function fetchSchedule(date) {
+                $.ajax({
+                    url: "{{ route('schedule.demoScheduleupdate') }}",
+                    method: "GET",
+                    data: {
+                        date: date
+                    },
+                    success: function(response) {
+                        $('#newdemodata').empty().html(response.tbody);
+                        initializeComponents();
+                        initializeDatepicker('#selectDates1', fetchSchedule);
+                        initMap('mapScreen1', '#scheduleSection1');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+            }
+
+
             // Function to initialize the map
             var openInfoWindowpop = null;
             var maps = {};
@@ -505,9 +502,9 @@
                     maps[mapElementId] = new google.maps.Map(document.getElementById(mapElementId), {
                         zoom: 5,
                         center: {
-                                lat: 39.8283,
-                                lng: -98.5795
-                            }
+                            lat: 39.8283,
+                            lng: -98.5795
+                        }
                     });
                 }
 
@@ -610,6 +607,21 @@
                 console.log("Window loaded, initializing map");
                 initMap('mapScreen1', '#scheduleSection1');
             };
+
+            function initializeDatepicker(selector, fetchFunction) {
+                $(selector).datepicker({
+                    format: 'yyyy-mm-dd', // Specify the format
+                    autoclose: true, // Close the datepicker when a date is selected
+                    todayHighlight: true // Highlight today's date
+                }).on('changeDate', function(selected) {
+                    var selectedDate = new Date(selected.date);
+                    var date = selectedDate.getFullYear() + '-' +
+                        (selectedDate.getMonth() + 1).toString().padStart(2, '0') + '-' +
+                        selectedDate.getDate().toString().padStart(2, '0');
+                    fetchFunction(date);
+                });
+            }
+            initializeDatepicker('#selectDates1', fetchSchedule);
         });
     </script>
 @endsection
