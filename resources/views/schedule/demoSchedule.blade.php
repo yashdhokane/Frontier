@@ -34,7 +34,7 @@
                                 <img src="{{ asset('public/images/Uploads/users/' . $item->id . '/' . $item->user_image) }}"
                                     alt="user" width="48" class="rounded-circle tech_profile"
                                     onerror="this.onerror=null; this.src='{{ $defaultImage }}';" />
-                                <span class="tech-name">
+                                <span class="tech-name tech_profile">
                                     @php
                                         $name = $item->name;
                                         $nameParts = explode(' ', $name);
@@ -46,6 +46,29 @@
                                     {{ $formattedName }}
                                 </span>
                             </a>
+                                <div class="popupContainer text-start" style="display: none;">
+                                    <!-- Popup content for profile link -->
+                                    <a href="{{ url('technicians/show/' . $item->id) }}" class="popup-option"><i
+                                            class="fa fa-user pe-2"></i>View Profile</a>
+                                    </hr>
+                                    <!-- Popup content for message option -->
+                                    <a href="#" class="popup-option message-popup"><i
+                                            class="fa fa-list-alt pe-2"></i>Message</a></hr>
+                                    <a href="#" class="popup-option setting-popup"><i
+                                            class="fa fa-wrench pe-2"></i>Settings</a>
+                                </div>
+
+                                <div class="smscontainer">
+
+                                    <input type="text" class="message_content form-control p-1 my-1"
+                                        placeholder="Type Something....">
+                                    <button class="btn btn-info p-0 px-1 my-1 float-end">Send</button>
+
+                                </div>
+                                <div class="settingcontainer">
+                                    <div style="width:150px; height:100px;">
+                                    </div>
+                                </div>
                         </div>
                     @endforeach
                 </div>

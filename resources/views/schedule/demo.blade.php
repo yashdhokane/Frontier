@@ -106,6 +106,82 @@
         async></script>
 
     <script>
+    $(document).ready(function () {
+    // Click event handler for tech_profile links
+    $(document).on("click", ".tech_profile", function (event) {
+        event.preventDefault(); // Prevent default link behavior
+
+        var profileLink = $(this).closest(".tech_profile"); // Ensure we are targeting the closest .tech_profile
+        var popupContainer = profileLink.next(".popupContainer");
+
+        // Hide all other open popups
+        $(".popupContainer").not(popupContainer).fadeOut();
+
+        // Set position of the popupContainer directly below the clicked element
+        popupContainer.css({
+            top: profileLink.offset().top + profileLink.outerHeight() + 10 + "px", // Adjust 10 pixels for spacing
+            left: profileLink.offset().left - 70 + "px",
+        });
+
+        // Show the popupContainer
+        popupContainer.fadeIn();
+    });
+
+    // Click event handler for message-popup links
+    $(document).on("click", ".message-popup", function (event) {
+        event.preventDefault(); // Prevent default link behavior
+
+        var messagePopup = $(this);
+        var smscontainer = messagePopup.closest(".tech-header").find(".smscontainer");
+
+        // Hide all other open smscontainers and settingcontainers
+        $(".smscontainer").not(smscontainer).fadeOut();
+        $(".settingcontainer").fadeOut();
+
+        // Set position of the smscontainer to the right of popupContainer
+        smscontainer.css({
+            top: messagePopup.offset().top - 10 + "px",
+            left: messagePopup.offset().left + $(".popupContainer").outerWidth() - 60 + "px", // Adjust 10 pixels for spacing
+        });
+
+        smscontainer.fadeToggle();
+    });
+
+    // Click event handler for setting-popup links
+    $(document).on("click", ".setting-popup", function (event) {
+        event.preventDefault(); // Prevent default link behavior
+
+        var settingPopup = $(this);
+        var settingcontainer = settingPopup.closest(".tech-header").find(".settingcontainer");
+
+        // Hide all other open settingcontainers and smscontainers
+        $(".settingcontainer").not(settingcontainer).fadeOut();
+        $(".smscontainer").fadeOut();
+
+        // Set position of the settingcontainer to the right of popupContainer (next to the message container)
+        settingcontainer.css({
+            top: settingPopup.offset().top - 50 + "px",
+            left: settingPopup.offset().left + $(".popupContainer").outerWidth() + $(".smscontainer").outerWidth() - 315 + "px", // Adjust for both containers
+        });
+
+        settingcontainer.fadeToggle();
+    });
+
+    // Click event listener for the document to close popups when clicking outside
+    $(document).click(function (event) {
+        var target = $(event.target);
+
+        if (
+            !target.closest(".popupContainer").length &&
+            !target.closest(".tech_profile").length &&
+            !target.closest(".smscontainer").length &&
+            !target.closest(".settingcontainer").length
+        ) {
+            $(".popupContainer, .smscontainer, .settingcontainer").fadeOut();
+        }
+    });
+});
+
         $(function() {
             $(".day").sortable({
                 connectWith: ".day",
