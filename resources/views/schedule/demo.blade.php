@@ -489,13 +489,14 @@
                             });
                         }
 
-                        function revertTempMove(newJobElement, originalContainer, originalJobCount) {
+                       function revertTempMove(newJobElement, originalContainer, originalJobCount) {
+                            // Remove the temporary new job element from the new container
                             newJobElement.remove();
-                            var originalJobWidth = 100 / originalJobCount;
 
-                            // Append the job back to the original container
+                            // Append the draggable job back to the original container
                             originalContainer.append(ui.draggable);
-                             // Reinitialize draggable functionality for the element
+
+                            // Reinitialize draggable functionality for the element
                             ui.draggable.draggable({
                                 helper: 'clone',
                                 cursor: 'move',
@@ -510,20 +511,22 @@
                                 }
                             });
 
-                            // Restore the original classes (optional, as reinitializing should handle this)
-                            ui.draggable.addClass('ui-draggable ui-draggable-handle');
+                            // Calculate the correct number of jobs in the original container
+                            var currentJobCount = originalContainer.children('.dts').length;
 
-                            // Update the width of the original container
+                            // Update the width of all jobs in the original container
+                            var originalJobWidth = 100 / currentJobCount;
                             originalContainer.children('.dts').each(function() {
                                 $(this).css('width', originalJobWidth + 'px');
                             });
 
-                            // Update the width of the new container
+                            // Update the width of all jobs in the new container
                             var newJobWidth = 100 / newContainer.children('.dts').length;
                             newContainer.children('.dts').each(function() {
                                 $(this).css('width', newJobWidth + 'px');
                             });
                         }
+
                     }
                 });
             }
