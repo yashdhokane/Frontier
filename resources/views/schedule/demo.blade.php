@@ -106,7 +106,7 @@
         async></script>
 
     <script>
-    
+
         $(document).ready(function () {
             // Click event handler for tech_profile links
             $(document).on("click", ".tech_profile", function (event) {
@@ -272,9 +272,6 @@
                 }
             });
 
-
-         
-
             $('.eventSchedule').on('click', function() {
                 var id = $(this).attr('data-id');
                 console.log(id);
@@ -363,8 +360,6 @@
                     $('.clickPoint1[data-technician-id="' + id + '"]').hide();
                 }
             });
-
-
 
             // Function to initialize draggable elements
             function initializeDraggable() {
@@ -607,7 +602,6 @@
                     }
                 });
             }
-
 
             // Function to initialize resizable elements
             function initializeResizable() {

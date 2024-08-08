@@ -138,7 +138,7 @@
                                                                 data-timezone-name="{{ $job->technician->TimeZone->timezone_name }}"
                                                                 data-time="{{ $timeString }}"
                                                                 data-date="{{ $formattedDate }}"
-                                                                style="max-width: {{ $jobWidth }}%;cursor: pointer;">
+                                                                style="max-width: {{ $jobWidth }}px;cursor: pointer;">
                                                                 @if ($job->JobModel && $job->JobModel->is_confirmed == 'yes')
                                                                     <div class="cls_is_confirmed">
                                                                         <i class="ri-thumb-up-fill"></i>
