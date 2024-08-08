@@ -180,14 +180,23 @@
                         left: leftPosition + 'px',
                         zIndex: 1000 // Ensure the popupDiv is above other elements
                     }).toggle();
+
+                    // Add keydown event listener to hide popupDiv when Esc is pressed
+                    $(document).on('keydown', function(e) {
+                        if (e.key === "Escape") { // Check if the pressed key is "Esc"
+                            popupDiv.hide();
+                        }
+                    });
+                       // Hide the popup div when clicking outside of it
+                    $(document).on('click',function(e) {
+                        popupDiv.hide();
+                    });
+
                 }
             });
 
-            // Hide the popup div when clicking outside of it
-            $(document).click(function() {
-                $('.popupDiv').hide();
-            });
 
+         
 
             $('.eventSchedule').on('click', function() {
                 var id = $(this).attr('data-id');
@@ -297,7 +306,7 @@
                 });
             }
 
-             // Function to revert drag operation
+            // Function to revert drag operation
             function revertDrag(ui) {
                 ui.helper.animate(ui.originalPosition, "slow");
             }
@@ -395,7 +404,11 @@
                                 }).then((result) => {
                                     if (result.isConfirmed) {
                                         if (timezone == zoneName) {
-                                            updateJobTechnician(jobId, duration, date, time, newTechnicianId, ui, name, zoneName, newJobElement, originalContainer, originalJobCount);
+                                            updateJobTechnician(jobId, duration,
+                                                date, time, newTechnicianId, ui,
+                                                name, zoneName, newJobElement,
+                                                originalContainer,
+                                                originalJobCount);
                                         } else {
                                             Swal.fire({
                                                 title: `Do you want to change the Job from ${timezone} to ${zoneName}?`,
@@ -405,25 +418,42 @@
                                                 cancelButtonText: 'No',
                                                 reverseButtons: true
                                             }).then((innerResult) => {
-                                                if (innerResult.isConfirmed) {
-                                                    updateJobTechnician(jobId, duration, date, time, newTechnicianId, ui, name, zoneName, newJobElement, originalContainer, originalJobCount);
+                                                if (innerResult
+                                                    .isConfirmed) {
+                                                    updateJobTechnician(
+                                                        jobId, duration,
+                                                        date, time,
+                                                        newTechnicianId,
+                                                        ui, name,
+                                                        zoneName,
+                                                        newJobElement,
+                                                        originalContainer,
+                                                        originalJobCount
+                                                        );
                                                 } else {
-                                                    revertTempMove(newJobElement, originalContainer, originalJobCount);
+                                                    revertTempMove(
+                                                        newJobElement,
+                                                        originalContainer,
+                                                        originalJobCount
+                                                        );
                                                 }
                                             });
                                         }
                                     } else {
-                                        revertTempMove(newJobElement, originalContainer, originalJobCount);
+                                        revertTempMove(newJobElement,
+                                            originalContainer, originalJobCount);
                                     }
                                 });
                             },
                             error: function(error) {
-                                revertTempMove(newJobElement, originalContainer, originalJobCount);
+                                revertTempMove(newJobElement, originalContainer,
+                                    originalJobCount);
                                 console.error(error);
                             }
                         });
 
-                        function updateJobTechnician(jobId, duration, date, time, newTechnicianId, ui, name, zoneName, newJobElement, originalContainer, originalJobCount) {
+                        function updateJobTechnician(jobId, duration, date, time, newTechnicianId, ui,
+                            name, zoneName, newJobElement, originalContainer, originalJobCount) {
                             $.ajax({
                                 url: '{{ route('updateJobTechnician') }}',
                                 method: 'POST',
@@ -446,12 +476,14 @@
                                             timer: 1500
                                         });
                                     } else {
-                                        revertTempMove(newJobElement, originalContainer, originalJobCount);
+                                        revertTempMove(newJobElement, originalContainer,
+                                            originalJobCount);
                                         console.error('Error:', response.error);
                                     }
                                 },
                                 error: function(error) {
-                                    revertTempMove(newJobElement, originalContainer, originalJobCount);
+                                    revertTempMove(newJobElement, originalContainer,
+                                        originalJobCount);
                                     console.error(error);
                                 }
                             });
@@ -608,7 +640,7 @@
                 $('.cbtn1').removeClass('btn-info').addClass('btn-light-info text-info');
                 $('.mbtn1').removeClass('btn-light-info text-info').addClass('btn-info');
                 $('#mapSection1').show();
-                 initMap('mapScreen1', '#scheduleSection1');
+                initMap('mapScreen1', '#scheduleSection1');
             });
 
             // Event listener for hiding the map
@@ -647,7 +679,7 @@
                 if (maps[mapElementId]) {
                     destroyMap(mapElementId); // Destroy the existing map instance
                 }
-                
+
                 maps[mapElementId] = new google.maps.Map(document.getElementById(mapElementId), {
                     zoom: 5,
                     center: {
@@ -697,7 +729,8 @@
                 var bounds = new google.maps.LatLngBounds();
 
                 markers.forEach(marker => {
-                    console.log("Creating marker for:", marker.name, "at position:", marker.latitude, marker.longitude);
+                    console.log("Creating marker for:", marker.name, "at position:", marker.latitude, marker
+                        .longitude);
                     var markerInstance = new google.maps.Marker({
                         position: {
                             lat: parseFloat(marker.latitude),
@@ -770,7 +803,7 @@
                 if (maps[mapElementId]) {
                     // Clear any existing markers or overlays if applicable
                     clearMarkers(mapElementId);
-                    
+
                     // Clear event listeners associated with the map
                     google.maps.event.clearInstanceListeners(maps[mapElementId]);
 
