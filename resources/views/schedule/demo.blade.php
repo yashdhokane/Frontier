@@ -608,6 +608,7 @@
                 $('.cbtn1').removeClass('btn-info').addClass('btn-light-info text-info');
                 $('.mbtn1').removeClass('btn-light-info text-info').addClass('btn-info');
                 $('#mapSection1').show();
+                 initMap('mapScreen1', '#scheduleSection1');
             });
 
             // Event listener for hiding the map
@@ -630,7 +631,6 @@
                         $('#newdemodata').empty().html(response.tbody);
                         initializeComponents();
                         initializeDatepicker('#selectDates1', fetchSchedule);
-                        initMap('mapScreen1', '#scheduleSection1');
                     },
                     error: function(xhr, status, error) {
                         console.error('Error:', error);
@@ -639,29 +639,35 @@
             }
 
 
-            // Function to initialize the map
             var openInfoWindowpop = null;
             var maps = {};
 
             function initMap(mapElementId, scheduleSectionId) {
-                if (!maps[mapElementId]) {
-                    maps[mapElementId] = new google.maps.Map(document.getElementById(mapElementId), {
-                        zoom: 5,
-                        center: {
-                            lat: 39.8283,
-                            lng: -98.5795
-                        }
-                    });
+
+                if (maps[mapElementId]) {
+                    destroyMap(mapElementId); // Destroy the existing map instance
                 }
+                
+                maps[mapElementId] = new google.maps.Map(document.getElementById(mapElementId), {
+                    zoom: 5,
+                    center: {
+                        lat: 39.8283,
+                        lng: -98.5795
+                    }
+                });
 
                 var selectedDate = $(scheduleSectionId).data('map-date');
                 if (!selectedDate) {
                     selectedDate = new Date().toISOString().split('T')[0];
                     $(scheduleSectionId).data('map-date', selectedDate);
+                    console.log("No date provided. Using current date:", selectedDate);
+                } else {
+                    console.log("Using provided date:", selectedDate);
                 }
 
                 fetchJobData(mapElementId, selectedDate);
             }
+
 
             function fetchJobData(mapElementId, date) {
                 $.ajax({
@@ -672,13 +678,14 @@
                     },
                     success: function(response) {
                         if (response.data) {
+                            console.log("Job data received:", response.data);
                             setMarkers(mapElementId, response.data);
                         } else {
                             console.error('Error: No job data returned.');
                         }
                     },
-                    error: function() {
-                        console.error('Error: AJAX request failed.');
+                    error: function(xhr, status, error) {
+                        console.error('Error: AJAX request failed. Status:', status, 'Error:', error);
                     }
                 });
             }
@@ -690,6 +697,7 @@
                 var bounds = new google.maps.LatLngBounds();
 
                 markers.forEach(marker => {
+                    console.log("Creating marker for:", marker.name, "at position:", marker.latitude, marker.longitude);
                     var markerInstance = new google.maps.Marker({
                         position: {
                             lat: parseFloat(marker.latitude),
@@ -700,6 +708,7 @@
                     });
 
                     markerInstance.addListener('click', function() {
+                        console.log("Marker clicked for job ID:", marker.job_id);
                         fetchMarkerDetails(markerInstance, marker.job_id);
                     });
 
@@ -707,7 +716,10 @@
                 });
 
                 if (markers.length > 0) {
+                    console.log("Fitting map to marker bounds.");
                     maps[mapElementId].fitBounds(bounds);
+                } else {
+                    console.log("No markers to set on map.");
                 }
             }
 
@@ -720,6 +732,7 @@
                     },
                     success: function(response) {
                         if (response.content) {
+                            console.log("Marker details received:", response.content);
                             if (openInfoWindowpop) {
                                 openInfoWindowpop.close();
                             }
@@ -728,8 +741,8 @@
                             console.error('Error: No content returned.');
                         }
                     },
-                    error: function() {
-                        console.error('Error: AJAX request failed.');
+                    error: function(xhr, status, error) {
+                        console.error('Error: AJAX request failed. Status:', status, 'Error:', error);
                     }
                 });
             }
@@ -750,9 +763,22 @@
             }
 
             window.onload = function() {
-                console.log("Window loaded, initializing map");
                 initMap('mapScreen1', '#scheduleSection1');
             };
+
+            function destroyMap(mapElementId) {
+                if (maps[mapElementId]) {
+                    // Clear any existing markers or overlays if applicable
+                    clearMarkers(mapElementId);
+                    
+                    // Clear event listeners associated with the map
+                    google.maps.event.clearInstanceListeners(maps[mapElementId]);
+
+                    // Set the map instance to null, effectively "destroying" it
+                    maps[mapElementId] = null;
+                    console.log("Map instance destroyed for:", mapElementId);
+                }
+            }
 
             function initializeDatepicker(selector, fetchFunction) {
                 $(selector).datepicker({
