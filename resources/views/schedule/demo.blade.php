@@ -297,6 +297,11 @@
                 });
             }
 
+             // Function to revert drag operation
+            function revertDrag(ui) {
+                ui.helper.animate(ui.originalPosition, "slow");
+            }
+
             // Function to initialize droppable elements
             function initializeDroppable() {
                 $('.day').droppable({
@@ -309,10 +314,67 @@
                         var timezone = ui.draggable.attr('data-timezone-name');
                         var date = $(this).data('date');
                         var time = $(this).data('slot-time');
+                        let name;
+                        let zoneName;
 
                         var height_slot = duration ? (duration / 30) * 40 : 0;
 
-                        // Update the schedule
+                        // Temporarily move the job to the new position
+                        var originalContainer = ui.draggable.parent();
+                        var newContainer = $(event.target);
+                        var originalJobCount = originalContainer.children('.dts').length;
+                        var newJobCount = newContainer.children('.dts').length + 1;
+                        var newJobWidth = 100 / newJobCount;
+                        var originalJobWidth = 100 / (originalJobCount - 1);
+
+                        // Remove the draggable element from its original container
+                        ui.draggable.remove();
+
+                        // Set the width of existing jobs in the new container
+                        newContainer.children('.dts').each(function() {
+                            $(this).css('width', newJobWidth + 'px');
+                        });
+
+                        // Append the new job with the calculated width
+                        var newJobElement = $('<div>', {
+                            id: jobId,
+                            class: 'dts dragDiv stretchJob border',
+                            css: {
+                                height: height_slot + 'px',
+                                position: 'relative',
+                                width: newJobWidth + 'px'
+                            },
+                            'data-duration': duration,
+                            'data-technician-name': techName,
+                            'data-timezone-name': timezone,
+                            html: ui.draggable.html()
+                        });
+
+                        newContainer.append(newJobElement);
+
+                        // Update the width of the original container if any jobs remain
+                        if (originalJobCount > 1) {
+                            originalContainer.children('.dts').each(function() {
+                                $(this).css('width', originalJobWidth + 'px');
+                            });
+                        }
+
+                        // Make the new job element draggable
+                        newJobElement.draggable({
+                            helper: 'clone',
+                            cursor: 'move',
+                            start: function(event, ui) {
+                                if (isResizing) {
+                                    return false;
+                                }
+                                isDragging = true;
+                            },
+                            stop: function(event, ui) {
+                                isDragging = false;
+                            }
+                        });
+
+                        // Ask for confirmation to move the job
                         $.ajax({
                             url: "{{ route('get.techName') }}",
                             type: 'GET',
@@ -320,8 +382,8 @@
                                 techId: newTechnicianId,
                             },
                             success: function(response) {
-                                var name = response.name;
-                                var zoneName = response.time_zone.timezone_name;
+                                name = response.name;
+                                zoneName = response.time_zone.timezone_name;
 
                                 Swal.fire({
                                     title: `Do you want to move job from ${techName} to ${name}?`,
@@ -333,50 +395,7 @@
                                 }).then((result) => {
                                     if (result.isConfirmed) {
                                         if (timezone == zoneName) {
-                                            $.ajax({
-                                                url: '{{ route('updateJobTechnician') }}',
-                                                method: 'POST',
-                                                data: {
-                                                    job_id: jobId,
-                                                    duration: duration,
-                                                    date: date,
-                                                    time: time,
-                                                    technician_id: newTechnicianId,
-                                                    _token: '{{ csrf_token() }}'
-                                                },
-                                                success: function(
-                                                    response) {
-                                                    console.log(
-                                                        'Job updated successfully:',
-                                                        response);
-                                                    if (response
-                                                        .success ==
-                                                        true) {
-
-                                                        Swal.fire({
-                                                            position: 'top-end',
-                                                            icon: 'success',
-                                                            title: 'Job moved successfully',
-                                                            showConfirmButton: false,
-                                                            timer: 1500
-                                                        });
-                                                    } else {
-                                                        console.log(
-                                                            response
-                                                            .error);
-                                                        revertDrag(
-                                                            el
-                                                        ); // Revert the drag operation
-                                                    }
-                                                },
-                                                error: function(error) {
-                                                    console.error(
-                                                        error);
-                                                    revertDrag(
-                                                        el
-                                                    ); // Revert the drag operation
-                                                }
-                                            });
+                                            updateJobTechnician(jobId, duration, date, time, newTechnicianId, ui, name, zoneName, newJobElement, originalContainer, originalJobCount);
                                         } else {
                                             Swal.fire({
                                                 title: `Do you want to change the Job from ${timezone} to ${zoneName}?`,
@@ -386,106 +405,80 @@
                                                 cancelButtonText: 'No',
                                                 reverseButtons: true
                                             }).then((innerResult) => {
-                                                if (innerResult
-                                                    .isConfirmed) {
-                                                    $.ajax({
-                                                        url: '{{ route('updateJobTechnician') }}',
-                                                        method: 'POST',
-                                                        data: {
-                                                            job_id: jobId,
-                                                            duration: duration,
-                                                            date: date,
-                                                            time: time,
-                                                            technician_id: newTechnicianId,
-                                                            _token: '{{ csrf_token() }}'
-                                                        },
-                                                        success: function(
-                                                            response
-                                                        ) {
-                                                            console
-                                                                .log(
-                                                                    'Job updated successfully:',
-                                                                    response
-                                                                );
-                                                            if (response
-                                                                .success ==
-                                                                true
-                                                            ) {
-
-                                                                Swal.fire({
-                                                                    position: 'top-end',
-                                                                    icon: 'success',
-                                                                    title: 'Job moved successfully',
-                                                                    showConfirmButton: false,
-                                                                    timer: 1500
-                                                                });
-                                                            } else {
-                                                                console
-                                                                    .log(
-                                                                        response
-                                                                        .error
-                                                                    );
-
-                                                            }
-                                                        },
-
-                                                    });
+                                                if (innerResult.isConfirmed) {
+                                                    updateJobTechnician(jobId, duration, date, time, newTechnicianId, ui, name, zoneName, newJobElement, originalContainer, originalJobCount);
+                                                } else {
+                                                    revertTempMove(newJobElement, originalContainer, originalJobCount);
                                                 }
                                             });
                                         }
+                                    } else {
+                                        revertTempMove(newJobElement, originalContainer, originalJobCount);
                                     }
                                 });
                             },
                             error: function(error) {
+                                revertTempMove(newJobElement, originalContainer, originalJobCount);
                                 console.error(error);
                             }
                         });
 
-                        ui.draggable.remove();
-                        var jobCount = $(this).children('.dts').length + 1;
-                        var jobWidth = 100 / jobCount;
-
-                        // Set the width of existing jobs
-                        $(this).children('.dts').each(function() {
-                            $(this).css('width', jobWidth + 'px');
-                        });
-
-                        // Append the new job with the calculated width
-                        var newJobElement = $('<div id="' + jobId +
-                            '" class="dts dragDiv stretchJob border" style="height:' + height_slot +
-                            'px; position: relative; width:' + jobWidth + 'px;" data-duration="' +
-                            duration + '">' + ui.draggable.html() + '</div>');
-
-                        $(this).append(newJobElement);
-
-                        // Make the new job element draggable
-                        newJobElement.draggable({
-                            helper: 'clone',
-                            cursor: 'move',
-                            start: function(event, ui) {
-                                if (isResizing) {
-                                    return false; // Prevent dragging if resizing
+                        function updateJobTechnician(jobId, duration, date, time, newTechnicianId, ui, name, zoneName, newJobElement, originalContainer, originalJobCount) {
+                            $.ajax({
+                                url: '{{ route('updateJobTechnician') }}',
+                                method: 'POST',
+                                data: {
+                                    job_id: jobId,
+                                    duration: duration,
+                                    date: date,
+                                    time: time,
+                                    technician_id: newTechnicianId,
+                                    _token: '{{ csrf_token() }}'
+                                },
+                                success: function(response) {
+                                    console.log('Job updated successfully:', response);
+                                    if (response.success) {
+                                        Swal.fire({
+                                            position: 'top-end',
+                                            icon: 'success',
+                                            title: 'Job moved successfully',
+                                            showConfirmButton: false,
+                                            timer: 1500
+                                        });
+                                    } else {
+                                        revertTempMove(newJobElement, originalContainer, originalJobCount);
+                                        console.error('Error:', response.error);
+                                    }
+                                },
+                                error: function(error) {
+                                    revertTempMove(newJobElement, originalContainer, originalJobCount);
+                                    console.error(error);
                                 }
-                                isDragging = true;
-                            },
-                            stop: function(event, ui) {
-                                isDragging = false;
-                            }
-                        });
+                            });
+                        }
 
-                        // Update the width of the original container if any jobs remain
-                        var originalContainer = ui.draggable.parent();
-                        var originalJobCount = originalContainer.children('.dts').length;
-
-                        if (originalJobCount > 0) {
+                        function revertTempMove(newJobElement, originalContainer, originalJobCount) {
+                            newJobElement.remove();
                             var originalJobWidth = 100 / originalJobCount;
+
+                            // Append the job back to the original container
+                            originalContainer.append(ui.draggable);
+
+                            // Update the width of the original container
                             originalContainer.children('.dts').each(function() {
                                 $(this).css('width', originalJobWidth + 'px');
+                            });
+
+                            // Update the width of the new container
+                            var newJobWidth = 100 / newContainer.children('.dts').length;
+                            newContainer.children('.dts').each(function() {
+                                $(this).css('width', newJobWidth + 'px');
                             });
                         }
                     }
                 });
             }
+
 
             // Function to initialize resizable elements
             function initializeResizable() {
