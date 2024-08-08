@@ -495,6 +495,23 @@
 
                             // Append the job back to the original container
                             originalContainer.append(ui.draggable);
+                             // Reinitialize draggable functionality for the element
+                            ui.draggable.draggable({
+                                helper: 'clone',
+                                cursor: 'move',
+                                start: function(event, ui) {
+                                    if (isResizing) {
+                                        return false;
+                                    }
+                                    isDragging = true;
+                                },
+                                stop: function(event, ui) {
+                                    isDragging = false;
+                                }
+                            });
+
+                            // Restore the original classes (optional, as reinitializing should handle this)
+                            ui.draggable.addClass('ui-draggable ui-draggable-handle');
 
                             // Update the width of the original container
                             originalContainer.children('.dts').each(function() {
