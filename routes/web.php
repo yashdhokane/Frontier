@@ -726,7 +726,7 @@ Route::middleware('auth')->group(function () {
 
     // Schedule
 
-    Route::get('schedule', [ScheduleController::class, 'index'])->name('schedule');
+    Route::get('schedule_old', [ScheduleController::class, 'index'])->name('schedule_old');
 
     Route::get('schedule_new', [ScheduleController::class, 'schedule_new'])->name('schedule_new');
 
@@ -808,7 +808,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/getJobsByDate/', [ScheduleController::class, 'getJobsByDate'])->name('schedule.getJobsByDate');
 
-    Route::get('/demo', [ScheduleController::class, 'demo'])->name('demo');
+    Route::get('/schedule', [ScheduleController::class, 'demo'])->name('schedule');
 
     Route::post('/update-job-technician', [ScheduleController::class, 'updateJobTechnician'])->name('updateJobTechnician');
 
