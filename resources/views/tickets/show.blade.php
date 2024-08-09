@@ -851,10 +851,12 @@
                                         </strong>{{ \Carbon\Carbon::parse($technicians->schedule->start_date_time ?? null)->format('jS F Y') }}
                                     </div>
                                     <div class="mb-2"><strong>From:
-                                        </strong>{{ $convertTimeToTimezone($technicians->schedule->start_date_time ?? null, 'H:i:a') }}
+                                        </strong>
+                                        {{ $modifyDateTime($technicians->schedule->start_date_time ?? null, $interval, 'add', 'H:i:a') }}
                                     </div>
                                     <div class="mb-2"><strong>To:
-                                        </strong>{{ $convertTimeToTimezone($technicians->schedule->end_date_time ?? null, 'H:i:a') }}
+                                        </strong>
+                                         {{ $modifyDateTime($technicians->schedule->end_date_time ?? null, $interval, 'add', 'H:i:a') }}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
