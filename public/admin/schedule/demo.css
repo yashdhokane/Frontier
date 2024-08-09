@@ -1,0 +1,55 @@
+
+.day div {
+    cursor: move;
+}
+
+.schedule-container {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+}
+
+.header-row,
+.time-row {
+    display: flex;
+}
+
+.timeslot {
+
+    height: 40px;
+}
+
+.tech-header,
+.timeslot {
+    width: 100px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    text-align: center;
+    font-size: 12px;
+}
+
+.time-slot {
+    display: flex;
+    flex-direction: column;
+    height: 490px;
+    overflow-y: scroll;
+}
+
+.time-slot div {
+    text-align: center;
+}
+
+.tech-profile-img {
+    width: 48px;
+    border-radius: 50%;
+}
+
+.tech-name {
+    display: block;
+    margin-top: 5px;
+}
+
+.ui-draggable-dragging {
+    z-index: 1000 !important;
+    /* Ensure the helper has a high z-index during dragging */
+}

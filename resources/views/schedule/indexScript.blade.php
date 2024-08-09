@@ -1,15 +1,6 @@
 @section('script')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <!-- Bootstrap Datepicker CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
-        rel="stylesheet">
-
-    <!-- Bootstrap Datepicker JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
     <script src="{{ url('public/admin/schedule/script.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
     <script
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&loading=async&callback=initMap&libraries=marker"
         async></script>

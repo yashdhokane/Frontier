@@ -49,6 +49,9 @@
     
     <link href="{{ asset('public/admin/dist/libs/dragula/dist/dragula.min.js') }}" rel="stylesheet" />
     <link href="{{ asset('public/admin/dist/libs/prismjs/themes/prism-okaidia.min.css') }}" rel="stylesheet">
+    <!-- Bootstrap Datepicker CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
+        rel="stylesheet">
 
 	
 	<style>
