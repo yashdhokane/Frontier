@@ -23,7 +23,7 @@
             </div>
         </div>
 
-        <div class="col-md-12" id="scheduleSection1" data-map-date="{{ $formattedDate }}">
+        <div class="col-md-12" id="scheduleSection1" data-map-date="{{ $formattedDate }}" style="overflow-x: scroll;">
             <div class="schedule-container mx-4 bg-white">
                 <div class="header-row">
                     <div class="tech-header"></div>

@@ -23,7 +23,7 @@
 .timeslot {
     width: 100px;
     padding: 5px;
-    border: 1px solid #ddd;
+    border: 1px solid #f4f4f4;
     text-align: center;
     font-size: 12px;
 }
@@ -33,6 +33,7 @@
     flex-direction: column;
     height: 490px;
     overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .time-slot div {
