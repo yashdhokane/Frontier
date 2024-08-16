@@ -8,7 +8,30 @@
 
         $(document).ready(function () {
 
+            $(document).on("click", ".tech_extend_width", function(event) {
+                event.stopPropagation(); // Prevents the event from bubbling up
+                var className = $(this).data("class-name");
+
+                $("." + className).each(function() {
+                    var currentWidth = $(this).css("width");
+
+                    if (currentWidth === "400px") {
+                        $(this).attr("style", "width: 100px !important;");
+                        if (!$(this).hasClass("tech-header")) {
+                            $(this).attr("style", "width: 100px !important; display: flex;");
+                        }
+                    } else {
+                        $(this).attr("style", "width: 400px !important; display: flex;");
+                    }
+                });
+            });
+
+
             $(document).on("click", ".tech_profile", function (event) {
+                // Check if the clicked element is an image
+                if ($(event.target).is("img")) {
+                    return; // Exit if the clicked element is an image
+                }
                 event.preventDefault();
 
                 var profileLink = $(this).closest(".tech_profile");
@@ -25,9 +48,6 @@
 
                 popupContainer.fadeIn();
             });
-
-
-
 
             // Click event handler for message-popup links
             $(document).on("click", ".message-popup", function (event) {

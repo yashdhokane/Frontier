@@ -29,11 +29,11 @@
                     <div class="tech-header"></div>
                     <!-- Loop through the user_array to generate technician headers -->
                     @foreach ($technicians as $key => $item)
-                        <div class="tech-header" style="color: #123456;" data-tech-id="{{ $item->id }}">
+                        <div class="tech-header  tech_width_{{ $item->id }}" style="color: #123456;" data-tech-id="{{ $item->id }}">
                             <a href="#" class="link user_head_link tech_profile" style="color: #123456 !important;">
                                 <img src="{{ asset('public/images/Uploads/users/' . $item->id . '/' . $item->user_image) }}"
-                                    alt="user" width="48" class="rounded-circle tech_profile"
-                                    onerror="this.onerror=null; this.src='{{ $defaultImage }}';" />
+                                    alt="user" width="48" class="rounded-circle tech_extend_width"
+                                    onerror="this.onerror=null; this.src='{{ $defaultImage }}';" data-class-name="tech_width_{{ $item->id }}"/>
                                 <span class="tech-name tech_profile">
                                     @php
                                         $name = $item->name;
@@ -108,7 +108,7 @@
                                         $groupedJobs = collect($technicianSchedules)->groupBy('start_date_time');
                                         $timeString = formatTime($hour, $minute);
                                     @endphp
-                                    <div class="timeslot p-0 day clickPoint1" data-date="{{ $formattedDate }}"
+                                    <div class="timeslot p-0 day clickPoint1 tech_width_{{ $item->id }}"
                                         data-slot-time="{{ formatTime($hour, $minute) }}"
                                         data-technician-name="{{ $item->name }}"
                                         data-technician-id="{{ $item->id }}" style="display: flex;">
