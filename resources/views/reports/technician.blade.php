@@ -35,7 +35,7 @@
                                     <div class="row mt-2">
                                         <div class="col-md-12">
                                             <div class="table-responsive">
-                                                <table class="table table-hover table-striped  customize-table mb-0 v-middle overflow-auto">
+                                                <table class="table table-hover table-striped  customize-table mb-0 v-middle overflow-auto" id="technician">
                                                     <thead class="table-dark">
                                                         <tr>
                                                             <th class="border-bottom border-top">Technician Name</th>
@@ -86,7 +86,7 @@
                                     <div class="row mt-2">
                                         <div class="col-md-12">
                                             <div class="table-responsive">
-                                                <table class="table table-hover table-striped  customize-table mb-0 v-middle overflow-auto">
+                                                <table class="table table-hover table-striped  customize-table mb-0 v-middle overflow-auto" id="technician">
                                                     <thead class="table-dark">
                                                         <tr>
                                                             <th class="border-bottom border-top">Technician Name</th>
@@ -145,5 +145,25 @@
         </div>
     </div>
     </div>
+     <script>
+        $(document).ready(function() {
+            // Initialize DataTables for all IDs
+            var tableIds = [
+                'technician'
+            ];
+
+            $.each(tableIds, function(index, tableId) {
+                if ($.fn.DataTable.isDataTable('#' + tableId)) {
+                    $('#' + tableId).DataTable().destroy();
+                }
+
+                $('#' + tableId).DataTable({
+                    "order": [[0, "desc"]],
+                    "pageLength": 25
+                    // Add more options as needed
+                });
+            });
+        });
+    </script>
 
 @stop

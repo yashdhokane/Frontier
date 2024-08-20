@@ -105,7 +105,26 @@
 
 
 </div>
+   <script>
+        $(document).ready(function() {
+            // Initialize DataTables for all IDs
+            var tableIds = [
+                'file_export11'
+            ];
 
+            $.each(tableIds, function(index, tableId) {
+                if ($.fn.DataTable.isDataTable('#' + tableId)) {
+                    $('#' + tableId).DataTable().destroy();
+                }
+
+                $('#' + tableId).DataTable({
+                    "order": [[0, "desc"]],
+                    "pageLength": 25
+                    // Add more options as needed
+                });
+            });
+        });
+    </script>
 <!-- jQuery -->
 @section('script')
 <!-- jQuery -->

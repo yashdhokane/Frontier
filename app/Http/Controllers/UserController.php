@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\LocationCity;
 use App\Models\UsersDetails;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 use App\Models\UserFiles;
 
@@ -51,94 +52,317 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index($status = null)
-    {
-        $user_auth = auth()->user();
-        $user_id = $user_auth->id;
-        $permissions_type = $user_auth->permissions_type;
-        $module_id = 2;
+    // public function index($status = null)
+    // {
+    //     $user_auth = auth()->user();
+    //     $user_id = $user_auth->id;
+    //     $permissions_type = $user_auth->permissions_type;
+    //     $module_id = 2;
+    //     $locationStates = LocationState::all();
 
-        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
-        if ($permissionCheck === true) {
-            // Proceed with the action
-        } else {
-            return $permissionCheck; // This will handle the redirection
-        }
-
-        $usersQuery = User::where('role', 'customer');
-
-        if ($status == "deactive") {
-            $usersQuery->where('status', 'deactive');
-        } else {
-            $usersQuery->where('status', 'active');
-        }
-
-        $users = $usersQuery->orderBy('created_at', 'desc')->paginate(50);
-
-        return view('users.index', ['users' => $users]);
-    }
-
-    //     public function index($status = null)
-    //     {
-    //         $usersQuery = User::with('Location')->where('role', 'customer');
-
-    //         if ($status == "deactive") {
-    //             $usersQuery->where('status', 'deactive');
-    //         } else {
-    //             $usersQuery->where('status', 'active');
-    //         }
-
-    //         $users = $usersQuery->orderBy('created_at', 'desc')->paginate(50);
-
-    //       foreach ($users as $user) {
-    //     // if ($user->is_updated != 'yes') {
-    //           if ($user) {
-
-    //         $address = $user->Location->address_line1 . ', ' . $user->Location->city;
-
-    //         $response = file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($address) . '&key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&callback');
-
-
-    //         $data = json_decode($response);
-
-    //         if ($data && $data->status === 'OK') {
-    //             $latitude = $data->results[0]->geometry->location->lat;
-    //             $longitude = $data->results[0]->geometry->location->lng;
-
-    //             // Update latitude and longitude in the CustomerUserAddress model
-    //             CustomerUserAddress::updateOrCreate(
-    //                 ['user_id' => $user->id],
-    //                 ['latitude' => $latitude, 'longitude' => $longitude]
-    //             );
-
-    //           $user->is_updated = 'yes';
-    //             $user->save();
-    //         } else {
-    //             $user->latitude = null;
-    //             $user->longitude = null;
-    //         }
+    //     $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+    //     if ($permissionCheck === true) {
+    //         // Proceed with the action
+    //     } else {
+    //         return $permissionCheck; // This will handle the redirection
     //     }
+
+    //     $usersQuery = User::where('role', 'customer');
+
+    //     if ($status == "deactive") {
+    //         $usersQuery->where('status', 'deactive');
+    //     } else {
+    //         $usersQuery->where('status', 'active');
+    //     }
+
+    //     $users = $usersQuery->orderBy('created_at', 'desc')->paginate(50);
+
+    // return view('users.index', compact('users', 'locationStates'));
     // }
-    //         return view('users.index', ['users' => $users]);
-    //     }
 
+public function index(Request $request, $status = null)
+{
+    // Get the query parameters
+    $workupdate = $request->query('workupdate');
+    $stateIds = $request->query('state', []); // Default to an empty array if no values are present
+  $jobs = $request->query('jobs');
+    // Filter out empty values
+    $stateIds = array_filter($stateIds, function($value) {
+        return !is_null($value) && $value !== '';
+    });
 
-    public function search(Request $request)
-    {
-        $query = $request->input('search');
+    //dd($stateIds); // Debug to check the received values
 
-        $users = User::where('role', 'customer')
-            ->where(function ($queryBuilder) use ($query) {
-                $queryBuilder->where('name', 'like', '%' . $query . '%')
-                    ->orWhere('email', 'like', '%' . $query . '%');
-            })
-            ->orderBy('created_at', 'desc')
-            ->paginate(50);
+    // Get the authenticated user and their details
+    $user_auth = auth()->user();
+    $user_id = $user_auth->id;
+    $permissions_type = $user_auth->permissions_type;
+    $module_id = 2;
 
-        $tbodyHtml = view('users.search_content', compact('users'))->render();
+    // Fetch location states for the view
+    $locationStates = LocationState::all();
 
-        return response()->json(['tbody' => $tbodyHtml]);
+    // Check user permissions
+    $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+    if ($permissionCheck !== true) {
+        return $permissionCheck; // Handle the redirection if permission check fails
     }
+
+    // Start the query for users with role 'customer'
+    $usersQuery = User::where('role', 'customer');
+
+    // Apply status filter if provided
+    if ($status === "deactive") {
+        $usersQuery->where('status', 'deactive');
+    } elseif ($status === "active") {
+        $usersQuery->where('status', 'active');
+    }
+
+    // Apply work update filter if provided
+    if ($workupdate === 'yes') {
+        $usersQuery->where('is_updated', 'yes');
+    } elseif ($workupdate === 'no') {
+        $usersQuery->where('is_updated', 'no');
+    }
+
+    // Check if state IDs are present
+    if (!empty($stateIds)) {
+        // Apply state filter
+        $usersQuery->whereIn('user_address.state_id', $stateIds);
+
+        // Apply joins if state IDs are present
+        $usersQuery->leftJoin('user_address', 'users.id', '=', 'user_address.user_id')
+            ->leftJoin('location_states', 'user_address.state_id', '=', 'location_states.state_id')
+            ->leftJoin('location_cities', 'user_address.city_id', '=', 'location_cities.city_id')
+            ->select('users.*', 'location_states.state_name', 'location_cities.city')
+            ->orderBy('users.created_at', 'desc');
+    } else {
+        // Fetch users without joins
+        $usersQuery->orderBy('created_at', 'desc');
+    }
+  $timezone_name = session('timezone_name');
+    $now = Carbon::now($timezone_name);
+
+    // Handle job filters
+    if ($jobs === 'upcoming') {
+        // Upcoming jobs filter
+        $usersQuery->leftJoin('job_assigned', 'users.id', '=', 'job_assigned.customer_id')
+            ->where('job_assigned.start_date_time', '>', $now)
+            ->select('users.*', 'job_assigned.start_date_time');
+    } elseif ($jobs === 'this_month') {
+        // Jobs this month
+        $usersQuery->leftJoin('job_assigned', 'users.id', '=', 'job_assigned.customer_id')
+            ->whereMonth('job_assigned.start_date_time', $now->month)
+            ->whereYear('job_assigned.start_date_time', $now->year)
+            ->select('users.*', 'job_assigned.start_date_time');
+    } elseif ($jobs === 'last_month') {
+        // Jobs last month
+        $usersQuery->leftJoin('job_assigned', 'users.id', '=', 'job_assigned.customer_id')
+            ->whereMonth('job_assigned.start_date_time', $now->subMonth()->month)
+            ->whereYear('job_assigned.start_date_time', $now->year)
+            ->select('users.*', 'job_assigned.start_date_time');
+    } else {
+        // Show all users
+        $usersQuery->select('users.*');
+    }
+    // Paginate the results
+    $users = $usersQuery->paginate(50);
+
+    // Pass the data to the view
+    return view('users.index', compact('users', 'locationStates', 'workupdate', 'stateIds', 'jobs'));
+}
+
+
+public function customers_demo_iframe(Request $request, $status = null)
+{
+    // Get the query parameters
+    $workupdate = $request->query('workupdate');
+    $stateIds = $request->query('state', []); // Default to an empty array if no values are present
+  $jobs = $request->query('jobs');
+    // Filter out empty values
+    $stateIds = array_filter($stateIds, function($value) {
+        return !is_null($value) && $value !== '';
+    });
+
+    //dd($stateIds); // Debug to check the received values
+
+    // Get the authenticated user and their details
+    $user_auth = auth()->user();
+    $user_id = $user_auth->id;
+    $permissions_type = $user_auth->permissions_type;
+    $module_id = 2;
+
+    // Fetch location states for the view
+    $locationStates = LocationState::all();
+
+    // Check user permissions
+    $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+    if ($permissionCheck !== true) {
+        return $permissionCheck; // Handle the redirection if permission check fails
+    }
+
+    // Start the query for users with role 'customer'
+    $usersQuery = User::where('role', 'customer');
+
+    // Apply status filter if provided
+    if ($status === "deactive") {
+        $usersQuery->where('status', 'deactive');
+    } elseif ($status === "active") {
+        $usersQuery->where('status', 'active');
+    }
+
+    // Apply work update filter if provided
+    if ($workupdate === 'yes') {
+        $usersQuery->where('is_updated', 'yes');
+    } elseif ($workupdate === 'no') {
+        $usersQuery->where('is_updated', 'no');
+    }
+
+    // Check if state IDs are present
+    if (!empty($stateIds)) {
+        // Apply state filter
+        $usersQuery->whereIn('user_address.state_id', $stateIds);
+
+        // Apply joins if state IDs are present
+        $usersQuery->leftJoin('user_address', 'users.id', '=', 'user_address.user_id')
+            ->leftJoin('location_states', 'user_address.state_id', '=', 'location_states.state_id')
+            ->leftJoin('location_cities', 'user_address.city_id', '=', 'location_cities.city_id')
+            ->select('users.*', 'location_states.state_name', 'location_cities.city')
+            ->orderBy('users.created_at', 'desc');
+    } else {
+        // Fetch users without joins
+        $usersQuery->orderBy('created_at', 'desc');
+    }
+  $timezone_name = session('timezone_name');
+    $now = Carbon::now($timezone_name);
+
+    // Handle job filters
+    if ($jobs === 'upcoming') {
+        // Upcoming jobs filter
+        $usersQuery->leftJoin('job_assigned', 'users.id', '=', 'job_assigned.customer_id')
+            ->where('job_assigned.start_date_time', '>', $now)
+            ->select('users.*', 'job_assigned.start_date_time');
+    } elseif ($jobs === 'this_month') {
+        // Jobs this month
+        $usersQuery->leftJoin('job_assigned', 'users.id', '=', 'job_assigned.customer_id')
+            ->whereMonth('job_assigned.start_date_time', $now->month)
+            ->whereYear('job_assigned.start_date_time', $now->year)
+            ->select('users.*', 'job_assigned.start_date_time');
+    } elseif ($jobs === 'last_month') {
+        // Jobs last month
+        $usersQuery->leftJoin('job_assigned', 'users.id', '=', 'job_assigned.customer_id')
+            ->whereMonth('job_assigned.start_date_time', $now->subMonth()->month)
+            ->whereYear('job_assigned.start_date_time', $now->year)
+            ->select('users.*', 'job_assigned.start_date_time');
+    } else {
+        // Show all users
+        $usersQuery->select('users.*');
+    }
+    // Paginate the results
+    $users = $usersQuery->paginate(50);
+
+    // Pass the data to the view
+    return view('users.index_customers_demo_iframe', compact('users', 'locationStates', 'workupdate', 'stateIds', 'jobs'));
+}
+
+
+
+
+
+    // public function search(Request $request)
+    // {
+    //     $query = $request->input('search');
+    //     $locationStates = LocationState::all();
+
+    //     $users = User::where('role', 'customer')
+    //         ->where(function ($queryBuilder) use ($query) {
+    //             $queryBuilder->where('name', 'like', '%' . $query . '%')
+    //                 ->orWhere('email', 'like', '%' . $query . '%');
+    //         })
+    //         ->orderBy('created_at', 'desc')
+    //         ->paginate(50);
+
+    //     $tbodyHtml = view('users.search_content', compact('users','locationStates'))->render();
+
+    //     return response()->json(['tbody' => $tbodyHtml]);
+    // }
+public function search(Request $request)
+{
+    // Get the query parameters
+    $query = $request->input('search');
+    $workupdate = $request->query('workupdate');
+    $stateIds = $request->query('state', []); // Default to an empty array if no values are present
+    $jobs = $request->query('jobs');
+
+    // Filter out empty values
+    $stateIds = array_filter($stateIds, function($value) {
+        return !is_null($value) && $value !== '';
+    });
+
+    // Fetch location states for the view
+    $locationStates = LocationState::all();
+
+    // Start the query for users with role 'customer'
+    $usersQuery = User::where('role', 'customer');
+
+    // Apply search filter if provided
+   
+
+    // Apply work update filter if provided
+    if ($workupdate === 'yes') {
+        $usersQuery->where('is_updated', 'yes');
+    } elseif ($workupdate === 'no') {
+        $usersQuery->where('is_updated', 'no');
+    }
+
+    // Apply state filter if state IDs are present
+    if (!empty($stateIds)) {
+        $usersQuery->leftJoin('user_address', 'users.id', '=', 'user_address.user_id')
+                   ->whereIn('user_address.state_id', $stateIds)
+                   ->leftJoin('location_states', 'user_address.state_id', '=', 'location_states.state_id')
+                   ->leftJoin('location_cities', 'user_address.city_id', '=', 'location_cities.city_id')
+                   ->select('users.*', 'location_states.state_name', 'location_cities.city');
+    }
+
+    // Apply jobs filter if 'jobs' parameter is present
+     $timezone_name = session('timezone_name');
+    $now = Carbon::now($timezone_name);
+
+    // Handle job filters
+    if ($jobs === 'upcoming') {
+        // Upcoming jobs filter
+        $usersQuery->leftJoin('job_assigned', 'users.id', '=', 'job_assigned.customer_id')
+            ->where('job_assigned.start_date_time', '>', $now)
+            ->select('users.*', 'job_assigned.start_date_time');
+    } elseif ($jobs === 'this_month') {
+        // Jobs this month
+        $usersQuery->leftJoin('job_assigned', 'users.id', '=', 'job_assigned.customer_id')
+            ->whereMonth('job_assigned.start_date_time', $now->month)
+            ->whereYear('job_assigned.start_date_time', $now->year)
+            ->select('users.*', 'job_assigned.start_date_time');
+    } elseif ($jobs === 'last_month') {
+        // Jobs last month
+        $usersQuery->leftJoin('job_assigned', 'users.id', '=', 'job_assigned.customer_id')
+            ->whereMonth('job_assigned.start_date_time', $now->subMonth()->month)
+            ->whereYear('job_assigned.start_date_time', $now->year)
+            ->select('users.*', 'job_assigned.start_date_time');
+    } else {
+        // Show all users
+        $usersQuery->select('users.*');
+    }
+
+    
+ $usersQuery->where(function ($queryBuilder) use ($query) {
+        $queryBuilder->where('name', 'like', '%' . $query . '%')
+                     ->orWhere('email', 'like', '%' . $query . '%');
+    });
+    // Order and paginate the results
+    $users = $usersQuery->orderBy('users.created_at', 'desc')->paginate(50);
+
+    // Render the view and return JSON response
+    $tbodyHtml = view('users.search_content', compact('users', 'locationStates','workupdate', 'stateIds', 'jobs'))->render();
+    return response()->json(['tbody' => $tbodyHtml]);
+}
 
 
     /**
@@ -171,7 +395,37 @@ class UserController extends Controller
         // $cities1 = LocationCity::all();
 
 
-        return view('users.create', compact('users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags'));
+        return view('users.create', compact('users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags',));
+    }
+
+     public function customers_demo_iframe_create()
+    {
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 3;
+
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck === true) {
+            // Proceed with the action
+        } else {
+            return $permissionCheck; // This will handle the redirection
+        }
+
+        $users = User::all();
+        $roles = Role::all();
+        $locationStates = LocationState::all();
+        $locationStates1 = LocationState::all();
+
+        $leadSources = SiteLeadSource::all();
+        $tags = SiteTags::all(); // Fetch all tags
+
+        // Fetch all cities initially
+        // $cities = LocationCity::all();
+        // $cities1 = LocationCity::all();
+
+
+        return view('users.customers_demo_iframe_create', compact('users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags',));
     }
 
     public function store(Request $request)
@@ -515,7 +769,161 @@ class UserController extends Controller
         return view('users.show', compact('customer_tag', 'estimates', 'notename', 'leadsourcename', 'leadsource', 'selectedTags', 'tickets', 'payment', 'activity', 'setting', 'login_history', 'location1', 'tags', 'leadSources', 'cities', 'locationStates', 'commonUser', 'payments', 'payment', 'userAddresscity', 'jobasigndate', 'customerimage', 'jobasign', 'userTags', 'location', 'tickets', 'UsersDetails', 'Notes'));
     }
 
+public function show_customers_demo_iframe($id)
+    {
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 4;
 
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck === true) {
+            // Proceed with the action
+        } else {
+            return $permissionCheck; // This will handle the redirection
+        }
+
+        //$roles = Role::all();
+
+        $commonUser = User::with('Location')->where('role', 'customer')->where('id', $id)->first();
+        if (!$commonUser) {
+            return view('404');
+        }
+        if (!$commonUser) {
+            return view('404');
+        }
+        $customer_tag = SiteTags::all();
+        $notename = DB::table('user_notes')->where(
+            'user_id',
+            $commonUser->id
+        )->get();
+        $estimates = DB::table('estimates')->where(
+            'customer_id',
+            $commonUser->id
+        )->get();
+        // $userId = $user->id;
+        // $attr = [
+        //     'address_primary' => '',
+        //     'address_type' => '',
+        //     'address_format' => ''
+        // ];
+        //$address = $this->getUserAddress($userId, $attr);
+
+        $userAddresscity = DB::table('user_address')
+            ->leftJoin('location_cities', 'user_address.city_id', '=', 'location_cities.city_id')
+            ->leftJoin('location_states', 'user_address.state_id', '=', 'location_states.state_id')
+            ->where('user_address.user_id', $commonUser->id)
+            ->get();
+        //dd($userAddresscity);
+
+
+        $workAddress = CustomerUserAddress::where('user_id', $commonUser->id)
+            ->where('address_type', 'office')
+            ->first();
+
+
+        $location = CustomerUserAddress::where('user_id', $commonUser->id)->get();
+
+
+
+
+        $jobasigndate = DB::table('job_assigned')
+            ->where('customer_id', $commonUser->id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+
+        $jobasign = DB::table('jobs')
+            ->where('customer_id', $commonUser->id)
+            ->get();
+
+
+        $payments = DB::table('payments')
+            ->where('customer_id', $commonUser->id)
+            ->get();
+
+
+
+        $customerimage = DB::table('user_files')
+            ->where('user_id', $commonUser->id)
+            ->get();
+        // dd($jobasign);
+
+        $tickets = JobModel::orderBy('created_at', 'desc')->get();
+        $payment = Payment::with('user', 'JobModel')->latest()->get();
+        $UsersDetails = UsersDetails::where('user_id', $commonUser->id)->first();
+        // dd($UsersDetails);
+
+        // Fetch the $locationStates from wherever you are fetching it
+        $locationStates = LocationState::all();
+        // $locationStates1 = LocationState::all();
+
+        $cities = LocationCity::all();
+        // $cities1 = LocationCity::all();
+
+        // Fetch the $leadSources from wherever you are fetching it
+        $leadSources = SiteLeadSource::all();
+        $tags = SiteTags::all();
+
+
+        $location = CustomerUserAddress::where('user_id', $commonUser->id)
+            ->whereIn('address_type', ['home', 'work', 'other'])
+            ->first();
+
+        $location1 = CustomerUserAddress::where('user_id', $commonUser->id)
+            ->whereIn('address_type', ['home', 'work', 'other'])
+            ->where('address_id', '>', $location ? $location->address_id : 0)
+            ->orderBy('address_id')
+            ->first();
+
+
+
+
+
+
+        $location = $commonUser->location;
+        if ($location) {
+            // Fetch cities associated with the technician's state
+            $cities = LocationCity::where('state_id', $location->state_id)->get();
+        } else {
+            $cities = collect(); // No cities if no location is set
+        }
+
+        //  $location = CustomerUserAddress::where('user_id', $user->id)->get();
+
+        //   dd($location);
+
+
+        $Notes = UserNotesCustomer::where('user_id', $commonUser->id)->first();
+
+        // Assuming you have a 'tags' relationship defined in your User model
+        $userTags = $commonUser->tags;
+
+        // Convert the comma-separated tag_id string to an array
+        $selectedTags = explode(',', $userTags->pluck('tag_id')->implode(','));
+
+        $source = $commonUser->source;
+
+        $activity = UsersActivity::with('user')
+            ->where('user_id', $commonUser->id)
+            ->get();
+        $leadsourcename = Leadsource::where('user_id', $commonUser->id)
+            ->get();
+        //  dd($leadsourcename);
+        $setting = UsersSettings::where('user_id', $commonUser->id)
+            ->first();
+        $login_history = DB::table('user_login_history')
+            ->where('user_login_history.user_id', $commonUser->id)
+            ->first();
+        $tickets = JobModel::orderBy('created_at', 'desc')->get();
+        $payment = Payment::with('user', 'JobModel')->latest()->get();
+
+
+
+
+        $leadsource = SiteLeadSource::all();
+        return view('users.show_customers_demo_iframe', compact('customer_tag', 'estimates', 'notename', 'leadsourcename', 'leadsource', 'selectedTags', 'tickets', 'payment', 'activity', 'setting', 'login_history', 'location1', 'tags', 'leadSources', 'cities', 'locationStates', 'commonUser', 'payments', 'payment', 'userAddresscity', 'jobasigndate', 'customerimage', 'jobasign', 'userTags', 'location', 'tickets', 'UsersDetails', 'Notes'));
+    }
     // function getUserAddress($user_id, $attr)
     // {
     //     $whereclause = " WHERE user_address.user_id = " . $user_id;

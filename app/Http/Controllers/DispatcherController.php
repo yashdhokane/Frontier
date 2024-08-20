@@ -43,7 +43,7 @@ class DispatcherController extends Controller
 
     public function create()
     {
-        $permissions = DB::table('user_permissions')->pluck('permission_id')->toArray();
+        $permissions = DB::table('user_permissions')->pluck('id')->toArray();
 
         $users = User::all();
         //    $roles = Role::all();
@@ -361,86 +361,191 @@ class DispatcherController extends Controller
         // exit();
         return view('dispatcher.show', compact('commonUser', 'access_array', 'parentModules', 'activity', 'setting', 'UsersDetails', 'locationStates', 'Note', 'source', 'selectedTags', 'userTags', 'tags', 'payments', 'tickets', 'customerimage', 'notename', 'activity', 'jobasign', 'location', 'latitude', 'longitude', 'userAddresscity', 'estimates', 'home_phone'));
     }
-    public function permission(Request $request)
-    {
-        $data = $request->all();
-        $userId = $data['user_id'] ?? null;
+    // public function permission(Request $request)
+    // {
+    //    // dd($request->all());
+    //     $data = $request->all();
+    //     $userId = $data['user_id'] ?? null;
 
-        if (!$userId) {
-            return response()->json(['error' => 'User ID is required'], 400);
+    //     if (!$userId) {
+    //         return response()->json(['error' => 'User ID is required'], 400);
+    //     }
+
+    //     $permissionType = $data['radio-solid-info'] ?? null;
+
+    //     if ($permissionType) {
+    //         $user = User::find($userId);
+    //         if (!$user) {
+    //             return response()->json(['error' => 'User not found'], 404);
+    //         }
+    //         $user->permissions_type = $permissionType;
+    //         $user->save();
+    //     }
+
+    //     // Handle permissions for each module
+    //     foreach ($data as $key => $value) {
+    //         if (is_array($value) && isset($value[0])) {
+    //             $moduleId = $key;
+    //             $permissionValue = $value[0];
+
+    //             // If 'selected' and permission value is null, set permission to 0 for all modules and continue
+    //             if ($permissionType == 'selected' && $permissionValue === null) {
+    //                 UserPermission::where('user_id', $userId)->update(['permission' => 0]);
+    //                 continue;
+    //             }
+
+    //             // Skip if permission value is null
+    //             if ($permissionValue === null) {
+    //                 continue;
+    //             }
+
+    //             $userPermission = UserPermission::where('user_id', $userId)
+    //                 ->where('module_id', $moduleId)
+    //                 ->first();
+
+    //             if ($userPermission) {
+    //                 $userPermission->permission = $permissionValue;
+    //                 $userPermission->save();
+    //             } else {
+
+    //             }
+    //         } else {
+    //             // If 'selected', skip modules with null values, else update with 0
+    //             if ($permissionType != 'selected') {
+    //                 // Skip if value is null
+    //                 if ($value[0] === null) {
+    //                     continue;
+    //                 }
+
+    //                 $userPermission = UserPermission::where('user_id', $userId)
+    //                     ->where('module_id', $key)
+    //                     ->first();
+
+    //                 if ($userPermission) {
+    //                     $userPermission->permission = 0;
+    //                     $userPermission->save();
+    //                 } else {
+
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     // Update permissions based on 'all' or 'block'
+    //     if ($permissionType == 'all') {
+    //         UserPermission::where('user_id', $userId)->update(['permission' => 1]);
+    //     }
+
+    //     if ($permissionType == 'block') {
+    //         UserPermission::where('user_id', $userId)->update(['permission' => 0]);
+    //     }
+
+    //     return redirect()->back()->with(['success' => 'Permissions updated successfully']);
+    // }
+
+public function permission(Request $request)
+{
+    // Extract data from the request
+    $data = $request->all();
+    $userId = $data['user_id'] ?? null;
+
+    // Validate user ID
+    if (!$userId) {
+        return response()->json(['error' => 'User ID is required'], 400);
+    }
+
+    // Find the user
+    $user = User::find($userId);
+    if (!$user) {
+        return response()->json(['error' => 'User not found'], 404);
+    }
+
+    // Update user permission type
+    $permissionType = $data['radio-solid-info'] ?? null;
+    if ($permissionType) {
+        $user->permissions_type = $permissionType;
+        $user->save();
+    }
+
+    // Handle permissions for each module
+    foreach ($data as $key => $value) {
+        // Skip non-integer keys (like '_token')
+        if (!is_numeric($key)) {
+            continue;
         }
 
-        $permissionType = $data['radio-solid-info'] ?? null;
+        if (is_array($value) && isset($value[0])) {
+            $moduleId = $key;
+            $permissionValue = $value[0];
 
-        if ($permissionType) {
-            $user = User::find($userId);
-            if (!$user) {
-                return response()->json(['error' => 'User not found'], 404);
+            // If 'selected' and permission value is null, set permission to 0 for all modules and continue
+            if ($permissionType == 'selected' && $permissionValue === null) {
+                UserPermission::where('user_id', $userId)->update(['permission' => 0]);
+                continue;
             }
-            $user->permissions_type = $permissionType;
-            $user->save();
-        }
 
-        // Handle permissions for each module
-        foreach ($data as $key => $value) {
-            if (is_array($value) && isset($value[0])) {
-                $moduleId = $key;
-                $permissionValue = $value[0];
+            // Skip if permission value is null
+            if ($permissionValue === null) {
+                continue;
+            }
 
-                // If 'selected' and permission value is null, set permission to 0 for all modules and continue
-                if ($permissionType == 'selected' && $permissionValue === null) {
-                    UserPermission::where('user_id', $userId)->update(['permission' => 0]);
+            // Check if the permission record exists
+            $userPermission = UserPermission::where('user_id', $userId)
+                ->where('module_id', $moduleId)
+                ->first();
+
+            if ($userPermission) {
+                // Update existing record
+                $userPermission->permission = $permissionValue;
+                $userPermission->save();
+            } else {
+                // Create new record
+                UserPermission::create([
+                    'user_id' => $userId,
+                    'module_id' => $moduleId,
+                    'permission' => $permissionValue
+                ]);
+            }
+        } else {
+            // If 'selected', skip modules with null values, else update with 0
+            if ($permissionType != 'selected') {
+                // Skip if value is null
+                if ($value[0] === null) {
                     continue;
                 }
 
-                // Skip if permission value is null
-                if ($permissionValue === null) {
-                    continue;
-                }
-
+                // Check if the permission record exists
                 $userPermission = UserPermission::where('user_id', $userId)
-                    ->where('module_id', $moduleId)
+                    ->where('module_id', $key)
                     ->first();
 
                 if ($userPermission) {
-                    $userPermission->permission = $permissionValue;
+                    // Update existing record with 0
+                    $userPermission->permission = 0;
                     $userPermission->save();
                 } else {
-
-                }
-            } else {
-                // If 'selected', skip modules with null values, else update with 0
-                if ($permissionType != 'selected') {
-                    // Skip if value is null
-                    if ($value[0] === null) {
-                        continue;
-                    }
-
-                    $userPermission = UserPermission::where('user_id', $userId)
-                        ->where('module_id', $key)
-                        ->first();
-
-                    if ($userPermission) {
-                        $userPermission->permission = 0;
-                        $userPermission->save();
-                    } else {
-
-                    }
+                    // Create new record with 0
+                    UserPermission::create([
+                        'user_id' => $userId,
+                        'module_id' => $key,
+                        'permission' => 0
+                    ]);
                 }
             }
         }
-
-        // Update permissions based on 'all' or 'block'
-        if ($permissionType == 'all') {
-            UserPermission::where('user_id', $userId)->update(['permission' => 1]);
-        }
-
-        if ($permissionType == 'block') {
-            UserPermission::where('user_id', $userId)->update(['permission' => 0]);
-        }
-
-        return redirect()->back()->with(['success' => 'Permissions updated successfully']);
     }
+
+    // Update permissions based on 'all' or 'block'
+    if ($permissionType == 'all') {
+        UserPermission::where('user_id', $userId)->update(['permission' => 1]);
+    }
+
+    if ($permissionType == 'block') {
+        UserPermission::where('user_id', $userId)->update(['permission' => 0]);
+    }
+
+    return redirect()->back()->with(['success' => 'Permissions updated successfully']);
+}
 
 
 

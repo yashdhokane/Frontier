@@ -249,6 +249,81 @@
 </script>
 
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Function to check if URL contains "header=off" and "sidebar=off"
+        function shouldApplyScript() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('header') === 'off' && urlParams.get('sidebar') === 'off';
+        }
+
+        // Apply the script only if the conditions are met
+        if (shouldApplyScript()) {
+            // Hide the header
+            const header = document.querySelector('header');
+            if (header) {
+                header.style.display = 'none';
+            }
+
+            // Hide the sidebar and remove its space
+            const sidebar = document.querySelector('.left-sidebar');
+            if (sidebar) {
+                sidebar.style.display = 'none';
+            }
+
+            // Adjust the main content width if necessary
+            const mainWrapper = document.querySelector('#main-wrapper');
+            if (mainWrapper) {
+                mainWrapper.style.marginLeft = '0';
+            }
+
+            // Hide the footer and remove its space
+            const footer = document.querySelector('.footer');
+            if (footer) {
+                footer.style.display = 'none';
+            }
+
+            // Inject additional CSS for other functionalities
+            const style = document.createElement('style');
+            style.type = 'text/css';
+            style.innerHTML = `
+                /* Hide header, aside, and footer elements */
+                header { display: none !important; }
+                aside { display: none !important; }
+                footer { display: none !important; }
+
+                /* Adjust layout and overflow */
+                #main-wrapper[data-layout=vertical][data-header-position=fixed] .topbar {
+                    display: none;
+                }
+                #main-wrapper[data-layout=vertical][data-sidebar-position=fixed] .left-sidebar {
+                    display: none;
+                }
+                #main-wrapper[data-layout=vertical][data-sidebartype=full] .page-wrapper {
+                    margin-left: 10px;
+                }
+                #main-wrapper[data-layout=vertical][data-header-position=fixed] .page-wrapper {
+                    padding-top: 10px;
+                }
+
+                /* Make content scrollable */
+                html, body {
+                    overflow: auto !important;
+                    margin: 0;
+                    padding: 0;
+                }
+
+                /* Specific section overflow */
+                #scheduleSection1 {
+                    overflow: auto !important;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    });
+</script>
+
+
 
     <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -258,5 +333,8 @@
 
     <!-- Bootstrap Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
+
+
 
 

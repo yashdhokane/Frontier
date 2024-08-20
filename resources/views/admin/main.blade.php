@@ -468,6 +468,7 @@
                 <div class="card card-border shadow">
                     <div class="card-body">
                         <div class="row">
+                        <h4>Stats</h4>
                             <div class="col-6 mb-3">
                                 <div class="text-white bg-primary rounded">
                                     <div class="card-body">

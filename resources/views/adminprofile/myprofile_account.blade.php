@@ -20,30 +20,33 @@
 
 <div class="page-wrapper" style="display:inline;">
 
-    <div class="page-breadcrumb" style="padding-top: 0px;">
-        <div class="row">
-            <div class="col-6 align-self-center">
-                <h4 class="page-title">My Profile</h4>
-            </div>
-            <div class="col-6 align-self-end">
-                <div class="profile-menu-btn" role="toolbar" aria-label="Toolbar with button groups" style="text-align: right;">
-                    <div class="btn-group me-1" role="group" aria-label="First group">
-                        <a href="{{ route('myprofile.index') }}"
-                            class="btn mx-2
-                                    @if(request()->routeIs('myprofile.index')) btn-info active @else btn-light-info text-info @endif">Profile</a>
-                        <a href="{{ route('myprofile.account') }}"
-                            class="btn mx-2
-                                    @if(request()->routeIs('myprofile.account')) btn-info active @else btn-light-info text-info @endif">Account Settings</a>
-                        <a href="{{ route('myprofile.activity') }}"
-                            class="btn mx-2
-                                    @if(request()->routeIs('myprofile.activity')) btn-info active @else btn-light-info text-info @endif">Activity and Notifications</a>
-                        {{-- <a href="{{ route('myprofile.notification') }}"
-                            class="btn mx-2
-                                    @if(request()->routeIs('myprofile.notification')) btn-info active @else btn-light-info text-info @endif">Notification</a> --}}
-                    </div>
-                </div>
+    <div class="page-breadcrumb" style="padding: 0px 0px 10px 0px;">
+    <div class="row">
+        <div class="col-5 align-self-center">
+            <h4 class="page-title">My Profile</h4>
+            <div class="d-flex align-items-center">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item"><a href="#">My Profile</a></li>
+                    </ol>
+                </nav>
             </div>
         </div>
+
+        <div class="col-7 text-end px-4">
+            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <a href="{{ route('myprofile.index') }}"
+                    class="btn {{ request()->routeIs('myprofile.index') ? 'btn-info' : 'btn-light-info text-info' }}">Profile</a>
+                <a href="{{ route('myprofile.account') }}"
+                    class="btn {{ request()->routeIs('myprofile.account') ? 'btn-info' : 'btn-light-info text-info' }}">Account Settings</a>
+                <a href="{{ route('myprofile.activity') }}"
+                    class="btn {{ request()->routeIs('myprofile.activity') ? 'btn-info' : 'btn-light-info text-info' }}">Activity and Notifications</a>
+                
+                
+            </div>
+        </div>
+    </div>
     </div>
 
     <div class="container-fluid">

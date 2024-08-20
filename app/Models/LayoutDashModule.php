@@ -12,7 +12,7 @@ class LayoutDashModule extends Model
     protected $table = 'layout_dash_modules';
     protected $primaryKey = 'id';
 
-    protected $fillable = ['layout_id','module_id','position','is_active','updated_by'];
+    protected $fillable = ['layout_id','module_id','position','is_active','updated_by','columns'];
 
     public function ModuleList()
     {

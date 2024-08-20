@@ -1,3 +1,4 @@
+
 @extends('home')
 @section('content')
     <!-- Page wrapper  -->
@@ -293,4 +294,5 @@
             });
         });
     </script>
+    
 @endsection

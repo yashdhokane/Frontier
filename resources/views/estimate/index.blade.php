@@ -29,12 +29,22 @@
            
         </div>
     </div>
-    @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-
+ @if (Session::has('success'))
+<div class="alert_wrap">
+    <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
+        {{ Session::get('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert"
+            aria-label="Close"></button>
     </div>
-    @endif
+</div>
+@endif
+
+@if (Session::has('error'))
+<div class="alert_wrap">
+    <div class="alert alert-danger">
+        {{ Session::get('error') }}
+    </div>
+</div>
+@endif
     <!-- ------------------------------------------------------------ -->
     <!-- End Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
@@ -48,7 +58,7 @@
                 <div class="col-md-4 col-xl-2">
                     <form>
                         <input type="text" class="form-control product-search" id="input-search"
-                            placeholder="Search Estimate..." />
+       placeholder="Search Estimate..." />
                     </form>
                 </div>
                 <div class="
@@ -140,11 +150,11 @@
             }
         </style>
 
-        <div class="row">
+        <div class="row"  id="card-row">
 
             <!-- column -->
             @foreach ($estimatecategory as $item)
-            <div class="col-lg-3 col-md-6 col-xl-2">
+            <div class="col-lg-3 col-md-6 col-xl-2 card-item">
                 <!-- Card -->
 
                 <div class="card">
@@ -278,6 +288,30 @@
     $("#appendbody1").html(data);
     }
     });
+    });
+
+     document.getElementById('input-search').addEventListener('keyup', function() {
+        const searchTerm = this.value.toLowerCase();
+        const cards = document.querySelectorAll('#card-row .card-item');
+        let firstMatch = null;
+
+        cards.forEach(card => {
+            const cardTitle = card.querySelector('.card-title').textContent.toLowerCase();
+
+            if (cardTitle.includes(searchTerm)) {
+                card.style.display = '';
+                if (!firstMatch) {
+                    firstMatch = card;
+                }
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Scroll to the first matching card if found
+        if (firstMatch) {
+            firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
     });
 </script>
 

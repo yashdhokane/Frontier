@@ -102,7 +102,7 @@
                                             <div class="row">
                                                 <div class="col-md-4">
                                                     <label for="technician"
-                                                        class="control-label bold mb5">Technician</label>
+                                                        class="control-label bold mb5"> Technicians </label>
                                                     <select class="select2-with-menu-bg form-control" name="technician_id[]"
                                                         id="menu-bg-multiple2" multiple="multiple" data-bgcolor="light"
                                                         data-bgcolor-variation="accent-3" data-text-color="blue"
@@ -140,9 +140,9 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row" id="masonry-grid">
                         @foreach ($technician as $item)
-                            <div class="col-md-3">
+                            <div class="col-md-3 masonry-item">
                                 <div class="mb-2">
                                     <div class="card">
                                         <div class="card-body card-border shadow text-left">
@@ -193,8 +193,59 @@
                         @endforeach
                     </div>
                     
-
-
+<h4>Inactive Technicians </h4>
+   <div class="row" id="masonry-grid">
+                        @foreach ($technician1 as $item)
+                            <div class="col-md-3 masonry-item">
+                                <div class="mb-2">
+                                    <div class="card">
+                                        <div class="card-body card-border shadow text-left">
+                                            <h4 class="card-title mb-2">{{ $item->name }}</h4>
+                                            <h6 class="mb-2">Assigned to </h6>
+                                            <ul class="list-group list-group-horizontal-xl">
+                                                @php
+                                                    $assignedProducts = [];
+                                                @endphp
+                    
+                                                @foreach ($assign->where('technician_id', $item->id) as $assignment)
+                                                    @if (!isset($assignedProducts[$assignment->product_id]))
+                                                        @php
+                                                            $assignedProducts[$assignment->product_id] = $assignment->quantity;
+                                                        @endphp
+                                                    @else
+                                                        @php
+                                                            $assignedProducts[$assignment->product_id] += $assignment->quantity;
+                                                        @endphp
+                                                    @endif
+                                                @endforeach
+                    
+                                                @if (empty($assignedProducts))
+                                                    <p>No Part Assigned</p>
+                                                @else
+                                                    @foreach ($assignedProducts as $productId => $quantity)
+                                                        @php
+                                                            $productItem = $product->find($productId);
+                                                        @endphp
+                                                        @if ($productItem)
+                                                            <li class="list-group-item d-flex align-items-center">
+                                                                <i class="text-info fas fa-user mx-2"></i>
+                                                                {{ $productItem->product_name }} ({{ $quantity }})
+                                                            </li>
+                                                        @else
+                                                            <li class="list-group-item d-flex align-items-center">
+                                                                <i class="text-danger fas fa-exclamation-triangle mx-2"></i>
+                                                                Product not found ({{ $quantity }})
+                                                            </li>
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
 
 
@@ -210,8 +261,24 @@
         <!-- End Page wrapper  -->
         <!-- -------------------------------------------------------------- -->
     </div>
+        </div>
+
     <!-- -------------------------------------------------------------- -->
     <!-- End Wrapper -->
     <!-- -------------------------------------------------------------- -->
-
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+<!-- Include imagesLoaded.js -->
+<script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
+<script>
+    window.onload = function() {
+        var elem = document.querySelector('#masonry-grid');
+        imagesLoaded(elem, function() {
+            var msnry = new Masonry(elem, {
+                itemSelector: '.masonry-item',
+                columnWidth: '.masonry-item',
+                percentPosition: true
+            });
+        });
+    };
+</script>
 @endsection

@@ -160,7 +160,7 @@ class ProductCategoryController extends Controller
         // Delete the category from the database
         $productCategory->delete();
 
-        return redirect()->route('product.index')->with('success', 'Products & Materials deleted successfully!');
+        return redirect()->route('partCategory')->with('success', 'Products & Materials deleted successfully!');
     }
 
     public function assign_product(Request $request)
@@ -177,6 +177,7 @@ class ProductCategoryController extends Controller
         } else {
             return $permissionCheck; // This will handle the redirection
         }
+        $technician1 = User::where('role', 'technician')->where('status', 'deactive')->get();
 
         $technician = User::where('role', 'technician')->where('status', 'active')->get();
 
@@ -184,7 +185,7 @@ class ProductCategoryController extends Controller
 
         $assign = ProductAssigned::with('Technician', 'Product')->get();
 
-        return view('product.assign_product', compact('technician', 'product', 'assign'));
+        return view('product.assign_product', compact('technician','technician1', 'product', 'assign'));
     }
 
     public function store_assign_product(Request $request)

@@ -1,4 +1,4 @@
-<div class="card card-hover">
+<!--<div class="card card-hover"> -->
 
     <div class="p-3">
         <div class="mb-1 d-flex justify-content-between">
@@ -36,4 +36,4 @@
 
         </div>
     </div>
-</div>
+<!--</div>  -->

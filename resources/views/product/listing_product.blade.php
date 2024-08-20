@@ -3,7 +3,7 @@
 
     <!-- Page wrapper  -->
     <!-- -------------------------------------------------------------- -->
-    <div class="page-wrapper" style="display:inline;">
+    <div class="" style="display:inline;">
         <!-- -------------------------------------------------------------- -->
      <div class="page-breadcrumb">
             <div class="row">
@@ -95,7 +95,7 @@
         <!-- -------------------------------------------------------------- -->
         <!-- Container fluid  -->
         <!-- -------------------------------------------------------------- -->
-        <div class="show-categories">
+        <div class="show-categories" style="min-height:500px;">
 
              <div class="container-fluid px-3 mt-2">
 
@@ -271,7 +271,9 @@
         <!-- -------------------------------------------------------------- -->
         <!-- Recent comment and chats -->
         <!-- -------------------------------------------------------------- -->
-    </div>  </div>
+    </div> 
+          </div> 
+
 @section('script')
 
     <script>

@@ -17,7 +17,17 @@
                     </nav>
                 </div>
             </div>
+             <div class="col-5 align-self-center">
+            <div class="d-flex no-block justify-content-end align-items-center">
+
+              
+                <a href="#." id="filterButton" class="btn btn-sm btn-info">
+                    <i class="ri-filter-line"></i> Filters
+                </a>
+            </div>
         </div>
+        </div>
+        
     </div>
     @if (Session::has('success'))
         <div class="alert_wrap">
@@ -39,84 +49,87 @@
         <!-- -------------------------------------------------------------- -->
         <!-- basic table -->
         <div class="row">
+               
+        <div id="filterDiv" class="card card-body shadow" style="display: none;">
+            <div class="row">
+                <div class="col-sm-3">
+                    <!-- Date filtering input -->
+                    <label><strong>Month & Year</strong></label>
+                    <select id="month-filter" class="form-control">
+                        <option value="">All</option>
+                        @php
+                            // Get the current month and year
+                            $currentMonth = new DateTime();
+                            // Format the current month and year
+                            $currentMonthFormatted = $currentMonth->format('F Y');
+                            // Output the option tag for the current month
+                            echo "<option value=\"" .
+                                strtolower($currentMonthFormatted) .
+                                "\">" .
+                                $currentMonthFormatted .
+                                '</option>';
+
+                            // Generate options for the previous 11 months
+                            for ($i = 0; $i < 12; $i++) {
+                                // Modify date to get previous months
+                                $monthYear = $currentMonth->modify('-1 month')->format('F Y');
+                                // Output the option tag for the previous months
+                                echo "<option value=\"" .
+                                    strtolower($monthYear) .
+                                    "\">" .
+                                    $monthYear .
+                                    '</option>';
+                            }
+                        @endphp
+                    </select>
+                </div>
+
+                <div class="col-sm-3">
+                    <!-- Filter by other column (example: Manufacturer) -->
+                    <label class="text-nowrap"><strong>Manufacturers</strong></label>
+                    <select id="manufacturer-filter" class="form-control">
+                        <option value="">All</option>
+                        @foreach ($manufacturer as $item)
+                            <option value="{{ $item->manufacturer_name }}">
+                                {{ $item->manufacturer_name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-sm-3 mb-2">
+                    <!-- Filter by other column (example: Technicians) -->
+                    <label class="text-nowrap"><strong>Technicians</strong></label>
+                    <select id="technician-filter" class="form-control">
+                        <option value="">All</option>
+                        @foreach ($tech as $item)
+                            <option value="{{ $item->name }}">
+                                {{ $item->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-sm-3 mb-2">
+                    <!-- Filter by other column (example: Payment Status) -->
+                    <label class="text-nowrap"><strong>Status</strong></label>
+                    <select id="payment-status-filter" class="form-control">
+                        <option value="">All</option>
+                        <option value="paid">Paid</option>
+                        <option value="unpaid">Unpaid</option>
+                        <option value="refund">Refund</option>
+                        <option value="cancel">Cancel</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!-- Add your table or content here -->
+    </div>
 
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
 
 
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <!-- Date filtering input -->
-                                <label><strong>Month & Year</strong></label>
-                                <select id="month-filter" class="form-control">
-                                    <option value="">All</option>
-                                    @php
-                                        // Get the current month and year
-                                        $currentMonth = new DateTime();
-                                        // Format the current month and year
-                                        $currentMonthFormatted = $currentMonth->format('F Y');
-                                        // Output the option tag for the current month
-                                        echo "<option value=\"" .
-                                            strtolower($currentMonthFormatted) .
-                                            "\">" .
-                                            $currentMonthFormatted .
-                                            '</option>';
-
-                                        // Generate options for the previous 11 months
-                                        for ($i = 0; $i < 12; $i++) {
-                                            // Modify date to get previous months
-                                            $monthYear = $currentMonth->modify('-1 month')->format('F Y');
-                                            // Output the option tag for the previous months
-                                            echo "<option value=\"" .
-                                                strtolower($monthYear) .
-                                                "\">" .
-                                                $monthYear .
-                                                '</option>';
-                                        }
-                                    @endphp
-                                </select>
-                            </div>
-
-                            <div class="col-sm-3">
-                                <!-- Filter by other column (example: Manufacturer) -->
-                                <label class="text-nowrap"><strong>Manufacturers</strong></label>
-                                <select id="manufacturer-filter" class="form-control">
-                                    <option value="">All</option>
-                                    @foreach ($manufacturer as $item)
-                                        <option value="{{ $item->manufacturer_name }}">
-                                            {{ $item->manufacturer_name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="col-sm-3 mb-2">
-                                <!-- Filter by other column (example: Technicians) -->
-                                <label class="text-nowrap"><strong>Technicians</strong></label>
-                                <select id="technician-filter" class="form-control">
-                                    <option value="">All</option>
-                                    @foreach ($tech as $item)
-                                        <option value="{{ $item->name }}">
-                                            {{ $item->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="col-sm-3 mb-2">
-                                <!-- Filter by other column (example: Payment Status) -->
-                                <label class="text-nowrap"><strong>Status</strong></label>
-                                <select id="payment-status-filter" class="form-control">
-                                    <option value="">All</option>
-                                    <option value="paid">Paid</option>
-                                    <option value="unpaid">Unpaid</option>
-                                    <option value="refund">Refund</option>
-                                    <option value="cancel">Cancel</option>
-                                </select>
-                            </div>
-
-
-
-                        </div>
+                       
 
                         <div class="table-responsive table-custom">
 
@@ -324,6 +337,19 @@
 
         });
     </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('filterButton').addEventListener('click', function(event) {
+            event.preventDefault();
+            const filterDiv = document.getElementById('filterDiv');
+            if (filterDiv.style.display === 'none') {
+                filterDiv.style.display = 'block';
+            } else {
+                filterDiv.style.display = 'none';
+            }
+        });
+    });
+</script>
     <script>
         // Add click event listener to the "Comments" dropdown item
         document.querySelectorAll('.add-comment').forEach(item => {

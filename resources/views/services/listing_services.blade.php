@@ -112,7 +112,7 @@
 								</tr>
                             </thead>
 
-                            <tbody>
+                            <tbody id="service-table-body">
                                 @foreach ($service as $service)
                                     <!-- start row -->
                                     <tr class="search-items">
@@ -253,7 +253,39 @@
 
 @section('script')
     <script src="{{ asset('public/admin/dist/js/pages/contact.js') }}"></script>
-    
+    <script>
+    document.getElementById('input-search').addEventListener('keyup', function() {
+        const searchTerm = this.value.toLowerCase();
+        const rows = document.querySelectorAll('#service-table-body .search-items');
+        let firstMatch = null;
+
+        rows.forEach(row => {
+            const serviceName = row.querySelector('td a').textContent.toLowerCase();
+            const description = row.querySelector('.description-column').textContent.toLowerCase();
+            const serviceCode = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+            const basePricing = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
+            const status = row.querySelector('td:nth-child(5) span').textContent.toLowerCase();
+
+            if (serviceName.includes(searchTerm) || 
+                description.includes(searchTerm) || 
+                serviceCode.includes(searchTerm) || 
+                basePricing.includes(searchTerm) || 
+                status.includes(searchTerm)) {
+                row.style.display = '';
+                if (!firstMatch) {
+                    firstMatch = row;
+                }
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Scroll to the first matching row if found
+        if (firstMatch) {
+            firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    });
+</script>
 
 @stop
 @stop

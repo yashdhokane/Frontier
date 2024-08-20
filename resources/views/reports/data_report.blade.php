@@ -535,7 +535,31 @@
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-
+ 
     <script src="{{ url('public/admin/reports/script.js') }}"></script>
 	
+	
+	<script>
+        $(document).ready(function() {
+            // Initialize DataTables for all IDs
+            var tableIds = ['jobRevenue','monthjobRevenue',
+                'job_count', 'daily', 'weekly', 'monthly', 'job_tags', 'priority', 'status',
+                'job_lead_source', 'customerReport', 'zipcodeReport', 'cityReport', 'stateReport',
+                'manufacturers', 'appliances'
+            ];
+
+            $.each(tableIds, function(index, tableId) {
+                if ($.fn.DataTable.isDataTable('#' + tableId)) {
+                    $('#' + tableId).DataTable().destroy();
+                }
+
+                $('#' + tableId).DataTable({
+                    "order": [[0, "desc"]],
+                    "pageLength": 25
+                    // Add more options as needed
+                });
+            });
+        });
+    </script>
 @stop
+

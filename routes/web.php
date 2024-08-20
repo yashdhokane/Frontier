@@ -305,8 +305,12 @@ Route::group(['middleware' => 'auth'], function () {
 
 
     // Route::resource('/users', UserController::class, );
+    Route::get('/customers-demo-iframe-create', [UserController::class, 'customers_demo_iframe_create'])->name('customers_demo_iframe_create');
+    Route::get('/show-customers-demo-iframe/{id}', [UserController::class, 'show_customers_demo_iframe'])->name('show_customers_demo_iframe');
 
+    Route::get('/customers-demo-iframe', [UserController::class, 'customers_demo_iframe'])->name('customers_demo_iframe');
 
+    Route::get('/customers-demo-iframe/{status?}', [UserController::class, 'customers_demo_iframe'])->name('customers_demo_iframe.status');
 
     Route::get('/customers', [UserController::class, 'index'])->name('users.index');
     Route::get('/customers/{status?}', [UserController::class, 'index'])->name('users.status');
@@ -362,8 +366,10 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::POST('/update-technician-fleet', [TechnicianController::class, 'update_fleet_technician'])->name('update_fleet_technician');
     Route::POST('/fleetupdated', [FleetController::class, 'fleetupdated'])->name('fleetupdated');
-    Route::post('vehicles/{id}/update-insurance', [FleetController::class, 'vehicleupdateinsurance'])
-        ->name('vehicle_insurance_policy.update');
+    Route::post('vehicles/{id}/update-insurance', [FleetController::class, 'vehicleupdateinsurance'])->name('vehicle_insurance_policy.update');
+    
+        Route::get('/fleet/vehicle/details', [FleetController::class, 'getVehicleDetails'])->name('fleet.vehicle.details');
+
     Route::POST('/technicians/updatefleet', [TechnicianController::class, 'updatefleet'])->name('updatefleet');
     Route::post('/technicians/sms/', [TechnicianController::class, 'smstechnician'])->name('smstechnician');
     Route::post('/technicians/customer_tags_store/', [UserController::class, 'customer_tags_store'])->name('customer_tags_store');
@@ -1031,6 +1037,23 @@ Route::middleware('auth')->group(function () {
 
 
    // customizer 
+   // web.php
+
+   Route::get('/form/automation', [LayoutDashController::class, 'showForm'])->name('automation.form.show');
+
+   Route::get('dashboard/schedule/search', [LayoutDashController::class, 'schedulesearch'])->name('dashboard.schedule.search');
+
+    Route::get('dashboard/search/payments', [LayoutDashController::class, 'searchPayments'])->name('dashboard.search.payments');
+
+    Route::get('dashboard/search/tools', [LayoutDashController::class, 'searchTools'])->name('dashboard.search.tools');
+    Route::get('dashboard/events/search', [LayoutDashController::class, 'eventsearch'])->name('dashboard.events.search');
+
+    Route::get('dashboard/search/parts', [LayoutDashController::class, 'searchParts'])->name('dashboard.search.parts');
+   Route::get('dashboard/search-technicians', [LayoutDashController::class, 'searchTechnicians'])->name('dashboard.search.technicians');
+
+   Route::get('dashboard/search/customers', [LayoutDashController::class, 'searchCustomers'])->name('dashboard.search.customers');
+
+    Route::get('/dashboard/test', [LayoutDashController::class, 'test'])->name('dashboard.test');
 
     Route::get('/dash', [LayoutDashController::class, 'index'])->name('dash');
     
@@ -1046,7 +1069,9 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/createNewLayout', [LayoutDashController::class, 'createNewLayout'])->name('createNewLayout');
 
+Route::get('/customer/fetch-data', [LayoutDashController::class, 'fetchData'])->name('autom.fetch.user');
 
+Route::get('/automation', [LayoutDashController::class, 'automation'])->name('automation.user');
 
 
 
@@ -1081,6 +1106,14 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/my-profile', [AdminProfileController::class, 'index'])->name('myprofile.index')->middleware('auth');
     Route::get('/my-profile/notification', [AdminProfileController::class, 'notification'])->name('myprofile.notification')->middleware('auth');
+
+
+
+// Route for AJAX requests to load more activities
+Route::get('myprofile/activity/load-more', [AdminProfileController::class, 'loadMoreActivities'])->name('myprofile.activity.loadMore');
+
+// Route for AJAX requests to load more notifications
+Route::get('myprofile/notifications/load-more', [AdminProfileController::class, 'loadMoreNotifications'])->name('myprofile.notifications.loadMore');
 
     Route::get('/my-profile/activity', [AdminProfileController::class, 'activity'])->name('myprofile.activity')->middleware('auth');
 

@@ -8,17 +8,16 @@
     <div class="page-breadcrumb" style="padding: 0px 0px 10px 0px;">
         <div class="row">
             <div class="col-5 align-self-center">
-                 <h4 class="page-title">Vehicles</h4>
+                <h4 class="page-title">Vehicles</h4>
                 <div class="d-flex align-items-center">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-							<li class="breadcrumb-item"><a href="#">Asset Management</a></li>
-                             <li class="breadcrumb-item"><a href="#">Vehicles</a></li>
+                            <li class="breadcrumb-item"><a href="#">Asset Management</a></li>
+                            <li class="breadcrumb-item"><a href="#">Vehicles</a></li>
                         </ol>
                     </nav>
                 </div>
             </div>
-
             <div class="col-7 text-end px-4">
                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                     <a href="{{ route('product.index') }}"
@@ -38,7 +37,6 @@
                                 href="{{ route('assign_product') }}">Parts</a>
                             <a class="dropdown-item {{ Route::currentRouteName() === 'assign_tool' ? 'btn-info' : 'text-info' }}"
                                 href="{{ route('assign_tool') }}">Tools</a>
-
                         </div>
                     </div>
                     <div class="btn-group" role="group">
@@ -60,14 +58,9 @@
                         class="btn {{ Route::currentRouteName() === 'partCategory' ? 'btn-info' : 'btn-light-info text-info' }}">Categories</a>
                 </div>
             </div>
-
-
         </div>
     </div>
-    <!-- -------------------------------------------------------------- -->
-    <!-- Start Page Content -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- basic table -->
+
     @if (Session::has('success'))
     <div class="alert_wrap">
         <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
@@ -76,14 +69,13 @@
         </div>
     </div>
     @endif
+
     <div class="row">
         <div class="col-12">
-
             <div class="card">
-                <div class="card-body card-border shadow ">
-                    <div class="table-responsive table-custom"style="overflow: auto; ">
-                        <table id="zero_config00" class="table table-hover table-striped text-nowrap"
-                            style="overflow-x: auto; overflow-y: auto;" data-paging="true" data-paging-size="7">
+                <div class="card-body card-border shadow">
+                    <div class="table-responsive table-custom">
+                        <table id="zero_config00" class="table table-hover table-striped text-nowrap">
                             <thead>
                                 <div class="row">
                                     <div class="col-md-3">
@@ -99,7 +91,6 @@
                                             </select>
                                         </div>
                                     </div>
-
                                     <div class="col-md-3">
                                         <div class="mb-3">
                                             <label for="service"
@@ -117,7 +108,7 @@
                                     <th>ID</th>
                                     <th>Vehicle Name</th>
                                     <th>Vehicle No.</th>
-									<th>Insurance</th>
+                                    <th>Insurance</th>
                                     <th>Technician Assigned</th>
                                     <th>Last Modified</th>
                                     <th>Status</th>
@@ -126,8 +117,7 @@
                             </thead>
                             <tbody id="vehicle_table_body">
                                 @foreach ($vehicle as $item)
-                                <tr data-technician="{{ $item->technician->name ?? '' }}"
-                                    data-status="{{ $item->status }}">
+                                <tr data-technician="{{ $item->technician->name ?? '' }}" data-status="{{ $item->status }}">
                                     <td>{{ $loop->index + 1 }}</td>
                                     <td>
                                         <div class="d-flex align-items-center">
@@ -148,20 +138,43 @@
                                         </div>
                                     </td>
                                     <td>{{ $item->vehicle_no ?? '' }}</td>
-                                   
-<td>
-    <div>
-        {{ $item->vin_number ?? '' }}
+                                    <td>
+                                          <div>
         @if ($item->vehicle && $item->vehicle->valid_upto)
-            <br/> <span class="ft11">{{ $item->vehicle->valid_upto->format('n-j-Y') }}</span>
+<button type="button" 
+        class="btn btn-link" 
+        data-bs-toggle="modal" 
+        data-bs-target="#samedata-modal-{{ $item->vehicle_id }}" 
+        data-id="{{ $item->vehicle_id }}">
+    Yes
+</button>
+        <div class="modal fade" id="samedata-modal-{{ $item->vehicle_id }}" tabindex="-1" aria-labelledby="exampleModalLabel1">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header d-flex align-items-center">
+                        <h4 class="modal-title" id="exampleModalLabel1">Insurance Details</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="modal-body-content-{{ $item->vehicle_id }}">
+                        <!-- Vehicle details will be loaded here -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-danger text-danger font-medium" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @else
+<button type="button" 
+        class="btn btn-link" >
+      
+    No
+</button>
         @endif
     </div>
-</td>
-
-                                    <td>{{ $item->technician->name ?? null }}</td>
-                                    <td>{{ $item->updated_at ? \Carbon\Carbon::parse($item->updated_at)->format('m-d-Y
-                                        h:i:a') : null }}
                                     </td>
+                                    <td>{{ $item->technician->name ?? null }}</td>
+                                    <td>{{ $item->updated_at ? \Carbon\Carbon::parse($item->updated_at)->format('m-d-Y h:i:a') : null }}</td>
                                     <td style="text-transform: capitalize;">{{ $item->status ?? null }}</td>
                                     <td>
                                         <div class="btn-group">
@@ -170,29 +183,21 @@
                                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 <i class="ri-settings-3-fill align-middle fs-5"></i>
                                             </button>
-                                            <div class="dropdown-menu">
-                                              @if ($item->vehicle->document ?? '')
-        <a href="{{ asset('public/document/' . $item->vehicle->document ?? '') }}" target="_blank"
-            class="dropdown-item">
-            <i class="fa fa-file-pdf-o me-2"></i> Download PDF
-        </a>
-        @else
-        <span class="dropdown-item">
-            Insurance Not Available
-        </span>
-        @endif
-                                                @if ($item->status == 'active')
-                                                <a class="dropdown-item"
-                                                    href="{{ url('inactive/fleet/' . $item->vehicle_id) }}"><i
-                                                        data-feather="edit-2" class="feather-sm me-2"></i>
-                                                    Inactive</a>
-                                                @else
-                                                <a class="dropdown-item"
-                                                    href="{{ url('active/fleet/' . $item->vehicle_id) }}"><i
-                                                        data-feather="edit-2" class="feather-sm me-2"></i>
-                                                    Active</a>
-                                                @endif
+                                            <div class="dropdown-menu ">
+                                                @if ($item->vehicle && $item->vehicle->valid_upto ?? '')
+                                                    <button type="button" class="btn dropdown-item" data-id="{{ $item->vehicle_id }}" data-bs-toggle="modal" data-bs-target="#samedata-modal-{{ $item->vehicle_id }}"> <i data-feather="eye" class="feather-sm me-2"></i>
+View</button>
 
+                                                @else
+                                                <span class="dropdown-item"></span>
+                                                @endif
+                                                @if ($item->status == 'active')
+                                                <a class="dropdown-item" href="{{ url('inactive/fleet/' . $item->vehicle_id) }}">
+                                                    <i data-feather="edit-2" class="feather-sm me-2"></i> Inactive</a>
+                                                @else
+                                                <a class="dropdown-item" href="{{ url('active/fleet/' . $item->vehicle_id) }}">
+                                                    <i data-feather="edit-2" class="feather-sm me-2"></i> Active</a>
+                                                @endif
                                                 @if ($item->vehicle_id)
                                                 <a href="{{ route('fleet.fleetedit', ['id' => $item->vehicle_id]) }}"
                                                     class="text-dark pe-2 dropdown-item">
@@ -207,51 +212,89 @@
                             </tbody>
                         </table>
                     </div>
-
-
                 </div>
             </div>
         </div>
-        @section('script')
-        <script>
-            $('#zero_config00').DataTable({
-                    "order": [
-                        [0, "desc"]
-                    ],
-                    "pageLength": 25,
-                });
-        </script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const technicianFilter = document.getElementById('technician_filter');
-                const statusFilter = document.getElementById('status_filter');
-                const tableBody = document.getElementById('vehicle_table_body');
+    </div>
+</div>
 
-                function filterTable() {
-                    const technician = technicianFilter.value.toLowerCase();
-                    const status = statusFilter.value.toLowerCase();
+@section('script')
+<script>
+    $(document).ready(function() {
+        $('button[data-bs-toggle="modal"]').on('click', function(event) {
+            var button = $(event.currentTarget); // Button that triggered the modal
+            var vehicleId = button.data('id'); // Extract info from data-* attributes
+            var modalId = '#samedata-modal-' + vehicleId;
+            var modalBodyId = '#modal-body-content-' + vehicleId;
 
-                    Array.from(tableBody.querySelectorAll('tr')).forEach(row => {
-                        const rowTechnician = row.getAttribute('data-technician').toLowerCase();
-                        const rowStatus = row.getAttribute('data-status').toLowerCase();
-
-                        const matchesTechnician = technician === '' || rowTechnician === technician;
-                        const matchesStatus = status === '' || rowStatus === status;
-
-                        if (matchesTechnician && matchesStatus) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    });
+            // Make an AJAX call to fetch vehicle details
+            $.ajax({
+                url: '{{ route("fleet.vehicle.details") }}', // Update with your route
+                type: 'GET',
+                data: { id: vehicleId },
+                success: function(response) {
+                    if (response.error) {
+                        $(modalBodyId).html('<p class="text-danger">' + response.error + '</p>');
+                    } else {
+                        // Use the document URL provided in the response directly
+                        var documentLink = response.document ? '<a href="' + response.document + '" target="_blank" class="btn btn-primary"><i class="fa fa-file-pdf-o me-2"></i> Download PDF</a>' : '<span>No insurance copy available</span>';
+                        
+                        var content = '<p>Name: ' + response.name + '</p>' +
+                                      '<p>Valid Up To: ' + response.valid_upto + '</p>' +
+                                      '<p>Premium: ' + response.premium + '</p>' +
+                                      '<p>Cover: ' + response.cover + '</p>' +
+                                      documentLink;
+                        $(modalBodyId).html(content);
+                    }
+                },
+                error: function(xhr) {
+                    $(modalBodyId).html('<p class="text-danger">Error fetching data</p>');
                 }
-
-                technicianFilter.addEventListener('change', filterTable);
-                statusFilter.addEventListener('change', filterTable);
-
-                // Call filterTable on page load to apply initial filter if any
-                filterTable();
             });
-        </script>
-        @endsection
-        @endsection
+        });
+    });
+</script>
+
+
+
+<script>
+    $('#zero_config00').DataTable({
+        "order": [[0, "desc"]],
+        "pageLength": 25,
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const technicianFilter = document.getElementById('technician_filter');
+        const statusFilter = document.getElementById('status_filter');
+        const tableBody = document.getElementById('vehicle_table_body');
+
+        function filterTable() {
+            const technician = technicianFilter.value.toLowerCase();
+            const status = statusFilter.value.toLowerCase();
+
+            Array.from(tableBody.querySelectorAll('tr')).forEach(row => {
+                const rowTechnician = row.getAttribute('data-technician').toLowerCase();
+                const rowStatus = row.getAttribute('data-status').toLowerCase();
+
+                const matchesTechnician = technician === '' || rowTechnician === technician;
+                const matchesStatus = status === '' || rowStatus === status;
+
+                if (matchesTechnician && matchesStatus) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        technicianFilter.addEventListener('change', filterTable);
+        statusFilter.addEventListener('change', filterTable);
+
+        // Call filterTable on page load to apply initial filter if any
+        filterTable();
+    });
+</script>
+ 
+@endsection
+@endsection

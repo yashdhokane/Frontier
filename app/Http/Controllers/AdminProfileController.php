@@ -104,24 +104,19 @@ class AdminProfileController extends Controller
         return view('adminprofile.myprofile', compact('dob', 'ssn', 'work_phone', 'home_phone', 'last_name', 'first_name', 'locationStates', 'user', 'userAddress'));
     }
 
-    public function activity()
+ public function activity(Request $request)
     {
         $userId = Auth::id();
-        // $activity = DB::table('job_activity')
-        // ->join('users', 'job_activity.user_id', '=', 'users.id')
-        // ->join('user_login_history', 'job_activity.user_id', '=', 'user_login_history.user_id')
-        // ->where('job_activity.user_id', $userId)
-        // ->get();
+
         $jobActivity = DB::table('job_activity')
             ->select(
                 'job_activity.user_id',
                 'job_activity.activity',
                 'job_activity.created_at as activity_date',
                 DB::raw("'job_activity' as activity_type"),
-                'users.*' // Select all columns from the users table
+                'users.*'
             )
             ->join('users', 'job_activity.user_id', '=', 'users.id')
-            ->join('user_login_history', 'job_activity.user_id', '=', 'user_login_history.user_id')
             ->where('job_activity.user_id', $userId);
 
         $userActivity = DB::table('user_activity')
@@ -130,20 +125,94 @@ class AdminProfileController extends Controller
                 'user_activity.activity',
                 'user_activity.created_at as activity_date',
                 DB::raw("'user_activity' as activity_type"),
-                'users.*' // Select all columns from the users table
+                'users.*'
             )
             ->join('users', 'user_activity.user_id', '=', 'users.id')
             ->where('user_activity.user_id', $userId);
 
         $activity = $jobActivity->union($userActivity)
-            ->orderBy('activity_date', 'desc') // Order by created_at in descending order
-            ->get();
-        $userNotifications = UserNotification::with('notice')->where('user_id', $userId)->orderBy('id', 'desc')->get();
+            ->orderBy('activity_date', 'desc')
+            ->paginate(50);
 
+        $userNotifications = UserNotification::with('notice')
+            ->where('user_id', $userId)
+            ->orderBy('id', 'desc')
+            ->paginate(50);
 
+        if ($request->ajax()) {
+            return response()->json([
+                'data' => [
+                    'activities' => $activity->items(),
+                    'notifications' => $userNotifications->items()
+                ],
+                'next_activity_page' => $activity->nextPageUrl(),
+                'next_notifications_page' => $userNotifications->nextPageUrl()
+            ]);
+        }
 
         return view('adminprofile.myprofile_activity', compact('activity', 'userNotifications'));
     }
+
+    public function loadMoreActivities(Request $request)
+    {
+        $userId = Auth::id();
+
+        $jobActivity = DB::table('job_activity')
+            ->select(
+                'job_activity.user_id',
+                'job_activity.activity',
+                'job_activity.created_at as activity_date',
+                DB::raw("'job_activity' as activity_type"),
+                'users.*'
+            )
+            ->join('users', 'job_activity.user_id', '=', 'users.id')
+            ->where('job_activity.user_id', $userId);
+
+        $userActivity = DB::table('user_activity')
+            ->select(
+                'user_activity.user_id',
+                'user_activity.activity',
+                'user_activity.created_at as activity_date',
+                DB::raw("'user_activity' as activity_type"),
+                'users.*'
+            )
+            ->join('users', 'user_activity.user_id', '=', 'users.id')
+            ->where('user_activity.user_id', $userId);
+
+        $activity = $jobActivity->union($userActivity)
+            ->orderBy('activity_date', 'desc')
+            ->paginate(50);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'data' => $activity->items(),
+                'next_page_url' => $activity->nextPageUrl()
+            ]);
+        }
+    }
+
+    public function loadMoreNotifications(Request $request)
+    {
+        $userId = Auth::id();
+
+        $userNotifications = UserNotification::with('notice')
+            ->where('user_id', $userId)
+            ->orderBy('id', 'desc')
+            ->paginate(50);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'data' => $userNotifications->items(),
+                'next_page_url' => $userNotifications->nextPageUrl()
+            ]);
+        }
+    }
+
+
+
+
+
+
 
     public function notification()
     {

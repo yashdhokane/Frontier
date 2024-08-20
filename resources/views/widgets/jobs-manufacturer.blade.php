@@ -10,4 +10,7 @@
         </div>
         <div id="chart-pie-simple"></div>
     </div>
-</div>
+</div>  
+
+<script src="{{ asset('public/admin/dist/js/pages/apex-chart/apex.pie.init.js') }}"></script>
+<script src="{{ asset('public/admin/dist/libs/apexcharts/dist/apexcharts.min.js') }}"></script>

@@ -433,10 +433,11 @@ class ToolController extends Controller
         $technician = User::where('role', 'technician')->where('status', 'active')->get();
 
         $product = Tool::all();
+        $technician1 = User::where('role', 'technician')->where('status', 'deactive')->get();
 
         $assign = ToolAssign::with('Technician', 'Product')->get();
 
-        return view('tool.assign_tool', compact('technician', 'product', 'assign'));
+        return view('tool.assign_tool', compact('technician','technician1', 'product', 'assign'));
     }
 
     public function store_assign_tool(Request $request)

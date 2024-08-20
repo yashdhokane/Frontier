@@ -66,15 +66,15 @@
                             class="col-md-8 col-xl-10 text-end d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
 
                             <a href="{{ route('technicians.create') }}" id="" class="btn btn-info"><i
-                                    class=" fas fa-user-plus "></i> Add New Technicians</a>
+                                    class=" fas fa-user-plus "></i> Add New </a>
 
                             @if (request()->routeIs('technicians.index'))
                                 <a href="{{ route('technicians.status', ['status' => 'deactive']) }}"
                                     class="btn btn-danger mx-3"><i class="ri-user-unfollow-fill"></i> View Inactive
-                                    Technicians</a>
+                                    </a>
                             @elseif(request()->routeIs('technicians.status'))
                                 <a href="{{ route('technicians.index') }}" class="btn btn-success mx-3"><i
-                                        class="ri-user-follow-line"></i> View Active Technicians</a>
+                                        class="ri-user-follow-line"></i> View Active </a>
                             @endif
 
                         </div>
@@ -392,5 +392,7 @@
                 }
             });
         </script>
+    
+
     @endsection
 @endsection

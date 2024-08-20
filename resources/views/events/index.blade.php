@@ -260,5 +260,7 @@
 
         });
     </script>
+
+  
 @endsection
 @endsection

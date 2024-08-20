@@ -1,172 +1,55 @@
+@php
+use App\Models\NavMenuLeft;
+use App\Models\UserPermission;
+use Illuminate\Support\Facades\Auth;
+
+// Get the authenticated user ID
+$userId = Auth::id();
+
+// Fetch user permissions as an array of module IDs
+$userPermissions = UserPermission::where('user_id', $userId)
+    ->where('permission', 1)
+    ->pluck('module_id')
+    ->toArray();
+
+// Fetch menus with their children and user permissions
+$menus = NavMenuLeft::where('parent_id', 0)
+    ->with(['children', 'children.userpermission'])
+    ->orderBy('order_by', 'asc')
+    ->get();
+@endphp
+
 <aside class="left-sidebar">
-    <!-- Sidebar scroll-->
     <div class="scroll-sidebar">
-        <!-- Sidebar navigation-->
         <nav class="sidebar-nav mt-2">
-
-             <ul id="sidebarnav">
- 					
+            <ul id="sidebarnav">
+                @foreach ($menus as $menu)
                 <li class="sidebar-item">
-					<a class="sidebar-link waves-effect waves-dark sidebar-link ft1" href="{{ route('home') }}"  aria-expanded="false">
-					<i class="fas fa-home"></i><span class="hide-menu">Dashboard</span></a>
-				</li>
-
-                <li class="sidebar-item ft2">
-                    <a class="sidebar-link has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="fas ri-group-fill fs20" style="font-size: 16px;"></i> <span class="hide-menu">Profiles</span></a>
-                    <ul aria-expanded="false" class="collapse first-level ft2_sub">
- 						<li class="sidebar-item">
-							<a href="{{ route('users.index') }}" class="sidebar-link fs18"><i class="ri-group-line"></i><span class="hide-menu">Customers </span></a>
-						</li>
-						<li class="sidebar-item">
-							<a href="{{ route('technicians.index') }}" class="sidebar-link fs18"><i class="ri-contacts-line"></i><span class="hide-menu">Technicians </span></a>
-						</li>
-						<li class="sidebar-item">
-							<a href="{{ route('dispatcher.index') }}" class="sidebar-link fs18"><i class="ri-admin-line"></i><span class="hide-menu">Dispatchers </span></a>
-						</li>
-						<li class="sidebar-item">
-							<a href="{{ route('multiadmin.index') }}" class="sidebar-link fs18"><i class="ri-admin-fill"></i><span class="hide-menu">Admin </span></a>
-						</li>
-						 <li class="sidebar-item">
-                            <a href="{{ route('customersdata.index') }}" class="sidebar-link fs18"><i
-                                    class="ri-admin-fill"></i><span class="hide-menu">Customer Data </span></a>
-                        </li>
-					</ul>
-                </li>
-
-                <li class="sidebar-item">
-                    <a class="sidebar-link has-arrow waves-effect waves-dark ft3" href="#" aria-expanded="false"><i class="fas fa-calendar-check"></i> <span class="hide-menu">Jobs</span></a>
+                    <a class="sidebar-link waves-effect waves-dark sidebar-link {{ $menu->menu_class }} @if($menu->children->isNotEmpty()) has-arrow @endif" href="{{ $menu->menu_link === '#.' ? '#.' : route($menu->menu_link) }} " aria-expanded="false">
+                        <i class="{{ $menu->menu_icon }}"></i><span class="hide-menu">{{ $menu->menu_name }}</span>
+                    </a>
+                    @if ($menu->children->isNotEmpty())
                     <ul aria-expanded="false" class="collapse first-level">
-                        <li class="sidebar-item">
-							<a href="{{ route('schedule') }}" class="sidebar-link"><i class="fas fa-calendar-check"></i><span class="hide-menu">Schedule </span></a>
-						</li>            
-                        <li class="sidebar-item">
-							<a href="{{ route('map') }}" class="sidebar-link"><i class="fas fa-calendar-check"></i><span class="hide-menu">Reschedule </span></a>
-						</li>
-                        <li class="sidebar-item">
-							<a href="{{ route('tickets.index') }}" class="sidebar-link"><i class="mdi mdi-book-multiple"></i><span class="hide-menu"> Jobs List </span></a>
-                        </li>
-						<li class="sidebar-item">
-							<a href="{{ route('payment-list') }}" class="sidebar-link"><i class="ri-money-dollar-box-line"></i><span class="hide-menu"> Payments & Invoices</span></a>
-						</li>
-                     </ul>
-                </li>
-
-                <li class="sidebar-item">
-                    <a class="sidebar-link has-arrow waves-effect waves-dark ft4" href="#" aria-expanded="false"><i class="fas ri-list-check-2"></i><span class="hide-menu">Price Book</span></a>
-                     <ul aria-expanded="false" class="collapse first-level">
-                        <li class="sidebar-item">
-							<a href="{{ route('services.index') }}" class="sidebar-link"><i class="ri-book-line"></i> <span class="hide-menu">Services </span></a>
-						</li>
-                     
-                     
-						<li class="sidebar-item">
-							<a href="#." class="sidebar-link"><i class="far ri-price-tag-2-line"></i><span class="hide-menu">Estimates</span></a>
-						</li>
-                         <li class="sidebar-item">
-							<a href="{{ route('estimate.index') }}" class="sidebar-link"><i class="ri-article-line"></i> <span class="hide-menu">Estimate Templates </span></a>
-						
-                     </ul>
-                </li>
-
-     <li class="sidebar-item">
-                    <a class="sidebar-link has-arrow waves-effect waves-dark ft6" href="#" aria-expanded="false"><i class="fas fa-chart-line" style="font-size: 16px;"></i><span class="hide-menu">Asset Management </span></a>
-                    <ul aria-expanded="false" class="collapse first-level">
-						
-						
-						<li class="sidebar-item">
-							<a href="{{route('product.index')}}" class="sidebar-link"><i class="ri-file-chart-line"></i> <span class="hide-menu">Parts </span></a>
-						</li>
-						   <li class="sidebar-item">
-							<a href="{{route('assign_product')}}" class="sidebar-link"><i class="ri-book-2-line"></i> <span class="hide-menu">Assign Parts </span></a>
-                        </li>
-                         <li class="sidebar-item">
-							<a href="{{route('tool.index')}}" class="sidebar-link"><i class="ri-file-chart-line"></i> <span class="hide-menu">Tools </span></a>
-						</li>
-                         <li class="sidebar-item">
-							<a href="{{route('vehicles')}}" class="sidebar-link"><i class="ri-file-chart-line"></i> <span class="hide-menu">Vehicle </span></a>
-						</li>
-                     </ul>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link has-arrow waves-effect waves-dark ft6" href="#" aria-expanded="false"><i class="fas fa-chart-line" style="font-size: 16px;"></i><span class="hide-menu">Reports</span></a>
-                    <ul aria-expanded="false" class="collapse first-level">
-						<li class="sidebar-item">
-							<a href="{{route('jobreport.index')}}" class="sidebar-link"><i class="ri-file-chart-line"></i> <span class="hide-menu">Jobs</span></a>
-						</li>
-						<li class="sidebar-item">
-							<a href="{{route('technicianreport.index')}}" class="sidebar-link"><i class="ri-file-chart-line"></i> <span class="hide-menu">Technicians</span></a>
-						</li>
-						<li class="sidebar-item">
-							<a href="{{route('employeereport.index')}}" class="sidebar-link"><i class="ri-file-chart-line"></i> <span class="hide-menu">Employees </span></a>
-						</li>
-                         <li class="sidebar-item">
-							<a href="{{route('performanncematrix')}}" class="sidebar-link"><i class="ri-file-chart-line"></i> <span class="hide-menu">Performance Matrix </span></a>
-						</li>
-                         <li class="sidebar-item">
-							<a href="{{route('fleetreport')}}" class="sidebar-link"><i class="ri-file-chart-line"></i> <span class="hide-menu">Fleet Report </span></a>
-						</li>
-                     </ul>
-                </li>
-				
-				<li class="sidebar-item">
-					<a class="sidebar-link waves-effect waves-dark sidebar-link ft1" href="{{ route('app_chats') }}"  aria-expanded="false">
-					<i class="ri-message-2-line"></i><span class="hide-menu">Messages</span></a>
-                 </li>
-				 
-				 
-				 <li class="sidebar-item">
-                    <a class="sidebar-link has-arrow waves-effect waves-dark ft2" href="#" aria-expanded="false"><i class="fas mdi mdi-book-multiple"></i> <span class="hide-menu">Other</span></a>
-                    <ul aria-expanded="false" class="collapse first-level">
-						<li class="sidebar-item"><a href="{{ route('events') }}" class="sidebar-link"><i class="fas fa-calendar-check"></i> <span class="hide-menu"> Event List</span></a></li>
-						<li class="sidebar-item"><a href="{{ route('sticky_notes') }}" class="sidebar-link"><i class="fas fa-sticky-note"></i> <span class="hide-menu"> Notes</span></a></li>
-					
-						<li class="sidebar-item">
-							<a href="{{route('manufacturer.index')}}" class="sidebar-link"><i class="ri-building-3-line"></i> <span class="hide-menu"> Manufacturers</span></a>
-						</li>
+                        @php
+                            // Filter children based on user permissions
+                            $filteredChildren = $menu->children->filter(function($child) use ($userPermissions) {
+                                return in_array($child->module_id, $userPermissions);
+                            });
+                           // dump($filteredChildren);
+                        @endphp
+                        @foreach ($filteredChildren as $child)
+                            <li class="sidebar-item">
+                                <a href="{{ $child->menu_link === '#.' ? '#.' : route($child->menu_link) }}" class="sidebar-link {{ $menu->menu_class }}">
+                                    <i class="{{ $child->menu_icon }}"></i>
+                                    <span class="hide-menu">{{ $child->menu_name }}</span>
+                                </a>
+                            </li>
+                        @endforeach
                     </ul>
+                    @endif
                 </li>
-				
- 
-                <li class="sidebar-item">
-                    <a class="sidebar-link has-arrow waves-effect waves-dark ft7" href="#" aria-expanded="false"><i class="fas ri-settings-2-line"></i><span class="hide-menu">Settings</span></a>
-                    <ul aria-expanded="false" class="collapse first-level">
- 						<li class="sidebar-item">
-							<a href="{{ route('buisnessprofile.index') }}" class="sidebar-link"><i class="ri-file-list-line"></i> <span class="hide-menu">Business Profile </span></a>
-						</li>
-                        <li class="sidebar-item ft2">
-							<a href="{{ route('businessHours.business-hours') }}" class="sidebar-link"><i class="ri-24-hours-line fas"></i> <span class="hide-menu">Working Hours </span></a>
-						</li>
-						<li class="sidebar-item">
-							<a href="{{ route('tax.index') }}" class="sidebar-link"><i class="ri-bar-chart-fill"></i> <span class="hide-menu"> Tax</span></a>
-                        </li>
-						<li class="sidebar-item">
-							<a href="{{ route('servicearea.index') }}" class="sidebar-link"><i class="ri-service-line"></i> <span class="hide-menu">Service Area </span></a>
-						</li>
-						<li class="sidebar-item">
-							<a href="{{ route('lead.lead-source') }}" class="sidebar-link"><i class="ri-focus-2-line"></i> <span class="hide-menu"> Lead Source </span></a>
-                        </li>
-                        <li class="sidebar-item">
-							<a href="{{ route('tags.tags-list') }}" class="sidebar-link"><i class="fas fa-tag"></i> <span class="hide-menu"> Tags </span></a>
-						</li>
-                        <li class="sidebar-item">
-							<a href="{{ route('site_job_fields') }}" class="sidebar-link"><i class="fas fa-tags "></i> <span class="hide-menu"> Job Fields </span></a>
-                        </li>
-                    </ul>
-                </li>
-				
-				<li class="sidebar-item">
-                    <a class="sidebar-link waves-effect waves-dark sidebar-link ft8" href="#." aria-expanded="false"><i class="fas fa-power-off "></i><span class="hide-menu">Log Out</span></a>
-                </li>
-				
-				
-				
-				 
-               
-
+                @endforeach
             </ul>
-
         </nav>
-        <!-- End Sidebar navigation -->
     </div>
-    <!-- End Sidebar scroll-->
 </aside>

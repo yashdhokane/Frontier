@@ -142,7 +142,7 @@ class FleetController extends Controller
         $users = User::where('role', 'technician')->where('status', 'active')
             //->whereNotIn('id', $technicianIds)
             ->get();
-        $fleet = FleetDetails::where('vehicle_id', $id)->get();
+        $fleet = FleetDetails::where('vehicle_id', $id)->where('user_id', $fleetModel->technician_id)->get();
         $vehicles = FleetVehicle::all();
 
         // dd($fleet);
@@ -272,7 +272,13 @@ $imageName = time() . '_' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT) . '_' .
         'vehicle_weight' => $request->vehicle_weight,
         'vehicle_cost' => $request->vehicle_cost,
     ]);
-
+FleetDetails::where('user_id', $request->technician_id)
+    ->where('vehicle_id', $request->vehicle_id)
+    ->update([
+        'user_id' => $request->technician_id,
+        'vehicle_id' => $request->vehicle_id,
+        // Add other fields to update here
+    ]);
     // Redirect back with success message
     return redirect()->route('vehicles')
         ->with('success', 'Policy and Fleet Vehicle updated successfully');
@@ -486,4 +492,22 @@ $imageName = time() . '_' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT) . '_' .
         // Redirect back with a success message
         return redirect()->route('vehicles')->with('success', 'Fleet model updated successfully.');
     }
+
+    public function getVehicleDetails(Request $request)
+{
+    $vehicle = VehicleInsurancePolicy::where('vehicle_id', $request->id)->first();
+
+    if ($vehicle) {
+        return response()->json([
+            'name' => $vehicle->name,
+            'valid_upto' => $vehicle->valid_upto ? $vehicle->valid_upto->format('n-j-Y') : 'N/A',
+            'premium' => $vehicle->premium ?? 'N/A',
+            'cover' => $vehicle->cover ?? 'N/A',
+            'document' => $vehicle->document ? asset('public/document/' . $vehicle->document) : null,
+        ]);
+    } else {
+        return response()->json(['error' => 'Vehicle not found'], 404);
+    }
+}
+
 }
