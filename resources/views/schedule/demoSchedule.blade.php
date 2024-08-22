@@ -33,7 +33,7 @@
                             <a href="#" class="link user_head_link tech_profile" style="color: #123456 !important;">
                                 <img src="{{ asset('public/images/Uploads/users/' . $item->id . '/' . $item->user_image) }}"
                                     alt="user" width="48" class="rounded-circle tech_extend_width"
-                                    onerror="this.onerror=null; this.src='{{ $defaultImage }}';" data-class-name="tech_width_{{ $item->id }}"/>
+                                    onerror="this.onerror=null; this.src='{{ $defaultImage }}';" data-class-name="tech_width_{{ $item->id }}"  data-jobClass-name="width_job_{{ $item->id }}" data-max-width="max_width_job{{ $item->id }}"/>
                                 <span class="tech-name tech_profile">
                                     @php
                                         $name = $item->name;
@@ -111,6 +111,7 @@
                                     <div class="timeslot p-0 day clickPoint1 tech_width_{{ $item->id }}"
                                         data-slot-time="{{ formatTime($hour, $minute) }}"
                                         data-technician-name="{{ $item->name }}"
+                                        data-date="{{ $formattedDate }}"
                                         data-technician-id="{{ $item->id }}" style="display: flex;">
 
                                         @foreach ($groupedJobs as $key2 => $jobs)
@@ -125,14 +126,14 @@
                                                         $height_slot = $duration ? ($duration / 30) * 40 : 0;
                                                         $overflow_height = $height_slot - 10;
                                                     @endphp
-                                                    <div id='{{ $job->job_id }}' class="dts dragDiv stretchJob border"
+                                                    <div id='{{ $job->job_id }}' class="dts dragDiv stretchJob border width_job_{{ $job->technician_id }}"
                                                         style="height:{{ $height_slot }}px; position: relative; width:{{ $jobWidth }}px;"
                                                         data-duration="{{ $job->JobModel->jobassignname->duration }}" data-technician-name="{{ $job->technician->name }}"  data-timezone-name="{{ $job->technician->TimeZone->timezone_name }}">
 
                                                         <a class="show_job_details text-white"
                                                             href="{{ $job->job_id ? route('tickets.show', $job->job_id) : '#' }}"
                                                             style="width: {{ $jobWidth }}px;">
-                                                            <div class="mb-1" data-id="{{ $job->job_id }}"
+                                                            <div class="mb-1 max_width_job{{ $job->technician_id }}"
                                                                 data-duration="{{ $job->JobModel->jobassignname->duration }}"
                                                                 data-technician-name="{{ $job->technician->name }}"
                                                                 data-timezone-name="{{ $job->technician->TimeZone->timezone_name }}"
@@ -157,24 +158,15 @@
                                                                     <div class="cls_slot_job_card">
                                                                         {{ $job->JobModel->job_title ?? null }}
                                                                     </div>
-                                                                    <div class="cls_slot_job_card">
+                                                                    <div class="cls_slot_job_card hide_address">
                                                                         {{ $job->JobModel->city ?? null }},
                                                                         {{ $job->JobModel->state ?? null }}
                                                                     </div>
-                                                                    <div class="round-init">
-                                                                        @php
-                                                                            $name = $job->technician->name ?? null;
-                                                                            $initials = '';
-                                                                            if ($name) {
-                                                                                $names = explode(' ', $name);
-                                                                                foreach ($names as $part) {
-                                                                                    $initials .= strtoupper(
-                                                                                        substr($part, 0, 1),
-                                                                                    );
-                                                                                }
-                                                                            }
-                                                                        @endphp
-                                                                        {{ $initials }}
+                                                                    <div class="cls_slot_job_card show_address" style="display: none;">
+                                                                        {{ $job->JobModel->address }},
+                                                                        {{ $job->JobModel->city ?? null }},
+                                                                        {{ $job->JobModel->state ?? null }},
+                                                                        {{ $job->JobModel->zipcode }}
                                                                     </div>
                                                                 </div>
                                                             </div>

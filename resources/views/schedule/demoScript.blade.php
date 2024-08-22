@@ -13,21 +13,72 @@
 
             $(document).on("click", ".tech_extend_width", function(event) {
                 event.stopPropagation(); // Prevents the event from bubbling up
+                
                 var className = $(this).data("class-name");
+                var jobClass = $(this).data("jobclass-name");
+                var maxWidth = $(this).data("max-width");
+                
 
                 $("." + className).each(function() {
-                    var currentWidth = $(this).css("width");
-
+                    var $this = $(this);
+                    var currentWidth = $this.css("width");
+                    
+                    var $show_address = $this.find("." + 'show_address');
+                    var $hide_address = $this.find("." + 'hide_address');
+                    
                     if (currentWidth === "400px") {
-                        $(this).attr("style", "width: 100px !important;");
-                        if (!$(this).hasClass("tech-header")) {
-                            $(this).attr("style", "width: 100px !important; display: flex;");
+                        $this.attr("style", "width: 100px !important;");
+                        if (!$this.hasClass("tech-header")) {
+                            $this.attr("style", "width: 100px !important; display: flex;");
                         }
+                        
+                        $hide_address.attr("style", "display: block");
+                        $show_address.attr("style", "display: none");
                     } else {
-                        $(this).attr("style", "width: 400px !important; display: flex;");
+                        $this.attr("style", "width: 400px !important; display: flex;");
+                        $hide_address.attr("style", "display: none");
+                        $show_address.attr("style", "display: block");
                     }
+                    
+                    // New functionality: Adjust width based on child count
+                    var $children = $this.find("." + jobClass);
+                    var $maxWidth = $this.find("." + maxWidth);
+                    var childCount = $children.length;
+                    
+                    
+                    if (childCount > 0) {
+                         if (currentWidth === "400px") {
+                            var newWidth = 100 / childCount;
+                        } else {
+                            var newWidth = 400 / childCount;
+                        }
+                    }
+
+                    $children.each(function() {
+                        // Get the current inline styles
+                        var currentStyle = $(this).attr("style") || "";
+
+                        // Update or add the width with !important
+                        var updatedStyle = currentStyle.replace(/width:\s*\d+px\s*!important;/, '') + " width: " + newWidth + "px !important;";
+
+                        // Apply the updated styles
+                        $(this).attr("style", updatedStyle);
+                    });
+                    $maxWidth.each(function() {
+                        // Get the current inline styles
+                        var currentStyle = $(this).attr("style") || "";
+
+                        // Update or add the width with !important
+                        var updatedStyle = currentStyle.replace(/max-width:\s*\d+px\s*!important;/, '') + " max-width: " + newWidth + "px !important;";
+
+                        // Apply the updated styles
+                        $(this).attr("style", updatedStyle);
+                    });
+
+
                 });
             });
+
 
 
             $(document).on("click", ".tech_profile", function (event) {
@@ -341,7 +392,7 @@
                         // Append the new job with the calculated width
                         var newJobElement = $('<div>', {
                             id: jobId,
-                            class: 'dts dragDiv stretchJob border',
+                            class: 'dts dragDiv stretchJob border width_job_'+newTechnicianId,
                             css: {
                                 height: height_slot + 'px',
                                 position: 'relative',
