@@ -1,3 +1,8 @@
+
+
+
+
+
 <!DOCTYPE html>
 
 <html dir="ltr" lang="en">
@@ -52,6 +57,13 @@
     <!-- Bootstrap Datepicker CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
         rel="stylesheet">
+@if (request()->query('sidebar') === 'off')
+    <style>
+        #main-wrapper[data-layout="vertical"][data-sidebartype="full"] .page-wrapper {
+            margin-left: 0px;
+        }
+    </style>
+@endif
 
 	
 	<style>

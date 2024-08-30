@@ -1,3 +1,15 @@
+
+
+
+@php
+ $sidebar=null;
+   
+@endphp
+
+
+
+
+
 @php
 use App\Models\NavMenuLeft;
 use App\Models\UserPermission;
@@ -18,6 +30,13 @@ $menus = NavMenuLeft::where('parent_id', 0)
     ->orderBy('order_by', 'asc')
     ->get();
 @endphp
+
+<!-- Default Sidebar for other roles -->
+@if (request('sidebar') == 'off')
+    <!-- Do not display the header -->
+@elseif ($sidebar == 'off')
+    <!-- Do not display the header -->
+@else
 
 <aside class="left-sidebar">
     <div class="scroll-sidebar">
@@ -53,3 +72,7 @@ $menus = NavMenuLeft::where('parent_id', 0)
         </nav>
     </div>
 </aside>
+
+
+
+@endif

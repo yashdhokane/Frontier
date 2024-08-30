@@ -39,6 +39,40 @@
             }
         });
 
+
+
+        $('#category_name1').on('change', function() {
+            var selectedCategory = $(this).val();
+            if (selectedCategory) {
+                table.column(2).search('^' + selectedCategory + '$', true, false).draw();
+            } else {
+                table.column(2).search('').draw();
+            }
+        });
+
+        // Manufacturer filter
+        $('#manufacturer_filter1').on('change', function() {
+            var selectedManufacturer = $(this).val();
+            if (selectedManufacturer) {
+                table.column(3).search('^' + selectedManufacturer + '$', true, false).draw();
+            } else {
+                table.column(3).search('').draw();
+            }
+        });
+
+        // Status filter
+        $('#status_filter1').on('change', function() {
+            var selectedStatus = $(this).val();
+            if (selectedStatus) {
+                table.column(5).search('^' + selectedStatus + '$', true, false).draw();
+            } else {
+                table.column(5).search('').draw();
+            }
+        });
+
+
+        
+
         // Stock filter (if needed)
         $('#stock_filter').on('change', function() {
             var selectedStock = $(this).val();

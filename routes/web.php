@@ -210,12 +210,12 @@ Route::middleware('guest')->group(function () {
 
 
 
-Route::get('/dashboard', function () {
+// Route::get('/dashboard', function () {
 
 
 
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 
 
@@ -1053,7 +1053,7 @@ Route::middleware('auth')->group(function () {
 
    Route::get('dashboard/search/customers', [LayoutDashController::class, 'searchCustomers'])->name('dashboard.search.customers');
 
-    Route::get('/dashboard/test', [LayoutDashController::class, 'test'])->name('dashboard.test');
+    Route::get('/dashboard', [LayoutDashController::class, 'test'])->name('dashboard.test');
 
     Route::get('/dash', [LayoutDashController::class, 'index'])->name('dash');
     

@@ -1,3 +1,11 @@
+ 
+
+if sidebar OFF 
+{
+	NO NEED TO PRINT 
+}
+else 
+{
 <aside class="left-sidebar">
     <!-- Sidebar scroll-->
     <div class="scroll-sidebar">
@@ -40,3 +48,5 @@
     </div>
     <!-- End Sidebar scroll-->
 </aside>
+
+}

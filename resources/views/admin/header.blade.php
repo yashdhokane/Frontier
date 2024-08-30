@@ -1,3 +1,11 @@
+
+
+
+@php
+    // Set to 'off' to hide the sidebar
+    $header=null; // Set to 'off' to hide the header
+@endphp 
+
 @auth
 
     @if (auth()->user()->role == 'dispatcher')
@@ -8,11 +16,24 @@
     @endif
 @endauth
 
+<!--
 
-
+if sidebar OFF 
+{
+	NO NEED TO PRINT 
+}
+else 
+{
+    -->
+	
 <!-- Default Sidebar for other roles -->
-<!-- Add your default sidebar code here -->
+@if (request('header') == 'off')
+    <!-- Do not display the header -->
+@elseif ($header == 'off')
+    <!-- Do not display the header -->
+@else
 <header class="topbar">
+    <link rel="stylesheet" href="{{ url('public/admin/dashboard/style.css') }}">
 
     <nav class="navbar top-navbar navbar-expand-md navbar-dark">
 
@@ -34,9 +55,8 @@
                 <li @if (request()->routeIs('schedule')) class="toplinks selected" @else class="toplinks" @endif
                     class="toplinks"><a href="{{ route('schedule') }}"><i class="fas fa-calendar-check"></i>
                         Schedule</a></li>
-						
-						<li class="toplinks selected" class="toplinks"><a href="https://dispatchannel.com/portal/schedule_new"><i class="fas fa-calendar-check"></i>
-                        Schedule New</a></li>
+					<!-- <li class="toplinks selected" class="toplinks"><a href="https://dispatchannel.com/portal/schedule_new"><i class="fas fa-calendar-check"></i>
+                        // Schedule New</a></li> -->
 
                 <li class="toplinks"><a href="{{ route('users.index') }}"><i class="fas fa-users"></i> Customer</a></li>
 
@@ -63,10 +83,10 @@
             <!-- Right side toggle and nav items -->
             <ul class="navbar-nav">
                 @php
-                    use Carbon\Carbon;
-                    $currentFormattedDate = Carbon::now($timezoneName)->format('D d, M\' y');
-                    $currentFormattedDateTime = Carbon::now($timezoneName)->format('h:i:s A T');
-                @endphp
+    $currentFormattedDate = \Carbon\Carbon::now($timezoneName)->format('D d, M\' y');
+    $currentFormattedDateTime = \Carbon\Carbon::now($timezoneName)->format('h:i:s A T');
+@endphp
+
                 <li class="nav-item dropdown align-self-center px-2">
                     <div class="nav-clock"><span>{{ $currentFormattedDate }}</span><br />
                         <span id="liveTime"></span>
@@ -114,7 +134,7 @@
 
                 <link rel="stylesheet"
                     href="{{ asset('public/admin/dist/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}">
-
+                      
             </ul>
 
         </div>
@@ -325,3 +345,5 @@
     setInterval(updateTime, 1000); // Update every second
     updateTime(); // Initial call
 </script>
+
+@endif

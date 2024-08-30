@@ -23,9 +23,12 @@
 
 <div class="page-wrapper" style="display:inline;">
 
-   <div class="page-breadcrumb" style="padding: 0px 0px 10px 0px;">
-    <div class="row">
-        <div class="col-5 align-self-center">
+   <div class="page-wrapper" style="display:inline;">
+
+     <div class="page-breadcrumb" style="padding: 0px 0px 10px 0px;">
+    <div class="d-flex justify-content-between align-items-center">
+        <!-- Left section with left margin -->
+        <div class="col-auto" style="margin-left: 30px;">
             <h4 class="page-title">My Profile</h4>
             <div class="d-flex align-items-center">
                 <nav aria-label="breadcrumb">
@@ -37,7 +40,8 @@
             </div>
         </div>
 
-        <div class="col-7 text-end px-4">
+        <!-- Right section with right margin -->
+        <div class="col-auto" style="margin-right: 5px;">
             <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                 <a href="{{ route('myprofile.index') }}"
                     class="btn {{ request()->routeIs('myprofile.index') ? 'btn-info' : 'btn-light-info text-info' }}">Profile</a>
@@ -45,8 +49,6 @@
                     class="btn {{ request()->routeIs('myprofile.account') ? 'btn-info' : 'btn-light-info text-info' }}">Account Settings</a>
                 <a href="{{ route('myprofile.activity') }}"
                     class="btn {{ request()->routeIs('myprofile.activity') ? 'btn-info' : 'btn-light-info text-info' }}">Activity and Notifications</a>
-                
-                
             </div>
         </div>
     </div>

@@ -32,8 +32,10 @@ class ProductCategoryController extends Controller
 
         $manufacture = Manufacturer::all();
         $product = ProductCategory::get();
+                $product1 = ProductCategory::get();
 
-        return view('product.index', compact('products', 'manufacture', 'product'));
+
+        return view('product.index', compact('products','product1', 'manufacture', 'product'));
     }
     public function getCategoryById($id)
     {
