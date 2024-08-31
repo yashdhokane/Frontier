@@ -167,6 +167,21 @@
                                                                         {{ $job->JobModel->city ?? null }},
                                                                         {{ $job->JobModel->state ?? null }},
                                                                         {{ $job->JobModel->zipcode }}
+                                                                         <div style="font-size:12px;">
+                                                                            @if ($job->JobModel->JobAppliances && $job->JobModel->JobAppliances->Appliances)
+                                                                                {{ $job->JobModel->JobAppliances->Appliances->appliance->appliance_name ?? null }} /
+                                                                            @endif
+                                                                            @if ($job->JobModel->JobAppliances && $job->JobModel->JobAppliances->Appliances)
+                                                                                {{ $job->JobModel->JobAppliances->Appliances->manufacturer->manufacturer_name ?? null }} /
+                                                                            @endif
+                                                                            @if ($job->JobModel->JobAppliances && $job->JobModel->JobAppliances->Appliances->model_number)
+                                                                                {{ $job->JobModel->JobAppliances->Appliances->model_number ?? null }} /
+                                                                            @endif
+                                                                            @if ($job->JobModel->JobAppliances && $job->JobModel->JobAppliances->Appliances->serial_number)
+                                                                                {{ $job->JobModel->JobAppliances->Appliances->serial_number ?? null }}
+                                                                            @endif
+                                                                        </div>
+                                                                         <p>{{ $job->JobModel->description ?? null }}</p>
                                                                     </div>
                                                                 </div>
                                                             </div>
