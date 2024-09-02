@@ -28,186 +28,180 @@
         <!-- -------------------------------------------------------------- -->
         <!-- Start Page Content -->
         <!-- -------------------------------------------------------------- -->
-        <div class="row">
-            <div class="col-12">
-                <div class="d-flex justify-content-between pb-2">
-                    <h4 class="mb-3 page-title text-info fw-bold">
-                        {{ $layout->layout_name ?? null }}
-                        @if ($layout->added_by == auth()->user()->id && $layout->is_editable == 'yes')
-                            <a href="#" class="edit-layout" data-bs-toggle="modal" data-bs-target="#editModal">
-                                <i class="fa fa-edit align-top fs-1 text-danger"></i>
-                            </a>
-                        @endif
-                    </h4>
-                    <button type="button" class="btn btn-info" id="customAdd">Custom Dashboard </button>
 
-                </div>
-                <div id="customShow">
-                    <div class="d-flex justify-content-end pb-2">
+        <div class="d-flex justify-content-between pb-2">
+            <h4 class="mb-3 page-title text-info fw-bold">
+                {{ $layout->layout_name ?? null }}
+                @if ($layout->added_by == auth()->user()->id && $layout->is_editable == 'yes')
+                    <a href="#" class="edit-layout" data-bs-toggle="modal" data-bs-target="#editModal">
+                        <i class="fa fa-edit align-top fs-1 text-danger"></i>
+                    </a>
+                @endif
+            </h4>
+            <button type="button" class="btn btn-info" id="customAdd">Custom Dashboard </button>
 
-                        <a href="#" class="create-layout" data-bs-toggle="modal" data-bs-target="#createModal">
-                            <button type="button" class="btn btn-info">Add New Dashboard</button>
-                        </a>
-                        <a href="#" class="create-layout mx-2" data-bs-toggle="modal" data-bs-target="#saveAsModal">
-                            <button type="button" class="btn btn-danger ">Save As Current</button>
-                        </a>
-                        <form id="urlForm" class="d-flex mx-2" action="{{ route('dash') }}" method="GET">
-                            <select id="urlSelect" name="id" class="form-select">
-                                <option value="">--Select Dashboard--</option>
-                                @foreach ($layoutList as $value)
-                                    <option value="{{ $value->id }}">{{ $value->layout_name }}</option>
-                                @endforeach
-                            </select>
-                        </form>
+        </div>
+        <div id="customShow">
+            <div class="d-flex justify-content-end pb-2">
 
-                        @if ($layout->added_by == auth()->user()->id)
-                            <form action="{{ route('update.status') }}" method="POST" class="d-flex pe-5">
-                                @csrf
-                                <input type="hidden" name="layout_id" id="layout_id_val" value="{{ $layout->id }}">
-                                <select name="module_id" class="form-select" required>
-                                    @if ($variable->isEmpty() && $List->isEmpty())
-                                        <option value="">All section already exists</option>
-                                    @else
-                                        <option value="">Select to add section</option>
-                                        @foreach ($variable as $value)
-                                            <option value="{{ $value->module_id }}">
-                                                {{ $value->ModuleList->module_name ?? null }}
-                                            </option>
-                                        @endforeach
-                                        @foreach ($List as $item)
-                                            <option value="{{ $item->module_id }}">
-                                                {{ $item->module_name ?? null }}
-                                            </option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                                <button type="submit" class="btn btn-info mx-2">Add</button>
-                            </form>
-
-                        @endif
-
-                        <!-- Create Layout Name Modal -->
-                        <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel"
-                            aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <form id="editForm" action="{{ route('createLayout') }}" method="POST">
-                                        @csrf
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editModalLabel">Add New Dashboard</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <input type="hidden" id="editLayoutId" name="id" value="">
-                                            <div class="mb-3">
-                                                <label for="editLayoutName" class="form-label">Dashboard Name</label>
-                                                <input type="text" class="form-control" id="editLayoutName"
-                                                    name="layout_name" required>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-primary">Save</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Edit Layout Name Modal -->
-                        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel"
-                            aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <form id="editForm" action="{{ route('updateLayoutName', ['id' => $layout->id]) }}"
-                                        method="POST">
-                                        @csrf
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editModalLabel">Edit Dashboard Name</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <input type="hidden" id="editLayoutId" name="id" value="">
-                                            <div class="mb-3">
-                                                <label for="editLayoutName" class="form-label">Dashboard Name</label>
-                                                <input type="text" class="form-control" id="editLayoutName"
-                                                    name="layout_name" value="{{ $layout->layout_name ?? null }}"
-                                                    required>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-primary">Save changes</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Save as current Layout Name Modal -->
-                        <div class="modal fade" id="saveAsModal" tabindex="-1" aria-labelledby="editModalLabel"
-                            aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <form id="editForm" action="{{ route('createNewLayout') }}" method="POST">
-                                        @csrf
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editModalLabel">Save as current Dashboard</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <input type="hidden" id="editLayoutId" name="id" value="">
-                                            <div class="mb-3">
-                                                <label for="editLayoutName" class="form-label">Dashboard Name</label>
-                                                <input type="text" class="form-control" id="editLayoutName"
-                                                    name="layout_name" required>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-primary">Save</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-
-                    </div>
-                </div>
-
-                <form id="positionForm" method="POST" action="{{ route('savePositions') }}">
-                    @csrf
-                    <input type="hidden" name="positions" id="positions">
-                    <input type="hidden" name="layout_id" value="{{ $layout->id }}">
-                    <div class="newLayout draggable-cards" id="draggable-area">
-
-                      
-                        @foreach ($cardPositions as $cardPosition)
-						<!-- card card-border card-shadow-->
-							 <div class="col-md-6 draggable-items"  data-id="{{ $cardPosition->module_id }}">
-								
-                                 <div class=" grid">
-                    	@include('widgets.' . $cardPosition->ModuleList->module_code)
-
-                                </div>
-							</div>
-                       
-                         @endforeach
-                    </div>
-                    @if ($layout->added_by == auth()->user()->id)
-                        <button type="submit" class="btn btn-primary mt-3" id="savePosition">Save Positions</button>
-                    @endif
+                <a href="#" class="create-layout" data-bs-toggle="modal" data-bs-target="#createModal">
+                    <button type="button" class="btn btn-info">Add New Dashboard</button>
+                </a>
+                <a href="#" class="create-layout mx-2" data-bs-toggle="modal" data-bs-target="#saveAsModal">
+                    <button type="button" class="btn btn-danger ">Save As Current</button>
+                </a>
+                <form id="urlForm" class="d-flex mx-2" action="{{ route('dash') }}" method="GET">
+                    <select id="urlSelect" name="id" class="form-select">
+                        <option value="">--Select Dashboard--</option>
+                        @foreach ($layoutList as $value)
+                            <option value="{{ $value->id }}">{{ $value->layout_name }}</option>
+                        @endforeach
+                    </select>
                 </form>
+
+                @if ($layout->added_by == auth()->user()->id)
+                    <form action="{{ route('update.status') }}" method="POST" class="d-flex pe-5">
+                        @csrf
+                        <input type="hidden" name="layout_id" id="layout_id_val" value="{{ $layout->id }}">
+                        <select name="module_id" class="form-select" required>
+                            @if ($variable->isEmpty() && $List->isEmpty())
+                                <option value="">All section already exists</option>
+                            @else
+                                <option value="">Select to add section</option>
+                                @foreach ($variable as $value)
+                                    <option value="{{ $value->module_id }}">
+                                        {{ $value->ModuleList->module_name ?? null }}
+                                    </option>
+                                @endforeach
+                                @foreach ($List as $item)
+                                    <option value="{{ $item->module_id }}">
+                                        {{ $item->module_name ?? null }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
+                        <button type="submit" class="btn btn-info mx-2">Add</button>
+                    </form>
+
+                @endif
+
+                <!-- Create Layout Name Modal -->
+                <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form id="editForm" action="{{ route('createLayout') }}" method="POST">
+                                @csrf
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editModalLabel">Add New Dashboard</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="hidden" id="editLayoutId" name="id" value="">
+                                    <div class="mb-3">
+                                        <label for="editLayoutName" class="form-label">Dashboard Name</label>
+                                        <input type="text" class="form-control" id="editLayoutName" name="layout_name"
+                                            required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Layout Name Modal -->
+                <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form id="editForm" action="{{ route('updateLayoutName', ['id' => $layout->id]) }}"
+                                method="POST">
+                                @csrf
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editModalLabel">Edit Dashboard Name</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="hidden" id="editLayoutId" name="id" value="">
+                                    <div class="mb-3">
+                                        <label for="editLayoutName" class="form-label">Dashboard Name</label>
+                                        <input type="text" class="form-control" id="editLayoutName"
+                                            name="layout_name" value="{{ $layout->layout_name ?? null }}" required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Save as current Layout Name Modal -->
+                <div class="modal fade" id="saveAsModal" tabindex="-1" aria-labelledby="editModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form id="editForm" action="{{ route('createNewLayout') }}" method="POST">
+                                @csrf
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editModalLabel">Save as current Dashboard</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="hidden" id="editLayoutId" name="id" value="">
+                                    <div class="mb-3">
+                                        <label for="editLayoutName" class="form-label">Dashboard Name</label>
+                                        <input type="text" class="form-control" id="editLayoutName"
+                                            name="layout_name" required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
 
             </div>
         </div>
+
+        <form id="positionForm" method="POST" action="{{ route('savePositions') }}">
+            @csrf
+            <input type="hidden" name="positions" id="positions">
+            <input type="hidden" name="layout_id" value="{{ $layout->id }}">
+            <div class="newLayout draggable-cards" id="draggable-area">
+
+
+                @foreach ($cardPositions as $cardPosition)
+                    <!-- card card-border card-shadow-->
+                    <div id="boxContainer" class="row draggable-items" data-id="{{ $cardPosition->module_id }}">
+
+                        <div class=" grid">
+                            @include('widgets.' . $cardPosition->ModuleList->module_code)
+
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            @if ($layout->added_by == auth()->user()->id)
+                <button type="submit" class="btn btn-primary mt-3" id="savePosition">Save Positions</button>
+            @endif
+        </form>
+
+
         <!-- -------------------------------------------------------------- -->
         <!-- End PAge Content -->
         <!-- -------------------------------------------------------------- -->

@@ -3,12 +3,13 @@
         <div class="card-body card-border shadow">
             <div class="form-group">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h4 class="text-warning">Jobs</h4>
+                    <h4 class="text-warning">Message</h4>
                     <button class="btn btn-link text-warning expand-toggle" data-index="0">Expand</button>
                 </div>
-                <iframe src="https://dispatchannel.com/portal/tickets?header=off&sidebar=off"
-                    style="width: 100%; height: 400px; border: none; overflow-x: scroll; overflow-y: scroll;"
-                    id="jobIframe">
+                <!-- Add iframe or other content here -->
+                <iframe src="https://dispatchannel.com/portal/inbox?header=off&sidebar=off"
+                    style="width: 100%; height: 400px; border: none; overflow-x: auto; overflow-y: auto;"
+                    id="messageIframe">
                 </iframe>
             </div>
         </div>
