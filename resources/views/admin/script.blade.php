@@ -81,6 +81,8 @@
 <script src="{{ asset('public/admin/dist/js/pages/calendar/cal-init.js') }}"></script>
 -->
 
+
+
 <?php  
     if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')   
          $url = "https://";   
@@ -97,7 +99,7 @@
 		//echo $url." home page";  
 		?>
 		<script src="{{ asset('public/admin/dist/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
-		<script src="{{ asset('public/admin/dist/js/pages/dashboards/dashboard1.js') }}"></script>
+		<!-- <script src="{{ asset('public/admin/dist/js/pages/dashboards/dashboard1.js') }}"></script> -->
 		<script src="{{ asset('public/admin/dist/js/pages/apex-chart/apex.pie.init.js') }}"></script>
 		<?php 
 	}

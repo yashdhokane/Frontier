@@ -240,6 +240,8 @@ $time_interval = Session::get('time_interval', 0);
         <!-- Repeat similar divs for the other boxes -->
     </div>
 </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>

@@ -3,21 +3,21 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use App\Models\Tool; 
-use App\Models\UserNotesCustomer; 
-use App\Models\Role;  
-use App\Models\SiteLeadSource;  
-use App\Models\SiteTags;   
+use App\Models\Tool;
+use App\Models\UserNotesCustomer;
+use App\Models\Role;
+use App\Models\SiteLeadSource;
+use App\Models\SiteTags;
 use App\Models\UserTag;
-use App\Models\User;  
-use App\Models\UsersDetails; 
-use App\Models\CustomerUserAddress;  
-use App\Models\LocationState;  
+use App\Models\User;
+use App\Models\UsersDetails;
+use App\Models\CustomerUserAddress;
+use App\Models\LocationState;
 use App\Models\Event;
 use App\Models\Payment;
 use App\Models\JobModel;
-use App\Models\Products;   
-use App\Models\BusinessHours; 
+use App\Models\Products;
+use App\Models\BusinessHours;
 use App\Models\Schedule;
 use App\Models\JobAssign;
 use App\Models\LayoutDash;
@@ -148,12 +148,12 @@ class LayoutDashController extends Controller
         $product = $productNames->merge($toolNames)->merge($fleetVehicleNames)->unique()->take(5);
         $payments = Payment::limit(5)->get();
         $events = Event::limit(5)->get();
-           $job = Schedule::with('JobModel','JobTechEvent', 'technician')
+        $job = Schedule::with('JobModel', 'JobTechEvent', 'technician')
             ->where('start_date_time', '>', Carbon::now($timezone_name))
             ->latest()->limit(5)->get();
 
-              $time_interval = Session::get('time_interval');
-         $data = $request->all();
+        $time_interval = Session::get('time_interval');
+        $data = $request->all();
         $currentDate = isset($data['date']) && !empty($data['date']) ? Carbon::parse($data['date']) : Carbon::now($timezone_name);
         $filterDate = $currentDate->format('Y-m-d');
         $previousDate = $currentDate->copy()->subDay()->format('Y-m-d');
@@ -184,14 +184,163 @@ class LayoutDashController extends Controller
                 ->format('Y-m-d H:i:s');
             return $schedule;
         });
- $paymentclose = Payment::with('JobAppliances', 'user', 'JobModel')->where('status', 'unpaid')->orderBy('id', 'desc')
+        $paymentclose = Payment::with('JobAppliances', 'user', 'JobModel')->where('status', 'unpaid')->orderBy('id', 'desc')
 
             ->limit(5)->get();
-      
-        return view('dashboard.test', compact('recentcustomer', 'product', 'tool', 'events', 'payments', 'schedules1','job','technicians', 'schedules', 'formattedDate', 'hours', 'tomorrowDate', 'previousDate','paymentclose'));
+
+        return view('dashboard.test', compact('recentcustomer', 'product', 'tool', 'events', 'payments', 'schedules1', 'job', 'technicians', 'schedules', 'formattedDate', 'hours', 'tomorrowDate', 'previousDate', 'paymentclose'));
     }
 
+    public function drag(Request $request)
+    {
+        if ($request->has('id')) {
+            $Id = $request->id;
+            $layout = LayoutDash::where('id', $Id)->first();
+        } else {
+            $Id = auth()->user()->id;
+            $user = User::where('id', $Id)->first();
+            $layout = LayoutDash::where('id', $user->layout_id)->first();
+        }
 
+        $timezone_name = Session::get('timezone_name');
+
+        if (!$layout) {
+            return view('404');
+        }
+        $jobcompleteyes = Schedule::with(['JobModel', 'JobTechEvent', 'technician'])
+            //->where('start_date_time', '>', Carbon::now($timezone_name))
+            ->whereHas('JobTechEvent', function ($query) {
+                $query->where('tech_completed', 'yes');
+            })
+            // ->latest()
+            // ->limit(5)
+            ->get();
+
+        $allVariable = LayoutDashModule::where('layout_id', $layout->id)->get();
+        $moduleIds = $allVariable->pluck('module_id')->toArray();
+        $List = LayoutDashModuleList::whereNotIn('module_id', $moduleIds)->get();
+
+
+        $variable = LayoutDashModule::with('ModuleList')->where('layout_id', $layout->id)->where('is_active', 'no')->get();
+
+        $cardPositions = LayoutDashModule::where('layout_id', $layout->id)->where('is_active', 'yes')->orderBy('position')->get();
+
+        $layoutList = LayoutDash::all();
+
+        $job = Schedule::with('JobModel', 'technician')
+            ->where('start_date_time', '>', Carbon::now($timezone_name))
+            ->latest()->limit(5)->get();
+
+        $paymentopen = Payment::with('JobAppliances', 'user', 'JobModel')->where('status', 'paid')->orderBy('id', 'desc')
+
+            ->limit(5)->get();
+
+        $paymentclose = Payment::with('JobAppliances', 'user', 'JobModel')->where('status', 'unpaid')->orderBy('id', 'desc')
+
+            ->limit(5)->get();
+
+
+        $adminCount = User::where('role', 'admin')->count();
+        $dispatcherCount = User::where('role', 'dispatcher')->count();
+        $technicianCount = User::where('role', 'technician')->count();
+        $customerCount = User::where('role', 'customer')->count();
+
+
+        $jobActivity = DB::table('job_activity')
+            ->select(
+                'job_activity.user_id',
+                'job_activity.activity',
+                'job_activity.created_at as activity_date',
+                DB::raw("'job_activity' as activity_type"),
+                'users.*' // Select all columns from the users table
+            )
+            ->join('users', 'job_activity.user_id', '=', 'users.id')
+            ->join('user_login_history', 'job_activity.user_id', '=', 'user_login_history.user_id');
+        // Fetch user activities for all users
+        $userActivity = DB::table('user_activity')
+            ->select(
+                'user_activity.user_id',
+                'user_activity.activity',
+                'user_activity.created_at as activity_date',
+                DB::raw("'user_activity' as activity_type"),
+                'users.*' // Select all columns from the users table
+            )
+            ->join('users', 'user_activity.user_id', '=', 'users.id');
+        // Combine and order the activities by activity_date
+        $activity = $jobActivity->union($userActivity)
+            ->orderBy('activity_date', 'desc')->limit(10)
+            ->get();
+
+        // Fetch notifications for all users
+        $userNotifications = UserNotification::with('notice')
+            ->orderBy('id', 'desc')->limit(10)
+            ->get();
+
+
+        $technicianuser = User::where('role', 'technician')
+            ->where('status', 'active')
+            ->orderBy('created_at', 'desc')
+            ->limit(9)
+            ->get();
+
+
+        foreach ($technicianuser as $key => $user) {
+            $areaName = [];
+            if (isset($user->service_areas) && !empty($user->service_areas)) {
+                $service_areas = explode(',', $user->service_areas);
+                foreach ($service_areas as $key1 => $value1) {
+                    $location_service_area = DB::table('location_service_area')->where('area_id', $value1)->first();
+                    if (isset($location_service_area->area_name) && !empty($location_service_area->area_name)) {
+                        $areaName[] = $location_service_area->area_name;
+                    }
+                }
+                $technicianuser[$key]->area_name = implode(', ', $areaName);
+
+                // Retrieve job completion data for the current technician user
+                $totalJobsCount = JobModel::where('technician_id', $user->id)->count();
+
+                $completedJobsCount = JobModel::where('technician_id', $user->id)->where('status', 'closed')->count();
+                $completionRate = ($totalJobsCount > 0) ? ($completedJobsCount / $totalJobsCount) * 100 : 0;
+
+                // Add job completion data to the technician user object
+                $technicianuser[$key]->completed_jobs_count = $completedJobsCount;
+                $technicianuser[$key]->total_jobs_count = $totalJobsCount;
+                $technicianuser[$key]->completion_rate = $completionRate;
+            }
+        }
+
+        $customeruser = User::where('role', 'customer')
+            ->orderBy('created_at', 'desc')
+            ->limit(9)
+            ->get();
+
+        foreach ($customeruser as $user) {
+            $userAddresses = DB::table('user_address')
+                ->leftJoin('location_cities', 'user_address.city', '=', 'location_cities.city_id')
+                ->leftJoin('location_states', 'user_address.state_id', '=', 'location_states.state_id')
+                ->where('user_address.user_id', $user->id)
+                ->get();
+
+            $jobs = DB::table('jobs')
+                ->where('jobs.customer_id', $user->id)
+                ->get();
+            $grossTotal = DB::table('payments')
+                ->selectRaw('sum(`total`) as grosstotal, `customer_id`')
+                ->where('customer_id', $user->id)
+                ->groupBy('customer_id')
+                ->orderByRaw('grosstotal DESC')
+                ->first();
+
+            // Merge user addresses and jobs data into user object
+            $user->user_addresses = $userAddresses;
+            // dd($user->user_addresses );
+            $user->jobs = $jobs;
+            $user->gross_total = $grossTotal ? $grossTotal->grosstotal : 0;
+        }
+
+
+        return view('dashboard.drag', compact('variable', 'jobcompleteyes', 'cardPositions', 'job', 'paymentopen', 'paymentclose', 'adminCount', 'dispatcherCount', 'technicianCount', 'customerCount', 'layout', 'layoutList', 'activity', 'userNotifications', 'technicianuser', 'customeruser', 'List'));
+    }
 
     public function index(Request $request)
     {
@@ -345,6 +494,8 @@ class LayoutDashController extends Controller
     }
     public function savePositions(Request $request)
     {
+
+        // dd($request->all());
         $positions = json_decode($request->positions, true);
         $userId = auth()->user()->id;
 
@@ -471,44 +622,45 @@ class LayoutDashController extends Controller
     }
 
 
-// app/Http/Controllers/CustomerController.php
-public function fetchData(Request $request)
-{
-    $email = $request->query('email');
+    // app/Http/Controllers/CustomerController.php
+    public function fetchData(Request $request)
+    {
+        $email = $request->query('email');
 
-    // Find the most recent user data based on the email
-    $user = User::where('email', $email)->first();
+        // Find the most recent user data based on the email
+        $user = User::where('email', $email)->first();
 
-    if ($user) {
-        $userDetails = UsersDetails::where('user_id', $user->id)->first();
-        $customerAddress = CustomerUserAddress::where('user_id', $user->id)->first();
-        $userNotes = UserNotesCustomer::where('user_id', $user->id)->latest()->first();
-        $userTags = UserTag::where('user_id', $user->id)->pluck('tag_id')->toArray();
+        if ($user) {
+            $userDetails = UsersDetails::where('user_id', $user->id)->first();
+            $customerAddress = CustomerUserAddress::where('user_id', $user->id)->first();
+            $userNotes = UserNotesCustomer::where('user_id', $user->id)->latest()->first();
+            $userTags = UserTag::where('user_id', $user->id)->pluck('tag_id')->toArray();
 
-        return response()->json([
-            'first_name' => $userDetails->first_name ?? '',
-            'last_name' => $userDetails->last_name ?? '',
-            'mobile_phone' => $user->mobile ?? '',
-            'address1' => $customerAddress->address_line1 ?? '',
-            'city' => $customerAddress->city ?? '',
-            'state_id' => $customerAddress->state_id ?? '',
-            'zip_code' => $customerAddress->zipcode ?? '',
-            'home_phone' => $userDetails->home_phone ?? '',
-            'work_phone' => $userDetails->work_phone ?? '',
-            'company' => $userDetails->customer_company ?? '',
-            'user_type' => $userDetails->customer_type ?? '',
-            'role' => $userDetails->customer_position ?? '',
-            'additional_email' => $userDetails->additional_email ?? '',
-            'customer_notes' => $userNotes->note ?? '',
-            'tag_id' => $userTags,  // Return an array of tag IDs
-        ]);
+            return response()->json([
+                'first_name' => $userDetails->first_name ?? '',
+                'last_name' => $userDetails->last_name ?? '',
+                'mobile_phone' => $user->mobile ?? '',
+                'address1' => $customerAddress->address_line1 ?? '',
+                'city' => $customerAddress->city ?? '',
+                'state_id' => $customerAddress->state_id ?? '',
+                'zip_code' => $customerAddress->zipcode ?? '',
+                'home_phone' => $userDetails->home_phone ?? '',
+                'work_phone' => $userDetails->work_phone ?? '',
+                'company' => $userDetails->customer_company ?? '',
+                'user_type' => $userDetails->customer_type ?? '',
+                'role' => $userDetails->customer_position ?? '',
+                'additional_email' => $userDetails->additional_email ?? '',
+                'customer_notes' => $userNotes->note ?? '',
+                'tag_id' => $userTags,  // Return an array of tag IDs
+            ]);
+        }
+
+        return response()->json(null);
     }
 
-    return response()->json(null);
-}
-
- public function automation(){
-    $user_auth = auth()->user();
+    public function automation()
+    {
+        $user_auth = auth()->user();
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
         $module_id = 3;
@@ -527,35 +679,33 @@ public function fetchData(Request $request)
 
         $leadSources = SiteLeadSource::all();
         $tags = SiteTags::all(); // Fetch all tags
-   
+
         // Fetch all cities initially
         // $cities = LocationCity::all();
         // $cities1 = LocationCity::all();
 
 
-        return view('dashboard.automation_form_submission', compact('users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags', ));
+        return view('dashboard.automation_form_submission', compact('users', 'roles', 'locationStates', 'locationStates1', 'leadSources', 'tags',));
     }
-   public function showForm()
-{
-    // Define an array with pre-filled values
-    $formData = [
-        'first_name' => 'John',
-        'last_name' => 'Doe',
-        'display_name' => 'John D.',
-        'email' => 'john@example.com',
-        'phone' => '555-1234',
-        'address' => '123 Main St, Anytown, USA',
-        'state' => 'CA',
-        'zip' => '12345',
-        'country' => 'CA', // Initially selected country
-        'occupation' => 'developer',
-        'self_description' => 'I am a software developer with 5 years of experience in web development.',
-        'interests' => ['Technology', 'Music'], // Default selected interests
-    ];
+    public function showForm()
+    {
+        // Define an array with pre-filled values
+        $formData = [
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'display_name' => 'John D.',
+            'email' => 'john@example.com',
+            'phone' => '555-1234',
+            'address' => '123 Main St, Anytown, USA',
+            'state' => 'CA',
+            'zip' => '12345',
+            'country' => 'CA', // Initially selected country
+            'occupation' => 'developer',
+            'self_description' => 'I am a software developer with 5 years of experience in web development.',
+            'interests' => ['Technology', 'Music'], // Default selected interests
+        ];
 
-    // Pass the array to the view
-    return view('dashboard.automation_array', compact('formData'));
-}
-
-
+        // Pass the array to the view
+        return view('dashboard.automation_array', compact('formData'));
+    }
 }

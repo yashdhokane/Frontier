@@ -1038,6 +1038,7 @@ Route::middleware('auth')->group(function () {
 
    // customizer 
    // web.php
+    Route::get('/drag', [LayoutDashController::class, 'drag'])->name('drag');
 
    Route::get('/form/automation', [LayoutDashController::class, 'showForm'])->name('automation.form.show');
 

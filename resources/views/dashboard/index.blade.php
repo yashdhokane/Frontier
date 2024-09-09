@@ -1,27 +1,24 @@
 @extends('home')
 
 @section('content')
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <style>
-        .newLayout {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
+        .expanded {
+            order: -1 !important;
+            /* Move to the top */
         }
 
-        .draggable-items {
-            padding: 10px;
-            text-align: center;
-            width: fit-content;
-            /* Set a fixed width for masonry items */
-            box-sizing: border-box;
+        .original {
+            order: 0;
         }
 
-        .gu-mirror {
-            display: block;
-            opacity: 0.6;
-            position: fixed;
-            z-index: 9999;
-            pointer-events: none;
+        .box:focus-within {
+            border: 2px solid #007bff;
+            /* Add blue border when focused */
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+            /* Add shadow effect */
+            outline: none;
+            /* Remove default outline */
         }
     </style>
     <div class="container-fluid">
@@ -182,19 +179,54 @@
             @csrf
             <input type="hidden" name="positions" id="positions">
             <input type="hidden" name="layout_id" value="{{ $layout->id }}">
-            <div class="newLayout draggable-cards" id="draggable-area">
+            <div class="" id="draggable-area">
 
+                    <div class="row" id="box-container">
+                    @foreach ($cardPositions as $index => $cardPosition)
+                        @if ($cardPosition->ModuleList->module_code == 'schedule')
+                            <!-- Correct the spelling here -->
+                            <div class="col-md-12 col-lg-12  mb-3 box draggable-items1" id="box-{{ $index }}"
+                                data-original-index="{{ $index }}" tabindex="0"  data-id="{{ $cardPosition->module_id }}">
+                                <div class="card">
+                                    <!-- Flex container for module name and button -->
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>{{ $cardPosition->ModuleList->module_name }}</strong>
+                                        </div>
+                                        <div>
+                                            <button type="button" class="btn btn-link expand-btn">Expand</button>
+                                        </div>
+                                    </div>
 
-                @foreach ($cardPositions as $cardPosition)
-                    <!-- card card-border card-shadow-->
-                    <div id="boxContainer" class="row draggable-items" data-id="{{ $cardPosition->module_id }}">
+                                    <div class="card-body clearelement" data-id="{{ $cardPosition->module_id }}">
+                                        @include('widgets.' . $cardPosition->ModuleList->module_code)
+                                    </div>
+                                </div>
+                            </div>
+                        @else
+                            <div class="col-md-4 mb-3 box draggable-items1" id="box-{{ $index }}"
+                                data-original-index="{{ $index }}" tabindex="0"  data-id="{{ $cardPosition->module_id }}">
+                                <div class="card">
+                                    <!-- Flex container for module name and button -->
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>{{ $cardPosition->ModuleList->module_name }}</strong>
+                                        </div>
+                                        <div>
+                                            <button type="button" class="btn btn-link expand-btn">Expand</button>
+                                        </div>
+                                    </div>
 
-                        <div class=" grid">
-                            @include('widgets.' . $cardPosition->ModuleList->module_code)
+                                    <div class="card-body clearelement" data-id="{{ $cardPosition->module_id }}">
+                                        @include('widgets.' . $cardPosition->ModuleList->module_code)
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    @endforeach
 
-                        </div>
-                    </div>
-                @endforeach
+                </div>
+
             </div>
             @if ($layout->added_by == auth()->user()->id)
                 <button type="submit" class="btn btn-primary mt-3" id="savePosition">Save Positions</button>
@@ -208,7 +240,90 @@
     </div>
 
     <div class="chat-windows"></div>
+    </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const boxes = document.querySelectorAll('.box');
+
+            boxes.forEach(box => {
+                const expandBtn = box.querySelector('.expand-btn');
+
+                expandBtn.addEventListener('click', function() {
+                    const isExpanded = box.classList.contains('expanded');
+
+                    // Reset all boxes to original state
+                    boxes.forEach(b => {
+                        b.classList.remove('expanded');
+                        b.classList.add('original');
+                        b.classList.remove('col-md-12');
+                        b.classList.add('col-md-4');
+                        const btn = b.querySelector('.expand-btn');
+                        btn.textContent = 'Expand';
+                    });
+
+                    if (!isExpanded) {
+                        // Expand this box
+                        box.classList.add('expanded');
+                        box.classList.remove('original');
+                        box.classList.remove('col-md-4');
+                        box.classList.add('col-md-12');
+                        expandBtn.textContent = 'Less';
+
+                        // Scroll into view and focus on expanded section
+                        box.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+
+                        // Optionally focus on the expand button for accessibility
+                        expandBtn.focus();
+                    } else {
+                        // Focus on the collapsed section after restoring original state
+                        box.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                        expandBtn.focus();
+                    }
+                });
+            });
+
+            // Initialize Sortable
+            new Sortable(document.getElementById('box-container'), {
+                animation: 150,
+                ghostClass: 'sortable-ghost',
+                onEnd: function(evt) {
+                    console.log('Moved box from index', evt.oldIndex, 'to', evt.newIndex);
+
+                    // Show the "Save Positions" button on drop
+                    document.getElementById('savePosition').style.display = 'block';
+                }
+            });
+
+            // Handle form submission
+            $('#positionForm').on('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission
+
+                var positions = [];
+                $('#box-container .draggable-items1').each(function(index, element) {
+                    // Push module_id and new position into the array
+                    positions.push({
+                        module_id: $(element).data(
+                            'id'), // Assuming data-id holds the module's id
+                        position: index // New position after sorting
+                    });
+                });
+
+                // Set the hidden input's value to the serialized positions
+                $('#positions').val(JSON.stringify(positions));
+
+                // Submit the form
+                this.submit();
+            });
+        });
+    </script>
+     
 @section('script')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -226,33 +341,33 @@
             });
         });
 
-        $(function() {
-            dragula([document.getElementById('draggable-area')])
-                .on('drag', function(e) {
-                    e.className = e.className.replace('card-moved', '');
-                })
-                .on('over', function(e, t) {
-                    t.className += ' card-over';
-                })
-                .on('out', function(e, t) {
-                    t.className = t.className.replace('card-over', '');
-                })
-                .on('drop', function() {
-                    $('#savePosition').show();
-                });
+        // $(function() {
+        //     dragula([document.getElementById('draggable-area')])
+        //         .on('drag', function(e) {
+        //             e.className = e.className.replace('card-moved', '');
+        //         })
+        //         .on('over', function(e, t) {
+        //             t.className += ' card-over';
+        //         })
+        //         .on('out', function(e, t) {
+        //             t.className = t.className.replace('card-over', '');
+        //         })
+        //         .on('drop', function() {
+        //             $('#savePosition').show();
+        //         });
 
 
-            $('#positionForm').on('submit', function(event) {
-                var positions = [];
-                $('#draggable-area .draggable-items').each(function(index, element) {
-                    positions.push({
-                        module_id: $(element).data('id'),
-                        position: index
-                    });
-                });
-                $('#positions').val(JSON.stringify(positions));
-            });
-        });
+        //     $('#positionForm').on('submit', function(event) {
+        //         var positions = [];
+        //         $('#draggable-area .draggable-items').each(function(index, element) {
+        //             positions.push({
+        //                 module_id: $(element).data('id'),
+        //                 position: index
+        //             });
+        //         });
+        //         $('#positions').val(JSON.stringify(positions));
+        //     });
+        // });
     </script>
     <script>
         $(document).ready(function() {
@@ -267,7 +382,8 @@
 
 
             $(document).on('click', '.clearSection', function() {
-                var elementId = $(this).closest('.draggable-items').data('id');
+                var elementId = $(this).closest('.clearelement').data('id');
+                console.log("first".elementId);
 
                 function getUrlParameter(name) {
                     var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -277,6 +393,7 @@
 
                 // Get the 'id' parameter from the URL or fallback to the value from the DOM element
                 var layoutId = getUrlParameter('id') || $('#layout_id_val').val();
+                console.log("yas".layoutId);
                 $.ajax({
                     url: '{{ route('changeStatus') }}',
                     type: 'POST',
@@ -300,6 +417,164 @@
             });
         });
     </script>
-@endsection
+  <!--   <script>
+        $(document).ready(function() {
+            function applyIframeStyles(iframeId) {
+                $(iframeId).on('load', function() {
+                    var iframe = $(this)[0];
+                    var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
 
+                    // Inject custom CSS into the iframe
+                    var style = document.createElement('style');
+                    style.type = 'text/css';
+                    style.innerHTML = `
+
+                /* Hide header and aside elements */
+                header { display: none !important; }
+                aside { display: none !important; }
+                footer { display: none !important; }
+
+                  .page-title { display: none !important; }
+                  .page-breadcrumb { padding: 0px 0px 0 0px !important; }
+                  .page-wrapper>.container-fluid, .page-wrapper>.container-lg, .page-wrapper>.container-md, .page-wrapper>.container-sm, .page-wrapper>.container-xl, .page-wrapper>.container-xxl {
+    padding: 0px;
+
+}
+.container-fluid{
+    padding: 0px;
+    }
+
+    .table-custom #zero_config_info {
+    float: none;}
+
+.paginate_button{display:inline-block !important;}
+
+  /* Custom styles for specific classes */
+                .threedottest { display: block !important; }
+                .withoutthreedottest { display: none !important; }
+
+
+                /* Adjust layout and overflow */
+                #main-wrapper[data-layout=vertical][data-header-position=fixed] .topbar {
+                    display: none;
+                }
+                #main-wrapper[data-layout=vertical][data-sidebar-position=fixed] .left-sidebar {
+                    display: none;
+                }
+                #main-wrapper[data-layout=vertical][data-sidebartype=full] .page-wrapper {
+                    margin-left: 10px;
+                }
+                #main-wrapper[data-layout=vertical][data-header-position=fixed] .page-wrapper {
+                    padding-top: 10px;
+                }
+
+                /* Make iframe content scrollable */
+                html, body {
+                    overflow: auto !important; /* Allow scrolling */
+                    margin: 0; /* Remove default margins */
+                    padding: 0; /* Remove default padding */
+
+                }
+                #scheduleSection1{
+                    overflow:auto !important;
+                    }
+            `;
+
+                    iframeDocument.head.appendChild(style);
+
+                    // Optionally adjust iframe height based on content
+                    // $(iframe).height($(iframeDocument).find('body').height());
+                });
+            }
+
+            // Apply styles to both iframes
+            applyIframeStyles('#customerIframe');
+            applyIframeStyles('#scheduleIframe');
+            applyIframeStyles('#technicianIframe');
+            applyIframeStyles('#assetsIframe');
+            applyIframeStyles('#paymentsIframe');
+            applyIframeStyles('#eventsIframe');
+            applyIframeStyles('#jobIframe');
+            applyIframeStyles('#messageIframe');
+            applyIframeStyles('#toolIframe');
+            applyIframeStyles('#fleetIframe');
+        });
+    </script> -->
+    <script>
+    $(document).ready(function() {
+        function applyIframeStyles(iframeId, styles) {
+            $(iframeId).on('load', function() {
+                var iframe = $(this)[0];
+                var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+
+                // Inject custom CSS into the iframe
+                var style = iframeDocument.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = styles; // Pass the styles as an argument
+
+                // Append the style element to the iframe's head
+                iframeDocument.head.appendChild(style);
+            });
+        }
+
+        // Define the CSS styles as a variable
+        var iframeStyles = `
+            /* Hide header and aside elements */
+            header, aside, footer { display: none !important; }
+            
+            .page-title { display: none !important; }
+            .page-breadcrumb { padding: 0px 0px 0 0px !important; }
+            
+            .page-wrapper>.container-fluid, 
+            .page-wrapper>.container-lg, 
+            .page-wrapper>.container-md, 
+            .page-wrapper>.container-sm, 
+            .page-wrapper>.container-xl, 
+            .page-wrapper>.container-xxl {
+                padding: 0px;
+            }
+            
+            .container-fluid {
+                padding: 0px;
+            }
+
+            .table-custom #zero_config_info { float: none; }
+
+            .paginate_button { display: inline-block !important; }
+
+            /* Custom styles for specific classes */
+            .threedottest { display: block !important; }
+            .withoutthreedottest { display: none !important; }
+
+            /* Adjust layout and overflow */
+            #main-wrapper[data-layout=vertical][data-header-position=fixed] .topbar { display: none; }
+            #main-wrapper[data-layout=vertical][data-sidebar-position=fixed] .left-sidebar { display: none; }
+            #main-wrapper[data-layout=vertical][data-sidebartype=full] .page-wrapper { margin-left: 10px; }
+            #main-wrapper[data-layout=vertical][data-header-position=fixed] .page-wrapper { padding-top: 10px; }
+
+            /* Make iframe content scrollable */
+            html, body {
+                overflow: auto !important; /* Allow scrolling */
+                margin: 0; /* Remove default margins */
+                padding: 0; /* Remove default padding */
+            }
+
+            #scheduleSection1 { overflow: auto !important; }
+        `;
+
+        // Apply styles to all iframes
+        applyIframeStyles('#customerIframe', iframeStyles);
+        applyIframeStyles('#scheduleIframe', iframeStyles);
+        applyIframeStyles('#technicianIframe', iframeStyles);
+        applyIframeStyles('#assetsIframe', iframeStyles);
+        applyIframeStyles('#paymentsIframe', iframeStyles);
+        applyIframeStyles('#eventsIframe', iframeStyles);
+        applyIframeStyles('#jobIframe', iframeStyles);
+        applyIframeStyles('#messageIframe', iframeStyles);
+        applyIframeStyles('#toolIframe', iframeStyles);
+        applyIframeStyles('#fleetIframe', iframeStyles);
+    });
+</script>
+
+@endsection
 @endsection

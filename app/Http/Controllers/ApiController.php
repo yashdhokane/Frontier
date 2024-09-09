@@ -132,7 +132,9 @@ public function user_login(Request $request)
             return response()->json(['status' => false, 'message' => 'Technician ID is required'], 500);
         }
 
-        $notifications = UserNotification::with('notice')->where('user_id', $technicianId)->get();
+        $notifications = UserNotification::with('notice')->where('user_id', $technicianId) ->orderBy('id', 'desc')
+    ->get();
+
 
         if ($notifications->isEmpty()) {
             return response()->json(['status' => false, 'message' => 'No notifications found'], 201);
