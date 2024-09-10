@@ -820,6 +820,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/demoScheduleupdate/', [ScheduleController::class, 'demoScheduleupdate'])->name('schedule.demoScheduleupdate');
 
+    Route::get('/getALlJobDetails/', [ScheduleController::class, 'getALlJobDetails'])->name('schedule.getALlJobDetails');
+
 
     // MailController
 

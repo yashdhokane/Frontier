@@ -1,87 +1,204 @@
-
 @section('script')
-
-
-
     <script
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&loading=async&callback=initMap&libraries=marker"
         async></script>
 
     <script>
+        $(document).ready(function() {
+            $(document).on('click', '.JobOpenModalButton', function(event) {
+                event.preventDefault(); // Prevent the default anchor click behavior
+                var tech_id = $(this).data('tech-id');
+                var date = $(this).data('date');
+                $.ajax({
+                    url: '{{ route('schedule.getALlJobDetails') }}',
+                    method: 'GET',
+                    data: {
+                        tech_id: tech_id,
+                        date: date
+                    },
+                    success: function(response) {
+                        var jobs = response;
+                        var ticketShowRoute = "{{ route('tickets.show', ':id') }}"; // Placeholder for job ID
+                        $('.openJobTechDetails').empty();
 
-        $(document).ready(function () {
 
-            $(document).on("click", ".tech_extend_width", function(event) {
-                event.stopPropagation(); // Prevents the event from bubbling up
-                
-                var className = $(this).data("class-name");
-                var jobClass = $(this).data("jobclass-name");
-                var maxWidth = $(this).data("max-width");
-                
-
-                $("." + className).each(function() {
-                    var $this = $(this);
-                    var currentWidth = $this.css("width");
-                    
-                    var $show_address = $this.find("." + 'show_address');
-                    var $hide_address = $this.find("." + 'hide_address');
-                    
-                    if (currentWidth === "400px") {
-                        $this.attr("style", "width: 100px !important;");
-                        if (!$this.hasClass("tech-header")) {
-                            $this.attr("style", "width: 100px !important; display: flex;");
-                        }
-                        
-                        $hide_address.attr("style", "display: block");
-                        $show_address.attr("style", "display: none");
-                    } else {
-                        $this.attr("style", "width: 400px !important; display: flex;");
-                        $hide_address.attr("style", "display: none");
-                        $show_address.attr("style", "display: block");
-                    }
-                    
-                    // New functionality: Adjust width based on child count
-                    var $children = $this.find("." + jobClass);
-                    var $maxWidth = $this.find("." + maxWidth);
-                    var childCount = $children.length;
-                    
-                    
-                    if (childCount > 0) {
-                         if (currentWidth === "400px") {
-                            var newWidth = 100 / childCount;
+                        // Check if there are jobs in the response
+                        if (jobs.length === 0) {
+                            // If no jobs are available, show a message
+                            $('.openJobTechDetails').append(
+                                '<div class="col-12"><p>There is no job available.</p></div>'
+                            );
                         } else {
-                            var newWidth = 400 / childCount;
+                            // If jobs are available, iterate over each job and append its details
+                            jobs.forEach(function(job) {
+                                // Create the HTML structure for each job
+                                var jobHtml = `
+    <div class="col-md-4 mb-3">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <!-- Job ID and Badge -->
+                <h5 class="card-title">
+                    <i class="fas fa-id-badge px-2"></i>
+                    <strong>Job #${job.job_model ? job.job_model.id : 'N/A'}</strong>
+                </h5>
+
+                <!-- Job Time Range -->
+                <p class="text-muted">
+                    ${job.start_date_time && job.end_date_time ? formatDateRange(job.start_date_time, job.end_date_time, job.interval) : ''}
+                </p>
+
+                <!-- Job Title -->
+                <div class="mb-2">
+                    <i class="fas fa-ticket-alt px-2"></i>
+                    <strong>${job.job_model ? job.job_model.job_title : 'N/A'}</strong>
+                </div>
+
+                <!-- User Info -->
+                <div class="mb-2">
+                    <i class="fas fa-user px-2"></i>
+                    <strong>${job.job_model && job.job_model.user ? job.job_model.user.name : 'N/A'}</strong>
+                    <p class="text-muted ps-4 m-0 ms-2">
+                        ${job.job_model && job.job_model.addresscustomer ? job.job_model.addresscustomer.address_line1 : 'N/A'},
+                        ${job.job_model && job.job_model.addresscustomer ? job.job_model.addresscustomer.zipcode : ''}
+                    </p>
+                    <p class="text-muted ps-4 m-0 ms-2">
+                        ${job.job_model && job.job_model.user ? job.job_model.user.mobile : 'N/A'}
+                    </p>
+                </div>
+
+                <!-- Technician Info -->
+                <div class="mb-2">
+                    <i class="fas fa-user-secret px-2"></i>
+                    <strong>${job.technician && job.technician.name ? job.technician.name : 'N/A'}</strong>
+                </div>
+
+                <!-- Job Status -->
+                <div class="mb-3">
+                    <i class="fas fa-tag px-2"></i>
+                    <span class="badge bg-primary">${job.job_model ? job.job_model.status : 'N/A'}</span>
+                </div>
+
+                <!-- Edit Button -->
+                <div class="d-flex justify-content-end">
+                     <a href="${ticketShowRoute.replace(':id', job.job_model ? job.job_model.id : '#')}">
+                     <button class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>`;
+
+                                // Append the jobHtml into the container
+                                $('.openJobTechDetails').append(jobHtml);
+                                
+                            });
+
+                           
+
                         }
+                         $('#allJobsTechnician').modal('show');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error: AJAX request failed. Status:', status, 'Error:',
+                            error);
                     }
-
-                    $children.each(function() {
-                        // Get the current inline styles
-                        var currentStyle = $(this).attr("style") || "";
-
-                        // Update or add the width with !important
-                        var updatedStyle = currentStyle.replace(/width:\s*\d+px\s*!important;/, '') + " width: " + newWidth + "px !important;";
-
-                        // Apply the updated styles
-                        $(this).attr("style", updatedStyle);
-                    });
-                    $maxWidth.each(function() {
-                        // Get the current inline styles
-                        var currentStyle = $(this).attr("style") || "";
-
-                        // Update or add the width with !important
-                        var updatedStyle = currentStyle.replace(/max-width:\s*\d+px\s*!important;/, '') + " max-width: " + newWidth + "px !important;";
-
-                        // Apply the updated styles
-                        $(this).attr("style", updatedStyle);
-                    });
-
-
                 });
             });
+            // Helper function to format the start and end time with the interval adjustment
+            function formatDateRange(startDate, endDate, interval) {
+                var startDateTime = moment(
+                    startDate); // Assuming moment.js is available
+                var endDateTime = moment(endDate);
+
+                // Add the interval if provided
+                if (interval) {
+                    startDateTime.add(interval, 'hours');
+                    endDateTime.add(interval, 'hours');
+                }
+
+                // Format the dates
+                return startDateTime.format('MMM D YYYY h:mm A') + ' - ' +
+                    endDateTime.format('h:mm A');
+            }
+        });
 
 
 
-            $(document).on("click", ".tech_profile", function (event) {
+        $(document).ready(function() {
+
+            // $(document).on("click", ".tech_extend_width", function(event) {
+            //     event.stopPropagation(); // Prevents the event from bubbling up
+
+            //     var className = $(this).data("class-name");
+            //     var jobClass = $(this).data("jobclass-name");
+            //     var maxWidth = $(this).data("max-width");
+
+
+            //     $("." + className).each(function() {
+            //         var $this = $(this);
+            //         var currentWidth = $this.css("width");
+
+            //         var $show_address = $this.find("." + 'show_address');
+            //         var $hide_address = $this.find("." + 'hide_address');
+
+            //         if (currentWidth === "400px") {
+            //             $this.attr("style", "width: 100px !important;");
+            //             if (!$this.hasClass("tech-header")) {
+            //                 $this.attr("style", "width: 100px !important; display: flex;");
+            //             }
+
+            //             $hide_address.attr("style", "display: block");
+            //             $show_address.attr("style", "display: none");
+            //         } else {
+            //             $this.attr("style", "width: 400px !important; display: flex;");
+            //             $hide_address.attr("style", "display: none");
+            //             $show_address.attr("style", "display: block");
+            //         }
+
+            //         // New functionality: Adjust width based on child count
+            //         var $children = $this.find("." + jobClass);
+            //         var $maxWidth = $this.find("." + maxWidth);
+            //         var childCount = $children.length;
+
+
+            //         if (childCount > 0) {
+            //              if (currentWidth === "400px") {
+            //                 var newWidth = 100 / childCount;
+            //             } else {
+            //                 var newWidth = 400 / childCount;
+            //             }
+            //         }
+
+            //         $children.each(function() {
+            //             // Get the current inline styles
+            //             var currentStyle = $(this).attr("style") || "";
+
+            //             // Update or add the width with !important
+            //             var updatedStyle = currentStyle.replace(/width:\s*\d+px\s*!important;/, '') + " width: " + newWidth + "px !important;";
+
+            //             // Apply the updated styles
+            //             $(this).attr("style", updatedStyle);
+            //         });
+            //         $maxWidth.each(function() {
+            //             // Get the current inline styles
+            //             var currentStyle = $(this).attr("style") || "";
+
+            //             // Update or add the width with !important
+            //             var updatedStyle = currentStyle.replace(/max-width:\s*\d+px\s*!important;/, '') + " max-width: " + newWidth + "px !important;";
+
+            //             // Apply the updated styles
+            //             $(this).attr("style", updatedStyle);
+            //         });
+
+
+            //     });
+            // });
+
+
+
+            $(document).on("click", ".tech_profile", function(event) {
                 // Check if the clicked element is an image
                 if ($(event.target).is("img")) {
                     return; // Exit if the clicked element is an image
@@ -104,7 +221,7 @@
             });
 
             // Click event handler for message-popup links
-            $(document).on("click", ".message-popup", function (event) {
+            $(document).on("click", ".message-popup", function(event) {
                 event.preventDefault(); // Prevent default link behavior
 
                 var messagePopup = $(this);
@@ -117,14 +234,15 @@
                 // Set position of the smscontainer to the right of popupContainer
                 smscontainer.css({
                     top: messagePopup.offset().top - 10 + "px",
-                    left: messagePopup.offset().left + $(".popupContainer").outerWidth() - 60 + "px", // Adjust 10 pixels for spacing
+                    left: messagePopup.offset().left + $(".popupContainer").outerWidth() - 60 +
+                        "px", // Adjust 10 pixels for spacing
                 });
 
                 smscontainer.fadeToggle();
             });
 
             // Click event handler for setting-popup links
-            $(document).on("click", ".setting-popup", function (event) {
+            $(document).on("click", ".setting-popup", function(event) {
                 event.preventDefault(); // Prevent default link behavior
 
                 var settingPopup = $(this);
@@ -137,14 +255,15 @@
                 // Set position of the settingcontainer to the right of popupContainer (next to the message container)
                 settingcontainer.css({
                     top: settingPopup.offset().top - 50 + "px",
-                    left: settingPopup.offset().left + $(".popupContainer").outerWidth() + $(".smscontainer").outerWidth() - 315 + "px", // Adjust for both containers
+                    left: settingPopup.offset().left + $(".popupContainer").outerWidth() + $(
+                        ".smscontainer").outerWidth() - 315 + "px", // Adjust for both containers
                 });
 
                 settingcontainer.fadeToggle();
             });
 
             // Click event listener for the document to close popups when clicking outside
-            $(document).click(function (event) {
+            $(document).click(function(event) {
                 var target = $(event.target);
 
                 if (
@@ -238,8 +357,8 @@
                             popupDiv.hide();
                         }
                     });
-                       // Hide the popup div when clicking outside of it
-                    $(document).on('click',function(e) {
+                    // Hide the popup div when clicking outside of it
+                    $(document).on('click', function(e) {
                         popupDiv.hide();
                     });
 
@@ -392,7 +511,7 @@
                         // Append the new job with the calculated width
                         var newJobElement = $('<div>', {
                             id: jobId,
-                            class: 'dts dragDiv stretchJob border width_job_'+newTechnicianId,
+                            class: 'dts dragDiv stretchJob border width_job_' + newTechnicianId,
                             css: {
                                 height: height_slot + 'px',
                                 position: 'relative',
@@ -474,13 +593,13 @@
                                                         newJobElement,
                                                         originalContainer,
                                                         originalJobCount
-                                                        );
+                                                    );
                                                 } else {
                                                     revertTempMove(
                                                         newJobElement,
                                                         originalContainer,
                                                         originalJobCount
-                                                        );
+                                                    );
                                                 }
                                             });
                                         }
@@ -534,7 +653,7 @@
                             });
                         }
 
-                       function revertTempMove(newJobElement, originalContainer, originalJobCount) {
+                        function revertTempMove(newJobElement, originalContainer, originalJobCount) {
                             // Remove the temporary new job element from the new container
                             newJobElement.remove();
 

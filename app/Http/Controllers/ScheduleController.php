@@ -193,7 +193,7 @@ class ScheduleController extends Controller
         }
 
         $current_time = Carbon::now($timezone_name)->format('h:i A');
-        $new_currentDate =  $currentDate->format('Y-m-d');
+        $new_currentDate = $currentDate->format('Y-m-d');
 
         $data = DB::table('job_assigned')
             ->select(
@@ -349,7 +349,7 @@ class ScheduleController extends Controller
         }
 
         $current_time = Carbon::now($timezone_name)->format('h:i A');
-        $new_currentDate =  $currentDate->format('Y-m-d');
+        $new_currentDate = $currentDate->format('Y-m-d');
 
         $data = DB::table('job_assigned')
             ->select(
@@ -2042,9 +2042,9 @@ class ScheduleController extends Controller
                 $query->whereBetween('start_date_time', [$startDateTime, $endDateTime])
                     ->orWhereBetween('end_date_time', [$startDateTime, $endDateTime])
                     ->orWhere(function ($query) use ($startDateTime, $endDateTime) {
-                        $query->where('start_date_time', '<=', $startDateTime)
-                            ->where('end_date_time', '>=', $endDateTime);
-                    });
+                    $query->where('start_date_time', '<=', $startDateTime)
+                        ->where('end_date_time', '>=', $endDateTime);
+                });
             })
             ->get();
 
@@ -2386,7 +2386,7 @@ class ScheduleController extends Controller
         }
 
         $current_time = Carbon::now($timezone_name)->format('h:i A');
-        $new_currentDate =  $currentDate->format('Y-m-d');
+        $new_currentDate = $currentDate->format('Y-m-d');
 
         $data = DB::table('job_assigned')
             ->select(
@@ -2546,7 +2546,7 @@ class ScheduleController extends Controller
         }
 
         $current_time = Carbon::now($timezone_name)->format('h:i A');
-        $new_currentDate =  $currentDate->format('Y-m-d');
+        $new_currentDate = $currentDate->format('Y-m-d');
 
         $data = DB::table('job_assigned')
             ->select(
@@ -2706,7 +2706,7 @@ class ScheduleController extends Controller
         }
 
         $current_time = Carbon::now($timezone_name)->format('h:i A');
-        $new_currentDate =  $currentDate->format('Y-m-d');
+        $new_currentDate = $currentDate->format('Y-m-d');
 
         $data = DB::table('job_assigned')
             ->select(
@@ -2795,7 +2795,7 @@ class ScheduleController extends Controller
 
         $timezone_name = Session::get('timezone_name');
         $time_interval = Session::get('time_interval');
-         $data = $request->all();
+        $data = $request->all();
         $currentDate = isset($data['date']) && !empty($data['date']) ? Carbon::parse($data['date']) : Carbon::now($timezone_name);
         $filterDate = $currentDate->format('Y-m-d');
         $previousDate = $currentDate->copy()->subDay()->format('Y-m-d');
@@ -2943,7 +2943,7 @@ class ScheduleController extends Controller
     {
         $timezone_name = Session::get('timezone_name');
         $time_interval = Session::get('time_interval');
-          $data = $request->all();
+        $data = $request->all();
         $currentDate = isset($data['date']) && !empty($data['date']) ? Carbon::parse($data['date']) : Carbon::now($timezone_name);
 
         if ($request->has('date')) {
@@ -2982,5 +2982,26 @@ class ScheduleController extends Controller
         $screen2 = view('schedule.demoSchedule', compact('technicians', 'schedules', 'formattedDate', 'hours', 'tomorrowDate', 'previousDate'))->render();
 
         return response()->json(['tbody' => $screen2]);
+    }
+    public function getALlJobDetails(Request $request)
+    {
+
+        $timezone_name = Session::get('timezone_name');
+        $time_interval = Session::get('time_interval');
+        $currentDate = Carbon::now($timezone_name);
+       $filterDate = Carbon::parse($request->date)->format('Y-m-d');
+
+
+        $schedule = Schedule::with([
+            'JobModel' => function ($query) {
+                $query->with(['user', 'addresscustomer']);  
+            },
+            'technician'
+        ])->where('technician_id', $request->tech_id)
+            ->where('start_date_time', 'LIKE', "%$filterDate%")
+            ->where('show_on_schedule', 'yes')->get();
+
+
+        return response()->json($schedule);
     }
 }

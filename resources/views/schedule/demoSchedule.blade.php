@@ -32,8 +32,8 @@
                         <div class="tech-header  tech_width_{{ $item->id }}" style="color: #123456;" data-tech-id="{{ $item->id }}">
                             <a href="#" class="link user_head_link tech_profile" style="color: #123456 !important;">
                                 <img src="{{ asset('public/images/Uploads/users/' . $item->id . '/' . $item->user_image) }}"
-                                    alt="user" width="48" class="rounded-circle tech_extend_width"
-                                    onerror="this.onerror=null; this.src='{{ $defaultImage }}';" data-class-name="tech_width_{{ $item->id }}"  data-jobClass-name="width_job_{{ $item->id }}" data-max-width="max_width_job{{ $item->id }}"/>
+                                    alt="user" width="48" class="rounded-circle tech_extend_width JobOpenModalButton"  data-tech-id="{{ $item->id }}"
+                                    onerror="this.onerror=null; this.src='{{ $defaultImage }}';" data-class-name="tech_width_{{ $item->id }}"  data-jobClass-name="width_job_{{ $item->id }}" data-max-width="max_width_job{{ $item->id }}"  data-date="{{ $formattedDate }}"/>
                                 <span class="tech-name tech_profile">
                                     @php
                                         $name = $item->name;
@@ -403,5 +403,25 @@
         <div class="col-12 bg-light py-2 px-3 mt-3 card-border mapStyle" id="mapSection1">
             <div id="mapScreen1" style="height: 550px; width: 100%;"></div>
         </div>
-
+        
+       <!-- Modal -->
+<div class="modal fade" id="allJobsTechnician" tabindex="-1" aria-labelledby="allJobsTechnicianLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header d-flex align-items-center">
+                <h4 class="modal-title" id="allJobsTechnicianLabel">Technician Jobs</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body row openJobTechDetails">
+               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light-danger text-danger font-medium waves-effect text-start"
+                    data-bs-dismiss="modal">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
