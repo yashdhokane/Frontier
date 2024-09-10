@@ -32,7 +32,7 @@
                         <div class="tech-header  tech_width_{{ $item->id }}" style="color: #123456;" data-tech-id="{{ $item->id }}">
                             <a href="#" class="link user_head_link tech_profile" style="color: #123456 !important;">
                                 <img src="{{ asset('public/images/Uploads/users/' . $item->id . '/' . $item->user_image) }}"
-                                    alt="user" width="48" class="rounded-circle tech_extend_width JobOpenModalButton"  data-tech-id="{{ $item->id }}"
+                                    alt="user" width="48" class="rounded-circle tech_extend_width JobOpenModalButton"  data-tech-id="{{ $item->id }}"  data-tech-name="{{ $item->name }}"
                                     onerror="this.onerror=null; this.src='{{ $defaultImage }}';" data-class-name="tech_width_{{ $item->id }}"  data-jobClass-name="width_job_{{ $item->id }}" data-max-width="max_width_job{{ $item->id }}"  data-date="{{ $formattedDate }}"/>
                                 <span class="tech-name tech_profile">
                                     @php
@@ -409,7 +409,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header d-flex align-items-center">
-                <h4 class="modal-title" id="allJobsTechnicianLabel">Technician Jobs</h4>
+                <h4 class="modal-title" id="allJobsTechnicianLabel46"></h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body row openJobTechDetails">

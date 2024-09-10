@@ -8,6 +8,7 @@
             $(document).on('click', '.JobOpenModalButton', function(event) {
                 event.preventDefault(); // Prevent the default anchor click behavior
                 var tech_id = $(this).data('tech-id');
+                var tech_name = $(this).data('tech-name');
                 var date = $(this).data('date');
                 $.ajax({
                     url: '{{ route('schedule.getALlJobDetails') }}',
@@ -19,6 +20,9 @@
                     success: function(response) {
                         var jobs = response;
                         var ticketShowRoute = "{{ route('tickets.show', ':id') }}"; // Placeholder for job ID
+                        $('#allJobsTechnicianLabel46').empty();
+                        $('#allJobsTechnicianLabel46').append(tech_name + ' - Dispatch Schedule');
+
                         $('.openJobTechDetails').empty();
 
 
@@ -82,7 +86,7 @@
                 <div class="d-flex justify-content-end">
                      <a href="${ticketShowRoute.replace(':id', job.job_model ? job.job_model.id : '#')}">
                      <button class="btn btn-outline-primary btn-sm">
-                        <i class="fas fa-edit"></i> Edit
+                        <i class="fas fa-view"></i> View
                     </button>
                     </a>
                 </div>
