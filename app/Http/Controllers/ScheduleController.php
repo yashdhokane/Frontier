@@ -8,6 +8,7 @@ use App\Models\BusinessHours;
 use App\Models\CustomerUserAddress;
 use App\Models\Event;
 use App\Models\JobActivity;
+use App\Models\JobAppliances;
 use App\Models\JobAssign;
 use App\Models\JobDetails;
 use App\Models\JobModel;
@@ -2989,12 +2990,12 @@ class ScheduleController extends Controller
         $timezone_name = Session::get('timezone_name');
         $time_interval = Session::get('time_interval');
         $currentDate = Carbon::now($timezone_name);
-       $filterDate = Carbon::parse($request->date)->format('Y-m-d');
+        $filterDate = Carbon::parse($request->date)->format('Y-m-d');
 
 
         $schedule = Schedule::with([
             'JobModel' => function ($query) {
-                $query->with(['user', 'addresscustomer']);  
+                $query->with(['user', 'addresscustomer']);
             },
             'technician'
         ])->where('technician_id', $request->tech_id)
@@ -3003,5 +3004,90 @@ class ScheduleController extends Controller
 
 
         return response()->json($schedule);
+    }
+    public function update_view_job(Request $request, $id)
+    {
+
+        $timezone_id = Session::get('timezone_id');
+        $timezone_name = Session::get('timezone_name');
+        $time_interval = Session::get('time_interval');
+
+        $date = $request->date;
+        $from = $request->from_time;
+        $to = $request->to_time;
+
+        $start_date = Carbon::parse($date . ' ' . $from);
+        $end_date = Carbon::parse($date . ' ' . $to);
+
+        $newFormattedDateTime = Carbon::parse($start_date)->subHours($time_interval)->format('Y-m-d H:i:s');
+        $newFormattedDateTime2 = Carbon::parse($end_date)->subHours($time_interval)->format('Y-m-d H:i:s');
+
+        $start_date_time = Carbon::parse($newFormattedDateTime);
+        $end_date_time = Carbon::parse($newFormattedDateTime2);
+
+        $job = JobModel::find($id);
+
+        $job->job_title = $request->job_title;
+        $job->priority = $request->priority;
+        $job->warranty_type = $request->job_type;
+        $job->warranty_ticket = $request->warranty_ticket;
+        $job->description = $request->job_description;
+
+        $job->save();
+
+        if (isset($request->date) && !empty($request->date)) {
+            // Update Schedule
+
+            $schedule = Schedule::where('job_id', $id)->first();
+
+            $schedule->start_date_time = $start_date_time;
+            $schedule->end_date_time = $end_date_time;
+            $schedule->added_by = auth()->user()->id;
+            $schedule->updated_by = auth()->user()->id;
+
+            $schedule->save();
+
+            // Update JobTechEvent
+
+            $job_tech = JobTechEvent::where('job_id', $id)->first();
+
+            $job_tech->job_schedule = $start_date_time;
+
+            $job_tech->save();
+
+            // Update JobAssign
+
+            $jobAssigned = JobAssign::where('job_id', $id)->where('assign_status', 'active')->first();
+
+            $jobAssigned->start_date_time = $start_date_time;
+            $jobAssigned->end_date_time = $end_date_time;
+            $jobAssigned->save();
+        }
+        $app_id = JobAppliances::where('job_id', $request->id)->first();
+
+        if (isset($request->exist_appl_id) && !empty($request->exist_appl_id)) {
+
+            $userappl = [
+                'appliance_id' => (isset($request->exist_appl_id) && !empty($request->exist_appl_id)) ? $request->exist_appl_id : '',
+            ];
+            $addAppliancesUser = DB::table('job_appliance')->where('job_id', $request->id)->update($userappl);
+        } else {
+
+            if (isset($request->appliances) && !empty($request->appliances) && isset($request->manufacturer) && !empty($request->manufacturer)) {
+                $jobDetails = [
+                    'appliance_type_id' => (isset($request->appliances) && !empty($request->appliances)) ? $request->appliances : '',
+                    'model_number' => (isset($request->model_number) && !empty($request->model_number)) ? $request->model_number : '',
+                    'serial_number' => (isset($request->serial_number) && !empty($request->serial_number)) ? $request->serial_number : '',
+                    'manufacturer_id' => (isset($request->manufacturer) && !empty($request->manufacturer)) ? $request->manufacturer : '',
+                ];
+
+                $userappliances = DB::table('user_appliances')->where('appliance_id', $app_id->appliance_id)->update($jobDetails);
+            }
+
+        }
+
+        return redirect()->back();
+
+
     }
 }

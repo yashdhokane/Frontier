@@ -32,7 +32,142 @@
     </script>
     <script>
         $(document).ready(function() {
-        
+            $('.update-job').hide();
+            $(document).on('click', '.edit-job', function() {
+                $('.update-job').toggle();
+            });
+            $(document).on('click', '#add_new_appl', function() {
+                $('#show_new_appl').toggle();
+            });
+            $(document).on('click', '#add_appliance', function() {
+                $('.appliancefield').show();
+                $('#add_appliance').hide();
+            });
+            $(document).on('click', '#add_manufaturer', function() {
+                $('.manufaturerfield').show();
+                $('#add_manufaturer').hide();
+            });
+
+            $(document).on('click', '#addAppl', function() {
+                var appliance = $('#new_appliance').val();
+                $.ajax({
+                    url: "{{ url('add/new/appliance') }}",
+                    data: {
+                        appliance: appliance,
+                    },
+                    method: 'get',
+                    success: function(data) {
+                        // Clear existing options
+                        $('#appliances').empty();
+                        // Check if data is not empty and has appliances array
+                        if (data && data && data.length > 0) {
+                            // Append new options
+                            $.each(data, function(index, value) {
+                                $('#appliances').append($('<option value="' + value
+                                    .appliance_type_id + '">' + value
+                                    .appliance_name + '</option>'));
+                            });
+                        }
+                        $('.appliancefield').hide();
+                        $('#add_appliance').show();
+                        $('#resp_text').text('Appliance added successfully');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+            });
+
+            $(document).on('click', '#addManu', function() {
+                var manufacturer = $('#new_manufacturer').val();
+                $.ajax({
+                    url: "{{ url('add/new/manufacturer') }}",
+                    data: {
+                        manufacturer: manufacturer,
+                    },
+                    method: 'get',
+                    success: function(data) {
+                        // Clear existing options
+                        $('#manufacturer').empty();
+                        // Check if data is not empty and has appliances array
+                        if (data && data && data.length > 0) {
+                            // Append new options
+                            $.each(data, function(index, value) {
+                                $('#manufacturer').append($('<option value="' + value
+                                    .id + '">' + value.manufacturer_name +
+                                    '</option>'));
+                            });
+                        }
+                        $('.manufaturerfield').hide();
+                        $('#add_manufaturer').show();
+                        $('#resp_texts').text('Manufacturer added successfully');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+            });
+
+            $('#warranty_ticket').hide();
+            $(document).on('change', '#check_job_type', function() {
+                if ($(this).val() == 'in_warranty') {
+                    $('#warranty_ticket').show();
+                } else {
+                    $('#warranty_ticket').hide();
+                }
+            });
+
+            $(document).on('input', '#check_serial_number', function() {
+                var serialNumber = $(this).val();
+                var baseUrl = "{{ url('/') }}";
+                if (serialNumber.length > 0) {
+                    $.ajax({
+                        url: '{{ route('check.serial.number') }}',
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            serial_number: serialNumber
+                        },
+                        success: function(response) {
+                            if (response.status === 'success') {
+                                var detailsHtml = '';
+                                response.data.forEach(function(detail) {
+                                    // Check if detail.user exists and is an array
+                                    if (Array.isArray(detail.user) && detail.user
+                                        .length > 0) {
+                                        // Iterate over the users if there are multiple
+                                        detail.user.forEach(function(user) {
+                                            detailsHtml += `
+                                                <div class="alert alert-success">
+                                                    <strong>Serial Number matches with existing customer <a href="${baseUrl}/customers/show/${user.id}">${user.name}</a></strong>
+                                                    <!-- Add more fields as necessary -->
+                                                </div>
+                                            `;
+                                        });
+                                    } else {
+                                        // Handle case where detail.user is not an array or is empty
+                                        detailsHtml += `
+                                                <div class="alert alert-warning">
+                                                    No user information available for appliance with serial number: ${detail.serial_number}
+                                                </div>
+                                            `;
+                                    }
+                                });
+                                $('#serial_number_detail').html(detailsHtml);
+                            } else {
+                                $('#serial_number_detail').html(`
+                                    <div class="alert alert-danger">
+                                        ${response.message}
+                                    </div>
+                                `);
+                            }
+                        }
+                    });
+                } else {
+                    $('#serial_number_detail').html('');
+                }
+            });
+
             $('#open_job_settings').hide();
 
             $(document).on('click', '#job_set_lnk', function(e) {

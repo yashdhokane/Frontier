@@ -9,7 +9,8 @@
     <div class="page-breadcrumb">
         <div class="row">
             <div class="col-md-10">
-                <h4 class="page-title">#{{ $technicians->id ?? null }} - {{ $technicians->job_title ?? null }}
+                <h4 class="page-title">#{{ $technicians->id ?? null }} - {{ $technicians->job_title ?? null }} <span
+                        class="mb-1 badge bg-warning">{{ $technicians->status ?? null }} </span>
                     @foreach ($jobFields as $jobField)
                         <span class="mb-1 badge bg-warning">{{ $jobField->field_name }}</span>
                     @endforeach
@@ -793,6 +794,262 @@
                     </div>
                 </div>
 
+                <div class="mb-4 update-job">
+                    <div class="card">
+                        <div class="card-body card-border shadow">
+                            <form action="{{ route('schedule.update_view_job', ['id' => $technicians->id]) }}"
+                                method="POST">
+                                @csrf
+                                <div class="d-flex mb-3">
+                                    <h4>Edit Job</h4> <button type="submit"
+                                        class="ms-3 btn btn-primary btn-xs">Update</button>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="mt-0 mb-3">
+                                            <h6 class="card-title required-field"><i class="fas fa fa-sticky-note"></i>
+                                                Job Title </h6>
+                                            <div class="form-group">
+                                                <input type="text" name="job_title" class="form-control job_title"
+                                                    placeholder="Add Job Title Here" aria-label=""
+                                                    value="{{ $technicians->job_title ?? null }}"
+                                                    aria-describedby="basic-addon1" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mt-0 mb-3">
+                                            <h6 class="card-title required-field"><i class="fas fa-user"></i> Priority
+                                            </h6>
+                                            <div class="form-group">
+                                                <select class="form-control priority" id="exampleFormControlSelect1"
+                                                    name="priority">
+                                                    <option value="high"
+                                                        {{ isset($technicians->priority) && $technicians->priority == 'high' ? 'selected' : '' }}>
+                                                        High</option>
+                                                    <option
+                                                        value="low"{{ isset($technicians->priority) && $technicians->priority == 'low' ? 'selected' : '' }}>
+                                                        Low</option>
+                                                    <option
+                                                        value="medium"{{ isset($technicians->priority) && $technicians->priority == 'medium' ? 'selected' : '' }}>
+                                                        Medium</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 d-flex gap-2">
+                                        <div>
+                                            <label for="newdatetime">Date </label>
+                                            <div>
+                                                <input type="date" class="form-control" id="newdate" name="date"
+                                                    value="{{ $date }}">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label for="newdatetime">From </label>
+
+                                            <select class="form-control " id="from_time" name="from_time">
+                                                @foreach ($timeIntervals as $intervals)
+                                                    @php
+                                                        $timeDisplay = date('h:i A', strtotime($intervals));
+                                                        $selected =
+                                                            substr($dateTime, 11, 5) === substr($intervals, 0, 5)
+                                                                ? 'selected'
+                                                                : '';
+                                                    @endphp
+                                                    <option value="{{ $intervals }}" {{ $selected }}>
+                                                        {{ $timeDisplay }}</option>
+                                                @endforeach
+                                            </select>
+
+                                        </div>
+                                        <div>
+                                            <label for="newdatetime">To </label>
+
+                                            <select class="form-control" id="to_time" name="to_time">
+                                                @foreach ($timeIntervals as $intervals)
+                                                    @php
+                                                        $timeDisplay = date('h:i A', strtotime($intervals));
+                                                        $selected =
+                                                            substr($dateTime, 11, 5) === substr($intervals, 0, 5)
+                                                                ? 'selected'
+                                                                : '';
+                                                    @endphp
+                                                    <option value="{{ $intervals }}" {{ $selected }}>
+                                                        {{ $timeDisplay }}</option>
+                                                @endforeach
+                                            </select>
+
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="col-md-6">
+                                        <div class="mt-0 mb-3">
+                                            <h6 class="card-title required-field"><i class="fas fa fa-check-square"></i>
+                                                Warranty </h6>
+                                            <div class="form-group d-flex gap-2">
+                                                <select class="form-control job_type" id="check_job_type"
+                                                    name="job_type">
+                                                    <option value="">Please select</option>
+                                                    <option value="in_warranty"
+                                                        {{ isset($technicians->warranty_type) && $technicians->warranty_type == 'in_warranty' ? 'selected' : '' }}>
+                                                        In Warranty</option>
+                                                    <option value="out_warranty"
+                                                        {{ isset($technicians->warranty_type) && $technicians->warranty_type == 'out_warranty' ? 'selected' : '' }}>
+                                                        Out of Warranty</option>
+                                                </select>
+                                                <input type="text" class="form-control"
+                                                    placeholder="Enter Warranty Number" name="warranty_ticket"
+                                                    id="warranty_ticket"
+                                                    value="{{ $technicians->warranty_ticket ?? null }}">
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-6">
+                                        <div class="mt-0 mb-3">
+                                            <h6 class="card-title required-field"><i
+                                                    class="fas fa fa-pencil-square-o"></i>
+                                                Job Description
+                                            </h6>
+                                            <div class="form-group">
+                                                <textarea class="form-control job_description" rows="2" placeholder="Add Description  Here..."
+                                                    name="job_description" required>{{ $technicians->description ?? null }}</textarea>
+                                                <small id="textHelp" class="form-text text-muted">All all details of the
+                                                    job goes here</small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <h6 class="card-title required-field"><i class="fas fa fa-television"></i>Select
+                                            Existing Appliances </h6>
+                                        <div class="form-group">
+                                            <select class="form-control appl_id exist_appl_id" id="appl_id"
+                                                name="exist_appl_id">
+                                                <option value=""> -- Select existig appliances -- </option>
+                                                @foreach ($job_appliance as $appliance)
+                                                    <option value="{{ $appliance->appliance_id ?? null }}"
+                                                        data-appName="{{ $appliance->appliance->appliance_name ?? null }}"
+                                                        data-manuName="{{ $appliance->manufacturer->manufacturer_name ?? null }}"
+                                                        data-model="{{ $appliance->model_number ?? null }}"
+                                                        data-serial="{{ $appliance->serial_number ?? null }}">
+                                                        {{ $appliance->appliance->appliance_name ?? null }} /
+                                                        {{ $appliance->manufacturer->manufacturer_name ?? null }} /
+                                                        {{ $appliance->model_number ?? null }} /
+                                                        {{ $appliance->serial_number ?? null }}
+                                                    </option>
+                                                @endforeach
+
+                                            </select>
+                                        </div>
+                                        <div class="text-info"><a class="pointer" id="add_new_appl">Add New</a></div>
+                                    </div>
+                                </div>
+
+                                <div class="row" style="display: none;" id="show_new_appl">
+                                    <div class="col-md-3">
+                                        <div class="mt-0 mb-3">
+                                            <h6 class="card-title required-field"><i class="fas fa fa-television"></i>
+                                                Appliances </h6>
+                                            <div class="form-group">
+                                                <select class="form-control appliances" id="appliances"
+                                                    name="appliances">
+                                                    <option value="">-- Select Appliances -- </option>
+                                                    @if (isset($appliances) && !empty($appliances))
+                                                        @foreach ($appliances as $value)
+                                                            <option value="{{ $value->appliance_type_id }}"
+                                                                data-name="{{ $value->appliance_name }}">
+                                                                {{ $value->appliance_name }}</option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                                <small class="text-success" id="resp_text"></small>
+                                                <div class="text-primary" style="cursor: pointer;" id="add_appliance">+
+                                                    Add New</div>
+                                                <div class="my-2 appliancefield" style="display:none;">
+                                                    <div class="d-flex ">
+                                                        <input type="text" name="new_appliance"
+                                                            class="form-control rounded-0 " id="new_appliance"
+                                                            placeholder="Add Appliances Here">
+                                                        <button type="button" class="btn btn-cyan p-0 px-2 rounded-0"
+                                                            style="cursor: pointer;" id="addAppl">Add</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mt-0 mb-3">
+                                            <h6 class="card-title required-field"><i class="fas fa fa-industry"></i>
+                                                Manufacturer </h6>
+                                            <div class="form-group">
+                                                <select class="form-control manufacturer" id="manufacturer"
+                                                    name="manufacturer">
+                                                    <option value="">-- Select Manufacturer -- </option>
+                                                    @if (isset($manufacturers) && !empty($manufacturers))
+                                                        @foreach ($manufacturers as $value)
+                                                            <option value="{{ $value->id }}"
+                                                                data-name="{{ $value->manufacturer_name }}">
+                                                                {{ $value->manufacturer_name }}
+                                                            </option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                                <small class="text-success" id="resp_texts"></small>
+                                                <div class="text-primary" style="cursor: pointer;" id="add_manufaturer">+
+                                                    Add New</div>
+                                                <div class="my-2 manufaturerfield" style="display:none;">
+                                                    <div class="d-flex ">
+                                                        <input type="text" name="new_manufacturer"
+                                                            class="form-control rounded-0 " id="new_manufacturer"
+                                                            placeholder="Add Manufaturer Here">
+                                                        <button type="button" class="btn btn-cyan p-0 px-2 rounded-0"
+                                                            style="cursor: pointer;" id="addManu">Add</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mt-0 mb-3">
+                                            <h6 class="card-title required-field"><i class="fas fa fa-hashtag"></i> Model
+                                                Number </h6>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control model_number"
+                                                    placeholder="Model Number here" aria-label=""
+                                                    aria-describedby="basic-addon1" name="model_number">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mt-0 mb-3">
+                                            <h6 class="card-title required-field required-field"><i
+                                                    class="fas fa fa-hashtag"></i>
+                                                Serial Number </h6>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control serial_number"
+                                                    placeholder="Serial Number here" aria-label=""
+                                                    aria-describedby="basic-addon1" name="serial_number"
+                                                    id="check_serial_number">
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 w-100" id="serial_number_detail"></div>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
                 <div class="mb-4">
                     <div class="card">
                         <div class="card-body card-border shadow">
@@ -802,7 +1059,7 @@
                                     <div class="mb-2">
                                         <h5 class="card-title uppercase">#{{ $technicians->id ?? null }} -
                                             {{ $technicians->job_title ?? null }} <span
-                                                class="mb-1 badge bg-warning">{{ $technicians->status ?? null }} </span>
+                                                class="mb-1 badge bg-info pointer edit-job"> Edit </span>
                                         </h5>
                                     </div>
                                 </div>
@@ -856,7 +1113,7 @@
                                     </div>
                                     <div class="mb-2"><strong>To:
                                         </strong>
-                                         {{ $modifyDateTime($technicians->schedule->end_date_time ?? null, $interval, 'add', 'H:i:a') }}
+                                        {{ $modifyDateTime($technicians->schedule->end_date_time ?? null, $interval, 'add', 'H:i:a') }}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -930,14 +1187,17 @@
                                 <div class="row mb-2 justify-content-end" style="border-top: 1px solid #343434;">
                                     <div class="col-md-5 mt-2 text-right" style="text-align: right;padding-right: 36px;">
 
-                                        <div class="price_h5">Subtotal: <span>${{ $technicians->subtotal ?? null }}</span>
+                                        <div class="price_h5">Subtotal:
+                                            <span>${{ $technicians->subtotal ?? null }}</span>
                                         </div>
-                                        <div class="price_h5">Discount: <span>${{ $technicians->discount ?? null }}</span>
+                                        <div class="price_h5">Discount:
+                                            <span>${{ $technicians->discount ?? null }}</span>
                                         </div>
                                         <div class="price_h5">Tax ({{ $technicians->tax_details ?? null }}):
                                             <span>${{ $technicians->tax ?? null }}</span>
                                         </div>
-                                        <div class="price_h5">Total: <span>${{ $technicians->gross_total ?? null }}</span>
+                                        <div class="price_h5">Total:
+                                            <span>${{ $technicians->gross_total ?? null }}</span>
                                         </div>
 
                                     </div>

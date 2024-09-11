@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BusinessHours;
 use App\Models\CustomerUserAddress;
 use App\Models\JobActivity;
 use App\Models\JobAssign;
@@ -33,9 +34,11 @@ use App\Models\JobProduct;
 
 use App\Models\JobServices;
 use App\Models\TimeZone;
+use App\Models\UserAppliances;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 
@@ -67,7 +70,6 @@ class TicketController extends Controller
         $status = JobModel::all();
         $tickets = JobModel::orderBy('created_at', 'desc')->get();
         $technicians = JobModel::with('jobdetailsinfo', 'jobassignname')->orderBy('created_at', 'desc')->get();
-
         return view('tickets.index', [
             'tickets' => $tickets,
             'status' => $status,
@@ -247,7 +249,35 @@ class TicketController extends Controller
         $jobAssigns = JobAssign::where('job_id', $id)->get();
         $assignedJobs = $jobAssigns->count() > 1 ? $jobAssigns : null;
 
-        return view('tickets.show', ['Payment' => $Payment, 'jobservice' => $jobservice, 'jobproduct' => $jobproduct, 'jobFields' => $jobFields, 'ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source, 'activity' => $activity, 'files' => $files, 'schedule' => $schedule, 'jobTimings' => $jobTimings, 'travelTime' => $travelTime, 'checkSchedule' => $checkSchedule, 'assignedJobs' => $assignedJobs]);
+        $job_appliance = UserAppliances::with('appliance', 'manufacturer')->where('user_id', $ticket->customer_id)->get();
+
+        $appliances = DB::table('appliance_type')->get();
+
+        $manufacturers = DB::table('manufacturers')->get();
+        $d = Carbon::parse($checkSchedule->start_date_time)->format('D F Y');
+        $t = Carbon::parse($checkSchedule->start_date_time)->format('h:i A');
+        $date = $d;
+        $time = str_replace(" ", ":00 ", $t);
+        $dateTime = Carbon::parse("$date $time");
+        $datenew = Carbon::parse($date);
+        $currentDay = $datenew->format('l');
+        $currentDayLower = strtolower($currentDay);
+        // Query the business hours for the given day
+        $hours = BusinessHours::where('day', $currentDayLower)->first();
+
+        // Calculate time intervals (example)
+        $timeIntervals = [];
+        $current = strtotime($hours->start_time);
+        $end = strtotime($hours->end_time);
+        $interval = 30 * 60; // Interval in seconds (30 minutes)
+
+        while ($current <= $end) {
+            $timeIntervals[] = date('H:i', $current);
+            $current += $interval;
+        }
+
+
+        return view('tickets.show', ['Payment' => $Payment, 'jobservice' => $jobservice, 'jobproduct' => $jobproduct, 'jobFields' => $jobFields, 'ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source, 'activity' => $activity, 'files' => $files, 'schedule' => $schedule, 'jobTimings' => $jobTimings, 'travelTime' => $travelTime, 'checkSchedule' => $checkSchedule, 'assignedJobs' => $assignedJobs, 'job_appliance' => $job_appliance, 'appliances' => $appliances, 'manufacturers' => $manufacturers, 'timeIntervals' => $timeIntervals, 'dateTime' => $dateTime, 'date' => $date]);
     }
 
     // Show the form for editing the specified ticket
