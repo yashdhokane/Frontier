@@ -794,7 +794,7 @@
                     </div>
                 </div>
 
-                <div class="mb-4 update-job">
+                <div class="mb-4 update-job" id="editdetails">
                     <div class="card">
                         <div class="card-body card-border shadow">
                             <form action="{{ route('schedule.update_view_job', ['id' => $technicians->id]) }}"

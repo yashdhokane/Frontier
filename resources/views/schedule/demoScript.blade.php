@@ -19,9 +19,11 @@
                     },
                     success: function(response) {
                         var jobs = response;
-                        var ticketShowRoute = "{{ route('tickets.show', ':id') }}"; // Placeholder for job ID
+                        var ticketShowRoute =
+                        "{{ route('tickets.show', ':id') }}"; // Placeholder for job ID
                         $('#allJobsTechnicianLabel46').empty();
-                        $('#allJobsTechnicianLabel46').append(tech_name + ' - Dispatch Schedule');
+                        $('#allJobsTechnicianLabel46').append(tech_name +
+                            ' - Dispatch Schedule');
 
                         $('.openJobTechDetails').empty();
 
@@ -37,72 +39,76 @@
                             jobs.forEach(function(job) {
                                 // Create the HTML structure for each job
                                 var jobHtml = `
-    <div class="col-md-4 mb-3">
-        <div class="card shadow-sm h-100">
-            <div class="card-body">
-                <!-- Job ID and Badge -->
-                <h5 class="card-title">
-                    <i class="fas fa-id-badge px-2"></i>
-                    <strong>Job #${job.job_model ? job.job_model.id : 'N/A'}</strong>
-                </h5>
+                                <div class="col-md-4 mb-3">
+                                    <div class="card shadow-sm h-100">
+                                        <div class="card-body">
+                                            <!-- Job ID and Badge -->
+                                            <h5 class="card-title">
+                                                <i class="fas fa-id-badge px-2"></i>
+                                                <strong>Job #${job.job_model ? job.job_model.id : 'N/A'}</strong>
+                                            </h5>
 
-                <!-- Job Time Range -->
-                <p class="text-muted">
-                    ${job.start_date_time && job.end_date_time ? formatDateRange(job.start_date_time, job.end_date_time, job.interval) : ''}
-                </p>
+                                            <!-- Job Time Range -->
+                                            <p class="text-muted">
+                                                ${job.start_date_time && job.end_date_time ? formatDateRange(job.start_date_time, job.end_date_time, job.interval) : ''}
+                                            </p>
 
-                <!-- Job Title -->
-                <div class="mb-2">
-                    <i class="fas fa-ticket-alt px-2"></i>
-                    <strong>${job.job_model ? job.job_model.job_title : 'N/A'}</strong>
-                </div>
+                                            <!-- Job Title -->
+                                            <div class="mb-2">
+                                                <i class="fas fa-ticket-alt px-2"></i>
+                                                <strong>${job.job_model ? job.job_model.job_title : 'N/A'}</strong>
+                                            </div>
 
-                <!-- User Info -->
-                <div class="mb-2">
-                    <i class="fas fa-user px-2"></i>
-                    <strong>${job.job_model && job.job_model.user ? job.job_model.user.name : 'N/A'}</strong>
-                    <p class="text-muted ps-4 m-0 ms-2">
-                        ${job.job_model && job.job_model.addresscustomer ? job.job_model.addresscustomer.address_line1 : 'N/A'},
-                        ${job.job_model && job.job_model.addresscustomer ? job.job_model.addresscustomer.zipcode : ''}
-                    </p>
-                    <p class="text-muted ps-4 m-0 ms-2">
-                        ${job.job_model && job.job_model.user ? job.job_model.user.mobile : 'N/A'}
-                    </p>
-                </div>
+                                            <!-- User Info -->
+                                            <div class="mb-2">
+                                                <i class="fas fa-user px-2"></i>
+                                                <strong>${job.job_model && job.job_model.user ? job.job_model.user.name : 'N/A'}</strong>
+                                                <p class="text-muted ps-4 m-0 ms-2">
+                                                    ${job.job_model && job.job_model.addresscustomer ? job.job_model.addresscustomer.address_line1 : 'N/A'},
+                                                    ${job.job_model && job.job_model.addresscustomer ? job.job_model.addresscustomer.zipcode : ''}
+                                                </p>
+                                                <p class="text-muted ps-4 m-0 ms-2">
+                                                    ${job.job_model && job.job_model.user ? job.job_model.user.mobile : 'N/A'}
+                                                </p>
+                                            </div>
 
-                <!-- Technician Info -->
-                <div class="mb-2">
-                    <i class="fas fa-user-secret px-2"></i>
-                    <strong>${job.technician && job.technician.name ? job.technician.name : 'N/A'}</strong>
-                </div>
+                                            <!-- Technician Info -->
+                                            <div class="mb-2">
+                                                <i class="fas fa-user-secret px-2"></i>
+                                                <strong>${job.technician && job.technician.name ? job.technician.name : 'N/A'}</strong>
+                                            </div>
 
-                <!-- Job Status -->
-                <div class="mb-3">
-                    <i class="fas fa-tag px-2"></i>
-                    <span class="badge bg-primary">${job.job_model ? job.job_model.status : 'N/A'}</span>
-                </div>
+                                            <!-- Job Status -->
+                                            <div class="mb-3">
+                                                <i class="fas fa-tag px-2"></i>
+                                                <span class="badge bg-primary">${job.job_model ? job.job_model.status : 'N/A'}</span>
+                                            </div>
 
-                <!-- Edit Button -->
-                <div class="d-flex justify-content-end">
-                     <a href="${ticketShowRoute.replace(':id', job.job_model ? job.job_model.id : '#')}">
-                     <button class="btn btn-outline-primary btn-sm">
-                        <i class="fas fa-view"></i> View
-                    </button>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>`;
+                                            <!-- Edit Button -->
+                                            <div class="d-flex justify-content-between">
+                                                <a href="${ticketShowRoute.replace(':id', job.job_model ? job.job_model.id : '#')}?mode=edit#editdetails">
+                                                <button class="btn btn-outline-primary btn-sm">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </button>
+                                                <a href="${ticketShowRoute.replace(':id', job.job_model ? job.job_model.id : '#')}">
+                                                <button class="btn btn-outline-primary btn-sm">
+                                                    View
+                                                </button>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`;
 
                                 // Append the jobHtml into the container
                                 $('.openJobTechDetails').append(jobHtml);
-                                
+
                             });
 
-                           
+
 
                         }
-                         $('#allJobsTechnician').modal('show');
+                        $('#allJobsTechnician').modal('show');
                     },
                     error: function(xhr, status, error) {
                         console.error('Error: AJAX request failed. Status:', status, 'Error:',

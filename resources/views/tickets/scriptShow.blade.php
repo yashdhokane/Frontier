@@ -32,7 +32,14 @@
     </script>
     <script>
         $(document).ready(function() {
-            $('.update-job').hide();
+            var urlParams = new URLSearchParams(window.location.search);
+            var mode = urlParams.get('mode');
+
+            if (mode === 'edit') {
+                $('.update-job').show(); // Show the element
+            } else {
+                $('.update-job').hide(); // Hide the element (optional)
+            }
             $(document).on('click', '.edit-job', function() {
                 $('.update-job').toggle();
             });
