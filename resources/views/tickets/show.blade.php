@@ -9,7 +9,8 @@
     <div class="page-breadcrumb">
         <div class="row">
             <div class="col-md-10">
-                <h4 class="page-title">#{{ $technicians->id ?? null }} - <span class="title_update">{{ $technicians->job_title ?? null }}</span> <span
+                <h4 class="page-title">#{{ $technicians->id ?? null }} - <span
+                        class="title_update">{{ $technicians->job_title ?? null }}</span> <span
                         class="mb-1 badge bg-warning">{{ $technicians->status ?? null }} </span>
                     @foreach ($jobFields as $jobField)
                         <span class="mb-1 badge bg-warning">{{ $jobField->field_name }}</span>
@@ -435,9 +436,9 @@
                                                     }
                                                 @endphp
                                                 <span class="enr_date">
-                                                @if ($time_schedule)
-                                                    {{ $time_schedule->format('M d Y g:i a') }}
-                                                @endif
+                                                    @if ($time_schedule)
+                                                        {{ $time_schedule->format('M d Y g:i a') }}
+                                                    @endif
                                                 </span>
                                             </div>
                                         </div>
@@ -804,8 +805,7 @@
                                 method="POST">
                                 @csrf
                                 <div class="d-flex mb-3">
-                                    <h4>Edit Job</h4> <button type="submit"
-                                        class="ms-3 btn btn-primary btn-xs">Update</button>
+                                    <h4>Edit Job</h4>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-8">
@@ -813,9 +813,9 @@
                                             <h6 class="card-title required-field"><i class="fas fa fa-sticky-note"></i>
                                                 Job Title </h6>
                                             <div class="form-group">
-                                                <input type="text" name="job_title" id="job_title" class="form-control job_title"
-                                                    placeholder="Add Job Title Here" aria-label=""
-                                                    value="{{ $technicians->job_title ?? null }}"
+                                                <input type="text" name="job_title" id="job_title"
+                                                    class="form-control job_title" placeholder="Add Job Title Here"
+                                                    aria-label="" value="{{ $technicians->job_title ?? null }}"
                                                     aria-describedby="basic-addon1" required>
                                             </div>
                                         </div>
@@ -857,7 +857,7 @@
                                                     @php
                                                         $timeDisplay = date('h:i A', strtotime($intervals));
                                                         $selected =
-                                                            substr($dateTime, 11, 5) === substr($intervals, 0, 5)
+                                                            isset($fromDate) && $fromDate == $timeDisplay
                                                                 ? 'selected'
                                                                 : '';
                                                     @endphp
@@ -875,9 +875,7 @@
                                                     @php
                                                         $timeDisplay = date('h:i A', strtotime($intervals));
                                                         $selected =
-                                                            substr($dateTime, 11, 5) === substr($intervals, 0, 5)
-                                                                ? 'selected'
-                                                                : '';
+                                                            isset($toDate) && $toDate == $timeDisplay ? 'selected' : '';
                                                     @endphp
                                                     <option value="{{ $intervals }}" {{ $selected }}>
                                                         {{ $timeDisplay }}</option>
@@ -904,17 +902,19 @@
                                                         {{ isset($technicians->warranty_type) && $technicians->warranty_type == 'out_warranty' ? 'selected' : '' }}>
                                                         Out of Warranty</option>
                                                 </select>
-                                                <input type="text" class="form-control"
-                                                    placeholder="Enter Warranty Number" name="warranty_ticket"
-                                                    id="warranty_ticket"
-                                                    value="{{ $technicians->warranty_ticket ?? null }}">
+                                                @if (isset($technicians->warranty_type) && $technicians->warranty_type == 'in_warranty')
+                                                    <input type="text" class="form-control"
+                                                        placeholder="Enter Warranty Number" name="warranty_ticket"
+                                                        id="warranty_ticket"
+                                                        value="{{ $technicians->warranty_ticket ?? null }}">
+                                                @endif
 
                                             </div>
                                         </div>
                                     </div>
 
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <div class="mt-0 mb-3">
                                             <h6 class="card-title required-field"><i
                                                     class="fas fa fa-pencil-square-o"></i>
@@ -941,7 +941,8 @@
                                                         data-appName="{{ $appliance->appliance->appliance_name ?? null }}"
                                                         data-manuName="{{ $appliance->manufacturer->manufacturer_name ?? null }}"
                                                         data-model="{{ $appliance->model_number ?? null }}"
-                                                        data-serial="{{ $appliance->serial_number ?? null }}">
+                                                        data-serial="{{ $appliance->serial_number ?? null }}"
+                                                        {{ isset($technicians->JobAppliances) && $technicians->JobAppliances->appliance_id == $appliance->appliance_id ? 'selected' : '' }}>
                                                         {{ $appliance->appliance->appliance_name ?? null }} /
                                                         {{ $appliance->manufacturer->manufacturer_name ?? null }} /
                                                         {{ $appliance->model_number ?? null }} /
@@ -967,7 +968,8 @@
                                                     @if (isset($appliances) && !empty($appliances))
                                                         @foreach ($appliances as $value)
                                                             <option value="{{ $value->appliance_type_id }}"
-                                                                data-name="{{ $value->appliance_name }}">
+                                                                data-name="{{ $value->appliance_name }}"
+                                                                {{ isset($technicians->JobAppliances) && $technicians->JobAppliances->Appliances->appliance_type_id == $value->appliance_type_id ? 'selected' : '' }}>
                                                                 {{ $value->appliance_name }}</option>
                                                         @endforeach
                                                     @endif
@@ -998,7 +1000,8 @@
                                                     @if (isset($manufacturers) && !empty($manufacturers))
                                                         @foreach ($manufacturers as $value)
                                                             <option value="{{ $value->id }}"
-                                                                data-name="{{ $value->manufacturer_name }}">
+                                                                data-name="{{ $value->manufacturer_name }}"
+                                                                {{ isset($technicians->JobAppliances) && $technicians->JobAppliances->Appliances->manufacturer_id == $value->id ? 'selected' : '' }}>
                                                                 {{ $value->manufacturer_name }}
                                                             </option>
                                                         @endforeach
@@ -1026,7 +1029,8 @@
                                             <div class="form-group">
                                                 <input type="text" class="form-control model_number"
                                                     placeholder="Model Number here" aria-label=""
-                                                    aria-describedby="basic-addon1" name="model_number">
+                                                    aria-describedby="basic-addon1" name="model_number"
+                                                    value="{{ $technicians->JobAppliances->Appliances->model_number }}">
                                             </div>
                                         </div>
                                     </div>
@@ -1039,14 +1043,19 @@
                                                 <input type="text" class="form-control serial_number"
                                                     placeholder="Serial Number here" aria-label=""
                                                     aria-describedby="basic-addon1" name="serial_number"
-                                                    id="check_serial_number">
+                                                    id="check_serial_number"
+                                                    value="{{ $technicians->JobAppliances->Appliances->serial_number }}">
                                             </div>
 
                                         </div>
                                     </div>
                                     <div class="col-md-3 w-100" id="serial_number_detail"></div>
                                 </div>
+                                <button type="submit" class="ms-3 btn btn-primary btn-xs float-end"
+                                    data-action="save-close">Save & Close</button>
 
+                                <button type="submit" class="ms-3 btn btn-primary btn-xs float-end"
+                                    data-action="save">Save</button>
                             </form>
 
                         </div>
@@ -1061,8 +1070,8 @@
                                 <div class="col-md-7">
                                     <div class="mb-2">
                                         <h5 class="card-title uppercase ">#{{ $technicians->id ?? null }} -
-                                           <span class="title_update"> {{ $technicians->job_title ?? null }} </span> <span
-                                                class="mb-1 badge bg-info pointer edit-job"> Edit </span>
+                                            <span class="title_update"> {{ $technicians->job_title ?? null }} </span>
+                                            <span class="mb-1 badge bg-info pointer edit-job"> Edit </span>
                                         </h5>
                                     </div>
                                 </div>
@@ -1103,44 +1112,54 @@
                                             $durationInMinutes = $technicians->jobassignname->duration ?? null;
                                             $durationInHours = $durationInMinutes / 60; // Convert minutes to hours
                                             ?>
-                                            
                                         @endif
                                         <span class="duration_update">{{ $durationInHours ?? null }} Hours</span>
                                     </div>
-                                    <div class="mb-2"><strong>Priority:</strong> <span class="priority_update">{{ $technicians->priority ?? null }}</span>
+                                    <div class="mb-2"><strong>Priority:</strong> <span
+                                            class="priority_update">{{ $technicians->priority ?? null }}</span>
                                     </div>
                                     <div class="mb-2"><strong>Date:
-                                        </strong> <span class="date_update">{{ \Carbon\Carbon::parse($technicians->schedule->start_date_time ?? null)->format('jS F Y') }}</span>
+                                        </strong> <span
+                                            class="date_update">{{ \Carbon\Carbon::parse($technicians->schedule->start_date_time ?? null)->format('jS F Y') }}</span>
                                     </div>
                                     <div class="mb-2"><strong>From:
                                         </strong>
-                                       <span class="from_update"> {{ $modifyDateTime($technicians->schedule->start_date_time ?? null, $interval, 'add', 'H:i:a') }}</span>
+                                        <span class="from_update">
+                                            {{ $modifyDateTime($technicians->schedule->start_date_time ?? null, $interval, 'add', 'h:i: A') }}</span>
                                     </div>
                                     <div class="mb-2"><strong>To:
                                         </strong>
-                                        <span class="to_update">{{ $modifyDateTime($technicians->schedule->end_date_time ?? null, $interval, 'add', 'H:i:a') }}</span>
+                                        <span
+                                            class="to_update">{{ $modifyDateTime($technicians->schedule->end_date_time ?? null, $interval, 'add', 'h:i: A') }}</span>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-2"><strong>Warranty Type: </strong>
-                                     <span class="warranty_update">   {{ $technicians->warranty_type ?? null }}</span>
+                                        <span class="warranty_update"> {{ $technicians->warranty_type ?? null }}</span>
                                     </div>
                                     @if ($technicians->warranty_type === 'in_warranty')
                                         <div class="mb-2"><strong>Warranty Number: </strong>
-                                           <span class="warranty_ticket_update"> {{ $technicians->warranty_ticket ?? null }}</span>
+                                            <span class="warranty_ticket_update">
+                                                {{ $technicians->warranty_ticket ?? null }}</span>
                                         </div>
                                     @endif
 
                                     <div class="mb-2"><strong>Appliances: </strong>
-                                        <span class="appliance_update">{{ $technicians->JobAppliances->Appliances->appliance->appliance_name ?? null }}</span>
+                                        <span
+                                            class="appliance_update">{{ $technicians->JobAppliances->Appliances->appliance->appliance_name ?? null }}</span>
                                     </div>
                                     <div class="mb-2"><strong>Manufacturer:</strong>
-                                        <span class="manufacturer_update">{{ $technicians->JobAppliances->Appliances->manufacturer->manufacturer_name ?? null }}</span>
+                                        <span
+                                            class="manufacturer_update">{{ $technicians->JobAppliances->Appliances->manufacturer->manufacturer_name ?? null }}</span>
                                     </div>
                                     <div class="mb-2"><strong>Model Number:
-                                        </strong><span class="model_update">{{ $technicians->JobAppliances->Appliances->model_number ?? null }}</span></div>
+                                        </strong><span
+                                            class="model_update">{{ $technicians->JobAppliances->Appliances->model_number ?? null }}</span>
+                                    </div>
                                     <div class="mb-2"><strong>Serial Number: </strong>
-                                        <span class="serial_update">{{ $technicians->JobAppliances->Appliances->serial_number ?? null }}</span> </div>
+                                        <span
+                                            class="serial_update">{{ $technicians->JobAppliances->Appliances->serial_number ?? null }}</span>
+                                    </div>
                                 </div>
                             </div>
 

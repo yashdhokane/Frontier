@@ -254,9 +254,9 @@ class TicketController extends Controller
         $appliances = DB::table('appliance_type')->get();
 
         $manufacturers = DB::table('manufacturers')->get();
-        $d = Carbon::parse($checkSchedule->start_date_time)->format('D F Y');
+        $d = Carbon::parse($checkSchedule->start_date_time)->format('Y-m-d');
         $t = Carbon::parse($checkSchedule->start_date_time)->format('h:i A');
-        $date = $d;
+        $date =$d;
         $time = str_replace(" ", ":00 ", $t);
         $dateTime = Carbon::parse("$date $time");
         $datenew = Carbon::parse($date);
@@ -276,8 +276,24 @@ class TicketController extends Controller
             $current += $interval;
         }
 
+         $int = Session::get('time_interval');
 
-        return view('tickets.show', ['Payment' => $Payment, 'jobservice' => $jobservice, 'jobproduct' => $jobproduct, 'jobFields' => $jobFields, 'ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source, 'activity' => $activity, 'files' => $files, 'schedule' => $schedule, 'jobTimings' => $jobTimings, 'travelTime' => $travelTime, 'checkSchedule' => $checkSchedule, 'assignedJobs' => $assignedJobs, 'job_appliance' => $job_appliance, 'appliances' => $appliances, 'manufacturers' => $manufacturers, 'timeIntervals' => $timeIntervals, 'dateTime' => $dateTime, 'date' => $date]);
+        $startDateTime = $checkSchedule->start_date_time? Carbon::parse($checkSchedule->start_date_time): null;
+        $startDateTime2 = $checkSchedule->end_date_time? Carbon::parse($checkSchedule->end_date_time): null;
+         if ($startDateTime && isset($int)) {
+            // Add the interval to the parsed time
+            $startDateTime->addHours($int);
+        }
+
+        if ($startDateTime2 && isset($int)) {
+            // Add the interval to the parsed time
+            $startDateTime2->addHours($int);
+        }
+
+        $fromDate = $startDateTime ? $startDateTime->format('h:i A') : null;
+        $toDate = $startDateTime2 ? $startDateTime2->format('h:i A') : null;
+
+        return view('tickets.show', ['Payment' => $Payment, 'jobservice' => $jobservice, 'jobproduct' => $jobproduct, 'jobFields' => $jobFields, 'ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source, 'activity' => $activity, 'files' => $files, 'schedule' => $schedule, 'jobTimings' => $jobTimings, 'travelTime' => $travelTime, 'checkSchedule' => $checkSchedule, 'assignedJobs' => $assignedJobs, 'job_appliance' => $job_appliance, 'appliances' => $appliances, 'manufacturers' => $manufacturers, 'timeIntervals' => $timeIntervals, 'dateTime' => $dateTime, 'date' => $date, 'fromDate' => $fromDate, 'toDate' => $toDate]);
     }
 
     // Show the form for editing the specified ticket

@@ -33,6 +33,13 @@
     <script>
         $(document).ready(function() {
 
+             var buttonAction = ''; // Variable to store button action
+
+                // Detect which button was clicked
+                $('button[type="submit"]').on('click', function() {
+                    buttonAction = $(this).data('action'); // Store the action of the clicked button
+                });
+
             $('#editJobForm').on('submit', function(event) {
                 event.preventDefault(); // Prevent default form submission
 
@@ -95,7 +102,14 @@
                           // Update enr_date
                         $('.enr_date').empty().append(response.enr_date);
 
-                        $('.update-job').hide();
+                        // Check if "Save & Close" button was clicked
+                        if (buttonAction === 'save-close') {
+                            // Hide the .update-job element
+                            $('.update-job').hide();
+                        }
+
+                        // Clear buttonAction after form submission
+                        buttonAction = '';
 
                     },
                     error: function(xhr) {
@@ -196,7 +210,6 @@
                 });
             });
 
-            $('#warranty_ticket').hide();
             $(document).on('change', '#check_job_type', function() {
                 if ($(this).val() == 'in_warranty') {
                     $('#warranty_ticket').show();
