@@ -3085,9 +3085,43 @@ class ScheduleController extends Controller
             }
 
         }
+        $interval = Session::get('time_interval');
 
-        return redirect()->back();
 
+        $job = JobModel::with('jobassignname', 'JobTechEvent', 'JobAssign', 'usertechnician', 'addedby', 'jobfieldname', 'JobAppliances.Appliances.manufacturer', 'JobAppliances.Appliances.appliance')->find($id);
 
+        $startDateTime = $job->schedule->start_date_time
+            ? Carbon::parse($job->schedule->start_date_time)
+            : null;
+
+        if ($startDateTime && isset($interval)) {
+            // Add the interval to the parsed time
+            $startDateTime->addHours($interval);
+        }
+        $startDateTime2 = $job->schedule->end_date_time
+            ? Carbon::parse($job->schedule->end_date_time)
+            : null;
+
+        if ($startDateTime2 && isset($interval)) {
+            // Add the interval to the parsed time
+            $startDateTime2->addHours($interval);
+        }
+
+        // Format the date if it exists
+        $formattedDateTime = $startDateTime ? $startDateTime->format('jS F Y, h:i A') : null;
+        $enr_date = $startDateTime ? $startDateTime->format('M d Y g:i a') : null;
+
+        $newDate = $startDateTime ? $startDateTime->format('jS F Y') : null;
+        $fromDate = $startDateTime ? $startDateTime->format('H:i:a') : null;
+        $toDate = $startDateTime2 ? $startDateTime2->format('H:i:a') : null;
+
+        return response()->json([
+            'job' => $job,
+            'startDateTime' => $formattedDateTime,
+            'newDate' => $newDate,
+            'fromDate' => $fromDate,
+            'toDate' => $toDate,
+            'enr_date' => $enr_date,
+        ]);
     }
 }

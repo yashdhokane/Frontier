@@ -32,6 +32,87 @@
     </script>
     <script>
         $(document).ready(function() {
+
+            $('#editJobForm').on('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission
+
+                // Collect form data
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: $(this).attr('action'), // Form action URL
+                    type: 'POST',
+                    data: formData,
+                    processData: false,  // Required to send FormData correctly
+                    contentType: false,  // Required to send FormData correctly
+                
+                    success: function(response) {
+                        var job = response.job;
+                          // Update job title
+                        $('.title_update').empty().append( job.job_title );
+
+                          // Update full date
+                        var date = response.startDateTime;
+                        $('.fulldate_update').empty().append('<i class="fa fa-calendar"></i> ' + date);
+
+                          // Update description_update
+                        $('.description_update').empty().append(job.description);
+
+                          // Update description_update
+                          var duration = job.jobassignname.duration / 60; 
+                        $('.duration_update').empty().append(duration + ' Hours');
+
+                          // Update priority_update
+                        $('.priority_update').empty().append(job.priority);
+
+                          // Update date_update
+                        $('.date_update').empty().append(response.newDate);
+
+                          // Update from_update
+                        $('.from_update').empty().append(response.fromDate);
+
+                          // Update to_update
+                        $('.to_update').empty().append(response.toDate);
+
+                          // Update warranty_update
+                        $('.warranty_update').empty().append(job.warranty_type);
+
+                          // Update warranty_ticket_update
+                        $('.warranty_ticket_update').empty().append(job.warranty_ticket);
+
+                          // Update appliance_update
+                        $('.appliance_update').empty().append(job.job_appliances.appliances.appliance.appliance_name);
+
+                          // Update manufacturer_update
+                        $('.manufacturer_update').empty().append(job.job_appliances.appliances.manufacturer.manufacturer_name);
+
+                          // Update model_update
+                        $('.model_update').empty().append(job.job_appliances.appliances.model_number);
+
+                          // Update serial_update
+                        $('.serial_update').empty().append(job.job_appliances.appliances.serial_number);
+
+                          // Update enr_date
+                        $('.enr_date').empty().append(response.enr_date);
+
+                        $('.update-job').hide();
+
+                    },
+                    error: function(xhr) {
+                        // Handle error response (e.g., display error messages)
+                        alert('Error updating job. Please try again.');
+                    },
+                    complete: function() {
+                        // Re-enable the submit button
+                        $('button[type="submit"]').prop('disabled', false);
+                    }
+                });
+            });
+
+
+
+
+
             var urlParams = new URLSearchParams(window.location.search);
             var mode = urlParams.get('mode');
 

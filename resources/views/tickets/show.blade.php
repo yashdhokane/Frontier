@@ -9,7 +9,7 @@
     <div class="page-breadcrumb">
         <div class="row">
             <div class="col-md-10">
-                <h4 class="page-title">#{{ $technicians->id ?? null }} - {{ $technicians->job_title ?? null }} <span
+                <h4 class="page-title">#{{ $technicians->id ?? null }} - <span class="title_update">{{ $technicians->job_title ?? null }}</span> <span
                         class="mb-1 badge bg-warning">{{ $technicians->status ?? null }} </span>
                     @foreach ($jobFields as $jobField)
                         <span class="mb-1 badge bg-warning">{{ $jobField->field_name }}</span>
@@ -434,9 +434,11 @@
                                                         $time_schedule->addHours($interval);
                                                     }
                                                 @endphp
+                                                <span class="enr_date">
                                                 @if ($time_schedule)
                                                     {{ $time_schedule->format('M d Y g:i a') }}
                                                 @endif
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -797,7 +799,8 @@
                 <div class="mb-4 update-job" id="editdetails">
                     <div class="card">
                         <div class="card-body card-border shadow">
-                            <form action="{{ route('schedule.update_view_job', ['id' => $technicians->id]) }}"
+                            <form id="editJobForm"
+                                action="{{ route('schedule.update_view_job', ['id' => $technicians->id]) }}"
                                 method="POST">
                                 @csrf
                                 <div class="d-flex mb-3">
@@ -810,7 +813,7 @@
                                             <h6 class="card-title required-field"><i class="fas fa fa-sticky-note"></i>
                                                 Job Title </h6>
                                             <div class="form-group">
-                                                <input type="text" name="job_title" class="form-control job_title"
+                                                <input type="text" name="job_title" id="job_title" class="form-control job_title"
                                                     placeholder="Add Job Title Here" aria-label=""
                                                     value="{{ $technicians->job_title ?? null }}"
                                                     aria-describedby="basic-addon1" required>
@@ -1050,36 +1053,37 @@
                     </div>
                 </div>
 
-                <div class="mb-4">
+                <div class="mb-4" id="job-details-container">
                     <div class="card">
                         <div class="card-body card-border shadow">
 
                             <div class="row">
                                 <div class="col-md-7">
                                     <div class="mb-2">
-                                        <h5 class="card-title uppercase">#{{ $technicians->id ?? null }} -
-                                            {{ $technicians->job_title ?? null }} <span
+                                        <h5 class="card-title uppercase ">#{{ $technicians->id ?? null }} -
+                                           <span class="title_update"> {{ $technicians->job_title ?? null }} </span> <span
                                                 class="mb-1 badge bg-info pointer edit-job"> Edit </span>
                                         </h5>
                                     </div>
                                 </div>
                                 <div class="col-md-5">
                                     <div class="mb-2">
-                                        <h5 class="card-title uppercase"><i class="fa fa-calendar"
+
+
+                                        @php
+
+                                            // Parse the original time if it exists
+                                            $startDateTime = $technicians->schedule->start_date_time
+                                                ? Carbon::parse($technicians->schedule->start_date_time)
+                                                : null;
+
+                                            if ($startDateTime && $interval) {
+                                                // Add the interval to the parsed time
+                                                $startDateTime->addHours($interval);
+                                            }
+                                        @endphp
+                                        <h5 class="card-title uppercase fulldate_update"><i class="fa fa-calendar"
                                                 aria-hidden="true"></i>
-
-                                            @php
-
-                                                // Parse the original time if it exists
-                                                $startDateTime = $technicians->schedule->start_date_time
-                                                    ? Carbon::parse($technicians->schedule->start_date_time)
-                                                    : null;
-
-                                                if ($startDateTime && $interval) {
-                                                    // Add the interval to the parsed time
-                                                    $startDateTime->addHours($interval);
-                                                }
-                                            @endphp
 
                                             @if ($startDateTime)
                                                 {{ $startDateTime->format('jS F Y, h:i A') }}
@@ -1089,7 +1093,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <p>{{ $technicians->description ?? null }}</p>
+                            <p class="description_update">{{ $technicians->description ?? null }}</p>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-2">
@@ -1099,43 +1103,44 @@
                                             $durationInMinutes = $technicians->jobassignname->duration ?? null;
                                             $durationInHours = $durationInMinutes / 60; // Convert minutes to hours
                                             ?>
-                                            {{ $durationInHours ?? null }} Hours
+                                            
                                         @endif
+                                        <span class="duration_update">{{ $durationInHours ?? null }} Hours</span>
                                     </div>
-                                    <div class="mb-2"><strong>Priority:</strong> {{ $technicians->priority ?? null }}
+                                    <div class="mb-2"><strong>Priority:</strong> <span class="priority_update">{{ $technicians->priority ?? null }}</span>
                                     </div>
                                     <div class="mb-2"><strong>Date:
-                                        </strong>{{ \Carbon\Carbon::parse($technicians->schedule->start_date_time ?? null)->format('jS F Y') }}
+                                        </strong> <span class="date_update">{{ \Carbon\Carbon::parse($technicians->schedule->start_date_time ?? null)->format('jS F Y') }}</span>
                                     </div>
                                     <div class="mb-2"><strong>From:
                                         </strong>
-                                        {{ $modifyDateTime($technicians->schedule->start_date_time ?? null, $interval, 'add', 'H:i:a') }}
+                                       <span class="from_update"> {{ $modifyDateTime($technicians->schedule->start_date_time ?? null, $interval, 'add', 'H:i:a') }}</span>
                                     </div>
                                     <div class="mb-2"><strong>To:
                                         </strong>
-                                        {{ $modifyDateTime($technicians->schedule->end_date_time ?? null, $interval, 'add', 'H:i:a') }}
+                                        <span class="to_update">{{ $modifyDateTime($technicians->schedule->end_date_time ?? null, $interval, 'add', 'H:i:a') }}</span>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-2"><strong>Warranty Type: </strong>
-                                        {{ $technicians->warranty_type ?? null }}
+                                     <span class="warranty_update">   {{ $technicians->warranty_type ?? null }}</span>
                                     </div>
                                     @if ($technicians->warranty_type === 'in_warranty')
                                         <div class="mb-2"><strong>Warranty Number: </strong>
-                                            {{ $technicians->warranty_ticket ?? null }}
+                                           <span class="warranty_ticket_update"> {{ $technicians->warranty_ticket ?? null }}</span>
                                         </div>
                                     @endif
 
                                     <div class="mb-2"><strong>Appliances: </strong>
-                                        {{ $technicians->JobAppliances->Appliances->appliance->appliance_name ?? null }}
+                                        <span class="appliance_update">{{ $technicians->JobAppliances->Appliances->appliance->appliance_name ?? null }}</span>
                                     </div>
                                     <div class="mb-2"><strong>Manufacturer:</strong>
-                                        {{ $technicians->JobAppliances->Appliances->manufacturer->manufacturer_name ?? null }}
+                                        <span class="manufacturer_update">{{ $technicians->JobAppliances->Appliances->manufacturer->manufacturer_name ?? null }}</span>
                                     </div>
                                     <div class="mb-2"><strong>Model Number:
-                                        </strong>{{ $technicians->JobAppliances->Appliances->model_number ?? null }}</div>
+                                        </strong><span class="model_update">{{ $technicians->JobAppliances->Appliances->model_number ?? null }}</span></div>
                                     <div class="mb-2"><strong>Serial Number: </strong>
-                                        {{ $technicians->JobAppliances->Appliances->serial_number ?? null }} </div>
+                                        <span class="serial_update">{{ $technicians->JobAppliances->Appliances->serial_number ?? null }}</span> </div>
                                 </div>
                             </div>
 
