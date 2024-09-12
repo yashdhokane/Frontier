@@ -32,13 +32,19 @@
     </script>
     <script>
         $(document).ready(function() {
+            // Function to check URL for mode=edit
+            $('#save-close-btn').hide();
+            var urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('mode') === 'edit') {
+                $('#save-close-btn').show(); // Show Save & Close button
+            }
 
-             var buttonAction = ''; // Variable to store button action
+            var buttonAction = ''; // Variable to store button action
 
-                // Detect which button was clicked
-                $('button[type="submit"]').on('click', function() {
-                    buttonAction = $(this).data('action'); // Store the action of the clicked button
-                });
+            // Detect which button was clicked
+            $('button[type="submit"]').on('click', function() {
+                buttonAction = $(this).data('action'); // Store the action of the clicked button
+            });
 
             $('#editJobForm').on('submit', function(event) {
                 event.preventDefault(); // Prevent default form submission
@@ -50,62 +56,69 @@
                     url: $(this).attr('action'), // Form action URL
                     type: 'POST',
                     data: formData,
-                    processData: false,  // Required to send FormData correctly
-                    contentType: false,  // Required to send FormData correctly
-                
+                    processData: false, // Required to send FormData correctly
+                    contentType: false, // Required to send FormData correctly
+
                     success: function(response) {
                         var job = response.job;
-                          // Update job title
-                        $('.title_update').empty().append( job.job_title );
+                        // Update job title
+                        $('.title_update').empty().append(job.job_title);
 
-                          // Update full date
+                        // Update full date
                         var date = response.startDateTime;
-                        $('.fulldate_update').empty().append('<i class="fa fa-calendar"></i> ' + date);
+                        $('.fulldate_update').empty().append('<i class="fa fa-calendar"></i> ' +
+                            date);
 
-                          // Update description_update
+                        // Update description_update
                         $('.description_update').empty().append(job.description);
 
-                          // Update description_update
-                          var duration = job.jobassignname.duration / 60; 
+                        // Update description_update
+                        var duration = job.jobassignname.duration / 60;
                         $('.duration_update').empty().append(duration + ' Hours');
 
-                          // Update priority_update
+                        // Update priority_update
                         $('.priority_update').empty().append(job.priority);
 
-                          // Update date_update
+                        // Update date_update
                         $('.date_update').empty().append(response.newDate);
 
-                          // Update from_update
+                        // Update from_update
                         $('.from_update').empty().append(response.fromDate);
 
-                          // Update to_update
+                        // Update to_update
                         $('.to_update').empty().append(response.toDate);
 
-                          // Update warranty_update
+                        // Update warranty_update
                         $('.warranty_update').empty().append(job.warranty_type);
 
-                          // Update warranty_ticket_update
+                        // Update warranty_ticket_update
                         $('.warranty_ticket_update').empty().append(job.warranty_ticket);
 
-                          // Update appliance_update
-                        $('.appliance_update').empty().append(job.job_appliances.appliances.appliance.appliance_name);
+                        // Update appliance_update
+                        $('.appliance_update').empty().append(job.job_appliances.appliances
+                            .appliance.appliance_name);
 
-                          // Update manufacturer_update
-                        $('.manufacturer_update').empty().append(job.job_appliances.appliances.manufacturer.manufacturer_name);
+                        // Update manufacturer_update
+                        $('.manufacturer_update').empty().append(job.job_appliances.appliances
+                            .manufacturer.manufacturer_name);
 
-                          // Update model_update
-                        $('.model_update').empty().append(job.job_appliances.appliances.model_number);
+                        // Update model_update
+                        $('.model_update').empty().append(job.job_appliances.appliances
+                            .model_number);
 
-                          // Update serial_update
-                        $('.serial_update').empty().append(job.job_appliances.appliances.serial_number);
+                        // Update serial_update
+                        $('.serial_update').empty().append(job.job_appliances.appliances
+                            .serial_number);
 
-                          // Update enr_date
+                        // Update enr_date
                         $('.enr_date').empty().append(response.enr_date);
 
                         // Check if "Save & Close" button was clicked
                         if (buttonAction === 'save-close') {
                             // Hide the .update-job element
                             $('.update-job').hide();
+                            // Close the tab
+                            window.close();
                         }
 
                         // Clear buttonAction after form submission

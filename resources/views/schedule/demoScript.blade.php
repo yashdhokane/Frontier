@@ -86,7 +86,7 @@
 
                                             <!-- Edit Button -->
                                             <div class="d-flex justify-content-between">
-                                                <a href="${ticketShowRoute.replace(':id', job.job_model ? job.job_model.id : '#')}?mode=edit#editdetails">
+                                                <a href="${ticketShowRoute.replace(':id', job.job_model ? job.job_model.id : '#')}?mode=edit#editdetails" target="_blank">
                                                 <button class="btn btn-outline-primary btn-sm">
                                                     <i class="fas fa-edit"></i> Edit
                                                 </button>

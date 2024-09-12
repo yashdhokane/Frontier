@@ -1051,7 +1051,7 @@
                                     </div>
                                     <div class="col-md-3 w-100" id="serial_number_detail"></div>
                                 </div>
-                                <button type="submit" class="ms-3 btn btn-primary btn-xs float-end"
+                                <button id="save-close-btn" type="submit" class="ms-3 btn btn-primary btn-xs float-end"
                                     data-action="save-close">Save & Close</button>
 
                                 <button type="submit" class="ms-3 btn btn-primary btn-xs float-end"
