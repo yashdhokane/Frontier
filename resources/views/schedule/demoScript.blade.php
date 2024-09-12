@@ -44,7 +44,7 @@
                                                 <div class="card-body card-border card-shadow">
                                                     <!-- Job ID and Badge -->
                                                    <h5 class="card-title py-1">
-                                                        <strong>
+                                                        <strong class="text-uppercase">
                                                             Job #${job.job_model ? job.job_model.id : ''}
                                                             <span class="badge bg-primary">${job.job_model ? job.job_model.status : ''}</span>
                                                             ${job.job_model && job.job_model.warranty_type === 'in_warranty' ? `<span class="badge bg-primary">In Warranty</span>` : ''}
@@ -61,7 +61,7 @@
                                                     <!-- User Info -->
                                                     <div class="py-1">
                                                         <i class="fas fa-user pe-2 fs-2"></i>
-                                                        <strong>${job.job_model && job.job_model.user ? job.job_model.user.name : ''}</strong>
+                                                        <strong class="text-uppercase">${job.job_model && job.job_model.user ? job.job_model.user.name : ''}</strong>
                                                     </div>
                                                         <div>
                                                             ${job.job_model && job.job_model.addresscustomer ? job.job_model.addresscustomer.address_line1 : ''},
@@ -73,13 +73,13 @@
 
                                                     <!-- Job Title -->
                                                     <div class="py-1">
-                                                        <strong>${job.job_model ? job.job_model.job_title : ''}</strong></div>
+                                                        <strong  class="text-uppercase">${job.job_model ? job.job_model.job_title : ''}</strong></div>
                                                         <div class="description_info">${job.job_model ? job.job_model.description : ''}</div>
                                                     
 
                                                     <!-- Technician Info -->
                                                     <div class="py-1">
-                                                        <strong>Equipment</strong>   </div>  
+                                                        <strong class="text-uppercase">Equipment</strong>   </div>  
                                                         <div> ${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances 
                                                                         ? job.job_model.job_appliances.appliances.appliance.appliance_name 
                                                                         : ''} /  ${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances && job.job_model.job_appliances.appliances.manufacturer 
@@ -91,23 +91,30 @@
                                                                         : ''}</div>
                                                 
 
-                                                    <div class="py-1 row">
-                                                        <strong>Parts & Services</strong> </div>
-                                                         <div class="row">
+                                                    <div class="py-1">
+                                                        <strong class="text-uppercase">Parts & Services</strong>
+                                                     </div>
+                                                   <div class="row g-0">
                                                         <!-- Check and display parts -->
                                                         ${job.job_model && job.job_model.jobproductinfohasmany && job.job_model.jobproductinfohasmany.length > 0 
                                                             ? job.job_model.jobproductinfohasmany.map(product => `
-                                                                <div class="col-md-6">${product.product && product.product.product_name ? product.product.product_name : ''} ,</div>
+                                                                ${product.product && product.product.product_name 
+                                                                    ? `${product.product.product_name} ,` 
+                                                                    : ''}
                                                             `).join('') 
                                                             : ''}
-
+                                                        
                                                         <!-- Check and display services -->
                                                         ${job.job_model && job.job_model.jobserviceinfohasmany && job.job_model.jobserviceinfohasmany.length > 0 
                                                             ? job.job_model.jobserviceinfohasmany.map(service => `
-                                                                <div class="col-md-6">${service.service && service.service.service_name ? service.service.service_name : ''}</div>
+                                                                ${service.service && service.service.service_name 
+                                                                    ? `${service.service.service_name} ,` 
+                                                                    : ''}
                                                             `).join('') 
                                                             : ''}
-                                                   </div>
+                                                    </div>
+
+
 
 
                                                     <!-- Edit and View Buttons -->
