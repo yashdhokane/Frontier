@@ -113,6 +113,8 @@
                         // Update enr_date
                         $('.enr_date').empty().append(response.enr_date);
 
+                         $('.update-job').hide();
+
                         // Check if "Save & Close" button was clicked
                         if (buttonAction === 'save-close') {
                             // Hide the .update-job element
