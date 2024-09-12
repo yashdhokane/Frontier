@@ -54,3 +54,10 @@
     z-index: 1000 !important;
     /* Ensure the helper has a high z-index during dragging */
 }
+.description_info {
+    white-space: nowrap;        /* Prevents text from wrapping to the next line */
+    overflow: hidden;           /* Hides the overflow */
+    text-overflow: ellipsis;    /* Adds the ellipsis (...) when text overflows */
+    width: 100%;                /* Adjust the width as per your layout */
+    display: block;             /* Ensure it's treated as a block element */
+}

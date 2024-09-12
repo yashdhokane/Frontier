@@ -43,10 +43,10 @@
                                             <div class="card shadow-sm h-100">
                                                 <div class="card-body card-border card-shadow">
                                                     <!-- Job ID and Badge -->
-                                                   <h5 class="card-title">
+                                                   <h5 class="card-title py-1">
                                                         <strong>
-                                                            Job #${job.job_model ? job.job_model.id : 'N/A'}
-                                                            <span class="badge bg-primary">${job.job_model ? job.job_model.status : 'N/A'}</span>
+                                                            Job #${job.job_model ? job.job_model.id : ''}
+                                                            <span class="badge bg-primary">${job.job_model ? job.job_model.status : ''}</span>
                                                             ${job.job_model && job.job_model.warranty_type === 'in_warranty' ? `<span class="badge bg-primary">In Warranty</span>` : ''}
                                                             ${job.job_model && job.job_model.warranty_type === 'out_warranty' ? `<span class="badge bg-primary">Out of Warranty</span>` : ''}
                                                         </strong>
@@ -59,55 +59,55 @@
                                                     </div>
 
                                                     <!-- User Info -->
-                                                    <div>
+                                                    <div class="py-1">
                                                         <i class="fas fa-user pe-2 fs-2"></i>
-                                                        <strong>${job.job_model && job.job_model.user ? job.job_model.user.name : 'N/A'}</strong>
+                                                        <strong>${job.job_model && job.job_model.user ? job.job_model.user.name : ''}</strong>
+                                                    </div>
                                                         <div>
-                                                            ${job.job_model && job.job_model.addresscustomer ? job.job_model.addresscustomer.address_line1 : 'N/A'},
+                                                            ${job.job_model && job.job_model.addresscustomer ? job.job_model.addresscustomer.address_line1 : ''},
                                                             ${job.job_model && job.job_model.addresscustomer ? job.job_model.addresscustomer.zipcode : ''}
                                                         </div>
                                                         <div>
-                                                            ${job.job_model && job.job_model.user ? job.job_model.user.mobile : 'N/A'}
+                                                            ${job.job_model && job.job_model.user ? job.job_model.user.mobile : ''}
                                                         </div>
-                                                    </div>
 
                                                     <!-- Job Title -->
-                                                    <div>
-                                                        <strong>${job.job_model ? job.job_model.job_title : 'N/A'}</strong>
-                                                        <div>${job.job_model ? job.job_model.description : ''}</div>
-                                                    </div>
+                                                    <div class="py-1">
+                                                        <strong>${job.job_model ? job.job_model.job_title : ''}</strong></div>
+                                                        <div class="description_info">${job.job_model ? job.job_model.description : ''}</div>
+                                                    
 
                                                     <!-- Technician Info -->
-                                                    <div>
-                                                        <strong>Equipment</strong> 
+                                                    <div class="py-1">
+                                                        <strong>Equipment</strong>   </div>  
                                                         <div> ${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances 
                                                                         ? job.job_model.job_appliances.appliances.appliance.appliance_name 
-                                                                        : 'N/A'} /  ${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances && job.job_model.job_appliances.appliances.manufacturer 
+                                                                        : ''} /  ${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances && job.job_model.job_appliances.appliances.manufacturer 
                                                                         ? job.job_model.job_appliances.appliances.manufacturer.manufacturer_name 
-                                                                        : 'N/A'} /  ${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances 
+                                                                        : ''} /  ${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances 
                                                                         ? job.job_model.job_appliances.appliances.model_number 
-                                                                        : 'N/A'} / ${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances 
+                                                                        : ''} / ${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances 
                                                                         ? job.job_model.job_appliances.appliances.serial_number 
-                                                                        : 'N/A'}</div>
-                                                    </div>
+                                                                        : ''}</div>
+                                                
 
-                                                    <div>
-                                                        <strong>Parts & Services</strong>
-                                                        
+                                                    <div class="py-1 row">
+                                                        <strong>Parts & Services</strong> </div>
+                                                         <div class="row">
                                                         <!-- Check and display parts -->
                                                         ${job.job_model && job.job_model.jobproductinfohasmany && job.job_model.jobproductinfohasmany.length > 0 
                                                             ? job.job_model.jobproductinfohasmany.map(product => `
-                                                                <div>${product.product && product.product.product_name ? product.product.product_name : ''}</div>
+                                                                <div class="col-md-6">${product.product && product.product.product_name ? product.product.product_name : ''} ,</div>
                                                             `).join('') 
                                                             : ''}
 
                                                         <!-- Check and display services -->
                                                         ${job.job_model && job.job_model.jobserviceinfohasmany && job.job_model.jobserviceinfohasmany.length > 0 
                                                             ? job.job_model.jobserviceinfohasmany.map(service => `
-                                                                <div>${service.service && service.service.service_name ? service.service.service_name : ''}</div>
+                                                                <div class="col-md-6">${service.service && service.service.service_name ? service.service.service_name : ''}</div>
                                                             `).join('') 
                                                             : ''}
-                                                    </div>
+                                                   </div>
 
 
                                                     <!-- Edit and View Buttons -->
