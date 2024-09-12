@@ -2995,7 +2995,7 @@ class ScheduleController extends Controller
 
         $schedule = Schedule::with([
             'JobModel' => function ($query) {
-                $query->with(['user', 'addresscustomer','JobAppliances.Appliances.manufacturer', 'JobAppliances.Appliances.appliance']);
+                $query->with(['user','jobproductinfohasmany.product','jobserviceinfohasmany.service', 'addresscustomer','JobAppliances.Appliances.manufacturer', 'JobAppliances.Appliances.appliance']);
             },
             'technician'
         ])->where('technician_id', $request->tech_id)

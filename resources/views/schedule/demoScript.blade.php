@@ -19,6 +19,7 @@
                     },
                     success: function(response) {
                         var jobs = response;
+                        // console.log(jobs);
                         var ticketShowRoute ="{{ route('tickets.show', ':id') }}"; 
                         $('#allJobsTechnicianLabel46').empty();
                         $('#allJobsTechnicianLabel46').append(tech_name +
@@ -42,87 +43,75 @@
                                             <div class="card shadow-sm h-100">
                                                 <div class="card-body card-border card-shadow">
                                                     <!-- Job ID and Badge -->
-                                                    <h5 class="card-title">
-                                                        <i class="fas fa-id-badge px-2"></i>
-                                                        <strong>Job #${job.job_model ? job.job_model.id : 'N/A'}
-                                                        <span class="badge bg-primary">${job.job_model ? job.job_model.status : 'N/A'}</span></strong>
+                                                   <h5 class="card-title">
+                                                        <strong>
+                                                            Job #${job.job_model ? job.job_model.id : 'N/A'}
+                                                            <span class="badge bg-primary">${job.job_model ? job.job_model.status : 'N/A'}</span>
+                                                            ${job.job_model && job.job_model.warranty_type === 'in_warranty' ? `<span class="badge bg-primary">In Warranty</span>` : ''}
+                                                            ${job.job_model && job.job_model.warranty_type === 'out_warranty' ? `<span class="badge bg-primary">Out of Warranty</span>` : ''}
+                                                        </strong>
                                                     </h5>
 
-                                                    <!-- Job Time Range -->
-                                                    <p class="ps-2">
-                                                        ${job.start_date_time && job.end_date_time ? formatDateRange(job.start_date_time, job.end_date_time, job.interval) : ''}
-                                                    </p>
 
-                                                    <!-- Job Title -->
-                                                    <div class="mb-2">
-                                                        <i class="fas fa-ticket-alt px-2"></i>
-                                                        <strong>${job.job_model ? job.job_model.job_title : 'N/A'}</strong>
+                                                    <!-- Job Time Range -->
+                                                    <div>
+                                                        ${job.start_date_time && job.end_date_time ? formatDateRange(job.start_date_time, job.end_date_time, job.interval) : ''}
                                                     </div>
 
                                                     <!-- User Info -->
-                                                    <div class="mb-2">
-                                                        <i class="fas fa-user px-2"></i>
+                                                    <div>
+                                                        <i class="fas fa-user pe-2 fs-2"></i>
                                                         <strong>${job.job_model && job.job_model.user ? job.job_model.user.name : 'N/A'}</strong>
-                                                        <p class="ps-4 m-0 ms-2">
+                                                        <div>
                                                             ${job.job_model && job.job_model.addresscustomer ? job.job_model.addresscustomer.address_line1 : 'N/A'},
                                                             ${job.job_model && job.job_model.addresscustomer ? job.job_model.addresscustomer.zipcode : ''}
-                                                        </p>
-                                                        <p class="ps-4 m-0 ms-2">
+                                                        </div>
+                                                        <div>
                                                             ${job.job_model && job.job_model.user ? job.job_model.user.mobile : 'N/A'}
-                                                        </p>
-                                                    </div>
-
-                                                    <!-- Technician Info -->
-                                                    <div class="mb-2 ps-2">
-                                                        <strong>Equipment Details -</strong>
-                                                        <div class="mt-2 ps-4">
-                                                            <div class="mb-2"><strong>Warranty Type: </strong>
-                                                                <span class="warranty_update">${job.job_model && job.job_model.warranty_type ? job.job_model.warranty_type : 'N/A'}</span>
-                                                            </div>
-                                                            ${job.job_model && job.job_model.warranty_type === 'in_warranty' ? `
-                                                                <div class="mb-2"><strong>Warranty Number: </strong>
-                                                                    <span class="warranty_ticket_update">${job.job_model.warranty_ticket ? job.job_model.warranty_ticket : 'N/A'}</span>
-                                                                </div>` : ''
-                                                            }
-
-                                                            <div class="mb-2"><strong>Appliances: </strong>
-                                                                <span class="appliance_update">
-                                                                    ${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances 
-                                                                        ? job.job_model.job_appliances.appliances.appliance.appliance_name 
-                                                                        : 'N/A'}
-                                                                </span>
-                                                            </div>
-                                                            <div class="mb-2"><strong>Manufacturer:</strong>
-                                                                <span class="manufacturer_update">
-                                                                    ${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances && job.job_model.job_appliances.appliances.manufacturer 
-                                                                        ? job.job_model.job_appliances.appliances.manufacturer.manufacturer_name 
-                                                                        : 'N/A'}
-                                                                </span>
-                                                            </div>
-                                                            <div class="mb-2"><strong>Model Number:</strong>
-                                                                <span class="model_update">
-                                                                    ${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances 
-                                                                        ? job.job_model.job_appliances.appliances.model_number 
-                                                                        : 'N/A'}
-                                                                </span>
-                                                            </div>
-                                                            <div class="mb-2"><strong>Serial Number:</strong>
-                                                                <span class="serial_update">
-                                                                    ${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances 
-                                                                        ? job.job_model.job_appliances.appliances.serial_number 
-                                                                        : 'N/A'}
-                                                                </span>
-                                                            </div>
                                                         </div>
                                                     </div>
 
-                                                    <!-- Job Description -->
-                                                    <div class="mb-2 ps-2">
-                                                        <strong>Description -</strong><span>${job.job_model ? job.job_model.description : ''}</span>
+                                                    <!-- Job Title -->
+                                                    <div>
+                                                        <strong>${job.job_model ? job.job_model.job_title : 'N/A'}</strong>
+                                                        <div>${job.job_model ? job.job_model.description : ''}</div>
                                                     </div>
 
+                                                    <!-- Technician Info -->
+                                                    <div>
+                                                        <strong>Equipment</strong> 
+                                                        <div> ${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances 
+                                                                        ? job.job_model.job_appliances.appliances.appliance.appliance_name 
+                                                                        : 'N/A'} /  ${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances && job.job_model.job_appliances.appliances.manufacturer 
+                                                                        ? job.job_model.job_appliances.appliances.manufacturer.manufacturer_name 
+                                                                        : 'N/A'} /  ${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances 
+                                                                        ? job.job_model.job_appliances.appliances.model_number 
+                                                                        : 'N/A'} / ${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances 
+                                                                        ? job.job_model.job_appliances.appliances.serial_number 
+                                                                        : 'N/A'}</div>
+                                                    </div>
+
+                                                    <div>
+                                                        <strong>Parts & Services</strong>
+                                                        
+                                                        <!-- Check and display parts -->
+                                                        ${job.job_model && job.job_model.jobproductinfohasmany && job.job_model.jobproductinfohasmany.length > 0 
+                                                            ? job.job_model.jobproductinfohasmany.map(product => `
+                                                                <div>${product.product && product.product.product_name ? product.product.product_name : ''}</div>
+                                                            `).join('') 
+                                                            : ''}
+
+                                                        <!-- Check and display services -->
+                                                        ${job.job_model && job.job_model.jobserviceinfohasmany && job.job_model.jobserviceinfohasmany.length > 0 
+                                                            ? job.job_model.jobserviceinfohasmany.map(service => `
+                                                                <div>${service.service && service.service.service_name ? service.service.service_name : ''}</div>
+                                                            `).join('') 
+                                                            : ''}
+                                                    </div>
+
+
                                                     <!-- Edit and View Buttons -->
-                                                    <div class="d-flex justify-content-between">
+                                                    <div class="d-flex justify-content-between pt-2">
                                                         <a href="${ticketShowRoute.replace(':id', job.job_model ? job.job_model.id : '#')}?mode=edit#editdetails" target="_blank">
                                                             <button class="btn btn-outline-primary btn-sm">
                                                                 <i class="fas fa-edit"></i> Edit
