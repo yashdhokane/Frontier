@@ -1285,6 +1285,13 @@ class ScheduleController extends Controller
                     url()->current(),
                     'job'
                 );
+                
+                $message = 'Hello, Your Job is schedule.';
+                $to = '+917030467187'; // Recipient's phone number
+
+                $response = app('SmsService')->sendSms($message, $to);
+
+
                 $height_slot = $duration / 60;
                 $height_slot_px = $height_slot * 80 - 10;
 
