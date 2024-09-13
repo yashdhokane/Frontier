@@ -91,28 +91,29 @@
                                                                         : ''}</div>
                                                 
 
-                                                    <div class="py-1">
-                                                        <strong class="text-uppercase">Parts & Services</strong>
+                                                                        <div class="py-1">
+                                                                            <strong class="text-uppercase">Parts & Services</strong>
+                                                                        </div>
+                                                                    <div class="row g-0">
+                                                                            <!-- Check and display parts -->
+                                                                            ${job.job_model && job.job_model.jobproductinfohasmany && job.job_model.jobproductinfohasmany.length > 0 
+                                                                                ? job.job_model.jobproductinfohasmany.map(product => `
+                                                                                    ${product.product && product.product.product_name 
+                                                                                        ? `${product.product.product_name} ,` 
+                                                                                        : ''}
+                                                                                `).join('') 
+                                                                                : ''}
+                                                                            
+                                                                            <!-- Check and display services -->
+                                                                            ${job.job_model && job.job_model.jobserviceinfohasmany && job.job_model.jobserviceinfohasmany.length > 0 
+                                                                                ? job.job_model.jobserviceinfohasmany.map(service => `
+                                                                                    ${service.service && service.service.service_name 
+                                                                                        ? `${service.service.service_name}` 
+                                                                                        : ''}
+                                                                                `).join(', ').trim().slice(0, -1) // Remove the last comma
+                                                                                : ''
+                                                                            }
                                                      </div>
-                                                   <div class="row g-0">
-                                                        <!-- Check and display parts -->
-                                                        ${job.job_model && job.job_model.jobproductinfohasmany && job.job_model.jobproductinfohasmany.length > 0 
-                                                            ? job.job_model.jobproductinfohasmany.map(product => `
-                                                                ${product.product && product.product.product_name 
-                                                                    ? `${product.product.product_name} ,` 
-                                                                    : ''}
-                                                            `).join('') 
-                                                            : ''}
-                                                        
-                                                        <!-- Check and display services -->
-                                                        ${job.job_model && job.job_model.jobserviceinfohasmany && job.job_model.jobserviceinfohasmany.length > 0 
-                                                            ? job.job_model.jobserviceinfohasmany.map(service => `
-                                                                ${service.service && service.service.service_name 
-                                                                    ? `${service.service.service_name} ,` 
-                                                                    : ''}
-                                                            `).join('') 
-                                                            : ''}
-                                                    </div>
 
 
 
