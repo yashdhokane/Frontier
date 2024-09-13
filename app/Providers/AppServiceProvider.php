@@ -20,6 +20,8 @@ use App\Models\UserNotification;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Twilio\Rest\Client;
+use Exception;
 
 
 
@@ -109,6 +111,30 @@ class AppServiceProvider extends ServiceProvider
                     return $date->subHours($hours)->format($format);
                 } else {
                     throw new \InvalidArgumentException("Invalid operation. Use 'add' or 'subtract'.");
+                }
+            };
+        });
+
+        // Register the singleton for sending SMS
+        $this->app->singleton('SmsService', function ($app) {
+            return new class {
+                public function sendSms($message, $to)
+                {
+                    $sid = env('TWILIO_SID');
+                    $token = env('TWILIO_TOKEN');
+                    $fromNumber = env('TWILIO_FROM');
+
+                    try {
+                        $client = new Client($sid, $token);
+                        $client->messages->create($to, [
+                            'from' => $fromNumber,
+                            'body' => $message
+                        ]);
+
+                        return 'SMS Sent Successfully.';
+                    } catch (Exception $e) {
+                        return 'Error: ' . $e->getMessage();
+                    }
                 }
             };
         });
