@@ -106,13 +106,17 @@
                                                                             
                                                                             <!-- Check and display services -->
                                                                             ${job.job_model && job.job_model.jobserviceinfohasmany && job.job_model.jobserviceinfohasmany.length > 0 
-                                                                                ? job.job_model.jobserviceinfohasmany.map(service => `
-                                                                                    ${service.service && service.service.service_name 
-                                                                                        ? `${service.service.service_name}` 
-                                                                                        : ''}
-                                                                                `).join(', ').trim().slice(0, -1) // Remove the last comma
+                                                                                ? job.job_model.jobserviceinfohasmany
+                                                                                    .map(service => service.service && service.service.service_name 
+                                                                                        ? service.service.service_name 
+                                                                                        : ''
+                                                                                    )
+                                                                                    .filter(serviceName => serviceName !== '') // Filter out any empty service names
+                                                                                    .join(', ')  // Join with comma
+                                                                                    .replace(/,\s*$/, '')  // Remove the last comma if present
                                                                                 : ''
                                                                             }
+
                                                      </div>
 
 
