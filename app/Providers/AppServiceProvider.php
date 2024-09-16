@@ -22,6 +22,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Twilio\Rest\Client;
 use Exception;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\MyCustomEmail;
+
 
 
 
@@ -136,6 +139,24 @@ class AppServiceProvider extends ServiceProvider
                         return 'Error: ' . $e->getMessage();
                     }
                 }
+            };
+        });
+
+        // Define a common function that accepts subject, msg, from, to, and type
+        app()->singleton('commonFunction', function () {
+            return function ($subject, $msg, $from, $to, $type, $data) {
+
+                $maildata = [
+                    'subject' => $subject,
+                    'msg'     => $msg,
+                    'from'    => $from,
+                    'type'    => $type,
+                    'data'    => $data,
+                ];
+
+                    Mail::to($to)->send(new MyCustomEmail($maildata));
+
+                    return "Email sent to {$to} with subject '{$subject}'";
             };
         });
     }

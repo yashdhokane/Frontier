@@ -6,9 +6,9 @@
         <!-- start row -->
         <tr>
           <td>
-            <b>Hello {{ $maildata[0]->name }},</b>
+            <b>Hello {{ $maildata['data']['technician']->name }},</b>
             <p>
-              We have @if($maildata[3] == 'schedule') @else rescheduled @endif your service request.
+              We have {{ $maildata['data']['typeName'] === 'schedule' ? 'scheduled' : 'rescheduled' }}  your service request.
             </p>
             <b>- Thanks (Frontier team)</b>
           </td>

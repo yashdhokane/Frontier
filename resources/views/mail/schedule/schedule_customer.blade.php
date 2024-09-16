@@ -6,11 +6,13 @@
         <!-- start row -->
         <tr>
           <td>
-            <b>Hello {{ $maildata[1]->name ?? null }},</b>
+            <b>Hello {{ $maildata['data']['customer']->name ?? '' }},</b>
             <p>
-              We have @if($maildata[3] == 'schedule') @else rescheduled @endif your service request. Our technician {{ $maildata[0]->name ?? null}} will come on {{ \Carbon\Carbon::parse($maildata[2]->start_date_time)->format('F j, Y, g:i a') }}.
-          </p>
-          
+              We have 
+              {{ $maildata['data']['typeName'] === 'schedule' ? 'scheduled' : 'rescheduled' }} 
+              your service request. Our technician {{ $maildata['data']['technician']->name ?? '' }} will come on 
+              {{ \Carbon\Carbon::parse($maildata['data']['schedule']->start_date_time)->format('F j, Y, g:i a') }}.
+            </p>
           
             <b>- Thanks (Frontier team)</b>
           </td>
@@ -18,6 +20,5 @@
         <!-- end row -->
       </tbody>
     </table>
-  </div>
-
-  @endsection
+</div>
+@endsection

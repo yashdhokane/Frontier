@@ -1531,6 +1531,16 @@
 
                                 $('.btn-close').trigger(
                                     'click');
+                              
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error",
+                                    text: "Something went wrong !",
+                                });
+
+                            } else {
+
+                                $('.btn-close').trigger('click');
                                 var schedule_id = data.schedule_id;
                                 $.ajax({
                                     url: "{{ url('get/mail/schedule') }}",
@@ -1544,17 +1554,6 @@
                                     },
                                 });
 
-                                Swal.fire({
-                                    icon: "error",
-                                    title: "Error",
-                                    text: "Something went wrong !",
-                                });
-
-                            } else {
-
-                                $('.btn-close').trigger(
-                                    'click');
-                                var schedule_id = data.schedule_id;
 
                                 Swal.fire({
                                     title: "Done",

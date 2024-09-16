@@ -15,39 +15,45 @@ class MailController extends Controller
     public function index(Request $request)
     {
         try {
-            $type = $request->type;
+            $typeName = $request->type;
+    
             // Find the schedule with related models
             $schedule = Schedule::with('jobModel', 'technician')->findOrFail($request->schedule_id);
-    
-            // Retrieve technician details
+            
+            // Retrieve technician and customer details
             $technician = $schedule->technician;
+            $customer = User::find($schedule->jobModel->customer_id);
     
-            // Retrieve customer details
-            $customer_id = $schedule->jobModel->customer_id;
+            // Prepare data for the email
+            $data = compact('technician', 'customer', 'schedule', 'typeName');
+            
+            $type1 = "schedule_customer";   // Blade view: 'schedule_customer.blade.php'
+            $type2 = "schedule_technician"; // Blade view: 'schedule_technician.blade.php'
 
-            $customer = User::where('id', $customer_id)->first();
-            // Prepare data for email
-            $maildata = [$technician, $customer,$schedule,$type]; 
+            $to ='bawanesumit01@gmail.com';
     
-            // Recipient email addresses
-            $recipients = ['bawanesumit01@gmail.com'];
-            $recipients2 = ['bawanesumit01@gmail.com'];
+            if ($typeName == 'reschedule') {
+                // Email details for reschedule
+                $subject = "Re-Schedule Job Update";
+                $msg = "The job has been rescheduled.";
+                $from = "admin@example.com";
+            } elseif ($typeName == 'schedule') {
+                // Email details for schedule
+                $subject = "Schedule Job Update";
+                $msg = "A new job has been scheduled.";
+                $from = "admin@example.com";
+            }
     
-            // Send email
-            Mail::to($recipients)->send(new ScheduleTechnician($maildata));
-            Mail::to($recipients2)->send(new ScheduleCustomer($maildata));
-    
-            // If execution reaches here, email was sent successfully
-            $message = 'Email sent successfully';
-    
-            // Return success response
-            return response()->json(['message' => $message], 200);
+            // Call the common function to send the email
+            app('commonFunction')($subject, $msg, $from, $to, $type1, $data);
+            app('commonFunction')($subject, $msg, $from, $to, $type2, $data);
+
+            return response()->json(['message' => 'Emails sent successfully'], 200);
     
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            // Handle the case where the schedule or customer with the given ID is not found
-            return response()->json(['error' => 'Schedule or customer not found'. $e], 404);
+            return response()->json(['error' => 'Schedule or customer not found'], 404);
+           
         } catch (\Exception $e) {
-            // Handle other exceptions, such as mail configuration issues
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }

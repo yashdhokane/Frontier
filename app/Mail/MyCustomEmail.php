@@ -3,16 +3,14 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ScheduleCustomer extends Mailable
+class MyCustomEmail extends Mailable
 {
     use Queueable, SerializesModels;
-    
+
     public $maildata;
 
     /**
@@ -26,35 +24,29 @@ class ScheduleCustomer extends Mailable
     /**
      * Get the message envelope.
      */
-  public function envelope(): Envelope
+    public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Reshedule Job Update -'
+            subject: $this->maildata['subject'], 
         );
     }
 
-
-
     /**
-     * Get the message content definition.
+     * Build the message.
      */
-     public function build()
+    public function build()
     {
-        return $this->view('mail.schedule.schedule_customer') 
-            ->with('maildata', $this->maildata); 
+        // Use the correct concatenation in the view path with dot notation
+        return $this->from($this->maildata['from'])
+                    ->view('mail.schedule.' . $this->maildata['type'])
+                    ->with('maildata', $this->maildata);
     }
 
     /**
      * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
      */
-  public function attachments(): array
-{
-    return [];
-}
-
-
-
-
+    public function attachments(): array
+    {
+        return [];
+    }
 }
