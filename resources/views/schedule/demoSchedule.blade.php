@@ -13,7 +13,7 @@
         </div>
 
         <div class="col-md-4"></div>
-        <div class="col-md-4 text-start">
+        <div class="col-md-4 text-end">
             <a id="selectDates1" style="margin-right: 10px; font-size: 13px;cursor: pointer;"><i
                     class="fas fa-calendar-alt"></i>Select Dates</a>
             <div class="btn-group my-2" role="group" aria-label="Button group with nested dropdown"
@@ -48,7 +48,7 @@
                             </a>
                                 <div class="popupContainer text-start" style="display: none;">
                                     <!-- Popup content for profile link -->
-                                    <a href="{{ url('technicians/show/' . $item->id) }}" class="popup-option"><i
+                                    <a href="{{ url('technicians/show/' . $item->id) }}" target="_blank" class="popup-option"><i
                                             class="fa fa-user pe-2"></i>View Profile</a>
                                     </hr>
                                     <!-- Popup content for message option -->
