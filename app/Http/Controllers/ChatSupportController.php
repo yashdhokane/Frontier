@@ -21,6 +21,7 @@ use App\Models\ChatParticipants;
 use App\Models\SupportMessageReply;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Twilio\Rest\Client;
 
 class ChatSupportController extends Controller
@@ -219,8 +220,9 @@ class ChatSupportController extends Controller
 
         foreach ($filteredParticipants as $user) {
 
-            $receiverNumber = '+917030467187'; // Replace with the recipient's phone number
-            $message =  $request->reply; // Replace with your desired message
+            // $receiverNumber = '+917030467187'; // Replace with the recipient's phone number
+            $receiverNumber = '+918830711935'; // Replace with the recipient's phone number
+            $message = $request->reply; // Replace with your desired message
             $formattedMessage = "You have a new message in your chat:\n\n{$message}";
 
             $sid = env('TWILIO_SID');
@@ -323,5 +325,19 @@ class ChatSupportController extends Controller
         return back()->with('success', 'User added to the conversation successfully');
     }
 
-    
+    public function receiveSms(Request $request)
+    {
+        Storage::append('Data.log', 'data -- ' . json_encode($request->all()) . ' - ' . date('Y-m-d H:i:s') . PHP_EOL);
+
+        ChatMessage::insert([
+            'sender' => 11,
+            'conversation_id' => 11,
+            'message' => json_encode($request->all())
+        ]);
+
+
+
+    }
+
+
 }

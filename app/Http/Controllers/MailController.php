@@ -46,8 +46,8 @@ class MailController extends Controller
             }
     
             // Call the common function to send the email
-            app('commonFunction')($subject, $msg, $from, $to, $type1, $data);
-            app('commonFunction')($subject, $msg, $from, $to, $type2, $data);
+            // app('commonFunction')($subject, $msg, $from, $to, $type1, $data);
+            // app('commonFunction')($subject, $msg, $from, $to, $type2, $data);
 
             return response()->json(['message' => 'Emails sent successfully'], 200);
     

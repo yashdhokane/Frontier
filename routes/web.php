@@ -1208,6 +1208,9 @@ Route::get('myprofile/notifications/load-more', [AdminProfileController::class, 
 
     Route::get('sms/send', [ChatSupportController::class, 'sendSms']);
 
+    Route::post('/sms/receive', [ChatSupportController::class, 'receiveSms']);
+
+
 
     // payments
     Route::post('/update-payment-status', [PaymentController::class, 'updatePaymentStatus'])->name('update.payment.status');
