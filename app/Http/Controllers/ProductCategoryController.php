@@ -12,15 +12,15 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductCategoryController extends Controller
 {
-    public function index()
+
+    public function index_iframe()
     {
 
-        
         $user_auth = auth()->user();
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
         $module_id = 37;
-        
+
         $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
@@ -32,10 +32,35 @@ class ProductCategoryController extends Controller
 
         $manufacture = Manufacturer::all();
         $product = ProductCategory::get();
-                $product1 = ProductCategory::get();
+        $product1 = ProductCategory::get();
 
 
-        return view('product.index', compact('products','product1', 'manufacture', 'product'));
+        return view('product.iframe_part_index', compact('products', 'product1', 'manufacture', 'product'));
+    }
+    public function index()
+    {
+
+
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 37;
+
+        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck === true) {
+            // Proceed with the action
+        } else {
+            return $permissionCheck; // This will handle the redirection
+        }
+
+        $products = Products::orderBy('created_at', 'desc')->get();
+
+        $manufacture = Manufacturer::all();
+        $product = ProductCategory::get();
+        $product1 = ProductCategory::get();
+
+
+        return view('product.index', compact('products', 'product1', 'manufacture', 'product'));
     }
     public function getCategoryById($id)
     {
@@ -91,6 +116,19 @@ class ProductCategoryController extends Controller
             return view('404');
         }
 
+        return view('product.listing_product', ['service' => $service]);
+    }
+
+    public function iframeeditproductCategory($id)
+    {
+        // Find the service category by ID
+        $service = ProductCategory::find($id);
+
+        // Check if the category exists
+        if (!$service) {
+            return view('404');
+        }
+
         return view('product.index', ['service' => $service]);
     }
 
@@ -105,13 +143,32 @@ class ProductCategoryController extends Controller
 
 
 
+    public function iframedeleteproductcategory($id)
+    {
+        $productCategory = ProductCategory::find($id);
+
+        if (!$productCategory) {
+            return redirect()->route('product.index')->with('error', 'Products & Materials not found!');
+        }
+
+        // Check if the image file exists and delete it
+        if (!empty($productCategory->category_image) && file_exists(public_path('images/' . $productCategory->category_image))) {
+            unlink(public_path('images/' . $productCategory->category_image));
+        }
+
+        // Delete the category from the database
+        $productCategory->delete();
+
+        return redirect()->route('partCategoryiframe')->with('success', 'Products & Materials deleted successfully!');
+    }
+
+
 
     public function updateproductcategory(Request $request)
     {
         $adminId = Auth::id();
 
-        $request->validate([
-        ]);
+        $request->validate([]);
 
         $productCategory = ProductCategory::find($request->input('category_id'));
 
@@ -162,17 +219,18 @@ class ProductCategoryController extends Controller
         // Delete the category from the database
         $productCategory->delete();
 
-        return redirect()->route('partCategory')->with('success', 'Products & Materials deleted successfully!');
+        return redirect()->back()->with('success', 'Products & Materials deleted successfully!');
     }
 
-    public function assign_product(Request $request)
+
+    public function iframe_part_assign(Request $request)
     {
-        
+
         $user_auth = auth()->user();
         $user_id = $user_auth->id;
         $permissions_type = $user_auth->permissions_type;
         $module_id = 38;
-        
+
         $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
         if ($permissionCheck === true) {
             // Proceed with the action
@@ -187,7 +245,31 @@ class ProductCategoryController extends Controller
 
         $assign = ProductAssigned::with('Technician', 'Product')->get();
 
-        return view('product.assign_product', compact('technician','technician1', 'product', 'assign'));
+        return view('product.iframe_part_assign', compact('technician', 'technician1', 'product', 'assign'));
+    }
+    public function assign_product(Request $request)
+    {
+
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 38;
+
+        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck === true) {
+            // Proceed with the action
+        } else {
+            return $permissionCheck; // This will handle the redirection
+        }
+        $technician1 = User::where('role', 'technician')->where('status', 'deactive')->get();
+
+        $technician = User::where('role', 'technician')->where('status', 'active')->get();
+
+        $product = Products::all();
+
+        $assign = ProductAssigned::with('Technician', 'Product')->get();
+
+        return view('product.assign_product', compact('technician', 'technician1', 'product', 'assign'));
     }
 
     public function store_assign_product(Request $request)

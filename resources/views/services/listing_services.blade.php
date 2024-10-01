@@ -1,5 +1,9 @@
+@if(Route::currentRouteName() != 'dash')
+
+
 @extends('home')
 @section('content')
+@endif
     <style>
         .table-responsive .description-column {
             max-width: 200px;
@@ -288,4 +292,8 @@
 </script>
 
 @stop
+
+@if(Route::currentRouteName() != 'dash')
+
 @stop
+@endif

@@ -1,9 +1,8 @@
-<!-- resources/views/clients/index.blade.php -->
-
+@if(Route::currentRouteName() != 'dash')
 @extends('home')
 
 @section('content')
-
+@endif
     <!-- -------------------------------------------------------------- -->
     <!-- End Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
@@ -543,4 +542,7 @@
         });
     </script>
 @endsection
+@if(Route::currentRouteName() != 'dash')
+
 @endsection
+@endif

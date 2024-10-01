@@ -7,9 +7,7 @@
                         <h5 class="card-title text-info uppercase mb-1">Approval Pending to Close the Job</h5>
                         <h5 class="ft12">Technician marked the job as closed</h5>
                     </div>
-                    @if ($layout->added_by == auth()->user()->id)
-                        <button class="btn btn-light clearSection" data-element-id="{{ $cardPosition->element_id }}">X</button>
-                    @endif
+                   
                 </div>
                 <div class="table-responsive mt-1">
                     <table id="" class="table table-bordered text-nowrap">

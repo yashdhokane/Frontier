@@ -1,5 +1,10 @@
+
+@if(Route::currentRouteName() != 'dash')
+
+
 @extends('home')
 @section('content')
+@endif
 <!-- Page wrapper  -->
 <!-- -------------------------------------------------------------- -->
 <div class="page-wrapper" style="display:inline;">
@@ -1025,5 +1030,7 @@ function getZipCode(cityId, cityName) {
 </script>
 
 @endsection
+@if(Route::currentRouteName() != 'dash')
 
 @endsection
+@endif

@@ -1,7 +1,10 @@
+@if(Route::currentRouteName() != 'dash')
+
+
 @extends('home')
 
 @section('content')
-
+@endif
 
 
 
@@ -1218,5 +1221,7 @@
 </script>
 
 @endsection
+    @if(Route::currentRouteName() != 'dash')
 
 @endsection
+@endif

@@ -3,10 +3,7 @@
     <div class="p-3">
         <div class="d-flex justify-content-between mb-1">
             <h4 class="">MY ACTIVITY</h4>
-            @if ($layout->added_by == auth()->user()->id)
-                <button class="btn btn-light mx-2 clearSection"
-                    data-element-id="{{ $cardPosition->element_id }}">X</button>
-            @endif
+           
         </div>
         <div class="table-responsive">
             <table class="table customize-table mb-0 v-middle">

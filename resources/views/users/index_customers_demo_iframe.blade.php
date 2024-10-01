@@ -1,6 +1,44 @@
+@if(Route::currentRouteName() != 'dash')
+
+
 @extends('home')
 @section('content')
+
+@endif
+
     <style>
+
+     #main-wrapper[data-layout="vertical"][data-sidebartype="mini-sidebar"] .page-wrapper {
+    margin-left: 0px !important;
+  }
+    .search-breadcrumb{
+        padding:0px;
+    }
+
+       .container-fluid {
+                padding: 0px;
+            }
+
+ #main-wrapper[data-layout=vertical][data-header-position=fixed] .topbar { display: none; }
+            #main-wrapper[data-layout=vertical][data-sidebar-position=fixed] .left-sidebar { display: none; }
+            #main-wrapper[data-layout=vertical][data-sidebartype=full] .page-wrapper { margin-left: 0px; }
+            #main-wrapper[data-layout=vertical][data-header-position=fixed] .page-wrapper { padding-top: 0px; }
+
+            /* Make iframe content scrollable */
+            html, body {
+                overflow: auto !important; /* Allow scrolling */
+                margin: 0; /* Remove default margins */
+                padding: 0; /* Remove default padding */
+            }
+
+
+
+
+
+
+
+
+
         .user-work,
         .user-name,
         .ucfirst,
@@ -22,6 +60,7 @@
             display: flex;
             justify-content: space-between;
         }
+      
     </style>
     <style>
         #usersTable {
@@ -38,18 +77,68 @@
             margin: 0; */
             /* font-weight: normal; */
         }
-    </style>
 
+        .search-breadcrumb{
+            padiing-top:0px !important;
+        }
+   
+        
+        
+    </style>
+     <style>
+          #main-wrapper[data-layout="vertical"][data-sidebartype="mini-sidebar"] .page-wrapper {
+              margin-left: 0px !important;
+          }
+
+          /* .card-body {
+                                                                                                                                                                                                                        padding: 0px !important;
+                                                                                                                                                                                                                    } */
+
+          .container-fluid {
+              padding: 0px !important;
+          }
+
+          #main-wrapper[data-layout=vertical][data-header-position=fixed] .topbar {
+              display: none !important;
+          }
+
+          #main-wrapper[data-layout=vertical][data-sidebar-position=fixed] .left-sidebar {
+              display: none !important;
+          }
+
+          #main-wrapper[data-layout=vertical][data-sidebartype=full] .page-wrapper {
+              margin-left: 0px !important;
+          }
+
+          #main-wrapper[data-layout=vertical][data-header-position=fixed] .page-wrapper {
+              padding-top: 0px !important;
+          }
+
+          .page-wrapper {
+              padding: 0px !important;
+          }
+
+          /* Make iframe content scrollable */
+          html,
+          body {
+              overflow: auto !important;
+              /* Allow scrolling */
+              margin: 0;
+              /* Remove default margins */
+              padding: 0;
+              /* Remove default padding */
+          }
+      </style>
 
     <!-- -------------------------------------------------------------- -->
     <!-- Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
-    <div class="page-breadcrumb">
-        <div class="card">
-            <div class="row card-body ">
+    <div class="page-breadcrumb search-breadcrumb">
+        <div class="card searched-card">
+            <div class="row card-body  searched-card-body">
                 <!-- Search Input on the Left -->
-                <div class="col-6 align-self-center">
-                    <form>
+                <div class="col-6 align-self-center searched-card-body-div">
+                    <form class="searched-card-body-form">
                         <input type="text" name="" class="form-control" id="searchInput"
                             placeholder="Search Customers..." />
                     </form>
@@ -131,11 +220,11 @@
         <!-- -------------------------------------------------------------- -->
         <!-- Container fluid  -->
         <!-- -------------------------------------------------------------- -->
-        <div class="container-fluid">
+        <div class="container-fluid container-fluid-div">
             <!-- -------------------------------------------------------------- -->
             <!-- Start Page Content -->
             <!-- -------------------------------------------------------------- -->
-            <div class="widget-content searchable-container list">
+            <div class="widget-content searchable-container list  container-fluid-widget">
                 <!-- ---------------------
                                                                                                                 start Contact
                                                                                                             ---------------- -->
@@ -192,7 +281,7 @@
                                 <a href="#." id="searchButton" class="btn btn-sm btn-info">
                                     <i class="ri-user-search-line"></i> Search
                                 </a>
-                                <a href="{{ route('users.index') }}" id="resetButton" class="btn btn-sm btn-secondary">
+                                <a href="{{ route('customers_demo_iframe') }}" id="resetButton" class="btn btn-sm btn-secondary">
                                     <i class="ri-refresh-line"></i> Reset
                                 </a>
                             </div>
@@ -207,8 +296,8 @@
                 <!-- Modal -->
 
 
-                <div class="card card-body shadow">
-                    <div class="table-responsive table-custom">
+                <div class="card card-body shadow card-table">
+                    <div class="table-responsive table-custom card-table">
                         <!--zero_config  -  usersTable-->
                         <table id="usersTable" class="table table-hover table-striped search-table v-middle"
                             data-paging="true">
@@ -228,7 +317,7 @@
                                             <div class="d-flex align-items-center">
                                                 <div class="ms-2">
                                                     <div class="user-meta-info">
-                                                        <a href="{{ route('users.show', $user->id) }}">
+                                                        <a href="{{ route('show_customers_demo_iframe', $user->id) }}">
                                                             <h6 class="user-name mb-0" data-name="name">
                                                                 {{ $user->name }}
                                                             </h6>
@@ -311,7 +400,7 @@
                                                 </button>
                                                 <div class="dropdown-menu">
                                                     <a class="dropdown-item"
-                                                        href="{{ route('users.show', $user->id) }}"><i data-feather="eye"
+                                                        href="{{ route('show_customers_demo_iframe', $user->id) }}"><i data-feather="eye"
                                                             class="feather-sm me-2"></i> View</a>
                                                     <!--   <a class="dropdown-item" href="{{ route('users.show', $user->id) }}"><i
                                                                                                                                     data-feather="edit-2" class="feather-sm me-2"></i> Edit</a> -->
@@ -621,5 +710,8 @@
             });
         </script>
     @endsection
+@if(Route::currentRouteName() != 'dash')
 
 @endsection
+
+@endif

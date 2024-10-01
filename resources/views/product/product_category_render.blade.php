@@ -12,12 +12,13 @@
             <input type="hidden" name="category_id" value="{{ $productCategory->id }}">
             <div class="form-group">
                 <div class="col-md-12 mb-3"> <input type="text" value="{{ $productCategory->category_name }}"
-                        class="form-control" name="category_name" placeholder="Category Name" required/>
+                        class="form-control" name="category_name" placeholder="Category Name" required />
                 </div>
 
 
                 <div class="col-md-12 mb-3">
-                    <div class="
+                    <div
+                        class="
                                     fileupload
                                     btn btn-danger btn-rounded
                                     waves-effect waves-light

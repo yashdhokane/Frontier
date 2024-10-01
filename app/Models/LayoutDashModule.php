@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class LayoutDashModule extends Model
 {
     use HasFactory;
-    public $timestamps = false; 
+    //public $timestamps = false; 
     protected $table = 'layout_dash_modules';
     protected $primaryKey = 'id';
 

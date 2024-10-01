@@ -1,8 +1,10 @@
 <!-- resources/views/clients/index.blade.php -->
-
+  @if(Route::currentRouteName() != 'dash')
 @extends('home')
 
 @section('content')
+ @endif
+
 <div class="container-fluid">
 
     <div class="page-breadcrumb" style="padding: 0px 0px 10px 0px;">
@@ -316,4 +318,6 @@
 </div>
 
 @include('fleet.script')
+  @if(Route::currentRouteName() != 'dash')
 @endsection
+ @endif

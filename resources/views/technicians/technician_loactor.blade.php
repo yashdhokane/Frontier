@@ -1,5 +1,11 @@
+@if(Route::currentRouteName() != 'dash')
+
+
+
 @extends('home')
 @section('content')
+
+@endif
 <style>
     .technician-item:hover {
         background-color: #e8e8e8;
@@ -88,5 +94,7 @@
 
 <!-- ... Your existing HTML code ... -->
 
+@if(Route::currentRouteName() != 'dash')
 
 @stop
+@endif

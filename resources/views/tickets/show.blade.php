@@ -1,5 +1,8 @@
+@if(Route::currentRouteName() != 'dash')
+
 @extends('home')
 @section('content')
+@endif
     <!-- Page wrapper  -->
     <!-- -------------------------------------------------------------- -->
     <!-- -------------------------------------------------------------- -->
@@ -1486,4 +1489,7 @@
     <!-- End Container fluid  -->
 
     @include('tickets.scriptShow')
+
+@if(Route::currentRouteName() != 'dash')
 @endsection
+@endif

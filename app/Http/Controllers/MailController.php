@@ -30,8 +30,8 @@ class MailController extends Controller
             $type1 = "schedule_customer";   // Blade view: 'schedule_customer.blade.php'
             $type2 = "schedule_technician"; // Blade view: 'schedule_technician.blade.php'
 
-            // $to ='thesachinraut@gmail.com';
-            $to ='bawanesumit01@gmail.com';
+            // $to ='bawanesumit01@gmail.com';
+            $to ='thesachinraut@gmail.com';
     
             if ($typeName == 'reschedule') {
                 // Email details for reschedule

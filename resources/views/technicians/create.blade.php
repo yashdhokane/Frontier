@@ -1,6 +1,9 @@
+@if(Route::currentRouteName() != 'dash')
+
+
 @extends('home')
 @section('content')
-
+@endif
 <style>
     .required-field::after {
 
@@ -672,4 +675,9 @@ lastNameInput.addEventListener('input', updateDisplayName);
 </script>
 
 @endsection
+
+@if(Route::currentRouteName() != 'dash')
+
+
 @endsection
+@endif

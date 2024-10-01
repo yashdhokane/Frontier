@@ -3,10 +3,7 @@
     <div class="p-3">
         <div class="d-flex justify-content-between mb-1">
             <h4 class="">Quick Links</h4>
-            @if ($layout->added_by == auth()->user()->id)
-                <button class="btn btn-light mx-2 clearSection"
-                    data-element-id="{{ $cardPosition->element_id }}">X</button>
-            @endif
+            
         </div>
         <ul class="list-group list-group-flush">
             <li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a

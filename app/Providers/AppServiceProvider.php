@@ -29,7 +29,6 @@ use App\Mail\MyCustomEmail;
 
 
 
-
 class AppServiceProvider extends ServiceProvider
 {
     /**

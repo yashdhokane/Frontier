@@ -1,10 +1,11 @@
 <!-- resources/views/clients/edit.blade.php -->
+@if(Route::currentRouteName() != 'dash')
 
 @extends('home')
 
 @section('content')
 
-
+@endif
 <div class="page-breadcrumb">
 
     @if ($errors->any())
@@ -90,5 +91,7 @@
     </div>
 </div>
 <!-- /.row -->
+@if(Route::currentRouteName() != 'dash')
 
 @endsection
+@endif

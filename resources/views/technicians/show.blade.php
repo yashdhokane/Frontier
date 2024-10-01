@@ -1,7 +1,10 @@
+    @if (Route::currentRouteName() != 'dash')
+
+
 @extends('home')
 @section('content')
 <!-- Page wrapper  -->
-
+@endif
 @php
 $address = '';
 if (isset($location->address_line1) && $location->address_line1 !== '') {
@@ -1125,5 +1128,7 @@ $address .= $location->zipcode;
         });
 </script>
 @endsection
+    @if (Route::currentRouteName() != 'dash')
 
 @endsection
+@endif

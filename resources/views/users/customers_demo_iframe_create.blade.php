@@ -1,13 +1,39 @@
+@if(Route::currentRouteName() != 'dash')
+
+
 @extends('home')
 
 @section('content')
-
+@endif
 <link rel="stylesheet" href="{{ asset('public/admin/dist/libs/select2/dist/css/select2.min.css') }}">
 
 
 
 
 <style>
+ #main-wrapper[data-layout="vertical"][data-sidebartype="mini-sidebar"] .page-wrapper {
+    margin-left: 0px !important;
+  }
+
+.card-body {
+    padding: 0px !important;
+}
+.container-fluid {
+                padding: 0px;
+            }
+
+ #main-wrapper[data-layout=vertical][data-header-position=fixed] .topbar { display: none; }
+            #main-wrapper[data-layout=vertical][data-sidebar-position=fixed] .left-sidebar { display: none; }
+            #main-wrapper[data-layout=vertical][data-sidebartype=full] .page-wrapper { margin-left: 0px; }
+            #main-wrapper[data-layout=vertical][data-header-position=fixed] .page-wrapper { padding-top: 0px; }
+
+            /* Make iframe content scrollable */
+            html, body {
+                overflow: auto !important; /* Allow scrolling */
+                margin: 0; /* Remove default margins */
+                padding: 0; /* Remove default padding */
+            }
+
     .required-field::after {
 
         content: " *";
@@ -61,10 +87,7 @@
     }
 </style>
 
-
-
-
-
+     
 <form id="myForm" method="POST" action="{{ route('users.store') }}" enctype="multipart/form-data">
 
     @csrf
@@ -94,8 +117,9 @@
 				</div>
 				<div class="col-3 text-end px-4">
 					<a href="{{route('customers_demo_iframe')}}"
-						class="justify-content-center d-flex align-items-center"><i class="ri-contacts-line" style="margin-right: 8px;"></i> Back to Customers List </a>
-				</div>
+						class="justify-content-center d-flex align-items-center"><i class="ri-contacts-line" style="margin-right: 8px;"></i> Back </a>
+				</div>   
+                <!-- to Customers List -->
              </div>
 		</div>
 
@@ -177,7 +201,7 @@
 
 
 
-        <div class="row mt-4">
+        <div class="row mt-1">
  
             <div class="col-lg-9 d-flex align-items-stretch">
 
@@ -463,7 +487,7 @@
                         <button type="submit" id="submitBtn"
                             class="btn btn-info rounded-pill px-4 waves-effect waves-light">Save</button>
 
-                        <a href="{{ route('users.index') }}"> <button type="button"
+                        <a href="{{ route('customers_demo_iframe') }}"> <button type="button"
                                 class="btn btn-dark rounded-pill px-4 waves-effect waves-light">Cancel</button> </a>
 
                     </div>
@@ -923,5 +947,7 @@ function searchCity() {
 
 
 @endsection
+@if(Route::currentRouteName() != 'dash')
 
 @endsection
+@endif

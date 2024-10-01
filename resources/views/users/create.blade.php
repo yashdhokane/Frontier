@@ -1,7 +1,10 @@
+    @if(Route::currentRouteName() != 'dash')
+
+
 @extends('home')
 
 @section('content')
-
+@endif
 <link rel="stylesheet" href="{{ asset('public/admin/dist/libs/select2/dist/css/select2.min.css') }}">
 
 
@@ -93,7 +96,7 @@
                      <h4 class="page-title">Add New Customer</h4>
 				</div>
 				<div class="col-3 text-end px-4">
-					<a href="https://dispatchannel.com/portal/users"
+					<a href="https://dispatchannel.com/portal/customers"
 						class="justify-content-center d-flex align-items-center"><i class="ri-contacts-line" style="margin-right: 8px;"></i> Back to Customers List </a>
 				</div>
              </div>
@@ -923,5 +926,7 @@ function searchCity() {
 
 
 @endsection
+@if(Route::currentRouteName() != 'dash')
 
 @endsection
+@endif

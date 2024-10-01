@@ -20,20 +20,19 @@
                 <div class="row">
                     <div class="col-sm-12 col-md-6">
                         <div class="mb-3">
-                            <label for="password"
-                                class="control-label col-form-label required-field">Password</label>
-                            <input type="password" class="form-control" id="password" name="password"
-                                placeholder="" required />
+                            <label for="password" class="control-label col-form-label required-field">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder=""
+                                required />
 
 
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-6">
                         <div class="mb-3">
-                            <label for="confirm_password"
-                                class="control-label col-form-label required-field">Confirm Password</label>
-                            <input type="password" class="form-control" id="confirm_password"
-                                name="confirm_password" placeholder="" required />
+                            <label for="confirm_password" class="control-label col-form-label required-field">Confirm
+                                Password</label>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password"
+                                placeholder="" required />
                         </div>
                     </div>
                 </div>
@@ -44,8 +43,8 @@
                         <div class="mb-3">
                             <label for="first_name" class="control-label col-form-label required-field">First
                                 Name</label>
-                            <input type="text" class="form-control" id="first_name" name="first_name"
-                                placeholder="" required />
+                            <input type="text" class="form-control" id="first_name" name="first_name" placeholder=""
+                                required />
 
 
                         </div>
@@ -54,16 +53,16 @@
                         <div class="mb-3">
                             <label for="last_name" class="control-label col-form-label required-field">Last
                                 Name</label>
-                            <input type="text" class="form-control" id="last_name" name="last_name"
-                                placeholder="" required />
+                            <input type="text" class="form-control" id="last_name" name="last_name" placeholder=""
+                                required />
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-12 col-md-12">
                         <div class="mb-3">
-                            <label for="display_name"
-                                class="control-label col-form-label required-field">Display Name (shown
+                            <label for="display_name" class="control-label col-form-label required-field">Display Name
+                                (shown
                                 on invoice)</label>
                             <input type="text" class="form-control" id="display_name" name="display_name"
                                 placeholder="" required />
@@ -102,8 +101,8 @@
                 <div class="row">
                     <div class="col-sm-12 col-md-12">
                         <div class="mb-3">
-                            <label for="license_number"
-                                class="control-label col-form-label required-field">License Number</label>
+                            <label for="license_number" class="control-label col-form-label required-field">License
+                                Number</label>
                             <input type="text" class="form-control" id="license_number" name="license_number"
                                 placeholder="" required />
                         </div>
@@ -114,7 +113,8 @@
                         <div class="mb-3">
                             <label for="ssn" class="control-label col-form-label ">SSN(Social Security
                                 Number)</label>
-                            <input type="text" class="form-control" id="ssn" name="ssn" placeholder="" />
+                            <input type="text" class="form-control" id="ssn" name="ssn"
+                                placeholder="" />
                         </div>
                     </div>
                 </div>
@@ -163,15 +163,15 @@
                     <div class="col-sm-12 col-md-12">
                         <div class="mb-3">
                             <div class="form-check form-check-inline">
-                                @foreach($serviceAreas as $area)
-                                <label class="form-check-label" for="service_areas{{ $area->area_id }}"
-                                    style="width: 100%;">
-                                    <input class="form-check-input" type="checkbox"
-                                        id="service_areas{{ $area->area_id }}" name="service_areas[]"
-                                        value="{{ $area->area_id }}">
-                                    {{ $area->area_name }}
-                                </label>
-                                <span style="margin-right: 35px;"></span>
+                                @foreach ($serviceAreas as $area)
+                                    <label class="form-check-label" for="service_areas{{ $area->area_id }}"
+                                        style="width: 100%;">
+                                        <input class="form-check-input" type="checkbox"
+                                            id="service_areas{{ $area->area_id }}" name="service_areas[]"
+                                            value="{{ $area->area_id }}">
+                                        {{ $area->area_name }}
+                                    </label>
+                                    <span style="margin-right: 35px;"></span>
                                 @endforeach
                             </div>
                         </div>
@@ -193,8 +193,8 @@
                     <div class="row">
                         <div class="col-sm-12 col-md-12">
                             <div class="mb-3">
-                                <label for="address1"
-                                    class="control-label col-form-label required-field">Address Line 1
+                                <label for="address1" class="control-label col-form-label required-field">Address Line
+                                    1
                                     (Street)</label>
                                 <input type="text" class="form-control" id="address1" name="address1"
                                     placeholder="" required />
@@ -204,8 +204,8 @@
                             <div class="col-sm-12 col-md-12">
                                 <div class="mb-3">
                                     <label for="role" class="control-label col-form-label">Role</label>
-                                    <input type="text" class="form-control" id="role" name="role" placeholder=""
-                                        value="technician" />
+                                    <input type="text" class="form-control" id="role" name="role"
+                                        placeholder="" value="technician" />
                                 </div>
                             </div>
                         </div>
@@ -240,10 +240,9 @@
                                     class="control-label bold mb5 col-form-label required-field">State</label>
                                 <select class="form-select me-sm-2" id="state_id" name="state_id" required>
                                     <option selected disabled value="">Select State...</option>
-                                    @foreach($locationStates as $locationState)
-                                    <option value="{{ $locationState->state_id }}">{{ $locationState->state_name
-                                        }}
-                                    </option>
+                                    @foreach ($locationStates as $locationState)
+                                        <option value="{{ $locationState->state_id }}">{{ $locationState->state_name }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -251,8 +250,7 @@
 
                         <div class="col-sm-12 col-md-4">
                             <div class="mb-3">
-                                <label for="zip_code"
-                                    class="control-label col-form-label required-field">Zip</label>
+                                <label for="zip_code" class="control-label col-form-label required-field">Zip</label>
                                 <input type="text" class="form-control" id="zip_code" name="zip_code"
                                     placeholder="" required />
                             </div>
@@ -276,11 +274,10 @@
                                         <div class="mb-3">
                                             <select class="form-control select2-hidden-accessible"
                                                 id="select2-with-tags" name="tag_id[]" multiple="multiple"
-                                                data-bgcolor="light"
-                                                data-select2-id="select2-data-select2-with-tags" tabindex="-1"
-                                                aria-hidden="true" style="width: 100%">
-                                                @foreach($tags as $tag)
-                                                <option value="{{ $tag->tag_id }}">{{ $tag->tag_name }}</option>
+                                                data-bgcolor="light" data-select2-id="select2-data-select2-with-tags"
+                                                tabindex="-1" aria-hidden="true" style="width: 100%">
+                                                @foreach ($tags as $tag)
+                                                    <option value="{{ $tag->tag_id }}">{{ $tag->tag_name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>

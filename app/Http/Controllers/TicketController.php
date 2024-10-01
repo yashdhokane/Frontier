@@ -601,4 +601,218 @@ class TicketController extends Controller
 
         return redirect()->back()->with('success', 'Job settings updated successfully.');
     }
+
+
+  public function showiframe($id)
+    {
+
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 34;
+
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck === true) {
+            // Proceed with the action
+        } else {
+            return $permissionCheck; // This will handle the redirection
+        }
+
+        $technicians = JobModel::with('jobassignname', 'JobTechEvent', 'JobAssign', 'usertechnician', 'addedby', 'jobfieldname')->find($id);
+
+        if (!$technicians) {
+            return view('404');
+        }
+
+        $fieldIds = explode(',', $technicians->job_field_ids);
+        $jobFields = Jobfields::whereIn('field_id', $fieldIds)->get();
+        $Payment = Payment::where('job_id', $id)->first();
+
+        $jobproduct = JobProduct::where('job_id', $id)->get();
+        $jobservice = JobServices::where('job_id', $id)->get();
+
+
+        $ticket = JobModel::with('user', 'jobactivity')->findOrFail($id);
+        $techniciansnotes = JobNoteModel::where('job_id', '=', $id)
+            ->Leftjoin('users', 'users.id', '=', 'job_notes.added_by')
+            ->select('job_notes.*', 'users.name', 'users.user_image')
+            ->get();
+
+
+        $name = $technicians->tag_ids;
+
+        $names = explode(',', $name);
+
+        $Sitetagnames = SiteTags::whereIn('tag_id', $names)->get();
+        $customer_tag = SiteTags::all();
+
+
+        $namejobs = $technicians->job_field_ids;
+
+        $namesjobtag = explode(',', $namejobs);
+
+        $jobtagnames = SiteJobFields::whereIn('field_id', $namesjobtag)->get();
+
+        $job_tag = SiteJobFields::all();
+
+        $lead = User::where('id', $technicians->customer_id)->first();
+
+        if ($lead) {
+            $lead_id = $lead->source_id;
+            $lead_id = $lead->source_id;
+        } else {
+
+            $lead_id = null;
+        }
+
+
+        $leadone = explode(',', $lead_id);
+
+        $source = SiteLeadSource::whereIn('source_id', $leadone)->get();
+
+        $leadsource = SiteLeadSource::all();
+
+        $activity = JobActivity::with('user')->where('job_id', $id)->latest()->get();
+
+        $files = JobFile::where('job_id', $id)->latest()->get();
+
+        $schedule = JobAssign::where('job_id', $id)->where('assign_status', 'active')->first();
+
+        $jobTimings = App::make('JobTimingManager')->getJobTimings($id);
+
+        // travel time
+
+        $currentJobDate = $technicians->created_at;
+
+        // Define the start and end of the current job's date
+        $startOfDay = Carbon::parse($currentJobDate)->startOfDay();
+        $endOfDay = Carbon::parse($currentJobDate)->endOfDay();
+
+        // Find the previous job for the same technician created before the current job's creation time on the same day
+        $previousJob = JobModel::where('technician_id', $technicians->technician_id)
+            ->whereBetween('created_at', [$startOfDay, $endOfDay])
+            ->where('created_at', '<', $currentJobDate)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        $tech_add = CustomerUserAddress::where('user_id', $technicians->technician_id)->first();
+
+        if ($previousJob) {
+            $address = ($previousJob->latitude ?? 0) . ',' . ($previousJob->longitude ?? 0);
+        } else {
+            $address = ($tech_add->latitude ?? 0) . ',' . ($tech_add->longitude ?? 0);
+        }
+        $customer_address = ($technicians->latitude ?? 0) . ',' . ($technicians->longitude ?? 0);
+
+        $origin = $address;
+        $destination = $customer_address;
+
+        $response = Http::get('https://maps.googleapis.com/maps/api/distancematrix/json', [
+            'destinations' => $destination,
+            'origins' => $origin,
+            'key' => 'AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo',
+        ]);
+        $travelTime = 0;
+        $data = $response->json();
+        if ($response->successful()) {
+            if ($data['status'] === 'OK' && isset($data['rows'][0]['elements'][0]['duration'])) {
+                // Extract duration
+                $travelTime = $data['rows'][0]['elements'][0]['duration']['text'];
+            }
+        } else {
+            $travelTime = 0;
+        }
+
+        $checkSchedule = Schedule::where('job_id', $id)->first();
+
+        $jobAssigns = JobAssign::where('job_id', $id)->get();
+        $assignedJobs = $jobAssigns->count() > 1 ? $jobAssigns : null;
+
+        $job_appliance = UserAppliances::with('appliance', 'manufacturer')->where('user_id', $ticket->customer_id)->get();
+
+        $appliances = DB::table('appliance_type')->get();
+
+        $manufacturers = DB::table('manufacturers')->get();
+        $d = Carbon::parse($checkSchedule->start_date_time)->format('Y-m-d');
+        $t = Carbon::parse($checkSchedule->start_date_time)->format('h:i A');
+        $date = $d;
+        $time = str_replace(" ", ":00 ", $t);
+        $dateTime = Carbon::parse("$date $time");
+        $datenew = Carbon::parse($date);
+        $currentDay = $datenew->format('l');
+        $currentDayLower = strtolower($currentDay);
+        // Query the business hours for the given day
+        $hours = BusinessHours::where(
+            'day',
+            $currentDayLower
+        )->first();
+
+        // Calculate time intervals (example)
+        $timeIntervals = [];
+        $current = strtotime($hours->start_time);
+        $end = strtotime($hours->end_time);
+        $interval = 30 * 60; // Interval in seconds (30 minutes)
+
+        while ($current <= $end) {
+            $timeIntervals[] = date('H:i', $current);
+            $current += $interval;
+        }
+
+        $int = Session::get('time_interval');
+
+        $startDateTime = $checkSchedule->start_date_time ? Carbon::parse($checkSchedule->start_date_time) : null;
+        $startDateTime2 = $checkSchedule->end_date_time ? Carbon::parse($checkSchedule->end_date_time) : null;
+        if ($startDateTime && isset($int)) {
+            // Add the interval to the parsed time
+            $startDateTime->addHours($int);
+        }
+
+        if ($startDateTime2 && isset($int)) {
+            // Add the interval to the parsed time
+            $startDateTime2->addHours($int);
+        }
+
+        $fromDate = $startDateTime ? $startDateTime->format('h:i A') : null;
+        $toDate = $startDateTime2 ? $startDateTime2->format('h:i A') : null;
+
+        return view('tickets.iframe_job_show', ['Payment' => $Payment, 'jobservice' => $jobservice, 'jobproduct' => $jobproduct, 'jobFields' => $jobFields, 'ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source, 'activity' => $activity, 'files' => $files, 'schedule' => $schedule, 'jobTimings' => $jobTimings, 'travelTime' => $travelTime, 'checkSchedule' => $checkSchedule, 'assignedJobs' => $assignedJobs, 'job_appliance' => $job_appliance, 'appliances' => $appliances, 'manufacturers' => $manufacturers, 'timeIntervals' => $timeIntervals, 'dateTime' => $dateTime, 'date' => $date, 'fromDate' => $fromDate, 'toDate' => $toDate]);
+    }
+     public function indexiframe()
+    {
+
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 32;
+
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck === true) {
+            // Proceed with the action
+        } else {
+            return $permissionCheck; // This will handle the redirection
+        }
+
+        $servicearea = LocationServiceArea::all();
+        $manufacturer = Manufacturer::all();
+        $technicianrole = User::where('role', 'technician')->where('status', 'active')->get();
+        $totalCalls = JobModel::count();
+        $inProgress = JobModel::where('status', 'in_progress')->count();
+        $opened = JobModel::where('status', 'open')->count();
+        $complete = JobModel::where('status', 'closed')->count();
+        $status = JobModel::all();
+        $tickets = JobModel::orderBy('created_at', 'desc')->get();
+        $technicians = JobModel::with('jobdetailsinfo', 'jobassignname')->orderBy('created_at', 'desc')->get();
+        return view('tickets.iframe_job_index', [
+            'tickets' => $tickets,
+            'status' => $status,
+            'manufacturer' => $manufacturer,
+            'technicianrole' => $technicianrole,
+            'technicians' => $technicians,
+            'servicearea' => $servicearea,
+            'totalCalls' => $totalCalls,
+            'inProgress' => $inProgress,
+            'opened' => $opened,
+            'complete' => $complete
+        ]);
+    }
 }

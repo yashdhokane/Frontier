@@ -1,6 +1,9 @@
+
+@if(Route::currentRouteName() != 'dash')
+
 @extends('home')
 @section('content')
-
+@endif
     <!-- Page wrapper  -->
     <!-- -------------------------------------------------------------- -->
     <div class="page-wrapper" style="display:inline;">
@@ -257,4 +260,7 @@
     
 
 @stop
+@if(Route::currentRouteName() != 'dash')
+
 @stop
+@endif

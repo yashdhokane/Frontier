@@ -173,6 +173,7 @@ use App\Http\Controllers\StickyNotesController;
 
 
 */
+
 Route::get('clear', function () {
     Artisan::call('cache:clear');
     return "Cache cleared successfully";
@@ -185,6 +186,8 @@ Route::fallback(function () {
 
 Route::get('/unauthorized', function () {
     return view('403');
+    // return view('tickets.index');
+
 });
 
 Route::middleware('guest')->group(function () {
@@ -226,8 +229,12 @@ Route::middleware('guest')->group(function () {
 require __DIR__ . '/auth.php';
 
 
+Route::get('/home', [LayoutDashController::class, 'index'])->middleware('auth')->name('home');
 
-Route::get('/home', [HomeController::class, 'index'])->middleware('auth')->name('home');
+
+// Route::get('/home', [HomeController::class, 'index'])->middleware('auth')->name('home');
+
+// Route::get('/home', [HomeController::class, 'index'])->middleware('auth')->name('home');
 Route::get('/getSiteSettings', [HomeController::class, 'getSiteSettings'])->middleware('auth')->name('getSiteSettings');
 
 
@@ -305,12 +312,12 @@ Route::group(['middleware' => 'auth'], function () {
 
 
     // Route::resource('/users', UserController::class, );
-    Route::get('/customers-demo-iframe-create', [UserController::class, 'customers_demo_iframe_create'])->name('customers_demo_iframe_create');
-    Route::get('/show-customers-demo-iframe/{id}', [UserController::class, 'show_customers_demo_iframe'])->name('show_customers_demo_iframe');
+    Route::get('/customers-iframe-create', [UserController::class, 'customers_demo_iframe_create'])->name('customers_demo_iframe_create');
+    Route::get('/show-customers-iframe/{id}', [UserController::class, 'show_customers_demo_iframe'])->name('show_customers_demo_iframe');
 
-    Route::get('/customers-demo-iframe', [UserController::class, 'customers_demo_iframe'])->name('customers_demo_iframe');
+    Route::get('/customers-iframe', [UserController::class, 'customers_demo_iframe'])->name('customers_demo_iframe');
 
-    Route::get('/customers-demo-iframe/{status?}', [UserController::class, 'customers_demo_iframe'])->name('customers_demo_iframe.status');
+    Route::get('/customers-iframe/{status?}', [UserController::class, 'customers_demo_iframe'])->name('customers_demo_iframe.status');
 
     Route::get('/customers', [UserController::class, 'index'])->name('users.index');
     Route::get('/customers/{status?}', [UserController::class, 'index'])->name('users.status');
@@ -331,7 +338,6 @@ Route::group(['middleware' => 'auth'], function () {
 
 
     Route::get('/customers/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
-
 
 
     Route::get('/customers/show/{id}', [UserController::class, 'show'])->name('users.show');
@@ -360,6 +366,14 @@ Route::group(['middleware' => 'auth'], function () {
 
 
     // Route::resource('/technicians', TechnicianController::class,);
+
+    Route::get('/iframe-index', [TechnicianController::class, 'iframe_index'])->name('iframe_index');
+    Route::get('/iframe-create', [TechnicianController::class, 'iframe_create'])->name('iframe_create');
+    Route::post('/iframe-store', [TechnicianController::class, 'iframe_store'])->name('iframe_store');
+
+    Route::get('/iframe-show/{id}', [TechnicianController::class, 'iframe_show'])->name('iframe_show');
+    Route::get('/iframe/{status?}', [TechnicianController::class, 'iframe_index'])->name('iframe_technician_status');
+
     Route::get('/technicians', [TechnicianController::class, 'index'])->name('technicians.index');
 
     Route::get('/technicians/{status?}', [TechnicianController::class, 'index'])->name('technicians.status');
@@ -367,8 +381,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::POST('/update-technician-fleet', [TechnicianController::class, 'update_fleet_technician'])->name('update_fleet_technician');
     Route::POST('/fleetupdated', [FleetController::class, 'fleetupdated'])->name('fleetupdated');
     Route::post('vehicles/{id}/update-insurance', [FleetController::class, 'vehicleupdateinsurance'])->name('vehicle_insurance_policy.update');
-    
-        Route::get('/fleet/vehicle/details', [FleetController::class, 'getVehicleDetails'])->name('fleet.vehicle.details');
+    Route::post('vehicles/{id}/iframe-vehicle-update-insurance', [FleetController::class, 'iframevehicleupdateinsurance'])->name('iframevehicleupdateinsurance');
+
+
+    Route::get('/fleet/vehicle/details', [FleetController::class, 'getVehicleDetails'])->name('fleet.vehicle.details');
 
     Route::POST('/technicians/updatefleet', [TechnicianController::class, 'updatefleet'])->name('updatefleet');
     Route::post('/technicians/sms/', [TechnicianController::class, 'smstechnician'])->name('smstechnician');
@@ -436,7 +452,9 @@ Route::middleware('auth')->group(function () {
 
 
     Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
+ Route::get('/tickets-iframe', [TicketController::class, 'indexiframe'])->name('tickets.indexiframe');
 
+    Route::get('/tickets-iframe/{id}', [TicketController::class, 'showiframe'])->name('tickets.showiframe');
 
 
     // Show the form to create a new ticket
@@ -815,10 +833,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/getJobsByDate/', [ScheduleController::class, 'getJobsByDate'])->name('schedule.getJobsByDate');
 
     Route::get('/schedule', [ScheduleController::class, 'demo'])->name('schedule');
+    Route::get('/scheduleiframe', [ScheduleController::class, 'demoiframe'])->name('scheduleiframe');
 
     Route::post('/update-job-technician', [ScheduleController::class, 'updateJobTechnician'])->name('updateJobTechnician');
 
     Route::get('/demoScheduleupdate/', [ScheduleController::class, 'demoScheduleupdate'])->name('schedule.demoScheduleupdate');
+    Route::get('/demoScheduleupdateiframe/', [ScheduleController::class, 'demoScheduleupdateiframe'])->name('schedule.demoScheduleupdateiframe');
 
     Route::get('/getALlJobDetails/', [ScheduleController::class, 'getALlJobDetails'])->name('schedule.getALlJobDetails');
 
@@ -836,7 +856,9 @@ Route::middleware('auth')->group(function () {
     Route::get('events', [EventController::class, 'index'])->name('events');
 
     Route::get('event/delete/{id}', [EventController::class, 'destroy']);
+Route::get('events-iframe', [EventController::class, 'indexiframe'])->name('eventsiframe');
 
+    Route::get('event-iframe/delete/{id}', [EventController::class, 'destroyiframe']);
 
     // StickyNotesController
 
@@ -859,10 +881,21 @@ Route::middleware('auth')->group(function () {
 
 
     // FleetController
+    Route::get('vehicles-iframe-index', [FleetController::class, 'iframe_index'])->name('vehicle_iframe_index');
+    Route::get('iframeaddvehicle', [FleetController::class, 'iframeaddvehicle'])->name('iframeaddvehicle');
+    Route::get('iframe-active/fleet/{id}', [FleetController::class, 'iframe_active']);
+    Route::get('iframe-inactive/fleet/{id}', [FleetController::class, 'iframe_inactive']);
+    Route::post('fleet-iframefleetupdate/{id}', [FleetController::class, 'iframefleetupdate'])->name('iframefleetupdate');
+
+    Route::get('vehicle/iframefleetedit/{id}', [FleetController::class, 'iframefleetedit'])->name('fleet.iframefleetedit');
+
+    Route::post('iframe/store/store', [FleetController::class, 'iframestore'])->name('iframestore');
+
 
     Route::get('vehicles', [FleetController::class, 'index'])->name('vehicles');
 
     Route::post('fleet/store', [FleetController::class, 'store'])->name('fleet.store');
+
 
     Route::get('vehicle/details/{id}', [FleetController::class, 'edit']);
     Route::get('vehicle/fleetedit/{id}', [FleetController::class, 'fleetedit'])->name('fleet.fleetedit');
@@ -888,6 +921,42 @@ Route::middleware('auth')->group(function () {
 
 
 
+    Route::get('parts-iframe', [ProductCategoryController::class, 'index_iframe'])->name('product.index_iframe');
+    Route::get('book-list/parts-iframe-create', [productController::class, 'createproductiframe'])->name('product.createproduct.iframe');
+    Route::post('book-list/iframe-parts-store', [ProductController::class, 'iframepartsstore'])->name('product.iframepartsstore');
+    Route::get('book-list/parts-iframe/{product_id}/edit', [productController::class, 'partsiframeedit'])->name('product.iframe.edit');
+    Route::put('book-list/parts-iframe/{id}', [ProductController::class, 'update_iframe'])->name('product.update.iframe');
+    Route::get('active/parts-iframe/{id}', [ProductController::class, 'active_iframe']);
+    Route::get('inactive/parts-iframe/{id}', [ProductController::class, 'inactive_iframe']);
+    Route::get('book-list/parts-iframe/{id}/destroy', [productController::class, 'destroy_parts_iframe'])->name('product.iframe.destroy');
+    Route::get('iframe_part_assign', [ProductCategoryController::class, 'iframe_part_assign'])->name('iframe_part_assign');
+
+
+    Route::get('tools-index-iframe', [ToolController::class, 'index_iframe'])->name('tool.index_iframe');
+
+    Route::get('book-list/tool-iframe-create', [ToolController::class, 'iframecreateproduct'])->name('tool.createtool.iframe');
+    Route::get('book-list/tool-iframe/{product_id}/edit', [ToolController::class, 'iframe_edit'])->name('tool.edit.iframe');
+    Route::get('assign_tool_iframe', [ToolController::class, 'iframe_assign_product'])->name('assign_tool.iframe');
+
+    Route::post('book-list/tool-iframe-store', [ToolController::class, 'store_iframe'])->name('tool.iframe.store');
+
+
+    Route::put('book-list/tool-iframe/{id}', [ToolController::class, 'iframe_update'])->name('tool.iframe_update');
+    Route::get('inactive/tool-iframe/{id}', [ToolController::class, 'iframe_inactive']);
+
+    Route::get('active/tool-iframe/{id}', [ToolController::class, 'iframe_active']);
+    Route::get('book-list/tool-iframe/{id}/destroy', [ToolController::class, 'iframe_destroy'])->name('tool.iframe.destroy');
+
+    Route::post('store/assign-tool-iframe', [ToolController::class, 'store_iframe_assign_tool']);
+    Route::get('partCategoryiframe', [ProductController::class, 'listingproductiframe'])->name('partCategoryiframe');
+
+
+
+
+
+
+
+
 
     Route::get('parts', [ProductCategoryController::class, 'index'])->name('product.index');
 
@@ -907,16 +976,20 @@ Route::middleware('auth')->group(function () {
 
     Route::post('book-list/parts-store', [ProductController::class, 'store'])->name('product.store');
 
+
     Route::get('book-list/parts/{product_id}/edit', [productController::class, 'edit'])->name('product.edit');
 
     Route::put('book-list/parts/{id}', [ProductController::class, 'update'])->name('product.update');
 
 
     Route::get('inactive/parts/{id}', [ProductController::class, 'inactive']);
-
     Route::get('active/parts/{id}', [ProductController::class, 'active']);
 
+
+
+
     Route::get('book-list/parts/{id}/destroy', [productController::class, 'destroy'])->name('product.destroy');
+
 
     Route::get('assign_product', [ProductCategoryController::class, 'assign_product'])->name('assign_product');
 
@@ -1040,13 +1113,13 @@ Route::middleware('auth')->group(function () {
     Route::put('/setting/update-service-area', [ServiceAreaController::class, 'update'])->name('servicearea.update');
 
 
-   // customizer 
-   // web.php
+    // customizer
+    // web.php
     Route::get('/drag', [LayoutDashController::class, 'drag'])->name('drag');
 
-   Route::get('/form/automation', [LayoutDashController::class, 'showForm'])->name('automation.form.show');
+    Route::get('/form/automation', [LayoutDashController::class, 'showForm'])->name('automation.form.show');
 
-   Route::get('dashboard/schedule/search', [LayoutDashController::class, 'schedulesearch'])->name('dashboard.schedule.search');
+    Route::get('dashboard/schedule/search', [LayoutDashController::class, 'schedulesearch'])->name('dashboard.schedule.search');
 
     Route::get('dashboard/search/payments', [LayoutDashController::class, 'searchPayments'])->name('dashboard.search.payments');
 
@@ -1054,18 +1127,18 @@ Route::middleware('auth')->group(function () {
     Route::get('dashboard/events/search', [LayoutDashController::class, 'eventsearch'])->name('dashboard.events.search');
 
     Route::get('dashboard/search/parts', [LayoutDashController::class, 'searchParts'])->name('dashboard.search.parts');
-   Route::get('dashboard/search-technicians', [LayoutDashController::class, 'searchTechnicians'])->name('dashboard.search.technicians');
+    Route::get('dashboard/search-technicians', [LayoutDashController::class, 'searchTechnicians'])->name('dashboard.search.technicians');
 
-   Route::get('dashboard/search/customers', [LayoutDashController::class, 'searchCustomers'])->name('dashboard.search.customers');
+    Route::get('dashboard/search/customers', [LayoutDashController::class, 'searchCustomers'])->name('dashboard.search.customers');
 
-    Route::get('/dashboard', [LayoutDashController::class, 'test'])->name('dashboard.test');
+    Route::get('/dashboard-test', [LayoutDashController::class, 'test'])->name('dashboard.test');
 
-    Route::get('/dash', [LayoutDashController::class, 'index'])->name('dash');
-    
+    Route::get('/dashboard', [LayoutDashController::class, 'index'])->name('dash');
+
     Route::post('/savePositions', [LayoutDashController::class, 'savePositions'])->name('savePositions');
 
     Route::post('/update-status', [LayoutDashController::class, 'updateStatus'])->name('update.status');
-    
+
     Route::post('/changeStatus', [LayoutDashController::class, 'changeStatus'])->name('changeStatus');
 
     Route::post('/update-layout-name/{id}', [LayoutDashController::class, 'updateLayoutName'])->name('updateLayoutName');
@@ -1074,9 +1147,9 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/createNewLayout', [LayoutDashController::class, 'createNewLayout'])->name('createNewLayout');
 
-Route::get('/customer/fetch-data', [LayoutDashController::class, 'fetchData'])->name('autom.fetch.user');
+    Route::get('/customer/fetch-data', [LayoutDashController::class, 'fetchData'])->name('autom.fetch.user');
 
-Route::get('/automation', [LayoutDashController::class, 'automation'])->name('automation.user');
+    Route::get('/automation', [LayoutDashController::class, 'automation'])->name('automation.user');
 
 
 
@@ -1114,11 +1187,11 @@ Route::get('/automation', [LayoutDashController::class, 'automation'])->name('au
 
 
 
-// Route for AJAX requests to load more activities
-Route::get('myprofile/activity/load-more', [AdminProfileController::class, 'loadMoreActivities'])->name('myprofile.activity.loadMore');
+    // Route for AJAX requests to load more activities
+    Route::get('myprofile/activity/load-more', [AdminProfileController::class, 'loadMoreActivities'])->name('myprofile.activity.loadMore');
 
-// Route for AJAX requests to load more notifications
-Route::get('myprofile/notifications/load-more', [AdminProfileController::class, 'loadMoreNotifications'])->name('myprofile.notifications.loadMore');
+    // Route for AJAX requests to load more notifications
+    Route::get('myprofile/notifications/load-more', [AdminProfileController::class, 'loadMoreNotifications'])->name('myprofile.notifications.loadMore');
 
     Route::get('/my-profile/activity', [AdminProfileController::class, 'activity'])->name('myprofile.activity')->middleware('auth');
 
@@ -1208,9 +1281,6 @@ Route::get('myprofile/notifications/load-more', [AdminProfileController::class, 
 
     Route::get('sms/send', [ChatSupportController::class, 'sendSms']);
 
-    Route::post('/sms/receive', [ChatSupportController::class, 'receiveSms']);
-
-
 
     // payments
     Route::post('/update-payment-status', [PaymentController::class, 'updatePaymentStatus'])->name('update.payment.status');
@@ -1271,26 +1341,27 @@ Route::get('myprofile/notifications/load-more', [AdminProfileController::class, 
 
 
 
-//Tool Controller route
+    //Tool Controller route
+
+
+
 
     Route::get('tools', [ToolController::class, 'index'])->name('tool.index');
 
     Route::get('book-list/tool-create', [ToolController::class, 'createproduct'])->name('tool.createtool');
 
-  Route::post('book-list/tool-store', [ToolController::class, 'store'])->name('tool.store');
+    Route::post('book-list/tool-store', [ToolController::class, 'store'])->name('tool.store');
 
     Route::get('book-list/tool/{product_id}/edit', [ToolController::class, 'edit'])->name('tool.edit');
 
     Route::put('book-list/tool/{id}', [ToolController::class, 'update'])->name('tool.update');
- Route::get('inactive/tool/{id}', [ToolController::class, 'inactive']);
+    Route::get('inactive/tool/{id}', [ToolController::class, 'inactive']);
 
     Route::get('active/tool/{id}', [ToolController::class, 'active']);
-        Route::get('book-list/tool/{id}/destroy', [ToolController::class, 'destroy'])->name('tool.destroy');
+    Route::get('book-list/tool/{id}/destroy', [ToolController::class, 'destroy'])->name('tool.destroy');
 
     Route::get('assign_tool', [ToolController::class, 'assign_product'])->name('assign_tool');
     Route::post('store/assign-tool', [ToolController::class, 'store_assign_tool']);
-
-
 });
 
 Route::post('/reset-password', [UserController::class, 'resetPassword'])->name('resetPassword');

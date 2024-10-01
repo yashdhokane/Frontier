@@ -1358,4 +1358,480 @@ public function updatefleet(Request $request)
             return redirect()->back()->with('error', 'User not authenticated');
         }
     }
+
+      public function iframe_index($status = null)
+    {
+
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 9;
+
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck === true) {
+            // Proceed with the action
+        } else {
+            return $permissionCheck; // This will handle the redirection
+        }
+
+        $usersQuery = User::where('role', 'technician');
+
+        if ($status == "deactive") {
+            $usersQuery->where('status', 'deactive');
+        } else {
+            $usersQuery->where('status', 'active');
+        }
+
+        $users = $usersQuery->orderBy('created_at', 'desc')->get();
+
+        foreach ($users as $key => $value) {
+            $areaName = [];
+            if (isset($value->service_areas) && !empty($value->service_areas)) {
+                $service_areas = explode(',', $value->service_areas);
+                foreach ($service_areas as $key1 => $value1) {
+                    $location_service_area = DB::table('location_service_area')->where('area_id', $value1)->first();
+                    if (isset($location_service_area->area_name) && !empty($location_service_area->area_name)) {
+                        $areaName[] = $location_service_area->area_name;
+                    }
+                }
+                $users[$key]['area_name'] = implode(', ', $areaName);
+            }
+        }
+
+        return view('technicians.iframe_index', compact('users'));
+    }
+
+
+
+    public function iframe_create()
+    {
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;                
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 10;
+
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck === true) {
+            // Proceed with the action
+        } else {
+            return $permissionCheck; // This will handle the redirection
+        }
+
+        $serviceAreas = LocationServiceArea::all();
+        $users = User::all();
+        $colorcode = ColorCode::all();
+
+        //    $roles = Role::all();
+        $locationStates = LocationState::all();
+        $tags = SiteTags::all(); // Fetch all tags
+
+
+        return view('technicians.iframe_create', compact('users', 'colorcode', 'serviceAreas', 'tags', 'locationStates'));
+    }
+
+
+    public function iframe_show($id)
+    {
+
+        $user_auth = auth()->user();
+        $user_id = $user_auth->id;
+        $permissions_type = $user_auth->permissions_type;
+        $module_id = 11;
+
+        $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+        if ($permissionCheck === true) {
+            // Proceed with the action
+        } else {
+            return $permissionCheck; // This will handle the redirection
+        }
+
+
+
+        $commonUser = User::where('role', 'technician')->where('id', $id)->first();
+        if (!$commonUser) {
+            return view('404');
+        }
+
+
+        $vehicleDescriptions = FleetVehicle::pluck('vehicle_description')->toArray();
+        //dd($vehicleDescriptions);
+        $vehiclefleet = FleetVehicle::where('technician_id', $commonUser->id)->first();
+        $colorcode = ColorCode::all();
+        //dd($vehiclefleet);
+        $schedule = Schedule::with('JobModel.user', 'JobModel.addresscustomer', 'JobModel', 'event')->where('technician_id', $commonUser->id)->orderBy('created_at', 'desc')->get();
+
+
+        $notename = DB::table('user_notes')->where('user_id', $commonUser->id)->get();
+        $meta = $commonUser->meta;
+        $home_phone = $commonUser->meta()->where('meta_key', 'home_phone')->value('meta_value') ?? '';
+        $location = CustomerUserAddress::where('user_id', $commonUser->id)->get();
+
+        $jobasigndate = DB::table('job_assigned')
+            ->where('technician_id', $commonUser->id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+        $jobasign = DB::table('jobs')
+            ->where('technician_id', $commonUser->id)
+            ->get();
+
+
+
+
+        //  $payments = DB::table('payments')
+        // ->where('job_id', $technician->id)
+        // ->get();
+        $payments = DB::table('payments')
+            ->whereIn('job_id', function ($query) use ($commonUser) {
+                $query->select('id')
+                    ->from('jobs')
+                    ->where('technician_id', $commonUser->id);
+            })
+            ->get();
+
+        //dd( $payments);
+
+
+
+
+        $customerimage = DB::table('user_files')
+            ->where('user_id', $commonUser->id)
+            ->get();
+
+        // $userAddresscity = DB::table('user_address')
+        //     ->leftJoin('location_cities', 'user_address.city_id', '=', 'location_cities.city_id')
+        //     ->where('user_address.user_id', $technician->id)
+        //     ->value('location_cities.city');
+        $userAddresscity = DB::table('user_address')
+            ->leftJoin('location_cities', 'user_address.city_id', '=', 'location_cities.city_id')
+            ->leftJoin('location_states', 'user_address.state_id', '=', 'location_states.state_id')
+            ->where('user_address.user_id', $commonUser->id)
+            ->get();
+        $latitude = DB::table('user_address')
+            ->leftJoin('location_cities', 'user_address.city', '=', 'location_cities.city_id')
+            ->where('user_address.user_id', $commonUser->id)
+            ->value('location_cities.latitude');
+        $longitude = DB::table('user_address')
+            ->leftJoin('location_cities', 'user_address.city', '=', 'location_cities.city_id')
+            ->where('user_address.user_id', $commonUser->id)
+            ->value('location_cities.longitude');
+        $fleets = $commonUser->fleet;
+        if ($fleets) {
+            $oil_change = $commonUser->fleet()->where('fleet_key', 'oil_change')->value('fleet_value') ?? '';
+            $tune_up = $commonUser->fleet()->where('fleet_key', 'tune_up')->value('fleet_value') ?? '';
+            $tire_rotation = $commonUser->fleet()->where('fleet_key', 'tire_rotation')->value('fleet_value') ?? '';
+            $breaks = $commonUser->fleet()->where('fleet_key', 'breaks')->value('fleet_value') ?? '';
+            $inspection_codes = $commonUser->fleet()->where('fleet_key', 'inspection_codes')->value('fleet_value') ?? '';
+            $mileage = $commonUser->fleet()->where('fleet_key', 'mileage')->value('fleet_value') ?? '';
+            $registration_expiration_date = $commonUser->fleet()->where('fleet_key', 'registration_expiration_date')->value('fleet_value') ?? '';
+            $vehicle_coverage = $commonUser->fleet()->where('fleet_key', 'vehicle_coverage')->value('fleet_value') ?? '';
+            $license_plate = $commonUser->fleet()->where('fleet_key', 'license_plate')->value('fleet_value') ?? '';
+            $vin_number = $commonUser->fleet()->where('fleet_key', 'vin_number')->value('fleet_value') ?? '';
+            $make = $commonUser->fleet()->where('fleet_key', 'make')->value('fleet_value') ?? '';
+            $model = $commonUser->fleet()->where('fleet_key', 'model')->value('fleet_value') ?? '';
+            $year = $commonUser->fleet()->where('fleet_key', 'year')->value('fleet_value') ?? '';
+            $color = $commonUser->fleet()->where('fleet_key', 'color')->value('fleet_value') ?? '';
+            $vehicle_weight = $commonUser->fleet()->where('fleet_key', 'vehicle_weight')->value('fleet_value') ?? '';
+            $vehicle_cost = $commonUser->fleet()->where('fleet_key', 'vehicle_cost')->value('fleet_value') ?? '';
+            $use_of_vehicle = $commonUser->fleet()->where('fleet_key', 'use_of_vehicle')->value('fleet_value') ?? '';
+            $repair_services = $commonUser->fleet()->where('fleet_key', 'repair_services')->value('fleet_value') ?? '';
+            $ezpass = $commonUser->fleet()->where('fleet_key', 'ezpass')->value('fleet_value') ?? '';
+            $service = $commonUser->fleet()->where('fleet_key', 'service')->value('fleet_value') ?? '';
+            $additional_service_notes = $commonUser->fleet()->where('fleet_key', 'additional_service_notes')->value('fleet_value') ?? '';
+            $last_updated = $commonUser->fleet()->where('fleet_key', 'last_updated')->value('fleet_value') ?? '';
+            $epa_certification = $commonUser->fleet()->where('fleet_key', 'epa_certification')->value('fleet_value') ?? '';
+        } else {
+            $oil_change = '';
+            $tune_up = '';
+            $tire_rotation = '';
+            $breaks = '';
+            $inspection_codes = '';
+            $mileage = '';
+            $registration_expiration_date = '';
+            $vehicle_coverage = '';
+            $license_plate = '';
+            $vin_number = '';
+            $make = '';
+            $model = '';
+            $year = '';
+            $color = '';
+            $vehicle_weight = '';
+            $vehicle_cost = '';
+            $use_of_vehicle = '';
+            $repair_services = '';
+            $ezpass = '';
+            $service = '';
+            $additional_service_notes = '';
+            $last_updated = '';
+            $epa_certification = '';
+        }
+
+        $UsersDetails = UsersDetails::where('user_id', $commonUser->id)->first();
+
+        $serviceAreas = LocationServiceArea::all();
+        $locationStates = LocationState::all();
+        $tags = SiteTags::all();
+
+
+
+        // Assuming you have a 'tags' relationship defined in your User model
+        $userTags = $commonUser->tags;
+
+        // Convert the comma-separated tag_id string to an array
+        $selectedTags = explode(',', $userTags->pluck('tag_id')->implode(','));
+        $location = $commonUser->location;
+
+
+        // Check if the technician has a location
+        if ($location) {
+            // Fetch cities associated with the technician's state
+            $cities = LocationCity::where('state_id', $location->state_id)->get();
+        } else {
+            $cities = collect(); // No cities if no location is set
+        }
+
+        $Note = $commonUser->Note;
+        $source = $commonUser->source;
+        $technicianpart = User::where('role', 'technician')->find($id);
+
+
+        $product = Products::all();
+
+        $assign = ProductAssigned::with('Technician', 'Product')->get();
+
+
+        $tool = Tool::all();
+
+        $toolassign = ToolAssign::with('Technician', 'Product')->get();
+        $tickets = JobModel::orderBy('created_at', 'desc')->get();
+        $payment = Payment::with('user', 'JobModel')->latest()->get();
+
+        $manufacturer = Manufacturer::where('is_active', 'yes')->get();
+
+        $tech = User::where('role', 'technician')->where('status', 'active')->get();
+        $activity = UsersActivity::with('user')
+            ->where('user_id', $commonUser->id)
+            ->get();
+
+        $setting = UsersSettings::where('user_id', $commonUser->id)
+            ->first();
+        $login_history = DB::table('user_login_history')
+            ->where('user_login_history.user_id', $commonUser->id)
+            ->first();
+        $estimates = DB::table('estimates')->where(
+            'technician_id',
+            $commonUser->id
+        )->get();
+        //dd($login_history);
+
+        return view('technicians.iframe_show', compact('vehiclefleet', 'toolassign', 'tool', 'vehicleDescriptions', 'colorcode', 'schedule', 'estimates', 'activity', 'setting', 'login_history', 'commonUser', 'oil_change', 'tune_up', 'tire_rotation', 'breaks', 'inspection_codes', 'mileage', 'registration_expiration_date', 'vehicle_coverage', 'license_plate', 'vin_number', 'make', 'model', 'year', 'color', 'vehicle_weight', 'vehicle_cost', 'use_of_vehicle', 'repair_services', 'ezpass', 'service', 'additional_service_notes', 'last_updated', 'epa_certification', 'notename', 'payments', 'longitude', 'latitude', 'userAddresscity', 'jobasign', 'customerimage', 'location', 'jobasigndate', 'serviceAreas', 'locationStates', 'tags', 'cities', 'selectedTags', 'userTags', 'product', 'assign', 'technicianpart', 'tickets', 'payment', 'manufacturer', 'tech', 'UsersDetails'));
+    }
+
+
+     public function iframe_store(Request $request)
+    {
+        // dd($request->all());
+
+        $validator = Validator::make($request->all(), [
+
+            'first_name' => 'required|max:255',
+            'last_name' => 'required|max:255',
+            'display_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'mobile_phone' => 'required|max:20',
+            'address1' => 'required',
+            'city' => 'required',
+            'state_id' => 'required',
+            'zip_code' => 'max:10',
+            'license_number' => 'required',
+            'dob' => 'required',
+
+        ]);
+        if ($validator->fails()) {
+            return redirect()
+                ->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // If validation passes, create the user and related records
+        $user = new User();
+        $user->name = $request['display_name'];
+        $user->employee_id = User::max('employee_id') + 1;
+        $user->is_employee = 'yes';
+
+        $user->email = $request['email'];
+        $user->mobile = $request['mobile_phone'];
+        $user->color_code = $request['color_code'];
+        $user->role = $request['role'];
+
+        $user->password = Hash::make($request['password']);
+        // $user->service_areas = implode(',', $request['service_areas']);
+        $user->service_areas = !empty($request['service_areas']) ? implode(',', $request['service_areas']) : null;
+
+        $user->save();
+        $userId = $user->id;
+
+        if ($request->hasFile('image')) {
+            // Generate a unique directory name based on user ID and timestamp
+            $directoryName = $userId;
+
+            // Construct the full path for the directory
+            $directoryPath = public_path('images/Uploads/users/' . $directoryName);
+
+            // Ensure the directory exists; if not, create it
+            if (!file_exists($directoryPath)) {
+                mkdir($directoryPath, 0777, true);
+            }
+
+            // Move the uploaded image to the unique directory
+            $image = $request->file('image');
+            $imageName = $image->getClientOriginalName(); // Or generate a unique name if needed
+            $image->move($directoryPath, $imageName);
+
+            // Save the image path in the user record
+            $user->user_image = $imageName;
+            $user->save();
+        }
+        app('sendNotices')('New Technician', 'New Technician Added at ' . now(), url()->current(), 'technician');
+        // $userId = $user->id;
+        // $currentTimestamp = now();
+
+        // $userMeta = [
+        //     ['user_id' => $userId, 'meta_key' => 'first_name', 'meta_value' => $request['first_name']],
+        //     ['user_id' => $userId, 'meta_key' => 'last_name', 'meta_value' => $request['last_name']],
+        //     ['user_id' => $userId, 'meta_key' => 'home_phone', 'meta_value' => $request['home_phone']],
+        //     ['user_id' => $userId, 'meta_key' => 'work_phone', 'meta_value' => $request['work_phone']],
+        //     ['user_id' => $userId, 'meta_key' => 'license_number', 'meta_value' => $request['license_number']],
+        //     ['user_id' => $userId, 'meta_key' => 'dob', 'meta_value' => $request['dob']],
+        //     ['user_id' => $userId, 'meta_key' => 'ssn', 'meta_value' => $request['ssn']],
+        //     ['user_id' => $userId, 'meta_key' => 'created_at', 'meta_value' => $currentTimestamp],
+        //     ['user_id' => $userId, 'meta_key' => 'updated_at', 'meta_value' => $currentTimestamp],
+        // ];
+        // CustomerUserMeta::insert($userMeta);
+
+        $usersDetails = new UsersDetails();
+        $usersDetails->user_id = $userId;
+        $usersDetails->unique_number = 0;
+        $usersDetails->lifetime_value = '$00.0';
+        $usersDetails->license_number = $request->input('license_number');
+        $usersDetails->dob = $request->input('dob');
+        $usersDetails->ssn = $request->input('ssn');
+        $usersDetails->update_done = 'no';
+
+
+        $usersDetails->first_name = $request->input('first_name');
+        $usersDetails->last_name = $request->input('last_name');
+        $usersDetails->home_phone = $request->input('home_phone');
+        $usersDetails->work_phone = $request->input('work_phone');
+        // $usersDetails->customer_position = $request->input('role');
+
+        //  $usersDetails->additional_email = $request->input('additional_email');
+
+        //  $usersDetails->customer_company = $request->input('company');
+
+        // $usersDetails->customer_type = $request->input('user_type');
+
+        $usersDetails->save();
+
+
+
+
+        $customerAddress = new CustomerUserAddress();
+        $customerAddress->user_id = $userId;
+        $customerAddress->address_line1 = $request['address1'];
+        $customerAddress->address_line2 = $request['address_unit'];
+        $customerAddress->address_primary = ($request['address_type'] == 'home') ? 'yes' : 'no';
+        $customerAddress->city = $request['city'];
+        // $customerAddress->city_id = $request['city_id'];
+        $customerAddress->address_type = $request['address_type'];
+        $customerAddress->state_id = $request['state_id'];
+        $nearestZip = DB::table('location_cities')
+            ->select('zip')
+            ->where('zip', 'like', '%' . $request['zip_code'] . '%')
+
+            ->orderByRaw('ABS(zip - ' . $request['zip_code'] . ')')
+            ->first();
+
+        // If a nearest ZIP code is found, use it; otherwise, use the provided ZIP code
+        $customerAddress->zipcode = $nearestZip ? $nearestZip->zip : $request['zip_code'];
+
+
+
+        $city = DB::table('location_cities')->where('city', $request['city'])->first();
+
+        if ($city) {
+            $matchingCity = DB::table('location_cities')->where('zip', $request['zip_code'])->first();
+
+            if ($matchingCity) {
+                $customerAddress->city_id = $matchingCity->city_id;
+            } else {
+                $nearestCity = DB::table('location_cities')
+                    ->select('city_id')
+                    ->where('zip', 'like', '%' . $request['zip_code'] . '%')
+                    ->orderByRaw('ABS(zip - ' . $request['zip_code'] . ')')
+                    ->first();
+
+                if ($nearestCity) {
+                    $customerAddress->city_id = $nearestCity->city_id;
+                } else {
+                    $customerAddress->city_id = 0;
+                }
+            }
+        } else {
+            $customerAddress->city_id = 0;
+        }
+
+
+        // Construct the address string
+        $address = $request['address1'] . ', ' . $request['city'];
+
+
+        // Make a request to the Google Maps Geocoding API  . ', ' . $request['zip_code']
+        $response = file_get_contents('https://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($address) . '&key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&callback');
+
+        // Decode the JSON response
+        $data = json_decode($response);
+
+        // Check if the response contains results
+        if ($data && $data->status === 'OK') {
+            // Extract latitude and longitude from the response
+            $latitude = $data->results[0]->geometry->location->lat;
+            $longitude = $data->results[0]->geometry->location->lng;
+
+            // Store latitude and longitude in the $customerAddress object
+            $customerAddress->latitude = $latitude;
+            $customerAddress->longitude = $longitude;
+        } else {
+            // Handle error or set default values
+            $customerAddress->latitude = null;
+            $customerAddress->longitude = null;
+        }
+
+        // dd($customerAddress->latitude, $customerAddress->longitude);
+        // dd($request->all());
+
+        $customerAddress->save();
+
+
+
+
+
+        $tagIds = $request['tag_id'];
+
+        if (!empty($tagIds)) {
+            foreach ($tagIds as $tagId) {
+                $userTag = new UserTag();
+                $userTag->user_id = $userId;
+                $userTag->tag_id = $tagId;
+                $userTag->save();
+            }
+        }
+
+
+
+        //dd("end");
+        return redirect()->route('iframe_index')->with('success', 'Technician created successfully');
+    }
+
+
 }

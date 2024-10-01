@@ -1,9 +1,10 @@
 <!-- resources/views/clients/index.blade.php -->
+@if(Route::currentRouteName() != 'dash')
 
 @extends('home')
 
 @section('content')
-
+@endif
     <div class="page-breadcrumb">
         <div class="row">
             <div class="col-6 align-self-center">
@@ -468,4 +469,7 @@
     </script>
 
 @endsection
+    @if(Route::currentRouteName() != 'dash')
+
 @endsection
+@endif

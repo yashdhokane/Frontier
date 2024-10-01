@@ -1,6 +1,10 @@
+    @if (Route::currentRouteName() != 'dash')
+
+
+
 @extends('home')
 @section('content')
-
+@endif
 
     <div class="page-wrapper" style="display:inline;">
         <!-- -------------------------------------------------------------- -->
@@ -568,4 +572,7 @@
             document.getElementById('searchInput1').addEventListener('keyup', filterTable);
         </script>
     @endsection
+    @if (Route::currentRouteName() != 'dash')
+
 @endsection
+@endif

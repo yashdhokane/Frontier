@@ -1,5 +1,7 @@
+  @if(Route::currentRouteName() != 'dash')
 @extends('home')
 @section('content')
+ @endif
 <style>
     .select2-results__option--disabled{
     font-weight: 900;
@@ -2738,4 +2740,6 @@
         }
     </script>
 @endsection
+  @if(Route::currentRouteName() != 'dash')
 @endsection
+ @endif

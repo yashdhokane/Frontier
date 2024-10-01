@@ -7,7 +7,8 @@
                     <button type="button" class="btn btn-link text-warning expand-toggle" data-index="0">Expand</button>
                 </div> --}}
 <!-- Add iframe or other content here -->
-<iframe src="https://dispatchannel.com/portal/parts?header=off&sidebar=off"
+
+<iframe src="https://dispatchannel.com/portal/parts-iframe?header=off&sidebar=off"
     style="width: 100%; height: 400px; border: none; overflow-x: auto; overflow-y: auto;" id="assetsIframe">
 </iframe>
 {{-- </div>

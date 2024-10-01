@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\ChatSupportController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -43,4 +44,6 @@ Route::post('updateEnroute', [ApiController::class, 'updateEnroute']);
 Route::post('updateStart', [ApiController::class, 'updateStart']);
 Route::post('updateComplete', [ApiController::class, 'updateComplete']);
 Route::post('getAppDisclaimer', [ApiController::class, 'getAppDisclaimer']);
+
+Route::post('/sms/receive', [ChatSupportController::class, 'receiveSms']);
 

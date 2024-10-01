@@ -1,6 +1,9 @@
+@if(Route::currentRouteName() != 'dash')
+
+
 @extends('home')
 @section('content')
-
+@endif
 <!-- Form for assigning a ticket -->
 <form action="{{ route('tickets.updateAssign', $ticket->id) }}" method="POST">
     @csrf
@@ -14,5 +17,7 @@
     <button type="submit">Assign Job</button>
 </form>
 
+@if(Route::currentRouteName() != 'dash')
 
 @endsection
+@endif

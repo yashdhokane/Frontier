@@ -1,5 +1,7 @@
 /* 
 
+
+
 header { display: none !important; }
 aside { display: none !important; }
 footer { display: none !important; }
@@ -33,4 +35,56 @@ html, body {
 
 #scheduleSection1 {
     overflow: auto !important;
-} */
+} 
+
+
+<!-- footoer heder remove -->
+
+
+iframe,header { display: none !important; }
+iframe,aside { display: none !important; }
+iframe,footer { display: none !important; }
+iframe .page-title { display: none !important; }
+iframe .page-breadcrumb { padding: 0px 0px 0 0px !important; }
+iframe .page-wrapper > .container-fluid,
+iframe .page-breadcrumb {
+    padding: 1px !important;
+}
+iframe .threedottest { display: block !important; }
+iframe .withoutthreedottest { display: none !important; }
+
+iframe #main-wrapper[data-layout=vertical][data-header-position=fixed] .topbar {
+    display: none;
+}
+iframe #main-wrapper[data-layout=vertical][data-sidebar-position=fixed] .left-sidebar {
+    display: none;
+}
+#main-wrapper[data-layout=vertical][data-sidebartype=full] .page-wrapper {
+    margin-left: 10px;
+}
+iframe #main-wrapper[data-layout=vertical][data-header-position=fixed] .page-wrapper {
+    padding-top: 10px;
+}
+
+iframe,html, body {
+    overflow: auto !important;
+    margin: 0;
+    padding: 0;
+}
+
+iframe #scheduleSection1 {
+    overflow: auto !important;
+} 
+
+*/
+
+
+/*    dashboard external css      */
+.clearelement{
+padding: 0px;
+}
+
+.card-table{
+    padding: 0px;
+
+}

@@ -1,6 +1,8 @@
+  @if(Route::currentRouteName() != 'dash')
 @extends('home')
 
 @section('content')
+ @endif
     <link rel="stylesheet" href="{{ url('public/admin/chat/style.css') }}">
     <!-- Page wrapper  -->
     <!-- -------------------------------------------------------------- -->
@@ -188,5 +190,6 @@
     <!-- -------------------------------------------------------------- -->
     <!-- End Page wrapper  -->
     @include('chat.script')
-
+  @if(Route::currentRouteName() != 'dash')
 @endsection
+ @endif
