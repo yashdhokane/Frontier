@@ -329,11 +329,11 @@ class ChatSupportController extends Controller
     {
         Storage::append('Data.log', 'data -- ' . json_encode($request->all()) . ' - ' . date('Y-m-d H:i:s') . PHP_EOL);
 
-        ChatMessage::insert([
-            'sender' => 11,
-            'conversation_id' => 11,
-            'message' => json_encode($request->all())
-        ]);
+        // ChatMessage::insert([
+        //     'sender' => 11,
+        //     'conversation_id' => 11,
+        //     'message' => json_encode($request->all())
+        // ]);
 
 
 
