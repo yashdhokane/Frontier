@@ -233,7 +233,8 @@ class ChatSupportController extends Controller
             $client = new Client($sid, $token);
             $client->messages->create($receiverNumber, [
                 'from' => $fromNumber,
-                'body' => $formattedMessage
+                'body' => $formattedMessage,
+                'statusCallback' => url("https://dispatchannel.com/portal/api/sms/receive?conversation_id=" . $request->support_message_id)
             ]);
         }
 
