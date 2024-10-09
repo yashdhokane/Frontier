@@ -1281,6 +1281,8 @@ Route::get('events-iframe', [EventController::class, 'indexiframe'])->name('even
 
     Route::get('sms/send', [ChatSupportController::class, 'sendSms']);
 
+    Route::get('add_employee_cnvrsn', [ChatSupportController::class, 'add_employee_cnvrsn'])->name('add_employee_cnvrsn');
+
 
     // payments
     Route::post('/update-payment-status', [PaymentController::class, 'updatePaymentStatus'])->name('update.payment.status');

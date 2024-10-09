@@ -37,90 +37,9 @@ class ChatSupportController extends Controller
         $employee = User::whereNotIn('role', ['superadmin', 'customer'])->where('status', 'active')->get();
 
 
-        return view('chat.app_chats', compact('chatConversion', 'users', 'employee'));
+        return view('chat.app_chats', compact('chatConversion', 'users','employee'));
     }
 
-    // new  code start 
-
-
-    public function add_employee_cnvrsn(Request $request)
-    {
-        $authId = auth()->user()->id;
-        $currentDate = now()->format('Y-m-d H:i:s');
-
-        // Check if a conversation already exists
-        $check = ChatConversation::where('created_by', $authId)
-            ->where('send_to', $request->id)
-            ->first();
-
-        if (!$check) {
-            // Save a new conversation
-            $conversation = new ChatConversation();
-            $conversation->created_by = $authId;
-            $conversation->send_to = $request->id;
-            $conversation->created_date = $currentDate;
-            $conversation->last_activity = $currentDate;
-            $conversation->save();
-
-            // Define both participants: auth user and the request user
-            $participants = [$authId, $request->id];
-
-            // Add both participants to the conversation
-            foreach ($participants as $participantId) {
-                $participant = new ChatParticipants();
-                $participant->user_id = $participantId;
-                $participant->conversation_id = $conversation->id;
-                $participant->join_time = now();
-                $participant->added_by = $authId;
-                $participant->is_unread = 0;
-                $participant->is_active = 'yes';
-                $participant->save();
-            }
-
-            $id = $conversation->id;
-        } else {
-            $id = $check->id;
-        }
-
-
-
-        $chat = ChatMessage::with('user', 'chating')->where('conversation_id', $id)->get();
-        $partician = ChatParticipants::with('user')->where('conversation_id', $id)->get();
-        $chatMessages = ChatMessage::select('conversation_id', 'sender', 'message', 'time')
-            ->where('conversation_id', $id);
-
-        // Get chat files
-        $chatFiles = ChatFile::select('conversation_id', 'sender', 'filename', 'time')
-            ->where('conversation_id', $id);
-
-        // Combine chat messages and chat files using union
-        $combinedData = $chatMessages->union($chatFiles)
-            ->with('user') // Eager load the user relation
-            ->where('conversation_id', $id)
-            ->orderBy('time', 'desc')
-            ->get();
-        $attachmentfileChatFile = ChatFile::select('filename', 'sender', 'conversation_id')
-            ->where('conversation_id', $id)->get();
-
-
-
-        // Return the user data and chat messages as a JSON response
-        return response()->json([
-            'conversation_id' => $id,
-            'chat' => $chat,
-            'partician' => $partician,
-            'combineData' => $combinedData,
-            'attachmentfileChatFile' => $attachmentfileChatFile
-        ]);
-    }
-
-
-
-
-
-
-
-    // new code end here 
 
     public function get_chats(Request $request)
     {
@@ -321,37 +240,8 @@ class ChatSupportController extends Controller
             ]);
         }
 
-
-        $id = $request->support_message_id;
-
-
-
-
-        $chat = ChatMessage::with('user', 'chating')->where('conversation_id', $id)->get();
-        $partician = ChatParticipants::with('user')->where('conversation_id', $id)->get();
-        $chatMessages = ChatMessage::select('conversation_id', 'sender', 'message', 'time')
-            ->where('conversation_id', $id);
-
-        // Get chat files
-        $chatFiles = ChatFile::select('conversation_id', 'sender', 'filename', 'time')
-            ->where('conversation_id', $id);
-
-        // Combine chat messages and chat files using union
-        $combinedData = $chatMessages->union($chatFiles)
-            ->with('user') // Eager load the user relation
-            ->where('conversation_id', $id)
-            ->orderBy('time', 'desc')
-            ->get();
-        $attachmentfileChatFile = ChatFile::select('filename', 'sender', 'conversation_id')
-            ->where('conversation_id', $id)->get();
-
-        return response()->json([
-            'conversation_id' => $id,
-            'chat' => $chat,
-            'partician' => $partician,
-            'combineData' => $combinedData,
-            'attachmentfileChatFile' => $attachmentfileChatFile
-        ]);
+        // Optionally, return a success response
+        return response()->json(['message' => 'Reply stored successfully'], 200);
     }
 
     public function deleteParticipant(Request $request)
