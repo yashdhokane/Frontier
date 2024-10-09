@@ -24,17 +24,41 @@
                           </label>
                       </div>
                       <div class="p-2 border-bottom">
-                          <form>
+                          <form data-role="employee">
                               <div class="searchbar d-flex justify-content-between">
                                   <input class="form-control" type="text" name="text-search"
-                                      placeholder="Search Users" />
+                                      placeholder="Search Or Add Employees" />
                               </div>
                           </form>
+                          <form data-role="customer" class="add_custm_conversation" action="{{ route('search.customer') }}" method="post">
+                            @csrf
+                            <div class="searchbar d-flex justify-content-between">
+                                <input class="form-control" type="text" id="search-customer" name="add_new_customer" placeholder="Search Or Add Customer" />
+                            </div>
+                        </form>
+                        
+
                       </div>
                       @if (auth()->id() == 1)
                           <ul class="mailbox list-style-none app-chat">
                               @foreach ($employee as $item)
-                                  <li class="chatlist cursor-pointer ps-2" data-id="{{ $item->id }}">
+                                  <li class="chatlist cursor-pointer ps-2" data-id="{{ $item->id }}"
+                                      data-role="employee">
+
+                                      <a href="javascript:void(0)" class="chat-user message-item px-2">
+
+                                          <div class="mail-contnet">
+                                              <h6 class="message-title" data-username="2">
+                                                  {{ $item->name }}
+                                              </h6>
+                                          </div>
+
+                                      </a>
+                                  </li>
+                              @endforeach
+                              @foreach ($customer as $item)
+                                  <li class="chatlist cursor-pointer ps-2" data-id="{{ $item->id }}"
+                                      data-role="customer">
 
                                       <a href="javascript:void(0)" class="chat-user message-item px-2">
 
@@ -103,7 +127,7 @@
                               <div class="chat-box scrollable" style="height: calc(100vh - 300px)">
 
                                   <ul class="chat-list chat">
-                                     
+
                                   </ul>
 
                               </div>

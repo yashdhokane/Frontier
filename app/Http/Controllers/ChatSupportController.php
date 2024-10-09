@@ -36,8 +36,14 @@ class ChatSupportController extends Controller
 
         $employee = User::whereNotIn('role', ['superadmin', 'customer'])->where('status', 'active')->get();
 
+        $sendToIds = $chatConversion->pluck('send_to')->unique();
 
-        return view('chat.app_chats', compact('chatConversion', 'users', 'employee'));
+        $customer = User::where('role', 'customer')
+            ->whereIn('id', $sendToIds)
+            ->get();
+
+
+        return view('chat.app_chats', compact('chatConversion', 'users', 'employee', 'customer'));
     }
 
     // new  code start 
@@ -115,6 +121,24 @@ class ChatSupportController extends Controller
     }
 
 
+    public function searchCustomer(Request $request)
+    {
+        $query = $request->input('query');
+
+        // Search for customers based on the input query
+        $customers = User::where('role', 'customer')
+            ->where(function ($queryBuilder) use ($query) {
+                $queryBuilder->where('name', 'LIKE', "%{$query}%") // Partial matches
+                    ->orWhere('email', 'LIKE', "%{$query}%"); // Optionally search by email as well
+            })
+            ->orderByRaw("LOCATE('{$query}', name)") // Prioritize names that start with or contain the query
+            ->limit(30)
+            ->get();
+
+
+        // Return the view with the filtered customers
+        return response()->json($customers);
+    }
 
 
 
