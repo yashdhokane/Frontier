@@ -132,7 +132,7 @@ class ChatSupportController extends Controller
                     ->orWhere('email', 'LIKE', "%{$query}%"); // Optionally search by email as well
             })
             ->orderByRaw("LOCATE('{$query}', name)") // Prioritize names that start with or contain the query
-            ->limit(30)
+            ->limit(3)
             ->get();
 
 
@@ -325,24 +325,29 @@ class ChatSupportController extends Controller
         $authUserId = Auth::id();
         $filteredParticipants = $participants->where('user_id', '!=', $authUserId);
 
-        foreach ($filteredParticipants as $user) {
+        // Check if the "is_send" checkbox was checked
+        if ($request->has('is_send') && $request->is_send == 'yes') {
 
-            $receiverNumber = '+917030467187'; // Replace with the recipient's phone number
-            // $receiverNumber = '+918830711935'; // Replace with the recipient's phone number
-            $message = $request->reply; // Replace with your desired message
-            $formattedMessage = "You have a new message in your chat:\n\n{$message}";
+            foreach ($filteredParticipants as $user) {
 
-            $sid = env('TWILIO_SID');
-            $token = env('TWILIO_TOKEN');
-            $fromNumber = env('TWILIO_FROM');
+                $receiverNumber = '+917030467187'; // Replace with the recipient's phone number
+                // $receiverNumber = '+918830711935'; // Replace with the recipient's phone number
+                $message = $request->reply; // Replace with your desired message
+                $formattedMessage = "You have a new message in your chat:\n\n{$message}";
+
+                $sid = env('TWILIO_SID');
+                $token = env('TWILIO_TOKEN');
+                $fromNumber = env('TWILIO_FROM');
 
 
-            $client = new Client($sid, $token);
-            $client->messages->create($receiverNumber, [
-                'from' => $fromNumber,
-                'body' => $formattedMessage,
-                'statusCallback' => url("https://dispatchannel.com/portal/api/sms/receive?conversation_id=" . $request->support_message_id)
-            ]);
+                $client = new Client($sid, $token);
+                $client->messages->create($receiverNumber, [
+                    'from' => $fromNumber,
+                    'body' => $formattedMessage,
+                    'statusCallback' => url("https://dispatchannel.com/portal/api/sms/receive?conversation_id=" . $request->support_message_id)
+                ]);
+            }
+
         }
 
 

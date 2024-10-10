@@ -13,7 +13,7 @@
               <!-- -------------------------------------------------------------- -->
               <div class=" left-part bg-white fixed-left-part user-chat-box mt-5" style="height: 100%; overflow-y: auto;">
                   <div class="position-relative border-start" style="height: 100%; ">
-                      <div class="m-2 d-flex justify-content-between">
+                      <div class="m-2 mt-4 d-flex justify-content-between">
                           <label>
                               <input type="radio" name="role" value="employee" checked>
                               Employee
@@ -30,16 +30,20 @@
                                       placeholder="Search Or Add Employees" />
                               </div>
                           </form>
-                          <form data-role="customer" class="add_custm_conversation" action="{{ route('search.customer') }}" method="post">
-                            @csrf
-                            <div class="searchbar d-flex justify-content-between">
-                                <input class="form-control" type="text" id="search-customer" name="add_new_customer" placeholder="Search Or Add Customer" />
-                            </div>
-                        </form>
-                        
+                          <form data-role="customer" class="add_custm_conversation" action="{{ route('search.customer') }}"
+                              method="post">
+                              @csrf
+                              <div class="searchbar d-flex justify-content-between">
+                                  <input class="form-control" type="text" id="search-customer" name="add_new_customer"
+                                      placeholder="Search Or Add Customer" />
+                              </div>
+                          </form>
+
 
                       </div>
                       @if (auth()->id() == 1)
+                          <ul class="mailbox list-style-none new-cust-chat border shadow">
+                          </ul>
                           <ul class="mailbox list-style-none app-chat">
                               @foreach ($employee as $item)
                                   <li class="chatlist cursor-pointer ps-2" data-id="{{ $item->id }}"
@@ -141,16 +145,22 @@
                                           <input type="hidden" name="auth_id" value="{{ auth()->id() }}">
                                           <input type="hidden" name="conversation_id" value=""
                                               id="name_support_message_id">
-                                          {{-- <input id="fileInput" type="hidden" name="file" style="display: none;" /> --}}
-                                          {{-- <label for="fileInput" class="btn btn-secondary me-2">
-                                            <i class="fa fa-paperclip"></i> Attach File
-                                        </label> --}}
+
                                           <div class="d-flex">
                                               <input id="textarea1" placeholder="Type and hit enter" name="reply"
                                                   style="font-family: Arial, FontAwesome"
                                                   class="message-type-box form-control border-0 flex-grow-1 me-2"
                                                   type="text" />
-                                              <button id="sendButton" class="btn btn-primary" type="button">Send</button>
+                                              <div>
+                                                  <span class="mx-4"> SMS </span>
+                                                  <div class="form-check form-switch mx-4">
+                                                      <input class="form-check-input" name="is_send" type="checkbox"
+                                                          value="yes" id="flexSwitchCheckChecked">
+                                                  </div>
+                                              </div>
+
+                                              <button id="sendButton" class="btn btn-primary"
+                                                  type="button">Send</button>
                                               <input type="hidden" class="form-control" id="user" name="users"
                                                   required />
 

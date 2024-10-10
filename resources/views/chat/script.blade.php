@@ -99,6 +99,10 @@
             formData.append('auth_id', $('input[name="auth_id"]').val());
             formData.append('support_message_id', $('input[name="conversation_id"]').val());
 
+            // Check if the checkbox is checked and append the appropriate value
+            const isSendChecked = $('#flexSwitchCheckChecked').is(':checked') ? 'yes' : 'no';
+            formData.append('is_send', isSendChecked);
+
             $.ajax({
                 url: '{{ route('store_reply') }}',
                 method: 'POST',
@@ -106,8 +110,11 @@
                 contentType: false,
                 processData: false,
                 success: function(response) {
-                    $('#textarea1, #fileInput').val('');
-                    updateChatUI(response);
+                    $('#textarea1').val(''); // Clear input fields
+                    updateChatUI(response); // Update the UI with the new message
+
+                    // Uncheck the SMS checkbox after sending
+                    $('#flexSwitchCheckChecked').prop('checked', false);
                 }
             });
         };
@@ -131,7 +138,7 @@
                 $('.chatlist[data-role="customer"]').show();
                 return;
             }
-            
+
 
             $.ajax({
                 url: '{{ route('search.customer') }}',
@@ -141,7 +148,6 @@
                     query: query
                 },
                 success: function(data) {
-                    $('.chatlist[data-role="customer"]').hide();
                     $('.chatlist[data-role="new_customer"]').remove();
 
                     // Loop through the returned customers and append them to the list
@@ -157,7 +163,7 @@
                     `;
 
                         // Append the new customer item to the customer list
-                        $('.app-chat').append(customerItem);
+                        $('.new-cust-chat').append(customerItem);
                     });
                     if (data.length > 0) {
                         $('.chatlist[data-role="customer"]').show();
@@ -197,5 +203,3 @@
 
     });
 </script>
-
-
