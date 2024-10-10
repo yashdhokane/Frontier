@@ -1,4 +1,29 @@
 
+
+.openJobTechDetails {
+    padding-top: 0px;
+}
+.pp_job_info_box {
+    line-height: 18px;
+    margin-bottom: 10px;
+}
+.pp_job_info_box h6 {
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+}
+.pp_job_date {
+    font-style: italic;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+.pp_job_info_full {
+    margin-bottom: 0px !important;
+}
+.pp_job_info_full:hover {
+    background: #efefef;
+}
+
 .dts2 {
     min-height: 36px;
 }
@@ -24,7 +49,7 @@
 .popupContainer {
     position: absolute;
     z-index: 999;
-    background-color: #1777d3;
+    background-color: #3e5569;
     color: white;
     padding: 10px 7px;
     display: none;
@@ -71,14 +96,14 @@
     margin-left: -5px;
     border-width: 6px;
     border-style: solid;
-    border-color: transparent transparent #1777d3 transparent;
+    border-color: transparent transparent #3e5569 transparent;
     /* Change border-color */
 }
 
 .smscontainer {
     position: absolute;
     z-index: 999;
-    background-color: #1777d3;
+    background-color: #3e5569;
     color: white;
     padding: 7px;
     display: none;
@@ -89,7 +114,7 @@
 .smscontainer::after {
     content: "";
     position: absolute;
-    top: 50%;
+    top: 17%;
     /* Adjust top position as needed */
     right: 100%;
     /* Change left to right */
@@ -97,7 +122,7 @@
     /* Adjust margin-top as needed */
     border-width: 6px;
     border-style: solid;
-    border-color: transparent #1777d3 transparent transparent;
+    border-color: transparent #3e5569 transparent transparent;
     /* Change border-color */
 }
 
@@ -117,7 +142,7 @@
 .settingcontainer {
     position: absolute;
     z-index: 999;
-    background-color: #1777d3;
+    background-color: #3e5569;
     color: white;
     padding: 7px;
     display: none;
@@ -135,7 +160,7 @@
     /* Adjust margin-top as needed */
     border-width: 6px;
     border-style: solid;
-    border-color: transparent #1777d3 transparent transparent;
+    border-color: transparent #3e5569 transparent transparent;
     /* Change border-color */
 }
 
