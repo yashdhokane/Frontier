@@ -20,7 +20,7 @@
                     success: function(response) {
                         var jobs = response;
                         // console.log(jobs);
-                        var ticketShowRoute ="{{ route('tickets.show', ':id') }}"; 
+                        var ticketShowRoute = "{{ route('tickets.show', ':id') }}";
                         $('#allJobsTechnicianLabel46').empty();
                         $('#allJobsTechnicianLabel46').append(tech_name +
                             ' - Dispatch Schedule');
@@ -38,7 +38,7 @@
                             // If jobs are available, iterate over each job and append its details
                             jobs.forEach(function(job) {
                                 // Create the HTML structure for each job
-                               var jobHtml = `
+                                var jobHtml = `
                                         <div class="col-md-4 mb-3">
                                             <div class="card shadow-sm h-100">
                                                 <div class="card-body card-border card-shadow">
@@ -98,10 +98,10 @@
                                                                             <!-- Check and display parts -->
                                                                             ${job.job_model && job.job_model.jobproductinfohasmany && job.job_model.jobproductinfohasmany.length > 0 
                                                                                 ? job.job_model.jobproductinfohasmany.map(product => `
-                                                                                    ${product.product && product.product.product_name 
-                                                                                        ? `${product.product.product_name} ,` 
-                                                                                        : ''}
-                                                                                `).join('') 
+                                                                                            ${product.product && product.product.product_name 
+                                                                                                ? `${product.product.product_name} ,` 
+                                                                                                : ''}
+                                                                                        `).join('') 
                                                                                 : ''}
                                                                             
                                                                             <!-- Check and display services -->
@@ -290,6 +290,38 @@
 
                 smscontainer.fadeToggle();
             });
+
+            $('#sendSmsButton').on('click', function(e) {
+                e.preventDefault();
+
+                var formData = new FormData($('#sendSmsForm')[0]);
+
+                $.ajax({
+                    url: '{{ route('send_sms_schedule') }}', // Your route
+                    method: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        if (response.success) {
+                            // Clear the textarea
+                            $('#sendSmsForm textarea').val('');
+
+                            // Hide the smscontainer after SMS is sent successfully
+                            var smscontainer = $('#sendSmsForm').closest('.smscontainer');
+                            smscontainer.fadeOut();
+                        } else {
+                            // Handle the error case (optional)
+                            console.log('SMS sending failed');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(xhr.responseText); // Log any errors
+                    }
+                });
+            });
+
+
 
             // Click event handler for setting-popup links
             $(document).on("click", ".setting-popup", function(event) {

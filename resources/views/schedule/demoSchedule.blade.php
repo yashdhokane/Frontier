@@ -59,10 +59,12 @@
                                 </div>
 
                                 <div class="smscontainer">
-
-                                    <input type="text" class="message_content form-control p-1 my-1"
-                                        placeholder="Type Something....">
-                                    <button class="btn btn-info p-0 px-1 my-1 float-end">Send</button>
+                                    <form id="sendSmsForm" class="conversation_form" method="post">
+                                        @csrf
+                                        <input type="hidden" name="tech_id" value="{{ $item->id }}">
+                                        <textarea name="message" class="message_content form-control p-1 my-1" rows="1" placeholder="Type Something...."></textarea>
+                                        <button type="button" id="sendSmsButton" class="btn btn-info p-0 px-1 my-1 float-end">Send</button>
+                                    </form>
 
                                 </div>
                                 <div class="settingcontainer">

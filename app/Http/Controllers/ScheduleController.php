@@ -36,6 +36,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Storage;
 use Illuminate\Support\Facades\Session;
+use Twilio\Rest\Client;
 
 class ScheduleController extends Controller
 {
@@ -3216,4 +3217,39 @@ class ScheduleController extends Controller
         // Pass both technicians and schedules to the view
         return view('schedule.schedule_index_iframe', compact('technicians', 'schedules', 'formattedDate', 'hours', 'tomorrowDate', 'previousDate'));
     }
+
+
+    public function send_sms_schedule(Request $request)
+    {
+        $request->validate([
+            'message' => 'required',
+            'tech_id' => 'required',
+        ]);
+    
+        $technician = User::find($request->tech_id);
+    
+        if (!$technician) {
+            return response()->json(['success' => false, 'message' => 'Technician not found.']);
+        }
+    
+        // Twilio SMS logic
+        $messageContent = $request->input('message');
+        $sid = env('TWILIO_SID');
+        $token = env('TWILIO_TOKEN');
+        $fromNumber = env('TWILIO_FROM');
+        $receiverNumber = '+917030467187'; // Replace with the actual technician phone number
+    
+        try {
+            $client = new Client($sid, $token);
+            $client->messages->create($receiverNumber, [
+                'from' => $fromNumber,
+                'body' => $messageContent,
+            ]);
+    
+            return response()->json(['success' => true, 'message' => 'SMS sent successfully!']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to send SMS.']);
+        }
+    }
+    
 }
