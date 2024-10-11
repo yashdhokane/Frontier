@@ -91,7 +91,7 @@ class ChatSupportController extends Controller
 
 
         $chat = ChatMessage::with('user', 'chating')->where('conversation_id', $id)->get();
-        $partician = ChatParticipants::with('user')->where('conversation_id', $id)->get();
+        $partician = ChatParticipants::with('user', 'user.userAddress', 'user.schedule', 'user.schedule.JobModel')->where('conversation_id', $id)->get();
         $chatMessages = ChatMessage::select('conversation_id', 'sender', 'message', 'time')
             ->where('conversation_id', $id);
 

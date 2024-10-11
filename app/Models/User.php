@@ -24,7 +24,7 @@ class User extends Authenticatable
         'password',
         'role',
         'image',
-         'status',
+        'status',
         'login',
         'source_id',
         'service_areas',
@@ -52,13 +52,13 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-public function customerdatafetch()
-{
-    return $this->hasOne(CustomerData::class, 'user_id', 'id')->latest('updated_at');
-}
+    public function customerdatafetch()
+    {
+        return $this->hasOne(CustomerData::class, 'user_id', 'id')->latest('updated_at');
+    }
 
 
-public function Locationareaname()
+    public function Locationareaname()
     {
         return $this->hasOne(LocationServiceArea::class, 'area_id', 'service_areas');
     }
@@ -66,7 +66,7 @@ public function Locationareaname()
     {
         return $this->belongsToMany(Role::class);
     }
-        public function fleet()
+    public function fleet()
     {
         return $this->hasOne(FleetDetails::class, 'user_id', 'id');
     }
@@ -85,8 +85,8 @@ public function Locationareaname()
     {
         return $this->hasOne(CustomerUserAddress::class, 'user_id', 'id');
     }
-   public function   locationStateName()
-   {
+    public function locationStateName()
+    {
         return $this->hasOne(LocationState::class, 'state_id', 'state_id');
     }
     // User.php (assuming this is your User model)
@@ -118,35 +118,40 @@ public function Locationareaname()
         return $this->belongsToMany(SiteTags::class, 'user_tags', 'user_id', 'tag_id');
     }
 
-// User.php
+    // User.php
 
-public function homeAddress()
-{
-    return $this->hasOne(CustomerUserAddress::class, 'user_id', 'id')
-        ->where('address_type', 'home');
-}
+    public function homeAddress()
+    {
+        return $this->hasOne(CustomerUserAddress::class, 'user_id', 'id')
+            ->where('address_type', 'home');
+    }
 
-// Inside the User model
- public function TimeZone()
+    // Inside the User model
+    public function TimeZone()
     {
         return $this->belongsTo(TimeZone::class, 'timezone_id');
     }
 
-public function userAddress()
-{
-    return $this->hasOne(CustomerUserAddress::class, 'user_id', 'id');
-}
-public function fleetDetails()
-{
-    return $this->hasOne(FleetDetails::class, 'user_id', 'id');
-}
+    public function userAddress()
+    {
+        return $this->hasOne(CustomerUserAddress::class, 'user_id', 'id');
+    }
+    public function fleetDetails()
+    {
+        return $this->hasOne(FleetDetails::class, 'user_id', 'id');
+    }
 
-public function schedule_data()
-{
-    return $this->hasOne(Schedule::class, 'technician_id', 'id');
-}
+    public function schedule_data()
+    {
+        return $this->hasOne(Schedule::class, 'technician_id', 'id');
+    }
 
- public function LoginHistory()
+    public function schedule()
+    {
+        return $this->hasMany(Schedule::class, 'technician_id', 'id');
+    }
+
+    public function LoginHistory()
     {
         return $this->hasOne(UserLoginHistory::class, 'user_id', 'id');
     }

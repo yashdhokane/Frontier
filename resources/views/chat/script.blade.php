@@ -18,6 +18,22 @@
 
         $('input[name="role"]:checked').trigger('change');
 
+        function formatDateRange(startDate, endDate, interval) {
+                var startDateTime = moment(
+                    startDate); // Assuming moment.js is available
+                var endDateTime = moment(endDate);
+
+                // Add the interval if provided
+                if (interval) {
+                    startDateTime.add(interval, 'hours');
+                    endDateTime.add(interval, 'hours');
+                }
+
+                // Format the dates
+                return startDateTime.format('MMM D YYYY h:mm A') + ' - ' +
+                    endDateTime.format('h:mm A');
+            }
+
 
         const isFilePath = (message) => {
             const fileExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'jfif', 'jpg', 'jpeg',
@@ -72,7 +88,11 @@
             $("#name_support_message_id, #add_user_to_conversation_hidden, #add_user_to_conversation_hidden-new")
                 .val(id);
             $('.chat-list, .chat-meta-user-top').empty();
+            $('.user-details-jobs').empty();
+            $('.scheule-job-details').empty();
             const firstUserName = partician[1]?.user.name || '';
+            const firstUser = partician[1]?.user || '';
+            console.log(firstUser.schedule);
             const otherUsers = partician.filter((p, i) => i > 0).length;
             $('.chat-meta-user-top').html(
                 `<div class="align-items-center mb-3"><i class="fa fa-user px-2"></i><strong>${firstUserName || 'Unknown'}</strong> and</div><div id="partCount" class="fw-bold ps-2">${otherUsers} Others</div>`
@@ -82,6 +102,61 @@
             const uniqueFiles = {};
             attach.forEach((attachs) => attachs.filename && appendAttachment(attachs, uniqueFiles));
             $('.chat-box').scrollTop($('.chat-box').prop("scrollHeight"));
+
+            $('.user-details-jobs').html(
+                `<h4 class="pt-2 ps-4">${firstUserName || 'Unknown'}</h4><div class="px-4 border-bottom">  ${firstUser.mobile} , ${firstUser.user_address.address_line1} , ${firstUser.user_address.city} , ${firstUser.user_address.state_name} , ${firstUser.user_address.zipcode}</div>`
+            );
+
+            if (Array.isArray(partician)) {
+                partician.forEach(function(participant, index) {
+                    const firstUser = participant.user || {};
+                    
+                    if (firstUser.schedule && typeof firstUser.schedule === 'object') {
+                        // Convert object to array and loop through it
+                        Object.values(firstUser.schedule).forEach(function(item) {
+                            if (item && item.job_model) { // Check if item and item.job_model exist
+                                let fieldNames = ''; // Ensure fieldNames is initialized
+
+                                // Check if fieldids exist and are valid
+                                if (Array.isArray(item.job_model.fieldids) && item.job_model.fieldids.length > 0) {
+                                    // Join the field names into a single string
+                                    fieldNames = item.job_model.fieldids.map(function(f) {
+                                        return f.field_name;
+                                    }).join(', ');
+                                }
+
+                                // Conditionally add the badge if fieldNames is not empty
+                                const fieldNamesBadge = fieldNames ? `<span class="badge bg-primary">${fieldNames}</span>` : '';
+
+                                $('.scheule-job-details').append(`
+                                    <h5 class="card-title py-1">
+                                        <strong class="text-uppercase">
+                                            #${item.job_model ? item.job_model.id : ''} ${fieldNamesBadge}
+                                            ${item.job_model.warranty_type === 'in_warranty' ? `<span class="badge bg-warning">In Warranty</span>` : ''}
+                                            ${item.job_model.warranty_type === 'out_warranty' ? `<span class="badge bg-danger">Out of Warranty</span>` : ''}
+                                        </strong>
+                                    </h5>
+
+                                    <!-- Job Title and Description -->
+                                    <div class="pp_job_info pp_job_info_box">
+                                        <h6 class="text-uppercase">${item.job_model.job_title.length > 20 ? item.job_model.job_title.substring(0, 20) + '...' : item.job_model.job_title}</h6>
+                                        <div class="description_info">${item.job_model.description || ''}</div>
+                                        <div class="pp_job_date text-primary">
+                                            ${item.start_date_time && item.end_date_time ? formatDateRange(item.start_date_time, item.end_date_time, item.interval) : ''}
+                                        </div>
+                                    </div>
+                                `);
+                            }
+                        });
+                    }
+                });
+            }
+
+
+
+
+
+
         };
 
         $(document).on('click', '.chatlist', function() {

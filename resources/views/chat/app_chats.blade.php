@@ -127,12 +127,20 @@
                                   </form>
 
                               </div>
+                              <div class="d-flex">
+                                  <div class="chat-box scrollable w-75" style="height: calc(100vh - 300px)">
 
-                              <div class="chat-box scrollable" style="height: calc(100vh - 300px)">
+                                      <ul class="chat-list chat">
 
-                                  <ul class="chat-list chat">
+                                      </ul>
 
-                                  </ul>
+                                  </div>
+                                  <div class=" shadow w-25">
+                                      <div class="user-details-jobs border">
+                                      </div>
+                                      <div class="scheule-job-details mt-2 px-3" style="height: 380px; overflow-y: auto;">
+                                      </div>
+                                  </div>
 
                               </div>
                           </div>
