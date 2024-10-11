@@ -50,7 +50,7 @@ class LeadsourceController extends Controller
         $leadSource->updated_by = $user; 
         $leadSource->save();
     
-        return redirect()->back()->with('success' , 'Lead source saved successfully');
+        return redirect()->back()->with('success' , 'Lead source has been saved successfully.');
     }
 
     public function updateLeadSource(Request $request)
@@ -61,7 +61,7 @@ class LeadsourceController extends Controller
         $leadSource->source_name = $request->input('source_name');
         $leadSource->update();
 
-        return redirect()->back()->with('success' , 'Lead source updated successfully');
+        return redirect()->back()->with('success' , 'Lead source has been updated successfully.');
     }
 
     public function deleteLeadSource(Request $request, $leadSourceId)
@@ -69,7 +69,7 @@ class LeadsourceController extends Controller
         $leadSource = UserLeadSourceCustomer::findOrFail($leadSourceId);
         $leadSource->delete();
 
-        return redirect()->back()->with('success' , 'Lead source deleted successfully');
+        return redirect()->back()->with('success' , 'Lead source has been deleted successfully.');
     }
 
     

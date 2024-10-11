@@ -41,7 +41,7 @@ class SiteLeadSourceController extends Controller
         $leadSource->count = 0; 
         $leadSource->save();
     
-        return response()->json(['message' => 'Lead source saved successfully']);
+        return response()->json(['message' => 'The lead source has been created successfully.']);
     }
 
     public function updateLeadSource(Request $request, $source_id)
@@ -52,7 +52,7 @@ class SiteLeadSourceController extends Controller
         $leadSource->source_name = $request->input('lead_source');
         $leadSource->save();
 
-        return response()->json(['message' => 'Lead source updated successfully']);
+        return response()->json(['message' => 'The lead source has been updated successfully.']);
     }
 
     public function deleteLeadSource($leadSourceId)
@@ -60,7 +60,7 @@ class SiteLeadSourceController extends Controller
         $leadSource = SiteLeadSource::findOrFail($leadSourceId);
         $leadSource->delete();
 
-        return response()->json(['message' => 'Lead source deleted successfully']);
+        return response()->json(['message' => 'The lead source has been deleted successfully.']);
     }
     
 }

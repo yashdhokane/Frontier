@@ -51,7 +51,7 @@ class JobfieldsController extends Controller
 
         $tags->save();
 
-        return redirect()->back()->with('success' , 'Job Fields saved successfully');
+        return redirect()->back()->with('success' , 'Job fields have been saved successfully.');
     }
 
     public function updateField(Request $request)
@@ -61,7 +61,7 @@ class JobfieldsController extends Controller
         
         $field->update();
 
-        return redirect()->back()->with('success' , 'Job Fields updated successfully');
+        return redirect()->back()->with('success' , 'Job fields were updated successfully.');
     }
 
     public function deleteJobFields(Request $request, $jobFieldsId)
@@ -70,7 +70,7 @@ class JobfieldsController extends Controller
 
         $jobFields->delete();
 
-        return redirect()->back()->with('success' , 'Job Fields deleted successfully');
+        return redirect()->back()->with('success' , 'Job fields were deleted successfully.');
     }
 }
 

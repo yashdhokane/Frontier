@@ -336,7 +336,7 @@ class TicketController extends Controller
         ]);
 
         // Redirect to the ticket details page or any other appropriate page
-        return redirect()->route('tickets.index')->with('success', 'Ticket updated successfully');
+        return redirect()->route('tickets.index')->with('success', 'The job has been updated successfully.');
     }
 
     // Remove the specified ticket from the database
@@ -384,7 +384,7 @@ class TicketController extends Controller
         $ticket->save();
 
         // Redirect or show success message
-        return redirect()->route('tickets.show', $ticket->id)->with('success', 'Ticket assigned successfully');
+        return redirect()->route('tickets.show', $ticket->id)->with('success', 'The job has been assigned successfully.');
     }
 
     public function techniciannotestore(Request $request)
@@ -407,7 +407,7 @@ class TicketController extends Controller
         }
 
         // Redirect back with success message
-        return redirect()->back()->with('success', 'Job note created successfully');
+        return redirect()->back()->with('success', 'The job note has been created successfully.');
     }
 
     public function addCustomerTags(Request $request, $id)
@@ -439,7 +439,7 @@ class TicketController extends Controller
         app('JobActivityManager')->addJobActivity($id, $activity);
 
 
-        return redirect()->back()->with('success', 'Cusomer tags added successfully');
+        return redirect()->back()->with('success', 'The customer tags have been added successfully.');
     }
     public function job_tags(Request $request, $id)
     {
@@ -470,7 +470,7 @@ class TicketController extends Controller
         app('JobActivityManager')->addJobActivity($id, $activity);
 
 
-        return redirect()->back()->with('success', 'Job tags added successfully');
+        return redirect()->back()->with('success', 'The job tags have been added successfully.');
     }
 
 
@@ -509,7 +509,7 @@ class TicketController extends Controller
                     $activity = 'Attachments Uploaded';
                     app('JobActivityManager')->addJobActivity($id, $activity);
 
-                    return redirect()->back()->with('success', 'Attachment added successfully');
+                    return redirect()->back()->with('success', 'The attachment has been added successfully.');
                 } else {
                     return redirect()->back()->with('error', 'Failed to move uploaded file');
                 }
@@ -550,7 +550,7 @@ class TicketController extends Controller
 
 
 
-        return redirect()->back()->with('success', 'Job tags added successfully');
+        return redirect()->back()->with('success', 'The job tags have been added successfully.');
     }
 
 
@@ -581,7 +581,7 @@ class TicketController extends Controller
         $jobModel->save();
 
         // Redirect back with success message
-        return redirect()->back()->with('success', 'Approve Job status updated successfully.');
+        return redirect()->back()->with('success', 'The approve job status has been updated successfully.');
     }
 
 
@@ -599,7 +599,7 @@ class TicketController extends Controller
         $job->save();
         $schedule->save();
 
-        return redirect()->back()->with('success', 'Job settings updated successfully.');
+        return redirect()->back()->with('success', 'The job settings have been updated successfully.');
     }
 
 

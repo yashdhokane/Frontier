@@ -74,7 +74,7 @@ class ManufactureController extends Controller
             'added_by' => $adminId,
             'last_updated_by' => $adminId,
         ]);
-        return redirect()->route('manufacturer.index')->with('success', 'Manufacturer created successfully!');
+        return redirect()->route('manufacturer.index')->with('success', 'The manufacturer has been created successfully.');
     }
 
 
@@ -117,7 +117,7 @@ class ManufactureController extends Controller
             'last_updated_by' => Auth::id(),
         ]);
 
-        return redirect()->route('manufacturer.index')->with('success', 'Manufacturer updated successfully!');
+        return redirect()->route('manufacturer.index')->with('success', 'The manufacturer has been updated successfully.');
     }
 
 
@@ -134,7 +134,7 @@ class ManufactureController extends Controller
         // Delete the manufacturer record from the database
         $manufacture->update();
 
-        return redirect()->back()->with('success', 'Manufacturer enable successfully!');
+        return redirect()->back()->with('success', 'The manufacturer has been enabled successfully.');
     }
 
     public function disable($id)
@@ -150,7 +150,7 @@ class ManufactureController extends Controller
         // Delete the manufacturer record from the database
         $manufacture->update();
 
-        return redirect()->back()->with('success', 'Manufacturer disable successfully!');
+        return redirect()->back()->with('success', 'The manufacturer has been disabled successfully.');
     }
 
 

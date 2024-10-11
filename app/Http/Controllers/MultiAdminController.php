@@ -258,7 +258,7 @@ class MultiAdminController extends Controller
 
 
         //    dd("end");
-        return redirect()->route('multiadmin.index')->with('success', 'Admin created successfully');
+        return redirect()->route('multiadmin.index')->with('success', 'Admin has been created successfully.');
     }
 
 
@@ -568,7 +568,7 @@ class MultiAdminController extends Controller
         $user->tags()->syncWithoutDetaching($tagIds);
 
 
-        return redirect()->back()->with('success', 'Admin updated successfully');
+        return redirect()->back()->with('success', 'Admin has been updated successfully.');
     }
 
 

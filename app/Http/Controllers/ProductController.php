@@ -103,7 +103,7 @@ class ProductController extends Controller
         } else {
 
             return redirect()->route('product.listingproduct', ['product_id' => $productCategoryId])
-                ->with('success', 'Product & Material created successfully');
+                ->with('success', 'The part has been created successfully.');
         }
 
         foreach ($technicianIds as $technicianId) {
@@ -114,7 +114,7 @@ class ProductController extends Controller
         }
 
         return redirect()->route('product.index_iframe')
-            ->with('success', 'Product & Material created successfully');
+            ->with('success', 'The part has been created successfully.');
     }
     public function store(Request $request)
     {
@@ -178,7 +178,7 @@ class ProductController extends Controller
         } else {
 
             return redirect()->route('product.listingproduct', ['product_id' => $productCategoryId])
-                ->with('success', 'Product & Material created successfully');
+                ->with('success', 'The part has been created successfully.');
         }
 
         foreach ($technicianIds as $technicianId) {
@@ -189,7 +189,7 @@ class ProductController extends Controller
         }
 
         return redirect()->route('product.index')
-            ->with('success', 'Product & Material created successfully');
+            ->with('success', 'The part has been created successfully.');
     }
 
 
@@ -282,7 +282,7 @@ class ProductController extends Controller
 
         // Redirect or respond as needed
         return redirect()->route('product.index_iframe')
-            ->with('success', 'Product & Material updated successfully');
+            ->with('success', 'The part has been updated successfully.');
     }
     public function update(Request $request, $id)
     {
@@ -372,7 +372,7 @@ class ProductController extends Controller
 
         // Redirect or respond as needed
         return redirect()->route('product.index')
-            ->with('success', 'Product & Material updated successfully');
+            ->with('success', 'The part has been updated successfully.');
     }
 
 
@@ -462,7 +462,7 @@ class ProductController extends Controller
         // Delete the product
         $product->delete();
         // Redirect or respond as needed
-        return redirect()->back()->with('success', 'Product deleted successfully');
+        return redirect()->back()->with('success', 'The part has been deleted successfully.');
     }
 
 
@@ -493,7 +493,7 @@ class ProductController extends Controller
         // Delete the product
         $product->delete();
         // Redirect or respond as needed
-        return redirect()->route('partCategory')->with('success', 'Product deleted successfully');
+        return redirect()->route('partCategory')->with('success', 'The part has been deleted successfully.');
     }
 
 
@@ -530,7 +530,7 @@ class ProductController extends Controller
 
         $product->update();
 
-        return redirect()->back()->with('success', 'Status Inactive successfully');
+        return redirect()->back()->with('success', 'part Status Inactive successfully');
     }
 
     public function active_iframe(Request $request, $id)
@@ -542,7 +542,7 @@ class ProductController extends Controller
 
         $product->update();
 
-        return redirect()->back()->with('success', 'Status Active successfully');
+        return redirect()->back()->with('success', 'Part status changed to active successfully.');
     }
     public function inactive(Request $request, $id)
     {
@@ -553,7 +553,7 @@ class ProductController extends Controller
 
         $product->update();
 
-        return redirect()->back()->with('success', 'Status Inactive successfully');
+        return redirect()->back()->with('success', 'Part status changed to inactive successfully.');
     }
 
     public function active(Request $request, $id)
@@ -565,6 +565,6 @@ class ProductController extends Controller
 
         $product->update();
 
-        return redirect()->back()->with('success', 'Status Active successfully');
+        return redirect()->back()->with('success', 'Part status changed to active successfully.');
     }
 }

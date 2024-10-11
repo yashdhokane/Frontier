@@ -133,7 +133,7 @@ class AppServiceProvider extends ServiceProvider
                             'body' => $message
                         ]);
 
-                        return 'SMS Sent Successfully.';
+                        return 'SMS has been sent successfully';
                     } catch (Exception $e) {
                         return 'Error: ' . $e->getMessage();
                     }

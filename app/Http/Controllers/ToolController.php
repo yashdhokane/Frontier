@@ -173,7 +173,7 @@ class ToolController extends Controller
         }
 
         // Redirect or respond as needed
-        return redirect()->route('tool.index')->with('success', 'Tool created successfully');
+        return redirect()->route('tool.index')->with('success', 'The tool has been created successfully.');
     }
 
     public function store_iframe(Request $request)
@@ -237,7 +237,7 @@ class ToolController extends Controller
         }
 
         // Redirect or respond as needed
-        return redirect()->route('tool.index_iframe')->with('success', 'Tool created successfully');
+        return redirect()->route('tool.index_iframe')->with('success', 'The tool has been created successfully.');
     }
 
     // public function update(Request $request, $id)
@@ -427,7 +427,7 @@ class ToolController extends Controller
 
 
         // Redirect or respond as needed
-        return redirect()->route('tool.index')->with('success', 'Tool updated successfully');
+        return redirect()->route('tool.index')->with('success', 'The tool has been updated successfully.');
     }
     public function iframe_update(Request $request, $id)
     {
@@ -527,7 +527,7 @@ class ToolController extends Controller
 
 
         // Redirect or respond as needed
-        return redirect()->route('tool.index_iframe')->with('success', 'Tool updated successfully');
+        return redirect()->route('tool.index_iframe')->with('success', 'The tool has been updated successfully.');
     }
 
     public function edit($id)
@@ -586,7 +586,7 @@ class ToolController extends Controller
         // Delete the product
         $product->delete();
         // Redirect or respond as needed
-        return redirect()->route('tool.index')->with('success', 'Tool deleted successfully');
+        return redirect()->route('tool.index')->with('success', 'The tool has been deleted successfully.');
     }
 
     public function iframe_destroy($id)
@@ -616,7 +616,7 @@ class ToolController extends Controller
         // Delete the product
         $product->delete();
         // Redirect or respond as needed
-        return redirect()->route('tool.index_iframe')->with('success', 'Tool deleted successfully');
+        return redirect()->route('tool.index_iframe')->with('success', 'The tool has been deleted successfully.');
     }
 
 
@@ -653,7 +653,7 @@ class ToolController extends Controller
 
         $product->update();
 
-        return redirect()->back()->with('success', 'Status Inactive successfully');
+        return redirect()->back()->with('success', 'The tool status has been successfully changed to inactive.');
     }
 
     public function active(Request $request, $id)
@@ -665,7 +665,7 @@ class ToolController extends Controller
 
         $product->update();
 
-        return redirect()->back()->with('success', 'Status Active successfully');
+        return redirect()->back()->with('success', 'The tool status has been successfully changed to active.');
     }
 
     public function iframe_inactive(Request $request, $id)
@@ -677,7 +677,7 @@ class ToolController extends Controller
 
         $product->update();
 
-        return redirect()->back()->with('success', 'Status Inactive successfully');
+        return redirect()->back()->with('success', 'The tool status has been successfully changed to inactive.');
     }
 
     public function iframe_active(Request $request, $id)
@@ -689,7 +689,7 @@ class ToolController extends Controller
 
         $product->update();
 
-        return redirect()->back()->with('success', 'Status Active successfully');
+        return redirect()->back()->with('success', 'The tool status has been successfully changed to active.');
     }
 
     public function iframe_assign_product(Request $request)
@@ -763,7 +763,7 @@ class ToolController extends Controller
         }
 
         // Optionally, you can redirect the user back or return a response
-        return redirect()->back()->with('success', 'Assignments stored successfully.');
+        return redirect()->back()->with('success', 'Assignments have been successfully stored.');
     }
 
 
@@ -788,6 +788,6 @@ class ToolController extends Controller
         }
 
         // Optionally, you can redirect the user back or return a response
-        return redirect()->back()->with('success', 'Assignments stored successfully.');
+        return redirect()->back()->with('success', 'Assignments have been successfully stored');
     }
 }

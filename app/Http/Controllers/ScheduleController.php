@@ -8,7 +8,9 @@ use App\Models\BusinessHours;
 use App\Models\CustomerUserAddress;
 use App\Models\Event;
 use App\Models\JobActivity;
-use App\Models\JobAppliances;
+use App\Models\Jobfields;
+
+use App\Models\JobAppliances;  
 use App\Models\JobAssign;
 use App\Models\JobDetails;
 use App\Models\JobModel;
@@ -2073,7 +2075,7 @@ class ScheduleController extends Controller
         if ($jobDetails->count() > 0) {
             return response()->json(['status' => 'success', 'data' => $jobDetails]);
         } else {
-            return response()->json(['status' => 'error', 'message' => 'Serial number not found']);
+            return response()->json(['status' => 'error', 'message' => 'Serial number not found.']);
         }
     }
 
@@ -2942,7 +2944,7 @@ class ScheduleController extends Controller
 
 
 
-            return response()->json(['success' => true, 'message' => 'Job updated successfully.']);
+            return response()->json(['success' => true, 'message' => 'The job has been updated successfully.']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
@@ -3036,27 +3038,42 @@ class ScheduleController extends Controller
 
         return response()->json(['tbody' => $screen2]);
     }
-    public function getALlJobDetails(Request $request)
-    {
+  public function getALlJobDetails(Request $request)
+{
+    $timezone_name = Session::get('timezone_name');
+    $time_interval = Session::get('time_interval');
+    $currentDate = Carbon::now($timezone_name);
+    $filterDate = Carbon::parse($request->date)->format('Y-m-d');
 
-        $timezone_name = Session::get('timezone_name');
-        $time_interval = Session::get('time_interval');
-        $currentDate = Carbon::now($timezone_name);
-        $filterDate = Carbon::parse($request->date)->format('Y-m-d');
-
-
-        $schedule = Schedule::with([
-            'JobModel' => function ($query) {
-                $query->with(['user','jobproductinfohasmany.product','jobserviceinfohasmany.service', 'addresscustomer','JobAppliances.Appliances.manufacturer', 'JobAppliances.Appliances.appliance']);
-            },
-            'technician'
-        ])->where('technician_id', $request->tech_id)
-            ->where('start_date_time', 'LIKE', "%$filterDate%")
-            ->where('show_on_schedule', 'yes')->get();
-
-
-        return response()->json($schedule);
+    $schedule = Schedule::with([
+        'JobModel' => function ($query) {
+            $query->with([
+                'user',
+                'jobproductinfohasmany.product',
+                'jobserviceinfohasmany.service',
+                'addresscustomer',
+                'JobAppliances.Appliances.manufacturer',
+                'JobAppliances.Appliances.appliance',
+                // 'fieldids' 
+            ]);
+        },
+        'technician'
+    ])->where('technician_id', $request->tech_id)
+        ->where('start_date_time', 'LIKE', "%$filterDate%")
+        ->where('show_on_schedule', 'yes')
+        ->get();
+        // dd($schedule);
+        $schedule->each(function($scheduleItem) {
+    $jobModel = $scheduleItem->JobModel;
+    if ($jobModel) {
+        $jobModel->fieldids = $jobModel->fieldids(); // Manually load the custom fieldids
     }
+});
+
+
+    return response()->json($schedule);
+}
+
     public function update_view_job(Request $request, $id)
     {
 
@@ -3219,6 +3236,109 @@ class ScheduleController extends Controller
     }
 
 
+// public function getLocation(Request $request)
+// {
+//     $userId = $request->input('id');
+
+//     // Fetch latitude and longitude from the 'customer_user_address' table
+//     $location = CustomerUserAddress::where('user_id', $userId)->first(['latitude', 'longitude']);
+
+//     if ($location) {
+//         return response()->json($location);
+//     }
+
+//     return response()->json(['error' => 'Location not found.'], 404);
+// }
+
+
+
+ public function getLocation(Request $request)
+{
+    // Dump the request data for debugging
+    //dd($request->all());
+
+    $userId = $request->input('id'); // Technician's user_id
+
+    // Parse the input date and format it
+    $inputDate = Carbon::parse($request->input('date'))->format('Y-m-d');
+
+    // Fetch technician's location and name
+    $technicianLocation = CustomerUserAddress::where('user_id', $userId)
+        ->first(['user_id', 'latitude', 'longitude']);
+
+    if (!$technicianLocation) {
+        return response()->json(['error' => 'Technician location not found.'], 404);
+    }
+
+    $technicianName = User::where('id', $technicianLocation->user_id)->value('name');
+    $technicianLocation->name = $technicianName;
+
+    // Set $currentDate to the input date
+    $currentDate = Carbon::createFromFormat('Y-m-d', $inputDate)->startOfDay();
+
+    // Fetch job IDs for the technician on the input date
+    $jobIds = Schedule::where('technician_id', $userId)
+                ->whereDate('start_date_time', '=', $currentDate)
+                ->pluck('job_id');
+
+    if ($jobIds->isEmpty()) {
+        return response()->json(['error' => 'No jobs found for this technician on the selected date.'], 404);
+    }
+
+    $customerIds = JobAssign::whereIn('job_id', $jobIds)->pluck('customer_id');
+
+    if ($customerIds->isEmpty()) {
+        return response()->json(['error' => 'No customers found for these jobs.'], 404);
+    }
+
+    // Fetch customer locations along with their names
+    $customerLocations = CustomerUserAddress::whereIn('user_id', $customerIds)
+        ->get(['user_id', 'latitude', 'longitude']);
+
+    if ($customerLocations->isEmpty()) {
+        return response()->json(['error' => 'No customer locations found.'], 404);
+    }
+
+    foreach ($customerLocations as $customerLocation) {
+        $customerName = User::where('id', $customerLocation->user_id)->value('name');
+        $customerLocation->name = $customerName;
+    }
+
+    // Sort customers based on distance from technician's location
+    $sortedCustomers = $customerLocations->map(function($customer) use ($technicianLocation) {
+        $distance = $this->calculateDistance(
+            $technicianLocation->latitude, $technicianLocation->longitude,
+            $customer->latitude, $customer->longitude
+        );
+        $customer->distance = $distance;
+        return $customer;
+    })->sortBy('distance');
+
+    return response()->json([
+        'technician_location' => $technicianLocation,
+        'sorted_customers' => $sortedCustomers->values(),
+    ]);
+}
+
+
+private function calculateDistance($lat1, $lon1, $lat2, $lon2) {
+    $earthRadius = 6371;
+    $dLat = deg2rad($lat2 - $lat1);
+    $dLon = deg2rad($lon2 - $lon1);
+
+    $a = sin($dLat / 2) * sin($dLat / 2) +
+         cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+         sin($dLon / 2) * sin($dLon / 2);
+
+    $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+    $distance = $earthRadius * $c;
+
+    return $distance;
+}
+
+
+
     public function send_sms_schedule(Request $request)
     {
         $request->validate([
@@ -3251,5 +3371,6 @@ class ScheduleController extends Controller
             return response()->json(['success' => false, 'message' => 'Failed to send SMS.']);
         }
     }
-    
+
+
 }

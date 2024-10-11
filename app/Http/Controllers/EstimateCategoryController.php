@@ -62,7 +62,7 @@ class EstimateCategoryController extends Controller
             'updated_by' => $adminId,
         ]);
 
-        return redirect()->route('estimate.index')->with('success', 'Estimate category created successfully!');
+        return redirect()->route('estimate.index')->with('success', 'The estimate category has been created successfully.');
     }
 
 
@@ -139,7 +139,7 @@ class EstimateCategoryController extends Controller
         // Save the changes to the database
         $estimateCategory->save();
 
-        return redirect()->route('estimate.index')->with('success', 'Estimate category updated successfully!');
+        return redirect()->route('estimate.index')->with('success', 'The estimate category has been updated successfully.');
     }
 
 
@@ -161,7 +161,7 @@ class EstimateCategoryController extends Controller
 
     $estimateCategory->delete();
 
-    return redirect()->route('estimate.index')->with('success', 'Estimate category deleted successfully!');
+    return redirect()->route('estimate.index')->with('success', 'The estimate category has been deleted successfully.');
 }
 
 

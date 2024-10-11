@@ -173,6 +173,6 @@ class PaymentController extends Controller
 
         $payment->save();
 
-        return redirect()->back()->with('success', 'Comment added successfully');
+        return redirect()->back()->with('success', 'The comment has been added successfully.');
     }
 }

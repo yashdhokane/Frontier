@@ -452,7 +452,7 @@ Route::middleware('auth')->group(function () {
 
 
     Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
-    Route::get('/tickets-iframe', [TicketController::class, 'indexiframe'])->name('tickets.indexiframe');
+ Route::get('/tickets-iframe', [TicketController::class, 'indexiframe'])->name('tickets.indexiframe');
 
     Route::get('/tickets-iframe/{id}', [TicketController::class, 'showiframe'])->name('tickets.showiframe');
 
@@ -536,6 +536,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/assign-task/{taskId}/{technicianId}', [ScheduleController::class, 'assignTechnician']);
 
 
+Route::get('/get-location-best-root', [ScheduleController::class, 'getLocation'])->name('getLocation.bestroot');
 
     // Route for displaying all tasks (GET request)
 
@@ -859,7 +860,7 @@ Route::middleware('auth')->group(function () {
     Route::get('events', [EventController::class, 'index'])->name('events');
 
     Route::get('event/delete/{id}', [EventController::class, 'destroy']);
-    Route::get('events-iframe', [EventController::class, 'indexiframe'])->name('eventsiframe');
+Route::get('events-iframe', [EventController::class, 'indexiframe'])->name('eventsiframe');
 
     Route::get('event-iframe/delete/{id}', [EventController::class, 'destroyiframe']);
 
@@ -1275,6 +1276,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/add-user-to-participants', [ChatSupportController::class, 'addUserToparticipant'])->name('addUserToParticipant');
 
+    Route::get('/index-iframe-inbox', [ChatSupportController::class, 'index_iframe'])->name('index_iframe_inbox');
 
     Route::get('/inbox', [ChatSupportController::class, 'index'])->name('app_chats');
 

@@ -321,7 +321,7 @@ class TechnicianController extends Controller
 
 
         //dd("end");
-        return redirect()->route('technicians.index')->with('success', 'Technician created successfully');
+        return redirect()->route('technicians.index')->with('success', 'Technician has been created successfully.');
     }
 
 
@@ -747,7 +747,7 @@ class TechnicianController extends Controller
 
 
 
-        return redirect()->back()->with('success', 'Technician updated successfully');
+        return redirect()->back()->with('success', 'Technician has been updated successfully.');
     }
 
     public function updateservice(Request $request)
@@ -784,7 +784,7 @@ class TechnicianController extends Controller
         $user->save();
 
 
-        return redirect()->back()->with('success', 'ServiceArea Updated Successfully');
+        return redirect()->back()->with('success', 'Service area has been updated successfully.');
     }
 
 
@@ -826,7 +826,7 @@ class TechnicianController extends Controller
         $user->updated_at = now();
         $user->save();
 
-        return redirect()->back()->with('success', 'Comment added successfully');
+        return redirect()->back()->with('success', 'Comment has been added successfully.');
     }
 
 
@@ -867,7 +867,7 @@ class TechnicianController extends Controller
         // Save the changes to the user model
         $user->save();
 
-        return redirect()->back()->with('success', 'Status updated successfully');
+        return redirect()->back()->with('success', 'Status has been updated successfully.');
     }
 
 
@@ -910,7 +910,7 @@ public function updatefleet(Request $request)
         ]);
     }
 
-    return redirect()->back()->with('success', 'Fleet data updated successfully!');
+    return redirect()->back()->with('success', 'Fleet data has been updated successfully.');
 }
 
 
@@ -1279,7 +1279,7 @@ public function updatefleet(Request $request)
 
 
         // dd("end");
-        return redirect()->back()->with('success', 'Technician created successfully');
+        return redirect()->back()->with('success', 'Technician has been created successfully.');
     }
 
     public function smstechnician(Request $request)
@@ -1303,7 +1303,7 @@ public function updatefleet(Request $request)
 
             $userSettings->save();
 
-            return redirect()->back()->with('success', 'Settings updated successfully.');
+            return redirect()->back()->with('success', 'Settings have been updated successfully.');
         } else {
             // Create new user settings
             $userSettings = new UsersSettings();
@@ -1321,7 +1321,7 @@ public function updatefleet(Request $request)
 
             $userSettings->save();
 
-            return redirect()->back()->with('success', 'Settings created successfully.');
+            return redirect()->back()->with('success', 'Settings have been created successfully.');
         }
     }
 
@@ -1348,7 +1348,7 @@ public function updatefleet(Request $request)
                 ]);
 
                 // Return a success response
-                return redirect()->back()->with('success', 'Vehicle title changed successfully');
+                return redirect()->back()->with('success', 'Vehicle title has been changed successfully.');
             } else {
                 // Return an error response if the fleet record is not found
                 return redirect()->back()->with('error', 'Fleet record not found for the provided technician ID and description');
@@ -1830,7 +1830,7 @@ public function updatefleet(Request $request)
 
 
         //dd("end");
-        return redirect()->route('iframe_index')->with('success', 'Technician created successfully');
+        return redirect()->route('iframe_index')->with('success', 'Technician has been created successfully.');
     }
 
 

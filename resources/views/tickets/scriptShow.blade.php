@@ -187,7 +187,7 @@
                         }
                         $('.appliancefield').hide();
                         $('#add_appliance').show();
-                        $('#resp_text').text('Appliance added successfully');
+                        $('#resp_text').text('The appliance has been added successfully.');
                     },
                     error: function(xhr, status, error) {
                         console.error('Error:', error);
@@ -217,7 +217,7 @@
                         }
                         $('.manufaturerfield').hide();
                         $('#add_manufaturer').show();
-                        $('#resp_texts').text('Manufacturer added successfully');
+                        $('#resp_texts').text('The manufacturer has been added successfully.');
                     },
                     error: function(xhr, status, error) {
                         console.error('Error:', error);

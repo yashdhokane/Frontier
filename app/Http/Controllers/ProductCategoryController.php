@@ -103,7 +103,7 @@ class ProductCategoryController extends Controller
             $cat->save();
         }
 
-        return redirect()->back()->with('success', 'Products & Materials created successfully!');
+        return redirect()->back()->with('success', 'The parts category has been created successfully.');
     }
 
     public function editproductCategory($id)
@@ -159,7 +159,7 @@ class ProductCategoryController extends Controller
         // Delete the category from the database
         $productCategory->delete();
 
-        return redirect()->route('partCategoryiframe')->with('success', 'Products & Materials deleted successfully!');
+        return redirect()->route('partCategoryiframe')->with('success', 'The parts category has been deleted successfully.');
     }
 
 
@@ -201,14 +201,14 @@ class ProductCategoryController extends Controller
         // Save the changes to the database
         $productCategory->save();
 
-        return redirect()->back()->with('success', 'Products & Materials updated successfully!');
+        return redirect()->back()->with('success', 'The parts category has been updated successfully.');
     }
     public function deleteproductcategory($id)
     {
         $productCategory = ProductCategory::find($id);
 
         if (!$productCategory) {
-            return redirect()->route('product.index')->with('error', 'Products & Materials not found!');
+            return redirect()->route('product.index')->with('error', 'Part not found.');
         }
 
         // Check if the image file exists and delete it
@@ -219,7 +219,7 @@ class ProductCategoryController extends Controller
         // Delete the category from the database
         $productCategory->delete();
 
-        return redirect()->back()->with('success', 'Products & Materials deleted successfully!');
+        return redirect()->back()->with('success', 'The parts category has been deleted successfully.');
     }
 
 
@@ -292,6 +292,6 @@ class ProductCategoryController extends Controller
         }
 
         // Optionally, you can redirect the user back or return a response
-        return redirect()->back()->with('success', 'Assignments stored successfully.');
+        return redirect()->back()->with('success', 'Assignments have been stored successfully.');
     }
 }

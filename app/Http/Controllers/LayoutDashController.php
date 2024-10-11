@@ -514,7 +514,7 @@ class LayoutDashController extends Controller
             }
         });
 
-        return redirect()->back()->with('success', 'Positions saved successfully!');
+        return redirect()->back()->with('success', 'Positions have been saved successfully.');
     }
 
     public function updateStatus(Request $request)
@@ -691,7 +691,7 @@ class LayoutDashController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Module added successfully.',
+            'message' => 'The module has been added successfully.',
             'html' => view('dashboard.card-positions', compact('cardPosition', 'variable', 'jobcompleteyes', 'cardPositions', 'job', 'paymentopen', 'paymentclose', 'adminCount', 'dispatcherCount', 'technicianCount', 'customerCount', 'layout', 'layoutList', 'activity', 'userNotifications', 'technicianuser', 'customeruser', 'List'))->render()
         ]);
     }
@@ -705,7 +705,7 @@ class LayoutDashController extends Controller
             $cardPosition->is_active = 'no'; // or true based on your requirement
             $cardPosition->save();
 
-            return response()->json(['success' => true, 'message' => 'Status updated successfully']);
+            return response()->json(['success' => true, 'message' => 'Module status updated successfully.']);
         }
 
         return response()->json(['success' => false, 'message' => 'Module not found']);
@@ -724,7 +724,7 @@ class LayoutDashController extends Controller
         $layout->save();
 
         // Redirect back with success message or any other response
-        return redirect()->back()->with('success', 'Layout name updated successfully.');
+        return redirect()->back()->with('success', 'The layout name has been updated successfully.');
     }
 
 
@@ -742,7 +742,7 @@ class LayoutDashController extends Controller
         $layout->save();
 
         // Redirect back with success message or any other response
-  return redirect()->route('dash', ['id' => $layout->id])->with('success', 'Layout added successfully.'); 
+  return redirect()->route('dash', ['id' => $layout->id])->with('success', 'The layout has been added successfully.'); 
      }
 
     public function createNewLayout(Request $request)
@@ -774,7 +774,7 @@ class LayoutDashController extends Controller
         }
 
         // Redirect or return a response
-        return redirect()->back()->with('success', 'Layout saved successfully!');
+        return redirect()->back()->with('success', 'The layout has been saved successfully.');
     }
 
 

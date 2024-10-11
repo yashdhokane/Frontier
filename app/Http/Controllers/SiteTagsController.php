@@ -42,7 +42,7 @@ class SiteTagsController extends Controller
     
         $tags->save();
     
-        return response()->json(['message' => 'Tags saved successfully']);
+        return response()->json(['message' => 'The tags have been created successfully.']);
     }
     
 
@@ -52,7 +52,7 @@ class SiteTagsController extends Controller
         $tag->tag_name = $request->input('tag');
         $tag->save();
 
-        return response()->json(['message' => 'Tag updated successfully']);
+        return response()->json(['message' => 'The tags have been updated successfully.']);
     }
     
     public function deleteTag($tagId)
@@ -60,7 +60,7 @@ class SiteTagsController extends Controller
         $tag = SiteTags::findOrFail($tagId);
         $tag->delete();
 
-        return response()->json(['message' => 'Tag deleted successfully']);
+        return response()->json(['message' => 'The tags have been deleted successfully.']);
     }
 }
 

@@ -104,7 +104,7 @@ class ServiceAreaController extends Controller
 
         $locationServiceArea->save();
 
-        return redirect()->route('servicearea.index')->with('success', 'Service area location updated successfully');
+        return redirect()->route('servicearea.index')->with('success', 'The service area location has been updated successfully.');
     }
 
 }

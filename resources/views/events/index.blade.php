@@ -5,6 +5,11 @@
 
 @section('content')
 @endif
+<style>
+.footer{
+    display:none !important;
+}
+</style>
     <div class="page-breadcrumb">
         <div class="row">
             <div class="col-6 align-self-center">

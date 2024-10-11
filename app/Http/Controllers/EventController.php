@@ -40,7 +40,7 @@ class EventController extends Controller
 
         $event->delete();
 
-        return redirect()->back()->with('success', 'Successfully deleted');
+        return redirect()->back()->with('success', 'The event was successfully deleted.');
     }
 
      public function indexiframe()
@@ -70,7 +70,7 @@ class EventController extends Controller
 
         $event->delete();
 
-        return redirect()->back()->with('success', 'Successfully deleted');
+        return redirect()->back()->with('success', 'The event was successfully deleted.');
     }
 
 }

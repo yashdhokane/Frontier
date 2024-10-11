@@ -34,7 +34,7 @@ class StickyNotesController extends Controller
 
         $note->save();
 
-        return redirect()->back()->with('success','Sticky note created successfully');
+        return redirect()->back()->with('success','The sticky note has been created successfully.');
     }
 
     /**
@@ -48,7 +48,7 @@ class StickyNotesController extends Controller
 
         $note->update();
 
-        return redirect()->route('sticky_notes')->with('success','Sticky note updated successfully');
+        return redirect()->route('sticky_notes')->with('success','The sticky note has been updated successfully.');
     }
 
     /**
@@ -60,7 +60,7 @@ class StickyNotesController extends Controller
 
          $note->delete();
 
-         return redirect()->back()->with('success','Sticky note deleted successfully');
+         return redirect()->back()->with('success','The sticky note has been deleted successfully.');
 
     }
 

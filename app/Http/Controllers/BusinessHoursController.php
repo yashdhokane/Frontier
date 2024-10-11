@@ -88,7 +88,7 @@ class BusinessHoursController extends Controller
                 
             }
             
-            return response()->json(['message' => 'Business hours updated successfully']);
+            return response()->json(['message' => 'The business hours have been updated successfully.']);
         // } catch (\Exception $e) {
         //     return response()->json(['error' => 'Error updating business hours'], 500);
         // }
@@ -115,7 +115,7 @@ class BusinessHoursController extends Controller
                         ]
                     );
             } 
-            return response()->json(['message' => 'Business hours updated successfully']);
+            return response()->json(['message' => 'The business hours have been updated successfully.']);
     }
     
 }

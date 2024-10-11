@@ -238,7 +238,7 @@ class DispatcherController extends Controller
 
 
         //    dd("end");
-        return redirect()->route('dispatcher.index')->with('success', 'Dispatcher created successfully');
+        return redirect()->route('dispatcher.index')->with('success', 'Dispatcher has been created successfully.');
     }
 
 
@@ -544,7 +544,7 @@ public function permission(Request $request)
         UserPermission::where('user_id', $userId)->update(['permission' => 0]);
     }
 
-    return redirect()->back()->with(['success' => 'Permissions updated successfully']);
+    return redirect()->back()->with(['success' => 'Permissions have been updated successfully.']);
 }
 
 
@@ -761,7 +761,7 @@ public function permission(Request $request)
         $user->tags()->attach($tagIds);
         $user->tags()->syncWithoutDetaching($tagIds);
 
-        return redirect()->back()->with('success', 'Dispatcher updated successfully');
+        return redirect()->back()->with('success', 'Dispatcher has been updated successfully.');
     }
 
 

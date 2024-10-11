@@ -35,7 +35,7 @@ class AdminProfileController extends Controller
 
             $user->save();
 
-            return redirect()->back()->with('success', 'Email verified preference updated.');
+            return redirect()->back()->with('success', 'Email verification preference has been updated.');
         } else {
             return redirect()->back()->with('error', 'Unauthorized access.');
         }
@@ -56,7 +56,7 @@ class AdminProfileController extends Controller
 
             $user->save();
 
-            return redirect()->back()->with('success', 'SMS Notification preference updated.');
+            return redirect()->back()->with('success', 'SMS notification preference has been updated.');
         } else {
             return redirect()->back()->with('error', 'Unauthorized access.');
         }
@@ -77,7 +77,7 @@ class AdminProfileController extends Controller
 
             $user->save();
 
-            return redirect()->back()->with('success', 'Email notification preference updated.');
+            return redirect()->back()->with('success', 'Email notification preference has been updated.');
         } else {
             return redirect()->back()->with('error', 'Unauthorized access.');
         }
@@ -272,7 +272,7 @@ class AdminProfileController extends Controller
         // Save the user object
         $user->save();
 
-        return redirect()->back()->with('success', 'Image updated successfully.');
+        return redirect()->back()->with('success', 'Image has been updated successfully.');
     }
 
 
@@ -296,7 +296,7 @@ class AdminProfileController extends Controller
             'password' => bcrypt($request->password),
         ]);
 
-        return redirect()->back()->with('success', 'Password updated successfully.');
+        return redirect()->back()->with('success', 'Password has been updated successfully.');
     }
 
 
@@ -340,7 +340,7 @@ class AdminProfileController extends Controller
 
         // dd(1);
 
-        return redirect()->back()->with('success', 'Information updated successfully.');
+        return redirect()->back()->with('success', 'Information has been updated successfully.');
     }
 
 

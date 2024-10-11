@@ -42,7 +42,7 @@ class SiteJobFieldsController extends Controller
         $Jobfields->save();
         // dd($tags);
 
-        return response()->json(['message' => 'Job Fields saved successfully']);
+        return response()->json(['message' => 'Job fields have been saved successfully.']);
     }
 
     public function updateField(Request $request, $field_id)
@@ -51,7 +51,7 @@ class SiteJobFieldsController extends Controller
         $field->field_name = $request->input('field-name');
         $field->save();
 
-        return response()->json(['message' => 'Field updated successfully']);
+        return response()->json(['message' => 'The field has been updated successfully.']);
     }
 
     public function deleteJobFields($jobFieldsId)
@@ -59,7 +59,7 @@ class SiteJobFieldsController extends Controller
         $jobFields = SiteJobFields::findOrFail($jobFieldsId);
         $jobFields->delete();
 
-        return response()->json(['message' => 'Job field deleted successfully']);
+        return response()->json(['message' => 'The field has been deleted successfully.']);
     }
 }
 

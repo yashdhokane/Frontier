@@ -81,12 +81,12 @@ public function user_login(Request $request)
 
     // Check if user exists
     if (!$user) {
-        return response()->json(['status' => false, 'message' => 'Invalid email or password'], 401);
+        return response()->json(['status' => false, 'message' => 'Invalid email or password.'], 401);
     }
 
     // Check if password matches
     if (!Hash::check($request->password, $user->password)) {
-        return response()->json(['status' => false, 'message' => 'Invalid email or password'], 401);
+        return response()->json(['status' => false, 'message' => 'Invalid email or password.'], 401);
     }
 
     // Check if user's role is "technician"
@@ -120,7 +120,7 @@ public function user_login(Request $request)
         'timezone_id' => $timezoneId,
         'timezone_name' => $timezone->timezone_name,
         'time_interval' => $timezone->time_interval,
-        'message' => 'Login Successful'
+        'message' => 'Login successful.'
     ], 200);
 }
 
@@ -129,7 +129,7 @@ public function user_login(Request $request)
         $technicianId = $request->input('technician_id');
 
         if (!$technicianId) {
-            return response()->json(['status' => false, 'message' => 'Technician ID is required'], 500);
+            return response()->json(['status' => false, 'message' => 'Technician ID is required.'], 500);
         }
 
         $notifications = UserNotification::with('notice')->where('user_id', $technicianId) ->orderBy('id', 'desc')
@@ -137,10 +137,10 @@ public function user_login(Request $request)
 
 
         if ($notifications->isEmpty()) {
-            return response()->json(['status' => false, 'message' => 'No notifications found'], 201);
+            return response()->json(['status' => false, 'message' => 'No notifications found.'], 201);
         }
 
-        return response()->json(['status' => true, 'message' => 'Notifications found', 'data' => $notifications], 200);
+        return response()->json(['status' => true, 'message' => 'Notifications found.', 'data' => $notifications], 200);
     }
 
 
@@ -170,7 +170,7 @@ public function reset_password(Request $request)
         $message->from('yashdhokane890@gmail.com', 'Admin');
     });
 
-    return response()->json(['status' => true, 'message' => 'Password reset successful. Check your email for the new password.'], 200);
+    return response()->json(['status' => true, 'message' => 'Password reset successful. Please check your email for the new password.'], 200);
 }
 
 
@@ -243,7 +243,7 @@ public function jobdetailsfetch(Request $request)
     </div>';
 
 
-    return response()->json(['status' => true, 'html' => $html,'data' => $job, 'message' => 'The specified job is available in both JobModel and schedule'], 200);
+    return response()->json(['status' => true, 'html' => $html,'data' => $job, 'message' => 'The specified job is available in both JobModel and Schedule.'], 200);
 }
 
 
@@ -269,10 +269,10 @@ public function getTechnicianJobs(Request $request)
     
 
     if ($jobs->isEmpty()) {
-        return response()->json(['status' => false,  'message' => 'Today no jobs are available'],201);
+        return response()->json(['status' => false,  'message' => 'Today, no jobs are available.'],201);
     }
 
-    return response()->json(['status' => true, 'data' => $jobs , 'message' => 'Today jobs are available'],200);
+    return response()->json(['status' => true, 'data' => $jobs , 'message' => 'Today, jobs are available.'],200);
 }
 
 public function getCustomerHistory(Request $request)
@@ -285,7 +285,7 @@ public function getCustomerHistory(Request $request)
                                 ->get();
 
     if ($customerHistory->isEmpty()) {
-        return response()->json(['status' => false, 'message' => 'No customer history found for the specified user'], 201);
+        return response()->json(['status' => false, 'message' => 'No customer history found for the specified user.'], 201);
     }
 
     // Prepare HTML output
@@ -317,14 +317,14 @@ public function getTechnicianJobsHistory(Request $request)
     // Check if the date is provided
     if (!$date) {
         // If the date is missing, return a 400 Bad Request response
-        return response()->json(['status' => false, 'message' => 'Date is required'], 201);
+        return response()->json(['status' => false, 'message' => 'Date is required.'], 201);
     }
 
     // Parse and format the date using Carbon
     try {
         $formattedDate = Carbon::createFromFormat('m-d-Y', $date)->format('Y-m-d');
     } catch (\Exception $e) {
-        return response()->json(['status' => false, 'message' => 'Invalid date format'], 201);
+        return response()->json(['status' => false, 'message' => 'Invalid date format.'], 201);
     }
 
     // Filter the jobs by technician_id and the specified date
@@ -342,10 +342,10 @@ public function getTechnicianJobsHistory(Request $request)
         // ->get();
 
     if ($jobs->isEmpty()) {
-        return response()->json(['status' => false, 'message' => 'No jobs available for the specified date'], 201);
+        return response()->json(['status' => false, 'message' => 'No jobs available for the specified date.'], 201);
     }
 
-    return response()->json(['status' => true, 'data' => $jobs , 'message' => 'History jobs are available'],200);
+    return response()->json(['status' => true, 'data' => $jobs , 'message' => 'History jobs are available.'],200);
 }
 
 
@@ -359,7 +359,7 @@ public function getcustomerJobsHistory(Request $request)
                     ->get();
 
         if ($jobs->isEmpty()) {
-            return response()->json(['status' => false, 'message' => 'Today no  jobs are available '], 201);
+            return response()->json(['status' => false, 'message' => 'Today, no jobs are available. '], 201);
         }
 
         return response()->json(['status' => true, 'data' => $jobs],200);
@@ -907,7 +907,7 @@ public function jobfileUploadByTechnician(Request $request)
             $jobNote->save();
         }
 
-        return response()->json(['status' => true, 'message' => 'Files and products uploaded successfully'], 200);
+        return response()->json(['status' => true, 'message' => 'Files and products have been uploaded successfully.'], 200);
     } catch (\Exception $e) {
         return response()->json(['status' => false, 'message' => $e->getMessage()], 500);
     }
@@ -931,7 +931,7 @@ public function jobfileUploadByTechnician(Request $request)
     // Check if any ProductAssigned record found
     if ($productAssigned->isEmpty()) {
         // If no ProductAssigned record found, return a response with status false and error message
-        return response()->json(['status' => false, 'message' => 'No parts assigned to the specified technician'], 201);
+        return response()->json(['status' => false, 'message' => 'No parts have been assigned to the specified technician.'], 201);
     }
 
     // If ProductAssigned record(s) found, return a response with status true and the parts data
@@ -944,7 +944,7 @@ public function technicianLogout(Request $request)
 {
     auth()->logout();
    // $request->session()->invalidate();
-    return response()->json(['status' => true,'message' => 'Technician logged out successfully'], 200);
+    return response()->json(['status' => true,'message' => 'The technician has logged out successfully.'], 200);
 }
 public function updateTechnicianProfile(Request $request)
 {
@@ -960,7 +960,7 @@ public function updateTechnicianProfile(Request $request)
         $technician = User::where('role','technician')->findOrFail($request->technician_id);
     } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
         // Return a response with status false and error message if technician is not found
-        return response()->json(['status' => false, 'message' => 'Technician not found'], 201);
+        return response()->json(['status' => false, 'message' => 'Technician not found.'], 201);
     }
 
     // Update technician's name and email
@@ -969,7 +969,7 @@ public function updateTechnicianProfile(Request $request)
     $technician->save();
 
     // Assuming the update is successful
-    return response()->json(['status' => true, 'message' => 'Technician profile updated successfully', 'technician' => $technician], 200);
+    return response()->json(['status' => true, 'message' => 'The technician profile has been updated successfully.', 'technician' => $technician], 200);
 }
 
 
@@ -1004,7 +1004,7 @@ public function updateTechnicianProfile(Request $request)
         // Calculate present and absent days
         $technician = User::find($technicianId);
         if (!$technician) {
-            return response()->json(['status' => false, 'message' => 'Technician not found'], 404);
+            return response()->json(['status' => false, 'message' => 'Technician not found.'], 404);
         }
 
         $createdAt = $technician->created_at;
@@ -1065,11 +1065,11 @@ public function updateTechnicianProfile(Request $request)
 
     // Check if any products were found
     if ($products->isEmpty()) {
-        return response()->json(['status' => false, 'message' => 'No product found'], 201);
+        return response()->json(['status' => false, 'message' => 'No product found.'], 201);
     }
 
     // Return the found products
-    return response()->json(['status' => true, 'message' => 'Product name found', 'data' => $products], 200);
+    return response()->json(['status' => true, 'message' => 'Product name found.', 'data' => $products], 200);
 }
   
 
@@ -1111,7 +1111,7 @@ public function updateEnroute(Request $request)
             $event->save();
             return response()->json(['status' => true, 'data' => $event], 201);
         } else {
-            return response()->json(['status' => false, 'message' => 'Job not found'], 200);
+            return response()->json(['status' => false, 'message' => 'Job not found.'], 200);
         }
     }
 
@@ -1174,7 +1174,7 @@ app('sendNoticesapp')(
 
         return response()->json(['status' => true, 'data' => $event], 201);
     } else {
-        return response()->json(['status' => false, 'message' => 'Job not found'], 200);
+        return response()->json(['status' => false, 'message' => 'Job not found.'], 200);
     }
 }
 
@@ -1256,7 +1256,7 @@ app('sendNoticesapp')(
         return response()->json(['status' => true, 'data' => $event], 201);
     } else {
         // Return a failure response if the job is not found
-        return response()->json(['status' => false, 'message' => 'Job not found'], 200);
+        return response()->json(['status' => false, 'message' => 'Job not found.'], 200);
     }
 }
 

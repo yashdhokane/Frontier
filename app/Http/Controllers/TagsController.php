@@ -50,7 +50,7 @@ class TagsController extends Controller
 
         $tags->save();
 
-        return redirect()->back()->with('success' , 'Tags saved successfully');
+        return redirect()->back()->with('success' , 'The tags have been created successfully.');
     }
 
     public function updateTag(Request $request)
@@ -60,7 +60,7 @@ class TagsController extends Controller
 
         $tag->update();
 
-        return redirect()->back()->with('success' , 'Tags updated successfully');
+        return redirect()->back()->with('success' , 'The tags have been updated successfully.');
     }
     
     public function deleteTag(Request $request ,$tagId)
@@ -69,7 +69,7 @@ class TagsController extends Controller
 
         $tag->delete();
 
-        return redirect()->back()->with('success' , 'Tags deleted successfully');
+        return redirect()->back()->with('success' , 'The tags have been deleted successfully.');
     }
 }
 

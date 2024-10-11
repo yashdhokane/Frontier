@@ -3,6 +3,45 @@
 
       @section('content')
       @endif
+
+      <style>
+          #main-wrapper[data-layout="vertical"][data-sidebartype="mini-sidebar"] .page-wrapper {
+              margin-left: 0px !important;
+          }
+
+          .container-fluid {
+              padding: 0px !important;
+          }
+
+          #main-wrapper[data-layout=vertical][data-header-position=fixed] .topbar {
+              display: none !important;
+          }
+
+          #main-wrapper[data-layout=vertical][data-sidebar-position=fixed] .left-sidebar {
+              display: none !important;
+          }
+
+          #main-wrapper[data-layout=vertical][data-sidebartype=full] .page-wrapper {
+              margin-left: 0px !important;
+          }
+
+          #main-wrapper[data-layout=vertical][data-header-position=fixed] .page-wrapper {
+              padding-top: 0px !important;
+          }
+
+          .page-wrapper {
+              padding: 0px !important;
+          }
+
+
+          html,
+          body {
+              overflow: auto !important;
+
+              margin: 0;
+              padding: 0;
+          }
+      </style>
       <link rel="stylesheet" href="{{ url('public/admin/chat/style.css') }}">
       <!-- Page wrapper  -->
       <!-- -------------------------------------------------------------- -->
@@ -11,64 +50,38 @@
               <!-- -------------------------------------------------------------- -->
               <!-- Left Part  -->
               <!-- -------------------------------------------------------------- -->
-              <div class=" left-part bg-white fixed-left-part user-chat-box mt-5" style="height: 100%; overflow-y: auto;">
-                  <div class="position-relative border-start" style="height: 100%; ">
-                      <div class="m-2 mt-4 d-flex justify-content-between">
-                          <label>
-                              <input type="radio" name="role" value="employee" checked>
-                              Employee
-                          </label>
-                          <label>
-                              <input type="radio" name="role" value="customer">
-                              Customer
-                          </label>
-                      </div>
-                      <div class="p-2 border-bottom">
-                          <form data-role="employee">
+              <div class=" left-part bg-white fixed-left-part user-chat-box" style="height: 100%; overflow-y: auto;">
+                  <!-- Mobile toggle button -->
+                  <a class="ri-menu-fill ri-close-fill btn btn-success show-left-part d-block d-md-none"
+                      href="javascript:void(0)"></a>
+                  <!-- Mobile toggle button -->
+                  <div class="p-3">
+                      <h4>Chat Sidebar</h4>
+                  </div>
+                  <div class="position-relative" style="height: 100%; ">
+                      <div class="p-3 border-bottom">
+                          <form>
                               <div class="searchbar d-flex justify-content-between">
                                   <input class="form-control" type="text" name="text-search"
-                                      placeholder="Search Or Add Employees" />
+                                      placeholder="Search Users" />
+                                  <i class="fa fa-comment-dots fs-7 ms-1 pt-1" id="addNewChat"></i>
                               </div>
                           </form>
-                          <form data-role="customer" class="add_custm_conversation" action="{{ route('search.customer') }}"
-                              method="post">
-                              @csrf
-                              <div class="searchbar d-flex justify-content-between">
-                                  <input class="form-control" type="text" id="search-customer" name="add_new_customer"
-                                      placeholder="Search Or Add Customer" />
-                              </div>
-                          </form>
-
-
                       </div>
                       @if (auth()->id() == 1)
-                          <ul class="mailbox list-style-none new-cust-chat border shadow">
-                          </ul>
                           <ul class="mailbox list-style-none app-chat">
-                              @foreach ($employee as $item)
-                                  <li class="chatlist cursor-pointer ps-2" data-id="{{ $item->id }}"
-                                      data-role="employee">
+                              @foreach ($chatConversion as $item)
+                                  <li class="chatlist cursor-pointer" data-id="{{ $item->id }}">
 
                                       <a href="javascript:void(0)" class="chat-user message-item px-2">
 
                                           <div class="mail-contnet">
                                               <h6 class="message-title" data-username="2">
-                                                  {{ $item->name }}
-                                              </h6>
-                                          </div>
-
-                                      </a>
-                                  </li>
-                              @endforeach
-                              @foreach ($customer as $item)
-                                  <li class="chatlist cursor-pointer ps-2" data-id="{{ $item->id }}"
-                                      data-role="customer">
-
-                                      <a href="javascript:void(0)" class="chat-user message-item px-2">
-
-                                          <div class="mail-contnet">
-                                              <h6 class="message-title" data-username="2">
-                                                  {{ $item->name }}
+                                                  @foreach ($item->Participant as $value)
+                                                      @if ($value->user)
+                                                          {{ $value->user->name }},
+                                                      @endif
+                                                  @endforeach
                                               </h6>
                                           </div>
 
@@ -91,7 +104,39 @@
               <div class="right-part chat-container">
                   <div class="chat-box-inner-part">
 
-                      <div class="card chatting-box mb-0  support-message-box-show w-100 d-block" style="">
+                      <div class="chat-not-selected w-100">
+                          <div class="text-center">
+                              <span class="display-5 text-info"><i data-feather="message-square"></i></span>
+                              <h5>Open chat from the list</h5>
+                          </div>
+                          <form class="conversation_form" action="{{ route('addUserToParticipant') }}" method="post">
+                              @csrf
+                              <div class="searchbar">
+                                  <div style="display:flex;" class="justify-content-center">
+                                      <div class="col-md-9">
+                                          <input class="form-control" type="text"
+                                              placeholder="Search dispatcher or customer" class="form-control"
+                                              id="participants" name="users" required />
+                                          <input class="form-control" type="hidden" id="selected_user_id" name="user_id">
+                                      </div>
+                                      <div class="col-md-1" style="margin-left: 5px;">
+                                          <button type="submit" class="btn btn-primary" id="add_participant">
+                                              <i class="fas fa-plus"></i> <!-- "Add" icon -->
+                                          </button>
+                                      </div>
+                                  </div>
+                                  <div id="autocomplete-results-users-part">
+
+                                  </div>
+
+
+
+                              </div>
+                          </form>
+                      </div>
+
+
+                      <div class="card chatting-box mb-0  support-message-box-show w-100" style="">
 
                           <div class="">
                               <div class="d-flex justify-content-between shadow py-2 px-4">
@@ -131,7 +176,16 @@
                               <div class="chat-box scrollable" style="height: calc(100vh - 300px)">
 
                                   <ul class="chat-list chat">
+                                      <li class="chat-item">
+                                          <div class="chat-img">
 
+                                          </div>
+                                          <div class="chat-content">
+                                              <h6 class="font-medium"></h6>
+                                              <div class="box bg-light"></div>
+                                          </div>
+                                          <div class="chat-time"></div>
+                                      </li>
                                   </ul>
 
                               </div>
@@ -145,20 +199,15 @@
                                           <input type="hidden" name="auth_id" value="{{ auth()->id() }}">
                                           <input type="hidden" name="conversation_id" value=""
                                               id="name_support_message_id">
-
+                                          {{-- <input id="fileInput" type="hidden" name="file" style="display: none;" /> --}}
+                                          {{-- <label for="fileInput" class="btn btn-secondary me-2">
+                                            <i class="fa fa-paperclip"></i> Attach File
+                                        </label> --}}
                                           <div class="d-flex">
                                               <input id="textarea1" placeholder="Type and hit enter" name="reply"
                                                   style="font-family: Arial, FontAwesome"
                                                   class="message-type-box form-control border-0 flex-grow-1 me-2"
                                                   type="text" />
-                                              <div>
-                                                  <span class="mx-4"> SMS </span>
-                                                  <div class="form-check form-switch mx-4">
-                                                      <input class="form-check-input" name="is_send" type="checkbox"
-                                                          value="yes" id="flexSwitchCheckChecked">
-                                                  </div>
-                                              </div>
-
                                               <button id="sendButton" class="btn btn-primary"
                                                   type="button">Send</button>
                                               <input type="hidden" class="form-control" id="user" name="users"
@@ -177,6 +226,7 @@
               </div>
           </div>
 
+      </div>
       </div>
       <!-- -------------------------------------------------------------- -->
       <!-- End Page wrapper  -->

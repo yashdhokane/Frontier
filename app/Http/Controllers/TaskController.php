@@ -38,7 +38,7 @@ class TaskController extends Controller
 
         $task = Task::create($validatedData);
 
-        return response()->json(['message' => 'Task created successfully', 'task' => $task]);
+        return response()->json(['message' => 'The task has been created successfully.', 'task' => $task]);
     }
 
     public function edit($id)
@@ -63,7 +63,7 @@ class TaskController extends Controller
         $task = Task::findOrFail($id);
         $task->update($validatedData);
 
-        return response()->json(['message' => 'Task updated successfully', 'task' => $task]);
+        return response()->json(['message' => 'The task has been updated successfully.', 'task' => $task]);
     }
 
     public function destroy($id)
@@ -71,6 +71,6 @@ class TaskController extends Controller
         $task = Task::findOrFail($id);
         $task->delete();
 
-        return response()->json(['message' => 'Task deleted successfully']);
+        return response()->json(['message' => 'The task has been deleted successfully.']);
     }
 }

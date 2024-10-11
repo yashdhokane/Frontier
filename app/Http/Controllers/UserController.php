@@ -609,7 +609,7 @@ public function search(Request $request)
             }
         }
         //  dd(1);
-        return redirect()->route('users.index')->with('success', 'Customer created successfully');
+        return redirect()->route('users.index')->with('success', 'Customer has been created successfully.');
     }
 
 
@@ -1290,7 +1290,7 @@ public function show_customers_demo_iframe($id)
 
 
 
-        return redirect()->back()->with('success', 'User updated successfully');
+        return redirect()->back()->with('success', 'Customer has been updated successfully.');
     }
 
 
@@ -1320,7 +1320,7 @@ public function show_customers_demo_iframe($id)
 
             $user->delete();
 
-            return redirect()->route('users.index')->with('success', 'User deleted successfully');
+            return redirect()->route('users.index')->with('success', 'Customer has been deleted successfully.');
         } catch (\Exception $e) {
             return redirect()->route('users.index')->with('error', 'Failed to delete user');
         }
@@ -1382,7 +1382,7 @@ public function show_customers_demo_iframe($id)
         });
 
         // Redirect back with success message
-        return redirect()->back()->with('success', 'Password reset successful. Check your email for the new password.');
+        return redirect()->back()->with('success', 'Password has been reset successfully. Check your email for the new password.');
     }
 
     public function getCities(Request $request)
@@ -1444,7 +1444,7 @@ public function show_customers_demo_iframe($id)
         $user->password = Hash::make($request->password);
         $user->save();
 
-        return redirect()->back()->with('success', 'Password updated successfully.');
+        return redirect()->back()->with('success', 'Password has been updated successfully.');
     }
 
 
@@ -1757,7 +1757,7 @@ public function show_customers_demo_iframe($id)
                 }
             }
 
-            return redirect()->back()->with('success', 'Tags created successfully');
+            return redirect()->back()->with('success', 'Tags have been created successfully.');
         } catch (\Exception $e) {
             // Handle any errors that occur during database operation
             return redirect()->back()->with('error', 'Failed to create tags: ' . $e->getMessage());
@@ -1804,7 +1804,7 @@ public function show_customers_demo_iframe($id)
                     $file->save();
 
                     // Redirect with success message
-                    return redirect()->back()->with('success', 'Attachment added successfully');
+                    return redirect()->back()->with('success', 'Attachment has been added successfully.');
                 } else {
                     // Error: Failed to move uploaded file
                     return redirect()->back()->with('error', 'Failed to move uploaded file');
@@ -1842,7 +1842,7 @@ public function show_customers_demo_iframe($id)
                 }
             }
 
-            return redirect()->back()->with('success', 'Leadsource created successfully');
+            return redirect()->back()->with('success', 'Lead source has been created successfully.');
         } catch (\Exception $e) {
             // Handle any errors that occur during database operation
             return redirect()->back()->with('error', 'Failed to create Leadsource: ' . $e->getMessage());
@@ -1877,6 +1877,6 @@ public function show_customers_demo_iframe($id)
         $user->updated_at = now();
         $user->save();
 
-        return redirect()->back()->with('success', 'Work details updated successfully');
+        return redirect()->back()->with('success', 'Work details have been updated successfully.');
     }
 }

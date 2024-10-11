@@ -80,7 +80,7 @@ public function permissiondelete(Request $request)
 
     DB::table('permissions')->where('id', $id)->delete();
 
-    return redirect()->route('permissionindex')->with('success', 'Permission deleted successfully');
+    return redirect()->route('permissionindex')->with('success', 'Permission has been deleted successfully.');
 }
 
 public function permissionstore(Request $request)
@@ -101,7 +101,7 @@ public function permissionstore(Request $request)
         'created_at' => Carbon::now(),
     ]);
 
-    return redirect()->route('permissionindex')->with('success', 'Permission created successfully');
+    return redirect()->route('permissionindex')->with('success', 'Permission has been created successfully.');
 }
 
 public function updateNotification(Request $request)
@@ -122,7 +122,7 @@ public function updateNotification(Request $request)
         }
 
         // Return response
-        return response()->json(['message' => 'Notification updated successfully']);
+        return response()->json(['message' => 'Notification has been updated successfully.']);
     }
 }
 

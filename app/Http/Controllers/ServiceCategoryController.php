@@ -146,7 +146,7 @@ class ServiceCategoryController extends Controller
     // Save the changes to the database
     $serviceCategory->save();
 
-    return redirect()->route('services.index')->with('success', 'Service category updated successfully!');
+    return redirect()->route('services.index')->with('success', 'The service category has been updated successfully.');
 }
 
 
@@ -173,7 +173,7 @@ public function deleteServicescategory($id)
     // Delete the category from the database
     $serviceCategory->delete();
 
-    return redirect()->route('services.index')->with('success', 'Service category deleted successfully!');
+    return redirect()->route('services.index')->with('success', 'The service category has been deleted successfully.');
 }
 
 

@@ -8,7 +8,7 @@
                 </div> --}}
 <!-- Add iframe or other content here -->
 
-<iframe src="https://dispatchannel.com/portal/inbox?header=off&sidebar=off"
+<iframe src="https://dispatchannel.com/portal/index-iframe-inbox?header=off&sidebar=off"
     style="width: 100%; height: 400px; border: none; overflow-x: auto; overflow-y: auto;" id="messageIframe">
 </iframe>
 {{-- </div>

@@ -74,7 +74,7 @@ class ServicesController extends Controller
 
         // Redirect to the index route with the service_category_id parameter
         return redirect()->route('services.listingServices', ['category_id' => $request->input('service_category_id')])
-            ->with('success', 'Service created successfully!');
+            ->with('success', 'The service has been created successfully.');
     }
 
 
@@ -131,7 +131,7 @@ class ServicesController extends Controller
 
         // Redirect to the index route with success message
         return redirect()->route('services.listingServices', ['category_id' => $request->input('service_category_id')])
-            ->with('success', 'Service updated successfully!');
+            ->with('success', 'The service has been updated successfully.');
     }
 
     public function deleteService($service_id)
@@ -147,7 +147,7 @@ class ServicesController extends Controller
         $service->delete();
 
         // Redirect to the index route with a success message
-        return redirect()->back()->with('success', 'Service deleted successfully.');
+        return redirect()->back()->with('success', 'The service has been deleted successfully.');
     }
 
     public function inactive(Request $request , $id)
@@ -165,7 +165,7 @@ class ServicesController extends Controller
         $service->update();
 
         // Redirect to the index route with a success message
-        return redirect()->back()->with('success', 'Service updated successfully.');
+        return redirect()->back()->with('success', 'The service has been updated successfully.');
     }
 
     public function active(Request $request , $id)
@@ -183,6 +183,6 @@ class ServicesController extends Controller
         $service->update();
 
         // Redirect to the index route with a success message
-        return redirect()->back()->with('success', 'Service updated successfully.');
+        return redirect()->back()->with('success', 'The service has been updated successfully.');
     }
 }

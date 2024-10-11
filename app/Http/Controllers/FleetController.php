@@ -66,7 +66,7 @@ class FleetController extends Controller
 
         $product->update();
 
-        return redirect()->back()->with('success', 'Status Inactive successfully');
+        return redirect()->back()->with('success', 'Vehicle status changed to inactive successfully.');
     }
 
     public function active(Request $request, $id)
@@ -78,7 +78,7 @@ class FleetController extends Controller
 
         $product->update();
 
-        return redirect()->back()->with('success', 'Status Active successfully');
+        return redirect()->back()->with('success', 'Vehicle status changed to active successfully.');
     }
     public function iframe_inactive(Request $request, $id)
     {
@@ -89,7 +89,7 @@ class FleetController extends Controller
 
         $product->update();
 
-        return redirect()->back()->with('success', 'Status Inactive successfully');
+        return redirect()->back()->with('success', 'Vehicle status changed to inactive successfully.');
     }
 
     public function iframe_active(Request $request, $id)
@@ -101,7 +101,7 @@ class FleetController extends Controller
 
         $product->update();
 
-        return redirect()->back()->with('success', 'Status Active successfully');
+        return redirect()->back()->with('success', 'Vehicle status changed to active successfully.');
     }
 
     public function addvehicle(Request $request)
@@ -181,7 +181,7 @@ class FleetController extends Controller
 
 
         // Redirect to the vehicles route with a success message
-        return redirect()->route('vehicle_iframe_index')->with('success', 'Fleet Vehicle created successfully');
+        return redirect()->route('vehicle_iframe_index')->with('success', 'Fleet vehicle was created successfully.');
     }
 
     public function store(Request $request)
@@ -239,7 +239,7 @@ class FleetController extends Controller
 
 
         // Redirect to the vehicles route with a success message
-        return redirect()->route('vehicles')->with('success', 'Fleet Vehicle created successfully');
+        return redirect()->route('vehicles')->with('success', 'Fleet vehicle was created successfully.');
     }
 
 
@@ -461,7 +461,7 @@ class FleetController extends Controller
             ]);
         // Redirect back with success message
         return redirect()->route('vehicles')
-            ->with('success', 'Policy and Fleet Vehicle updated successfully');
+            ->with('success', 'Policy and fleet vehicle updated successfully.');
     }
 
     public function iframevehicleupdateinsurance(Request $request, $id)
@@ -569,7 +569,7 @@ class FleetController extends Controller
             ]);
         }
 
-        return redirect()->route('vehicle_iframe_index')->with('success', 'Fleet data updated successfully!');
+        return redirect()->route('vehicle_iframe_index')->with('success', 'Fleet data has been updated successfully.');
     }
 
     public function edit(Request $request, $id)
@@ -661,7 +661,7 @@ class FleetController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'Fleet data updated successfully!');
+        return redirect()->back()->with('success', 'Fleet data has been updated successfully.');
     }
 
 
@@ -751,7 +751,7 @@ class FleetController extends Controller
 
 
         // Redirect back with a success message
-        return redirect()->route('vehicle_iframe_index')->with('success', 'Fleet model updated successfully.');
+        return redirect()->route('vehicle_iframe_index')->with('success', 'The fleet model has been updated successfully.');
     }
 
     public function fleetupdate(Request $request, $id)
@@ -840,7 +840,7 @@ class FleetController extends Controller
 
 
         // Redirect back with a success message
-        return redirect()->route('vehicles')->with('success', 'Fleet model updated successfully.');
+        return redirect()->route('vehicles')->with('success', 'The fleet model was updated successfully.');
     }
 
     public function getVehicleDetails(Request $request)

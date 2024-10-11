@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Arr;
 
 class JobModel extends Model
 {
@@ -221,4 +222,13 @@ public function jobfieldname()
     {
         return $this->hasOne(Schedule::class, 'job_id', 'id');
     }
+
+
+public function fieldids()
+{
+    // Explode 'job_field_ids' into an array, and query where 'field_id' is in that array
+    $jobFieldIds = explode(',', $this->job_field_ids);
+
+    return Jobfields::whereIn('field_id', $jobFieldIds)->get();
+}
 }

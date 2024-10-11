@@ -38,7 +38,7 @@ class CrmController extends Controller
         // Set other client attributes
         $client->save();
 
-        return redirect()->route('clients.index')->with('success', 'Client created successfully');
+        return redirect()->route('clients.index')->with('success', 'The client has been created successfully.');
     }
 
     // Show the form to edit a client
@@ -58,7 +58,7 @@ class CrmController extends Controller
         // Update other client attributes
         $client->save();
 
-        return redirect()->route('clients.index')->with('success', 'Client updated successfully');
+        return redirect()->route('clients.index')->with('success', 'The client has been updated successfully.');
     }
 
     // Delete the specified client from the database
@@ -67,7 +67,7 @@ class CrmController extends Controller
         $client = Client::find($id);
         $client->delete();
 
-        return redirect()->route('clients.index')->with('success', 'Client deleted successfully');
+        return redirect()->route('clients.index')->with('success', 'The client has been deleted successfully.');
     }
 }
 

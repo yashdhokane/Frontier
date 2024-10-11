@@ -1,5 +1,7 @@
 @section('script')
-  
+  <!--  <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&loading=async&callback=initMap&libraries=marker"
+        async></script> -->
 
     <script>
         $(document).ready(function() {
@@ -19,7 +21,6 @@
             $button.text('Show Best Route');
         }
     });
- 
 
             $(document).on('click', '.JobOpenModalButton', function(event) {
                 event.preventDefault(); // Prevent the default anchor click behavior
@@ -51,8 +52,6 @@
                             ' - Dispatch Schedule');
         
                         $('.openJobTechDetails').empty();
-                        
-                          
 
 
                         // Check if there are jobs in the response
@@ -79,8 +78,7 @@
                                 // Create the HTML structure for each job
          var jobHtml = `
     <div class="col-md-4 mb-3">
- 	 
-        <div class="card shadow-sm h-100 pp_job_info_full">
+        <div class="card shadow-sm h-100">
             <div class="card-body card-border card-shadow">
                 <!-- Job ID and Badge -->
                 <h5 class="card-title py-1">
@@ -93,68 +91,74 @@
                 </h5>
 
                 <!-- Job Title and Description -->
-                <div class="pp_job_info pp_job_info_box">
-					<h6 class="text-uppercase"> ${job.job_model ? (job.job_model.job_title.length > 20 ? job.job_model.job_title.substring(0, 20) + '...' : job.job_model.job_title) : ''} </h6>
-					<div class="description_info">${job.job_model ? job.job_model.description : ''}</div>
- 					<div class="pp_job_date text-primary">
-						${job.start_date_time && job.end_date_time ? formatDateRange(job.start_date_time, job.end_date_time, job.interval) : ''}
-					</div>
+                <div class="py-1">
+                    <strong class="text-uppercase">
+                        ${job.job_model ? (job.job_model.job_title.length > 20 ? job.job_model.job_title.substring(0, 20) + '...' : job.job_model.job_title) : ''}
+                    </strong>
                 </div>
- 
-                <!-- User Info -->
-               <div class="pp_user_info pp_job_info_box">
-                    <h6 class="text-uppercase"><i class="fas fa-user pe-2 fs-2"></i> ${job.job_model && job.job_model.user ? job.job_model.user.name : ''}</h6>
-					<div>
-						${job.job_model && job.job_model.addresscustomer ? job.job_model.addresscustomer.address_line1 : ''},
-						${job.job_model && job.job_model.addresscustomer ? job.job_model.addresscustomer.zipcode : ''}
-					</div>
-					<div>
-						${job.job_model && job.job_model.user ? job.job_model.user.mobile : ''}
-					</div>
-				</div>
-                
-                <!-- Equipment Info -->
-                <div class="pp_job_info_box">
-                    <h6 class="text-uppercase">Equipment</h6>
-					<div> 
-						${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances 
-							? job.job_model.job_appliances.appliances.appliance.appliance_name 
-							: ''} /  
-						${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances && job.job_model.job_appliances.appliances.manufacturer 
-							? job.job_model.job_appliances.appliances.manufacturer.manufacturer_name 
-							: ''} /  
-						${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances 
-							? job.job_model.job_appliances.appliances.model_number 
-							: ''} / 
-						${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances 
-							? job.job_model.job_appliances.appliances.serial_number 
-							: ''}
-					</div>
-				</div>
-				
-				<div class="pp_job_info_box">
-					<h6 class="text-uppercase">Parts & Services</h6>
- 					<div> 
-						<!-- Check and display parts -->
-						${job.job_model && job.job_model.jobproductinfohasmany && job.job_model.jobproductinfohasmany.length > 0 
-							? job.job_model.jobproductinfohasmany.map(product => `
-								${product.product && product.product.product_name ? `${product.product.product_name}, ` : ''}
-							`).join('') 
-							: ''
-						}
+                <div class="description_info">${job.job_model ? job.job_model.description : ''}</div>
 
-						<!-- Check and display services -->
-						${job.job_model && job.job_model.jobserviceinfohasmany && job.job_model.jobserviceinfohasmany.length > 0 
-							? job.job_model.jobserviceinfohasmany
-								.map(service => service.service && service.service.service_name ? service.service.service_name : '')
-								.filter(serviceName => serviceName !== '') // Filter out any empty service names
-								.join(', ')  // Join with comma
-								.replace(/,\s*$/, '')  // Remove the last comma if present
-							: ''
-						}
-					</div>
+                <!-- Job Time Range -->
+                <div>
+                    ${job.start_date_time && job.end_date_time ? formatDateRange(job.start_date_time, job.end_date_time, job.interval) : ''}
                 </div>
- 
+
+                <!-- User Info -->
+                <div class="py-1">
+                    <i class="fas fa-user pe-2 fs-2"></i>
+                    <strong class="text-uppercase">${job.job_model && job.job_model.user ? job.job_model.user.name : ''}</strong>
+                </div>
+                <div>
+                    ${job.job_model && job.job_model.addresscustomer ? job.job_model.addresscustomer.address_line1 : ''},
+                    ${job.job_model && job.job_model.addresscustomer ? job.job_model.addresscustomer.zipcode : ''}
+                </div>
+                <div>
+                    ${job.job_model && job.job_model.user ? job.job_model.user.mobile : ''}
+                </div>
+
+                <!-- Equipment Info -->
+                <div class="py-1">
+                    <strong class="text-uppercase">Equipment</strong>
+                </div>
+                <div> 
+                    ${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances 
+                        ? job.job_model.job_appliances.appliances.appliance.appliance_name 
+                        : ''} /  
+                    ${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances && job.job_model.job_appliances.appliances.manufacturer 
+                        ? job.job_model.job_appliances.appliances.manufacturer.manufacturer_name 
+                        : ''} /  
+                    ${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances 
+                        ? job.job_model.job_appliances.appliances.model_number 
+                        : ''} / 
+                    ${job.job_model && job.job_model.job_appliances && job.job_model.job_appliances.appliances 
+                        ? job.job_model.job_appliances.appliances.serial_number 
+                        : ''}
+                </div>
+
+                <!-- Parts & Services -->
+                <div class="py-1">
+                    <strong class="text-uppercase">Parts & Services</strong>
+                </div>
+                <div class="row g-0">
+                    <!-- Check and display parts -->
+                    ${job.job_model && job.job_model.jobproductinfohasmany && job.job_model.jobproductinfohasmany.length > 0 
+                        ? job.job_model.jobproductinfohasmany.map(product => `
+                            ${product.product && product.product.product_name ? `${product.product.product_name}, ` : ''}
+                        `).join('') 
+                        : ''
+                    }
+
+                    <!-- Check and display services -->
+                    ${job.job_model && job.job_model.jobserviceinfohasmany && job.job_model.jobserviceinfohasmany.length > 0 
+                        ? job.job_model.jobserviceinfohasmany
+                            .map(service => service.service && service.service.service_name ? service.service.service_name : '')
+                            .filter(serviceName => serviceName !== '') // Filter out any empty service names
+                            .join(', ')  // Join with comma
+                            .replace(/,\s*$/, '')  // Remove the last comma if present
+                        : ''
+                    }
+                </div>
+
                 <!-- Edit and View Buttons -->
                 <div class="d-flex justify-content-between pt-2">
                     <a href="${ticketShowRoute.replace(':id', job.job_model ? job.job_model.id : '#')}?mode=edit#editdetails" target="_blank">
@@ -168,7 +172,6 @@
                         </button>
                     </a>
                 </div>
-				
             </div>
         </div>
     </div>`;
@@ -191,53 +194,30 @@
                     }
                 });
 
-         $.ajax({
-    url: "{{ route('getLocation.bestroot') }}", // Replace with your Laravel route
-    type: 'GET',
-    data: {
-        id: tech_id,
-        date: date
-    },
-    success: function(response) {
-        if (response.technician_location && response.sorted_customers) {
-         //   console.log('Technician Location:', response.technician_location);
-          //  console.log('Customer Locations:', response.sorted_customers);
+                 $.ajax({
+            url: "{{ route('getLocation.bestroot') }}", // Replace with your Laravel route
+            type: 'GET',
+            data: { id: tech_id },
+            success: function(response) {
+                if (response.technician_location && response.sorted_customers) {
+                    console.log('Technician Location:', response.technician_location);
+                    console.log('Customer Locations:', response.sorted_customers);
 
-            // Clear any previous map or error message
-            $('#map').empty();
-            $('.mapbestroute').empty();
-
-            // Inject map content
-            $('.mapbestroute').append('<div id="map" style="height: 500px; width: 100%;"></div>');
-            
-            // Display route on map
-            initMap(response.technician_location, response.sorted_customers);
-        } else {
-            alert('Location data not found.');
-        }
-    },
-    error: function(xhr, status, error) {
-        var response = xhr.responseJSON;
-        if (response && response.error === "No jobs found for this technician on the selected date.") {
-            // Clear previous map content and append 'No jobs found' message
-            $('#map').empty();
-            $('.mapbestroute').empty().append('<div class="no-jobs-message" >No best route found.</div>');
-        } else {
-            console.error('Error fetching location:', error);
-        }
-    }
-});
-
-    
-        //    $('#allJobsTechnician').on('hide.bs.modal', function() {
-        // $('#map').empty();               // Empty the map div
-        // $('.mapbestroute').empty();      // Empty the map route div
-     
+                    // Display route on map
+                    initMap(response.technician_location, response.sorted_customers);
+                } else {
+                    alert('Location data not found.');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching location:', error);
+            }
+        });
 
 
-            // });
+            });
 
-    });
+
             // Helper function to format the start and end time with the interval adjustment
             function formatDateRange(startDate, endDate, interval) {
                 var startDateTime = moment(
@@ -371,36 +351,6 @@
                 });
 
                 smscontainer.fadeToggle();
-            });
-
-            $('#sendSmsButton').on('click', function(e) {
-                e.preventDefault();
-
-                var formData = new FormData($('#sendSmsForm')[0]);
-
-                $.ajax({
-                    url: '{{ route('send_sms_schedule') }}', // Your route
-                    method: 'POST',
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function(response) {
-                        if (response.success) {
-                            // Clear the textarea
-                            $('#sendSmsForm textarea').val('');
-
-                            // Hide the smscontainer after SMS is sent successfully
-                            var smscontainer = $('#sendSmsForm').closest('.smscontainer');
-                            smscontainer.fadeOut();
-                        } else {
-                            // Handle the error case (optional)
-                            console.log('SMS sending failed');
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.log(xhr.responseText); // Log any errors
-                    }
-                });
             });
 
             // Click event handler for setting-popup links
@@ -1165,132 +1115,4 @@
 
         });
     </script>
-    <script>
-    // function openModal(element) {
-    //     var userId = element.getAttribute('data-id');
-    //     console.log('User ID:', userId);
-
-    //     var modal = new bootstrap.Modal(document.getElementById('mapModal'));
-    //     modal.show();
-
-    //     // Fetch the location data
-    //     $.ajax({
-    //         url: "{{ route('getLocation.bestroot') }}", // Replace with your Laravel route
-    //         type: 'GET',
-    //         data: { id: userId },
-    //         success: function(response) {
-    //             if (response.technician_location && response.sorted_customers) {
-    //                 console.log('Technician Location:', response.technician_location);
-    //                 console.log('Customer Locations:', response.sorted_customers);
-
-    //                 // Display route on map
-    //                 initMap(response.technician_location, response.sorted_customers);
-    //             } else {
-    //                 alert('Location data not found.');
-    //             }
-    //         },
-    //         error: function(xhr, status, error) {
-    //             console.error('Error fetching location:', error);
-    //         }
-    //     });
-    // }
-// Initialize Google Map with route and blue color for the best route
-function initMap(technicianLocation, customerLocations) {
-    var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 10,
-        center: { lat: parseFloat(technicianLocation.latitude), lng: parseFloat(technicianLocation.longitude) },
-    });
-
-    var directionsService = new google.maps.DirectionsService();
-    var directionsRenderer = new google.maps.DirectionsRenderer({
-        polylineOptions: {
-            strokeColor: 'blue',  // Set the road map color to blue
-            strokeWeight: 6,
-             suppressMarkers: false, 
-        }
-    });
-    directionsRenderer.setMap(map);
-
-    var waypoints = customerLocations.map(function(customer) {
-        return {
-            location: new google.maps.LatLng(parseFloat(customer.latitude), parseFloat(customer.longitude)),
-            stopover: false
-         
-        };
-    });
-
-    var request = {
-        origin: new google.maps.LatLng(parseFloat(technicianLocation.latitude), parseFloat(technicianLocation.longitude)),
-        destination: waypoints[waypoints.length - 1].location,  // The last customer as the destination
-         waypoints: waypoints.slice(0, -1),  // All customers except the last one as waypoints
-        travelMode: google.maps.TravelMode.DRIVING
-    };
-
-    directionsService.route(request, function(result, status) {
-        if (status === 'OK') {
-            directionsRenderer.setDirections(result);
-
-            // Create marker for the technician
-            var technicianPosition = {
-                lat: parseFloat(technicianLocation.latitude),
-                lng: parseFloat(technicianLocation.longitude)
-            };
-            createMarker(technicianPosition, technicianLocation.name, map, false);
-
-            // Create customer markers
-            for (var i = 0; i < customerLocations.length; i++) {
-                var customer = customerLocations[i]; // Get the customer data
-                var customerPosition = {
-                    lat: parseFloat(customer.latitude),
-                    lng: parseFloat(customer.longitude)
-                };
-               createMarker(customerPosition, customer.name, map, false);
-            }
-        } else {
-            console.error('Directions request failed due to ' + status);
-        }
-    });
-}
-
-// Function to create a marker and its info window
-function createMarker(position, name, map, isTechnician) {
-    var marker = new google.maps.Marker({
-        position: position,
-        map: map, // Keep the map property to ensure the marker is displayed
-        icon: {
-            url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png', // Red marker for technician and customers
-            scaledSize: new google.maps.Size(isTechnician ? 60 : 50, isTechnician ? 60 : 50)
-        }
-    });
-
-    // Geocode the position to get the address
-    var geocoder = new google.maps.Geocoder();
-    geocoder.geocode({ location: position }, function(results, status) {
-        if (status === 'OK' && results[0]) {
-            var address = results[0].formatted_address; // Get the formatted address
-            var content = `<div style="color: black; background-color: white; padding: 5px; border-radius: 3px;">
-                                ${name}<br>
-                               ${address}
-                           </div>`;
-            var infoWindow = new google.maps.InfoWindow({
-                content: content
-            });
-
-            marker.addListener('click', function() {
-                infoWindow.open(map, marker);
-            });
-        } else {
-            console.error('Geocoder failed due to: ' + status);
-        }
-    });
-}
-
-
-
-</script>
-
-
-
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo"></script>
-
 @endsection

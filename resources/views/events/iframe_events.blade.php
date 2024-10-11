@@ -15,6 +15,9 @@
 .table> :not(caption)>*>* {
             padding: 0px !important;
 }
+.footer{
+    display:none !important;
+}
 .card {
     --bs-card-spacer-y: 10px; }
 

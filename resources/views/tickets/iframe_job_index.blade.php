@@ -202,10 +202,10 @@
                         </div>
                     </div>
                 </div>
+                <!--
                 <div class="card withoutthreedottest11">
                     <div class="card-body">
                         <div class="row row-no-margin mt-4">
-                            <!-- Column -->
                             <div class="col-md-6 col-lg-3 col-xlg-3">
                                 <div class="card card-hover">
                                     <div class="p-2 rounded bg-light-primary text-center">
@@ -214,7 +214,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Column -->
                             <div class="col-md-6 col-lg-3 col-xlg-3">
                                 <div class="card card-hover">
                                     <div class="p-2 rounded bg-light-warning text-center">
@@ -223,7 +222,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Column -->
                             <div class="col-md-6 col-lg-3 col-xlg-3">
                                 <div class="card card-hover">
                                     <div class="p-2 rounded bg-light-success text-center">
@@ -232,7 +230,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Column -->
                             <div class="col-md-6 col-lg-3 col-xlg-3">
                                 <div class="card card-hover">
                                     <div class="p-2 rounded bg-light-danger text-center">
@@ -243,7 +240,8 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> 
+                -->
 
 
 

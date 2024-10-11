@@ -49,7 +49,7 @@ class MailController extends Controller
             // app('commonFunction')($subject, $msg, $from, $to, $type1, $data);
             // app('commonFunction')($subject, $msg, $from, $to, $type2, $data);
 
-            return response()->json(['message' => 'Emails sent successfully'], 200);
+            return response()->json(['message' => 'Emails have been sent successfully.'], 200);
     
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['error' => 'Schedule or customer not found'], 404);

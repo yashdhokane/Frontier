@@ -49,7 +49,7 @@ class TaxController extends Controller
         ]);
 
 
-        return redirect()->route('tax.index')->with('success', 'Tax information updated successfully');
+        return redirect()->route('tax.index')->with('success', 'The tax information has been updated successfully.');
     }
 
 

@@ -59,7 +59,7 @@ class BuisnessProfileController extends Controller
             $businessProfile->save();
             // dd(1);
             // Add success flash message
-            return redirect()->back()->with('success', 'Business profile updated successfully.');
+            return redirect()->back()->with('success', 'The business profile has been updated successfully.');
         } else {
             // Handle the case where the model with the given ID is not found
             return redirect()->back()->with('error', 'Business profile not found.');
@@ -79,7 +79,7 @@ class BuisnessProfileController extends Controller
             $businessProfile->save();
             // dd(1);
             // Add success flash message
-            return redirect()->back()->with('success', 'Business profile updated successfully.');
+            return redirect()->back()->with('success', 'The business profile has been updated successfully.');
         } else {
             // Handle the case where the model with the given ID is not found
             return redirect()->back()->with('error', 'Business profile not found.');
@@ -99,7 +99,7 @@ class BuisnessProfileController extends Controller
             $businessProfile->save();
             // dd(1);
             // Add success flash message
-            return redirect()->back()->with('success', 'Business profile updated successfully.');
+            return redirect()->back()->with('success', 'The business profile has been updated successfully.');
         } else {
             // Handle the case where the model with the given ID is not found
             return redirect()->back()->with('error', 'Business profile not found.');
@@ -118,7 +118,7 @@ class BuisnessProfileController extends Controller
             $businessProfile->save();
             // dd(1);
             // Add success flash message
-            return redirect()->back()->with('success', 'Business profile updated successfully.');
+            return redirect()->back()->with('success', 'The business profile has been updated successfully.');
         } else {
             // Handle the case where the model with the given ID is not found
             return redirect()->back()->with('error', 'Business profile not found.');

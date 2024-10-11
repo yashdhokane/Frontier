@@ -352,7 +352,7 @@ class CustomerDataController extends Controller
         }
 
 
-        return redirect()->back()->with('success', 'Job updated successfully.');
+        return redirect()->back()->with('success', 'The job has been updated successfully.');
     }
 
   
@@ -554,7 +554,7 @@ class CustomerDataController extends Controller
                 }
             }
 
-            return redirect()->back()->with('success', 'Job stored successfully.');
+            return redirect()->back()->with('success', 'The job has been stored successfully.');
         }
     }
 
