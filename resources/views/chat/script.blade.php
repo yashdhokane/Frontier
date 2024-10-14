@@ -19,20 +19,20 @@
         $('input[name="role"]:checked').trigger('change');
 
         function formatDateRange(startDate, endDate, interval) {
-                var startDateTime = moment(
-                    startDate); // Assuming moment.js is available
-                var endDateTime = moment(endDate);
+            var startDateTime = moment(
+                startDate); // Assuming moment.js is available
+            var endDateTime = moment(endDate);
 
-                // Add the interval if provided
-                if (interval) {
-                    startDateTime.add(interval, 'hours');
-                    endDateTime.add(interval, 'hours');
-                }
-
-                // Format the dates
-                return startDateTime.format('MMM D YYYY h:mm A') + ' - ' +
-                    endDateTime.format('h:mm A');
+            // Add the interval if provided
+            if (interval) {
+                startDateTime.add(interval, 'hours');
+                endDateTime.add(interval, 'hours');
             }
+
+            // Format the dates
+            return startDateTime.format('MMM D YYYY h:mm A') + ' - ' +
+                endDateTime.format('h:mm A');
+        }
 
 
         const isFilePath = (message) => {
@@ -92,7 +92,6 @@
             $('.scheule-job-details').empty();
             const firstUserName = partician[1]?.user.name || '';
             const firstUser = partician[1]?.user || '';
-            console.log(firstUser.schedule);
             const otherUsers = partician.filter((p, i) => i > 0).length;
             $('.chat-meta-user-top').html(
                 `<div class="align-items-center mb-3"><i class="fa fa-user px-2"></i><strong>${firstUserName || 'Unknown'}</strong> and</div><div id="partCount" class="fw-bold ps-2">${otherUsers} Others</div>`
@@ -109,16 +108,19 @@
 
             if (Array.isArray(partician)) {
                 partician.forEach(function(participant, index) {
-                    const firstUser = participant.user || {};
-                    
-                    if (firstUser.schedule && typeof firstUser.schedule === 'object') {
+                    const firstUser = participant.schedules || {};
+                    console.log(firstUser);
+
+                    if (firstUser && typeof firstUser === 'object') {
                         // Convert object to array and loop through it
-                        Object.values(firstUser.schedule).forEach(function(item) {
-                            if (item && item.job_model) { // Check if item and item.job_model exist
+                        Object.values(firstUser).forEach(function(item) {
+                            if (item && item
+                                .job_model) { // Check if item and item.job_model exist
                                 let fieldNames = ''; // Ensure fieldNames is initialized
 
                                 // Check if fieldids exist and are valid
-                                if (Array.isArray(item.job_model.fieldids) && item.job_model.fieldids.length > 0) {
+                                if (Array.isArray(item.job_model.fieldids) && item.job_model
+                                    .fieldids.length > 0) {
                                     // Join the field names into a single string
                                     fieldNames = item.job_model.fieldids.map(function(f) {
                                         return f.field_name;
@@ -126,7 +128,9 @@
                                 }
 
                                 // Conditionally add the badge if fieldNames is not empty
-                                const fieldNamesBadge = fieldNames ? `<span class="badge bg-primary">${fieldNames}</span>` : '';
+                                const fieldNamesBadge = fieldNames ?
+                                    `<span class="badge bg-primary">${fieldNames}</span>` :
+                                    '';
 
                                 $('.scheule-job-details').append(`
                                     <h5 class="card-title py-1">
@@ -161,11 +165,14 @@
 
         $(document).on('click', '.chatlist', function() {
             const id = $(this).data('id');
+            const userRole = $(this).data('user-role');
             $('.chat').show();
             $.get('{{ route('add_employee_cnvrsn') }}', {
-                id
+                id: id,
+                user_role: userRole
             }, updateChatUI);
         });
+
 
         const sendMessage = () => {
             const formData = new FormData();

@@ -46,7 +46,7 @@
                           </ul>
                           <ul class="mailbox list-style-none app-chat">
                               @foreach ($employee as $item)
-                                  <li class="chatlist cursor-pointer ps-2" data-id="{{ $item->id }}"
+                                  <li class="chatlist cursor-pointer ps-2" data-id="{{ $item->id }}" data-user-role="{{ $item->role }}"
                                       data-role="employee">
 
                                       <a href="javascript:void(0)" class="chat-user message-item px-2 border p-0 my-1 pt-2 me-1">
@@ -61,7 +61,7 @@
                                   </li>
                               @endforeach
                               @foreach ($customer as $item)
-                                  <li class="chatlist cursor-pointer ps-2" data-id="{{ $item->id }}"
+                                  <li class="chatlist cursor-pointer ps-2" data-id="{{ $item->id }}" data-user-role="{{ $item->role }}"
                                       data-role="customer">
 
                                       <a href="javascript:void(0)" class="chat-user message-item px-2 border p-0 my-1 pt-2 me-1">

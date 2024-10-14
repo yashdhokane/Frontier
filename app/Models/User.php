@@ -150,6 +150,18 @@ class User extends Authenticatable
     {
         return $this->hasMany(Schedule::class, 'technician_id', 'id');
     }
+    
+    public function schedulesByRole($role)
+    {
+        if ($role == 'technician') {
+            return $this->hasMany(JobAssign::class, 'technician_id', 'id');
+        } elseif ($role == 'customer') {
+            return $this->hasMany(JobAssign::class, 'customer_id', 'id');
+        } else {
+            return collect(); // Return an empty collection or handle other roles if needed
+        }
+    }
+    
 
     public function LoginHistory()
     {

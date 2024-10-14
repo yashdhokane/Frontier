@@ -53,12 +53,12 @@ class ChatSupportController extends Controller
     {
         $authId = auth()->user()->id;
         $currentDate = now()->format('Y-m-d H:i:s');
-
+    
         // Check if a conversation already exists
         $check = ChatConversation::where('created_by', $authId)
             ->where('send_to', $request->id)
             ->first();
-
+    
         if (!$check) {
             // Save a new conversation
             $conversation = new ChatConversation();
@@ -67,10 +67,10 @@ class ChatSupportController extends Controller
             $conversation->created_date = $currentDate;
             $conversation->last_activity = $currentDate;
             $conversation->save();
-
+    
             // Define both participants: auth user and the request user
             $participants = [$authId, $request->id];
-
+    
             // Add both participants to the conversation
             foreach ($participants as $participantId) {
                 $participant = new ChatParticipants();
@@ -82,39 +82,49 @@ class ChatSupportController extends Controller
                 $participant->is_active = 'yes';
                 $participant->save();
             }
-
+    
             $id = $conversation->id;
         } else {
             $id = $check->id;
         }
-
-
-
+    
+        // Fetch chat messages
         $chat = ChatMessage::with('user', 'chating')->where('conversation_id', $id)->get();
-        $partician = ChatParticipants::with('user', 'user.userAddress', 'user.schedule', 'user.schedule.JobModel')->where('conversation_id', $id)->get();
-        $chatMessages = ChatMessage::select('conversation_id', 'sender', 'message', 'time')
-            ->where('conversation_id', $id);
-
+    
+        // Fetch participants
+        $participants = ChatParticipants::with(['user', 'user.userAddress'])
+            ->where('conversation_id', $id)
+            ->get();
+    
+        // Attach schedules based on role
+        foreach ($participants as $participant) {
+            $role = $request->user_role; // Get role from the request
+            // Fetch schedules based on the role
+            $participant->schedules = $participant->user->schedulesByRole($role)->with('jobModel')->get();
+        }
+    
         // Get chat files
         $chatFiles = ChatFile::select('conversation_id', 'sender', 'filename', 'time')
             ->where('conversation_id', $id);
-
+    
         // Combine chat messages and chat files using union
+        $chatMessages = ChatMessage::select('conversation_id', 'sender', 'message', 'time')
+            ->where('conversation_id', $id);
+        
         $combinedData = $chatMessages->union($chatFiles)
             ->with('user') // Eager load the user relation
             ->where('conversation_id', $id)
             ->orderBy('time', 'desc')
             ->get();
+    
         $attachmentfileChatFile = ChatFile::select('filename', 'sender', 'conversation_id')
             ->where('conversation_id', $id)->get();
-
-
-
+    
         // Return the user data and chat messages as a JSON response
         return response()->json([
             'conversation_id' => $id,
             'chat' => $chat,
-            'partician' => $partician,
+            'partician' => $participants,
             'combineData' => $combinedData,
             'attachmentfileChatFile' => $attachmentfileChatFile
         ]);
