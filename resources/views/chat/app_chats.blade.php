@@ -49,7 +49,7 @@
                                   <li class="chatlist cursor-pointer ps-2" data-id="{{ $item->id }}"
                                       data-role="employee">
 
-                                      <a href="javascript:void(0)" class="chat-user message-item px-2">
+                                      <a href="javascript:void(0)" class="chat-user message-item px-2 border p-0 my-1 pt-2 me-1">
 
                                           <div class="mail-contnet">
                                               <h6 class="message-title" data-username="2">
@@ -64,7 +64,7 @@
                                   <li class="chatlist cursor-pointer ps-2" data-id="{{ $item->id }}"
                                       data-role="customer">
 
-                                      <a href="javascript:void(0)" class="chat-user message-item px-2">
+                                      <a href="javascript:void(0)" class="chat-user message-item px-2 border p-0 my-1 pt-2 me-1">
 
                                           <div class="mail-contnet">
                                               <h6 class="message-title" data-username="2">
