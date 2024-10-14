@@ -154,13 +154,16 @@ class User extends Authenticatable
     public function schedulesByRole($role)
     {
         if ($role == 'technician') {
-            return $this->hasMany(JobAssign::class, 'technician_id', 'id');
+            return $this->hasMany(JobAssign::class, 'technician_id', 'id')
+                        ->orderBy('start_date_time', 'desc');
         } elseif ($role == 'customer') {
-            return $this->hasMany(JobAssign::class, 'customer_id', 'id');
+            return $this->hasMany(JobAssign::class, 'customer_id', 'id')
+                        ->orderBy('start_date_time', 'desc'); 
         } else {
-            return collect(); // Return an empty collection or handle other roles if needed
+            return collect(); 
         }
     }
+    
     
 
     public function LoginHistory()
