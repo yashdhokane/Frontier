@@ -140,7 +140,7 @@
                                   <div class=" shadow w-25">
                                       <div class="user-details-jobs border">
                                       </div>
-                                      <div class="scheule-job-details mt-2 px-3" style="height: 380px; overflow-y: auto;">
+                                      <div class="scheule-job-details mt-2 px-3" style="height: 320px; overflow-y: auto;">
                                       </div>
                                   </div>
 
@@ -197,23 +197,25 @@
       </div>
 
       <!-- Modal for Predefined Replies -->
-<div class="modal fade" id="predefinedReplyModal" tabindex="-1" aria-labelledby="predefinedReplyModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="predefinedReplyModalLabel">Choose a Predefined Reply</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                    @foreach ($predefinedReplies as $reply)
-                        <button type="button" class="btn btn-outline-danger predefined-reply-item" data-content="{{ $reply->pt_content }}">
-                           {{ $reply->pt_title }}
-                        </button>
-                    @endforeach
-            </div>
-        </div>
-    </div>
-</div>
+      <div class="modal fade" id="predefinedReplyModal" tabindex="-1" aria-labelledby="predefinedReplyModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="predefinedReplyModalLabel">Choose a Predefined Reply</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                      @foreach ($predefinedReplies as $reply)
+                          <button type="button" class="btn btn-outline-danger predefined-reply-item"
+                              data-content="{{ $reply->pt_content }}">
+                              {{ $reply->pt_title }}
+                          </button>
+                      @endforeach
+                  </div>
+              </div>
+          </div>
+      </div>
 
       <!-- -------------------------------------------------------------- -->
       <!-- End Page wrapper  -->
