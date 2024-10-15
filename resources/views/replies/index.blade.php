@@ -8,12 +8,12 @@
     <div class="page-breadcrumb">
         <div class="row">
             <div class="col-9 align-self-center">
-                <h4 class="page-title">Replies</h4>
+                <h4 class="page-title">Predefine Reply</h4>
                 <div class="d-flex align-items-center">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{ route('buisnessprofile.index') }}">Settings</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Predefine Replies </li>
+                            <li class="breadcrumb-item active" aria-current="page">Predefine Reply </li>
                         </ol>
                     </nav>
                 </div>
@@ -26,7 +26,7 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header d-flex align-items-center">
-                                <h4 class="modal-title" id="exampleModalLabel1">Add Replies</h4>
+                                <h4 class="modal-title" id="exampleModalLabel1">Add Predefine Reply</h4>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
@@ -59,7 +59,7 @@
         </div>
     </div>
     @if (session('success'))
-        <div class="alert alert-success">
+        <div class="alert alert-success mx-4">
             {{ session('success') }}
         </div>
     @endif
@@ -90,7 +90,7 @@
                                             <td>
                                                 <button type="button" class="btn btn-primary btn-sm edit-btn"
                                                     data-bs-toggle="modal" data-bs-target="#samedata-modal2"
-                                                    data-reply-id="{{ $item->pt_id  }}">
+                                                    data-reply-id="{{ $item->pt_id  }}" data-title="{{ $item->pt_title }}" data-content="{{ $item->pt_content }}" data-active="{{ $item->pt_active }}">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                                 <a href="{{ url('/delete/replies/' . $item->pt_id ) }}"
@@ -112,7 +112,7 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header d-flex align-items-center">
-                            <h4 class="modal-title" id="exampleModalLabel1">Edit Replies</h4>
+                            <h4 class="modal-title" id="exampleModalLabel1">Edit Predefine Reply</h4>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form action="{{ url('/edit/replies') }}" method="POST">
@@ -121,13 +121,20 @@
                                 <div class="mb-3">
                                     <label for="tag1" class="control-label bold mb5">Title:</label>
                                     <input type="text" class="form-control" id="tag1" name="pt_title"
-                                        value="" />
+                                        value="" id="title" />
                                 </div>
                                 <div class="mb-3">
                                     <label for="pt_content" class="control-label bold mb5">Content:</label>
-                                    <textarea class="form-control" name="pt_content" ></textarea>
+                                    <textarea class="form-control" name="pt_content" id="content"></textarea>
                                 </div>
-                                <input type="hidden" id="pt_id" name="pt_id" value="">
+                                <div class="mb-3">
+                                    <label for="active" class="control-label bold mb5">Active:</label>
+                                    <select name="active" id="active"  class="form-control">
+                                        <option value="yes">Yes</option>
+                                        <option value="no">No</option>
+                                    </select>
+                                </div>
+                                <input type="hidden" id="pt_id" name="pt_id" value="" id="pt_id">
 
                             </div>
                             <div class="modal-footer">
@@ -154,18 +161,6 @@
                         <a href="#" class="card-link">Need more help?</a>
                     </div>
                 </div>
-                <hr />
-                <div class="col-md-12 ">
-                    <div class="card text-white bg-primary">
-                        <div class="card-body">
-                            <span>
-                                <i class="fas fa-tag fill-white"></i>
-                            </span>
-                            <h3 class="card-title mt-3 mb-0">00</h3>
-                            <p class="card-text text-white-50" style="color: white !important;">Total Replies</p>
-                        </div>
-                    </div>
-                </div>
 
             </div>
         </div>
@@ -185,47 +180,26 @@
             ],
             "pageLength": 25,
         });
-        // for add tag query
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('saveTagsBtn').addEventListener('click', function() {
-                var Tags = document.getElementById('tags').value;
-                // alert('1234');
-                $.ajax({
-                    url: '{{ route('tags-add') }}',
-                    type: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    data: {
-                        tags: Tags
-                    },
-                    success: function(response) {
-                        // console.log('Success:', response);
-                        $('#samedata-modal').modal('hide');
-                        location.reload();
-                    },
-                    error: function(error) {
-                        console.error(error);
-                    }
-                });
-            });
-        });
+       
 
-        // for edit model open and fetch
-        let row;
         document.addEventListener('DOMContentLoaded', function() {
             $(document).on('click', '.edit-btn', function() {
-                var tagId = $(this).data('tag-id');
-                var tagName = $(this).data('tag-name');
-                row = $(this).closest('tr');
-                // alert(tagId);
+                // Get data attributes from the clicked button
+                var id = $(this).data('reply-id');
+                var title = $(this).data('title');
+                var content = $(this).data('content');
+                var active = $(this).data('active');
 
-                $('#tag-id').val(tagId);
-                $('#tag1').val(tagName);
+                // Set the values in the form inputs
+                $('#pt_id').val(id); // Set hidden input field
+                $('#tag1').val(title); // Set title input field
+                $('#content').val(content); // Set content textarea
+
+                // Set the selected value for the "Active" dropdown
+                $('#active').val(active).change(); // Dynamically set the selected value
             });
-
-
         });
+
     </script>
 @endsection
 @endsection
