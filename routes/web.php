@@ -631,7 +631,7 @@ Route::get('/get-location-best-root', [ScheduleController::class, 'getLocation']
 
 
 
-    Route::get('/setting/replies/replies-list', [RepliesController::class, 'index'])->name('replies-list');
+    Route::get('/setting/predefined-replies', [RepliesController::class, 'index'])->name('replies-list');
 
     Route::post('/store/replies', [RepliesController::class, 'store']);
 
