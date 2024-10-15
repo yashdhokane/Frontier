@@ -136,6 +136,8 @@ use Illuminate\Support\Facades\Artisan;
 
 use App\Http\Controllers\StickyNotesController;
 
+use App\Http\Controllers\RepliesController;
+
 /*
 
 
@@ -624,6 +626,18 @@ Route::get('/get-location-best-root', [ScheduleController::class, 'getLocation']
     Route::post('/edit/tags', [TagsController::class, 'updateTag']);
 
     Route::get('/delete/tags/{tagId}', [TagsController::class, 'deleteTag']);
+
+    // replies Route here(st)
+
+
+
+    Route::get('/setting/replies/replies-list', [RepliesController::class, 'index'])->name('replies-list');
+
+    Route::post('/store/replies', [RepliesController::class, 'store']);
+
+    Route::post('/edit/replies', [RepliesController::class, 'update']);
+
+    Route::get('/delete/replies/{replyId}', [RepliesController::class, 'delete']);
 
 
 
