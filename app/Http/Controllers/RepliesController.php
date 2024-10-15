@@ -50,9 +50,13 @@ class RepliesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function delete(string $id)
     {
-        //
+        $reply = PredefineReplies::find($id);
+
+        $reply->delete();
+        
+        return redirect()->back()->with('success' , 'The reply have been deleted successfully.');
     }
 
     /**
