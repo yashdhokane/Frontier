@@ -7,6 +7,16 @@
 
 <script>
     $(document).ready(function() {
+        $(document).on('click', '.predefined-reply-item', function() {
+            // Get the content associated with the clicked title
+            var content = $(this).data('content');
+
+            // Populate the content in the input field
+            $('#textarea1').val(content);
+
+            // Close the modal after selection
+            $('#predefinedReplyModal').modal('hide');
+        });
 
         $('input[name="role"]').on('change', function() {
             $('.chatlist').hide();

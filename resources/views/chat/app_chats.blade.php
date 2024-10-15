@@ -46,10 +46,11 @@
                           </ul>
                           <ul class="mailbox list-style-none app-chat">
                               @foreach ($employee as $item)
-                                  <li class="chatlist cursor-pointer ps-2" data-id="{{ $item->id }}" data-user-role="{{ $item->role }}"
-                                      data-role="employee">
+                                  <li class="chatlist cursor-pointer ps-2" data-id="{{ $item->id }}"
+                                      data-user-role="{{ $item->role }}" data-role="employee">
 
-                                      <a href="javascript:void(0)" class="chat-user message-item px-2 border p-0 my-1 pt-2 me-1">
+                                      <a href="javascript:void(0)"
+                                          class="chat-user message-item px-2 border p-0 my-1 pt-2 me-1">
 
                                           <div class="mail-contnet">
                                               <h6 class="message-title" data-username="2">
@@ -61,10 +62,11 @@
                                   </li>
                               @endforeach
                               @foreach ($customer as $item)
-                                  <li class="chatlist cursor-pointer ps-2" data-id="{{ $item->id }}" data-user-role="{{ $item->role }}"
-                                      data-role="customer">
+                                  <li class="chatlist cursor-pointer ps-2" data-id="{{ $item->id }}"
+                                      data-user-role="{{ $item->role }}" data-role="customer">
 
-                                      <a href="javascript:void(0)" class="chat-user message-item px-2 border p-0 my-1 pt-2 me-1">
+                                      <a href="javascript:void(0)"
+                                          class="chat-user message-item px-2 border p-0 my-1 pt-2 me-1">
 
                                           <div class="mail-contnet">
                                               <h6 class="message-title" data-username="2">
@@ -148,6 +150,13 @@
 
                           <div class="card-body border-top border-bottom chat-send-message-footer">
                               <div class="row">
+                                  <div class="col-md-12">
+                                      <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                          data-bs-target="#predefinedReplyModal">
+                                          Predefined Reply
+                                      </button>
+
+                                  </div>
                                   <div class="col-12">
                                       <div class="input-field mt-0 mb-0">
                                           <input type="hidden" name="auth_id" value="{{ auth()->id() }}">
@@ -186,6 +195,26 @@
           </div>
 
       </div>
+
+      <!-- Modal for Predefined Replies -->
+<div class="modal fade" id="predefinedReplyModal" tabindex="-1" aria-labelledby="predefinedReplyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="predefinedReplyModalLabel">Choose a Predefined Reply</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                    @foreach ($predefinedReplies as $reply)
+                        <button type="button" class="btn btn-outline-danger predefined-reply-item" data-content="{{ $reply->pt_content }}">
+                           {{ $reply->pt_title }}
+                        </button>
+                    @endforeach
+            </div>
+        </div>
+    </div>
+</div>
+
       <!-- -------------------------------------------------------------- -->
       <!-- End Page wrapper  -->
       @include('chat.script')

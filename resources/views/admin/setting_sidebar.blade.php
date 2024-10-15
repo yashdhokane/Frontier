@@ -40,6 +40,9 @@ else
 				<li class="sidebar-item ft8">
 					<a href="{{ route('site_job_fields') }}" class="sidebar-link"><i class="fas ri-command-fill"></i> <span class="hide-menu"> Job Fields </span></a>
 				</li>
+				<li class="sidebar-item ft8">
+					<a href="{{ route('predefined-replies') }}" class="sidebar-link"><i class="fas fa-comment-dots"></i> <span class="hide-menu"> Predefine Reply </span></a>
+				</li>
  						
             </ul>
 
