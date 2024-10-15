@@ -112,18 +112,22 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header d-flex align-items-center">
-                            <h4 class="modal-title" id="exampleModalLabel1">Edit Tags</h4>
+                            <h4 class="modal-title" id="exampleModalLabel1">Edit Replies</h4>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form action="{{ url('/edit/replies') }}" method="POST">
                             @csrf
                             <div class="modal-body">
                                 <div class="mb-3">
-                                    <label for="tag1" class="control-label bold mb5">Tags:</label>
-                                    <input type="text" class="form-control" id="tag1" name="tag_name"
+                                    <label for="tag1" class="control-label bold mb5">Title:</label>
+                                    <input type="text" class="form-control" id="tag1" name="pt_title"
                                         value="" />
                                 </div>
-                                <input type="hidden" id="tag-id" name="tag_id" value="">
+                                <div class="mb-3">
+                                    <label for="pt_content" class="control-label bold mb5">Content:</label>
+                                    <textarea class="form-control" name="pt_content" ></textarea>
+                                </div>
+                                <input type="hidden" id="pt_id" name="pt_id" value="">
 
                             </div>
                             <div class="modal-footer">
