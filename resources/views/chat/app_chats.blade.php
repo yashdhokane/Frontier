@@ -164,6 +164,11 @@
                                               id="name_support_message_id">
 
                                           <div class="d-flex">
+                                              <label for="file_input">
+                                                <button class="btn btn-outline-dark py-3 m-1"><i class=" fas fa-paperclip"></i></button></label>
+                                              <input type="file" name="file" id="file_input"
+                                                  style="display: none;"
+                                                  accept="image/*, .pdf, .doc, .docx, .xls, .xlsx, .txt, .zip" />
                                               <input id="textarea1" placeholder="Type and hit enter" name="reply"
                                                   style="font-family: Arial, FontAwesome"
                                                   class="message-type-box form-control border-0 flex-grow-1 me-2"

@@ -189,12 +189,23 @@
 
         const sendMessage = () => {
             const formData = new FormData();
-            formData.append('reply', $('#textarea1').val());
+            const messageText = $('#textarea1').val().trim();
+            const fileInput = $('#file_input')[0].files[0];
+
+            if (!messageText && !fileInput) {
+                alert('Please enter a message or select a file to send.');
+                return;
+            }
+
+            formData.append('reply', messageText);
             formData.append('_token', '{{ csrf_token() }}');
             formData.append('auth_id', $('input[name="auth_id"]').val());
             formData.append('support_message_id', $('input[name="conversation_id"]').val());
 
-            // Check if the checkbox is checked and append the appropriate value
+            if (fileInput) {
+                formData.append('file', fileInput);
+            }
+
             const isSendChecked = $('#flexSwitchCheckChecked').is(':checked') ? 'yes' : 'no';
             formData.append('is_send', isSendChecked);
 
@@ -205,14 +216,17 @@
                 contentType: false,
                 processData: false,
                 success: function(response) {
-                    $('#textarea1').val(''); // Clear input fields
-                    updateChatUI(response); // Update the UI with the new message
-
-                    // Uncheck the SMS checkbox after sending
+                    $('#textarea1').val('');
+                    $('#file_input').val('');
+                    updateChatUI(response);
                     $('#flexSwitchCheckChecked').prop('checked', false);
+                },
+                error: function(xhr, status, error) {
+                    alert('Error sending message. Please try again.');
                 }
             });
         };
+
 
         $('#textarea1').on('keypress', function(event) {
             // on key enter 

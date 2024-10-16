@@ -370,7 +370,20 @@ class ChatSupportController extends Controller
 
 
         $chat = ChatMessage::with('user', 'chating')->where('conversation_id', $id)->get();
-        $partician = ChatParticipants::with('user')->where('conversation_id', $id)->get();
+        
+        
+        // Fetch participants
+        $participants = ChatParticipants::with(['user', 'user.userAddress'])
+            ->where('conversation_id', $id)
+            ->get();
+
+        // Attach schedules based on role
+        foreach ($participants as $participant) {
+            $role = $request->user_role; // Get role from the request
+            // Fetch schedules based on the role
+            $participant->schedules = $participant->user->schedulesByRole($role)->with('jobModel')->get();
+        }
+
         $chatMessages = ChatMessage::select('conversation_id', 'sender', 'message', 'time')
             ->where('conversation_id', $id);
 
@@ -390,7 +403,7 @@ class ChatSupportController extends Controller
         return response()->json([
             'conversation_id' => $id,
             'chat' => $chat,
-            'partician' => $partician,
+            'partician' => $participants,
             'combineData' => $combinedData,
             'attachmentfileChatFile' => $attachmentfileChatFile
         ]);
