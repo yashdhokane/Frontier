@@ -7,15 +7,38 @@
 
 <script>
     $(document).ready(function() {
-        $(document).on('click', '.predefined-reply-item', function() {
-            // Get the content associated with the clicked title
-            var content = $(this).data('content');
 
-            // Populate the content in the input field
-            $('#textarea1').val(content);
 
-            // Close the modal after selection
-            $('#predefinedReplyModal').modal('hide');
+        $('#file_input').on('change', function() {
+            const file = this.files[0];
+            const filePreview = $('#filePreview');
+
+            if (file) {
+                const fileName = file.name;
+                const fileSize = (file.size / 1024).toFixed(2) + ' KB'; // Display size in KB
+                filePreview.html(`
+                    <div class="alert alert-info d-flex align-items-center py-1">
+                        <span class="me-2"><i class="fa fa-paperclip"></i></span>
+                        <span class="file-name">${fileName} (${fileSize})</span>
+                        <button type="button" class="btn-close ms-auto" aria-label="Close" id="removeFile"></button>
+                    </div>
+                `);
+            } else {
+                filePreview.empty(); // Clear the preview if no file is selected
+            }
+        });
+
+        // Remove the file if the user clicks the 'remove' button
+        $(document).on('click', '#removeFile', function() {
+            $('#file_input').val(''); // Clear the input
+            $('#filePreview').empty(); // Clear the preview
+        });
+
+        $(document).on('change', '#predefinedReplySelect', function() {
+            const predefinedReply = $(this).val();
+            if (predefinedReply) {
+                $('#textarea1').val(predefinedReply);
+            }
         });
 
         $('input[name="role"]').on('change', function() {
@@ -216,10 +239,11 @@
                 contentType: false,
                 processData: false,
                 success: function(response) {
-                    $('#textarea1').val('');
-                    $('#file_input').val('');
-                    updateChatUI(response);
-                    $('#flexSwitchCheckChecked').prop('checked', false);
+                    $('#textarea1').val(''); // Clear message input
+                    $('#file_input').val(''); // Clear file input
+                    $('#filePreview').empty(); // Clear file preview
+                    updateChatUI(response); // Update chat UI with the new message
+                    $('#flexSwitchCheckChecked').prop('checked', false); // Reset switch
                 },
                 error: function(xhr, status, error) {
                     alert('Error sending message. Please try again.');

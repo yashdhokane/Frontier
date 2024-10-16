@@ -7,6 +7,7 @@
       <!-- Page wrapper  -->
       <!-- -------------------------------------------------------------- -->
       <div class="" style="display: inline;">
+
           <div class="chat-application">
               <!-- -------------------------------------------------------------- -->
               <!-- Left Part  -->
@@ -150,11 +151,21 @@
 
                           <div class="card-body border-top border-bottom chat-send-message-footer">
                               <div class="row">
-                                  <div class="col-md-12">
-                                      <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                          data-bs-target="#predefinedReplyModal">
-                                          Predefined Reply
-                                      </button>
+                                <div id="filePreview" class="col-md-12"></div>
+                                  <div class="col-md-12 w-25 mb-1 d-flex align-items-center">
+                                      <label for="file_input" class="btn btn-outline-primary m-1 py-1">
+                                          Attachment
+                                      </label>
+                                      <input type="file" name="file" id="file_input" style="display: none;"
+                                          accept="image/*, .pdf, .doc, .docx, .xls, .xlsx, .txt, .zip" />
+
+                                      <select id="predefinedReplySelect"
+                                          class="form-control predefined-reply-select select2" style="width: 100%;">
+                                          <option value="" disabled selected>Choose a Predefined Reply</option>
+                                          @foreach ($predefinedReplies as $reply)
+                                              <option value="{{ $reply->pt_content }}">{{ $reply->pt_title }}</option>
+                                          @endforeach
+                                      </select>
 
                                   </div>
                                   <div class="col-12">
@@ -164,13 +175,7 @@
                                               id="name_support_message_id">
 
                                           <div class="d-flex">
-                                            <label for="file_input" class="btn btn-outline-dark py-3 m-1">
-                                                <i class="fas fa-paperclip"></i>
-                                            </label>
-                                            <input type="file" name="file" id="file_input"
-                                                style="display: none;"
-                                                accept="image/*, .pdf, .doc, .docx, .xls, .xlsx, .txt, .zip" />
-                                            
+
                                               <input id="textarea1" placeholder="Type and hit enter" name="reply"
                                                   style="font-family: Arial, FontAwesome"
                                                   class="message-type-box form-control border-0 flex-grow-1 me-2"
@@ -195,33 +200,14 @@
                                   </div>
                               </div>
                           </div>
+
                       </div>
 
                   </div>
               </div>
+              
           </div>
 
-      </div>
-
-      <!-- Modal for Predefined Replies -->
-      <div class="modal fade" id="predefinedReplyModal" tabindex="-1" aria-labelledby="predefinedReplyModalLabel"
-          aria-hidden="true">
-          <div class="modal-dialog">
-              <div class="modal-content">
-                  <div class="modal-header">
-                      <h5 class="modal-title" id="predefinedReplyModalLabel">Choose a Predefined Reply</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                      @foreach ($predefinedReplies as $reply)
-                          <button type="button" class="btn btn-outline-danger predefined-reply-item"
-                              data-content="{{ $reply->pt_content }}">
-                              {{ $reply->pt_title }}
-                          </button>
-                      @endforeach
-                  </div>
-              </div>
-          </div>
       </div>
 
       <!-- -------------------------------------------------------------- -->
