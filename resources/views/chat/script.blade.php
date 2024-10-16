@@ -17,7 +17,7 @@
                 const fileName = file.name;
                 const fileSize = (file.size / 1024).toFixed(2) + ' KB'; // Display size in KB
                 filePreview.html(`
-                    <div class="alert alert-info d-flex align-items-center py-1">
+                    <div class="alert alert-info d-flex align-items-center py-1 m-0">
                         <span class="me-2"><i class="fa fa-paperclip"></i></span>
                         <span class="file-name">${fileName} (${fileSize})</span>
                         <button type="button" class="btn-close ms-auto" aria-label="Close" id="removeFile"></button>

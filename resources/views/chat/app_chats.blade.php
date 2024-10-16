@@ -141,7 +141,7 @@
                                   <div class=" shadow w-25">
                                       <div class="user-details-jobs border">
                                       </div>
-                                      <div class="scheule-job-details mt-2 px-3" style="height: 320px; overflow-y: auto;">
+                                      <div class="scheule-job-details mt-2 px-3" style="height: 220px; overflow-y: auto;">
                                       </div>
                                   </div>
 
