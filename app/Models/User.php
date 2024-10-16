@@ -160,7 +160,8 @@ class User extends Authenticatable
             return $this->hasMany(JobAssign::class, 'customer_id', 'id')
                         ->orderBy('start_date_time', 'desc'); 
         } else {
-            return collect(); 
+            return $this->hasMany(JobAssign::class, 'technician_id', 'id')
+            ->orderBy('start_date_time', 'desc');
         }
     }
     
