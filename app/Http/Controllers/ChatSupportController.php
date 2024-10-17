@@ -135,6 +135,148 @@ class ChatSupportController extends Controller
         ]);
     }
 
+    public function store(Request $request)
+    {
+        $request->validate([
+            'auth_id' => 'required',
+            'support_message_id' => 'required',
+            'file' => 'nullable|mimes:pdf,doc,docx,xlsx,txt,mp3,mp4,mov,avi|max:5120', // Max 5MB for most files
+        ]);
+    
+        $fileSizeLimit = 5120; // Default max size 5MB
+        $allowedVideoSizeLimit = 16384; // 16MB for videos
+    
+        // Handle file upload if present
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $fileMimeType = $file->getMimeType();
+    
+            // Check file size limit based on file type
+            if (str_starts_with($fileMimeType, 'video/') && $file->getSize() > $allowedVideoSizeLimit * 1024) {
+                return response()->json(['error' => 'Video file size exceeds 16MB'], 422);
+            } elseif (!str_starts_with($fileMimeType, 'video/') && $file->getSize() > $fileSizeLimit * 1024) {
+                return response()->json(['error' => 'File size exceeds 5MB'], 422);
+            }
+    
+            // Store the file
+            $directory = public_path('images/Uploads/chat/' . $request->support_message_id);
+            if (!file_exists($directory)) {
+                mkdir($directory, 0777, true);
+            }
+            $filename = uniqid() . '_' . $file->getClientOriginalName();
+            $file->move($directory, $filename);
+    
+            // Save file information in ChatFile
+            $chatFile = new ChatFile();
+            $chatFile->sender = $request->auth_id;
+            $chatFile->time = now();
+            $chatFile->conversation_id = $request->support_message_id;
+            $chatFile->filename = $filename;
+            $chatFile->type = $fileMimeType;
+            $chatFile->size = $file->getSize();
+            $chatFile->save();
+        }
+    
+        // Check if a message is present and not null
+        if ($request->filled('reply')) {
+            $message = $request->reply;
+    
+            // Extract YouTube URL if present
+            $youtubeEmbedUrl = null;
+            if (preg_match('/(https?:\/\/(www\.)?youtube\.com\/watch\?v=|youtu\.be\/)([\w\-]+)/', $message, $matches)) {
+                $youtubeVideoId = $matches[3];
+                $youtubeEmbedUrl = "https://www.youtube.com/embed/{$youtubeVideoId}";
+    
+                // Save YouTube URL as a file in the ChatFile table
+                $chatFile = new ChatFile();
+                $chatFile->sender = $request->auth_id;
+                $chatFile->time = now();
+                $chatFile->conversation_id = $request->support_message_id;
+                $chatFile->filename = $youtubeEmbedUrl; // Store the embed URL
+                $chatFile->type = 'youtube'; // Custom type to identify it's a YouTube video
+                $chatFile->size = null; // No size for embedded videos
+                $chatFile->save();
+            }
+    
+            // Save the message text if there is a message and no YouTube URL only
+            if (!$youtubeEmbedUrl) {
+                $chatMessage = new ChatMessage();
+                $chatMessage->sender = $request->auth_id;
+                $chatMessage->conversation_id = $request->support_message_id;
+                $chatMessage->message = $message;
+                $chatMessage->time = now();
+                $chatMessage->save();
+            }
+        }
+    
+        $participants = ChatParticipants::where('conversation_id', $request->support_message_id)->get();
+        $authUserId = Auth::id();
+        $filteredParticipants = $participants->where('user_id', '!=', $authUserId);
+    
+        // Check if the "is_send" checkbox was checked
+        if ($request->has('is_send') && $request->is_send == 'yes') {
+            foreach ($filteredParticipants as $user) {
+                $receiverNumber = '+917030467187'; // Replace with the recipient's phone number
+                $message = $request->reply; // Replace with your desired message
+                $formattedMessage = "You have a new message in your chat:\n\n{$message}";
+    
+                $sid = env('TWILIO_SID');
+                $token = env('TWILIO_TOKEN');
+                $fromNumber = env('TWILIO_FROM');
+    
+                $client = new Client($sid, $token);
+                $client->messages->create($receiverNumber, [
+                    'from' => $fromNumber,
+                    'body' => $formattedMessage,
+                    'statusCallback' => url("https://dispatchannel.com/portal/api/sms/receive?conversation_id=" . $request->support_message_id)
+                ]);
+            }
+        }
+    
+        $id = $request->support_message_id;
+    
+        $chat = ChatMessage::with('user', 'chating')->where('conversation_id', $id)->get();
+    
+        // Fetch participants
+        $participants = ChatParticipants::with(['user', 'user.userAddress'])
+            ->where('conversation_id', $id)
+            ->get();
+    
+        // Attach schedules based on role
+        foreach ($participants as $participant) {
+            $role = $request->user_role; // Get role from the request
+            // Fetch schedules based on the role
+            $participant->schedules = $participant->user->schedulesByRole($role)->with('jobModel')->get();
+        }
+    
+        $chatMessages = ChatMessage::select('conversation_id', 'sender', 'message', 'time')
+            ->where('conversation_id', $id);
+    
+        // Get chat files
+        $chatFiles = ChatFile::select('conversation_id', 'sender', 'filename', 'time')
+            ->where('conversation_id', $id);
+    
+        // Combine chat messages and chat files using union
+        $combinedData = $chatMessages->union($chatFiles)
+            ->with('user') // Eager load the user relation
+            ->where('conversation_id', $id)
+            ->orderBy('time', 'desc')
+            ->get();
+    
+        $attachmentfileChatFile = ChatFile::select('filename', 'sender', 'conversation_id')
+            ->where('conversation_id', $id)->get();
+    
+        return response()->json([
+            'conversation_id' => $id,
+            'chat' => $chat,
+            'partician' => $participants,
+            'combineData' => $combinedData,
+            'attachmentfileChatFile' => $attachmentfileChatFile
+        ]);
+    }
+    
+    
+    
 
     public function searchCustomer(Request $request)
     {
@@ -154,8 +296,6 @@ class ChatSupportController extends Controller
         // Return the view with the filtered customers
         return response()->json($customers);
     }
-
-
 
 
 
@@ -277,138 +417,6 @@ class ChatSupportController extends Controller
         $conversation->save();
 
         return back()->with('success', 'User added to the conversation successfully');
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'auth_id' => 'required',
-            'support_message_id' => 'required',
-        ]);
-
-        if ($request->hasFile('file')) {
-            // Handle file upload
-            $file = $request->file('file');
-
-            // Store the file in the specified directory
-            $directory = public_path('images/Uploads/chat/' . $request->support_message_id);
-
-            // Ensure the directory exists
-            if (!file_exists($directory)) {
-                mkdir($directory, 0777, true);
-            }
-
-            // Generate a unique filename to prevent conflicts
-            $filename = uniqid() . '_' . $file->getClientOriginalName();
-
-            // Move the uploaded file to the directory
-            $file->move($directory, $filename);
-
-            // Create a new ChatFile record
-            $chatFile = new ChatFile();
-            $chatFile->sender = $request->auth_id;
-            $chatFile->time = now();
-            $chatFile->conversation_id = $request->support_message_id;
-            $chatFile->filename = $filename; // Store the generated filename
-            $chatFile->type = $file->getClientMimeType();
-
-            // Retrieve the file size if the file exists
-            if (file_exists($directory . '/' . $filename)) {
-                $chatFile->size = filesize($directory . '/' . $filename);
-            } else {
-                // Handle the case where the file doesn't exist
-                // You can set the size to null or a default value here
-                $chatFile->size = null;
-            }
-
-            // Save the ChatFile record
-            $chatFile->save();
-        }
-
-        // Check if a message is present and not null
-        if ($request->filled('reply')) {
-            // Create a new message
-            $message = new ChatMessage();
-            $message->sender = $request->auth_id;
-            $message->conversation_id = $request->support_message_id;
-            $message->message = $request->reply;
-            $message->time = now();
-            $message->save();
-        }
-
-        $participants = ChatParticipants::where('conversation_id', $request->support_message_id)->get();
-        $authUserId = Auth::id();
-        $filteredParticipants = $participants->where('user_id', '!=', $authUserId);
-
-        // Check if the "is_send" checkbox was checked
-        if ($request->has('is_send') && $request->is_send == 'yes') {
-
-            foreach ($filteredParticipants as $user) {
-
-                $receiverNumber = '+917030467187'; // Replace with the recipient's phone number
-                // $receiverNumber = '+918830711935'; // Replace with the recipient's phone number
-                $message = $request->reply; // Replace with your desired message
-                $formattedMessage = "You have a new message in your chat:\n\n{$message}";
-
-                $sid = env('TWILIO_SID');
-                $token = env('TWILIO_TOKEN');
-                $fromNumber = env('TWILIO_FROM');
-
-
-                $client = new Client($sid, $token);
-                $client->messages->create($receiverNumber, [
-                    'from' => $fromNumber,
-                    'body' => $formattedMessage,
-                    'statusCallback' => url("https://dispatchannel.com/portal/api/sms/receive?conversation_id=" . $request->support_message_id)
-                ]);
-            }
-
-        }
-
-
-        $id = $request->support_message_id;
-
-
-
-
-        $chat = ChatMessage::with('user', 'chating')->where('conversation_id', $id)->get();
-
-
-        // Fetch participants
-        $participants = ChatParticipants::with(['user', 'user.userAddress'])
-            ->where('conversation_id', $id)
-            ->get();
-
-        // Attach schedules based on role
-        foreach ($participants as $participant) {
-            $role = $request->user_role; // Get role from the request
-            // Fetch schedules based on the role
-            $participant->schedules = $participant->user->schedulesByRole($role)->with('jobModel')->get();
-        }
-
-        $chatMessages = ChatMessage::select('conversation_id', 'sender', 'message', 'time')
-            ->where('conversation_id', $id);
-
-        // Get chat files
-        $chatFiles = ChatFile::select('conversation_id', 'sender', 'filename', 'time')
-            ->where('conversation_id', $id);
-
-        // Combine chat messages and chat files using union
-        $combinedData = $chatMessages->union($chatFiles)
-            ->with('user') // Eager load the user relation
-            ->where('conversation_id', $id)
-            ->orderBy('time', 'desc')
-            ->get();
-        $attachmentfileChatFile = ChatFile::select('filename', 'sender', 'conversation_id')
-            ->where('conversation_id', $id)->get();
-
-        return response()->json([
-            'conversation_id' => $id,
-            'chat' => $chat,
-            'partician' => $participants,
-            'combineData' => $combinedData,
-            'attachmentfileChatFile' => $attachmentfileChatFile
-        ]);
     }
 
     public function deleteParticipant(Request $request)

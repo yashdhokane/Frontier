@@ -92,20 +92,39 @@
             const imgSrc = data.user?.user_image ?
                 `public/images/Uploads/users/${data.user.id}/${data.user.user_image}` :
                 '{{ asset('public/images/login_img_bydefault.png') }}';
+
+            const isYoutubeLink = (message) => {
+                // Regular expression to detect YouTube URLs
+                const youtubeRegex =
+                    /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|embed\/|v\/|.+\?v=)?([^&\n]{11})/;
+                return youtubeRegex.test(message);
+            };
+
             const chatItem = `<li class="chat-item ps-2">
-            <div class="chat-img"><img src="${imgSrc}" alt="user"></div>
-            <div class="chat-content">
-                <div class="d-flex"><span class="font-medium">${data.user?.name || 'Unknown User'}, </span>
-                <span class="chat-time m-1">${formatTime(data.time)}</span></div>
-                ${data.message && isFilePath(data.message) ? `
-                    ${['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(data.message.split('.').pop().toLowerCase()) ?
-                    `<div class="file"><a href="public/images/Uploads/chat/${data.conversation_id}/${data.message}" target="_blank">
-                    <img src="public/images/Uploads/chat/${data.conversation_id}/${data.message}" width="100" height="100" /></a></div>` :
-                    `<div class="file"><a href="public/images/Uploads/chat/${data.conversation_id}/${data.message}" target="_blank">${data.message}</a></div>`
-                }` : `<div class="box bg-light">${data.message}</div>`}
-            </div></li>`;
+                        <div class="chat-img"><img src="${imgSrc}" alt="user"></div>
+                        <div class="chat-content">
+                            <div class="d-flex">
+                                <span class="font-medium">${data.user?.name || 'Unknown User'}, </span>
+                                <span class="chat-time m-1">${formatTime(data.time)}</span>
+                            </div>
+                            ${data.message ? 
+                                isYoutubeLink(data.message) ? 
+                                    // Embed YouTube video if the message is a valid YouTube link
+                                    `<div class="file"><iframe width="320" height="240" src="${data.message.replace("watch?v=", "embed/")}" frameborder="0" allowfullscreen></iframe></div>` :
+                                isFilePath(data.message) ? 
+                                    // Check if it's a file type
+                                    ['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(data.message.split('.').pop().toLowerCase()) ?
+                                        `<div class="file"><a href="public/images/Uploads/chat/${data.conversation_id}/${data.message}" target="_blank">
+                                        <img src="public/images/Uploads/chat/${data.conversation_id}/${data.message}" width="100" height="100" /></a></div>` :
+                                        `<div class="file"><a href="public/images/Uploads/chat/${data.conversation_id}/${data.message}" target="_blank">${data.message}</a></div>`
+                                : `<div class="box bg-light">${data.message}</div>` 
+                            : `<div class="box bg-light">No message</div>`}
+                        </div>
+                    </li>`;
+
             $('.chat-list').prepend(chatItem);
         };
+
 
         const appendAttachment = (attachs, uniqueFiles) => {
             const fileSrc = `public/images/Uploads/chat/${attachs.conversation_id}/${attachs.filename}`;
@@ -165,7 +184,7 @@
                     ${firstUser.user_address?.zipcode || ''}
                 </div>`
             );
-             $('.scheule-job-details').append(`<h4 class="py-2"> Today's Jobs</h4>`);
+            $('.scheule-job-details').append(`<h4 class="py-2"> Today's Jobs</h4>`);
 
             // Append job details if available
             if (Array.isArray(partician)) {
