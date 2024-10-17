@@ -12,6 +12,10 @@
               height: 240px;
               overflow-y: auto;
           }
+
+          .mailbox.app-chat {
+              padding-bottom: 100px;
+          }
       </style>
       <link rel="stylesheet" href="{{ url('public/admin/chat/style.css') }}">
       <!-- Page wrapper  -->

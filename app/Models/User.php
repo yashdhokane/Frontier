@@ -150,22 +150,30 @@ class User extends Authenticatable
     {
         return $this->hasMany(Schedule::class, 'technician_id', 'id');
     }
-    
+
     public function schedulesByRole($role)
     {
+        $timezone = session('timezone_name', config('app.timezone')); 
+
+        $currentDate = now()->timezone($timezone)->toDateString();
+
         if ($role == 'technician') {
             return $this->hasMany(JobAssign::class, 'technician_id', 'id')
-                        ->orderBy('start_date_time', 'desc');
+                ->whereDate('start_date_time', $currentDate)
+                ->orderBy('start_date_time', 'desc');
         } elseif ($role == 'customer') {
             return $this->hasMany(JobAssign::class, 'customer_id', 'id')
-                        ->orderBy('start_date_time', 'desc'); 
+                ->whereDate('start_date_time', $currentDate)
+                ->orderBy('start_date_time', 'desc');
         } else {
             return $this->hasMany(JobAssign::class, 'technician_id', 'id')
-            ->orderBy('start_date_time', 'desc');
+                ->whereDate('start_date_time', $currentDate)
+                ->orderBy('start_date_time', 'desc');
         }
     }
-    
-    
+
+
+
 
     public function LoginHistory()
     {
