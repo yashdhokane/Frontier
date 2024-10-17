@@ -24,11 +24,11 @@
                     </div>
                 `);
             } else {
-                filePreview.empty(); // Clear the preview if no file is selected
+               filePreview.empty(); 
             }
         });
 
-        // Remove the file if the user clicks the 'remove' button
+        
         $(document).on('click', '#removeFile', function() {
             $('#file_input').val(''); // Clear the input
             $('#filePreview').empty(); // Clear the preview

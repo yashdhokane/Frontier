@@ -3,6 +3,16 @@
 
       @section('content')
       @endif
+      <style>
+          .right-part {
+              height: calc(100vh - 70px);
+          }
+
+          .scheule-job-details {
+              height: 240px;
+              overflow-y: auto;
+          }
+      </style>
       <link rel="stylesheet" href="{{ url('public/admin/chat/style.css') }}">
       <!-- Page wrapper  -->
       <!-- -------------------------------------------------------------- -->
@@ -141,7 +151,7 @@
                                   <div class=" shadow w-25">
                                       <div class="user-details-jobs border">
                                       </div>
-                                      <div class="scheule-job-details mt-2 px-3" style="height: 280px; overflow-y: auto;">
+                                      <div class="scheule-job-details mt-2 px-3">
                                       </div>
                                   </div>
 
@@ -151,7 +161,7 @@
 
                           <div class="card-body border-top border-bottom chat-send-message-footer">
                               <div class="row">
-                                <div id="filePreview" class="col-md-12"></div>
+                                  <div id="filePreview" class="col-md-12"></div>
                                   <div class="col-md-12 w-25 mb-1 d-flex align-items-center">
                                       <label for="file_input" class="btn btn-outline-primary m-1 py-1">
                                           Attachment
@@ -205,7 +215,7 @@
 
                   </div>
               </div>
-              
+
           </div>
 
       </div>
