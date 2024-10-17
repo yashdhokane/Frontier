@@ -35,7 +35,9 @@ class ChatSupportController extends Controller
         $chatConversion = ChatConversation::with('Participant.user')->latest('last_activity')->get();
         $users = User::all();
 
-        $employee = User::whereNotIn('role', ['superadmin', 'customer'])->where('status', 'active')->get();
+        $employee = User::whereNotIn('role', ['superadmin', 'customer', 'technician'])->where('status', 'active')->get();
+
+        $technician = User::where('role', 'technician')->where('status', 'active')->get();
 
         $sendToIds = $chatConversion->pluck('send_to')->unique();
 
@@ -46,7 +48,7 @@ class ChatSupportController extends Controller
         $predefinedReplies = PredefineReplies::all();
 
 
-        return view('chat.app_chats', compact('chatConversion', 'users', 'employee', 'customer', 'predefinedReplies'));
+        return view('chat.app_chats', compact('chatConversion', 'users', 'employee', 'customer', 'predefinedReplies', 'technician'));
     }
 
     // new  code start 
@@ -370,8 +372,8 @@ class ChatSupportController extends Controller
 
 
         $chat = ChatMessage::with('user', 'chating')->where('conversation_id', $id)->get();
-        
-        
+
+
         // Fetch participants
         $participants = ChatParticipants::with(['user', 'user.userAddress'])
             ->where('conversation_id', $id)

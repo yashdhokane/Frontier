@@ -24,17 +24,14 @@
               <!-- -------------------------------------------------------------- -->
               <div class=" left-part bg-white fixed-left-part user-chat-box mt-5" style="height: 100%; overflow-y: auto;">
                   <div class="position-relative border-start" style="height: 100%; ">
-                      <div class="m-2 mt-4 d-flex justify-content-between">
-                          <label>
-                              <input type="radio" name="role" value="employee" checked>
-                              Employee
-                          </label>
-                          <label>
-                              <input type="radio" name="role" value="customer">
-                              Customer
-                          </label>
-                      </div>
-                      <div class="p-2 border-bottom">
+
+                      <div class="m-2 mt-4">
+                          <form data-role="technician">
+                              <div class="searchbar d-flex justify-content-between">
+                                  <input class="form-control" type="text" name="text-search"
+                                      placeholder="Search Or Add Technician" />
+                              </div>
+                          </form>
                           <form data-role="employee">
                               <div class="searchbar d-flex justify-content-between">
                                   <input class="form-control" type="text" name="text-search"
@@ -52,21 +49,54 @@
 
 
                       </div>
+
+                      <div class="p-2 border-bottom d-flex justify-content-between">
+                          <label class="btn btn-cyan badge">
+                              <input type="radio" name="role" value="technician" style="display: none;" checked>
+                              Technician
+                          </label>
+                          <label class="btn btn-cyan badge">
+                              <input type="radio" name="role" value="customer" style="display: none;">
+                              Customer
+                          </label>
+                          <label class="btn btn-cyan badge">
+                              <input type="radio" name="role" value="employee" style="display: none;">
+                              Employee
+                          </label>
+                      </div>
                       @if (auth()->id() == 1)
                           <ul class="mailbox list-style-none new-cust-chat border shadow">
                           </ul>
                           <ul class="mailbox list-style-none app-chat">
-                              @foreach ($employee as $item)
+                              @foreach ($technician as $item)
                                   <li class="chatlist cursor-pointer ps-2" data-id="{{ $item->id }}"
-                                      data-user-role="{{ $item->role }}" data-role="employee">
+                                      data-user-role="{{ $item->role }}" data-role="technician">
 
                                       <a href="javascript:void(0)"
-                                          class="chat-user message-item px-2 border p-0 my-1 pt-2 me-1">
+                                          class="chat-user message-item px-2 border pb-3 my-1 pt-2 me-1">
 
                                           <div class="mail-contnet">
                                               <h6 class="message-title" data-username="2">
                                                   {{ $item->name }}
                                               </h6>
+                                              <span class="text-capitalize"> {{ $item->role }}</span>
+                                          </div>
+
+                                      </a>
+                                  </li>
+                              @endforeach
+                              @foreach ($employee as $item)
+                                  <li class="chatlist cursor-pointer ps-2" data-id="{{ $item->id }}"
+                                      data-user-role="{{ $item->role }}" data-role="employee">
+
+                                      <a href="javascript:void(0)"
+                                          class="chat-user message-item px-2 border pb-3 my-1 pt-2 me-1">
+
+                                          <div class="mail-contnet">
+                                              <h6 class="message-title" data-username="2">
+                                                  {{ $item->name }}
+                                              </h6>
+                                              <span class="text-capitalize"> {{ $item->role }}</span>
                                           </div>
 
                                       </a>
@@ -77,12 +107,13 @@
                                       data-user-role="{{ $item->role }}" data-role="customer">
 
                                       <a href="javascript:void(0)"
-                                          class="chat-user message-item px-2 border p-0 my-1 pt-2 me-1">
+                                          class="chat-user message-item px-2 border pb-3 my-1 pt-2 me-1">
 
                                           <div class="mail-contnet">
                                               <h6 class="message-title" data-username="2">
                                                   {{ $item->name }}
                                               </h6>
+                                              <span class="text-capitalize"> {{ $item->role }}</span>
                                           </div>
 
                                       </a>
@@ -124,8 +155,8 @@
                                                       id="add_user_to_conversation_hidden-new" name="conversation_id">
                                               </div>
                                               <div class="col-md-1" style="margin-left: 5px;">
-                                                  <button id="autosubmitwithoutmodel" type="submit" class="btn btn-primary"
-                                                      id="add_user_to_conversation_button">
+                                                  <button id="autosubmitwithoutmodel" type="submit"
+                                                      class="btn btn-primary" id="add_user_to_conversation_button">
                                                       <i class="fas fa-plus"></i> <!-- "Add" icon -->
                                                   </button>
                                               </div>

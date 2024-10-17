@@ -24,11 +24,11 @@
                     </div>
                 `);
             } else {
-               filePreview.empty(); 
+                filePreview.empty();
             }
         });
 
-        
+
         $(document).on('click', '#removeFile', function() {
             $('#file_input').val(''); // Clear the input
             $('#filePreview').empty(); // Clear the preview
@@ -42,12 +42,17 @@
         });
 
         $('input[name="role"]').on('change', function() {
+            $('label.btn').removeClass('text-dark');
+            if ($(this).is(':checked')) {
+                $(this).closest('label').addClass('text-dark');
+            }
             $('.chatlist').hide();
             var selectedRole = $('input[name="role"]:checked').val();
             $('.chatlist[data-role="' + selectedRole + '"]').show();
             $('form[data-role]').hide();
             $('form[data-role="' + selectedRole + '"]').show();
         });
+
 
         $('input[name="role"]:checked').trigger('change');
 
@@ -160,6 +165,7 @@
                     ${firstUser.user_address?.zipcode || ''}
                 </div>`
             );
+             $('.scheule-job-details').append(`<h4 class="py-2"> Today's Jobs</h4>`);
 
             // Append job details if available
             if (Array.isArray(partician)) {
@@ -177,21 +183,21 @@
                                     '';
 
                                 $('.scheule-job-details').append(`
-                            <h5 class="card-title py-1">
-                                <strong class="text-uppercase">
-                                    #${item.job_model.id} ${fieldNamesBadge}
-                                    ${item.job_model.warranty_type === 'in_warranty' ? `<span class="badge bg-warning">In Warranty</span>` : ''}
-                                    ${item.job_model.warranty_type === 'out_warranty' ? `<span class="badge bg-danger">Out of Warranty</span>` : ''}
-                                </strong>
-                            </h5>
-                            <div class="pp_job_info pp_job_info_box">
-                                <h6 class="text-uppercase">${item.job_model.job_title.length > 20 ? item.job_model.job_title.substring(0, 20) + '...' : item.job_model.job_title}</h6>
-                                <div class="description_info">${item.job_model.description || ''}</div>
-                                <div class="pp_job_date text-primary">
-                                    ${item.start_date_time && item.end_date_time ? formatDateRange(item.start_date_time, item.end_date_time, item.interval) : ''}
-                                </div>
-                            </div>
-                        `);
+                                    <h5 class="card-title py-1">
+                                        <strong class="text-uppercase">
+                                            #${item.job_model.id} ${fieldNamesBadge}
+                                            ${item.job_model.warranty_type === 'in_warranty' ? `<span class="badge bg-warning">In Warranty</span>` : ''}
+                                            ${item.job_model.warranty_type === 'out_warranty' ? `<span class="badge bg-danger">Out of Warranty</span>` : ''}
+                                        </strong>
+                                    </h5>
+                                    <div class="pp_job_info pp_job_info_box">
+                                        <h6 class="text-uppercase">${item.job_model.job_title.length > 20 ? item.job_model.job_title.substring(0, 20) + '...' : item.job_model.job_title}</h6>
+                                        <div class="description_info">${item.job_model.description || ''}</div>
+                                        <div class="pp_job_date text-primary">
+                                            ${item.start_date_time && item.end_date_time ? formatDateRange(item.start_date_time, item.end_date_time, item.interval) : ''}
+                                        </div>
+                                    </div>
+                                `);
                             }
                         });
                     }
