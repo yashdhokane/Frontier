@@ -1,6 +1,28 @@
 @extends('home')
 
 @section('content')
+    <style>
+        /* styles.css or within a <style> tag */
+        .table-fixed {
+            table-layout: fixed;
+            /* Ensures that the table respects the defined widths */
+            width: 100%;
+            /* Sets the table width */
+        }
+
+        .table-fixed th:nth-child(2),
+        /* Target the second column for "Content" */
+        .table-fixed td:nth-child(2) {
+            width: 100px;
+            /* Set the width for the "Content" column */
+            overflow: hidden;
+            /* Prevent overflow */
+            white-space: nowrap;
+            /* Prevent text from wrapping */
+            text-overflow: ellipsis;
+            /* Show ellipsis for overflow text */
+        }
+    </style>
 
     <!-- -------------------------------------------------------------- -->
     <!-- Bread crumb and right sidebar toggle -->
@@ -40,7 +62,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="pt_content" class="control-label bold mb5">Content:</label>
-                                        <textarea class="form-control" name="pt_content" ></textarea>
+                                        <textarea class="form-control" name="pt_content"></textarea>
                                     </div>
                                 </div>
 
@@ -69,41 +91,44 @@
             <div class="col-9">
                 <div class="card card-border shadow">
                     <div class="card-body">
-                            <table id="default_order" class="table table-striped table-bordered display text-nowrap"
-                                style="width: 100%">
-                                <thead>
+                        <table id="default_order"
+                            class="table table-striped table-bordered display text-nowrap table-fixed">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Content</th>
+                                    <th>Active</th>
+                                    <th>Date Added</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($reply as $item)
                                     <tr>
-                                        <th>Title</th>
-                                        <th>Content</th>
-                                        <th>Active</th>
-                                        <th>Date Added</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($reply as $item)
-                                        <tr>
-                                            <td> {{ $item->pt_title }} </td>
-                                            <td> {{ $item->pt_content }} </td>
-                                            <td> {{ $item->pt_active }} </td>
-                                            <td>{{ $convertDateToTimezone($item->pt_date_added) }}</td>
-                                            <td>
-                                                <button type="button" class="btn btn-primary btn-sm edit-btn"
-                                                    data-bs-toggle="modal" data-bs-target="#samedata-modal2"
-                                                    data-reply-id="{{ $item->pt_id  }}" data-title="{{ $item->pt_title }}" data-content="{{ $item->pt_content }}" data-active="{{ $item->pt_active }}">
-                                                    <i class="fas fa-edit"></i>
+                                        <td>{{ $item->pt_title }}</td>
+                                        <td>{{ $item->pt_content }}</td>
+                                        <td>{{ $item->pt_active }}</td>
+                                        <td>{{ $convertDateToTimezone($item->pt_date_added) }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-sm edit-btn"
+                                                data-bs-toggle="modal" data-bs-target="#samedata-modal2"
+                                                data-reply-id="{{ $item->pt_id }}" data-title="{{ $item->pt_title }}"
+                                                data-content="{{ $item->pt_content }}"
+                                                data-active="{{ $item->pt_active }}">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <a href="{{ url('/delete/replies/' . $item->pt_id) }}"
+                                                onclick="return confirm('Are you sure you want to delete reply?')">
+                                                <button type="button" class="btn btn-danger btn-sm delete-btn">
+                                                    <i class="fas fa-trash"></i>
                                                 </button>
-                                                <a href="{{ url('/delete/replies/' . $item->pt_id ) }}"
-                                                    onclick="confirm('Are you sure you want to delete reply?')"><button
-                                                        type="button" class="btn btn-danger btn-sm delete-btn">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button></a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
 
-                                </tbody>
-                            </table>
                     </div>
                 </div>
             </div>
@@ -120,8 +145,8 @@
                             <div class="modal-body">
                                 <div class="mb-3">
                                     <label for="tag1" class="control-label bold mb5">Title:</label>
-                                    <input type="text" class="form-control" id="tag1" name="pt_title"
-                                        value="" id="title" />
+                                    <input type="text" class="form-control" id="tag1" name="pt_title" value=""
+                                        id="title" />
                                 </div>
                                 <div class="mb-3">
                                     <label for="pt_content" class="control-label bold mb5">Content:</label>
@@ -129,7 +154,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="active" class="control-label bold mb5">Active:</label>
-                                    <select name="active" id="active"  class="form-control">
+                                    <select name="active" id="active" class="form-control">
                                         <option value="yes">Yes</option>
                                         <option value="no">No</option>
                                     </select>
@@ -180,7 +205,7 @@
             ],
             "pageLength": 25,
         });
-       
+
 
         document.addEventListener('DOMContentLoaded', function() {
             $(document).on('click', '.edit-btn', function() {
@@ -199,7 +224,6 @@
                 $('#active').val(active).change(); // Dynamically set the selected value
             });
         });
-
     </script>
 @endsection
 @endsection
