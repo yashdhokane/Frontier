@@ -186,7 +186,18 @@
                     ${firstUser.user_address?.zipcode || ''}
                 </div>`
             );
-            $('.scheule-job-details').append(`<h4 class="py-2"> Today's Jobs</h4>`);
+            let hasSchedules = false;
+
+            if (Array.isArray(partician)) {
+                partician.forEach(function(participant) {
+                    if (participant.schedules && Object.keys(participant.schedules).length > 0) {
+                        hasSchedules = true;
+                    }
+                });
+                if (hasSchedules) {
+                    $('.scheule-job-details').append(`<h4 class="py-2"> Today's Jobs</h4>`);
+                }
+            }
 
             // Append job details if available
             if (Array.isArray(partician)) {
