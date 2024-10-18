@@ -29,7 +29,7 @@ class ChatSupportController extends Controller
 {
 
 
-    public function index()
+    public function index(Request $request)
     {
 
         $chatConversion = ChatConversation::with('Participant.user')->latest('last_activity')->get();
@@ -47,8 +47,11 @@ class ChatSupportController extends Controller
 
         $predefinedReplies = PredefineReplies::all();
 
+        $quickId = $request->get('quick_id');
+        $quickUserRole = $request->get('quick_user_role');
 
-        return view('chat.app_chats', compact('chatConversion', 'users', 'employee', 'customer', 'predefinedReplies', 'technician'));
+
+        return view('chat.app_chats', compact('chatConversion', 'users', 'employee', 'customer', 'predefinedReplies', 'technician','quickId','quickUserRole'));
     }
 
     // new  code start 

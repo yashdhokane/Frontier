@@ -237,17 +237,38 @@
             }
         };
 
+        const quickId = '{{ $quickId }}';
+        const quickUserRole = '{{ $quickUserRole }}';
+
+        let id = null; 
+        let userRole = null;
+        let isSet = false; 
+
         $(document).on('click', '.chatlist', function() {
-            const id = $(this).data('id');
-            const userRole = $(this).data('user-role');
+            if (!isSet) {
+                if (quickId && quickUserRole) {
+                    id = quickId;
+                    userRole = quickUserRole;
+                } else {
+                    id = $(this).data('id');
+                    userRole = $(this).data('user-role');
+                }
+                isSet = true; 
+            } else {
+                id = $(this).data('id') || id; 
+                userRole = $(this).data('user-role') || userRole;
+            }
+
             $('.chat').show();
             $('#textarea1').val('');
             $('#predefinedReplySelect').val('').trigger('change');
+
             $.get('{{ route('add_employee_cnvrsn') }}', {
                 id: id,
                 user_role: userRole
             }, updateChatUI);
         });
+
 
 
         const sendMessage = () => {
