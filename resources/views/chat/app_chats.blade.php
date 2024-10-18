@@ -16,6 +16,16 @@
           .mailbox.app-chat {
               padding-bottom: 100px;
           }
+
+          @media (min-width: 768px) {
+              #main-wrapper[data-layout=vertical][data-sidebartype=mini-sidebar] .page-wrapper {
+                  margin-left: 0px !important;
+              }
+          }
+
+          #main-wrapper[data-layout=vertical][data-sidebartype=full] .page-wrapper {
+              margin-left: 0px !important;
+          }
       </style>
       <link rel="stylesheet" href="{{ url('public/admin/chat/style.css') }}">
       <!-- Page wrapper  -->

@@ -1,8 +1,3 @@
-
-
-
-
-
 <!DOCTYPE html>
 
 <html dir="ltr" lang="en">
@@ -51,22 +46,22 @@
     <link href="{{ asset('public/admin/stickynotes/style.css') }}" rel="stylesheet" />
 
     <link href="{{ asset('public/admin/dist/libs/select2/dist/css/select2.min.css') }}" rel="stylesheet" />
-    
+
     <link href="{{ asset('public/admin/dist/libs/dragula/dist/dragula.min.js') }}" rel="stylesheet" />
     <link href="{{ asset('public/admin/dist/libs/prismjs/themes/prism-okaidia.min.css') }}" rel="stylesheet">
     <!-- Bootstrap Datepicker CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
         rel="stylesheet">
-@if (request()->query('sidebar') === 'off')
-    <style>
-        #main-wrapper[data-layout="vertical"][data-sidebartype="full"] .page-wrapper {
-            margin-left: 0px;
-        }
-    </style>
-@endif
+    @if (request()->query('sidebar') === 'off')
+        <style>
+            #main-wrapper[data-layout="vertical"][data-sidebartype="full"] .page-wrapper {
+                margin-left: 0px;
+            }
+        </style>
+    @endif
 
-	
-	<style>
+
+    <style>
         #main-wrapper[data-layout=vertical][data-boxed-layout=boxed] .page-wrapper>.container-fluid,
         #main-wrapper[data-layout=vertical][data-boxed-layout=boxed] .page-wrapper>.container-lg,
         #main-wrapper[data-layout=vertical][data-boxed-layout=boxed] .page-wrapper>.container-md,
@@ -111,7 +106,7 @@
 
         .preload_img img {
             width: 100%;
-			display: none;
+            display: none;
         }
     </style>
 
@@ -134,7 +129,17 @@
 
 
 <body>
+    @php
 
+        $currentRoute = Route::current();
+
+        $routeUri = $currentRoute->uri();
+
+        $routeSegments = explode('/', $routeUri);
+
+        $prefix = isset($routeSegments[0]) && !empty($routeSegments[0]) ? $routeSegments[0] : '';
+
+    @endphp
 
     <!-- -------------------------------------------------------------- -->
 
@@ -142,8 +147,8 @@
 
     <!-- -------------------------------------------------------------- -->
 
-    <div class="preloader" >
- 
+    <div class="preloader">
+
 
         <div class="preload_img"><img
                 src="https://gaffis.in/frontier/website/public/admin/assets/images/loading-loader2.gif"
@@ -180,24 +185,13 @@
 
         <!-- -------------------------------------------------------------- -->
 
-        @php
 
-            $currentRoute = Route::current();
-
-            $routeUri = $currentRoute->uri();
-
-            $routeSegments = explode('/', $routeUri);
-
-            $prefix = isset($routeSegments[0]) && !empty($routeSegments[0]) ? $routeSegments[0] : '';
-
-        @endphp
 
         @if ($prefix == 'setting')
             @include('admin.setting_sidebar')
         @elseif ($prefix == 'schedule')
             @include('schedule.sidebar')
-        @elseif ($prefix == 'demo')
-            @include('schedule.sidebar')
+        @elseif ($prefix == 'inbox')
         @else
             @include('admin.sidebar')
         @endif
@@ -237,7 +231,7 @@
 
             <!-- -------------------------------------------------------------- -->
 
-         
+
 
 
 
