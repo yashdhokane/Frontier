@@ -26,6 +26,20 @@
           #main-wrapper[data-layout=vertical][data-sidebartype=full] .page-wrapper {
               margin-left: 0px !important;
           }
+
+          .chatlist a.chat-user.message-item {
+              padding: 10px 5px;
+              margin-top: 5px;
+          }
+
+          .chatlist h6.message-title {
+              margin-bottom: 0px;
+          }
+
+          .chatlist .text-capitalize {
+              font-size: 12px;
+              font-style: italic;
+          }
       </style>
       <link rel="stylesheet" href="{{ url('public/admin/chat/style.css') }}">
       <!-- Page wrapper  -->
@@ -87,7 +101,7 @@
                                       data-user-role="{{ $item->role }}" data-role="technician">
 
                                       <a href="javascript:void(0)"
-                                          class="chat-user message-item px-2 border pb-3 my-1 pt-2 me-1">
+                                          class="chat-user message-item border me-1">
 
                                           <div class="mail-contnet">
                                               <h6 class="message-title" data-username="{{ $item->name }}">
@@ -104,7 +118,7 @@
                                       data-user-role="{{ $item->role }}" data-role="employee">
 
                                       <a href="javascript:void(0)"
-                                          class="chat-user message-item px-2 border pb-3 my-1 pt-2 me-1">
+                                          class="chat-user message-item border me-1">
 
                                           <div class="mail-contnet">
                                               <h6 class="message-title" data-username="{{ $item->name }}">
@@ -121,7 +135,7 @@
                                       data-user-role="{{ $item->role }}" data-role="customer">
 
                                       <a href="javascript:void(0)"
-                                          class="chat-user message-item px-2 border pb-3 my-1 pt-2 me-1">
+                                          class="chat-user message-item border me-1">
 
                                           <div class="mail-contnet">
                                               <h6 class="message-title" data-username="{{ $item->name }}">
