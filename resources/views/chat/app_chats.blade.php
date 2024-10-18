@@ -80,7 +80,7 @@
                                           class="chat-user message-item px-2 border pb-3 my-1 pt-2 me-1">
 
                                           <div class="mail-contnet">
-                                              <h6 class="message-title" data-username="2">
+                                              <h6 class="message-title" data-username="{{ $item->name }}">
                                                   {{ $item->name }}
                                               </h6>
                                               <span class="text-capitalize"> {{ $item->role }}</span>
@@ -97,7 +97,7 @@
                                           class="chat-user message-item px-2 border pb-3 my-1 pt-2 me-1">
 
                                           <div class="mail-contnet">
-                                              <h6 class="message-title" data-username="2">
+                                              <h6 class="message-title" data-username="{{ $item->name }}">
                                                   {{ $item->name }}
                                               </h6>
                                               <span class="text-capitalize"> {{ $item->role }}</span>
@@ -114,7 +114,7 @@
                                           class="chat-user message-item px-2 border pb-3 my-1 pt-2 me-1">
 
                                           <div class="mail-contnet">
-                                              <h6 class="message-title" data-username="2">
+                                              <h6 class="message-title" data-username="{{ $item->name }}">
                                                   {{ $item->name }}
                                               </h6>
                                               <span class="text-capitalize"> {{ $item->role }}</span>

@@ -37,7 +37,9 @@
         $(document).on('change', '#predefinedReplySelect', function() {
             const predefinedReply = $(this).val();
             if (predefinedReply) {
-                $('#textarea1').val(predefinedReply);
+                const userName = $('.chat-user-name').text().trim();
+                const replyWithUserName = predefinedReply.replace(/{name}/gi, userName);
+                $('#textarea1').val(replyWithUserName);
             }
         });
 
@@ -155,13 +157,13 @@
                 const secondUserName = partician[1]?.user.name || 'Unknown';
                 const otherUsersCount = partician.length - 2;
                 $('.chat-meta-user-top').html(
-                    `<div class="align-items-center mb-3"><i class="fa fa-user px-2"></i><strong>${secondUserName}</strong> and</div><div id="partCount" class="fw-bold ps-2">${otherUsersCount} Others</div>`
+                    `<div class="align-items-center mb-3"><i class="fa fa-user px-2"></i><strong class="chat-user-name">${secondUserName}</strong> and</div><div id="partCount" class="fw-bold ps-2">${otherUsersCount} Others</div>`
                 );
             } else if (partician.length === 2) {
                 // Just show the user at index 1 if there are only 2 participants
                 const secondUserName = partician[1]?.user.name || 'Unknown';
                 $('.chat-meta-user-top').html(
-                    `<div class="align-items-center mb-3"><i class="fa fa-user px-2"></i><strong>${secondUserName}</strong></div>`
+                    `<div class="align-items-center mb-3"><i class="fa fa-user px-2"></i><strong class="chat-user-name">${secondUserName}</strong></div>`
                 );
             }
 
@@ -228,6 +230,8 @@
             const id = $(this).data('id');
             const userRole = $(this).data('user-role');
             $('.chat').show();
+            $('#textarea1').val('');
+            $('#predefinedReplySelect').val('').trigger('change');
             $.get('{{ route('add_employee_cnvrsn') }}', {
                 id: id,
                 user_role: userRole
