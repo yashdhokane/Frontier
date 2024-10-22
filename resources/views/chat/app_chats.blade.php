@@ -233,7 +233,7 @@
                                       <input type="file" name="file" id="file_input" style="display: none;"
                                           accept="image/*, .pdf, .doc, .docx, .xls, .xlsx, .txt, .zip" />
 
-                                      <select id="predefinedReplySelect"
+                                      <select id="predefinedReplySelect" data-auth-user="{{ auth()->user()->name }}"
                                           class="form-control predefined-reply-select select2" style="width: 100%;">
                                           <option value="" disabled selected>Choose a Predefined Reply</option>
                                           @foreach ($predefinedReplies as $reply)

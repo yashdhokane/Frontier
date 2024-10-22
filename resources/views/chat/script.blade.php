@@ -38,25 +38,16 @@
             const predefinedReply = $(this).val();
             if (predefinedReply) {
                 const userName = $('.chat-user-name').text().trim();
-                const replyWithUserName = predefinedReply.replace(/{name}/gi, userName);
-                $('#textarea1').val(replyWithUserName);
+                const yourName = $(this).data('auth-user').trim();
+
+                let replyWithUserNames = predefinedReply
+                    .replace(/{name}/gi, userName)
+                    .replace(/{your name}/gi, yourName);
+
+                $('#textarea1').val(replyWithUserNames);
             }
         });
 
-        // $('input[name="role"]').on('change', function() {
-        //     $('label.btn').removeClass('text-dark');
-        //     if ($(this).is(':checked')) {
-        //         $(this).closest('label').addClass('text-dark');
-        //     }
-        //     $('.chatlist').hide();
-        //     var selectedRole = $('input[name="role"]:checked').val();
-        //     $('.chatlist[data-role="' + selectedRole + '"]').show();
-        //     $('form[data-role]').hide();
-        //     $('form[data-role="' + selectedRole + '"]').show();
-        // });
-
-
-        // $('input[name="role"]:checked').trigger('change');
 
         $('.btn-group button').on('click', function() {
             $('.btn-group button').removeClass('active-01 btn-info').addClass(
