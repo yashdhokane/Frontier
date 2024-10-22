@@ -2,25 +2,19 @@
 
 @section('content')
     <style>
-        /* styles.css or within a <style> tag */
         .table-fixed {
             table-layout: fixed;
-            /* Ensures that the table respects the defined widths */
             width: 100%;
-            /* Sets the table width */
         }
 
+        .table-fixed th:nth-child(1),
+        .table-fixed td:nth-child(1),
         .table-fixed th:nth-child(2),
-        /* Target the second column for "Content" */
         .table-fixed td:nth-child(2) {
             width: 100px;
-            /* Set the width for the "Content" column */
             overflow: hidden;
-            /* Prevent overflow */
             white-space: nowrap;
-            /* Prevent text from wrapping */
             text-overflow: ellipsis;
-            /* Show ellipsis for overflow text */
         }
     </style>
 
@@ -62,7 +56,7 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="pt_content" class="control-label bold mb5">Content:</label>
-                                        <textarea class="form-control" name="pt_content"></textarea>
+                                        <textarea class="form-control" name="pt_content" cols="3" rows="5"></textarea>
                                     </div>
                                 </div>
 
@@ -145,12 +139,12 @@
                             <div class="modal-body">
                                 <div class="mb-3">
                                     <label for="tag1" class="control-label bold mb5">Title:</label>
-                                    <input type="text" class="form-control" id="tag1" name="pt_title" value=""
-                                        id="title" />
+                                    <input type="text" class="form-control" id="tag1" name="pt_title"
+                                        value="" id="title" />
                                 </div>
                                 <div class="mb-3">
                                     <label for="pt_content" class="control-label bold mb5">Content:</label>
-                                    <textarea class="form-control" name="pt_content" id="content"></textarea>
+                                    <textarea class="form-control" name="pt_content" id="content" cols="3" rows="5"></textarea>
                                 </div>
                                 <div class="mb-3">
                                     <label for="active" class="control-label bold mb5">Active:</label>
