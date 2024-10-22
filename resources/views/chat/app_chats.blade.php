@@ -77,8 +77,16 @@
 
 
                       </div>
+                      <div class="btn-group px-3 p-2 border-bottom" role="group" aria-label="Second group">
+                          <button type="button" class="badge btn btn-info active-01"
+                              data-role="technician">Technician</button>
+                          <button type="button" class="badge btn btn-light-info text-info font-weight-medium"
+                              data-role="customer">Customer</button>
+                          <button type="button" class="badge btn btn-light-info text-info font-weight-medium"
+                              data-role="employee">Employee</button>
+                      </div>
 
-                      <div class="p-2 border-bottom d-flex justify-content-between">
+                      {{-- <div class=" d-flex justify-content-between">
                           <label class="btn btn-cyan badge">
                               <input type="radio" name="role" value="technician" style="display: none;" checked>
                               Technician
@@ -91,7 +99,7 @@
                               <input type="radio" name="role" value="employee" style="display: none;">
                               Employee
                           </label>
-                      </div>
+                      </div> --}}
                       @if (auth()->id() == 1)
                           <ul class="mailbox list-style-none new-cust-chat border shadow">
                           </ul>
@@ -100,8 +108,7 @@
                                   <li class="chatlist cursor-pointer ps-2" data-id="{{ $item->id }}"
                                       data-user-role="{{ $item->role }}" data-role="technician">
 
-                                      <a href="javascript:void(0)"
-                                          class="chat-user message-item border me-1">
+                                      <a href="javascript:void(0)" class="chat-user message-item border me-1">
 
                                           <div class="mail-contnet">
                                               <h6 class="message-title" data-username="{{ $item->name }}">
@@ -117,8 +124,7 @@
                                   <li class="chatlist cursor-pointer ps-2" data-id="{{ $item->id }}"
                                       data-user-role="{{ $item->role }}" data-role="employee">
 
-                                      <a href="javascript:void(0)"
-                                          class="chat-user message-item border me-1">
+                                      <a href="javascript:void(0)" class="chat-user message-item border me-1">
 
                                           <div class="mail-contnet">
                                               <h6 class="message-title" data-username="{{ $item->name }}">
@@ -134,8 +140,7 @@
                                   <li class="chatlist cursor-pointer ps-2" data-id="{{ $item->id }}"
                                       data-user-role="{{ $item->role }}" data-role="customer">
 
-                                      <a href="javascript:void(0)"
-                                          class="chat-user message-item border me-1">
+                                      <a href="javascript:void(0)" class="chat-user message-item border me-1">
 
                                           <div class="mail-contnet">
                                               <h6 class="message-title" data-username="{{ $item->name }}">

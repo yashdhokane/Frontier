@@ -43,20 +43,35 @@
             }
         });
 
-        $('input[name="role"]').on('change', function() {
-            $('label.btn').removeClass('text-dark');
-            if ($(this).is(':checked')) {
-                $(this).closest('label').addClass('text-dark');
-            }
+        // $('input[name="role"]').on('change', function() {
+        //     $('label.btn').removeClass('text-dark');
+        //     if ($(this).is(':checked')) {
+        //         $(this).closest('label').addClass('text-dark');
+        //     }
+        //     $('.chatlist').hide();
+        //     var selectedRole = $('input[name="role"]:checked').val();
+        //     $('.chatlist[data-role="' + selectedRole + '"]').show();
+        //     $('form[data-role]').hide();
+        //     $('form[data-role="' + selectedRole + '"]').show();
+        // });
+
+
+        // $('input[name="role"]:checked').trigger('change');
+
+        $('.btn-group button').on('click', function() {
+            $('.btn-group button').removeClass('active-01 btn-info').addClass(
+                'btn-light-info text-info font-weight-medium');
+            $(this).removeClass('btn-light-info text-info font-weight-medium').addClass(
+                'active-01 btn-info');
             $('.chatlist').hide();
-            var selectedRole = $('input[name="role"]:checked').val();
+            var selectedRole = $(this).data('role');
             $('.chatlist[data-role="' + selectedRole + '"]').show();
             $('form[data-role]').hide();
             $('form[data-role="' + selectedRole + '"]').show();
         });
 
+        $('.btn-group button.active-01').trigger('click');
 
-        $('input[name="role"]:checked').trigger('change');
 
         function formatDateRange(startDate, endDate, interval) {
             var startDateTime = moment(
@@ -180,8 +195,8 @@
             const firstUser = partician[1]?.user || {};
             $('.user-details-jobs').html(
                 `<h4 class="pt-2 ps-4">${firstUserName}</h4>
-                <div class="px-4 border-bottom">
-                    ${firstUser.mobile || ''}, ${firstUser.user_address?.address_line1 || ''}, 
+                <div class="px-4 border-bottom ft11"><i class="fas fa-mobile-alt"></i>
+                    ${firstUser.mobile || ''}, <i class="ri-mail-send-line"></i> ${firstUser.email || ''}, <i class="ri-map-pin-line"></i>${firstUser.user_address?.address_line1 || ''}, 
                     ${firstUser.user_address?.city || ''}, ${firstUser.user_address?.state_name || ''}, 
                     ${firstUser.user_address?.zipcode || ''}
                 </div>`
@@ -240,9 +255,9 @@
         const quickId = '{{ $quickId }}';
         const quickUserRole = '{{ $quickUserRole }}';
 
-        let id = null; 
+        let id = null;
         let userRole = null;
-        let isSet = false; 
+        let isSet = false;
 
         $(document).on('click', '.chatlist', function() {
             if (!isSet) {
@@ -253,9 +268,9 @@
                     id = $(this).data('id');
                     userRole = $(this).data('user-role');
                 }
-                isSet = true; 
+                isSet = true;
             } else {
-                id = $(this).data('id') || id; 
+                id = $(this).data('id') || id;
                 userRole = $(this).data('user-role') || userRole;
             }
 
