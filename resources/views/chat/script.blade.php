@@ -96,43 +96,71 @@
                 `${Math.floor(diff / 86400000)} days ago`;
         };
 
+
         const appendChatItem = (data) => {
-            const imgSrc = data.user?.user_image ?
-                `public/images/Uploads/users/${data.user.id}/${data.user.user_image}` :
-                '{{ asset('public/images/login_img_bydefault.png') }}';
+            
+            $('.chat-list').empty();
+            const groupedMessages = [];
 
-            const isYoutubeLink = (message) => {
-                // Regular expression to detect YouTube URLs
-                const youtubeRegex =
-                    /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|embed\/|v\/|.+\?v=)?([^&\n]{11})/;
-                return youtubeRegex.test(message);
-            };
+            data.forEach((msg) => {
+                const groupKey = `${msg.sender}-${msg.time}`;
+                let group = groupedMessages.find(g => g.key === groupKey);
 
-            const chatItem = `<li class="chat-item ps-2">
-                        <div class="chat-img"><img src="${imgSrc}" alt="user"></div>
-                        <div class="chat-content">
-                            <div class="d-flex">
-                                <span class="font-medium">${data.user?.name || 'Unknown User'}, </span>
-                                <span class="chat-time m-1">${formatTime(data.time)}</span>
-                            </div>
-                            ${data.message ? 
-                                isYoutubeLink(data.message) ? 
-                                    // Embed YouTube video if the message is a valid YouTube link
-                                    `<div class="file"><iframe width="320" height="240" src="${data.message.replace("watch?v=", "embed/")}" frameborder="0" allowfullscreen></iframe></div>` :
-                                isFilePath(data.message) ? 
-                                    // Check if it's a file type
-                                    ['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(data.message.split('.').pop().toLowerCase()) ?
-                                        `<div class="file"><a href="public/images/Uploads/chat/${data.conversation_id}/${data.message}" target="_blank">
-                                        <img src="public/images/Uploads/chat/${data.conversation_id}/${data.message}" width="100" height="100" /></a></div>` :
-                                        `<div class="file"><a href="public/images/Uploads/chat/${data.conversation_id}/${data.message}" target="_blank">${data.message}</a></div>`
-                                : `<div class="box bg-light">${data.message}</div>` 
-                            : `<div class="box bg-light">No message</div>`}
+                if (!group) {
+                    group = {
+                        key: groupKey,
+                        sender: msg.sender,
+                        time: msg.time,
+                        messages: [msg]
+                    };
+                    groupedMessages.push(group);
+                } else {
+                    if (!group.messages.some(m => m.message === msg.message)) {
+                        group.messages.push(msg);
+                    }
+                }
+            });
+
+            groupedMessages.sort((a, b) => new Date(a.time) - new Date(b.time));
+
+            groupedMessages.forEach(group => {
+                const imgSrc = group.messages[0].user?.user_image ?
+                    `public/images/Uploads/users/${group.messages[0].user.id}/${group.messages[0].user.user_image}` :
+                    '{{ asset('public/images/login_img_bydefault.png') }}';
+
+                const chatItemsHTML = group.messages.map(data => {
+                    const isYoutubeLink = (message) => {
+                        const youtubeRegex =
+                            /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|embed\/|v\/|.+\?v=)?([^&\n]{11})/;
+                        return youtubeRegex.test(message);
+                    };
+
+                    return data.message ?
+                        isYoutubeLink(data.message) ?
+                        `<div class="file"><iframe width="320" height="240" src="${data.message.replace("watch?v=", "embed/")}" frameborder="0" allowfullscreen></iframe></div>` :
+                        isFilePath(data.message) ? ['jpg', 'jpeg', 'png', 'gif', 'bmp']
+                        .includes(data.message.split('.').pop().toLowerCase()) ?
+                        `<div class="file"><a href="public/images/Uploads/chat/${data.conversation_id}/${data.message}" target="_blank">
+                <img src="public/images/Uploads/chat/${data.conversation_id}/${data.message}" width="100" height="100" /></a></div>` :
+                        `<div class="file"><a href="public/images/Uploads/chat/${data.conversation_id}/${data.message}" target="_blank">${data.message}</a></div>` :
+                        `<div class="box bg-light">${data.message}</div>` :
+                        `<div class="box bg-light">No message</div>`;
+                }).join('');
+
+                const chatItem = `<li class="chat-item ps-2">
+                    <div class="chat-img"><img src="${imgSrc}" alt="user"></div>
+                    <div class="chat-content">
+                        <div class="d-flex">
+                            <span class="font-medium">${group.messages[0].user?.name || 'Unknown User'}, </span>
+                            <span class="chat-time m-1">${formatTime(group.time)}</span>
                         </div>
-                    </li>`;
+                        ${chatItemsHTML}
+                    </div>
+                </li>`;
 
-            $('.chat-list').prepend(chatItem);
+                $('.chat-list').append(chatItem);
+            });
         };
-
 
         const appendAttachment = (attachs, uniqueFiles) => {
             const fileSrc = `public/images/Uploads/chat/${attachs.conversation_id}/${attachs.filename}`;
@@ -150,6 +178,7 @@
                 attachmentfileChatFile: attach,
                 conversation_id: id
             } = response;
+            console.log(response);
 
             $("#name_support_message_id, #add_user_to_conversation_hidden, #add_user_to_conversation_hidden-new")
                 .val(id);
@@ -172,9 +201,9 @@
                     `<div class="align-items-center mb-3"><i class="fa fa-user px-2"></i><strong class="chat-user-name">${secondUserName}</strong></div>`
                 );
             }
-
+           const datacombineformsg = [combineData];
             // Append chat data
-            combineData.forEach(appendChatItem);
+            datacombineformsg.forEach(appendChatItem);
 
             // Append attachment files
             const uniqueFiles = {};
@@ -274,8 +303,6 @@
                 user_role: userRole
             }, updateChatUI);
         });
-
-
 
         const sendMessage = () => {
             const formData = new FormData();

@@ -231,7 +231,7 @@
                                           Attachment
                                       </label>
                                       <input type="file" name="file" id="file_input" style="display: none;"
-                                          accept="image/*, .pdf, .doc, .docx, .xls, .xlsx, .txt, .zip" />
+                                          accept="image/*, .pdf, .doc, .docx, .xls, .xlsx, .txt, .zip" multiple/>
 
                                       <select id="predefinedReplySelect" data-auth-user="{{ auth()->user()->name }}"
                                           class="form-control predefined-reply-select select2" style="width: 100%;">
