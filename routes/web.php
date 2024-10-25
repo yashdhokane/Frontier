@@ -1298,6 +1298,8 @@ Route::get('events-iframe', [EventController::class, 'indexiframe'])->name('even
 
     Route::post('/store_reply', [ChatSupportController::class, 'store'])->name('store_reply');
 
+    Route::post('/store_subject', [ChatSupportController::class, 'store_subject'])->name('store_subject');
+
     Route::get('sms/send', [ChatSupportController::class, 'sendSms']);
 
     Route::get('add_employee_cnvrsn', [ChatSupportController::class, 'add_employee_cnvrsn'])->name('add_employee_cnvrsn');

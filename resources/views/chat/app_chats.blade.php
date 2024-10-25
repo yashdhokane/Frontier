@@ -226,12 +226,12 @@
                           <div class="card-body border-top border-bottom chat-send-message-footer">
                               <div class="row">
                                   <div id="filePreview" class="col-md-12"></div>
-                                  <div class="col-md-12 w-25 mb-1 d-flex align-items-center">
+                                  <div class="col-md-12 w-50 mb-1 d-flex align-items-center">
                                       <label for="file_input" class="btn btn-outline-primary m-1 py-1">
                                           Attachment
                                       </label>
                                       <input type="file" name="file[]" id="file_input" style="display: none;"
-                                          accept="image/*, .png, .pdf, .doc, .docx, .xls, .xlsx, .txt, .zip" multiple/>
+                                          accept="image/*, .png, .pdf, .doc, .docx, .xls, .xlsx, .txt, .zip" multiple />
 
                                       <select id="predefinedReplySelect" data-auth-user="{{ auth()->user()->name }}"
                                           class="form-control predefined-reply-select select2" style="width: 100%;">
@@ -240,6 +240,10 @@
                                               <option value="{{ $reply->pt_content }}">{{ $reply->pt_title }}</option>
                                           @endforeach
                                       </select>
+                                      <label for="subject" class="btn form-control m-1 py-1" data-bs-toggle="modal"
+                                          data-bs-target="#subjectModal">
+                                          Subject / Topic
+                                      </label>
 
                                   </div>
                                   <div class="col-12">
@@ -282,6 +286,30 @@
 
           </div>
 
+      </div>
+      <!-- Modal -->
+      <div class="modal fade" id="subjectModal" tabindex="-1" aria-labelledby="subjectModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="subjectModalLabel">Enter Subject / Topic</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                      <form id="subjectForm">
+                          <div class="mb-3">
+                              <label for="subjectInput" class="form-label">Subject / Topic</label>
+                              <input type="text" class="form-control" id="subjectInput"
+                                  placeholder="Enter your subject here" required>
+                          </div>
+                      </form>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="button" id="submitSubject" form="subjectForm" class="btn btn-primary">Submit</button>
+                  </div>
+              </div>
+          </div>
       </div>
 
       <!-- -------------------------------------------------------------- -->

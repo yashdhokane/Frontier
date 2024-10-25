@@ -112,11 +112,11 @@ class ChatSupportController extends Controller
         }
 
         // Get chat files
-        $chatFiles = ChatFile::select('conversation_id', 'sender', 'filename', 'time')
+        $chatFiles = ChatFile::select('conversation_id', 'sender', 'filename', 'time','type')
             ->where('conversation_id', $id);
 
         // Combine chat messages and chat files using union
-        $chatMessages = ChatMessage::select('conversation_id', 'sender', 'message', 'time')
+        $chatMessages = ChatMessage::select('conversation_id', 'sender', 'message', 'time','type')
             ->where('conversation_id', $id);
 
         $combinedData = $chatMessages->union($chatFiles)
@@ -247,10 +247,10 @@ class ChatSupportController extends Controller
             $participant->schedules = $participant->user->schedulesByRole($role)->with('jobModel')->get();
         }
 
-        $chatMessages = ChatMessage::select('conversation_id', 'sender', 'message', 'time')
+        $chatMessages = ChatMessage::select('conversation_id', 'sender', 'message', 'time','type')
             ->where('conversation_id', $id);
 
-        $chatFiles = ChatFile::select('conversation_id', 'sender', 'filename', 'time')
+        $chatFiles = ChatFile::select('conversation_id', 'sender', 'filename', 'time','type')
             ->where('conversation_id', $id);
 
         $combinedData = $chatMessages->union($chatFiles)
@@ -290,6 +290,26 @@ class ChatSupportController extends Controller
         return response()->json($customers);
     }
 
+    public function store_subject(Request $request)
+    {
+        // Validate the input
+        $validatedData = $request->validate([
+            'subject' => 'required|string|max:255',
+            'support_message_id' => 'required|integer',
+        ]);
+    
+        // Create a new ChatMessage
+        ChatMessage::create([
+            'sender' => auth()->user()->id,
+            'conversation_id' => $validatedData['support_message_id'],
+            'message' => $validatedData['subject'],
+            'type' => 'subject',
+            'time' => now(),
+        ]);
+    
+        // Optionally, return a JSON response
+        return response()->json(['success' => 'Message stored successfully.']);
+    }
 
 
     // new code end here 

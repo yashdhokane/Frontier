@@ -98,6 +98,7 @@
 
 
         const appendChatItem = (data) => {
+            console.log(data);
 
             $('.chat-list').empty();
             const groupedMessages = [];
@@ -128,39 +129,54 @@
                     `public/images/Uploads/users/${group.messages[0].user.id}/${group.messages[0].user.user_image}` :
                     '{{ asset('public/images/login_img_bydefault.png') }}';
 
-                const chatItemsHTML = group.messages.map(data => {
-                    const isYoutubeLink = (message) => {
-                        const youtubeRegex =
-                            /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|embed\/|v\/|.+\?v=)?([^&\n]{11})/;
-                        return youtubeRegex.test(message);
-                    };
+                const isSubjectType = group.messages.some(msg => msg.type === 'subject');
 
-                    return data.message ?
-                        isYoutubeLink(data.message) ?
-                        `<div class="file"><iframe width="320" height="240" src="${data.message.replace("watch?v=", "embed/")}" frameborder="0" allowfullscreen></iframe></div>` :
-                        isFilePath(data.message) ? ['jpg', 'jpeg', 'png', 'gif', 'bmp']
-                        .includes(data.message.split('.').pop().toLowerCase()) ?
-                        `<div class="file"><a href="public/images/Uploads/chat/${data.conversation_id}/${data.message}" target="_blank">
-                <img src="public/images/Uploads/chat/${data.conversation_id}/${data.message}" width="100" height="100" /></a></div>` :
-                        `<div class="file my-1"><a href="public/images/Uploads/chat/${data.conversation_id}/${data.message}" target="_blank">${data.message}</a></div>` :
-                        `<div class="box bg-light">${data.message}</div>` :
-                        `<div class="box bg-light">No message</div>`;
-                }).join('');
+                let chatItem;
+                if (isSubjectType) {
+                    chatItem = `<li class="chat-item ps-2 mb-3">
+                                    <div class="chat-content subject-content">
+                                        <div class="subject-message text-center">
+                                            ${group.messages.map(msg => `<div>${msg.message}</div>`).join('')}
+                                        </div>
+                                    </div>
+                                </li>`;
+                } else {
+                    const chatItemsHTML = group.messages.map(data => {
+                        const isYoutubeLink = (message) => {
+                            const youtubeRegex =
+                                /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=|embed\/|v\/|.+\?v=)?([^&\n]{11})/;
+                            return youtubeRegex.test(message);
+                        };
 
-                const chatItem = `<li class="chat-item ps-2">
-                    <div class="chat-img"><img src="${imgSrc}" alt="user"></div>
-                    <div class="chat-content">
-                        <div class="d-flex">
-                            <span class="font-medium">${group.messages[0].user?.name || 'Unknown User'}, </span>
-                            <span class="chat-time m-1">${formatTime(group.time)}</span>
-                        </div>
-                        ${chatItemsHTML}
-                    </div>
-                </li>`;
+                        return data.message ?
+                            isYoutubeLink(data.message) ?
+                            `<div class="file"><iframe width="320" height="240" src="${data.message.replace("watch?v=", "embed/")}" frameborder="0" allowfullscreen></iframe></div>` :
+                            isFilePath(data.message) && ['jpg', 'jpeg', 'png', 'gif', 'bmp']
+                            .includes(data.message.split('.').pop().toLowerCase()) ?
+                            `<div class="file"><a href="public/images/Uploads/chat/${data.conversation_id}/${data.message}" target="_blank">
+                        <img src="public/images/Uploads/chat/${data.conversation_id}/${data.message}" width="100" height="100" /></a></div>` :
+                            isFilePath(data.message) ?
+                            `<div class="file my-1"><a href="public/images/Uploads/chat/${data.conversation_id}/${data.message}" target="_blank">${data.message}</a></div>` :
+                            `<div class="box bg-light">${data.message}</div>` :
+                            `<div class="box bg-light">No message</div>`;
+                    }).join('');
+
+                    chatItem = `<li class="chat-item ps-2">
+                                    <div class="chat-img"><img src="${imgSrc}" alt="user"></div>
+                                    <div class="chat-content">
+                                        <div class="d-flex">
+                                            <span class="font-medium">${group.messages[0].user?.name || 'Unknown User'}, </span>
+                                            <span class="chat-time m-1">${formatTime(group.time)}</span>
+                                        </div>
+                                        ${chatItemsHTML}
+                                    </div>
+                                </li>`;
+                }
 
                 $('.chat-list').append(chatItem);
             });
         };
+
 
         const appendAttachment = (attachs, uniqueFiles) => {
             const fileSrc = `public/images/Uploads/chat/${attachs.conversation_id}/${attachs.filename}`;
@@ -325,7 +341,7 @@
             const isSendChecked = $('#flexSwitchCheckChecked').is(':checked') ? 'yes' : 'no';
             formData.append('is_send', isSendChecked);
 
-           
+
 
             $.ajax({
                 url: '{{ route('store_reply') }}',
@@ -433,6 +449,35 @@
         });
 
         $('.chatlist:first').trigger('click');
+
+        $('#submitSubject').on('click', function() {
+            const formData = new FormData();
+
+            // Add the subject and other form data
+            formData.append('subject', $('#subjectInput').val());
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('auth_id', $('input[name="auth_id"]').val());
+            formData.append('support_message_id', $('input[name="conversation_id"]').val());
+
+            // Send AJAX request
+            $.ajax({
+                url: '{{ route('store_subject') }}',
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    console.error('Status:', status);
+                    console.error('Error:', error);
+                    console.error('Response Text:', xhr.responseText);
+                    alert('Error sending message. Please try again.');
+                }
+            });
+        });
+
 
     });
 </script>
