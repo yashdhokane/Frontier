@@ -10,28 +10,31 @@
 
 
         $('#file_input').on('change', function() {
-            const file = this.files[0];
+            const files = this.files;
             const filePreview = $('#filePreview');
-
-            if (file) {
+            filePreview.empty();
+            Array.from(files).forEach((file, index) => {
                 const fileName = file.name;
-                const fileSize = (file.size / 1024).toFixed(2) + ' KB'; // Display size in KB
-                filePreview.html(`
-                    <div class="alert alert-info d-flex align-items-center py-1 m-0">
-                        <span class="me-2"><i class="fa fa-paperclip"></i></span>
-                        <span class="file-name">${fileName} (${fileSize})</span>
-                        <button type="button" class="btn-close ms-auto" aria-label="Close" id="removeFile"></button>
-                    </div>
-                `);
-            } else {
-                filePreview.empty();
-            }
+                const fileSize = (file.size / 1024).toFixed(2) + ' KB';
+                filePreview.append(`
+            <div class="alert alert-info d-flex align-items-center py-1 m-0" data-file-index="${index}">
+                <span class="me-2"><i class="fa fa-paperclip"></i></span>
+                <span class="file-name">${fileName} (${fileSize})</span>
+                <button type="button" class="btn-close ms-auto" aria-label="Close" data-remove-file="${index}"></button>
+            </div>
+        `);
+            });
         });
 
-
-        $(document).on('click', '#removeFile', function() {
-            $('#file_input').val(''); // Clear the input
-            $('#filePreview').empty(); // Clear the preview
+        $(document).on('click', '[data-remove-file]', function() {
+            const indexToRemove = $(this).data('remove-file');
+            const fileInput = $('#file_input')[0];
+            const dataTransfer = new DataTransfer();
+            Array.from(fileInput.files).forEach((file, index) => {
+                if (index !== indexToRemove) dataTransfer.items.add(file);
+            });
+            fileInput.files = dataTransfer.files;
+            $(this).closest(`div[data-file-index="${indexToRemove}"]`).remove();
         });
 
         $(document).on('change', '#predefinedReplySelect', function() {
