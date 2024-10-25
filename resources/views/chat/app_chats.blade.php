@@ -230,8 +230,8 @@
                                       <label for="file_input" class="btn btn-outline-primary m-1 py-1">
                                           Attachment
                                       </label>
-                                      <input type="file" name="file" id="file_input" style="display: none;"
-                                          accept="image/*, .pdf, .doc, .docx, .xls, .xlsx, .txt, .zip" multiple/>
+                                      <input type="file" name="file[]" id="file_input" style="display: none;"
+                                          accept="image/*, .png, .pdf, .doc, .docx, .xls, .xlsx, .txt, .zip" multiple/>
 
                                       <select id="predefinedReplySelect" data-auth-user="{{ auth()->user()->name }}"
                                           class="form-control predefined-reply-select select2" style="width: 100%;">
@@ -244,7 +244,7 @@
                                   </div>
                                   <div class="col-12">
                                       <div class="input-field mt-0 mb-0">
-                                          <input type="hidden" name="auth_id" value="{{ auth()->id() }}">
+                                          <input type="hidden" name="auth_id" value="{{ auth()->user()->id }}">
                                           <input type="hidden" name="conversation_id" value=""
                                               id="name_support_message_id">
 

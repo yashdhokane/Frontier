@@ -98,7 +98,7 @@
 
 
         const appendChatItem = (data) => {
-            
+
             $('.chat-list').empty();
             const groupedMessages = [];
 
@@ -142,7 +142,7 @@
                         .includes(data.message.split('.').pop().toLowerCase()) ?
                         `<div class="file"><a href="public/images/Uploads/chat/${data.conversation_id}/${data.message}" target="_blank">
                 <img src="public/images/Uploads/chat/${data.conversation_id}/${data.message}" width="100" height="100" /></a></div>` :
-                        `<div class="file"><a href="public/images/Uploads/chat/${data.conversation_id}/${data.message}" target="_blank">${data.message}</a></div>` :
+                        `<div class="file my-1"><a href="public/images/Uploads/chat/${data.conversation_id}/${data.message}" target="_blank">${data.message}</a></div>` :
                         `<div class="box bg-light">${data.message}</div>` :
                         `<div class="box bg-light">No message</div>`;
                 }).join('');
@@ -178,7 +178,6 @@
                 attachmentfileChatFile: attach,
                 conversation_id: id
             } = response;
-            console.log(response);
 
             $("#name_support_message_id, #add_user_to_conversation_hidden, #add_user_to_conversation_hidden-new")
                 .val(id);
@@ -201,7 +200,7 @@
                     `<div class="align-items-center mb-3"><i class="fa fa-user px-2"></i><strong class="chat-user-name">${secondUserName}</strong></div>`
                 );
             }
-           const datacombineformsg = [combineData];
+            const datacombineformsg = [combineData];
             // Append chat data
             datacombineformsg.forEach(appendChatItem);
 
@@ -307,9 +306,9 @@
         const sendMessage = () => {
             const formData = new FormData();
             const messageText = $('#textarea1').val().trim();
-            const fileInput = $('#file_input')[0].files[0];
+            const fileInput = $('#file_input')[0].files;
 
-            if (!messageText && !fileInput) {
+            if (!messageText && fileInput.length === 0) {
                 alert('Please enter a message or select a file to send.');
                 return;
             }
@@ -319,12 +318,14 @@
             formData.append('auth_id', $('input[name="auth_id"]').val());
             formData.append('support_message_id', $('input[name="conversation_id"]').val());
 
-            if (fileInput) {
-                formData.append('file', fileInput);
+            for (let i = 0; i < fileInput.length; i++) {
+                formData.append('file[]', fileInput[i]);
             }
 
             const isSendChecked = $('#flexSwitchCheckChecked').is(':checked') ? 'yes' : 'no';
             formData.append('is_send', isSendChecked);
+
+           
 
             $.ajax({
                 url: '{{ route('store_reply') }}',
@@ -333,17 +334,22 @@
                 contentType: false,
                 processData: false,
                 success: function(response) {
-                    $('#textarea1').val(''); // Clear message input
-                    $('#file_input').val(''); // Clear file input
-                    $('#filePreview').empty(); // Clear file preview
-                    updateChatUI(response); // Update chat UI with the new message
-                    $('#flexSwitchCheckChecked').prop('checked', false); // Reset switch
+                    $('#textarea1').val('');
+                    $('#file_input').val('');
+                    $('#filePreview').empty();
+                    updateChatUI(response);
+                    $('#flexSwitchCheckChecked').prop('checked', false);
                 },
                 error: function(xhr, status, error) {
+                    console.error('Status:', status);
+                    console.error('Error:', error);
+                    console.error('Response Text:', xhr.responseText);
                     alert('Error sending message. Please try again.');
                 }
             });
         };
+
+
 
 
         $('#textarea1').on('keypress', function(event) {

@@ -51,7 +51,7 @@ class ChatSupportController extends Controller
         $quickUserRole = $request->get('quick_user_role');
 
 
-        return view('chat.app_chats', compact('chatConversion', 'users', 'employee', 'customer', 'predefinedReplies', 'technician','quickId','quickUserRole'));
+        return view('chat.app_chats', compact('chatConversion', 'users', 'employee', 'customer', 'predefinedReplies', 'technician', 'quickId', 'quickUserRole'));
     }
 
     // new  code start 
@@ -143,79 +143,71 @@ class ChatSupportController extends Controller
         $request->validate([
             'auth_id' => 'required',
             'support_message_id' => 'required',
-            'file' => 'nullable|mimes:jpeg,png,jpg,gif,bmp,svg,webp,pdf,doc,docx,xlsx,txt,mp3,mp4,mov,avi|max:5120',
+            'file' => 'nullable|array',
+            'file.*' => 'mimes:jpeg,png,jpg,gif,bmp,svg,webp,pdf,doc,docx,xlsx,txt,mp3,mp4,mov,avi|max:5120',
         ]);
 
-        $fileSizeLimit = 5120; // Default max size 5MB
-        $allowedVideoSizeLimit = 16384; // 16MB for videos
+        $fileSizeLimit = 5120;
+        $allowedVideoSizeLimit = 16384;
 
-        // Handle file upload if present
         if ($request->hasFile('file')) {
-            $file = $request->file('file');
+            foreach ($request->file('file') as $file) {
+                if ($file->isValid()) {
+                    $fileSize = $file->getSize();
+                    $fileMimeType = $file->getMimeType();
 
-            // Check if the file is valid before accessing its info
-            if ($file->isValid()) {
-                $fileSize = $file->getSize();
-                $fileMimeType = $file->getMimeType();
+                    if (str_starts_with($fileMimeType, 'video/') && $fileSize > $allowedVideoSizeLimit * 1024) {
+                        return response()->json(['error' => 'Video file size exceeds 16MB'], 422);
+                    } elseif (!str_starts_with($fileMimeType, 'video/') && $fileSize > $fileSizeLimit * 1024) {
+                        return response()->json(['error' => 'File size exceeds 5MB'], 422);
+                    }
 
-                // Check file size limit based on file type
-                if (str_starts_with($fileMimeType, 'video/') && $fileSize > $allowedVideoSizeLimit * 1024) {
-                    return response()->json(['error' => 'Video file size exceeds 16MB'], 422);
-                } elseif (!str_starts_with($fileMimeType, 'video/') && $fileSize > $fileSizeLimit * 1024) {
-                    return response()->json(['error' => 'File size exceeds 5MB'], 422);
+                    $directory = public_path('images/Uploads/chat/' . $request->support_message_id);
+                    if (!file_exists($directory)) {
+                        mkdir($directory, 0777, true);
+                    }
+                    $filename = uniqid() . '_' . $file->getClientOriginalName();
+                    $file->move($directory, $filename);
+
+                    $chatFile = new ChatFile();
+                    $chatFile->sender = auth()->user()->id;
+                    $chatFile->time = now();
+                    $chatFile->conversation_id = $request->support_message_id;
+                    $chatFile->filename = $filename;
+                    $chatFile->type = $fileMimeType;
+                    $chatFile->size = $fileSize;
+                    $chatFile->save();
+                } else {
+                    return response()->json(['error' => 'Invalid file upload'], 422);
                 }
-
-                // Store the file
-                $directory = public_path('images/Uploads/chat/' . $request->support_message_id);
-                if (!file_exists($directory)) {
-                    mkdir($directory, 0777, true);
-                }
-                $filename = uniqid() . '_' . $file->getClientOriginalName();
-                $file->move($directory, $filename);
-
-                // Save file information in ChatFile
-                $chatFile = new ChatFile();
-                $chatFile->sender = $request->auth_id;
-                $chatFile->time = now();
-                $chatFile->conversation_id = $request->support_message_id;
-                $chatFile->filename = $filename;
-                $chatFile->type = $fileMimeType;
-                $chatFile->size = $fileSize;
-                $chatFile->save();
-            } else {
-                return response()->json(['error' => 'Invalid file upload'], 422);
             }
         }
 
-        // Check if a message is present and not null
+
         if ($request->filled('reply')) {
             $message = $request->reply;
-
-            // Extract YouTube URL if present
             $youtubeEmbedUrl = null;
             if (preg_match('/(https?:\/\/(www\.)?youtube\.com\/watch\?v=|youtu\.be\/)([\w\-]+)/', $message, $matches)) {
                 $youtubeVideoId = $matches[3];
                 $youtubeEmbedUrl = "https://www.youtube.com/embed/{$youtubeVideoId}";
 
-                // Save YouTube URL as a file in the ChatFile table
-                $chatFile = new ChatFile();
-                $chatFile->sender = $request->auth_id;
-                $chatFile->time = now();
-                $chatFile->conversation_id = $request->support_message_id;
-                $chatFile->filename = $youtubeEmbedUrl; // Store the embed URL
-                $chatFile->type = 'youtube'; // Custom type to identify it's a YouTube video
-                $chatFile->size = null; // No size for embedded videos
-                $chatFile->save();
+                ChatFile::create([
+                    'sender' => auth()->user()->id,
+                    'time' => now(),
+                    'conversation_id' => $request->support_message_id,
+                    'filename' => $youtubeEmbedUrl,
+                    'type' => 'youtube',
+                    'size' => null,
+                ]);
             }
 
-            // Save the message text if there is a message and no YouTube URL only
             if (!$youtubeEmbedUrl) {
-                $chatMessage = new ChatMessage();
-                $chatMessage->sender = $request->auth_id;
-                $chatMessage->conversation_id = $request->support_message_id;
-                $chatMessage->message = $message;
-                $chatMessage->time = now();
-                $chatMessage->save();
+                ChatMessage::create([
+                    'sender' => auth()->user()->id,
+                    'conversation_id' => $request->support_message_id,
+                    'message' => $message,
+                    'time' => now(),
+                ]);
             }
         }
 
@@ -223,11 +215,10 @@ class ChatSupportController extends Controller
         $authUserId = Auth::id();
         $filteredParticipants = $participants->where('user_id', '!=', $authUserId);
 
-        // Check if the "is_send" checkbox was checked
         if ($request->has('is_send') && $request->is_send == 'yes') {
             foreach ($filteredParticipants as $user) {
-                $receiverNumber = '+917030467187'; // Replace with the recipient's phone number
-                $message = $request->reply; // Replace with your desired message
+                $receiverNumber = '+917030467187';
+                $message = $request->reply;
                 $formattedMessage = "You have a new message in your chat:\n\n{$message}";
 
                 $sid = env('TWILIO_SID');
@@ -247,28 +238,23 @@ class ChatSupportController extends Controller
 
         $chat = ChatMessage::with('user', 'chating')->where('conversation_id', $id)->get();
 
-        // Fetch participants
         $participants = ChatParticipants::with(['user', 'user.userAddress'])
             ->where('conversation_id', $id)
             ->get();
 
-        // Attach schedules based on role
         foreach ($participants as $participant) {
-            $role = $request->user_role; // Get role from the request
-            // Fetch schedules based on the role
+            $role = $request->user_role;
             $participant->schedules = $participant->user->schedulesByRole($role)->with('jobModel')->get();
         }
 
         $chatMessages = ChatMessage::select('conversation_id', 'sender', 'message', 'time')
             ->where('conversation_id', $id);
 
-        // Get chat files
         $chatFiles = ChatFile::select('conversation_id', 'sender', 'filename', 'time')
             ->where('conversation_id', $id);
 
-        // Combine chat messages and chat files using union
         $combinedData = $chatMessages->union($chatFiles)
-            ->with('user') // Eager load the user relation
+            ->with('user')
             ->where('conversation_id', $id)
             ->orderBy('time', 'desc')
             ->get();
@@ -284,10 +270,6 @@ class ChatSupportController extends Controller
             'attachmentfileChatFile' => $attachmentfileChatFile
         ]);
     }
-
-
-
-
 
     public function searchCustomer(Request $request)
     {
