@@ -226,7 +226,7 @@
                           <div class="card-body border-top border-bottom chat-send-message-footer">
                               <div class="row">
                                   <div id="filePreview" class="col-md-12"></div>
-                                  <div class="col-md-12 w-50 mb-1 d-flex align-items-center">
+                                  <div class="col-md-12 w-75 mb-1 d-flex align-items-center">
                                       <label for="file_input" class="btn btn-outline-primary m-1 py-1">
                                           Attachment
                                       </label>
@@ -244,6 +244,13 @@
                                           data-bs-target="#subjectModal">
                                           Subject / Topic
                                       </label>
+                                      <select id="subjectSelect" data-auth-user="{{ auth()->user()->name }}"
+                                          class="form-control subject-select select2" style="width: 100%;">
+                                          <option value="" disabled selected>Choose a Subject</option>
+                                          @foreach ($subject as $item)
+                                              <option value="{{ $item->message }}">{{ $item->message }}</option>
+                                          @endforeach
+                                      </select>
 
                                   </div>
                                   <div class="col-12">
@@ -306,11 +313,33 @@
                   </div>
                   <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                      <button type="button" id="submitSubject" form="subjectForm" class="btn btn-primary">Submit</button>
+                      <button type="button" id="submitSubject" form="subjectForm"
+                          class="btn btn-primary">Submit</button>
                   </div>
               </div>
           </div>
       </div>
+
+
+      <div id="editSubjectModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Subject</h5>
+                  
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="subjectInput-msg" class="form-control" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveSubjectBtn">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
 
       <!-- -------------------------------------------------------------- -->
       <!-- End Page wrapper  -->

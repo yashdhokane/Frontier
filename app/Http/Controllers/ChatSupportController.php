@@ -22,6 +22,7 @@ use App\Models\PredefineReplies;
 use App\Models\SupportMessageReply;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Twilio\Rest\Client;
 
@@ -50,8 +51,10 @@ class ChatSupportController extends Controller
         $quickId = $request->get('quick_id');
         $quickUserRole = $request->get('quick_user_role');
 
+        $subject = ChatMessage::where('type', 'subject')->get();
 
-        return view('chat.app_chats', compact('chatConversion', 'users', 'employee', 'customer', 'predefinedReplies', 'technician', 'quickId', 'quickUserRole'));
+
+        return view('chat.app_chats', compact('chatConversion', 'users', 'employee', 'customer', 'predefinedReplies', 'technician', 'quickId', 'quickUserRole', 'subject'));
     }
 
     // new  code start 
@@ -111,13 +114,12 @@ class ChatSupportController extends Controller
             $participant->schedules = $participant->user->schedulesByRole($role)->with('jobModel')->get();
         }
 
-        // Get chat files
-        $chatFiles = ChatFile::select('conversation_id', 'sender', 'filename', 'time','type')
+        $chatMessages = ChatMessage::select('id', 'conversation_id', 'sender', 'message', 'time', 'type')
             ->where('conversation_id', $id);
 
-        // Combine chat messages and chat files using union
-        $chatMessages = ChatMessage::select('conversation_id', 'sender', 'message', 'time','type')
+        $chatFiles = ChatFile::select(DB::raw('null as id'), 'conversation_id', 'sender', 'filename as message', 'time', 'type')
             ->where('conversation_id', $id);
+
 
         $combinedData = $chatMessages->union($chatFiles)
             ->with('user') // Eager load the user relation
@@ -246,11 +248,10 @@ class ChatSupportController extends Controller
             $role = $request->user_role;
             $participant->schedules = $participant->user->schedulesByRole($role)->with('jobModel')->get();
         }
-
-        $chatMessages = ChatMessage::select('conversation_id', 'sender', 'message', 'time','type')
+        $chatMessages = ChatMessage::select('id', 'conversation_id', 'sender', 'message', 'time', 'type')
             ->where('conversation_id', $id);
 
-        $chatFiles = ChatFile::select('conversation_id', 'sender', 'filename', 'time','type')
+        $chatFiles = ChatFile::select(DB::raw('null as id'), 'conversation_id', 'sender', 'filename as message', 'time', 'type')
             ->where('conversation_id', $id);
 
         $combinedData = $chatMessages->union($chatFiles)
@@ -297,7 +298,7 @@ class ChatSupportController extends Controller
             'subject' => 'required|string|max:255',
             'support_message_id' => 'required|integer',
         ]);
-    
+
         // Create a new ChatMessage
         ChatMessage::create([
             'sender' => auth()->user()->id,
@@ -306,9 +307,24 @@ class ChatSupportController extends Controller
             'type' => 'subject',
             'time' => now(),
         ]);
-    
+
         // Optionally, return a JSON response
         return response()->json(['success' => 'Message stored successfully.']);
+    }
+
+    public function update_subject(Request $request)
+    {
+        $subject = ChatMessage::find($request->id);
+
+        // Check if the subject was found
+        if ($subject) {
+            $subject->message = $request->subject; // Update the message property
+            $subject->save(); // Save the changes
+
+            return response()->json(['success' => 'Subject updated successfully.']);
+        } else {
+            return response()->json(['error' => 'Subject not found.'], 404); // Return error if not found
+        }
     }
 
 

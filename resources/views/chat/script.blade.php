@@ -8,6 +8,31 @@
 <script>
     $(document).ready(function() {
 
+        const $subjectSelect = $('#subjectSelect');
+        const $chatList = $('.chat-list');
+
+        const lastSubjectValue = $subjectSelect.find('option:last').val();
+        $subjectSelect.val(lastSubjectValue).trigger('change');
+
+        function scrollToSelectedSubject() {
+            const selectedSubjectId = $subjectSelect.val();
+            const $targetChatItem = $chatList.find(`.subject-msg:contains("${selectedSubjectId}")`);
+
+            if ($targetChatItem.length) {
+                const scrollTo = $targetChatItem.position().top + $chatList.scrollTop();
+                $chatList.animate({
+                    scrollTop: scrollTo
+                }, 500);
+            }
+        }
+
+        $subjectSelect.on('change', function() {
+            scrollToSelectedSubject();
+        });
+
+
+
+
 
         $('#file_input').on('change', function() {
             const files = this.files;
@@ -139,7 +164,7 @@
                     chatItem = `<li class="chat-item ps-2 mb-3">
                                     <div class="chat-content subject-content">
                                         <div class="subject-message text-center">
-                                            ${group.messages.map(msg => `<div>${msg.message}</div>`).join('')}
+                                            ${group.messages.map(msg => `<div class="subject-msg" data-msg-id="${msg.id}" data-msg-subject="${msg.message}">${msg.message} <i class="far fa-edit fs-1 align-top edit-subject" style="cursor: pointer;" data-id="${msg.id}"  data-msg-subject="${msg.message}"></i></div>`).join('')}
                                         </div>
                                     </div>
                                 </li>`;
@@ -480,6 +505,43 @@
                 }
             });
         });
+
+        $(document).on('click', '.edit-subject', function() {
+            const msgId = $(this).data('id');
+            const currentSubject = $(this).data('msg-subject');
+            $('#subjectInput-msg').val(currentSubject);
+            $('#editSubjectModal').data('msg-id', msgId);
+            $('#editSubjectModal').modal('show');
+        });
+
+        $('#saveSubjectBtn').click(function() {
+            const msgId = $('#editSubjectModal').data('msg-id');
+            const newSubject = $('#subjectInput-msg').val();
+            console.log(newSubject);
+
+            $.ajax({
+                url: '{{ route('update_subject') }}',
+                method: 'POST',
+                data: {
+                    id: msgId,
+                    subject: newSubject,
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    $(`.subject-msg[data-msg-id="${msgId}"]`)
+                        .attr('data-msg-subject', newSubject)
+                        .html(
+                            `${newSubject} <i class="far fa-edit fs-1 align-top edit-subject" style="cursor: pointer;" data-id="${msgId}" data-msg-subject="${newSubject}"></i>`
+                            );
+                    $('#editSubjectModal').modal('hide');
+                },
+
+                error: function(xhr) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+
 
 
     });
