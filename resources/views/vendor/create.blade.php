@@ -72,7 +72,7 @@
                     <div class="card card-body card-border shadow">
 
                         <div class="mb-3">
-                            <label class="control-label bold mb5 required-field">Name</label>
+                            <label class="control-label bold mb5 required-field">City</label>
                             <select id="city-select" name="city_id" class="form-control" style="width: 100%;"
                                 placeholder="Search for a city">
                                 <option value="">Select a city</option>
