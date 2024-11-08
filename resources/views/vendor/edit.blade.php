@@ -98,6 +98,17 @@
 							</textarea>
                             <small id="textHelp" class="form-text text-muted"></small>
                         </div>
+                        <div class="mb-3">
+                            <label class="control-label bold mb5 required-field">Status</label>
+                            <select id="status-select" name="status" class="form-control" style="width: 100%;" placeholder="Select status">
+                                <option value="yes" {{ $vendor->is_active == 'yes' ? 'selected' : '' }}>Active</option>
+                                <option value="no" {{ $vendor->is_active == 'no' ? 'selected' : '' }}>Deactive</option>
+                            </select>
+                            
+
+
+                            <small id="textHelp" class="form-text text-muted"></small>
+                        </div>
                     </div>
                     <!-- Card -->
 

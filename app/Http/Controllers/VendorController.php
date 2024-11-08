@@ -119,6 +119,7 @@ class VendorController extends Controller
             'address_line_1' => $request->input('address_line_1'),
             'address_line_2' => $request->input('address_line_2'),
             'city_id' => $request->input('city_id'),
+            'is_active' => $request->input('status'),
             'city' => $city->city,
             'state' => $city->state_id,
             'zipcode_id' => $city->zip,
