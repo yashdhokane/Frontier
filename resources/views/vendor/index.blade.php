@@ -24,7 +24,7 @@
                 </div>
             </div>
             <div class="col-3 align-self-center">
-                <a href="{{ route('vendor.create') }}" class="btn btn-info">
+                <a href="{{ route('vendor.create') }}" class="btn btn-info float-end">
                     <i class="ri-device-line"> </i>
                     Add New Vendor</a>
             </div>

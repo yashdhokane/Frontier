@@ -71,8 +71,7 @@
 
                         <div class="mb-3 justify-content-between">
                             <label class="control-label bold mb5 required-field">Description</label>
-                            <textarea id="vendor_description" name="vendor_description" class="form-control" style="height: 180px;" required>
-							</textarea>
+                            <textarea id="vendor_description" name="vendor_description" class="form-control" style="height: 180px;" required></textarea>
                             <small id="textHelp" class="form-text text-muted"></small>
                         </div>
 
@@ -105,14 +104,12 @@
 
                         <div class="mb-3 justify-content-between">
                             <label class="control-label bold mb5 required-field">Address Line 1</label>
-                            <textarea id="address_line_1" name="address_line_1" class="form-control" style="height: 113px;" required>
-							</textarea>
+                            <textarea id="address_line_1" name="address_line_1" class="form-control" style="height: 113px;" required></textarea>
                             <small id="textHelp" class="form-text text-muted"></small>
                         </div>
                         <div class="mb-3 justify-content-between">
                             <label class="control-label bold mb5">Address Line 2</label>
-                            <textarea id="address_line_2" name="address_line_2" class="form-control" style="height: 113px;">
-							</textarea>
+                            <textarea id="address_line_2" name="address_line_2" class="form-control" style="height: 113px;"></textarea>
                             <small id="textHelp" class="form-text text-muted"></small>
                         </div>
                     </div>
