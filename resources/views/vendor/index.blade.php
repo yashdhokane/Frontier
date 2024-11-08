@@ -13,7 +13,7 @@
     <div class="page-breadcrumb">
         <div class="row">
             <div class="col-9 align-self-center">
-                <h4 class="page-title">Manufactures</h4>
+                <h4 class="page-title">Vendors</h4>
                 <div class="d-flex align-items-center">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
@@ -82,10 +82,6 @@
                                                 <i class="ri-settings-3-fill align-middle fs-5"></i>
                                             </button>
                                             <div class="dropdown-menu">
-                                                <a class="dropdown-item"
-                                                    href="{{ url('vendor/view/' . $item->vendor_id) }}"><i
-                                                        data-feather="eye" class="feather-sm me-2"></i>
-                                                    View</a>
                                                 <a class="dropdown-item"
                                                     href="{{ url('vendor/edit/' . $item->vendor_id) }}"><i
                                                         data-feather="edit" class="feather-sm me-2"></i>
