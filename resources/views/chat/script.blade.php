@@ -11,24 +11,32 @@
         const $subjectSelect = $('#subjectSelect');
         const $chatList = $('.chat-list');
 
+        // Set the default selected option to the last one and trigger the change event
         const lastSubjectValue = $subjectSelect.find('option:last').val();
         $subjectSelect.val(lastSubjectValue).trigger('change');
 
+        // Function to scroll to the selected subject in the chat list
         function scrollToSelectedSubject() {
             const selectedSubjectId = $subjectSelect.val();
-            const $targetChatItem = $chatList.find(`.subject-msg:contains("${selectedSubjectId}")`);
+
+            // Locate the chat item that matches the selected subject
+            const $targetChatItem = $chatList.find(`.subject-msg[data-subject-id="${selectedSubjectId}"]`);
 
             if ($targetChatItem.length) {
-                const scrollTo = $targetChatItem.position().top + $chatList.scrollTop();
+                // Calculate the offset position to scroll to, relative to the container
+                const scrollTo = $targetChatItem.offset().top - $chatList.offset().top + $chatList.scrollTop();
+
+                // Animate the scroll to the target chat item
                 $chatList.animate({
                     scrollTop: scrollTo
                 }, 500);
             }
         }
 
-        $subjectSelect.on('change', function() {
-            scrollToSelectedSubject();
-        });
+        // Listen for changes on the select element and call the scroll function
+        $subjectSelect.on('change', scrollToSelectedSubject);
+
+
 
 
 
@@ -126,7 +134,6 @@
 
 
         const appendChatItem = (data) => {
-            console.log(data);
 
             $('.chat-list').empty();
             const groupedMessages = [];
@@ -517,7 +524,6 @@
         $('#saveSubjectBtn').click(function() {
             const msgId = $('#editSubjectModal').data('msg-id');
             const newSubject = $('#subjectInput-msg').val();
-            console.log(newSubject);
 
             $.ajax({
                 url: '{{ route('update_subject') }}',
@@ -532,7 +538,7 @@
                         .attr('data-msg-subject', newSubject)
                         .html(
                             `${newSubject} <i class="far fa-edit fs-1 align-top edit-subject" style="cursor: pointer;" data-id="${msgId}" data-msg-subject="${newSubject}"></i>`
-                            );
+                        );
                     $('#editSubjectModal').modal('hide');
                 },
 
