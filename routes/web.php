@@ -138,6 +138,8 @@ use App\Http\Controllers\StickyNotesController;
 
 use App\Http\Controllers\RepliesController;
 
+use App\Http\Controllers\VendorController;
+
 /*
 
 
@@ -1107,6 +1109,23 @@ Route::get('events-iframe', [EventController::class, 'indexiframe'])->name('even
     Route::get('/setting/manufacturer-enable/{id}', [ManufactureController::class, 'enable']);
 
     Route::get('/setting/manufacturer-disable/{id}', [ManufactureController::class, 'disable']);
+
+    // vendor 
+
+    Route::get('/setting/vendor', [VendorController::class, 'vendorlist'])->name('vendor.index');
+
+    Route::get('/setting/vendor-create', [VendorController::class, 'create'])->name('vendor.create');
+
+    Route::post('/setting/vendor-store', [VendorController::class, 'store'])->name('vendor.store');
+
+    Route::get('/vendor/edit/{id}/', [VendorController::class, 'edit'])->name('vendor.edit');
+
+    Route::post('/vendor/update/{id}', [VendorController::class, 'update'])->name('vendor.update');
+
+    Route::get('/vendor/delete/{id}', [VendorController::class, 'delete'])->name('vendor.delete');
+
+    Route::get('/cities/search', [VendorController::class, 'search'])->name('cities.search');
+
 
 
 
