@@ -61,9 +61,7 @@
                                 <tr>
                                     <td>{{ $item->vendor_name ?? null }} </td>
                                     <td>
-                                        {{ $item->address_line_1 ?? null }}</br>
-
-                                        {{ $item->address_line_2 ?? null }}
+                                        {{ $item->address_line_1 ?? null }} {{ $item->address_line_2 ?? null }}, {{ $item->state ?? null }}, {{ $item->zipcode_id ?? null }}
 
                                     </td>
                                     <td class="ucfirst">

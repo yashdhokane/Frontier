@@ -47,6 +47,12 @@ class VendorController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'vendor_name' => 'required|string|max:255',
+            'vendor_description' => 'required|string',
+            'address_line_1' => 'required|string|max:255',
+            'city_id' => 'required|integer|exists:location_cities,city_id',
+        ]);
 
         $adminId = Auth::id();
 
@@ -77,7 +83,7 @@ class VendorController extends Controller
             'address_line_2' => $request->input('address_line_2'),
             'city_id' => $request->input('city_id'),
             'city' => $cities->city,
-            'state' => $cities->state_id,
+            'state' => $cities->state_code,
             'zipcode_id' => $cities->zip,
         ]);
         return redirect()->route('vendor.index')->with('success', 'The vendor has been created successfully.');
@@ -87,6 +93,12 @@ class VendorController extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'vendor_name' => 'required|string|max:255',
+            'vendor_description' => 'required|string',
+            'address_line_1' => 'required|string|max:255',
+            'city_id' => 'required|integer|exists:location_cities,city_id',
+        ]);
         $adminId = Auth::id();
     
         // Retrieve the vendor record by ID
@@ -121,7 +133,7 @@ class VendorController extends Controller
             'city_id' => $request->input('city_id'),
             'is_active' => $request->input('status'),
             'city' => $city->city,
-            'state' => $city->state_id,
+            'state' => $city->state_code,
             'zipcode_id' => $city->zip,
         ]);
     
