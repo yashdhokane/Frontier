@@ -2,12 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use DB;
+use App\Models\User; 
+use App\Models\RoutingTrigger; 
+use App\Models\LocationServiceArea;
+use App\Models\RoutingTriggerTechnician; 
+use DB; 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use Storage;
+use Storage;    
+use App\Models\CustomerUserAddress;
+use App\Models\Schedule;
+use App\Models\JobAssign; 
+ use Illuminate\Support\Facades\Log;
+
+use App\Models\TechnicianJobsSchedulesOnMap;
+
+
 
 class MapController extends Controller
 {
@@ -306,4 +317,757 @@ class MapController extends Controller
             return 'false';
         }
     }
+
+
+
+// public function getAllTechniciansRoutes(Request $request)
+// {
+//     $currentDate = Carbon::now()->startOfDay();
+
+//     // Get all technicians with jobs assigned for today
+//     $technicians = User::where('role', 'technician')
+//                         ->whereHas('schedules', function ($query) use ($currentDate) {
+//                             $query->whereDate('start_date_time', '=', $currentDate);
+//                         })
+//                         ->get(['id', 'name']);
+
+//     if ($technicians->isEmpty()) {
+//         return response()->json(['error' => 'No technicians or jobs found for today.'], 404);
+//     }
+
+//     $technicianRoutes = [];
+//     $totalJobs = 0;
+
+//     foreach ($technicians as $technician) {
+//         $technicianId = $technician->id;
+
+//         // Get technician's location
+//         $technicianLocation = CustomerUserAddress::where('user_id', $technicianId)
+//             ->first(['user_id', 'latitude', 'longitude', 'address_line1', 'city', 'zipcode', 'state_name']);
+
+//         if (!$technicianLocation) {
+//             continue;
+//         }
+
+//         $technicianLocation->name = $technician->name;
+//         $technicianLocation->full_address = "{$technicianLocation->address_line1}, {$technicianLocation->city}, {$technicianLocation->state_name} {$technicianLocation->zipcode}";
+
+//         // Fetch today's jobs for the technician
+//         $jobs = Schedule::where('technician_id', $technicianId)
+//                     ->whereDate('start_date_time', '=', $currentDate)
+//                     ->get(['job_id', 'position', 'is_routes_map', 'job_onmap_reaching_timing']);
+
+//         $jobCount = $jobs->count();
+//         $totalJobs += $jobCount;
+
+//         $routeDetails = [
+//             'technician' => [
+//                 'id' => $technicianId,
+//                 'name' => $technician->name,
+//                 'location' => $technicianLocation->full_address,
+//             ],
+//             'job_count' => $jobCount,
+//             'jobs' => []
+//         ];
+
+//         foreach ($jobs as $job) {
+//             // Get customer locations for each job
+//             $customerIds = JobAssign::where('job_id', $job->job_id)->pluck('customer_id');
+
+//             if ($customerIds->isEmpty()) {
+//                 continue;
+//             }
+
+//             $customerLocations = CustomerUserAddress::whereIn('user_id', $customerIds)
+//                 ->get(['user_id', 'latitude', 'longitude', 'address_line1', 'city', 'zipcode', 'state_name']);
+
+//             foreach ($customerLocations as $customerLocation) {
+//                 $customerName = User::where('id', $customerLocation->user_id)->value('name');
+//                 $routeDetails['jobs'][] = [
+//                     'customer_location' => [
+//                         'name' => $customerName,
+//                         'latitude' => $customerLocation->latitude,
+//                         'longitude' => $customerLocation->longitude,
+//                         'full_address' => "{$customerLocation->address_line1}, {$customerLocation->city}, {$customerLocation->state_name} {$customerLocation->zipcode}",
+//                     ],
+//                     'job_id' => $job->job_id,
+//                     'job_onmap_reaching_timing' => $job->job_onmap_reaching_timing,
+//                 ];
+//             }
+//         }
+
+//         $technicianRoutes[] = $routeDetails;
+//     }
+
+//     return response()->json([
+//         'total_technicians' => $technicians->count(),
+//         'total_jobs' => $totalJobs,
+//         'technician_routes' => $technicianRoutes,
+//     ]);
+// }
+
+public function getAllTechniciansRoutes(Request $request)
+{
+    // Get today's date
+$timezone_name = Session::get('timezone_name');
+
+$inputDate = Carbon::now($timezone_name)->format('Y-m-d');
+   
+
+    // Fetch technician IDs where role is 'technician'
+    $technicians = User::where('role', 'technician')->where('status','active')->get();
+
+    // Handle case when no technicians are found
+    if ($technicians->isEmpty()) {
+        return view('jobrouting.technicians_jobs_map')->with('technicians', []);
+    }
+
+    // Prepare the response array for the view
+    $response = [];
+
+    foreach ($technicians as $technician) {
+        // Fetch technician's location
+        $technicianLocation = CustomerUserAddress::where('user_id', $technician->id)
+            ->first(['user_id', 'latitude', 'longitude', 'address_line1', 'city', 'zipcode', 'state_name']);
+
+        // Handle case where technician location is not found
+        if (!$technicianLocation) {
+            $response[] = [
+                'technician' => [
+                    'id' => $technician->id,
+                    'name' => $technician->name,
+                    'error' => 'Technician location not found.'
+                ]
+            ];
+            continue; // Skip to the next technician
+        }
+
+        // Attach technician's full address
+        $technicianLocation->full_address = $technicianLocation->address_line1 . ', ' . 
+                                             $technicianLocation->city . ', ' . 
+                                             $technicianLocation->state_name . ' ' . 
+                                             $technicianLocation->zipcode;
+
+        // Fetch jobs for the technician on the input date
+        $jobs = Schedule::where('technician_id', $technician->id)
+            ->whereDate('start_date_time', '=', $inputDate)
+            ->get(['job_id', 'position', 'is_routes_map', 'job_onmap_reaching_timing']);
+
+        // Initialize technician data structure
+        $technicianData = [
+            'technician' => [
+                'id' => $technician->id,
+                'name' => $technician->name,
+                'full_address' => $technicianLocation->full_address,
+                'latitude' => $technicianLocation->latitude,
+                'longitude' => $technicianLocation->longitude,
+            ],
+            'jobs' => []
+        ];
+
+        if ($jobs->isEmpty()) {
+            $technicianData['error'] = 'No jobs found for this technician on the selected date.';
+            $response[] = $technicianData;
+            continue; // Skip to the next technician
+        }
+
+        // Create an array to store job distances
+        $jobDistances = [];
+
+        foreach ($jobs as $job) {
+            // Fetch customer IDs assigned to the job
+            $customerIds = JobAssign::where('job_id', $job->job_id)->pluck('customer_id');
+
+            // Fetch customer locations
+            $customerLocations = CustomerUserAddress::whereIn('user_id', $customerIds)
+                ->get(['user_id', 'latitude', 'longitude', 'address_line1', 'city', 'zipcode', 'state_name']);
+
+            if ($customerLocations->isEmpty()) {
+                $technicianData['jobs'][] = [
+                    'job_id' => $job->job_id,
+                    'error' => 'No customer locations found for this job.'
+                ];
+                continue;
+            }
+
+            foreach ($customerLocations as $customerLocation) {
+                // Fetch customer name
+                $customerName = User::where('id', $customerLocation->user_id)->value('name');
+
+                // Construct the full address for the customer
+                $customerLocation->full_address = $customerLocation->address_line1 . ', ' . 
+                                                  $customerLocation->city . ', ' . 
+                                                  $customerLocation->state_name . ' ' . 
+                                                  $customerLocation->zipcode;
+
+                // Calculate distance from technician to customer
+                $distance = $this->calculateDistance(
+                    $technicianLocation->latitude,
+                    $technicianLocation->longitude,
+                    $customerLocation->latitude,
+                    $customerLocation->longitude
+                );
+
+                // Add customer info to the job and store the distance
+                $jobDistances[] = [
+                    'job_id' => $job->job_id,
+                    'position' => $job->position,
+                    'is_routes_map' => $job->is_routes_map,
+                    'job_onmap_reaching_timing' => $job->job_onmap_reaching_timing,
+                    'customer' => [
+                        'id' => $customerLocation->user_id,
+                        'name' => $customerName,
+                        'full_address' => $customerLocation->full_address,
+                        'latitude' => $customerLocation->latitude,
+                        'longitude' => $customerLocation->longitude,
+                    ],
+                    'distance' => $distance // Add the calculated distance
+                ];
+            }
+        }
+
+        // Sort jobs by distance
+        usort($jobDistances, function($a, $b) {
+            return $a['distance'] <=> $b['distance'];
+        });
+
+        // Assign sorted jobs to the technician data
+        $technicianData['jobs'] = $jobDistances;
+        $response[] = $technicianData;
+    }
+    // dd($response );
+
+    $responseJson = json_encode($response);
+    $tech = user::where('role','technician')->where('status','active')->get();
+    $routingTriggers = RoutingTrigger::all();
+$location=LocationServiceArea::all();
+    // dd($responseJson );
+    // Return the view with technicians and their jobs
+    return view('jobrouting.technicians_jobs_map', compact('responseJson','tech','routingTriggers','location'));
+}
+
+
+
+public function getAllTechniciansRoutesdate(Request $request)
+{
+    // Get today's date
+    // $inputDate = Carbon::today()->format('Y-m-d');
+    // $inputDate = $request->has('date') ? Carbon::parse($request->input('date'))->format('Y-m-d') : Carbon::today()->format('Y-m-d');
+
+
+// This line checks if a date parameter exists in the request.
+$inputDate = $request->has('date') ? 
+        Carbon::parse(explode(':', $request->input('date'))[0])->format('Y-m-d') : 
+        Carbon::today()->format('Y-m-d');
+
+    // Fetch technician IDs where role is 'technician'
+    $technicians = User::where('role', 'technician')->where('status','active')->get();
+
+    // Handle case when no technicians are found
+    if ($technicians->isEmpty()) {
+        return view('jobrouting.technicians_jobs_map')->with('technicians', []);
+    }
+
+    // Prepare the response array for the view
+    $response = [];
+
+    foreach ($technicians as $technician) {
+        // Fetch technician's location
+        $technicianLocation = CustomerUserAddress::where('user_id', $technician->id)
+            ->first(['user_id', 'latitude', 'longitude', 'address_line1', 'city', 'zipcode', 'state_name']);
+
+        // Handle case where technician location is not found
+        if (!$technicianLocation) {
+            $response[] = [
+                'technician' => [
+                    'id' => $technician->id,
+                    'name' => $technician->name,
+                    'error' => 'Technician location not found.'
+                ]
+            ];
+            continue; // Skip to the next technician
+        }
+
+        // Attach technician's full address
+        $technicianLocation->full_address = $technicianLocation->address_line1 . ', ' . 
+                                             $technicianLocation->city . ', ' . 
+                                             $technicianLocation->state_name . ' ' . 
+                                             $technicianLocation->zipcode;
+
+        // Fetch jobs for the technician on the input date
+        $jobs = Schedule::where('technician_id', $technician->id)
+            ->whereDate('start_date_time', '=', $inputDate)
+            ->get(['job_id', 'position', 'is_routes_map', 'job_onmap_reaching_timing']);
+
+        // Initialize technician data structure
+        $technicianData = [
+            'technician' => [
+                'id' => $technician->id,
+                'name' => $technician->name,
+                'full_address' => $technicianLocation->full_address,
+                'latitude' => $technicianLocation->latitude,
+                'longitude' => $technicianLocation->longitude,
+            ],
+            'jobs' => []
+        ];
+
+        if ($jobs->isEmpty()) {
+            $technicianData['error'] = 'No jobs found for this technician on the selected date.';
+            $response[] = $technicianData;
+            continue; // Skip to the next technician
+        }
+
+        // Create an array to store job distances
+        $jobDistances = [];
+
+        foreach ($jobs as $job) {
+            // Fetch customer IDs assigned to the job
+            $customerIds = JobAssign::where('job_id', $job->job_id)->pluck('customer_id');
+
+            // Fetch customer locations
+            $customerLocations = CustomerUserAddress::whereIn('user_id', $customerIds)
+                ->get(['user_id', 'latitude', 'longitude', 'address_line1', 'city', 'zipcode', 'state_name']);
+
+            if ($customerLocations->isEmpty()) {
+                $technicianData['jobs'][] = [
+                    'job_id' => $job->job_id,
+                    'error' => 'No customer locations found for this job.'
+                ];
+                continue;
+            }
+
+            foreach ($customerLocations as $customerLocation) {
+                // Fetch customer name
+                $customerName = User::where('id', $customerLocation->user_id)->value('name');
+
+                // Construct the full address for the customer
+                $customerLocation->full_address = $customerLocation->address_line1 . ', ' . 
+                                                  $customerLocation->city . ', ' . 
+                                                  $customerLocation->state_name . ' ' . 
+                                                  $customerLocation->zipcode;
+
+                // Calculate distance from technician to customer
+                $distance = $this->calculateDistance(
+                    $technicianLocation->latitude,
+                    $technicianLocation->longitude,
+                    $customerLocation->latitude,
+                    $customerLocation->longitude
+                );
+
+                // Add customer info to the job and store the distance
+                $jobDistances[] = [
+                    'job_id' => $job->job_id,
+                    'position' => $job->position,
+                    'is_routes_map' => $job->is_routes_map,
+                    'job_onmap_reaching_timing' => $job->job_onmap_reaching_timing,
+                    'customer' => [
+                        'id' => $customerLocation->user_id,
+                        'name' => $customerName,
+                        'full_address' => $customerLocation->full_address,
+                        'latitude' => $customerLocation->latitude,
+                        'longitude' => $customerLocation->longitude,
+                    ],
+                    'distance' => $distance // Add the calculated distance
+                ];
+            }
+        }
+
+        // Sort jobs by distance
+        usort($jobDistances, function($a, $b) {
+            return $a['distance'] <=> $b['distance'];
+        });
+
+        // Assign sorted jobs to the technician data
+        $technicianData['jobs'] = $jobDistances;
+        $response[] = $technicianData;
+    }
+    // dd($response );
+
+    // $responseJson = json_encode($response);
+    $tech = user::where('role','technician')->where('status','active')->get();
+    // $routingTriggers = RoutingTrigger::all();
+    // dd($responseJson );
+    // Return the view with technicians and their jobs
+    // return view('jobrouting.technicians_jobs_map', compact('responseJson','tech'));
+        return response()->json($response);
+
+}
+
+
+
+
+
+
+// Distance calculation function
+private function calculateDistance($lat1, $lon1, $lat2, $lon2)
+{
+    // Ensure all inputs are floats
+    $lat1 = (float) $lat1;
+    $lon1 = (float) $lon1;
+    $lat2 = (float) $lat2;
+    $lon2 = (float) $lon2;
+
+    $earthRadius = 6371; // Earth radius in kilometers
+
+    // Calculate differences
+    $dLat = deg2rad($lat2 - $lat1);
+    $dLon = deg2rad($lon2 - $lon1);
+
+    // Calculate distance using Haversine formula
+    $a = sin($dLat / 2) * sin($dLat / 2) +
+         cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+         sin($dLon / 2) * sin($dLon / 2);
+
+    $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+    $distance = $earthRadius * $c;
+
+    return $distance;
+}
+
+
+public function storerouting(Request $request)
+{
+    // Validate request data
+    $validatedData = $request->validate([
+        'technician' => 'required|array',
+        'days' => 'required|array',
+        'date' => 'required|date',
+    ]);
+
+    // Extract and initialize data
+    $technicianIds = $validatedData['technician'];
+    $requestedDate = Carbon::parse($request->date);
+    $updatedSchedules = [];
+    $updatedJobAssigns = [];
+
+    Log::info("Request data", [
+        'technician_ids' => $technicianIds, 
+        'days' => $validatedData['days'], 
+        'requested_date' => $requestedDate
+    ]);
+
+    foreach ($technicianIds as $technicianId) {
+        foreach ($validatedData['days'] as $day) {
+            $searchDate = $requestedDate->toDateString();
+            $cumulativeMinutes = 0; // Reset cumulative time for each technician-day combination
+
+            // Handle Schedule Model for current technician and day
+            $existingSchedules = Schedule::where('technician_id', $technicianId)
+                ->whereDate('start_date_time', $searchDate)
+                ->get();
+
+            //   dd($existingSchedules, $searchDate);
+
+            foreach ($existingSchedules as $existingSchedule) {
+                $startDateTime = Carbon::parse($existingSchedule->start_date_time);
+                $endDateTime = Carbon::parse($existingSchedule->end_date_time);
+                $durationInMinutes = $startDateTime->diffInMinutes($endDateTime);
+                //dd($durationInMinutes);
+                if ($cumulativeMinutes + $durationInMinutes > 360) {
+                    // Adjust the date while keeping the time the same
+                    $nextOccurrenceDate = $this->getNextOccurrence($requestedDate, $this->getDayOfWeek($day))->toDateString();
+                    $nextDayStartDateTime = Carbon::parse($nextOccurrenceDate)
+                        ->setTimeFrom($startDateTime)
+                        ->addDay();
+                    $nextDayEndDateTime = Carbon::parse($nextOccurrenceDate)
+                        ->setTimeFrom($endDateTime)
+                        ->addDay();
+
+                    // Update schedule with the new date and original time
+                    $existingSchedule->start_date_time = $nextDayStartDateTime;
+                    $existingSchedule->end_date_time = $nextDayEndDateTime;
+                } else {
+                    $cumulativeMinutes += $durationInMinutes;
+                }
+
+                $existingSchedule->save();
+
+                // Collect the updated schedule data
+                $updatedSchedules[] = [
+                    'technician_id' => $technicianId,
+                    'day' => $day,
+                    'original_date' => $startDateTime->toDateString(),
+                    'updated_date' => Carbon::parse($existingSchedule->start_date_time)->toDateString(),
+                    'updated_time' => Carbon::parse($existingSchedule->start_date_time)->toTimeString(),
+                ];
+            }
+
+            // Handle JobAssign Model for current technician and day
+            $existingJobAssigns = JobAssign::where('technician_id', $technicianId)
+                ->whereDate('start_date_time', $searchDate)
+                ->get();
+
+            foreach ($existingJobAssigns as $existingJobAssign) {
+                $startDateTime = Carbon::parse($existingJobAssign->start_date_time);
+                $endDateTime = Carbon::parse($existingJobAssign->end_date_time);
+                $durationInMinutes = $startDateTime->diffInMinutes($endDateTime);
+
+                if ($cumulativeMinutes + $durationInMinutes > 360) {
+                    // Adjust the date while keeping the time the same
+                    $nextOccurrenceDate = $requestedDate->copy()->next($this->getDayOfWeek($day))->toDateString();
+                    $nextDayStartDateTime = Carbon::parse($nextOccurrenceDate)
+                        ->setTimeFrom($startDateTime)
+                        ->addDay();
+                    $nextDayEndDateTime = Carbon::parse($nextOccurrenceDate)
+                        ->setTimeFrom($endDateTime)
+                        ->addDay();
+
+                    // Update job assign with the new date and original time
+                    $existingJobAssign->start_date_time = $nextDayStartDateTime;
+                    $existingJobAssign->end_date_time = $nextDayEndDateTime;
+                } else {
+                    $cumulativeMinutes += $durationInMinutes;
+                }
+
+                $existingJobAssign->save();
+
+                // Collect the updated job assignment data
+                $updatedJobAssigns[] = [
+                    'technician_id' => $technicianId,
+                    'day' => $day,
+                    'original_date' => $startDateTime->toDateString(),
+                    'updated_date' => Carbon::parse($existingJobAssign->start_date_time)->toDateString(),
+                    'updated_time' => Carbon::parse($existingJobAssign->start_date_time)->toTimeString(),
+                ];
+            }
+        }
+    }
+
+    // Check if any records were updated, else create a new entry
+    if (empty($updatedSchedules) && empty($updatedJobAssigns)) {
+        TechnicianJobsSchedulesOnMap::create([
+            'technician_ids' => implode(',', $technicianIds),
+            'days_ids' => implode(',', $validatedData['days']),
+            'previous_start_date_time' => $requestedDate,
+        ]);
+
+        Log::info("Created new entry in TechnicianJobsSchedulesOnMap", [
+            'technician_ids' => implode(',', $technicianIds),
+            'days_ids' => implode(',', $validatedData['days'])
+        ]);
+    }
+
+    return response()->json([
+        'success' => 'Data saved successfully',
+        'updated_schedules' => $updatedSchedules,
+        'updated_job_assigns' => $updatedJobAssigns,
+    ]);
+}
+
+// public function storerouting(Request $request)
+// {
+//     // Validate request data
+//     $validatedData = $request->validate([
+//         'technician' => 'required|array',
+//         'days' => 'required|array',
+//         'date' => 'required|date',
+//     ]);
+
+//     // Extract and initialize data
+//     $technicianIds = $validatedData['technician'];
+//     $requestedDate = Carbon::parse($request->date);
+//     $updatedSchedules = [];
+//     $updatedJobAssigns = [];
+
+//     Log::info("Request data", [
+//         'technician_ids' => $technicianIds, 
+//         'days' => $validatedData['days'], 
+//         'requested_date' => $requestedDate
+//     ]);
+
+//     foreach ($technicianIds as $technicianId) {
+//         foreach ($validatedData['days'] as $dayIndex => $day) {
+//             $searchDate = $requestedDate->toDateString();
+//             $cumulativeMinutes = 0; // Reset cumulative time for each technician-day combination
+
+//             // Handle Schedule Model for current technician and day
+//             $existingSchedules = Schedule::where('technician_id', $technicianId)
+//                 ->whereDate('start_date_time', $searchDate)
+//                 ->get();
+
+//             foreach ($existingSchedules as $existingSchedule) {
+//                 $startDateTime = Carbon::parse($existingSchedule->start_date_time);
+//                 $endDateTime = Carbon::parse($existingSchedule->end_date_time);
+//                 $durationInMinutes = $startDateTime->diffInMinutes($endDateTime);
+
+//                 // Check cumulative minutes and find the next available day
+//                 while ($cumulativeMinutes + $durationInMinutes > 360) {
+//                     $dayIndex = ($dayIndex + 1) % count($validatedData['days']);
+//                     $nextDay = $validatedData['days'][$dayIndex];
+//                     $nextOccurrenceDate = $this->getNextOccurrence($requestedDate, $this->getDayOfWeek($nextDay))->toDateString();
+
+//                     $startDateTime = Carbon::parse($nextOccurrenceDate)
+//                         ->setTimeFrom($startDateTime);
+//                     $endDateTime = Carbon::parse($nextOccurrenceDate)
+//                         ->setTimeFrom($endDateTime);
+//                     $cumulativeMinutes = 0; // Reset for the new day
+//                 }
+
+//                 $cumulativeMinutes += $durationInMinutes;
+//                 $existingSchedule->start_date_time = $startDateTime;
+//                 $existingSchedule->end_date_time = $endDateTime;
+//                 $existingSchedule->save();
+
+//                 // Collect the updated schedule data
+//                 $updatedSchedules[] = [
+//                     'technician_id' => $technicianId,
+//                     'day' => $day,
+//                     'original_date' => $startDateTime->toDateString(),
+//                     'updated_date' => $startDateTime->toDateString(),
+//                     'updated_time' => $startDateTime->toTimeString(),
+//                 ];
+//             }
+
+//             // Handle JobAssign Model for current technician and day
+//             $existingJobAssigns = JobAssign::where('technician_id', $technicianId)
+//                 ->whereDate('start_date_time', $searchDate)
+//                 ->get();
+
+//             foreach ($existingJobAssigns as $existingJobAssign) {
+//                 $startDateTime = Carbon::parse($existingJobAssign->start_date_time);
+//                 $endDateTime = Carbon::parse($existingJobAssign->end_date_time);
+//                 $durationInMinutes = $startDateTime->diffInMinutes($endDateTime);
+
+//                 // Check cumulative minutes and find the next available day
+//                 while ($cumulativeMinutes + $durationInMinutes > 360) {
+//                     $dayIndex = ($dayIndex + 1) % count($validatedData['days']);
+//                     $nextDay = $validatedData['days'][$dayIndex];
+//                     $nextOccurrenceDate = $this->getNextOccurrence($requestedDate, $this->getDayOfWeek($nextDay))->toDateString();
+
+//                     $startDateTime = Carbon::parse($nextOccurrenceDate)
+//                         ->setTimeFrom($startDateTime);
+//                     $endDateTime = Carbon::parse($nextOccurrenceDate)
+//                         ->setTimeFrom($endDateTime);
+//                     $cumulativeMinutes = 0; // Reset for the new day
+//                 }
+
+//                 $cumulativeMinutes += $durationInMinutes;
+//                 $existingJobAssign->start_date_time = $startDateTime;
+//                 $existingJobAssign->end_date_time = $endDateTime;
+//                 $existingJobAssign->save();
+
+//                 // Collect the updated job assignment data
+//                 $updatedJobAssigns[] = [
+//                     'technician_id' => $technicianId,
+//                     'day' => $day,
+//                     'original_date' => $startDateTime->toDateString(),
+//                     'updated_date' => $startDateTime->toDateString(),
+//                     'updated_time' => $startDateTime->toTimeString(),
+//                 ];
+//             }
+//         }
+//     }
+
+//     // Check if any records were updated, else create a new entry
+//     if (empty($updatedSchedules) && empty($updatedJobAssigns)) {
+//         TechnicianJobsSchedulesOnMap::create([
+//             'technician_ids' => implode(',', $technicianIds),
+//             'days_ids' => implode(',', $validatedData['days']),
+//             'previous_start_date_time' => $requestedDate,
+//         ]);
+
+//         Log::info("Created new entry in TechnicianJobsSchedulesOnMap", [
+//             'technician_ids' => implode(',', $technicianIds),
+//             'days_ids' => implode(',', $validatedData['days'])
+//         ]);
+//     }
+
+//     return response()->json([
+//         'success' => 'Data saved successfully',
+//         'updated_schedules' => $updatedSchedules,
+//         'updated_job_assigns' => $updatedJobAssigns,
+//     ]);
+// }
+
+
+/**
+ * Helper function to get day of the week by index.
+ *
+ * @param int $dayIndex Day index where 0 = Monday, 6 = Sunday
+ * @return int Corresponding Carbon day of week (1 for Monday, ..., 7 for Sunday)
+ */
+private function getDayOfWeek($dayIndex)
+{
+    $dayMap = [
+        0 => Carbon::MONDAY,
+        1 => Carbon::TUESDAY,
+        2 => Carbon::WEDNESDAY,
+        3 => Carbon::THURSDAY,
+        4 => Carbon::FRIDAY,
+        5 => Carbon::SATURDAY,
+        6 => Carbon::SUNDAY,
+    ];
+
+    return $dayMap[$dayIndex] ?? Carbon::MONDAY;
+}
+
+/**
+ * Helper function to get the next occurrence of a specified day of the week.
+ *
+ * @param Carbon|string $startDate
+ * @param int $targetDayOfWeek
+ * @return Carbon
+ */
+private function getNextOccurrence($startDate, $targetDayOfWeek)
+{
+    if (!$startDate instanceof Carbon) {
+        $startDate = Carbon::parse($startDate);
+    }
+
+    $daysUntilNext = ($targetDayOfWeek - $startDate->dayOfWeek + 7) % 7;
+
+    if ($daysUntilNext == 0) {
+        $daysUntilNext = 7;
+    }
+
+    return $startDate->copy()->addDays($daysUntilNext);
+}
+
+
+
+public function routingrurl(Request $request)
+{
+    // Try to find an existing RoutingTrigger by routing_title, or create a new one if it doesn't exist
+    $routingTrigger = RoutingTrigger::updateOrCreate(
+        ['routing_title' => $request->input('routing_title')], // Check for existing routing title
+        [
+            'created_by' => auth()->id(),
+            'updated_by' => auth()->id(),
+            'created_at' => now(),
+            'updated_at' => now(),
+            'routing_cron' => 'no',
+            'routing_cron_date' => now(),
+            'is_active' => 1,
+        ]
+    );
+
+    // Get technicians and days from the request
+    $technicians = $request->input('technicians', []);
+    $days = $request->input('days', []); // Array of days
+
+    // Loop through each technician to create or update entries in RoutingTriggerTechnician
+    foreach ($technicians as $technicianId) {
+        // For each technician, create a new entry with days selected as an array (stored as JSON)
+        RoutingTriggerTechnician::updateOrCreate(
+            [
+                'routing_id' => $routingTrigger->routing_id,
+                'technician_id' => $technicianId,
+            ],
+            [
+                'days_selected' => json_encode($days), // Store days as a JSON array
+                'job_confirmed' => $request->has('job_confirmed') ? 1 : 0,
+                'parts_available' => $request->has('parts_available') ? 1 : 0,
+                'last_updated' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+    }
+
+    return response()->json(['message' => 'Routing trigger and technicians saved or updated successfully.']);
+}
+
+
+
+
 }

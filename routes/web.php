@@ -396,6 +396,15 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/technicians/customer_file_store/', [UserController::class, 'customer_file_store'])->name('customer_file_store');
     Route::post('/technicians/customer_leadsource_store/', [UserController::class, 'customer_leadsource_store'])->name('customer_leadsource_store');
 
+Route::post('documents/technician/store', [TechnicianController::class, 'techdocstore'])->name('documents.store');
+// Route::get('documents/technician/edit/{id}', [TechnicianController::class, 'edit'])->name('documents.edit');
+// Route::post('documents/technician/update/{id}', [TechnicianController::class, 'update'])->name('documents.update');
+Route::delete('documents/technician/delete/{id}', [TechnicianController::class, 'techdocdestroy'])->name('documents.destroy');
+Route::post('documents/technician/update/{id}', [TechnicianController::class, 'techdocupdate'])->name('documents.update');
+
+
+
+
     Route::POST('/technicians/store', [TechnicianController::class, 'store'])->name('technicians.store');
 
     Route::POST('/technicians/fleet', [TechnicianController::class, 'fleettechnician'])->name('technicians.fleet');
@@ -541,7 +550,9 @@ Route::middleware('auth')->group(function () {
 
 
 Route::get('/get-location-best-root', [ScheduleController::class, 'getLocation'])->name('getLocation.bestroot');
+  Route::post('/get-location-best-root-saveRoute', [ScheduleController::class, 'getLocationpositionsaveRoute'])->name('getLocation.bestroot.saveRoute');
 
+  
     // Route for displaying all tasks (GET request)
 
 
@@ -715,6 +726,8 @@ Route::get('/get-location-best-root', [ScheduleController::class, 'getLocation']
 
 
 
+    Route::post('map-routingrurl', [MapController::class, 'routingrurl'])->name('map.routingrurl');
+
     Route::get('map', [MapController::class, 'index'])->name('map');
 
     Route::get('marker-content', [MapController::class, 'getMarkerDetails'])->name('map.getMarkerDetails');
@@ -725,7 +738,13 @@ Route::get('/get-location-best-root', [ScheduleController::class, 'getLocation']
 
     Route::post('reschedule-job', [MapController::class, 'rescheduleJob'])->name('reschedule.job');
 
+Route::get('routing', [MapController::class, 'getAllTechniciansRoutes'])->name('getAllTechniciansRoutes.job.map');
 
+Route::post('map-routing/store', [MapController::class, 'storerouting'])->name('map.routing.store');
+
+
+
+Route::get('map-raute-date', [MapController::class, 'getAllTechniciansRoutesdate'])->name('getAllTechniciansRoutesdate');
 
     //service section route
 
@@ -1125,7 +1144,6 @@ Route::get('events-iframe', [EventController::class, 'indexiframe'])->name('even
     Route::get('/vendor/delete/{id}', [VendorController::class, 'delete'])->name('vendor.delete');
 
     Route::get('/cities/search', [VendorController::class, 'search'])->name('cities.search');
-
 
 
 

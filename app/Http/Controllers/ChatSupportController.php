@@ -57,6 +57,37 @@ class ChatSupportController extends Controller
         return view('chat.app_chats', compact('chatConversion', 'users', 'employee', 'customer', 'predefinedReplies', 'technician', 'quickId', 'quickUserRole', 'subject'));
     }
 
+    public function index_iframe(Request $request)
+    {
+
+        $chatConversion = ChatConversation::with('Participant.user')->latest('last_activity')->get();
+        $users = User::all();
+
+        $employee = User::whereNotIn('role', ['superadmin', 'customer', 'technician'])->where('status', 'active')->get();
+
+        $technician = User::where('role', 'technician')->where('status', 'active')->get();
+
+        $sendToIds = $chatConversion->pluck('send_to')->unique();
+
+        $customer = User::where('role', 'customer')
+            ->whereIn('id', $sendToIds)
+            ->get();
+
+        $predefinedReplies = PredefineReplies::all();
+
+        $quickId = $request->get('quick_id');
+        $quickUserRole = $request->get('quick_user_role');
+
+        $subject = ChatMessage::where('type', 'subject')->get();
+
+
+        return view('chat.iframe_chat', compact('chatConversion', 'users', 'employee', 'customer', 'predefinedReplies', 'technician', 'quickId', 'quickUserRole', 'subject'));
+    }
+
+
+ 
+    
+
     // new  code start 
 
 

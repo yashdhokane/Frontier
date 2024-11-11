@@ -3236,35 +3236,18 @@ class ScheduleController extends Controller
     }
 
 
-// public function getLocation(Request $request)
-// {
-//     $userId = $request->input('id');
-
-//     // Fetch latitude and longitude from the 'customer_user_address' table
-//     $location = CustomerUserAddress::where('user_id', $userId)->first(['latitude', 'longitude']);
-
-//     if ($location) {
-//         return response()->json($location);
-//     }
-
-//     return response()->json(['error' => 'Location not found.'], 404);
-// }
-
-
-
- public function getLocation(Request $request)
+public function getLocation(Request $request)
 {
     // Dump the request data for debugging
-    //dd($request->all());
+    //  dd($request->all());
 
     $userId = $request->input('id'); // Technician's user_id
-
-    // Parse the input date and format it
     $inputDate = Carbon::parse($request->input('date'))->format('Y-m-d');
+    $priority = $request->input('priority');
 
-    // Fetch technician's location and name
+    // Fetch technician's location
     $technicianLocation = CustomerUserAddress::where('user_id', $userId)
-        ->first(['user_id', 'latitude', 'longitude']);
+        ->first(['user_id', 'latitude', 'longitude', 'address_line1', 'city', 'zipcode', 'state_name']);
 
     if (!$technicianLocation) {
         return response()->json(['error' => 'Technician location not found.'], 404);
@@ -3272,28 +3255,36 @@ class ScheduleController extends Controller
 
     $technicianName = User::where('id', $technicianLocation->user_id)->value('name');
     $technicianLocation->name = $technicianName;
+    $technicianLocation->full_address = $technicianLocation->address_line1 . ', ' .
+                                         $technicianLocation->city . ', ' .
+                                         $technicianLocation->state_name . ' ' .
+                                         $technicianLocation->zipcode;
 
-    // Set $currentDate to the input date
     $currentDate = Carbon::createFromFormat('Y-m-d', $inputDate)->startOfDay();
 
-    // Fetch job IDs for the technician on the input date
-    $jobIds = Schedule::where('technician_id', $userId)
+    // Fetch job IDs, positions, and is_routes_map for the technician on the input date
+    $jobs = Schedule::where('technician_id', $userId)
                 ->whereDate('start_date_time', '=', $currentDate)
-                ->pluck('job_id');
+                ->get(['job_id', 'position', 'is_routes_map','job_onmap_reaching_timing']);
 
-    if ($jobIds->isEmpty()) {
+    if ($jobs->isEmpty()) {
         return response()->json(['error' => 'No jobs found for this technician on the selected date.'], 404);
     }
 
-    $customerIds = JobAssign::whereIn('job_id', $jobIds)->pluck('customer_id');
+    $firstJob = $jobs->first();
+    $technicianLocation->job_id = $firstJob->job_id;
+    $technicianLocation->position = $firstJob->position;
+    $technicianLocation->is_routes_map = $firstJob->is_routes_map;
+
+    // Fetch customer IDs assigned to the jobs
+    $customerIds = JobAssign::whereIn('job_id', $jobs->pluck('job_id'))->pluck('customer_id');
 
     if ($customerIds->isEmpty()) {
         return response()->json(['error' => 'No customers found for these jobs.'], 404);
     }
 
-    // Fetch customer locations along with their names
     $customerLocations = CustomerUserAddress::whereIn('user_id', $customerIds)
-        ->get(['user_id', 'latitude', 'longitude']);
+        ->get(['user_id', 'latitude', 'longitude', 'address_line1', 'city', 'zipcode', 'state_name']);
 
     if ($customerLocations->isEmpty()) {
         return response()->json(['error' => 'No customer locations found.'], 404);
@@ -3302,6 +3293,37 @@ class ScheduleController extends Controller
     foreach ($customerLocations as $customerLocation) {
         $customerName = User::where('id', $customerLocation->user_id)->value('name');
         $customerLocation->name = $customerName;
+
+        $job = JobAssign::where('customer_id', $customerLocation->user_id)
+            ->whereIn('job_id', $jobs->pluck('job_id'))
+            ->first(['job_id', 'duration']);
+
+        if ($job) {
+            $customerLocation->job_id = $job->job_id;
+
+            // Format job duration
+            $hours = floor($job->duration / 60);
+            $minutes = $job->duration % 60;
+            $formattedDuration = "{$hours} hr {$minutes} min";
+            $customerLocation->duration = $formattedDuration;
+
+            // Fetch position and is_routes_map from Schedule
+            $schedule = Schedule::where('technician_id', $userId)
+                ->where('job_id', $job->job_id)
+                ->first(['position', 'is_routes_map','job_onmap_reaching_timing']);
+
+            if ($schedule) {
+                $customerLocation->position = $schedule->position;
+                $customerLocation->is_routes_map = $schedule->is_routes_map;
+                 $customerLocation->job_onmap_reaching_timing = $schedule->job_onmap_reaching_timing;
+
+            }
+        }
+
+        $customerLocation->full_address = $customerLocation->address_line1 . ', ' .
+                                          $customerLocation->city . ', ' .
+                                          $customerLocation->state_name . ' ' .
+                                          $customerLocation->zipcode;
     }
 
     // Sort customers based on distance from technician's location
@@ -3314,11 +3336,99 @@ class ScheduleController extends Controller
         return $customer;
     })->sortBy('distance');
 
+    $sortedCustomers = $sortedCustomers->values()->map(function($customer, $index) {
+        $customer->number = $index + 1;
+        return $customer;
+    });
+
+    // Customers filtered based on is_routes_map = 1
+    $sortedCustomers1 = $customerLocations->filter(function($customer) use ($userId, $jobs) {
+        $jobId = JobAssign::where('customer_id', $customer->user_id)
+            ->whereIn('job_id', $jobs->pluck('job_id'))
+            ->value('job_id');
+
+        return Schedule::where('technician_id', $userId)
+            ->where('job_id', $jobId)
+            ->where('is_routes_map', 1)
+            ->exists();
+    })->map(function($customer) use ($technicianLocation) {
+        $distance = $this->calculateDistance(
+            $technicianLocation->latitude, $technicianLocation->longitude,
+            $customer->latitude, $customer->longitude
+        );
+        $customer->distance = $distance;
+        return $customer;
+    });
+
+    $sortedCustomers1 = $sortedCustomers1->values()->map(function($customer, $index) {
+        $customer->number = $index + 1;
+        return $customer;
+    });
+
+    // Customers filtered based on is_confirmed = 'yes' in JobModel
+    $sortedCustomers2 = $customerLocations->filter(function($customer) use ($userId, $jobs) {
+        $jobId = JobAssign::where('customer_id', $customer->user_id)
+            ->whereIn('job_id', $jobs->pluck('job_id'))
+            ->value('job_id');
+
+        return Schedule::where('technician_id', $userId)
+            ->where('job_id', $jobId)
+            ->whereHas('JobModel', function ($query) {
+                $query->where('is_confirmed', 'yes');
+            })
+            ->exists();
+    })->map(function($customer) use ($technicianLocation) {
+        $distance = $this->calculateDistance(
+            $technicianLocation->latitude, $technicianLocation->longitude,
+            $customer->latitude, $customer->longitude
+        );
+        $customer->distance = $distance;
+        return $customer;
+    });
+
+    $sortedCustomers2 = $sortedCustomers2->values()->map(function($customer, $index) {
+        $customer->number = $index + 1;
+        return $customer;
+    });
+
+    // Customers filtered based on priority
+    $sortedCustomers3 = $customerLocations->filter(function($customer) use ($userId, $jobs, $priority) {
+        $jobId = JobAssign::where('customer_id', $customer->user_id)
+            ->whereIn('job_id', $jobs->pluck('job_id'))
+            ->value('job_id');
+
+        return Schedule::where('technician_id', $userId)
+            ->where('job_id', $jobId)
+            ->whereHas('JobModel', function ($query) use ($priority) {
+                $query->where('priority', $priority);
+            })
+            ->exists();
+    })->map(function($customer) use ($technicianLocation) {
+        $distance = $this->calculateDistance(
+            $technicianLocation->latitude, $technicianLocation->longitude,
+            $customer->latitude, $customer->longitude
+        );
+        $customer->distance = $distance;
+        return $customer;
+    });
+
+    $sortedCustomers3 = $sortedCustomers3->values()->map(function($customer, $index) {
+        $customer->number = $index + 1;
+        return $customer;
+    });
+
     return response()->json([
         'technician_location' => $technicianLocation,
-        'sorted_customers' => $sortedCustomers->values(),
+        'sorted_customers' => $sortedCustomers,
+        'sorted_customers1' => $sortedCustomers1,
+        'sorted_customers2' => $sortedCustomers2, // Response for jobs with is_confirmed = 'yes'
+        'sorted_customers3' => $sortedCustomers3, // Response for jobs with priority filtering
     ]);
 }
+
+
+
+
 
 
 private function calculateDistance($lat1, $lon1, $lat2, $lon2) {
@@ -3371,6 +3481,498 @@ private function calculateDistance($lat1, $lon1, $lat2, $lon2) {
             return response()->json(['success' => false, 'message' => 'Failed to send SMS.']);
         }
     }
+
+public function getLocationpositionsaveRoute1(Request $request)
+{  
+    // Get the customers array from the request
+    $customers = $request->input('customers');
+    $updatedCustomers = [];
+    // dd($customers);
+    // Parse the input date and set to start of day
+    $inputDate = Carbon::parse($request->input('date'))->format('Y-m-d');
+    $currentDate = Carbon::createFromFormat('Y-m-d', $inputDate)->startOfDay();
+
+    // Loop through the customers and update each position and is_routes_map in the Schedule model
+    foreach ($customers as $customer) {
+        $userId = $customer['user_id']; // This is the customer_id
+        $position = $customer['position'];
+        $technicianId = $customer['technicianId'];
+        $jobId = $customer['jobid']; // Get jobid from the customer array
+        $isRoute = $customer['isroute']; // Capture isroute value
+
+        // Update the position and is_routes_map in the Schedule model for the respective job
+        Schedule::where('job_id', $jobId) // Use job_id from the customer data
+            ->where('technician_id', $technicianId) // Ensure we're updating the correct technician's job
+            // ->whereDate('start_date_time', '=', $currentDate) // Check date condition
+            ->update([
+                'position' => $position,
+                'is_routes_map' => $isRoute // Update is_routes_map based on isroute
+            ]);
+            
+        // Fetch customer details from CustomerUserAddress and User model
+        $customerData = CustomerUserAddress::where('user_id', $userId)->first();
+        $customerUser = User::find($userId);
+
+        // Fetch technician details
+        $technicianData = CustomerUserAddress::where('user_id', $technicianId)->first();
+        $technicianUser = User::find($technicianId);
+
+        // Collect customer and technician data for the response
+        $updatedCustomers[] = [
+            'customer' => [
+                'user_id' => $customerUser->id,
+                'name' => $customerUser->name,
+                'latitude' => $customerData->latitude,
+                'longitude' => $customerData->longitude,
+                'full_address' => $customerData->address_line1 . ', ' . 
+                                 $customerData->city . ', ' . 
+                                 $customerData->zipcode . ', ' . 
+                                 $customerData->state_name,
+                'position' => $position, // Include the updated position
+                'isroute' => $isRoute
+            ],
+            'technician' => [
+                'user_id' => $technicianUser->id,
+                'name' => $technicianUser->name,
+                'latitude' => $technicianData->latitude,
+                'longitude' => $technicianData->longitude,
+                'full_address' => $technicianData->address_line1 . ', ' . 
+                                 $technicianData->city . ', ' . 
+                                 $technicianData->zipcode . ', ' . 
+                                 $technicianData->state_name,
+                'position' => $position, // Include the updated position for technician
+                                'isroute' => $isRoute
+
+            ]
+        ];
+    }
+
+    // Return success response with updated customer and technician data
+    return response()->json([
+        'success' => true,
+        'message' => 'Positions updated successfully',
+        'updated_customers' => $updatedCustomers
+    ]);
+}
+
+
+
+// public function getLocationpositionsaveRoute(Request $request)
+// {  
+//     // Get the customers array from the request
+//     $customers = $request->input('customers');
+//     $updatedCustomers = [];
+//     $previousLatitude = null; // Store previous latitude for distance calculation
+//     $previousLongitude = null; // Store previous longitude for distance calculation
+//     $speedKmPerHour = 50; // Assuming technician travels at 50 km/h, adjust this value based on your requirements
+
+//     // Parse the input date and set to start of day
+//     $inputDate = Carbon::parse($request->input('date'))->format('Y-m-d');
+//     $currentDate = Carbon::createFromFormat('Y-m-d', $inputDate)->startOfDay();
+
+//     // Loop through the customers and update each position and is_routes_map in the Schedule model
+//     foreach ($customers as $customer) {
+//         $userId = $customer['user_id']; // This is the customer_id
+//         $position = $customer['position'];
+//         $technicianId = $customer['technicianId'];
+//         $jobId = $customer['jobid']; // Get jobid from the customer array
+//         $isRoute = $customer['isroute']; // Capture isroute value
+
+//         // Initialize timing variables
+//         $calculatedTimingInMinutes = 0; // To store the calculated time in minutes
+
+//         // Fetch customer details from CustomerUserAddress and User model
+//         $customerData = CustomerUserAddress::where('user_id', $userId)->first();
+//         $customerUser = User::find($userId);
+
+//         // Fetch technician details
+//         $technicianData = CustomerUserAddress::where('user_id', $technicianId)->first();
+//         $technicianUser = User::find($technicianId);
+
+//         // Only calculate timing between points if isRoute is 1 and previous position exists
+//         if ($isRoute == 1 && $previousLatitude !== null && $previousLongitude !== null) {
+//             // Calculate the distance between previous and current positions using Haversine formula
+//             $distanceKm = $this->calculateDistance($previousLatitude, $previousLongitude, $customerData->latitude, $customerData->longitude);
+            
+//             // Calculate time in hours (Distance / Speed)
+//             $calculatedTimeInHours = $distanceKm / $speedKmPerHour;
+
+//             // Convert time to minutes
+//             $calculatedTimingInMinutes = $calculatedTimeInHours * 60; // Time in minutes
+//         }
+
+//         // Update the position, is_routes_map, and job_onmap_reaching_timing in the Schedule model for the respective job
+//         Schedule::where('job_id', $jobId) // Use job_id from the customer data
+//             ->where('technician_id', $technicianId) // Ensure we're updating the correct technician's job
+//             ->update([
+//                 'position' => $position,
+//                 'is_routes_map' => $isRoute, // Update is_routes_map based on isroute
+//                 'job_onmap_reaching_timing' => round($calculatedTimingInMinutes, 2) // Store calculated timing between two positions
+//             ]);
+        
+//         // Update the previous position and coordinates for the next loop iteration
+//         $previousLatitude = $customerData->latitude;
+//         $previousLongitude = $customerData->longitude;
+
+//         // Collect customer and technician data for the response
+//         $updatedCustomers[] = [
+//             'customer' => [
+//                 'user_id' => $customerUser->id,
+//                 'name' => $customerUser->name,
+//                 'latitude' => $customerData->latitude,
+//                 'longitude' => $customerData->longitude,
+//                 'full_address' => $customerData->address_line1 . ', ' . 
+//                                  $customerData->city . ', ' . 
+//                                  $customerData->zipcode . ', ' . 
+//                                  $customerData->state_name,
+//                 'position' => $position, // Include the updated position
+//                 'isroute' => $isRoute,
+//                 'calculated_timing_in_minutes' => round($calculatedTimingInMinutes, 2) // Include the timing in minutes
+//             ],
+//             'technician' => [
+//                 'user_id' => $technicianUser->id,
+//                 'name' => $technicianUser->name,
+//                 'latitude' => $technicianData->latitude,
+//                 'longitude' => $technicianData->longitude,
+//                 'full_address' => $technicianData->address_line1 . ', ' . 
+//                                  $technicianData->city . ', ' . 
+//                                  $technicianData->zipcode . ', ' . 
+//                                  $technicianData->state_name,
+//                 'position' => $position, // Include the updated position for technician
+//                 'isroute' => $isRoute
+//             ]
+//         ];
+//     }
+
+//     // Return success response with updated customer and technician data
+//     return response()->json([
+//         'success' => true,
+//         'message' => 'Positions updated successfully',
+//         'updated_customers' => $updatedCustomers
+//     ]);
+// }
+
+//  public function getLocationpositionsaveRoute(Request $request)
+// {  
+//     // Get the customers array from the request
+//     $customers = $request->input('customers');
+//     $updatedCustomers = [];
+//     $previousLatitude = null; // Store previous latitude for distance calculation
+//     $previousLongitude = null; // Store previous longitude for distance calculation
+//     $speedKmPerHour = 50; // Assuming technician travels at 50 km/h
+
+//     // Parse the input date and set to start of day
+//     $inputDate = Carbon::parse($request->input('date'))->format('Y-m-d');
+//     $currentDate = Carbon::createFromFormat('Y-m-d', $inputDate)->startOfDay();
+
+//     // Fetch technician details (assuming technician ID is the same for all customers)
+//     $technicianId = $customers[0]['technicianId'];
+//     $technicianData = CustomerUserAddress::where('user_id', $technicianId)->first();
+//     $technicianUser = User::find($technicianId);
+
+//     // Store technician's initial position
+//     $technicianLatitude = $technicianData->latitude;
+//     $technicianLongitude = $technicianData->longitude;
+
+//     // Loop through the customers and update each position and is_routes_map in the Schedule model
+//     foreach ($customers as $index => $customer) {
+//         $userId = $customer['user_id']; // This is the customer_id
+//         $position = $customer['position'];
+//         $jobId = $customer['jobid']; // Get jobid from the customer array
+//         $isRoute = $customer['isroute']; // Capture isroute value
+
+//         // Fetch customer details from CustomerUserAddress and User model
+//         $customerData = CustomerUserAddress::where('user_id', $userId)->first();
+//         $customerUser = User::find($userId);
+
+//         // Initialize timing variables
+//         $calculatedTimingInMinutes = 0; // To store the calculated time in minutes
+
+//         // Only calculate timing between points if isRoute is 1
+//         if ($isRoute == 1) {
+//             if ($index == 0) {
+//                 // Calculate distance from technician to the first customer
+//                 $distanceKm = $this->calculateDistance($technicianLatitude, $technicianLongitude, $customerData->latitude, $customerData->longitude);
+//             } else {
+//                 // Calculate distance from previous customer to the current customer
+//                 $distanceKm = $this->calculateDistance($previousLatitude, $previousLongitude, $customerData->latitude, $customerData->longitude);
+//             }
+
+//             // Calculate time in hours (Distance / Speed)
+//             $calculatedTimeInHours = $distanceKm / $speedKmPerHour;
+
+//             // Convert time to minutes
+//             $calculatedTimingInMinutes = $calculatedTimeInHours * 60; // Time in minutes
+//         }
+
+//         // Update the position, is_routes_map, and job_onmap_reaching_timing in the Schedule model for the respective job
+//         Schedule::where('job_id', $jobId) // Use job_id from the customer data
+//             ->where('technician_id', $technicianId) // Ensure we're updating the correct technician's job
+//             ->update([
+//                 'position' => $position,
+//                 'is_routes_map' => $isRoute, // Update is_routes_map based on isroute
+//                 'job_onmap_reaching_timing' => round($calculatedTimingInMinutes, 2) // Store calculated timing between two positions
+//             ]);
+        
+//         // Update the previous position and coordinates for the next loop iteration
+//         $previousLatitude = $customerData->latitude;
+//         $previousLongitude = $customerData->longitude;
+
+//         // Collect customer and technician data for the response
+//         $updatedCustomers[] = [
+//             'customer' => [
+//                 'user_id' => $customerUser->id,
+//                 'name' => $customerUser->name,
+//                 'latitude' => $customerData->latitude,
+//                 'longitude' => $customerData->longitude,
+//                 'full_address' => $customerData->address_line1 . ', ' . 
+//                                  $customerData->city . ', ' . 
+//                                  $customerData->zipcode . ', ' . 
+//                                  $customerData->state_name,
+//                 'position' => $position, // Include the updated position
+//                 'isroute' => $isRoute,
+//                 'calculated_timing_in_minutes' => round($calculatedTimingInMinutes, 2) // Include the timing in minutes
+//             ],
+//             'technician' => [
+//                 'user_id' => $technicianUser->id,
+//                 'name' => $technicianUser->name,
+//                 'latitude' => $technicianData->latitude,
+//                 'longitude' => $technicianData->longitude,
+//                 'full_address' => $technicianData->address_line1 . ', ' . 
+//                                  $technicianData->city . ', ' . 
+//                                  $technicianData->zipcode . ', ' . 
+//                                  $technicianData->state_name,
+//                 'position' => $position, // Include the updated position for technician
+//                 'isroute' => $isRoute
+//             ]
+//         ];
+//     }
+
+//     // Return success response with updated customer and technician data
+//     return response()->json([
+//         'success' => true,
+//         'message' => 'Positions updated successfully',
+//         'updated_customers' => $updatedCustomers
+//     ]);
+// }
+
+// public function getLocationpositionsaveRoute(Request $request)
+// {  
+//     // Get the customers array from the request
+//     $customers = $request->input('customers');
+//     $updatedCustomers = [];
+//     $previousLatitude = null; // Store previous latitude for distance calculation
+//     $previousLongitude = null; // Store previous longitude for distance calculation
+//     $speedKmPerHour = 50; // Assuming technician travels at 50 km/h
+
+//     // Parse the input date and set to start of day
+//     $inputDate = Carbon::parse($request->input('date'))->format('Y-m-d');
+//     $currentDate = Carbon::createFromFormat('Y-m-d', $inputDate)->startOfDay();
+
+//     // Fetch technician details (assuming technician ID is the same for all customers)
+//     $technicianId = $customers[0]['technicianId'];
+//     $technicianData = CustomerUserAddress::where('user_id', $technicianId)->first();
+//     $technicianUser = User::find($technicianId);
+
+//     // Store technician's initial position
+//     $technicianLatitude = $technicianData->latitude;
+//     $technicianLongitude = $technicianData->longitude;
+
+//     // Loop through the customers and update each position and is_routes_map in the Schedule model
+//     foreach ($customers as $index => $customer) {
+//         $userId = $customer['user_id']; // This is the customer_id
+//         $position = $customer['position'];
+//         $jobId = $customer['jobid']; // Get jobid from the customer array
+//         $isRoute = $customer['isroute']; // Capture isroute value
+
+//         // Fetch customer details from CustomerUserAddress and User model
+//         $customerData = CustomerUserAddress::where('user_id', $userId)->first();
+//         $customerUser = User::find($userId);
+
+//         // Initialize timing variables
+//         $calculatedTimingInMinutes = 0; // To store the calculated time in minutes
+
+//         // Only calculate timing between points if isRoute is 1
+//         if ($isRoute == 1) {
+//             // Calculate timing for the first two positions specifically
+//             if ($index == 0) {
+//                 // Calculate distance from technician to the first customer
+//                 $distanceKm = $this->calculateDistance($technicianLatitude, $technicianLongitude, $customerData->latitude, $customerData->longitude);
+//             } elseif ($index == 1) {
+//                 // Calculate distance from the first customer to the second customer
+//                 $distanceKm = $this->calculateDistance($technicianLatitude, $technicianLongitude, $customerData->latitude, $customerData->longitude);
+//             } else {
+//                 // Use previous customer's coordinates for subsequent customers
+//                 $distanceKm = $this->calculateDistance($previousLatitude, $previousLongitude, $customerData->latitude, $customerData->longitude);
+//             }
+
+//             // Calculate time in hours (Distance / Speed)
+//             $calculatedTimeInHours = $distanceKm / $speedKmPerHour;
+
+//             // Convert time to minutes
+//             $calculatedTimingInMinutes = $calculatedTimeInHours * 60; // Time in minutes
+//         }
+
+//         // Update the position, is_routes_map, and job_onmap_reaching_timing in the Schedule model for the respective job
+//         Schedule::where('job_id', $jobId) // Use job_id from the customer data
+//             ->where('technician_id', $technicianId) // Ensure we're updating the correct technician's job
+//             ->update([
+//                 'position' => $position,
+//                 'is_routes_map' => $isRoute, // Update is_routes_map based on isroute
+//                 'job_onmap_reaching_timing' => round($calculatedTimingInMinutes, 2) // Store calculated timing between two positions
+//             ]);
+        
+//         // Update the previous position and coordinates for the next loop iteration
+//         $previousLatitude = $customerData->latitude;
+//         $previousLongitude = $customerData->longitude;
+
+//         // Collect customer and technician data for the response
+//         $updatedCustomers[] = [
+//             'customer' => [
+//                 'user_id' => $customerUser->id,
+//                 'name' => $customerUser->name,
+//                 'latitude' => $customerData->latitude,
+//                 'longitude' => $customerData->longitude,
+//                 'full_address' => $customerData->address_line1 . ', ' . 
+//                                  $customerData->city . ', ' . 
+//                                  $customerData->zipcode . ', ' . 
+//                                  $customerData->state_name,
+//                 'position' => $position, // Include the updated position
+//                 'isroute' => $isRoute,
+//                 'job_onmap_reaching_timing' => round($calculatedTimingInMinutes, 2) // Include the timing in minutes
+//             ],
+//             'technician' => [
+//                 'user_id' => $technicianUser->id,
+//                 'name' => $technicianUser->name,
+//                 'latitude' => $technicianData->latitude,
+//                 'longitude' => $technicianData->longitude,
+//                 'full_address' => $technicianData->address_line1 . ', ' . 
+//                                  $technicianData->city . ', ' . 
+//                                  $technicianData->zipcode . ', ' . 
+//                                  $technicianData->state_name,
+//                 'position' => $position, // Include the updated position for technician
+//                 'isroute' => $isRoute
+//             ]
+//         ];
+//     }
+
+//     // Return success response with updated customer and technician data
+//     return response()->json([
+//         'success' => true,
+//         'message' => 'Positions updated successfully',
+//         'updated_customers' => $updatedCustomers
+//     ]);
+// }
+
+public function getLocationpositionsaveRoute(Request $request)
+{  
+    // Get the customers array from the request
+    $customers = $request->input('customers');
+    $updatedCustomers = [];
+    $previousLatitude = null; // Store previous latitude for distance calculation
+    $previousLongitude = null; // Store previous longitude for distance calculation
+    $speedKmPerHour = 50; // Assuming technician travels at 50 km/h
+
+    // Parse the input date and set to start of day
+    $inputDate = Carbon::parse($request->input('date'))->format('Y-m-d');
+    $currentDate = Carbon::createFromFormat('Y-m-d', $inputDate)->startOfDay();
+
+    // Fetch technician details (assuming technician ID is the same for all customers)
+    $technicianId = $customers[0]['technicianId'];
+    $technicianData = CustomerUserAddress::where('user_id', $technicianId)->first();
+    $technicianUser = User::find($technicianId);
+
+    // Store technician's initial position
+    $technicianLatitude = $technicianData->latitude;
+    $technicianLongitude = $technicianData->longitude;
+
+    // Initialize valid positions to track customers with isRoute = 1
+    $validPositions = [];
+
+    // Loop through the customers and update each position and is_routes_map in the Schedule model
+    foreach ($customers as $index => $customer) {
+        $userId = $customer['user_id']; // This is the customer_id
+        $position = $customer['position'];
+        $jobId = $customer['jobid']; // Get jobid from the customer array
+        $isRoute = $customer['isroute']; // Capture isroute value
+
+        // Fetch customer details from CustomerUserAddress and User model
+        $customerData = CustomerUserAddress::where('user_id', $userId)->first();
+        $customerUser = User::find($userId);
+
+        // Initialize timing variable
+        $calculatedTimingInMinutes = 0; // To store the calculated time in minutes
+
+        // Only calculate timing if the current position is a route (isRoute = 1)
+        if ($isRoute == 1) {
+            // Check if valid positions exist to calculate timing
+            if (count($validPositions) === 0) {
+                // If this is the first valid position, calculate distance from technician
+                $distanceKm = $this->calculateDistance($technicianLatitude, $technicianLongitude, $customerData->latitude, $customerData->longitude);
+            } else {
+                // Use the last valid customer for timing calculation
+                $lastValidCustomer = end($validPositions);
+                $distanceKm = $this->calculateDistance($lastValidCustomer->latitude, $lastValidCustomer->longitude, $customerData->latitude, $customerData->longitude);
+            }
+
+            // Calculate time in hours (Distance / Speed)
+            $calculatedTimeInHours = $distanceKm / $speedKmPerHour;
+
+            // Convert time to minutes
+            $calculatedTimingInMinutes = $calculatedTimeInHours * 60; // Time in minutes
+
+            // Add the current customer to the valid positions
+            $validPositions[] = $customerData;
+        }
+
+        // Update the position, is_routes_map, and job_onmap_reaching_timing in the Schedule model for the respective job
+        Schedule::where('job_id', $jobId) // Use job_id from the customer data
+            ->where('technician_id', $technicianId) // Ensure we're updating the correct technician's job
+            ->update([
+                'position' => $position,
+                'is_routes_map' => $isRoute, // Update is_routes_map based on isroute
+                'job_onmap_reaching_timing' => $isRoute == 1 ? round($calculatedTimingInMinutes, 2) : null // Store calculated timing only if isRoute is 1
+            ]);
+        
+        // Collect customer and technician data for the response
+        $updatedCustomers[] = [
+            'customer' => [
+                'user_id' => $customerUser->id,
+                'name' => $customerUser->name,
+                'latitude' => $customerData->latitude,
+                'longitude' => $customerData->longitude,
+                'full_address' => $customerData->address_line1 . ', ' . 
+                                 $customerData->city . ', ' . 
+                                 $customerData->zipcode . ', ' . 
+                                 $customerData->state_name,
+                'position' => $position, // Include the updated position
+                'isroute' => $isRoute,
+                'job_onmap_reaching_timing' => $isRoute == 1 ? round($calculatedTimingInMinutes, 2) : null // Include timing only if isRoute is 1
+            ],
+            'technician' => [
+                'user_id' => $technicianUser->id,
+                'name' => $technicianUser->name,
+                'latitude' => $technicianData->latitude,
+                'longitude' => $technicianData->longitude,
+                'full_address' => $technicianData->address_line1 . ', ' . 
+                                 $technicianData->city . ', ' . 
+                                 $technicianData->zipcode . ', ' . 
+                                 $technicianData->state_name,
+                'position' => $position, // Include the updated position for technician
+                'isroute' => $isRoute
+            ]
+        ];
+    }
+
+    // Return success response with updated customer and technician data
+    return response()->json([
+        'success' => true,
+        'message' => 'Positions updated successfully',
+        'updated_customers' => $updatedCustomers
+    ]);
+}
+
+
 
 
 }

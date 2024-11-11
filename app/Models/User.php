@@ -91,6 +91,10 @@ class User extends Authenticatable
     }
     // User.php (assuming this is your User model)
 
+public function schedules()
+{
+    return $this->hasMany(Schedule::class, 'technician_id');
+}
 
 
 
@@ -171,9 +175,6 @@ class User extends Authenticatable
                 ->orderBy('start_date_time', 'desc');
         }
     }
-
-
-
 
     public function LoginHistory()
     {

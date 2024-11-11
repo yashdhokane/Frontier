@@ -1,3 +1,96 @@
+#sortableCustomerList1 li,
+#sortableCustomerList2 li,
+#sortableCustomerList3 li {
+    position: relative; /* Make the li position relative to allow absolute positioning of children */
+    /* margin-bottom: 14px !important; Add margin to create space between list items */
+    border: none !important; 
+    padding: 0 !important; /* Remove padding */
+     /* border: 1px solid #cdcdcd; */
+    /* margin-bottom: 10px; */
+    /* padding: 6px; */
+
+}
+.route_cst2{
+ border: 1px solid #cdcdcd;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+.customerdetailslist{
+    display: flex; justify-content: space-between; align-items: center;
+}
+.customerRouteFormed{
+    display: flex; flex-direction: column; width: 100% !important;
+}
+
+/* .suggested-window {
+    display: block;
+    position: absolute;
+    bottom: -5px; /* Adjust to create a gap below the li */
+    /* right: 5px; */
+    /* background-color: #f9f9f9; Background color for contrast */
+    /* padding: 1px 1px; Add padding for aesthetics */
+    /* border-radius: 4px; */
+    /* border: 1px solid #007BFF; Add a border around the suggested window */
+    /* border: 1px solid black; */
+    /* font-weight: bold; */
+    /* color: black; */
+    /* color: #007BFF; Text color to match the border */
+    /* font-size: 0.7em; */
+    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); Optional shadow for depth */
+    /* z-index: 1; Ensure it appears above other elements if overlapping */
+/* }  */
+
+
+.suggested-window {
+    display: block;
+    width: 100%;
+    text-align: right;
+    font-size: 0.9em;
+    border: 1px solid #cdcdcd;
+    padding: 15px 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.job-title-h6{
+    font-weight: bold; color: #4CAF50; margin-bottom: 5px; 
+    display: block;
+    width: 100%;
+    text-align: right;
+
+}
+
+.job-title-h5{
+margin-left: 5px;
+font-size: 1.0em !important;
+}
+ul{
+    list-style-type: none !important;
+
+}
+#customerInfo {
+    height: 500px; /* Match the height of the map */
+    overflow-y: auto; /* Enable vertical scrolling */
+    border: 1px solid #ccc; /* Optional: style for better visibility */
+    padding: 10px; /* Maintain padding */
+}
+
+#map {
+    height: 500px; /* Ensure map has fixed height */
+    border: 1px solid #ccc; /* Optional: style for better visibility */
+    width: 75%; /* Maintain map width */
+}
+/* Add this to your existing CSS or <style> tag */
+.btn-active {
+    /* border-color: rgb(252, 68, 1) !important; */
+    background-color: #2962ff !important;
+    color: #fff !important;
+    
+}
 
 
 .openJobTechDetails {

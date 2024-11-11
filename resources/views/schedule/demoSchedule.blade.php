@@ -139,13 +139,13 @@
                                                     @endphp
                                                     <div id='{{ $job->job_id }}' class="dts dragDiv stretchJob border width_job_{{ $job->technician_id }}"
                                                         style="height:{{ $height_slot }}px; position: relative; width:{{ $jobWidth }}px;"
-                                                        data-duration="{{ $job->JobModel->jobassignname->duration }}" data-technician-name="{{ $job->technician->name }}"  data-timezone-name="{{ $job->technician->TimeZone->timezone_name }}">
+                                                        data-duration="{{ $job->JobModel->jobassignname->duration ?? '' }}" data-technician-name="{{ $job->technician->name }}"  data-timezone-name="{{ $job->technician->TimeZone->timezone_name }}">
 
                                                         <a class="show_job_details text-white"
                                                             href="{{ $job->job_id ? route('tickets.show', $job->job_id) : '#' }}"
                                                             style="width: {{ $jobWidth }}px;">
                                                             <div class="mb-1 max_width_job{{ $job->technician_id }}"
-                                                                data-duration="{{ $job->JobModel->jobassignname->duration }}"
+                                                                data-duration="{{ $job->JobModel->jobassignname->duration ?? '' }}"
                                                                 data-technician-name="{{ $job->technician->name }}"
                                                                 data-timezone-name="{{ $job->technician->TimeZone->timezone_name }}"
                                                                 data-time="{{ $timeString }}"
@@ -429,11 +429,37 @@
             <div class="modal-body row openJobTechDetails">
                 <!-- Original content -->
             </div>
-            <div class="modal-body row mapbestroute" style="display:none;">
-                <!-- Response content will be injected here -->
+           <!-- <div class="modal-body row mapbestroute" style="display:none;">
+             
                                 <div id="map" style="height: 500px; width: 100%;"></div>
 
-            </div>
+            </div> -->
+            <div class="modal-body row mapbestroute" style="display:none;">
+    <!-- Buttons -->
+    <div class="col-12">
+        <button class="btn btn-primary float-left">Default Route</button>
+        <button class="btn btn-success float-left" style="margin-left: 5px;">Save Route</button>
+    </div>
+
+
+    <div class="d-flex w-100 mt-3">
+       
+        <div id="customer-show" style="width: 35%; height: 500px; background-color: #f1f1f1;">
+       
+        </div>
+
+        <!-- Second div - map (75% width) -->
+        <div id="map" style="width: 65%; height: 500px; background-color: #e2e2e2;">
+     
+        </div>
+    </div>
+
+    <!-- Third div - map2 (75% width, hidden by default) -->
+    <div id="map2" style="width: 75%; height: 500px; background-color: #ccc; display: none;">
+
+    </div>
+
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-light-danger text-danger font-medium waves-effect text-start" data-bs-dismiss="modal">
                     Close
@@ -453,7 +479,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div id="map" style="height: 500px; width: 100%;"></div>
+                
+                <div id="map3" style="height: 500px; width: 100%;"></div>
             </div>
         </div>
     </div>

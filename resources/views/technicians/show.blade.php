@@ -92,9 +92,9 @@ $address .= $location->zipcode;
                                 class="ri-money-dollar-box-line"></i> Payments</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#estimate_tab"
+                        <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#documents_tab"
                             role="tab" aria-controls="pills-timeline" aria-selected="false"><i
-                                class="far ri-price-tag-2-line"></i> Estimates</a>
+                                class="far ri-price-tag-2-line"></i> Documents</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link " id="pills-timeline-tab" data-bs-toggle="pill" href="#fleet_tab" role="tab"
@@ -128,6 +128,10 @@ $address .= $location->zipcode;
                             <li><a class="dropdown-item" data-bs-toggle="pill" href="#activity_tab" role="tab"
                                     aria-controls="pills-timeline" aria-selected="false"><i
                                         class="fas fa-calendar-check"></i> Schedule</a></li>
+                                        <li><a class="dropdown-item" data-bs-toggle="pill" href="#estimate_tab" role="tab"
+                                    aria-controls="pills-timeline" aria-selected="false"><i
+                                        class="fas fa-calendar-check"></i> Estimate</a></li>
+                                        
                         </ul>
                     </li>
 
@@ -610,6 +614,17 @@ $address .= $location->zipcode;
                         </div>
 
                     </div>
+
+    <div class="tab-pane fade" id="documents_tab" role="tabpanel" aria-labelledby="pills-timeline-tab">
+          <div class="card-body card-border shadow">
+          <div class="container mt-4">
+                                      @include('commonfiles.document_file')
+
+            
+                </div>
+               </div>
+     </div>
+
 
 
 

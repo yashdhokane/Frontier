@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use App\Models\Role;
 use App\Models\Tool;
 use App\Models\User;
+use App\Models\UserDocument;
+
 use App\Models\Payment;
 
 use App\Models\UserTag;
@@ -347,7 +349,7 @@ class TechnicianController extends Controller
         if (!$commonUser) {
             return view('404');
         }
-
+$documents =UserDocument::where('user_id', $commonUser->id)->get();
 
         $vehicleDescriptions = FleetVehicle::pluck('vehicle_description')->toArray();
         //dd($vehicleDescriptions);
@@ -519,7 +521,7 @@ class TechnicianController extends Controller
         )->get();
         //dd($login_history);
 
-        return view('technicians.show', compact('vehiclefleet', 'toolassign', 'tool', 'vehicleDescriptions', 'colorcode', 'schedule', 'estimates', 'activity', 'setting', 'login_history', 'commonUser', 'oil_change', 'tune_up', 'tire_rotation', 'breaks', 'inspection_codes', 'mileage', 'registration_expiration_date', 'vehicle_coverage', 'license_plate', 'vin_number', 'make', 'model', 'year', 'color', 'vehicle_weight', 'vehicle_cost', 'use_of_vehicle', 'repair_services', 'ezpass', 'service', 'additional_service_notes', 'last_updated', 'epa_certification', 'notename', 'payments', 'longitude', 'latitude', 'userAddresscity', 'jobasign', 'customerimage', 'location', 'jobasigndate', 'serviceAreas', 'locationStates', 'tags', 'cities', 'selectedTags', 'userTags', 'product', 'assign', 'technicianpart', 'tickets', 'payment', 'manufacturer', 'tech', 'UsersDetails'));
+        return view('technicians.show', compact('vehiclefleet', 'documents', 'toolassign', 'tool', 'vehicleDescriptions', 'colorcode', 'schedule', 'estimates', 'activity', 'setting', 'login_history', 'commonUser', 'oil_change', 'tune_up', 'tire_rotation', 'breaks', 'inspection_codes', 'mileage', 'registration_expiration_date', 'vehicle_coverage', 'license_plate', 'vin_number', 'make', 'model', 'year', 'color', 'vehicle_weight', 'vehicle_cost', 'use_of_vehicle', 'repair_services', 'ezpass', 'service', 'additional_service_notes', 'last_updated', 'epa_certification', 'notename', 'payments', 'longitude', 'latitude', 'userAddresscity', 'jobasign', 'customerimage', 'location', 'jobasigndate', 'serviceAreas', 'locationStates', 'tags', 'cities', 'selectedTags', 'userTags', 'product', 'assign', 'technicianpart', 'tickets', 'payment', 'manufacturer', 'tech', 'UsersDetails'));
     }
 
     public function edit($id)
@@ -571,7 +573,7 @@ class TechnicianController extends Controller
 
             // $serviceAreas = $technician->serviceAreas()->get();
 
-            return view('technicians.edit', compact('technician', 'serviceAreas', 'license_number', 'ssn', 'dob', 'locationStates', 'userTags', 'selectedTags', 'meta', 'location', 'Note', 'tags', 'source', 'first_name', 'last_name', 'home_phone', 'work_phone', 'cities'));
+            return view('technicians.edit', compact('technician',  'serviceAreas', 'license_number', 'ssn', 'dob', 'locationStates', 'userTags', 'selectedTags', 'meta', 'location', 'Note', 'tags', 'source', 'first_name', 'last_name', 'home_phone', 'work_phone', 'cities'));
         } else {
             // Handle the case where meta is not found, perhaps redirect to an error page
             return redirect()->route('technicians.index');
@@ -1832,6 +1834,142 @@ public function updatefleet(Request $request)
         //dd("end");
         return redirect()->route('iframe_index')->with('success', 'Technician has been created successfully.');
     }
+
+// public function techdocstore(Request $request)
+// {
+//     $request->validate([
+//         'user_id' => 'required',
+//         'document_name' => 'required|string|max:255',
+//         'document_type' => 'required|string',
+//         'upload_document' => 'required|', // File is optional for updates
+//     ]);
+
+//     $document = $request->document_id ? UserDocument::find($request->document_id) : new UserDocument;
+
+//     if ($request->hasFile('upload_document')) {
+//         $file = $request->file('upload_document');
+//         $directoryPath = public_path('technician/documents/' . $request->user_id);
+//         if (!file_exists($directoryPath)) {
+//             mkdir($directoryPath, 0777, true);
+//         }
+//         $fileName = $file->getClientOriginalName();
+//         $file->move($directoryPath, $fileName);
+//         $filePath = 'technician/documents/' . $request->user_id . '/' . $fileName;
+//         $document->file_path = $filePath;
+//     }
+
+//     $document->user_id = $request->user_id;
+//     $document->document_name = $request->document_name;
+//     $document->document_type = $request->document_type;
+//     $document->save();
+
+//     return redirect()->back()->with('success', $request->document_id ? 'Document updated successfully.' : 'Document uploaded successfully.');
+// }
+
+
+
+// public function techdocdestroy($id)
+// {
+//     // Find the document by its ID
+//     $document = UserDocument::findOrFail($id);
+
+//     // Check if a file exists and delete it from the public directory
+//     if ($document->file_path && file_exists(public_path($document->file_path))) {
+//         // Delete the file from the server
+//         unlink(public_path($document->file_path));
+//     }
+
+//     // Delete the document record from the database
+//     $document->delete();
+
+//     // Redirect back with a success message
+//     return redirect()->back()->with('success', 'Document deleted successfully.');
+// }
+
+public function techdocstore(Request $request)
+{
+    $request->validate([
+        'user_id' => 'required',
+        'document_name' => 'required|string|max:255',
+        'document_type' => 'required|string',
+        'upload_document' => 'nullable|file', // File is optional for updates
+    ]);
+
+    $document = $request->document_id ? UserDocument::find($request->document_id) : new UserDocument;
+
+    if ($request->hasFile('upload_document')) {
+        $file = $request->file('upload_document');
+        $directoryPath = public_path('technician/documents/' . $request->user_id);
+        if (!file_exists($directoryPath)) {
+            mkdir($directoryPath, 0777, true);
+        }
+        $fileName = $file->getClientOriginalName();
+        $file->move($directoryPath, $fileName);
+        $filePath = 'technician/documents/' . $request->user_id . '/' . $fileName;
+        $document->file_path = $filePath;
+    }
+
+    $document->user_id = $request->user_id;
+    $document->document_name = $request->document_name;
+    $document->document_type = $request->document_type;
+    $document->save();
+
+    // Return JSON response
+    return response()->json([
+        'status' => 'success',
+        'message' => $request->document_id ? 'Document updated successfully.' : 'Document uploaded successfully.',
+        'document' => $document
+    ]);
+}
+
+public function techdocdestroy($id)
+{
+    $document = UserDocument::findOrFail($id);
+
+    if ($document->file_path && file_exists(public_path($document->file_path))) {
+        unlink(public_path($document->file_path));
+    }
+
+    $document->delete();
+
+    // Return JSON response
+    return response()->json(['status' => 'success', 'message' => 'Document deleted successfully.']);
+}
+
+public function techdocupdate(Request $request, $id)
+{
+    $request->validate([
+        'user_id' => 'required',
+        'document_name' => 'required|string|max:255',
+        'document_type' => 'required|string',
+        'upload_document' => 'nullable|file',
+    ]);
+
+    $document = UserDocument::findOrFail($id);
+
+    if ($request->hasFile('upload_document')) {
+        $file = $request->file('upload_document');
+        $directoryPath = public_path('technician/documents/' . $request->user_id);
+        if (!file_exists($directoryPath)) {
+            mkdir($directoryPath, 0777, true);
+        }
+        $fileName = $file->getClientOriginalName();
+        $file->move($directoryPath, $fileName);
+        $filePath = 'technician/documents/' . $request->user_id . '/' . $fileName;
+        $document->file_path = $filePath;
+    }
+
+    $document->user_id = $request->user_id;
+    $document->document_name = $request->document_name;
+    $document->document_type = $request->document_type;
+    $document->save();
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Document updated successfully.',
+        'document' => $document
+    ]);
+}
 
 
 }

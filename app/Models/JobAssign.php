@@ -55,4 +55,5 @@ class JobAssign extends Model
         return $this->belongsTo(JobModel::class, 'job_id', 'id');
     }
 
+
 }
