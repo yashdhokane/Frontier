@@ -5,6 +5,8 @@
 <script src="{{ asset('public/admin/dist/libs/popper.js/dist/umd/popper.min.js') }}"></script>
 
 <!-- Bootstrap tether Core JavaScript -->
+<!-- Include the CSS for bootstrap-switch -->
+
 
 <script src="{{ asset('public/admin/dist/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
 

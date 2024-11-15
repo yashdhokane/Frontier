@@ -9,33 +9,32 @@
     $(document).ready(function() {
 
         const $subjectSelect = $('#subjectSelect');
-const $chatList = $('.chat-list');
+        const $chatList = $('.chat-list');
 
-// Set the default selected option to the last one and trigger the change event
-const lastSubjectValue = $subjectSelect.find('option:last').val();
-$subjectSelect.val(lastSubjectValue).trigger('change');
+        // Set the default selected option to the last one and trigger the change event
+        const lastSubjectValue = $subjectSelect.find('option:last').val();
+        $subjectSelect.val(lastSubjectValue).trigger('change');
 
-// Function to scroll to the selected subject in the chat list
-function scrollToSelectedSubject() {
-    const selectedSubjectId = $subjectSelect.val();
+        // Function to scroll to the selected subject in the chat list
+        function scrollToSelectedSubject() {
+            const selectedSubjectId = $subjectSelect.val();
 
-    // Locate the chat item that matches the selected subject
-    const $targetChatItem = $chatList.find(`.subject-msg[data-subject-id="${selectedSubjectId}"]`);
+            // Locate the chat item that matches the selected subject
+            const $targetChatItem = $chatList.find(`.subject-msg[data-subject-id="${selectedSubjectId}"]`);
 
-    if ($targetChatItem.length) {
-        // Calculate the offset position within the scrollable container directly
-        const scrollTo = $targetChatItem.position().top + $chatList.scrollTop();
+            if ($targetChatItem.length) {
+                // Calculate the offset position to scroll to, relative to the container
+                const scrollTo = $targetChatItem.offset().top - $chatList.offset().top + $chatList.scrollTop();
 
-        // Animate the scroll to the target chat item
-        $chatList.animate({
-            scrollTop: scrollTo
-        }, 500);
-    }
-}
+                // Animate the scroll to the target chat item
+                $chatList.animate({
+                    scrollTop: scrollTo
+                }, 500);
+            }
+        }
 
-// Listen for changes on the select element and call the scroll function
-$subjectSelect.on('change', scrollToSelectedSubject);
-
+        // Listen for changes on the select element and call the scroll function
+        $subjectSelect.on('change', scrollToSelectedSubject);
 
 
 

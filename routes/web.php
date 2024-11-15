@@ -4,9 +4,9 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\PerformanceMatrix;
 use App\Http\Controllers\CustomerDataController;
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductController;  
 use App\Http\Controllers\LayoutDashController;
-
+use App\Http\Controllers\RoutingController;  
 use App\Http\Controllers\MultiAdminController;
 use App\Http\Controllers\ReportsController;
 
@@ -738,7 +738,9 @@ Route::get('/get-location-best-root', [ScheduleController::class, 'getLocation']
 
     Route::post('reschedule-job', [MapController::class, 'rescheduleJob'])->name('reschedule.job');
 
-Route::get('routing', [MapController::class, 'getAllTechniciansRoutes'])->name('getAllTechniciansRoutes.job.map');
+Route::get('routing-old', [MapController::class, 'getAllTechniciansRoutes'])->name('getAllTechniciansRoutes.job.map');
+
+
 
 Route::post('map-routing/store', [MapController::class, 'storerouting'])->name('map.routing.store');
 
@@ -781,6 +783,24 @@ Route::get('map-raute-date', [MapController::class, 'getAllTechniciansRoutesdate
 
 
     Route::post('book-list/services/{id}', [ServicesController::class, 'updateServices']);
+
+    //Routing web route
+    Route::get('routing', [RoutingController::class, 'index'])->name('index.routing.new');
+Route::post('route-setting-store', [RoutingController::class, 'Routesettingstore'])->name('index.routing.Routesettingstore');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
