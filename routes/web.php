@@ -4,9 +4,9 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\PerformanceMatrix;
 use App\Http\Controllers\CustomerDataController;
-use App\Http\Controllers\ProductController;  
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\LayoutDashController;
-use App\Http\Controllers\RoutingController;  
+use App\Http\Controllers\RoutingController;
 use App\Http\Controllers\MultiAdminController;
 use App\Http\Controllers\ReportsController;
 
@@ -396,11 +396,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/technicians/customer_file_store/', [UserController::class, 'customer_file_store'])->name('customer_file_store');
     Route::post('/technicians/customer_leadsource_store/', [UserController::class, 'customer_leadsource_store'])->name('customer_leadsource_store');
 
-Route::post('documents/technician/store', [TechnicianController::class, 'techdocstore'])->name('documents.store');
-// Route::get('documents/technician/edit/{id}', [TechnicianController::class, 'edit'])->name('documents.edit');
+    Route::post('documents/technician/store', [TechnicianController::class, 'techdocstore'])->name('documents.store');
+    // Route::get('documents/technician/edit/{id}', [TechnicianController::class, 'edit'])->name('documents.edit');
 // Route::post('documents/technician/update/{id}', [TechnicianController::class, 'update'])->name('documents.update');
-Route::delete('documents/technician/delete/{id}', [TechnicianController::class, 'techdocdestroy'])->name('documents.destroy');
-Route::post('documents/technician/update/{id}', [TechnicianController::class, 'techdocupdate'])->name('documents.update');
+    Route::delete('documents/technician/delete/{id}', [TechnicianController::class, 'techdocdestroy'])->name('documents.destroy');
+    Route::post('documents/technician/update/{id}', [TechnicianController::class, 'techdocupdate'])->name('documents.update');
 
 
 
@@ -465,7 +465,7 @@ Route::middleware('auth')->group(function () {
 
 
     Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
- Route::get('/tickets-iframe', [TicketController::class, 'indexiframe'])->name('tickets.indexiframe');
+    Route::get('/tickets-iframe', [TicketController::class, 'indexiframe'])->name('tickets.indexiframe');
 
     Route::get('/tickets-iframe/{id}', [TicketController::class, 'showiframe'])->name('tickets.showiframe');
 
@@ -549,10 +549,10 @@ Route::middleware('auth')->group(function () {
     Route::put('/assign-task/{taskId}/{technicianId}', [ScheduleController::class, 'assignTechnician']);
 
 
-Route::get('/get-location-best-root', [ScheduleController::class, 'getLocation'])->name('getLocation.bestroot');
-  Route::post('/get-location-best-root-saveRoute', [ScheduleController::class, 'getLocationpositionsaveRoute'])->name('getLocation.bestroot.saveRoute');
+    Route::get('/get-location-best-root', [ScheduleController::class, 'getLocation'])->name('getLocation.bestroot');
+    Route::post('/get-location-best-root-saveRoute', [ScheduleController::class, 'getLocationpositionsaveRoute'])->name('getLocation.bestroot.saveRoute');
 
-  
+
     // Route for displaying all tasks (GET request)
 
 
@@ -738,15 +738,15 @@ Route::get('/get-location-best-root', [ScheduleController::class, 'getLocation']
 
     Route::post('reschedule-job', [MapController::class, 'rescheduleJob'])->name('reschedule.job');
 
-Route::get('routing-old', [MapController::class, 'getAllTechniciansRoutes'])->name('getAllTechniciansRoutes.job.map');
+    Route::get('routing-old', [MapController::class, 'getAllTechniciansRoutes'])->name('getAllTechniciansRoutes.job.map');
 
 
 
-Route::post('map-routing/store', [MapController::class, 'storerouting'])->name('map.routing.store');
+    Route::post('map-routing/store', [MapController::class, 'storerouting'])->name('map.routing.store');
 
 
 
-Route::get('map-raute-date', [MapController::class, 'getAllTechniciansRoutesdate'])->name('getAllTechniciansRoutesdate');
+    Route::get('map-raute-date', [MapController::class, 'getAllTechniciansRoutesdate'])->name('getAllTechniciansRoutesdate');
 
     //service section route
 
@@ -786,9 +786,8 @@ Route::get('map-raute-date', [MapController::class, 'getAllTechniciansRoutesdate
 
     //Routing web route
     Route::get('routing', [RoutingController::class, 'index'])->name('index.routing.new');
-Route::post('route-setting-store', [RoutingController::class, 'Routesettingstore'])->name('index.routing.Routesettingstore');
-
-
+    Route::get('jobrouting_filter', [RoutingController::class, 'jobrouting_filter'])->name('jobrouting.filter');
+    Route::post('route-setting-store', [RoutingController::class, 'Routesettingstore'])->name('index.routing.Routesettingstore');
 
 
 
@@ -915,7 +914,7 @@ Route::post('route-setting-store', [RoutingController::class, 'Routesettingstore
     Route::get('events', [EventController::class, 'index'])->name('events');
 
     Route::get('event/delete/{id}', [EventController::class, 'destroy']);
-Route::get('events-iframe', [EventController::class, 'indexiframe'])->name('eventsiframe');
+    Route::get('events-iframe', [EventController::class, 'indexiframe'])->name('eventsiframe');
 
     Route::get('event-iframe/delete/{id}', [EventController::class, 'destroyiframe']);
 

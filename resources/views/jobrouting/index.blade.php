@@ -60,21 +60,26 @@
 
     <div class=" col-md-12">
         <div class="d-flex justify-content-between align-items-center" id="menu">
-            <div class="col-md-5 d-flex gap-1">
-                <select id="dateDay" name="dateDay" class="form-select select ms-1">
-                    <option value="today">Today</option>
-                    <option value="tomorrow">Tomorrow</option>
-                    <option value="nextdays">Next 3 Days</option>
-                </select>
+            <div class="col-md-3 row">
+                <div class="col-md-6">
+                    <select id="dateDay" name="dateDay" class="form-select select ms-1">
+                        <option value="today">Today</option>
+                        <option value="tomorrow">Tomorrow</option>
+                        <option value="nextdays">Next 3 Days</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <select id="routing" name="routing" class="form-select select">
+                        <option value="bestroute">Best Route</option>
+                        <option value="shortestroute">Shortest Route</option>
+                        <option value="customizedroute">Customized Route</option>
+                    </select>
+                </div>
 
-                <select id="routing" name="routing" class="form-select ms-1 select">
-                    <option value="bestroute">Best Route</option>
-                    <option value="shortestroute">Shortest Route</option>
-                    <option value="customizedroute">Customized Route</option>
-                </select>
-
-                <select id="routingTriggerSelect" name="routing_id" class="form-select select ms-1">
-                <option value="all">All Technician(s)</option>
+            </div>
+            <div class="col-md-3 ms-3">
+                <select id="routingTriggerSelect" name="routing_id" class="form-select select2 " multiple="multiple">
+                    <option value="all">All Technician(s)</option>
                     @foreach ($tech as $routing)
                         <option value="{{ $routing->id }}">
                             {{ $routing->name }}
@@ -83,7 +88,7 @@
                 </select>
             </div>
 
-            <div class="col-md-5"></div>
+            <div class="col-md-4"></div>
 
             <div class="col-md-2 d-flex align-items-center">
                 <a href="javascript:void(0);" id="setNewButton1" class="text-decoration-none text-primary"
