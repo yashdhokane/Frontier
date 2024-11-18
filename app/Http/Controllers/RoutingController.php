@@ -255,7 +255,7 @@ class RoutingController extends Controller
             }
 
             if (!empty($routeType)) {
-                $bestRouteJobIds = explode(',', $routeType);
+                $bestRouteJobIds = explode(',', trim($routeType, '[]'));
 
                 $filteredJobs = $jobs->whereIn('job_id', $bestRouteJobIds);
 

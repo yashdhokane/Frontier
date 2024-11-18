@@ -5,8 +5,9 @@
     // const techniciansData = {!! $responseJson !!};
 
     $(document).ready(function() {
-        fetchFilteredData(); 
+        fetchFilteredData();
     });
+
     function initMap(techniciansData) {
         const map = new google.maps.Map(document.getElementById("map"), {
             zoom: 5,
@@ -146,11 +147,11 @@
                     // Update the map with the filtered data
                     updateMap(techniciansData);
                 } else {
-                    alert(response.message || "No data found for the selected filters.");
+                    console.log(response.message || "No data found for the selected filters.");
                 }
             },
             error: function() {
-                alert("An error occurred while fetching data. Please try again.");
+                console.log("An error occurred while fetching data. Please try again.");
             }
         });
     }
