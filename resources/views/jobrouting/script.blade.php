@@ -6,6 +6,32 @@
 
     $(document).ready(function() {
         fetchFilteredData();
+        $('#routingTriggerSelect').select2('destroy');
+        $('#routingTriggerSelect').select2();
+        let isProcessing = false; // Flag to prevent recursive calls
+
+        $(document).on('change', '#routingTriggerSelect', function() {
+            if (isProcessing) return; // Prevent recursive execution
+            isProcessing = true;
+
+            fetchFilteredData();
+
+            const selectedValues = $(this).val();
+            const selectAllValue = 'all';
+
+            if (selectedValues.includes(selectAllValue)) {
+                // If "All" is selected, deselect others
+                $(this).val([selectAllValue]).trigger('change');
+            } else {
+                // If individual technicians are selected, deselect "All"
+                const filteredValues = selectedValues.filter(value => value !== selectAllValue);
+                $(this).val(filteredValues).trigger('change');
+            }
+
+            isProcessing = false; // Reset the flag after execution
+        });
+
+
     });
 
     function initMap(techniciansData) {
@@ -126,14 +152,14 @@
 
 
     function fetchFilteredData() {
-        // Get selected values from the filters
+
         const dateDay = $('#dateDay').val();
         const routing = $('#routing').val();
         const technicians = $('#routingTriggerSelect').val();
 
         // Make an AJAX request to fetch filtered data
         $.ajax({
-            url: "{{ route('jobrouting.filter') }}", // Replace with your backend route
+            url: "{{ route('jobrouting.filter') }}",
             type: "GET",
             data: {
                 dateDay: dateDay,
@@ -156,7 +182,7 @@
         });
     }
 
-    $(document).on('change', '#dateDay, #routing, #routingTriggerSelect', function() {
+    $(document).on('change', '#dateDay, #routing', function() {
         fetchFilteredData();
     });
 
