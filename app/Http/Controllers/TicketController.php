@@ -816,7 +816,7 @@ class TicketController extends Controller
         ]);
     }
 
-    public function updatejob(Request $request)
+     public function updatejob(Request $request)
     {
        
         $technician = JobModel::where('id',$request->jobId)->first();;

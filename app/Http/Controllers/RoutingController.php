@@ -1,5 +1,4 @@
-<?php
-namespace App\Http\Controllers;
+<?php namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\RoutingTrigger;
@@ -23,7 +22,7 @@ use Illuminate\Support\Facades\Auth;
 
 class RoutingController extends Controller
 {
-    public function index(Request $request)
+      public function index(Request $request)
     {
         $timezone_name = Session::get('timezone_name', 'UTC');
         $inputDate = Carbon::now($timezone_name)->format('Y-m-d');
@@ -165,7 +164,6 @@ class RoutingController extends Controller
     {
         $dateDay = $request->input('dateDay');
         $routing = $request->input('routing');
-        $technicians = $request->input('technician', []);
 
         // Get timezone and calculate date ranges
         $timezone_name = Session::get('timezone_name', 'UTC');
@@ -218,7 +216,7 @@ class RoutingController extends Controller
                 ->whereBetween('start_date_time', [$startDate, $endDate])
                 ->get(['job_id', 'position', 'is_routes_map', 'job_onmap_reaching_timing']);
 
-            $routingJob = RoutingJob::where('user_id', $technicians)->first();
+            $routingJob = RoutingJob::where('user_id', $technician->id)->first();
             $routeType = '';
 
             // Determine the route type based on `routing`
@@ -292,8 +290,6 @@ class RoutingController extends Controller
         return response()->json(['success' => true, 'data' => $response]);
     }
 
-
-
     // Distance calculation function
     private function calculateDistance($lat1, $lon1, $lat2, $lon2)
     {
@@ -318,70 +314,170 @@ class RoutingController extends Controller
         return $distance;
     }
 
-    public function Routesettingstore(Request $request)
-    {
-        // Validate the incoming request data if necessary
-        $validatedData = $request->validate([
-            'technicians' => 'required|array',
-            'technicians.*' => 'integer', // Each technician ID should be an integer
+   public function Routesettingstore(Request $request)
+{
+    // Validate input
+    $validatedData = $request->validate([
+        'technicians' => 'required|array',
+        'technicians.*' => 'integer',
+    ]);
+
+    $timezone_name = Session::get('timezone_name');
+    $inputDate = Carbon::now($timezone_name)->format('Y-m-d');
+
+    $technicians = $request->technicians;
+
+    if (empty($technicians)) {
+        return view('jobrouting.technicians_jobs_map')->with('technicians', []);
+    }
+
+    $response = [];
+    $savedSettings = [];
+
+    foreach ($technicians as $technicianId) {
+        // Fetch technician location
+        $technicianLocation = CustomerUserAddress::where('user_id', $technicianId)->first([
+            'user_id',
+            'latitude',
+            'longitude',
+            'address_line1',
+            'city',
+            'zipcode',
+            'state_name',
         ]);
 
-        // Initialize an array to store the created routing settings with their options
-        $savedSettings = [];
-
-        // Loop through each technician and create a separate RoutingSetting record
-        foreach ($request->technicians as $technicianId) {
-            // Create a new RoutingSetting for each technician
-            $routingSetting = RoutingSetting::create([
-                'user_id' => $technicianId, // Store technician ID as user_id
-                'created_by' => Auth::id(), // Use Auth facade to get the authenticated user's ID
-                'updated_by' => Auth::id(),
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-                'routing_details' => json_encode($request->all()), // Save all data as JSON or as needed
-                'routing_cron' => 'no',
-                'routing_cron_date' => Carbon::now(),
-                'is_active' => 'yes', // Static value
-            ]);
-
-            // Define the options that need to be saved in RoutingSettingOption
-            $options = [
-                'auto_route' => $request->has('auto_route') ? 'yes' : 'no',
-                'time_constraints' => $request->has('time_constraints') ? 'yes' : 'no',
-                'priority_routing' => $request->has('priority_routing') ? 'yes' : 'no',
-                'auto_rerouting_value' => $request->has('auto_rerouting') ? 'yes' : 'no',
-                'auto_publishing' => $request->has('auto_publishing') ? 'yes' : 'no',
-                'number_of_calls' => $request->has('number_of_calls') ? 'yes' : 'no',
-                'call_limit' => $request->has('call_limit') ? $request->call_limit : '0',
+        if (!$technicianLocation) {
+            $response[] = [
+                'technician' => [
+                    'id' => $technicianId,
+                    'error' => 'Technician location not found.',
+                ],
             ];
-
-            // Initialize an array to store the options for this routing setting
-            $optionsData = [];
-
-            // Loop through each option and store it in RoutingSettingOption
-            foreach ($options as $option => $value) {
-                $routingSettingOption = RoutingSettingOption::create([
-                    'routing_id' => $routingSetting->routing_id, // Link the option to the created routing_setting
-                    'routing_option' => $option,
-                    'routing_value' => $value,
-                ]);
-
-                // Add the option to the options array
-                $optionsData[] = $routingSettingOption;
-            }
-
-            // Add the routing setting and its options to the saved settings array
-            $savedSettings[] = [
-                'routingSetting' => $routingSetting,
-                'options' => $optionsData,
-            ];
+            continue;
         }
 
-        // Return a success response with the saved routing settings and options
-        return response()->json([
-            'success' => true,
-            'message' => 'Routing settings saved successfully for all technicians!',
-            'savedSettings' => $savedSettings,
-        ]);
+        $technicianLocation->full_address = $technicianLocation->address_line1 . ', ' . $technicianLocation->city . ', ' . $technicianLocation->state_name . ' ' . $technicianLocation->zipcode;
+
+        // Fetch jobs for the technician
+        $jobs = Schedule::with('Jobassign')
+            ->where('technician_id', $technicianId)
+            ->whereDate('start_date_time', '=', $inputDate)
+            ->get(['job_id', 'position', 'is_routes_map', 'job_onmap_reaching_timing', 'start_date_time', 'end_date_time']);
+
+        // Handle time constraint logic
+        $timeConstraintsEnabled = $request->input('time_constraints') === 'on';
+        $jobDistances = [];
+
+        if ($timeConstraintsEnabled && !$jobs->isEmpty()) {
+            foreach ($jobs as $job) {
+                if (!$job->Jobassign || !$job->Jobassign->userAddress) {
+                    continue; // Skip if Jobassign or address is missing
+                }
+
+                $origin = $technicianLocation->latitude . ',' . $technicianLocation->longitude;
+                $destination = $job->Jobassign->userAddress->latitude . ',' . $job->Jobassign->userAddress->longitude;
+
+                // Google Maps Distance Matrix API request
+                $apiKey = env('GOOGLE_MAPS_API_KEY'); // Use API key from .env
+                $response = Http::get('https://maps.googleapis.com/maps/api/distancematrix/json', [
+                    'origins' => $origin,
+                    'destinations' => $destination,
+                    'key' => 'AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo',
+                ]);
+
+                $data = $response->json();
+
+                if (!empty($data['rows'][0]['elements'][0]['distance']['value']) &&
+                    !empty($data['rows'][0]['elements'][0]['duration']['value'])) {
+                    $jobDistances[] = [
+                        'job_id' => $job->job_id,
+                        'distance' => $data['rows'][0]['elements'][0]['distance']['value'], // Distance in meters
+                        'duration' => $data['rows'][0]['elements'][0]['duration']['value'], // Duration in seconds
+                    ];
+                }
+            }
+
+            // Find the closest job
+            if (!empty($jobDistances)) {
+                usort($jobDistances, function ($a, $b) {
+                    return $a['distance'] <=> $b['distance'];
+                });
+
+                $closestJob = $jobDistances[0];
+                $traveldurationtime = $closestJob['duration'] + $job->Jobassign->duration;
+
+                // Update job timings
+                $startTime = Carbon::parse($job->start_date_time)->addSeconds($traveldurationtime);
+                $endTime = Carbon::parse($job->end_date_time)->addSeconds($traveldurationtime);
+
+                $job->start_date_time = $startTime;
+                $job->end_date_time = $endTime;
+                $job->save();
+
+                $job->Jobassign->start_date_time = $startTime;
+                $job->Jobassign->end_date_time = $endTime;
+                $job->Jobassign->save();
+            }
+        }
+
+        // Prepare response data
+        $technicianData = [
+            'technician' => [
+                'id' => $technicianId,
+                'full_address' => $technicianLocation->full_address,
+                'latitude' => $technicianLocation->latitude,
+                'longitude' => $technicianLocation->longitude,
+            ],
+            'jobs' => $jobDistances,
+        ];
+
+        $response[] = $technicianData;
+
+        // Update routing job
+        $jobIds = array_column($jobDistances, 'job_id');
+        $bestRoute = $jobIds;
+        $shortRoute = array_reverse($jobIds);
+        $customRoute = $jobIds;
+        shuffle($customRoute);
+
+        $routingJob = RoutingJob::updateOrCreate(
+            ['user_id' => $technicianId, 'created_at' => $inputDate],
+            [
+                'updated_by' => Auth::id(),
+                 'created_by' => Auth::id(),
+
+                'best_route' => json_encode($bestRoute),
+                'short_route' => json_encode($shortRoute),
+                'custom_route' => json_encode($customRoute),
+            ]
+        );
+
+        // Update routing settings
+        $routingSetting = RoutingSetting::updateOrCreate(
+            ['user_id' => $technicianId],
+            [
+                'created_by' => Auth::id(),
+                'updated_by' => Auth::id(),
+                'routing_cron' => 'no',
+                'routing_cron_date' => Carbon::now(),
+                'is_active' => 'yes',
+            ]
+        );
+
+        foreach (['auto_route', 'time_constraints', 'priority_routing', 'auto_rerouting', 'auto_publishing'] as $option) {
+            RoutingSettingOption::updateOrCreate(
+                ['routing_id' => $routingSetting->routing_id, 'routing_option' => $option],
+                ['routing_value' => $request->has($option) ? 'yes' : 'no']
+            );
+        }
     }
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Routing settings saved successfully for all technicians!',
+        'savedSettings' => $savedSettings,
+    ]);
+}
+
+
 }

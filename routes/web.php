@@ -1417,7 +1417,6 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/update-job-settings', [TicketController::class, 'updatejob'])->name('update-job-settings');
 
-
     Route::get('/permission-index', [AdminController::class, 'permissionindex'])->name('permissionindex');
 
     Route::post('/permission-store', [AdminController::class, 'permissionstore'])->name('permissions.store');

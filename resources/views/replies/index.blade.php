@@ -21,7 +21,7 @@
     <!-- -------------------------------------------------------------- -->
     <!-- Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
-    <div class="page-breadcrumb">
+    <div class="page-breadcrumb pt-0 ms-2">
         <div class="row">
             <div class="col-9 align-self-center">
                 <h4 class="page-title">Predefine Reply</h4>
@@ -79,7 +79,7 @@
             {{ session('success') }}
         </div>
     @endif
-    <div class="container-fluid">
+    <div class="container-fluid pt-2">
 
         <div class="row">
             <div class="col-9">

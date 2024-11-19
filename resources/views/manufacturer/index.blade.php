@@ -11,14 +11,14 @@
 
 
 
-    <div class="page-breadcrumb">
+    <div class="page-breadcrumb ms-2">
         <div class="row">
             <div class="col-9 align-self-center">
                 <h4 class="page-title">Manufactures</h4>
                 <div class="d-flex align-items-center">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('buisnessprofile.index') }}">Settings</a></li>
+                            <li class="breadcrumb-item"><a href="#">Other</a></li>
                             <li class="breadcrumb-item active" aria-current="page">Manufactures</li>
                         </ol>
                     </nav>
@@ -45,7 +45,7 @@
     <!-- -------------------------------------------------------------- -->
     <!-- Container fluid  -->
     <!-- -------------------------------------------------------------- -->
-    <div class="container-fluid">
+    <div class="container-fluid pt-2">
 
 
 

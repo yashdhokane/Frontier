@@ -55,5 +55,9 @@ class JobAssign extends Model
         return $this->belongsTo(JobModel::class, 'job_id', 'id');
     }
 
+    public function userAddress()
+    {
+        return $this->hasOne(CustomerUserAddress::class, 'user_id', 'customer_id');
+    }
 
 }

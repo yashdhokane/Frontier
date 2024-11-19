@@ -5,7 +5,7 @@
     <!-- -------------------------------------------------------------- -->
     <!-- Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
-    <div class="page-breadcrumb">
+    <div class="page-breadcrumb pt-0 ms-2">
         <div class="row">
             <div class="col-9 align-self-center">
                 <h4 class="page-title">Lead Source</h4>
@@ -63,59 +63,57 @@
     <!-- -------------------------------------------------------------- -->
     <!-- Container fluid  -->
     <!-- -------------------------------------------------------------- -->
-    <div class="container-fluid">
+    <div class="container-fluid pt-2">
 
         <div class="row">
             <div class="col-9">
                 <div class="card card-border shadow">
                     <div class="card-body">
-                        <div class="table-responsive table-custom2">
-                            <table id="default_order" class="table table-striped table-bordered display text-nowrap"
-                                style="width: 100%">
-                                <thead>
-                                    <tr>
-                                        <th>Lead Source</th>
-                                        <th>Added By</th>
-                                        <th>Date Added</th>
-                                        <th>Date Modified</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($leadSources as $leadSource)
-                                        <tr>
-                                            <td>
-                                                <p class="source_name">{{ $leadSource->source_name }}</p>
-                                            </td>
-                                            <td>{{ optional($leadSource->addedByUser)->name }}</td>
-                                            <td>{{ $leadSource->created_at->format('m-d-Y') }}</td>
-                                            <td>{{ $convertDateToTimezone($leadSource->updated_at) }}</td>
-                                            <td>
-                                                <button type="button" class="btn btn-primary btn-sm edit-btn"
-                                                    data-bs-toggle="modal" data-bs-target="#samedata-modal2"
-                                                    data-lead-source-id="{{ $leadSource->source_id }}"
-                                                    data-lead-source-name="{{ $leadSource->source_name }}">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <a href="{{ url('delete/leadsource/' . $leadSource->source_id) }}"
-                                                    onclick="confirm('Are you sure you want to delete Online Booking?')"><button
-                                                        type="button" class="btn btn-danger btn-sm delete-btn">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button></a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                                <tfoot>
+                        <table id="default_order" class="table table-striped table-bordered display text-nowrap"
+                            style="width: 100%">
+                            <thead>
+                                <tr>
                                     <th>Lead Source</th>
                                     <th>Added By</th>
                                     <th>Date Added</th>
                                     <th>Date Modified</th>
                                     <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($leadSources as $leadSource)
+                                    <tr>
+                                        <td>
+                                            <p class="source_name">{{ $leadSource->source_name }}</p>
+                                        </td>
+                                        <td>{{ optional($leadSource->addedByUser)->name }}</td>
+                                        <td>{{ $leadSource->created_at->format('m-d-Y') }}</td>
+                                        <td>{{ $convertDateToTimezone($leadSource->updated_at) }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-sm edit-btn"
+                                                data-bs-toggle="modal" data-bs-target="#samedata-modal2"
+                                                data-lead-source-id="{{ $leadSource->source_id }}"
+                                                data-lead-source-name="{{ $leadSource->source_name }}">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <a href="{{ url('delete/leadsource/' . $leadSource->source_id) }}"
+                                                onclick="confirm('Are you sure you want to delete Online Booking?')"><button
+                                                    type="button" class="btn btn-danger btn-sm delete-btn">
+                                                    <i class="fas fa-trash"></i>
+                                                </button></a>
+                                        </td>
                                     </tr>
-                                </tfoot>
-                            </table>
-                        </div>
+                                @endforeach
+                            </tbody>
+                            <tfoot>
+                                <th>Lead Source</th>
+                                <th>Added By</th>
+                                <th>Date Added</th>
+                                <th>Date Modified</th>
+                                <th>Action</th>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -178,40 +176,7 @@
         <!-- -------------------------------------------------------------- -->
         <!-- Recent comment and chats -->
         <!-- -------------------------------------------------------------- -->
-        <div class="row">
-            <!-- column -->
-            <div class="col-lg-6">
-                <br />
-            </div>
-            <!-- column -->
-            <div class="col-lg-6">
-                <br />
-            </div>
-        </div>
-        <!-- -------------------------------------------------------------- -->
-        <!-- Recent comment and chats -->
-        <!-- -------------------------------------------------------------- -->
     </div>
-    <!-- -------------------------------------------------------------- -->
-    <!-- End Container fluid  -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- footer -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- End footer -->
-    <!-- -------------------------------------------------------------- -->
-
-    <!-- -------------------------------------------------------------- -->
-    <!-- End Page wrapper  -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- </div> -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- End Wrapper -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- customizer Panel -->
-    <!-- -------------------------------------------------------------- -->
 @section('script')
     <script>
         if ($.fn.DataTable.isDataTable('#default_order')) {

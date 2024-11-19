@@ -1,4 +1,29 @@
 <!-- Large Modal -->
+<style>
+    .form-check-input {
+        width: 1.2em;
+        height: 1.2em;
+        border: 2px solid #6c757d;
+        margin-top: 4px;
+    }
+    .form-check-input:checked {
+        background-color: #198754;
+        border-color: #198754;
+    }
+    .bt-switch input[type="checkbox"] {
+        transform: scale(0.8);
+        margin: 0;
+    }
+    .modalbodyclass {
+        padding: 1.5rem !important;
+        background-color: #f8f9fa;
+    }
+</style>
+<style>
+
+.form-check-input{padding:0px !important};
+.modalbodyclass{padding-top:0px !important};
+</style>
 <link href="{{ asset('public/admin/dist/libs/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css') }}" rel="stylesheet">
 
 <div class="modal fade" id="largeModal" tabindex="-1" aria-labelledby="largeModalLabel" aria-hidden="true">
@@ -6,18 +31,21 @@
     <div class="modal-content">
 
       <!-- Modal Header with Cross Icon -->
-
+ <div class="modal-header title">
+    <h5 class="modal-title">Routing Settings</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
 
       <!-- Modal Body -->
-      <div class="modal-body">
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-          style="float: right;"></button>
+      <div class="modal-body modalbodyclass">
+       
           <form id="formstore" >
 
         <div class="row">
 
           <!-- Settings Panel with Scroll -->
-    <div class="col-md-4 p-3 border rounded settings-panel" style="max-height: 700px; overflow-y: auto;">
+    <div class="col-md-5 settings-panel" style="max-height: 700px; overflow-y: auto;">
+    <div class="card card-border card-shadow   p-3 border2 ">
         <div class="row mb-3">
             <label class="col-8 col-form-label">Auto Route Settings</label>
             <div class="col-4 bt-switch">
@@ -28,51 +56,49 @@
         <div class="row mb-3">
             <label class="col-8 col-form-label">Time Constraints</label>
             <div class="col-4  bt-switch">
-                <input type="checkbox" name="time_constraints" data-toggle="switchbutton" data-on-color="info" data-off-color="default" onchange="updateCheckboxValue(this)">
+                <input type="checkbox" name="time_constraints" data-toggle="switchbutton" data-on-color="success" data-off-color="default" onchange="updateCheckboxValue(this)">
                 <input type="hidden" name="time_constraints_value" value="no">
             </div>
         </div>
         <div class="row mb-3">
             <label class="col-8 col-form-label">Priority Routing</label>
             <div class="col-4  bt-switch">
-                <input type="checkbox" name="priority_routing" data-toggle="switchbutton" data-on-color="primary" data-off-color="default" onchange="updateCheckboxValue(this)">
+                <input type="checkbox" name="priority_routing" data-toggle="switchbutton" data-on-color="success" data-off-color="default" onchange="updateCheckboxValue(this)">
                 <input type="hidden" name="priority_routing_value" value="no">
             </div>
         </div>
         <div class="row mb-3">
             <label class="col-8 col-form-label">Automatic Re-Routing</label>
             <div class="col-4  bt-switch">
-                <input type="checkbox" name="auto_rerouting" data-toggle="switchbutton" data-on-color="warning" data-off-color="default" onchange="updateCheckboxValue(this)">
+                <input type="checkbox" name="auto_rerouting" data-toggle="switchbutton" data-on-color="success" data-off-color="default" onchange="updateCheckboxValue(this)">
                 <input type="hidden" name="auto_rerouting_value" value="no">
             </div>
         </div>
         <div class="row mb-3">
             <label class="col-8 col-form-label">Auto Publishing</label>
             <div class="col-4  bt-switch">
-                <input type="checkbox" name="auto_publishing" data-toggle="switchbutton" data-on-color="danger" data-off-color="default" onchange="updateCheckboxValue(this)">
+                <input type="checkbox" name="auto_publishing" data-toggle="switchbutton" data-on-color="success" data-off-color="default" onchange="updateCheckboxValue(this)">
                 <input type="hidden" name="auto_publishing_value" value="no">
             </div>
         </div>
-        <div class="row mb-3">
-            <label class="col-8 col-form-label">Number of Calls</label>
-            <div class="col-4  bt-switch">
-                <input type="checkbox" name="number_of_calls" data-toggle="switchbutton" data-on-color="success" data-off-color="default" onchange="updateCheckboxValue(this)">
-                <input type="hidden" name="number_of_calls_value" value="no">
-            </div>
-        </div>
+       
         <div class="row mt-4">
-            <label for="call-limit" class="col-6 col-form-label">Set Limit</label>
+            <label for="call-limit" class="col-6 col-form-label">Max Calls</label>
             <div class="col-6">
-                <input type="number" id="call-limit" name="call_limit" class="form-control" placeholder="Set Limit">
+                <input type="number" id="call-limit" name="number_of_calls" class="form-control" placeholder="Set Limit">
             </div>
         </div>
-</div>
+       </div>
+       </div>
+
 
 
 
 
           <!-- Tech List with Scroll -->
-         <div class="col-md-8 p-3 border rounded tech-list" style="max-height: 700px; overflow-y: auto;">
+         <div class="col-md-7  tech-list" style="max-height: 700px; overflow-y: auto;">
+         <div class="card card-border card-shadow p-3 border2 " >
+
     <div class="row mb-3">
         <div class="col">
             <button id="selectAll" type="button" class="btn btn-success">Select All</button>
@@ -92,8 +118,10 @@
             </div>
         </div>
         @endforeach
-</div>
+          </div>
         </div>
+                </div>
+
         <form>
       </div>
     </div>
