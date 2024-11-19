@@ -1,8 +1,69 @@
-@if(Route::currentRouteName() != 'dash')
+@if (Route::currentRouteName() != 'dash')
+    @extends('home')
+    @section('content')
+    @endif
+    <style>
+        #frontier_loader {
+            display: none;
+        }
 
-@extends('home')
-@section('content')
-@endif
+        /* Dim background */
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.1);
+            /* Dim background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            /* Ensure it's above other elements */
+        }
+
+        /* Loader styling */
+        .loader {
+            width: 50px;
+            aspect-ratio: 1;
+            display: grid;
+            border-radius: 50%;
+            background:
+                linear-gradient(0deg, rgb(0 0 0 / 50%) 30%, #0000 0 70%, rgb(0 0 0 / 100%) 0) 50%/8% 100%,
+                linear-gradient(90deg, rgb(0 0 0 / 25%) 30%, #0000 0 70%, rgb(0 0 0 / 75%) 0) 50%/100% 8%;
+            background-repeat: no-repeat;
+            animation: l23 1s infinite steps(12);
+
+        }
+
+        .loader::before,
+        .loader::after {
+            content: "";
+            grid-area: 1/1;
+            border-radius: 50%;
+            background: inherit;
+            opacity: 0.915;
+            transform: rotate(30deg);
+        }
+
+        .loader::after {
+            opacity: 0.83;
+            transform: rotate(60deg);
+        }
+
+        @keyframes l23 {
+            100% {
+                transform: rotate(1turn)
+            }
+        }
+    </style>
+    <div id="frontier_loader">
+        <span class="loader-overlay">
+            <span class="loader"></span>
+        </span>
+    </div>
+
     <!-- Page wrapper  -->
     <!-- -------------------------------------------------------------- -->
     <!-- -------------------------------------------------------------- -->
@@ -348,6 +409,7 @@
                     <div class="card">
                         <form action="{{ route('updateJobSettings', ['id' => $technicians->id]) }}" method="POST">
                             @csrf
+                            <input type="hidden" name="job_id" id="setting_job_id" value="{{ $technicians->id }}">
                             <div class="card-body card-border shadow">
                                 <div class="row">
                                     <div class="col-md-8 d-flex">
@@ -362,8 +424,23 @@
                                             </div>
                                             <div class="form-check form-switch mb-0">
                                                 <input class="form-check-input" type="checkbox" role="switch"
-                                                    id="flexSwitchCheckChecked4" name="job_confirmed"
+                                                    id="job_confirmed" name="job_confirmed"
                                                     @if ($technicians->is_confirmed == 'yes') checked @endif>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="d-flex align-items-center justify-content-between py-3 border-top">
+                                            <div>
+                                                <h5 class="fs-4 fw-semibold mb-0">Job Publish </h5>
+                                                <p class="mb-0">Publish the job on Schedule</p>
+                                            </div>
+                                            <div class="form-check form-switch mb-0">
+                                                <input class="form-check-input" type="checkbox" role="switch"
+                                                    id="is_published" name="is_published "
+                                                    @if ($technicians->is_published == 'yes') checked @endif>
                                             </div>
                                         </div>
                                     </div>
@@ -377,7 +454,7 @@
                                             </div>
                                             <div class="form-check form-switch mb-0">
                                                 <input class="form-check-input" type="checkbox" role="switch"
-                                                    id="flexSwitchCheckChecked4" name="job_schedule"
+                                                    id="job_schedule" name="job_schedule"
                                                     @if ($checkSchedule->show_on_schedule == 'yes') checked @endif>
                                             </div>
                                         </div>
@@ -392,7 +469,7 @@
                                             </div>
                                             <div class="form-check form-switch mb-0">
                                                 <input class="form-check-input" type="checkbox" role="switch"
-                                                    id="flexSwitchCheckChecked4" name="job_closed"
+                                                    id="job_closed" name="job_closed"
                                                     @if ($technicians->status == 'closed') checked @endif>
                                             </div>
                                         </div>
@@ -1490,6 +1567,6 @@
 
     @include('tickets.scriptShow')
 
-@if(Route::currentRouteName() != 'dash')
-@endsection
+    @if (Route::currentRouteName() != 'dash')
+    @endsection
 @endif

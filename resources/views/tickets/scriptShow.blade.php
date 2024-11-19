@@ -113,7 +113,7 @@
                         // Update enr_date
                         $('.enr_date').empty().append(response.enr_date);
 
-                         $('.update-job').hide();
+                        $('.update-job').hide();
 
                         // Check if "Save & Close" button was clicked
                         if (buttonAction === 'save-close') {
@@ -146,9 +146,9 @@
             var mode = urlParams.get('mode');
 
             if (mode === 'edit') {
-                $('.update-job').show(); // Show the element
+                $('.update-job').show();
             } else {
-                $('.update-job').hide(); // Hide the element (optional)
+                $('.update-job').hide();
             }
             $(document).on('click', '.edit-job', function() {
                 $('.update-job').toggle();
@@ -285,6 +285,44 @@
             });
 
             $('#open_job_settings').hide();
+
+            $(document).on('change', '#job_confirmed, #is_published, #job_schedule, #job_closed', function() {
+                const jobId = $('#setting_job_id').val();
+                const jobConfirmed = $('#job_confirmed').is(':checked') ? 'yes' : 'no';
+                const isPublished = $('#is_published').is(':checked') ? 'yes' : 'no';
+                const jobSchedule = $('#job_schedule').is(':checked') ? 'yes' : 'no';
+                const jobClosed = $('#job_closed').is(':checked') ? 'closed' : 'open';
+
+                const data = {
+                    _token: '{{ csrf_token() }}',
+                    jobId: jobId,
+                    job_confirmed: jobConfirmed,
+                    is_published: isPublished,
+                    job_schedule: jobSchedule,
+                    job_closed: jobClosed,
+                };
+
+                $.ajax({
+                    url: '{{ route('update-job-settings') }}',
+                    type: 'POST',
+                    data: data,
+                    success: function(response) {
+                        if (response.success) {
+                            $('#frontier_loader').show();
+                            setTimeout(function() {
+                                $('#frontier_loader').hide();
+                            }, 1000);
+                        } else {
+                            console.log('Failed to update settings. Please try again.');
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error('Error:', xhr.responseText);
+                        console.log('An error occurred. Please try again.');
+                    },
+                });
+            });
+
 
             $(document).on('click', '#job_set_lnk', function(e) {
                 $('#open_job_settings').toggle('fade');

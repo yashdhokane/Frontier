@@ -815,4 +815,33 @@ class TicketController extends Controller
             'complete' => $complete
         ]);
     }
+
+    public function updatejob(Request $request)
+    {
+       
+        $technician = JobModel::where('id',$request->jobId)->first();;
+    
+        if (!$technician) {
+            return response()->json(['success' => false, 'message' => 'Job not found.'], 404);
+        }
+    
+        // Update the job fields
+        $technician->is_confirmed = $request->job_confirmed;
+        $technician->is_published = $request->is_published;
+        $technician->status = $request->job_closed;
+        $technician->save();
+    
+        // Update the schedule
+        $schedule = Schedule::where('job_id', $request->jobId)->first();
+        
+        if ($schedule) {
+            $schedule->show_on_schedule = $request->job_schedule;
+            $schedule->save();
+        } else {
+            return response()->json(['success' => false, 'message' => 'Schedule not found for the job.'], 404);
+        }
+    
+        return response()->json(['success' => true, 'message' => 'Settings updated successfully.']);
+    }
+    
 }
