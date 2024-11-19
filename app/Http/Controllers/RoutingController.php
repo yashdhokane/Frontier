@@ -165,6 +165,7 @@ class RoutingController extends Controller
     {
         $dateDay = $request->input('dateDay');
         $routing = $request->input('routing');
+        $technicians = $request->input('technician', []);
 
         // Get timezone and calculate date ranges
         $timezone_name = Session::get('timezone_name', 'UTC');
@@ -217,7 +218,7 @@ class RoutingController extends Controller
                 ->whereBetween('start_date_time', [$startDate, $endDate])
                 ->get(['job_id', 'position', 'is_routes_map', 'job_onmap_reaching_timing']);
 
-            $routingJob = RoutingJob::where('user_id', $technician->id)->first();
+            $routingJob = RoutingJob::where('user_id', $technicians)->first();
             $routeType = '';
 
             // Determine the route type based on `routing`

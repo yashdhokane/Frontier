@@ -1,8 +1,8 @@
-@if(Route::currentRouteName() != 'dash')
-@extends('home')
+@if (Route::currentRouteName() != 'dash')
+    @extends('home')
 
-@section('content')
-@endif
+    @section('content')
+    @endif
     <!-- -------------------------------------------------------------- -->
     <!-- End Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
@@ -14,6 +14,13 @@
             margin-top: 0 !important;
             margin-bottom: 0 !important;
         }
+
+        .job-details-column {
+            max-width: 300px;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+        
     </style>
     <div class="container-fluid">
 
@@ -26,45 +33,45 @@
         <!-- basic table -->
         <div class="row">
             <div class="col-12">
-            <!--
-                <div class="card withoutthreedottest">
-                    <div class="card-body">
-                        <div class="row row-no-margin mt-4">
-                            <div class="col-md-6 col-lg-3 col-xlg-3">
-                                <div class="card card-hover">
-                                    <div class="p-2 rounded bg-light-primary text-center">
-                                        <h1 class="fw-light text-primary">{{ $totalCalls }}</h1>
-                                        <h6 class="text-primary">Total Calls</h6>
+                <!--
+                    <div class="card withoutthreedottest">
+                        <div class="card-body">
+                            <div class="row row-no-margin mt-4">
+                                <div class="col-md-6 col-lg-3 col-xlg-3">
+                                    <div class="card card-hover">
+                                        <div class="p-2 rounded bg-light-primary text-center">
+                                            <h1 class="fw-light text-primary">{{ $totalCalls }}</h1>
+                                            <h6 class="text-primary">Total Calls</h6>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6 col-lg-3 col-xlg-3">
-                                <div class="card card-hover">
-                                    <div class="p-2 rounded bg-light-warning text-center">
-                                        <h1 class="fw-light text-warning">{{ $inProgress }}</h1>
-                                        <h6 class="text-warning">In Progress</h6>
+                                <div class="col-md-6 col-lg-3 col-xlg-3">
+                                    <div class="card card-hover">
+                                        <div class="p-2 rounded bg-light-warning text-center">
+                                            <h1 class="fw-light text-warning">{{ $inProgress }}</h1>
+                                            <h6 class="text-warning">In Progress</h6>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6 col-lg-3 col-xlg-3">
-                                <div class="card card-hover">
-                                    <div class="p-2 rounded bg-light-success text-center">
-                                        <h1 class="fw-light text-success">{{ $opened }}</h1>
-                                        <h6 class="text-success">Opened</h6>
+                                <div class="col-md-6 col-lg-3 col-xlg-3">
+                                    <div class="card card-hover">
+                                        <div class="p-2 rounded bg-light-success text-center">
+                                            <h1 class="fw-light text-success">{{ $opened }}</h1>
+                                            <h6 class="text-success">Opened</h6>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6 col-lg-3 col-xlg-3">
-                                <div class="card card-hover">
-                                    <div class="p-2 rounded bg-light-danger text-center">
-                                        <h1 class="fw-light text-danger">{{ $complete }}</h1>
-                                        <h6 class="text-danger">Closed</h6>
+                                <div class="col-md-6 col-lg-3 col-xlg-3">
+                                    <div class="card card-hover">
+                                        <div class="p-2 rounded bg-light-danger text-center">
+                                            <h1 class="fw-light text-danger">{{ $complete }}</h1>
+                                            <h6 class="text-danger">Closed</h6>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>  -->
+                    </div>  -->
 
 
                 <div class="card threedottest" id="threedot">
@@ -285,7 +292,7 @@
                                     <thead>
                                         <tr>
                                             <th>Job ID</th>
-                                            <th>Job Details</th>
+                                            <th class="job-details-column">Job Details</th>
                                             <th>Customer</th>
                                             <th>Technician</th>
                                             <th>Date & Time</th>
@@ -300,11 +307,13 @@
                                                         class="fw-bold link"><span
                                                             class="mb-1 badge bg-primary">{{ $ticket->id }}</span></a>
                                                 </td>
-                                                <td>
-                                                    <div class="text-wrap2">
+                                                <td class="job-details-column">
+                                                    <div class="text-wrap2 d-flex">
+                                                        <div class=" text-truncate">
                                                         <a href="{{ route('tickets.show', $ticket->id) }}"
                                                             class="font-medium link">
                                                             {{ $ticket->job_title ?? null }}</a>
+                                                        </div>
                                                         <span
                                                             class="badge bg-light-warning text-warning font-medium">{{ $ticket->status }}</span>
                                                     </div>
@@ -377,169 +386,168 @@
             </div>
         </div>
     </div>
-@section('script')
-    <script>
-        $(document).ready(function() {
-            if ($.fn.DataTable.isDataTable('#zero_config')) {
-                $('#zero_config').DataTable().destroy();
-            }
+    @section('script')
+        <script>
+            $(document).ready(function() {
+                if ($.fn.DataTable.isDataTable('#zero_config')) {
+                    $('#zero_config').DataTable().destroy();
+                }
 
-            $('#zero_config').DataTable({
-                "order": [
-                    [0, "desc"]
-                ],
-                "pageLength": 25,
-            });
+                $('#zero_config').DataTable({
+                    "order": [
+                        [0, "desc"]
+                    ],
+                    "pageLength": 25,
+                });
 
-            $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass(
-                'btn btn-cyan text-white me-1'
-            );
+                $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass(
+                    'btn btn-cyan text-white me-1'
+                );
 
-            // Initialize DataTable
-            var table = $('#zero_config').DataTable();
+                // Initialize DataTable
+                var table = $('#zero_config').DataTable();
 
-            // Month filtering
-            $('#month-filter').on('change', function() {
-                var selectedMonth = $(this).val();
-                console.log("Selected month:", selectedMonth);
+                // Month filtering
+                $('#month-filter').on('change', function() {
+                    var selectedMonth = $(this).val();
+                    console.log("Selected month:", selectedMonth);
 
-                if (selectedMonth) {
-                    var Month = moment(selectedMonth, 'MMMM YYYY').format('MM');
-                    var Year = moment(selectedMonth, 'MMMM YYYY').format('YYYY');
-                    console.log("Formatted Month:", Month);
-                    console.log("Formatted Year:", Year);
+                    if (selectedMonth) {
+                        var Month = moment(selectedMonth, 'MMMM YYYY').format('MM');
+                        var Year = moment(selectedMonth, 'MMMM YYYY').format('YYYY');
+                        console.log("Formatted Month:", Month);
+                        console.log("Formatted Year:", Year);
 
-                    if (Month && Year) {
-                        // Adjust regex to match month and year only
-                        var dateRegex = '\\d{2}-' + Month + '-' + Year;
-                        console.log("Date Regex:", dateRegex);
+                        if (Month && Year) {
+                            // Adjust regex to match month and year only
+                            var dateRegex = '\\d{2}-' + Month + '-' + Year;
+                            console.log("Date Regex:", dateRegex);
 
-                        table.column(4).search(dateRegex, true, false).draw();
+                            table.column(4).search(dateRegex, true, false).draw();
+                        } else {
+                            console.error("Invalid Month or Year format.");
+                        }
                     } else {
-                        console.error("Invalid Month or Year format.");
+                        table.column(4).search('').draw();
                     }
-                } else {
-                    table.column(4).search('').draw();
-                }
-            });
+                });
 
-            // Manufacturer filtering
-            $('#manufacturer-filter').on('change', function() {
-                var manufacturer = $(this).val();
-                table.column(1).search(manufacturer).draw();
-            });
-            $('#technician-filter').on('change', function() {
-                var technician = $(this).val();
-                table.column(3).search(technician)
-                    .draw(); // Assuming technician names are in column index 3
-            });
+                // Manufacturer filtering
+                $('#manufacturer-filter').on('change', function() {
+                    var manufacturer = $(this).val();
+                    table.column(1).search(manufacturer).draw();
+                });
+                $('#technician-filter').on('change', function() {
+                    var technician = $(this).val();
+                    table.column(3).search(technician)
+                        .draw(); // Assuming technician names are in column index 3
+                });
 
 
-            $('#status-filter').on('change', function() {
-                var status = $(this).val();
-                table.columns(1).search(status).draw();
-            });
+                $('#status-filter').on('change', function() {
+                    var status = $(this).val();
+                    table.columns(1).search(status).draw();
+                });
 
 
 
-            $('#month-filter1').on('change', function() {
-                var selectedMonth = $(this).val();
-                console.log("Selected month:", selectedMonth);
+                $('#month-filter1').on('change', function() {
+                    var selectedMonth = $(this).val();
+                    console.log("Selected month:", selectedMonth);
 
-                if (selectedMonth) {
-                    var Month = moment(selectedMonth, 'MMMM YYYY').format('MM');
-                    var Year = moment(selectedMonth, 'MMMM YYYY').format('YYYY');
-                    console.log("Formatted Month:", Month);
-                    console.log("Formatted Year:", Year);
+                    if (selectedMonth) {
+                        var Month = moment(selectedMonth, 'MMMM YYYY').format('MM');
+                        var Year = moment(selectedMonth, 'MMMM YYYY').format('YYYY');
+                        console.log("Formatted Month:", Month);
+                        console.log("Formatted Year:", Year);
 
-                    if (Month && Year) {
-                        // Adjust regex to match month and year only
-                        var dateRegex = '\\d{2}-' + Month + '-' + Year;
-                        console.log("Date Regex:", dateRegex);
+                        if (Month && Year) {
+                            // Adjust regex to match month and year only
+                            var dateRegex = '\\d{2}-' + Month + '-' + Year;
+                            console.log("Date Regex:", dateRegex);
 
-                        table.column(4).search(dateRegex, true, false).draw();
+                            table.column(4).search(dateRegex, true, false).draw();
+                        } else {
+                            console.error("Invalid Month or Year format.");
+                        }
                     } else {
-                        console.error("Invalid Month or Year format.");
+                        table.column(4).search('').draw();
                     }
-                } else {
-                    table.column(4).search('').draw();
-                }
+                });
+
+                // Manufacturer filtering
+                $('#manufacturer-filter1').on('change', function() {
+                    var manufacturer = $(this).val();
+                    table.column(1).search(manufacturer).draw();
+                });
+                $('#technician-filter1').on('change', function() {
+                    var technician = $(this).val();
+                    table.column(3).search(technician)
+                        .draw(); // Assuming technician names are in column index 3
+                });
+
+
+                $('#status-filter1').on('change', function() {
+                    var status = $(this).val();
+                    table.columns(1).search(status).draw();
+                });
+
+
             });
+        </script>
+        <script>
+            // Wait until the DOM is fully loaded
+            document.addEventListener("DOMContentLoaded", function() {
+                // Get the filter button and the filter div
+                const filterButton = document.getElementById('filterButton');
+                const filterDiv = document.getElementById('filterDiv');
 
-            // Manufacturer filtering
-            $('#manufacturer-filter1').on('change', function() {
-                var manufacturer = $(this).val();
-                table.column(1).search(manufacturer).draw();
-            });
-            $('#technician-filter1').on('change', function() {
-                var technician = $(this).val();
-                table.column(3).search(technician)
-                    .draw(); // Assuming technician names are in column index 3
-            });
-
-
-            $('#status-filter1').on('change', function() {
-                var status = $(this).val();
-                table.columns(1).search(status).draw();
-            });
-
-
-        });
-    </script>
-    <script>
-        // Wait until the DOM is fully loaded
-        document.addEventListener("DOMContentLoaded", function() {
-            // Get the filter button and the filter div
-            const filterButton = document.getElementById('filterButton');
-            const filterDiv = document.getElementById('filterDiv');
-
-            // Add a click event listener to the filter button
-            filterButton.addEventListener('click', function() {
-                // Toggle the display of the filter div
-                if (filterDiv.style.display === 'none' || filterDiv.style.display === '') {
-                    filterDiv.style.display = 'block'; // Show the filter section
-                } else {
-                    filterDiv.style.display = 'none'; // Hide the filter section
-                }
-            });
-        });
-    </script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Get references to the search input and the table
-            const searchInput = document.getElementById('searchInput1');
-            const table = document.getElementById('zero_config');
-            const rows = table.getElementsByTagName('tr');
-
-            // Add an event listener to the search input
-            searchInput.addEventListener('keyup', function() {
-                const filter = searchInput.value
-                    .toLowerCase(); // Get the search term and convert to lowercase
-
-                // Loop through all table rows, and hide those who don't match the search query
-                for (let i = 1; i < rows.length; i++) { // Start from 1 to skip the header row
-                    let row = rows[i];
-                    const cells = row.getElementsByTagName('td');
-                    let textContent = '';
-
-                    // Concatenate the text content of all cells in the row
-                    for (let j = 0; j < cells.length; j++) {
-                        textContent += cells[j].textContent.toLowerCase();
-                    }
-
-                    // Check if the row's content matches the search term
-                    if (textContent.indexOf(filter) > -1) {
-                        row.style.display = ''; // Show the row
+                // Add a click event listener to the filter button
+                filterButton.addEventListener('click', function() {
+                    // Toggle the display of the filter div
+                    if (filterDiv.style.display === 'none' || filterDiv.style.display === '') {
+                        filterDiv.style.display = 'block'; // Show the filter section
                     } else {
-                        row.style.display = 'none'; // Hide the row
+                        filterDiv.style.display = 'none'; // Hide the filter section
                     }
-                }
+                });
             });
-        });
-    </script>
-@endsection
-@if(Route::currentRouteName() != 'dash')
+        </script>
 
-@endsection
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // Get references to the search input and the table
+                const searchInput = document.getElementById('searchInput1');
+                const table = document.getElementById('zero_config');
+                const rows = table.getElementsByTagName('tr');
+
+                // Add an event listener to the search input
+                searchInput.addEventListener('keyup', function() {
+                    const filter = searchInput.value
+                        .toLowerCase(); // Get the search term and convert to lowercase
+
+                    // Loop through all table rows, and hide those who don't match the search query
+                    for (let i = 1; i < rows.length; i++) { // Start from 1 to skip the header row
+                        let row = rows[i];
+                        const cells = row.getElementsByTagName('td');
+                        let textContent = '';
+
+                        // Concatenate the text content of all cells in the row
+                        for (let j = 0; j < cells.length; j++) {
+                            textContent += cells[j].textContent.toLowerCase();
+                        }
+
+                        // Check if the row's content matches the search term
+                        if (textContent.indexOf(filter) > -1) {
+                            row.style.display = ''; // Show the row
+                        } else {
+                            row.style.display = 'none'; // Hide the row
+                        }
+                    }
+                });
+            });
+        </script>
+    @endsection
+    @if (Route::currentRouteName() != 'dash')
+    @endsection
 @endif
