@@ -6,6 +6,9 @@
         #frontier_loader {
             display: none;
         }
+        .select2{
+            width: 100% !important;
+        }
 
         /* Dim background */
         .loader-overlay {
@@ -82,7 +85,8 @@
                 </h4>
             </div>
             <div class="col-md-2">
-                <a class="job_set_lnk ft14" id="job_set_lnk" href="#."><i class="far fa-sun"></i> Job Settings</a>
+                <a class="job_set_lnk ft14" id="job_set_lnk" href="#."><i class="far fa-sun"></i> Job Settings | </a>
+                <a class="job_set_lnk ft14" id="job_flag" href="#."><i class=" far fa-flag"></i> Add Flag</a>
             </div>
         </div>
     </div>
@@ -473,6 +477,41 @@
                                                     @if ($technicians->status == 'closed') checked @endif>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="mb-4 flwrap" id="open_job_flag_settings">
+                    <div class="card">
+                        <form id="flagCustomerForm" method="POST">
+                            @csrf
+                            <input type="hidden" name="technician_id" id="technician_id" value="{{ $technicians->technician_id }}">
+                            <input type="hidden" name="job_id" id="job_id" value="{{ $technicians->id }}">
+                            <div class="card-body card-border shadow">
+                                <div class="row">
+                                    <div class="col-md-12 d-flex">
+                                        <h5 class="card-title uppercase"><i class="far fa-flag"></i> Flag Customer</h5>
+                                    </div> 
+                                    <div class="col-12 pt-2">
+                                        <label for="flag">Flag</label>
+                                        <select name="flag" id="flag" class="form-control select2" required>
+                                             <option value="">-- Select Flag --</option>
+                                            @foreach($flag as  $value)
+                                                <option value="{{ $value->flag_name }}"> <i class="far fa-flag" style="color: {{ $value->flag_name }};"></i> {{ $value->flag_desc }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-12 pt-2 ">
+                                        <label for="flag_reason">Add Reason</label>
+                                        <textarea class="form-control" name="flag_reason" id="flag_reason" cols="10" rows="3" required></textarea>
+                                    </div>
+                                    <div class="col-12 pt-2">
+                                        <button type="submit" class="btn btn-success">
+                                            Submit
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -1322,7 +1361,7 @@
                                         <i class="fas fa-plus "></i>
                                     </div>
                                 </div>
-                                <div class="row mt-2">
+                                <div class="row mt-2" id="jobNotes">
                                     @foreach ($techniciansnotes as $item)
                                         <ul class="list-unstyled mt-3">
                                             <li class="d-flex align-items-start">

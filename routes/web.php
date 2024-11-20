@@ -529,7 +529,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/update-job-settings/{id}', [TicketController::class, 'updateJobSettings'])->name('updateJobSettings');
 
 
-
     // Show tickets assigned to a specific user
 
 

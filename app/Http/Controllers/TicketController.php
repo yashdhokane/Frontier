@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BusinessHours;
 use App\Models\CustomerUserAddress;
+use App\Models\FlagJob;
 use App\Models\JobActivity;
 use App\Models\JobAssign;
 use App\Models\Jobfields;
@@ -256,7 +257,7 @@ class TicketController extends Controller
         $manufacturers = DB::table('manufacturers')->get();
         $d = Carbon::parse($checkSchedule->start_date_time)->format('Y-m-d');
         $t = Carbon::parse($checkSchedule->start_date_time)->format('h:i A');
-        $date =$d;
+        $date = $d;
         $time = str_replace(" ", ":00 ", $t);
         $dateTime = Carbon::parse("$date $time");
         $datenew = Carbon::parse($date);
@@ -276,11 +277,11 @@ class TicketController extends Controller
             $current += $interval;
         }
 
-         $int = Session::get('time_interval');
+        $int = Session::get('time_interval');
 
-        $startDateTime = $checkSchedule->start_date_time? Carbon::parse($checkSchedule->start_date_time): null;
-        $startDateTime2 = $checkSchedule->end_date_time? Carbon::parse($checkSchedule->end_date_time): null;
-         if ($startDateTime && isset($int)) {
+        $startDateTime = $checkSchedule->start_date_time ? Carbon::parse($checkSchedule->start_date_time) : null;
+        $startDateTime2 = $checkSchedule->end_date_time ? Carbon::parse($checkSchedule->end_date_time) : null;
+        if ($startDateTime && isset($int)) {
             // Add the interval to the parsed time
             $startDateTime->addHours($int);
         }
@@ -293,7 +294,9 @@ class TicketController extends Controller
         $fromDate = $startDateTime ? $startDateTime->format('h:i A') : null;
         $toDate = $startDateTime2 ? $startDateTime2->format('h:i A') : null;
 
-        return view('tickets.show', ['Payment' => $Payment, 'jobservice' => $jobservice, 'jobproduct' => $jobproduct, 'jobFields' => $jobFields, 'ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source, 'activity' => $activity, 'files' => $files, 'schedule' => $schedule, 'jobTimings' => $jobTimings, 'travelTime' => $travelTime, 'checkSchedule' => $checkSchedule, 'assignedJobs' => $assignedJobs, 'job_appliance' => $job_appliance, 'appliances' => $appliances, 'manufacturers' => $manufacturers, 'timeIntervals' => $timeIntervals, 'dateTime' => $dateTime, 'date' => $date, 'fromDate' => $fromDate, 'toDate' => $toDate]);
+        $flag = FlagJob::all();
+
+        return view('tickets.show', ['Payment' => $Payment, 'jobservice' => $jobservice, 'jobproduct' => $jobproduct, 'jobFields' => $jobFields, 'ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source, 'activity' => $activity, 'files' => $files, 'schedule' => $schedule, 'jobTimings' => $jobTimings, 'travelTime' => $travelTime, 'checkSchedule' => $checkSchedule, 'assignedJobs' => $assignedJobs, 'job_appliance' => $job_appliance, 'appliances' => $appliances, 'manufacturers' => $manufacturers, 'timeIntervals' => $timeIntervals, 'dateTime' => $dateTime, 'date' => $date, 'fromDate' => $fromDate, 'toDate' => $toDate, 'flag' => $flag]);
     }
 
     // Show the form for editing the specified ticket
@@ -603,7 +606,7 @@ class TicketController extends Controller
     }
 
 
-  public function showiframe($id)
+    public function showiframe($id)
     {
 
         $user_auth = auth()->user();
@@ -777,7 +780,7 @@ class TicketController extends Controller
 
         return view('tickets.iframe_job_show', ['Payment' => $Payment, 'jobservice' => $jobservice, 'jobproduct' => $jobproduct, 'jobFields' => $jobFields, 'ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source, 'activity' => $activity, 'files' => $files, 'schedule' => $schedule, 'jobTimings' => $jobTimings, 'travelTime' => $travelTime, 'checkSchedule' => $checkSchedule, 'assignedJobs' => $assignedJobs, 'job_appliance' => $job_appliance, 'appliances' => $appliances, 'manufacturers' => $manufacturers, 'timeIntervals' => $timeIntervals, 'dateTime' => $dateTime, 'date' => $date, 'fromDate' => $fromDate, 'toDate' => $toDate]);
     }
-     public function indexiframe()
+    public function indexiframe()
     {
 
         $user_auth = auth()->user();
@@ -816,32 +819,60 @@ class TicketController extends Controller
         ]);
     }
 
-     public function updatejob(Request $request)
+    public function updatejob(Request $request)
     {
-       
-        $technician = JobModel::where('id',$request->jobId)->first();;
-    
+
+        $technician = JobModel::where('id', $request->jobId)->first();
+        ;
+
         if (!$technician) {
             return response()->json(['success' => false, 'message' => 'Job not found.'], 404);
         }
-    
+
         // Update the job fields
         $technician->is_confirmed = $request->job_confirmed;
         $technician->is_published = $request->is_published;
         $technician->status = $request->job_closed;
         $technician->save();
-    
+
         // Update the schedule
         $schedule = Schedule::where('job_id', $request->jobId)->first();
-        
+
         if ($schedule) {
             $schedule->show_on_schedule = $request->job_schedule;
             $schedule->save();
         } else {
             return response()->json(['success' => false, 'message' => 'Schedule not found for the job.'], 404);
         }
-    
+
         return response()->json(['success' => true, 'message' => 'Settings updated successfully.']);
     }
-    
+
+    public function flagCustomer(Request $request)
+    {
+
+
+        $jobNote = new JobNoteModel([
+            'user_id' => $request->technician_id,
+            'job_id' => $request->job_id,
+            'note' => $request->flag_reason,
+            'added_by' => Auth::id(),
+            'updated_by' => Auth::id(),
+            'is_flagged' => 'yes',
+        ]);
+
+        $jobNote->save();
+        $techniciansnotes = JobNoteModel::where('job_id', '=', $request->job_id)
+            ->Leftjoin('users', 'users.id', '=', 'job_notes.added_by')
+            ->select('job_notes.*', 'users.name', 'users.user_image')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'techniciansnotes' => $techniciansnotes,
+            'message' => 'Flag added successfully!'
+        ]);
+    }
+
+
 }

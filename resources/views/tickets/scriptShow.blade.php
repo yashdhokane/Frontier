@@ -285,6 +285,7 @@
             });
 
             $('#open_job_settings').hide();
+            $('#open_job_flag_settings').hide();
 
             $(document).on('change', '#job_confirmed, #is_published, #job_schedule, #job_closed', function() {
                 const jobId = $('#setting_job_id').val();
@@ -326,6 +327,61 @@
 
             $(document).on('click', '#job_set_lnk', function(e) {
                 $('#open_job_settings').toggle('fade');
+            });
+
+            $(document).on('click', '#job_flag', function(e) {
+                $('#open_job_flag_settings').toggle('fade');
+            });
+
+            $('#flagCustomerForm').on('submit', function(e) {
+                e.preventDefault();
+
+
+                let formData = $(this).serialize();
+
+                $.ajax({
+                    url: "{{ route('flagCustomer') }}",
+                    type: "POST",
+                    data: formData,
+                    success: function(response) {
+                        if (response.success) {
+                            $('#flagCustomerForm')[0].reset();
+                            $('#frontier_loader').show();
+                            setTimeout(function() {
+                                $('#frontier_loader').hide();
+                            }, 1000);
+                        } else {
+                            console.log('Failed to update settings. Please try again.');
+                        }
+                        // Clear existing notes and append updated ones
+                        let notesContainer = $('#jobNotes');
+                        notesContainer.empty(); // Clear existing notes
+
+                        response.techniciansnotes.forEach(note => {
+                            let noteImage = note.user_image ?
+                                `{{ asset('public/images/Uploads/users/') }}/${note.added_by}/${note.user_image}` :
+                                `{{ $defaultImage }}`;
+
+                            let noteHTML = `
+                                <ul class="list-unstyled mt-3">
+                                    <li class="d-flex align-items-start">
+                                        <img class="me-3 rounded" src="${noteImage}" width="60" alt="image" 
+                                            onerror="this.onerror=null; this.src='{{ $defaultImage }}';" />
+                                        <div class="media-body">
+                                            <h5 class="mt-0 mb-1">${note.name ?? 'Unknown'}</h5>
+                                            ${note.note ?? ''}
+                                        </div>
+                                    </li>
+                                </ul>
+                            `;
+
+                            notesContainer.append(noteHTML);
+                        });
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.responseText);
+                    }
+                });
             });
 
             $('#manufacturer_ids').select2();
