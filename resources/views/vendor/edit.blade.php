@@ -12,14 +12,14 @@
 
     <!-- -------------------------------------------------------------- -->
     <!-- Bread crumb and right sidebar toggle -->
-    <div class="page-breadcrumb">
+    <div class="page-breadcrumb ms-2">
         <div class="row">
             <div class="col-9 align-self-center">
                 <h4 class="page-title">Vendors</h4>
                 <div class="d-flex align-items-center">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('buisnessprofile.index') }}">Settings</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('buisnessprofile.index') }}">Other</a></li>
                             <li class="breadcrumb-item"><a href="{{ route('vendor.index') }}">Vendor</a></li>
                             <li class="breadcrumb-item active" aria-current="page">{{ $vendor->vendor_name }}</li>
                         </ol>
@@ -28,26 +28,27 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid">
+    <div class="container-fluid pt-2">
 
         @if ($errors->any())
 
-        @foreach ($errors->all() as $error)
-            <div class="alert_wrap">
-                <div class="alert alert-success alert-dismissible bg-danger text-white border-0 fade show">
-                    {{ $error }} <button type="button" class="btn-close" data-bs-dismiss="alert"
-                        aria-label="Close"></button>
+            @foreach ($errors->all() as $error)
+                <div class="alert_wrap">
+                    <div class="alert alert-success alert-dismissible bg-danger text-white border-0 fade show">
+                        {{ $error }} <button type="button" class="btn-close" data-bs-dismiss="alert"
+                            aria-label="Close"></button>
+                    </div>
                 </div>
-            </div>
-        @endforeach
-    @endif
+            @endforeach
+        @endif
 
 
         <!-- Row -->
 
 
         <!-- Card -->
-        <form action="{{ route('vendor.update', ['id' => $vendor->vendor_id]) }}" method="post" enctype="multipart/form-data">
+        <form action="{{ route('vendor.update', ['id' => $vendor->vendor_id]) }}" method="post"
+            enctype="multipart/form-data">
             @csrf
             <div class="row">
                 <!-- column -->
@@ -112,11 +113,12 @@
                         </div>
                         <div class="mb-3">
                             <label class="control-label bold mb5">Status</label>
-                            <select id="status-select" name="status" class="form-control" style="width: 100%;" placeholder="Select status">
+                            <select id="status-select" name="status" class="form-control" style="width: 100%;"
+                                placeholder="Select status">
                                 <option value="yes" {{ $vendor->is_active == 'yes' ? 'selected' : '' }}>Active</option>
                                 <option value="no" {{ $vendor->is_active == 'no' ? 'selected' : '' }}>Deactive</option>
                             </select>
-                            
+
 
 
                             <small id="textHelp" class="form-text text-muted"></small>

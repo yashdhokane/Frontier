@@ -3,12 +3,7 @@
 
     @section('content')
     @endif
-    <!-- -------------------------------------------------------------- -->
-    <!-- End Bread crumb and right sidebar toggle -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- Container fluid  -->
-    <!-- -------------------------------------------------------------- -->
+
     <style>
         .row-no-margin {
             margin-top: 0 !important;
@@ -20,7 +15,6 @@
             word-wrap: break-word;
             white-space: normal;
         }
-        
     </style>
     <div class="container-fluid">
 
@@ -34,44 +28,44 @@
         <div class="row">
             <div class="col-12">
                 <!--
-                    <div class="card withoutthreedottest">
-                        <div class="card-body">
-                            <div class="row row-no-margin mt-4">
-                                <div class="col-md-6 col-lg-3 col-xlg-3">
-                                    <div class="card card-hover">
-                                        <div class="p-2 rounded bg-light-primary text-center">
-                                            <h1 class="fw-light text-primary">{{ $totalCalls }}</h1>
-                                            <h6 class="text-primary">Total Calls</h6>
+                        <div class="card withoutthreedottest">
+                            <div class="card-body">
+                                <div class="row row-no-margin mt-4">
+                                    <div class="col-md-6 col-lg-3 col-xlg-3">
+                                        <div class="card card-hover">
+                                            <div class="p-2 rounded bg-light-primary text-center">
+                                                <h1 class="fw-light text-primary">{{ $totalCalls }}</h1>
+                                                <h6 class="text-primary">Total Calls</h6>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6 col-lg-3 col-xlg-3">
-                                    <div class="card card-hover">
-                                        <div class="p-2 rounded bg-light-warning text-center">
-                                            <h1 class="fw-light text-warning">{{ $inProgress }}</h1>
-                                            <h6 class="text-warning">In Progress</h6>
+                                    <div class="col-md-6 col-lg-3 col-xlg-3">
+                                        <div class="card card-hover">
+                                            <div class="p-2 rounded bg-light-warning text-center">
+                                                <h1 class="fw-light text-warning">{{ $inProgress }}</h1>
+                                                <h6 class="text-warning">In Progress</h6>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6 col-lg-3 col-xlg-3">
-                                    <div class="card card-hover">
-                                        <div class="p-2 rounded bg-light-success text-center">
-                                            <h1 class="fw-light text-success">{{ $opened }}</h1>
-                                            <h6 class="text-success">Opened</h6>
+                                    <div class="col-md-6 col-lg-3 col-xlg-3">
+                                        <div class="card card-hover">
+                                            <div class="p-2 rounded bg-light-success text-center">
+                                                <h1 class="fw-light text-success">{{ $opened }}</h1>
+                                                <h6 class="text-success">Opened</h6>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6 col-lg-3 col-xlg-3">
-                                    <div class="card card-hover">
-                                        <div class="p-2 rounded bg-light-danger text-center">
-                                            <h1 class="fw-light text-danger">{{ $complete }}</h1>
-                                            <h6 class="text-danger">Closed</h6>
+                                    <div class="col-md-6 col-lg-3 col-xlg-3">
+                                        <div class="card card-hover">
+                                            <div class="p-2 rounded bg-light-danger text-center">
+                                                <h1 class="fw-light text-danger">{{ $complete }}</h1>
+                                                <h6 class="text-danger">Closed</h6>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>  -->
+                        </div>  -->
 
 
                 <div class="card threedottest" id="threedot">
@@ -196,89 +190,7 @@
                         </div>
                     </div>
                 </div>
-                {{-- <div class="card card-body shadow">
 
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="d-flex flex-column align-items-baseline">
-                                <!-- Date filtering input -->
-
-
-                                <label><b>Month:</b></label>
-                                <select id="month-filter1" class="form-control mx-2">
-                                    <option value="">All</option>
-                                    @php
-                                        $time_interval = Session::get('time_interval', 0);
-                                        // Get the current month and year
-                                        $currentMonth = new DateTime();
-                                        // Format the current month and year
-                                        $currentMonthFormatted = $currentMonth->format('F Y');
-                                        // Output the option tag for the current month
-                                        echo "<option value=\"" .
-                                            strtolower($currentMonthFormatted) .
-                                            "\">" .
-                                            $currentMonthFormatted .
-                                            '</option>';
-
-                                        // Generate options for the previous 11 months
-                                        for ($i = 0; $i < 12; $i++) {
-                                            // Modify date to get previous months
-                                            $monthYear = $currentMonth->modify('-1 month')->format('F Y');
-                                            // Output the option tag for the previous months
-                                            echo "<option value=\"" .
-                                                strtolower($monthYear) .
-                                                "\">" .
-                                                $monthYear .
-                                                '
-                                                    </option>';
-                                        }
-                                    @endphp
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="d-flex flex-column  align-items-baseline">
-                                <!-- Filter by other column (example: Manufacturer) -->
-                                <label class="text-nowrap"><b>Manufacturer:</b></label>
-                                <select id="manufacturer-filter1" class="form-control mx-2">
-                                    <option value="">All</option>
-                                    @foreach ($manufacturer as $item)
-                                        <option value="{{ $item->manufacturer_name }}">
-                                            {{ $item->manufacturer_name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="d-flex flex-column align-items-baseline">
-                                <!-- Filter by other column (example: Manufacturer) -->
-                                <label class="text-nowrap"><b>Technician </b></label>
-                                <select id="technician-filter1" class="form-control mx-2">
-                                    <option value="">All</option>
-                                    @foreach ($technicianrole as $item)
-                                        <option value="{{ $item->name }}">
-                                            {{ $item->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="d-flex flex-column  align-items-baseline">
-                                <!-- Filter by status -->
-                                <label class="text-nowrap"><b>Status:</b></label>
-                                <select id="status-filter1" class="form-control mx-2">
-                                    <option value="">All</option>
-                                    <option value="open">Open</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="resolved">Resolved</option>
-                                    <option value="closed">Closed</option>
-                                    <option value="rejected">Rejected</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div> --}}
-                {{-- <a href="{{ route('tickets.create') }}" class="btn btn-primary mb-3">Create New Ticket</a> --}}
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive table-custom">
@@ -310,9 +222,9 @@
                                                 <td class="job-details-column">
                                                     <div class="text-wrap2 d-flex">
                                                         <div class=" text-truncate">
-                                                        <a href="{{ route('tickets.show', $ticket->id) }}"
-                                                            class="font-medium link">
-                                                            {{ $ticket->job_title ?? null }}</a>
+                                                            <a href="{{ route('tickets.show', $ticket->id) }}"
+                                                                class="font-medium link">
+                                                                {{ $ticket->job_title ?? null }}</a>
                                                         </div>
                                                         <span
                                                             class="badge bg-light-warning text-warning font-medium">{{ $ticket->status }}</span>

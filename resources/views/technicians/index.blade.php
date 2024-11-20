@@ -1,16 +1,10 @@
     @if (Route::currentRouteName() != 'dash')
+        @extends('home')
+        @section('content')
+        @endif
 
 
-
-@extends('home')
-@section('content')
-@endif
-
-    <div class="page-wrapper" style="display:inline;">
-        <!-- -------------------------------------------------------------- -->
-        <!-- Bread crumb and right sidebar toggle -->
-        <!-- -------------------------------------------------------------- -->
-        <div class="page-breadcrumb" style="padding-top: 0px;">
+        <div class="page-breadcrumb ms-2">
             <div class="row">
                 <div class="col-6 align-self-center">
                     <h4 class="page-title">Technicians</h4>
@@ -21,22 +15,15 @@
                 </div>
             </div>
         </div>
-        <!-- -------------------------------------------------------------- -->
-        <!-- End Bread crumb and right sidebar toggle -->
-        <!-- -------------------------------------------------------------- -->
 
-
-        <!-- -------------------------------------------------------------- -->
-        <!-- Container fluid  -->
-        <!-- -------------------------------------------------------------- -->
-        <div class="container-fluid">
+        <div class="container-fluid pt-2">
             <!-- -------------------------------------------------------------- -->
             <!-- Start Page Content -->
             <!-- -------------------------------------------------------------- -->
             <div class="widget-content searchable-container list">
                 <!-- ---------------------
-                                                                                                                                                                                                                                                                                                        start Contact
-                                                                                                                                                                                                                                                                                                    ---------------- -->
+                                                                                                                                                                                                                                                                                                            start Contact
+                                                                                                                                                                                                                                                                                                        ---------------- -->
 
                 @if (Session::has('success'))
                     <div class="alert_wrap">
@@ -54,91 +41,6 @@
                         </div>
                     </div>
                 @endif
-
-
-
-                {{-- <div class="card card-body shadow" style="display: none;">
-                    <div class="row">
-                        <div class="col-md-4 col-xl-2">
-                            <form>
-
-                                <input type="text" name="" class="form-control " aria-controls="" id="searchInput"
-                                    placeholder="Search Technicians..." />
-                            </form>
-                        </div>
-                        <div
-                            class="col-md-8 col-xl-10 text-end d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
-
-                            <a href="{{ route('technicians.create') }}" id="" class="btn btn-info"><i
-                                    class=" fas fa-user-plus "></i> Add New </a>
-
-                            @if (request()->routeIs('technicians.index'))
-                                <a href="{{ route('technicians.status', ['status' => 'deactive']) }}"
-                                    class="btn btn-danger mx-3"><i class="ri-user-unfollow-fill"></i> View Inactive
-                                </a>
-                            @elseif(request()->routeIs('technicians.status'))
-                                <a href="{{ route('technicians.index') }}" class="btn btn-success mx-3"><i
-                                        class="ri-user-follow-line"></i> View Active </a>
-                            @endif
-
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="card card-body shadow" style="display: none;">
-                    <div class="row">
-                        <!-- Search Input on the Left -->
-                        <div class="col-md-4 col-xl-2">
-                            <form>
-                                <input type="text" name="searchInput1" class="form-control" aria-controls="" id="searchInput1"
-                                    placeholder="Search Technicians..." />
-                            </form>
-                        </div>
-
-                        <!-- Three Dot Dropdown on the Right -->
-                        <div
-                            class="col-md-8 col-xl-10 text-end d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
-                            <div class="dropdown dropstart">
-                                <a href="#" class="link" id="dropdownMenuButton" data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="feather feather-more-vertical feather-sm">
-                                        <circle cx="12" cy="12" r="1"></circle>
-                                        <circle cx="12" cy="5" r="1"></circle>
-                                        <circle cx="12" cy="19" r="1"></circle>
-                                    </svg>
-                                </a>
-
-                                <!-- Dropdown Menu -->
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                                    <li>
-                                        <a href="{{ route('technicians.create') }}" class="dropdown-item">
-                                            <i class="fas fa-user-plus"></i> Add New
-                                        </a>
-                                    </li>
-
-                                    @if (request()->routeIs('technicians.index'))
-                                        <li>
-                                            <a href="{{ route('technicians.status', ['status' => 'deactive']) }}"
-                                                class="dropdown-item text-danger">
-                                                <i class="ri-user-unfollow-fill"></i> View Inactive
-                                            </a>
-                                        </li>
-                                    @elseif(request()->routeIs('technicians.status'))
-                                        <li>
-                                            <a href="{{ route('technicians.index') }}" class="dropdown-item text-success">
-                                                <i class="ri-user-follow-line"></i> View Active
-                                            </a>
-                                        </li>
-                                    @endif
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div> --}}
 
 
 
@@ -229,8 +131,8 @@
 
 
                 <!-- ---------------------
-                                                                                                                                                                                                                                                                                                        end Contact
-                                                                                                                                                                                                                                                                                                    ---------------- -->
+                                                                                                                                                                                                                                                                                                            end Contact
+                                                                                                                                                                                                                                                                                                        ---------------- -->
                 <!-- Modal style="overflow-x: auto;" -->
 
 
@@ -325,8 +227,8 @@
                                                         href="{{ route('technicians.show', $user->id) }}"><i
                                                             data-feather="eye" class="feather-sm me-2"></i> View</a>
                                                     <!-- <a class="dropdown-item"
-                                                                                                                                                                                                                                                                                                                                href="{{ route('technicians.edit', $user->id) }}"><i
-                                                                                                                                                                                                                                                                                                                                    data-feather="edit-2" class="feather-sm me-2"></i> Edit</a> -->
+                                                                                                                                                                                                                                                                                                                                    href="{{ route('technicians.edit', $user->id) }}"><i
+                                                                                                                                                                                                                                                                                                                                        data-feather="edit-2" class="feather-sm me-2"></i> Edit</a> -->
                                                     <a class="dropdown-item activity" href="javascript:void(0)"
                                                         data-bs-toggle="modal" data-bs-target="#commentModal1"
                                                         onclick="setUserId({{ $user->id }})">
@@ -340,9 +242,9 @@
                                                         Comments
                                                     </a>
                                                     <!-- <a class="dropdown-item" href="{{ route('permissionindex') }}">
-                                                                                                                                                                                                                                                                                                                                <i data-feather="user-check" class="feather-sm me-2"></i>
-                                                                                                                                                                                                                                                                                                                                Permission
-                                                                                                                                                                                                                                                                                                                            </a> -->
+                                                                                                                                                                                                                                                                                                                                    <i data-feather="user-check" class="feather-sm me-2"></i>
+                                                                                                                                                                                                                                                                                                                                    Permission
+                                                                                                                                                                                                                                                                                                                                </a> -->
 
                                                 </div>
                                             </div>
@@ -453,126 +355,121 @@
             </div>
         </div>
 
+        @section('script')
+            <script>
+                $(document).ready(function() {
+                    if ($.fn.DataTable.isDataTable('#zero_config')) {
+                        $('#zero_config').DataTable().destroy();
+                    }
 
+                    $('#zero_config').DataTable({
+                        "order": [
+                            [0, "desc"]
+                        ],
+                        "pageLength": 25,
+                    });
+                    var table = $('#zero_config').DataTable();
 
+                    // Apply search on input change
+                    $('#searchInput').on('keyup', function() {
+                        table.search(this.value).draw();
+                    });
 
+                    $('#searchInput1').on('keyup', function() {
+                        table.search(this.value).draw();
+                    });
 
-    @section('script')
-        <script>
-            $(document).ready(function() {
-                if ($.fn.DataTable.isDataTable('#zero_config')) {
-                    $('#zero_config').DataTable().destroy();
-                }
+                    $('.deletelink').on('click', function() {
+                        var questionId = $(this).data('question-id');
 
-                $('#zero_config').DataTable({
-                    "order": [
-                        [0, "desc"]
-                    ],
-                    "pageLength": 25,
-                });
-                var table = $('#zero_config').DataTable();
-
-                // Apply search on input change
-                $('#searchInput').on('keyup', function() {
-                    table.search(this.value).draw();
-                });
-
-                $('#searchInput1').on('keyup', function() {
-                    table.search(this.value).draw();
-                });
-
-                $('.deletelink').on('click', function() {
-                    var questionId = $(this).data('question-id');
-
-                    $.ajax({
-                        url: '/delete/question/' + questionId,
-                        type: 'get',
-                        dataType: 'json',
-                        success: function(data) {
-                            $(this).closest('tr').remove();
-                            alert(data.success);
-                        },
-                        error: function(xhr, status, error) {
-                            alert('Error: ' + xhr.responseText);
-                        }
+                        $.ajax({
+                            url: '/delete/question/' + questionId,
+                            type: 'get',
+                            dataType: 'json',
+                            success: function(data) {
+                                $(this).closest('tr').remove();
+                                alert(data.success);
+                            },
+                            error: function(xhr, status, error) {
+                                alert('Error: ' + xhr.responseText);
+                            }
+                        });
                     });
                 });
-            });
-        </script>
+            </script>
 
 
 
 
-        <script>
-            function setUserId(userId) {
-                $('#userId').val(userId);
+            <script>
+                function setUserId(userId) {
+                    $('#userId').val(userId);
 
-                // Fetch the user's status using AJAX
-                $.ajax({
-                    url: "{{ route('get.user.status') }}",
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                    },
-                    data: {
-                        user_id: userId
-                    },
-                    dataType: 'json',
-                    success: function(data) {
-                        // Update the confirmation message based on the user's status
-                        const message = (data.status === 'active') ? 'Are you sure to change status to Inactive?' :
-                            'Are you sure to change status to Active?';
-                        $('#confirmationMessage').text(message);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error:', error);
-                    }
-                });
-            }
-        </script>
-        <script>
-            // Function to set the user ID in the comment modal
-            function setUserIdForCommentModal(userId) {
-                document.getElementById('userIdForCommentModal').value = userId;
-            }
-        </script>
-        <script>
-            document.getElementById("submitButton").addEventListener("click", function(event) {
-                var comment = document.getElementById("comment").value.trim();
-                if (comment === "") {
-                    event.preventDefault(); // Prevent form submission
-                    alert("Please add a comment before submitting.");
+                    // Fetch the user's status using AJAX
+                    $.ajax({
+                        url: "{{ route('get.user.status') }}",
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                        },
+                        data: {
+                            user_id: userId
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            // Update the confirmation message based on the user's status
+                            const message = (data.status === 'active') ? 'Are you sure to change status to Inactive?' :
+                                'Are you sure to change status to Active?';
+                            $('#confirmationMessage').text(message);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error:', error);
+                        }
+                    });
                 }
-            });
-        </script>
-        <script>
-            // JavaScript Function to Filter Table Rows
-            function filterTable() {
-                // Get the value of the search input field
-                const searchInput = document.getElementById('searchInput1').value.toLowerCase();
-
-                // Get all table rows
-                const rows = document.querySelectorAll('#zero_config tbody tr');
-
-                // Loop through each row
-                rows.forEach(row => {
-                    // Get the text content of the row
-                    const text = row.textContent.toLowerCase();
-
-                    // Check if the row's text content includes the search input value
-                    if (text.includes(searchInput)) {
-                        row.style.display = ''; // Show the row
-                    } else {
-                        row.style.display = 'none'; // Hide the row
+            </script>
+            <script>
+                // Function to set the user ID in the comment modal
+                function setUserIdForCommentModal(userId) {
+                    document.getElementById('userIdForCommentModal').value = userId;
+                }
+            </script>
+            <script>
+                document.getElementById("submitButton").addEventListener("click", function(event) {
+                    var comment = document.getElementById("comment").value.trim();
+                    if (comment === "") {
+                        event.preventDefault(); // Prevent form submission
+                        alert("Please add a comment before submitting.");
                     }
                 });
-            }
+            </script>
+            <script>
+                // JavaScript Function to Filter Table Rows
+                function filterTable() {
+                    // Get the value of the search input field
+                    const searchInput = document.getElementById('searchInput1').value.toLowerCase();
 
-            // Attach the filterTable function to the search input's onkeyup event
-            document.getElementById('searchInput1').addEventListener('keyup', filterTable);
-        </script>
-    @endsection
-    @if (Route::currentRouteName() != 'dash')
+                    // Get all table rows
+                    const rows = document.querySelectorAll('#zero_config tbody tr');
 
-@endsection
-@endif
+                    // Loop through each row
+                    rows.forEach(row => {
+                        // Get the text content of the row
+                        const text = row.textContent.toLowerCase();
+
+                        // Check if the row's text content includes the search input value
+                        if (text.includes(searchInput)) {
+                            row.style.display = ''; // Show the row
+                        } else {
+                            row.style.display = 'none'; // Hide the row
+                        }
+                    });
+                }
+
+                // Attach the filterTable function to the search input's onkeyup event
+                document.getElementById('searchInput1').addEventListener('keyup', filterTable);
+            </script>
+        @endsection
+        @if (Route::currentRouteName() != 'dash')
+        @endsection
+    @endif
