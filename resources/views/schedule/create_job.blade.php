@@ -2265,9 +2265,24 @@
 
                         $('.job_id').val(data.id);
                         $('.customer_id').val(data.customer_id);
-                        $('.job_title').val(data.job_title);
                         $('.job_code').val(data.job_code);
                         $('.address_type').val(data.address_type);
+
+                        let jobTitle = data.job_title;
+                        let optionExists = false;
+                        $('select[name="job_title"] option').each(function() {
+                            if ($(this).val() === jobTitle) {
+                                $(this).prop('selected', true);
+                                optionExists = true;
+                            }
+                        });
+
+                        if (optionExists) {
+                            $('#show_new_title').hide();
+                        } else {
+                            $('#show_new_title').show(); 
+                            $('.job_title').val(jobTitle); 
+                        }
 
                         var appliances_id = data.appliances_id;
 
