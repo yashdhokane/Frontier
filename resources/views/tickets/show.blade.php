@@ -6,7 +6,8 @@
         #frontier_loader {
             display: none;
         }
-        .select2{
+
+        .select2 {
             width: 100% !important;
         }
 
@@ -133,7 +134,11 @@
                         <div class="card-body card-border shadow">
                             <div class="">
                                 <h5 class="card-title uppercase mt-1 mb-2"><a class="text-dark"
-                                        href="{{ url('users/show/' . $technicians->user->id) }}">{{ $technicians->user->name ?? null }}</a>
+                                        href="{{ url('customers/show/' . $technicians->user->id) }}">{{ $technicians->user->name ?? null }}
+                                        @if (!empty($technicians->user->flag_id != 0))
+                                            <i class=" far fa-flag"></i>
+                                        @endif
+                                    </a>
                                 </h5>
                                 <div>Address</div>
                                 <h5 class="todo-desc mb-2 fs-3 font-weight-medium">
@@ -257,7 +262,7 @@
                                     <form action="{{ url('add/job_tags/' . $technicians->id) }}" method="POST">
                                         @csrf
                                         <div class="mb-3">
-                                            <select class="select2-with-menu-bg form-control  me-sm-2" name="job_tags[]"
+                                            <select class="select2-with-menu-bg form-control  me-sm-2 text-uppercase" name="job_tags[]"
                                                 id="menu-bg-multiple" multiple="multiple" data-bgcolor="light"
                                                 data-bgcolor-variation="accent-3" data-text-color="blue"
                                                 style="width: 100%" required>
@@ -488,19 +493,28 @@
                     <div class="card">
                         <form id="flagCustomerForm" method="POST">
                             @csrf
-                            <input type="hidden" name="technician_id" id="technician_id" value="{{ $technicians->technician_id }}">
+                            <input type="hidden" name="technician_id" id="technician_id"
+                                value="{{ $technicians->technician_id }}">
+                            <input type="hidden" name="customer_id" id="customer_id"
+                                value="{{ $technicians->customer_id }}">
                             <input type="hidden" name="job_id" id="job_id" value="{{ $technicians->id }}">
                             <div class="card-body card-border shadow">
                                 <div class="row">
                                     <div class="col-md-12 d-flex">
                                         <h5 class="card-title uppercase"><i class="far fa-flag"></i> Flag Customer</h5>
-                                    </div> 
+                                    </div>
                                     <div class="col-12 pt-2">
-                                        <label for="flag">Flag</label>
-                                        <select name="flag" id="flag" class="form-control select2" required>
-                                             <option value="">-- Select Flag --</option>
-                                            @foreach($flag as  $value)
-                                                <option value="{{ $value->flag_name }}"> <i class="far fa-flag" style="color: {{ $value->flag_name }};"></i> {{ $value->flag_desc }}</option>
+                                        @if (!empty($notes))
+                                            <div class="text-info">Flag added on {{ $notes->created_at->format('Y-m-d') }}
+                                                by {{ $notes->name }}</div>
+                                        @endif
+                                        <label for="flag" class="pt-2">Flag</label>
+                                        <select name="flag_id" id="flag" class="form-control select2" required>
+                                            <option value="">-- Select Flag --</option>
+                                            @foreach ($flag as $value)
+                                                <option value="{{ $value->flag_id }}"> <i class="far fa-flag"
+                                                        style="color: {{ $value->flag_name }};"></i>
+                                                    {{ $value->flag_desc }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -1376,6 +1390,9 @@
                                                 @endisset
                                                 <div class="media-body">
                                                     <h5 class="mt-0 mb-1">{{ $item->name ?? 'Unknown' }}</h5>
+                                                    @if($item->is_flagged == 'yes') 
+                                                    <i class="far fa-flag"></i>
+                                                    @endif
                                                     {!! $item->note ?? null !!}
                                                 </div>
                                             </li>

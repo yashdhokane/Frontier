@@ -173,9 +173,9 @@ class TicketController extends Controller
 
         $namesjobtag = explode(',', $namejobs);
 
-        $jobtagnames = SiteJobFields::whereIn('field_id', $namesjobtag)->get();
+        $jobtagnames = SiteJobFields::whereIn('field_id', $namesjobtag)->orderBy('field_name', 'asc')->get();
 
-        $job_tag = SiteJobFields::all();
+        $job_tag = SiteJobFields::orderBy('field_name', 'asc')->get();
 
         $lead = User::where('id', $technicians->customer_id)->first();
 
@@ -295,8 +295,16 @@ class TicketController extends Controller
         $toDate = $startDateTime2 ? $startDateTime2->format('h:i A') : null;
 
         $flag = FlagJob::all();
+        $notes = JobNoteModel::where('job_id', '=', $id)
+        ->where('is_flagged', '=', 'yes')
+        ->leftJoin('users', 'users.id', '=', 'job_notes.added_by')
+        ->select('job_notes.*', 'users.name', 'users.user_image')
+        ->latest()
+        ->first();
+    
+        
 
-        return view('tickets.show', ['Payment' => $Payment, 'jobservice' => $jobservice, 'jobproduct' => $jobproduct, 'jobFields' => $jobFields, 'ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source, 'activity' => $activity, 'files' => $files, 'schedule' => $schedule, 'jobTimings' => $jobTimings, 'travelTime' => $travelTime, 'checkSchedule' => $checkSchedule, 'assignedJobs' => $assignedJobs, 'job_appliance' => $job_appliance, 'appliances' => $appliances, 'manufacturers' => $manufacturers, 'timeIntervals' => $timeIntervals, 'dateTime' => $dateTime, 'date' => $date, 'fromDate' => $fromDate, 'toDate' => $toDate, 'flag' => $flag]);
+        return view('tickets.show', ['Payment' => $Payment, 'jobservice' => $jobservice, 'jobproduct' => $jobproduct, 'jobFields' => $jobFields, 'ticket' => $ticket, 'Sitetagnames' => $Sitetagnames, 'technicians' => $technicians, 'techniciansnotes' => $techniciansnotes, 'customer_tag' => $customer_tag, 'job_tag' => $job_tag, 'jobtagnames' => $jobtagnames, 'leadsource' => $leadsource, 'source' => $source, 'activity' => $activity, 'files' => $files, 'schedule' => $schedule, 'jobTimings' => $jobTimings, 'travelTime' => $travelTime, 'checkSchedule' => $checkSchedule, 'assignedJobs' => $assignedJobs, 'job_appliance' => $job_appliance, 'appliances' => $appliances, 'manufacturers' => $manufacturers, 'timeIntervals' => $timeIntervals, 'dateTime' => $dateTime, 'date' => $date, 'fromDate' => $fromDate, 'toDate' => $toDate, 'flag' => $flag, 'notes' => $notes]);
     }
 
     // Show the form for editing the specified ticket
@@ -862,6 +870,11 @@ class TicketController extends Controller
         ]);
 
         $jobNote->save();
+
+        $user = User::where('id', $request->customer_id)->first();
+        $user->flag_id = $request->flag_id;
+        $user->save();
+
         $techniciansnotes = JobNoteModel::where('job_id', '=', $request->job_id)
             ->Leftjoin('users', 'users.id', '=', 'job_notes.added_by')
             ->select('job_notes.*', 'users.name', 'users.user_image')
