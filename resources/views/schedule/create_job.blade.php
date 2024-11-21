@@ -180,11 +180,21 @@
                                         <div class="mt-0 mb-3">
                                             <h6 class="card-title required-field"><i class="fas fa fa-sticky-note"></i>
                                                 Job Title </h6>
-                                            <div class="form-group">
+                                           
+                                            <select class="form-control" name="job_title">
+                                                <option value=""> -- Select Existig job Title -- </option>
+                                                @foreach($jobTitle as  $value)
+                                                    <option value="{{ $value->field_name }}">{{ $value->field_name }}</option>
+                                                @endforeach
+                                            </select>
+                                        
+                                            <div class="my-2"><a href="#." id="add_new_title">Add New</a></div>
+                                            <div class="form-group" id="show_new_title">
                                                 <input type="text" name="job_title" class="form-control job_title"
                                                     placeholder="Add Job Title Here" aria-label=""
                                                     aria-describedby="basic-addon1">
                                             </div>
+                                    
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -194,9 +204,11 @@
                                             <div class="form-group">
                                                 <select class="form-control priority" id="exampleFormControlSelect1"
                                                     name="priority">
+                                                    <option value="critical">Critical</option>
+                                                    <option value="emergency">Emergency</option>
                                                     <option value="high">High</option>
                                                     <option value="low">Low</option>
-                                                    <option value="medium">Medium</option>
+                                                    <option value="medium" checked>Medium</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -369,7 +381,7 @@
                                         <div class="mt-3 mb-3">
                                             <h6 class="card-title"><i class="fas fa fa-tags"></i> Tags </h6>
                                             <div class="input-group">
-                                                <select class="form-control me-sm-2 tags  "name="tags[]"
+                                                <select class="form-control me-sm-2 tags text-uppercase" name="tags[]"
                                                     multiple="multiple" style="width: 100%">
                                                     @foreach ($tags as $tag)
                                                         <option value="{{ $tag->field_id }}">
@@ -1142,6 +1154,11 @@
 
             $(document).on('click', '#add_new_appl', function() {
                 $('#show_new_appl').toggle();
+            });
+
+            $('#show_new_title').hide();
+            $(document).on('click', '#add_new_title', function() {
+                $('#show_new_title').toggle();
             });
 
 

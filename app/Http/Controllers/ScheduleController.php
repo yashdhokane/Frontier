@@ -26,6 +26,7 @@ use App\Models\Role;
 use App\Models\Schedule;
 use App\Models\ServiceCategory;
 use App\Models\SiteJobFields;
+use App\Models\SiteJobTitle;
 use App\Models\SiteLeadSource;
 use App\Models\SiteTags;
 use App\Models\TimeZone;
@@ -587,11 +588,13 @@ class ScheduleController extends Controller
 
             $leadSources = SiteLeadSource::all();
 
-            $tags = SiteJobFields::all(); // Fetch all tags
+            $tags = SiteJobFields::orderBy('field_name', 'asc')->get(); // Fetch all tags
 
             $site = SiteTags::all();
 
-            return view('schedule.create_job', compact('tags', 'leadSources', 'locationStates', 'technician', 'dateTime', 'manufacturers', 'appliances', 'getServices', 'getProduct', 'tags', 'hours', 'time', 'serviceCat', 'site', 'date', 'timeIntervals'));
+            $jobTitle = SiteJobTitle::orderBy('field_name', 'asc')->get();
+
+            return view('schedule.create_job', compact('tags', 'leadSources', 'locationStates', 'technician', 'dateTime', 'manufacturers', 'appliances', 'getServices', 'getProduct', 'tags', 'hours', 'time', 'serviceCat', 'site', 'date', 'timeIntervals','jobTitle'));
         }
     }
     public function create(Request $request)
