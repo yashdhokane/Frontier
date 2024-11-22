@@ -27,21 +27,40 @@ class ServiceAreaController extends Controller
     {
         return view('servicearea.add_servicearea');
     }
-    public function store(Request $request)
-    {
-        $locationServiceArea = new LocationServiceArea();
+    // public function store(Request $request)
+    // {
+    //     $locationServiceArea = new LocationServiceArea();
 
-        $locationServiceArea->area_name = $request->input('area_name');
-        $locationServiceArea->area_description = $request->input('area_description');
-        $locationServiceArea->area_radius = $request->input('area_radius');
-        $locationServiceArea->area_latitude = $request->input('area_latitude');
-        $locationServiceArea->area_longitude = $request->input('area_longitude');
+    //     $locationServiceArea->area_name = $request->input('area_name');
+    //     $locationServiceArea->area_description = $request->input('area_description');
+    //     $locationServiceArea->area_radius = $request->input('area_radius');
+    //     $locationServiceArea->area_latitude = $request->input('area_latitude');
+    //     $locationServiceArea->area_longitude = $request->input('area_longitude');
 
-        $locationServiceArea->save();
-        // dd(1);
-        $servicearea = LocationServiceArea::all();
-        return redirect()->route('servicearea.index')->with(['success' => 'Service area location created successfully', 'servicearea' => $servicearea]);
-    }
+    //     $locationServiceArea->save();
+    //     // dd(1);
+    //     $servicearea = LocationServiceArea::all();
+    //     return redirect()->route('servicearea.index')->with(['success' => 'Service area location created successfully', 'servicearea' => $servicearea]);
+    // }
+public function store(Request $request)
+{
+    $validatedData = $request->validate([
+        'area_name' => 'required|string|max:255',
+        'area_description' => 'required|string',
+        'area_radius' => 'required|integer',
+        'area_latitude' => 'required|string',
+        'area_longitude' => 'required|string',
+    ]);
+
+    $locationServiceArea = LocationServiceArea::create($validatedData);
+
+    // Return JSON response for AJAX requests
+    return response()->json([
+        'success' => true,
+        'message' => 'Service area added successfully.',
+        'data' => $locationServiceArea
+    ], 201);
+}
 
     public function editservicearea(Request $request)
     {

@@ -27,10 +27,13 @@
                     </nav>
                 </div>
             </div>
-            <div class="col-3 align-self-center">
+           <!-- <div class="col-3 align-self-center">
                 <a href="{{ route('servicearea.create') }}" id="btn-add-contact" class="btn btn-info"><i
                         class="ri-map-pin-line"> </i> Add New Service Area</a>
-            </div>
+            </div> -->
+            <div class="col-3 align-self-center">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#service-area-modal">Add Service Area</button>
+           </div>
         </div>
     </div>
     <!-- -------------------------------------------------------------- -->
@@ -109,7 +112,7 @@
 
             <!-- Row -->
 
-            <div class="row mt-2">
+            <div class="row mt-2" id="service-area-container">
 
                 <!-- column -->
                 @foreach ($servicearea as $index => $item)
@@ -157,6 +160,47 @@
 
                     </div>
                 @endforeach
+<div class="modal fade" id="service-area-modal" tabindex="-1" aria-labelledby="serviceAreaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="serviceAreaModalLabel">Add Service Area</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="service-area-form" action="{{ route('servicearea.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="area_name" class="form-label">Name</label>
+                        <input type="text" class="form-control" name="area_name" id="area_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="area_description" class="form-label">Description</label>
+                        <textarea class="form-control" name="area_description" id="area_description" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="area_radius" class="form-label">Radius</label>
+                        <select class="form-select" name="area_radius" id="area_radius" required>
+                            <option value="1">1KM</option>
+                            <option value="2">2KM</option>
+                            <option value="5">5KM</option>
+                            <option value="10">10KM</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="area_latitude" class="form-label">Latitude</label>
+                        <input type="text" class="form-control" name="area_latitude" id="area_latitude" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="area_longitude" class="form-label">Longitude</label>
+                        <input type="text" class="form-control" name="area_longitude" id="area_longitude" required>
+                    </div>
+                    <button type="button" id="submit-service-area" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
                 <script async defer
                     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&callback=initMap"></script>
@@ -260,6 +304,95 @@
                 }
             });
         });
+    </script>
+
+    <script>
+   $(document).ready(function() {
+    // Handle form submission via AJAX
+    $('#submit-service-area').on('click', function(e) {
+        e.preventDefault(); // Prevent default behavior
+
+        // Use FormData to get the form fields
+        const formData = new FormData($('#service-area-form')[0]);
+
+        $.ajax({
+            url: $('#service-area-form').attr('action'), // Form action URL
+            method: 'POST',
+            data: formData,
+            processData: false, // Prevent automatic data processing
+            contentType: false, // Set content type to false for FormData
+            success: function(response) {
+                if (response.success) {
+                    // Dynamically add new card to the page
+                    const newCard = `
+                        <div class="col-lg-4 col-md-6 col-xl-2">
+                            <div class="card card-border shadow mb-4">
+                                <div class="mparea">
+                                    <div id="map1${response.data.id}" style="height: 200px;"></div>
+                                </div>
+                                <div class="card-bodyX mx-3 mb-3">
+                                    <h5 class="card-title uppercase text-info">${response.data.area_name}</h5>
+                                    <p class="card-text mb-2">${response.data.area_description}</p>
+                                    <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#service-area" class="btn btn-xs btn-primary serviceareaedit" id="${response.data.area_id}">Edit</a>
+                                    <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#service-area-view" class="btn btn-xs btn-primary serviceareaview mx-2" id="${response.data.area_id}">View</a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    $('#service-area-container').append(newCard);
+
+                    // Initialize Google Map for the new card
+                    initializeMap(response.data.id, response.data.area_latitude, response.data.area_longitude, response.data.area_radius);
+
+                    // Close modal and reset form
+                    $('#service-area-modal').modal('hide');
+                    $('#service-area-form')[0].reset();
+                } else {
+                    alert('Failed to add service area.');
+                }
+            },
+            error: function(xhr) {
+                alert('Please Fill all required fields.');
+            }
+        });
+    });
+
+    // Reset form when modal is closed
+    $('#service-area-modal').on('hidden.bs.modal', function() {
+        $('#service-area-form')[0].reset();
+    });
+});
+
+// Function to initialize Google Map for a specific map container
+function initializeMap(mapId, latitude, longitude, radius) {
+    const map = new google.maps.Map(document.getElementById('map1' + mapId), {
+        zoom: 10, // You can adjust the zoom level as needed
+        center: { lat: parseFloat(latitude), lng: parseFloat(longitude) }
+    });
+
+    // Add a marker for the specified location
+    const marker = new google.maps.Marker({
+        position: { lat: parseFloat(latitude), lng: parseFloat(longitude) },
+        map: map,
+        title: 'Location'
+    });
+
+    // Add a circle overlay with the specified radius
+    const circle = new google.maps.Circle({
+        map: map,
+        radius: radius * 1000, // Convert from km to meters
+        fillColor: '#FF0000', // Red color
+        fillOpacity: 0.3,
+        strokeColor: '#FF0000',
+        strokeOpacity: 1,
+        strokeWeight: 1
+    });
+
+    // Bind the circle to the marker
+    circle.bindTo('center', marker, 'position');
+}
+
+
     </script>
 @endsection
 @endsection

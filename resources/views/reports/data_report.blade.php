@@ -39,7 +39,8 @@
 				<div class="row">
 
 
-					@if ($_REQUEST['type'] == 'job_revenue')
+					@if (request('type') == 'job_revenue' || empty(request('type')))
+
 						
 					
 							<div class="col-md-12">

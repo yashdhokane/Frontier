@@ -530,6 +530,8 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/flag-customer', [TicketController::class, 'flagCustomer'])->name('flagCustomer');
 
+
+
     // Show tickets assigned to a specific user
 
 
@@ -1134,13 +1136,13 @@ Route::middleware('auth')->group(function () {
 
 
 
-    Route::get('/setting/manufacturer', [ManufactureController::class, 'mnufacturelist'])->name('manufacturer.index');
+    Route::get('/manufacturer', [ManufactureController::class, 'mnufacturelist'])->name('manufacturer.index');
 
-    Route::get('/setting/manufacturer-create', [ManufactureController::class, 'create'])->name('manufacturer.create');
+    Route::get('/manufacturer-create', [ManufactureController::class, 'create'])->name('manufacturer.create');
 
     Route::post('/setting/manufacturer-store', [ManufactureController::class, 'store'])->name('manufacture.store');
 
-    Route::get('/setting/manufacturer-edit/{id}/edit', [ManufactureController::class, 'edit'])->name('manufacturer.edit');
+    Route::get('/manufacturer-edit/{id}/edit', [ManufactureController::class, 'edit'])->name('manufacturer.edit');
 
     Route::put('/setting/manufacturer-update/{id}/update', [ManufactureController::class, 'update'])->name('manufacture.update');
 
@@ -1150,9 +1152,9 @@ Route::middleware('auth')->group(function () {
 
     // vendor 
 
-    Route::get('/setting/vendor', [VendorController::class, 'vendorlist'])->name('vendor.index');
+    Route::get('vendors', [VendorController::class, 'vendorlist'])->name('vendor.index');
 
-    Route::get('/setting/vendor-create', [VendorController::class, 'create'])->name('vendor.create');
+    Route::get('/vendor-create', [VendorController::class, 'create'])->name('vendor.create');
 
     Route::post('/setting/vendor-store', [VendorController::class, 'store'])->name('vendor.store');
 

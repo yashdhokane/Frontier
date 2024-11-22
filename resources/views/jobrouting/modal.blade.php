@@ -18,11 +18,15 @@
         padding: 1.5rem !important;
         background-color: #f8f9fa;
     }
+.border-btm {
+    border-bottom: 1px solid #D8D8D8; /* Add a 1px solid bottom border */
+}
+
 </style>
 <style>
 
 .form-check-input{padding:0px !important};
-.modalbodyclass{padding-top:0px !important};
+
 </style>
 <link href="{{ asset('public/admin/dist/libs/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css') }}" rel="stylesheet">
 
@@ -45,44 +49,59 @@
 
           <!-- Settings Panel with Scroll -->
     <div class="col-md-5 settings-panel" style="max-height: 700px; overflow-y: auto;">
-    <div class="card card-border card-shadow   p-3 border2 ">
-        <div class="row mb-3">
-            <label class="col-8 col-form-label">Auto Route Settings</label>
-            <div class="col-4 bt-switch">
-                <input type="checkbox" name="auto_route" data-toggle="switchbutton" data-on-color="success" data-off-color="default" onchange="updateCheckboxValue(this)">
-                <input type="hidden" name="auto_route_value" value="no">
-            </div>
-        </div>
-        <div class="row mb-3">
+    <div class="card card-body card-border card-shadow   p-3 border2 ">
+       <div class="row mb-2 ">
+    <label class="col-8 col-form-label">Auto Route Settings</label>
+    <div class="col-4 bt-switch">
+        <input type="checkbox" name="auto_route" data-toggle="switchbutton" data-on-color="success" data-off-color="default" onchange="toggleTimeInput(this, 'autoRouteTime')">
+        <input type="hidden" name="auto_route_value" value="no">
+    </div>
+</div>
+<div class="row mb-2 d-none" id="autoRouteTime">
+    <div class="col-8 offset-4">
+        <input type="time" class="form-control" name="auto_route_time" value="08:00">
+    </div>
+</div>
+        <div class="row mb-2">
             <label class="col-8 col-form-label">Time Constraints</label>
             <div class="col-4  bt-switch">
                 <input type="checkbox" name="time_constraints" data-toggle="switchbutton" data-on-color="success" data-off-color="default" onchange="updateCheckboxValue(this)">
                 <input type="hidden" name="time_constraints_value" value="no">
             </div>
         </div>
-        <div class="row mb-3">
+        <div class="row mb-2 border-btm">
             <label class="col-8 col-form-label">Priority Routing</label>
             <div class="col-4  bt-switch">
                 <input type="checkbox" name="priority_routing" data-toggle="switchbutton" data-on-color="success" data-off-color="default" onchange="updateCheckboxValue(this)">
                 <input type="hidden" name="priority_routing_value" value="no">
             </div>
         </div>
-        <div class="row mb-3">
-            <label class="col-8 col-form-label">Automatic Re-Routing</label>
-            <div class="col-4  bt-switch">
-                <input type="checkbox" name="auto_rerouting" data-toggle="switchbutton" data-on-color="success" data-off-color="default" onchange="updateCheckboxValue(this)">
-                <input type="hidden" name="auto_rerouting_value" value="no">
-            </div>
-        </div>
-        <div class="row mb-3">
-            <label class="col-8 col-form-label">Auto Publishing</label>
-            <div class="col-4  bt-switch">
-                <input type="checkbox" name="auto_publishing" data-toggle="switchbutton" data-on-color="success" data-off-color="default" onchange="updateCheckboxValue(this)">
-                <input type="hidden" name="auto_publishing_value" value="no">
-            </div>
-        </div>
+       <div class="row mb-2 border-btm">
+    <label class="col-8 col-form-label">Automatic Re-Routing</label>
+    <div class="col-4 bt-switch">
+        <input type="checkbox" name="auto_rerouting" data-toggle="switchbutton" data-on-color="success" data-off-color="default" onchange="toggleTimeInput(this, 'autoReRouteTime')">
+        <input type="hidden" name="auto_rerouting_value" value="no">
+    </div>
+</div>
+<div class="row mb-2 d-none" id="autoReRouteTime">
+    <div class="col-8 offset-4">
+        <input type="time" class="form-control" name="auto_rerouting_time" value="08:00">
+    </div>
+</div>
+        <div class="row mb-2 border-btm">
+    <label class="col-8 col-form-label">Auto Publishing</label>
+    <div class="col-4 bt-switch">
+        <input type="checkbox" name="auto_publishing" data-toggle="switchbutton" data-on-color="success" data-off-color="default" onchange="toggleTimeInput(this, 'autoPublishingTime')">
+        <input type="hidden" name="auto_publishing_value" value="no">
+    </div>
+</div>
+<div class="row mb-2 d-none" id="autoPublishingTime">
+    <div class="col-8 offset-4">
+        <input type="time" class="form-control" name="auto_publishing_time" value="08:00">
+    </div>
+</div>
        
-        <div class="row mt-4">
+        <div class="row mb-2">
             <label for="call-limit" class="col-6 col-form-label">Max Calls</label>
             <div class="col-6">
                 <input type="number" id="call-limit" name="number_of_calls" class="form-control" placeholder="Set Limit">
@@ -99,7 +118,7 @@
          <div class="col-md-7  tech-list" style="max-height: 700px; overflow-y: auto;">
          <div class="card card-border card-shadow p-3 border2 " >
 
-    <div class="row mb-3">
+    <div class="row mb-2">
         <div class="col">
             <button id="selectAll" type="button" class="btn btn-success">Select All</button>
             <button id="saveButton" type="button" class="btn btn-success ms-2">Save</button>
@@ -225,4 +244,25 @@ document.getElementById('saveButton').addEventListener('click', function() {
 
 });
 
+
+
+
     </script>
+   <script>
+    function toggleTimeInput(checkbox, targetId) {
+        const parentRow = checkbox.closest('.row'); // Find the parent row
+        const targetRow = document.getElementById(targetId); // Find the target row to toggle
+
+        if (checkbox.checked) {
+            // If the checkbox is checked
+            parentRow.classList.remove('border-btm'); // Remove the 'border-btm' class
+            targetRow.classList.remove('d-none'); 
+           // targetRow.classList.add('border-btm');// Show the target row
+        } else {
+            // If the checkbox is unchecked
+            parentRow.classList.add('border-btm'); // Add back the 'border-btm' class
+            targetRow.classList.add('d-none');
+            //targetRow.classList.remove('border-btm'); // Hide the target row
+        }
+    }
+</script>

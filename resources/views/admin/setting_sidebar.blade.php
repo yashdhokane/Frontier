@@ -25,9 +25,7 @@ else
 				<li class="sidebar-item ft3">
 					<a href="{{ route('servicearea.index') }}" class="sidebar-link"><i class="ri-service-line fas"></i> <span class="hide-menu">Service Area </span></a>
 				</li>
-			<!--	<li class="sidebar-item ft4">
-					<a href="{{ route('manufacturer.index') }}" class="sidebar-link"><i class="ri-building-2-line fas"></i> <span class="hide-menu">Manufacturer</span></a>
-				</li> -->
+			
 				<li class="sidebar-item ft5">
 					<a href="{{ route('tax.index') }}" class="sidebar-link"><i class="ri-bar-chart-fill fas"></i> <span class="hide-menu"> Tax</span></a>
 				</li>
@@ -43,9 +41,7 @@ else
 				<li class="sidebar-item ft8">
 					<a href="{{ route('predefined-replies') }}" class="sidebar-link"><i class="fas fa-comment-dots"></i> <span class="hide-menu"> Predefine Reply </span></a>
 				</li>
-			<!--	<li class="sidebar-item ft8">
-					<a href="{{ route('vendor.index') }}" class="sidebar-link"><i class="bi-box"></i> <span class="hide-menu">  Vendors </span></a>
-				</li> -->
+			
  						
             </ul>
 
