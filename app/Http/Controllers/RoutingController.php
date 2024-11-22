@@ -1,4 +1,5 @@
-<?php namespace App\Http\Controllers;
+<?php
+namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\RoutingTrigger;
@@ -7,6 +8,8 @@ use App\Models\RoutingTriggerTechnician;
 use DB;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+
 use Illuminate\Support\Facades\Session;
 use Storage;
 use App\Models\CustomerUserAddress;
@@ -22,7 +25,7 @@ use Illuminate\Support\Facades\Auth;
 
 class RoutingController extends Controller
 {
-      public function index(Request $request)
+    public function index(Request $request)
     {
         $timezone_name = Session::get('timezone_name', 'UTC');
         $inputDate = Carbon::now($timezone_name)->format('Y-m-d');
@@ -314,170 +317,187 @@ class RoutingController extends Controller
         return $distance;
     }
 
-   public function Routesettingstore(Request $request)
-{
-    // Validate input
-    $validatedData = $request->validate([
-        'technicians' => 'required|array',
-        'technicians.*' => 'integer',
-    ]);
-
-    $timezone_name = Session::get('timezone_name');
-    $inputDate = Carbon::now($timezone_name)->format('Y-m-d');
-
-    $technicians = $request->technicians;
-
-    if (empty($technicians)) {
-        return view('jobrouting.technicians_jobs_map')->with('technicians', []);
-    }
-
-    $response = [];
-    $savedSettings = [];
-
-    foreach ($technicians as $technicianId) {
-        // Fetch technician location
-        $technicianLocation = CustomerUserAddress::where('user_id', $technicianId)->first([
-            'user_id',
-            'latitude',
-            'longitude',
-            'address_line1',
-            'city',
-            'zipcode',
-            'state_name',
+    public function Routesettingstore(Request $request)
+    {
+        // Validate input
+        $validatedData = $request->validate([
+            'technicians' => 'required|array',
+            'technicians.*' => 'integer',
         ]);
 
-        if (!$technicianLocation) {
-            $response[] = [
-                'technician' => [
-                    'id' => $technicianId,
-                    'error' => 'Technician location not found.',
-                ],
-            ];
-            continue;
+        // Get timezone and current date
+        $timezone_name = Session::get('timezone_name');
+        $inputDate = Carbon::now($timezone_name)->format('Y-m-d');
+
+        $technicians = $request->technicians;
+
+        if (empty($technicians)) {
+            return view('jobrouting.technicians_jobs_map')->with('technicians', []);
         }
 
-        $technicianLocation->full_address = $technicianLocation->address_line1 . ', ' . $technicianLocation->city . ', ' . $technicianLocation->state_name . ' ' . $technicianLocation->zipcode;
+        $response = [];
+        $savedSettings = [];
 
-        // Fetch jobs for the technician
-        $jobs = Schedule::with('Jobassign')
-            ->where('technician_id', $technicianId)
-            ->whereDate('start_date_time', '=', $inputDate)
-            ->get(['job_id', 'position', 'is_routes_map', 'job_onmap_reaching_timing', 'start_date_time', 'end_date_time']);
+        foreach ($technicians as $technicianId) {
+            // Fetch technician location
+            $technicianLocation = CustomerUserAddress::where('user_id', $technicianId)->first();
 
-        // Handle time constraint logic
-        $timeConstraintsEnabled = $request->input('time_constraints') === 'on';
-        $jobDistances = [];
+            if (!$technicianLocation) {
+                $response[] = [
+                    'technician' => [
+                        'id' => $technicianId,
+                        'error' => 'Technician location not found.',
+                    ],
+                ];
+                continue;
+            }
 
-        if ($timeConstraintsEnabled && !$jobs->isEmpty()) {
-            foreach ($jobs as $job) {
-                if (!$job->Jobassign || !$job->Jobassign->userAddress) {
-                    continue; // Skip if Jobassign or address is missing
+            $technicianLocation->full_address = implode(', ', array_filter([
+                $technicianLocation->address_line1,
+                $technicianLocation->city,
+                $technicianLocation->state_name . ' ' . $technicianLocation->zipcode,
+            ]));
+
+            // Fetch jobs for the technician
+            $jobs = Schedule::with(['Jobassign', 'Jobassign.userAddress'])
+                ->where('technician_id', $technicianId)
+                ->whereDate('start_date_time', '=', $inputDate)
+                ->get();
+
+            $timeConstraintsEnabled = $request->input('time_constraints') === 'on';
+            $jobDistances = [];
+
+            if ($timeConstraintsEnabled && !$jobs->isEmpty()) {
+                // Ensure technicianLocation exists
+                if (!$technicianLocation) {
+                    Log::error('Technician location not found.');
+                    return; // Stop execution if there's no technician location
                 }
 
+                // Set the initial origin to technician's location
                 $origin = $technicianLocation->latitude . ',' . $technicianLocation->longitude;
-                $destination = $job->Jobassign->userAddress->latitude . ',' . $job->Jobassign->userAddress->longitude;
 
-                // Google Maps Distance Matrix API request
-                $apiKey = env('GOOGLE_MAPS_API_KEY'); // Use API key from .env
-                $response = Http::get('https://maps.googleapis.com/maps/api/distancematrix/json', [
-                    'origins' => $origin,
-                    'destinations' => $destination,
-                    'key' => 'AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo',
-                ]);
+                $previousEndDateTime = null;
+                //  dd($jobs);
 
-                $data = $response->json();
+                foreach ($jobs as $index => $job) {
+                    if (!$job->Jobassign || !$job->Jobassign->userAddress) {
+                        Log::info('Missing Jobassign or userAddress for job.', ['job_id' => $job->job_id]);
+                        dd('1 skip');
+                        continue;
+                    }
 
-                if (!empty($data['rows'][0]['elements'][0]['distance']['value']) &&
-                    !empty($data['rows'][0]['elements'][0]['duration']['value'])) {
-                    $jobDistances[] = [
-                        'job_id' => $job->job_id,
-                        'distance' => $data['rows'][0]['elements'][0]['distance']['value'], // Distance in meters
-                        'duration' => $data['rows'][0]['elements'][0]['duration']['value'], // Duration in seconds
-                    ];
+                    $userAddress = $job->Jobassign->userAddress->first();
+                    $destination = $userAddress->latitude . ',' . $userAddress->longitude;
+
+                    // Make API call to Distance Matrix
+                    try {
+                        $apiResponse = Http::get('https://maps.googleapis.com/maps/api/distancematrix/json', [
+                            'origins' => $origin,
+                            'destinations' => $destination,
+                            'key' => 'AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo', // Ensure your API key is correct
+                        ]);
+
+                        // Check if the API request failed
+                        if ($apiResponse->failed()) {
+                            Log::error('Distance Matrix API call failed.', ['response' => $apiResponse->body(), 'job_id' => $job->job_id]);
+                            dd('2 skip');
+                            continue; // Skip this job on failure
+                        }
+
+                        $data = $apiResponse->json();
+
+                        // Store job distance and duration
+                        $jobDistances[] = [
+                            'job_id' => $job->job_id,
+                            'distance_value' => $data['rows'][0]['elements'][0]['distance']['value'],  // distance in meters
+                            'distance_text' => $data['rows'][0]['elements'][0]['distance']['text'],    // human-readable distance
+                            'duration_value' => $data['rows'][0]['elements'][0]['duration']['value'],  // duration in seconds
+                            'duration_text' => $data['rows'][0]['elements'][0]['duration']['text'],    // human-readable duration
+                        ];
+
+                        if ($index === 0) {
+                            // For the first job, store the previous end time
+                            $previousEndDateTime = Carbon::parse($job->end_date_time);
+                        } else {
+                          
+                            // For subsequent jobs
+                            if (!$previousEndDateTime) {
+                                Log::error('Missing previous job end time for technician.', [
+                                    'job_id' => $job->job_id,
+                                ]);
+                                dd('4 skip');
+                                continue; // Skip if no previous end time
+                            }
+
+                            // Calculate the new start time based on previous job's end time and travel duration
+                            $newStartTime = Carbon::parse($previousEndDateTime)
+                                ->addSeconds($data['rows'][0]['elements'][0]['duration']['value']);
+
+                            // Check if the current job's start time aligns with the calculated new start time
+                            $currentJobStart = Carbon::parse($job->start_date_time);
+                            $timeDifference = $newStartTime->diffInMinutes($currentJobStart);
+
+                            if ($timeDifference > 15) {
+                                // Adjust the current job's start time
+                                $job->start_date_time = $newStartTime->addMinutes(10); // Add a buffer of 10 minutes
+                                $job->end_date_time = $job->start_date_time->addMinutes($job->duration); // Update end time
+                                $job->save();
+
+                                Log::info('Updated job timing for alignment.', [
+                                    'job_id' => $job->job_id,
+                                    'new_start_time' => $job->start_date_time,
+                                    'new_end_time' => $job->end_date_time,
+                                ]);
+                            } else {
+                                Log::info('Job timing already aligned.', [
+                                    'job_id' => $job->job_id,
+                                    'start_time' => $currentJobStart,
+                                ]);
+                            }
+
+                            // Update the origin for the next job
+                            $origin = $destination;
+
+                            // Set the previous end date-time for the next iteration
+                            $previousEndDateTime = $job->end_date_time;
+                        }
+
+
+                        // Update the origin for the next job
+                        $origin = $destination;
+
+                        // Update the previous job's end date time
+                        $previousEndDateTime = $job->end_date_time;
+
+                    } catch (\Exception $e) {
+                        Log::error('Error calling Distance Matrix API for job.', [
+                            'job_id' => $job->job_id,
+                            'error' => $e->getMessage(),
+                        ]);
+                        continue; // Skip this job if the API call throws an error
+                    }
                 }
             }
 
-            // Find the closest job
-            if (!empty($jobDistances)) {
-                usort($jobDistances, function ($a, $b) {
-                    return $a['distance'] <=> $b['distance'];
-                });
-
-                $closestJob = $jobDistances[0];
-                $traveldurationtime = $closestJob['duration'] + $job->Jobassign->duration;
-
-                // Update job timings
-                $startTime = Carbon::parse($job->start_date_time)->addSeconds($traveldurationtime);
-                $endTime = Carbon::parse($job->end_date_time)->addSeconds($traveldurationtime);
-
-                $job->start_date_time = $startTime;
-                $job->end_date_time = $endTime;
-                $job->save();
-
-                $job->Jobassign->start_date_time = $startTime;
-                $job->Jobassign->end_date_time = $endTime;
-                $job->Jobassign->save();
-            }
+            // Add technician's saved settings to the response
+            $savedSettings[] = [
+                'technician_id' => $technicianId,
+                'job_distances' => $jobDistances,
+            ];
         }
 
-        // Prepare response data
-        $technicianData = [
-            'technician' => [
-                'id' => $technicianId,
-                'full_address' => $technicianLocation->full_address,
-                'latitude' => $technicianLocation->latitude,
-                'longitude' => $technicianLocation->longitude,
-            ],
-            'jobs' => $jobDistances,
-        ];
-
-        $response[] = $technicianData;
-
-        // Update routing job
-        $jobIds = array_column($jobDistances, 'job_id');
-        $bestRoute = $jobIds;
-        $shortRoute = array_reverse($jobIds);
-        $customRoute = $jobIds;
-        shuffle($customRoute);
-
-        $routingJob = RoutingJob::updateOrCreate(
-            ['user_id' => $technicianId, 'created_at' => $inputDate],
-            [
-                'updated_by' => Auth::id(),
-                 'created_by' => Auth::id(),
-
-                'best_route' => json_encode($bestRoute),
-                'short_route' => json_encode($shortRoute),
-                'custom_route' => json_encode($customRoute),
-            ]
-        );
-
-        // Update routing settings
-        $routingSetting = RoutingSetting::updateOrCreate(
-            ['user_id' => $technicianId],
-            [
-                'created_by' => Auth::id(),
-                'updated_by' => Auth::id(),
-                'routing_cron' => 'no',
-                'routing_cron_date' => Carbon::now(),
-                'is_active' => 'yes',
-            ]
-        );
-
-        foreach (['auto_route', 'time_constraints', 'priority_routing', 'auto_rerouting', 'auto_publishing'] as $option) {
-            RoutingSettingOption::updateOrCreate(
-                ['routing_id' => $routingSetting->routing_id, 'routing_option' => $option],
-                ['routing_value' => $request->has($option) ? 'yes' : 'no']
-            );
-        }
+        // Return the final response
+        return response()->json([
+            'success' => true,
+            'message' => 'Routing settings saved successfully for all technicians!',
+            'savedSettings' => $savedSettings,
+            'response' => $response,
+        ]);
     }
 
-    return response()->json([
-        'success' => true,
-        'message' => 'Routing settings saved successfully for all technicians!',
-        'savedSettings' => $savedSettings,
-    ]);
-}
+
+
 
 
 }
