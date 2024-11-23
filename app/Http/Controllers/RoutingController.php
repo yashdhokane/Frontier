@@ -180,7 +180,8 @@ class RoutingController extends Controller
                 $endDate = $startDate->copy()->endOfDay();
                 break;
             case 'tomorrow':
-                $endDate = $currentDate->copy()->addDay(); // Today and tomorrow
+                $startDate = $currentDate->copy()->addDay()->startOfDay();
+                $endDate = $currentDate->copy()->addDay()->endOfDay();
                 break;
             case 'nextdays':
                 $endDate = $currentDate->copy()->addDays(2); // Today to the next three days
@@ -319,16 +320,13 @@ class RoutingController extends Controller
 
     public function Routesettingstore(Request $request)
     {
-        // Validate input
         $validatedData = $request->validate([
             'technicians' => 'required|array',
             'technicians.*' => 'integer',
         ]);
 
-        // Get timezone and current date
         $timezone_name = Session::get('timezone_name');
         $inputDate = Carbon::now($timezone_name)->format('Y-m-d');
-
         $technicians = $request->technicians;
 
         if (empty($technicians)) {
@@ -339,7 +337,6 @@ class RoutingController extends Controller
         $savedSettings = [];
 
         foreach ($technicians as $technicianId) {
-            // Fetch technician location
             $technicianLocation = CustomerUserAddress::where('user_id', $technicianId)->first();
 
             if (!$technicianLocation) {
@@ -358,7 +355,6 @@ class RoutingController extends Controller
                 $technicianLocation->state_name . ' ' . $technicianLocation->zipcode,
             ]));
 
-            // Fetch jobs for the technician
             $jobs = Schedule::with(['Jobassign', 'Jobassign.userAddress'])
                 ->where('technician_id', $technicianId)
                 ->whereDate('start_date_time', '=', $inputDate)
@@ -368,126 +364,110 @@ class RoutingController extends Controller
             $jobDistances = [];
 
             if ($timeConstraintsEnabled && !$jobs->isEmpty()) {
-                // Ensure technicianLocation exists
-                if (!$technicianLocation) {
-                    Log::error('Technician location not found.');
-                    return; // Stop execution if there's no technician location
-                }
-
-                // Set the initial origin to technician's location
                 $origin = $technicianLocation->latitude . ',' . $technicianLocation->longitude;
-
                 $previousEndDateTime = null;
-                //  dd($jobs);
+                $dailyJobCount = 0;
 
                 foreach ($jobs as $index => $job) {
                     if (!$job->Jobassign || !$job->Jobassign->userAddress) {
                         Log::info('Missing Jobassign or userAddress for job.', ['job_id' => $job->job_id]);
-                        dd('1 skip');
                         continue;
                     }
 
                     $userAddress = $job->Jobassign->userAddress->first();
                     $destination = $userAddress->latitude . ',' . $userAddress->longitude;
 
-                    // Make API call to Distance Matrix
                     try {
                         $apiResponse = Http::get('https://maps.googleapis.com/maps/api/distancematrix/json', [
                             'origins' => $origin,
                             'destinations' => $destination,
-                            'key' => 'AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo', // Ensure your API key is correct
+                            'key' => 'AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo',
                         ]);
 
-                        // Check if the API request failed
                         if ($apiResponse->failed()) {
                             Log::error('Distance Matrix API call failed.', ['response' => $apiResponse->body(), 'job_id' => $job->job_id]);
-                            dd('2 skip');
-                            continue; // Skip this job on failure
+                            continue;
                         }
 
                         $data = $apiResponse->json();
-
-                        // Store job distance and duration
-                        $jobDistances[] = [
-                            'job_id' => $job->job_id,
-                            'distance_value' => $data['rows'][0]['elements'][0]['distance']['value'],  // distance in meters
-                            'distance_text' => $data['rows'][0]['elements'][0]['distance']['text'],    // human-readable distance
-                            'duration_value' => $data['rows'][0]['elements'][0]['duration']['value'],  // duration in seconds
-                            'duration_text' => $data['rows'][0]['elements'][0]['duration']['text'],    // human-readable duration
-                        ];
+                        $travelDuration = $data['rows'][0]['elements'][0]['duration']['value'];
 
                         if ($index === 0) {
-                            // For the first job, store the previous end time
                             $previousEndDateTime = Carbon::parse($job->end_date_time);
+                            $dailyJobCount++;
                         } else {
-                          
-                            // For subsequent jobs
                             if (!$previousEndDateTime) {
                                 Log::error('Missing previous job end time for technician.', [
                                     'job_id' => $job->job_id,
                                 ]);
-                                dd('4 skip');
-                                continue; // Skip if no previous end time
+                                continue;
                             }
 
-                            // Calculate the new start time based on previous job's end time and travel duration
-                            $newStartTime = Carbon::parse($previousEndDateTime)
-                                ->addSeconds($data['rows'][0]['elements'][0]['duration']['value']);
-
-                            // Check if the current job's start time aligns with the calculated new start time
+                            $newStartTime = Carbon::parse($previousEndDateTime)->addSeconds($travelDuration);
                             $currentJobStart = Carbon::parse($job->start_date_time);
                             $timeDifference = $newStartTime->diffInMinutes($currentJobStart);
 
                             if ($timeDifference > 15) {
-                                // Adjust the current job's start time
-                                $job->start_date_time = $newStartTime->addMinutes(10); // Add a buffer of 10 minutes
-                                $job->end_date_time = $job->start_date_time->addMinutes($job->duration); // Update end time
-                                $job->save();
+                                $job->start_date_time = $newStartTime->addMinutes(10);
+                                $job->end_date_time = $job->start_date_time->addMinutes($job->duration);
 
-                                Log::info('Updated job timing for alignment.', [
-                                    'job_id' => $job->job_id,
-                                    'new_start_time' => $job->start_date_time,
-                                    'new_end_time' => $job->end_date_time,
-                                ]);
-                            } else {
-                                Log::info('Job timing already aligned.', [
-                                    'job_id' => $job->job_id,
-                                    'start_time' => $currentJobStart,
-                                ]);
+                                // Check for leave time crossing 7 PM
+                                $leaveTime = Carbon::parse($newStartTime->format('Y-m-d') . ' 19:00:00');
+                                if ($job->end_date_time->greaterThan($leaveTime->addMinutes(15))) {
+                                    $nextDay = $newStartTime->addDay();
+                                    while ($nextDay->isSunday()) {
+                                        $nextDay->addDay(); // Skip Sunday
+                                    }
+
+                                    $job->start_date_time = $nextDay->setTime(8, 0); // Start at 8 AM the next working day
+                                    $job->end_date_time = $job->start_date_time->addMinutes($job->duration);
+                                    $dailyJobCount = 1; // Reset daily count for the new day
+                                } else {
+                                    $dailyJobCount++;
+                                }
+
+                                $job->save();
                             }
 
-                            // Update the origin for the next job
-                            $origin = $destination;
+                            // Check if the daily limit is exceeded
+                            if ($dailyJobCount > 5) {
+                                $nextDay = Carbon::parse($job->start_date_time)->addDay();
+                                while ($nextDay->isSunday()) {
+                                    $nextDay->addDay(); // Skip Sunday
+                                }
 
-                            // Set the previous end date-time for the next iteration
+                                $job->start_date_time = $nextDay->setTime(8, 0); // Start at 8 AM the next working day
+                                $job->end_date_time = $job->start_date_time->addMinutes($job->duration);
+                                $dailyJobCount = 1; // Reset daily count for the new day
+                                $job->save();
+
+                                $assign = JobAssign::where('job_id', $job->job_id)->first();
+
+                                $assign->start_date_time = $nextDay->setTime(8, 0); // Start at 8 AM the next working day
+                                $assign->end_date_time = $job->start_date_time->addMinutes($job->duration);
+                                
+                                $assign->save();
+                            }
+
+                            $origin = $destination;
                             $previousEndDateTime = $job->end_date_time;
                         }
-
-
-                        // Update the origin for the next job
-                        $origin = $destination;
-
-                        // Update the previous job's end date time
-                        $previousEndDateTime = $job->end_date_time;
-
                     } catch (\Exception $e) {
                         Log::error('Error calling Distance Matrix API for job.', [
                             'job_id' => $job->job_id,
                             'error' => $e->getMessage(),
                         ]);
-                        continue; // Skip this job if the API call throws an error
+                        continue;
                     }
                 }
             }
 
-            // Add technician's saved settings to the response
             $savedSettings[] = [
                 'technician_id' => $technicianId,
                 'job_distances' => $jobDistances,
             ];
         }
 
-        // Return the final response
         return response()->json([
             'success' => true,
             'message' => 'Routing settings saved successfully for all technicians!',
@@ -495,6 +475,7 @@ class RoutingController extends Controller
             'response' => $response,
         ]);
     }
+
 
 
 
