@@ -79,7 +79,7 @@
             </div>
             <div class="col-md-3 ms-3">
                 <select id="routingTriggerSelect" name="routing_id" class="form-select select2 " multiple="multiple">
-                    <option value="all">All Technician(s)</option>
+                    
                     @foreach ($tech as $routing)
                         <option value="{{ $routing->id }}">
                             {{ $routing->name }}
