@@ -134,6 +134,7 @@ class RoutingController extends Controller
                 'job_assigned.end_slot',
                 'job_assigned.pending_number',
                 'jobs.job_code',
+
                 'jobs.job_title as subject',
                 'jobs.status',
                 'jobs.address',
@@ -192,7 +193,7 @@ class RoutingController extends Controller
         }
 
         // Fetch active technicians
-       if (empty($tech_ids)) {
+        if (empty($tech_ids)) {
             $activeTechnicians = User::where('role', 'technician')
                 ->where('status', 'active')
                 ->get();
@@ -292,6 +293,9 @@ class RoutingController extends Controller
                         $technicianData['jobs'][] = [
                             'job_id' => $job->job_id,
                             'position' => $job->position,
+                            'job_title' => DB::table('jobs')
+                                ->where('id', $job->job_id)
+                                ->value('job_title'),
                             'is_routes_map' => $job->is_routes_map,
                             'job_onmap_reaching_timing' => $job->job_onmap_reaching_timing,
                             'customer' => [
@@ -335,6 +339,22 @@ class RoutingController extends Controller
 
         return $distance;
     }
+    private function roundToNearest30Minutes(Carbon $time)
+    {
+        $minutes = $time->minute;
+
+        // If the time is greater than 10 minutes, round up to the nearest 30 minutes
+        if ($minutes > 10) {
+            // Add the remaining minutes to reach the next 30-minute interval
+            $roundedMinutes = 30 * ceil($minutes / 30);
+        } else {
+            // If it's 10 minutes or less, round down to the previous 30-minute interval
+            $roundedMinutes = $minutes - ($minutes % 30);
+        }
+
+        return $time->copy()->setTime($time->hour, $roundedMinutes, 0);
+    }
+
 
     public function Routesettingstore(Request $request)
     {
@@ -375,7 +395,8 @@ class RoutingController extends Controller
 
             $jobs = Schedule::with(['Jobassign', 'Jobassign.userAddress'])
                 ->where('technician_id', $technicianId)
-                ->whereDate('start_date_time', '<=', $inputDate)
+                ->whereDate('start_date_time', '>=', $inputDate)
+                ->orderBy('start_date_time', 'asc')
                 ->get();
 
             $timeConstraintsEnabled = $request->input('time_constraints') === 'on';
@@ -394,9 +415,7 @@ class RoutingController extends Controller
                         continue;
                     }
 
-                    $userAddress = $job->Jobassign->userAddress->first();
-                    $destination = $userAddress->latitude . ',' . $userAddress->longitude;
-
+                    $destination = "{$job->Jobassign->userAddress->latitude},{$job->Jobassign->userAddress->longitude}";
 
                     try {
                         $apiResponse = Http::get('https://maps.googleapis.com/maps/api/distancematrix/json', [
@@ -415,12 +434,12 @@ class RoutingController extends Controller
                         $travelDuration = $data['rows'][0]['elements'][0]['duration']['value'];
 
                         if ($index === 0) {
+                            // Set the first job's end time as the previous end date time
                             $previousEndDateTime = Carbon::parse($job->end_date_time);
                             $dailyJobCount++;
                             $origin = $destination; // Reset origin for subsequent jobs
                             continue;
                         } else {
-
                             if (!$previousEndDateTime) {
                                 Log::error('Missing previous job end time for technician.', [
                                     'job_id' => $job->job_id,
@@ -428,50 +447,56 @@ class RoutingController extends Controller
                                 continue;
                             }
 
-                            $newStartTime = Carbon::parse($previousEndDateTime)->addSeconds($travelDuration);
+                            // Calculate the new start time based on previous job's end time and travel duration
+                            $previousEndCarbon = Carbon::parse($previousEndDateTime);
+                            Log::info('Previous End DateTime:', ['previousEndDateTime' => $previousEndCarbon]);
 
-                            $currentJobStart = Carbon::parse($job->start_date_time);
-                            $timeDifference = $newStartTime->diffInMinutes($currentJobStart);
-
-                            if ($timeDifference > 15 || $dailyJobCount > 5) {
-                                // Adjust start time if necessary
-                                if ($timeDifference > 15) {
-                                    $job->start_date_time = $newStartTime->addMinutes(30);
-                                }
-
-                                // Check if the job exceeds working hours or daily job limit
-                                $leaveTime = Carbon::parse($job->start_date_time->format('Y-m-d') . ' 19:00:00');
-                                if ($job->start_date_time->greaterThan($leaveTime) || $dailyJobCount > 5) {
-                                    // Move to the next working day at 8:00 AM
-                                    $nextDay = Carbon::parse($job->start_date_time)->addDay();
-                                    while ($nextDay->isSunday()) {
-                                        $nextDay->addDay(); // Skip Sundays
-                                    }
-                                    $job->start_date_time = $nextDay->setTime(8, 0);
-                                }
-
-                                // **Recalculate end_date_time by adding job duration**
-                                $job->end_date_time = $job->start_date_time->copy()->addMinutes($job->Jobassign->duration);
-
-                                // dd($job->start_date_time , $job->end_date_time,$job->duration,$travelDuration,$data);
-                                // Save the updated job
-                                $job->save();
-
-                                // Update JobAssign record
-                                $assign = JobAssign::where('job_id', $job->job_id)->first();
-                                if ($assign) {
-                                    $assign->start_date_time = $job->start_date_time;
-                                    $assign->end_date_time = $job->end_date_time;
-                                    $assign->save();
-                                }
-
-                                // Increment daily job counter
-                                $dailyJobCount++;
+                            if ($travelDuration) {
+                                $newStartTime = $this->roundToNearest30Minutes(
+                                    $previousEndCarbon->addSeconds($travelDuration)
+                                );
+                            } else {
+                                Log::error('Travel duration is missing or zero.', ['job_id' => $job->job_id]);
+                                $newStartTime = $this->roundToNearest30Minutes($previousEndCarbon);
                             }
 
+                            Log::info('New Start Time After Travel Duration:', ['newStartTime' => $newStartTime]);
 
+                            // Update the job's start_date_time with the calculated newStartTime
+                            $job->start_date_time = $newStartTime;
 
+                            // Check if the job exceeds working hours or daily job limit
+                            $leaveTime = Carbon::parse($newStartTime->format('Y-m-d') . ' 19:00:00');
+                            if ($newStartTime->greaterThan($leaveTime) || $dailyJobCount > 5) {
+                                $nextDay = $newStartTime->addDay();
+                                while ($nextDay->isSunday()) {
+                                    $nextDay->addDay();
+                                }
+                                $job->start_date_time = $nextDay->setTime(8, 0);
+                            }
+
+                            // Recalculate end time
+                            $job->end_date_time = $this->roundToNearest30Minutes(
+                                Carbon::parse($job->start_date_time)->addMinutes($job->Jobassign->duration)
+                            );
+
+                            // Log the updated times
+                            Log::info('Updated Start Date Time:', ['start_date_time' => $job->start_date_time]);
+                            Log::info('Updated End Date Time:', ['end_date_time' => $job->end_date_time]);
+
+                            // Save job and assignment
+                            $job->save();
+                            $assign = JobAssign::where('job_id', $job->job_id)->first();
+                            if ($assign) {
+                                $assign->start_date_time = $job->start_date_time;
+                                $assign->end_date_time = $job->end_date_time;
+                                $assign->save();
+                            }
+
+                            $dailyJobCount++;
                         }
+
+
 
                         $bestRouteJobs[$job->job_id] = $travelDuration; // Using travel duration for best route sorting
                         $shortRouteJobs[$job->job_id] = $travelDuration; // Shortest distance based on travel duration
@@ -517,31 +542,29 @@ class RoutingController extends Controller
                     if ($existingCount < 3) {
                         $newScheduleTimes = array_slice($scheduleTimes, $existingCount);
                         foreach ($newScheduleTimes as $scheduleTime) {
-                           
-                            RoutingJob::create([
-                                'user_id' => $technicianId,
-                                'schedule_date_time' => $scheduleTime,
-                                'best_route' => json_encode($bestRouteJobIds),
-                                'short_route' => json_encode($shortRouteJobIds),
-                                'created_by' => Auth()->user()->id,
-                                'updated_by' => Auth()->user()->id,
-                            ]);
+                            $routingJob = new RoutingJob(); // Create a new instance
+                            $routingJob->user_id = $technicianId;
+                            $routingJob->schedule_date_time = $scheduleTime;
+                            $routingJob->best_route = json_encode($bestRouteJobIds);
+                            $routingJob->short_route = json_encode($shortRouteJobIds);
+                            $routingJob->created_by = Auth()->user()->id;
+                            $routingJob->updated_by = Auth()->user()->id;
+                            $routingJob->save(); // Save the new instance
                         }
                     }
                 } else {
                     // Create all 3 new entries
                     foreach ($scheduleTimes as $scheduleTime) {
-                        RoutingJob::create([
-                            'user_id' => $technicianId,
-                            'schedule_date_time' => $scheduleTime,
-                            'best_route' => json_encode($bestRouteJobIds),
-                            'short_route' => json_encode($shortRouteJobIds),
-                            'created_by' => Auth()->user()->id,
-                            'updated_by' => Auth()->user()->id,
-                        ]);
+                        $routingJob = new RoutingJob(); // Create a new instance
+                        $routingJob->user_id = $technicianId;
+                        $routingJob->schedule_date_time = $scheduleTime;
+                        $routingJob->best_route = json_encode($bestRouteJobIds);
+                        $routingJob->short_route = json_encode($shortRouteJobIds);
+                        $routingJob->created_by = Auth()->user()->id;
+                        $routingJob->updated_by = Auth()->user()->id;
+                        $routingJob->save(); // Save the new instance
                     }
                 }
-
 
 
             }
