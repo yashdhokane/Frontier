@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\BusinessHours;
 use App\Models\User;
 use App\Models\RoutingTrigger;
 use App\Models\LocationServiceArea;
@@ -464,15 +465,24 @@ class RoutingController extends Controller
 
                             // Update the job's start_date_time with the calculated newStartTime
                             $job->start_date_time = $newStartTime;
-
-                            // Check if the job exceeds working hours or daily job limit
-                            $leaveTime = Carbon::parse($newStartTime->format('Y-m-d') . ' 19:00:00');
+                            $CurrentDate = Carbon::now($timezone_name)->addDay();
+                            $currentDayLower = strtolower($CurrentDate->format('l'));
+                            $hours = BusinessHours::where('day', $currentDayLower)->first();
+                            
+                            // Parse the leave time based on business hours
+                            $leaveTime = Carbon::parse($newStartTime->format('Y-m-d') . ' ' . $hours->end_time);
+                            
+                            // Check if the new start time exceeds working hours or the daily job count limit
                             if ($newStartTime->greaterThan($leaveTime) || $dailyJobCount > 5) {
-                                $nextDay = $newStartTime->addDay();
+                                $nextDay = $newStartTime->copy()->addDay();
+                                
+                                // Skip Sundays
                                 while ($nextDay->isSunday()) {
                                     $nextDay->addDay();
                                 }
-                                $job->start_date_time = $nextDay->setTime(8, 0);
+                            
+                                // Update the job's start time to the next day's start time
+                                $job->start_date_time = $nextDay->setTimeFromTimeString($hours->start_time);
                             }
 
                             // Recalculate end time
