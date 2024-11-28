@@ -43,9 +43,10 @@
             } // Center the map to a default location
         });
 
-        const getRandomColor = () => '#' + Math.floor(Math.random() * 16777215).toString(16);
+        // const getRandomColor = () => '#' + Math.floor(Math.random() * 16777215).toString(16);
 
         techniciansData.forEach((techData) => {
+
             const {
                 latitude,
                 longitude,
@@ -97,8 +98,8 @@
                 const directionsRenderer = new google.maps.DirectionsRenderer({
                     map,
                     polylineOptions: {
-                        strokeColor: getRandomColor(),
-                        strokeWeight: 5
+                        strokeColor: techData.technician.color_code,
+                        strokeWeight: 2
                     },
                     suppressMarkers: true
                 });
@@ -166,12 +167,16 @@
                 routing: routing,
                 technicians: technicians
             },
+
             success: function(response) {
                 if (response.success) {
                     const techniciansData = response.data;
 
                     // Update the map with the filtered data
                     updateMap(techniciansData);
+
+                    // Update the job list with new data
+                    updateJobDiv(techniciansData);
                 } else {
                     console.log(response.message || "No data found for the selected filters.");
                 }
@@ -188,6 +193,120 @@
 
     function updateMap(techniciansData) {
         initMap(techniciansData);
+    }
+
+    function updateJobDiv(techniciansData) {
+        const jobDiv = $('#jobdiv .list-group');
+        jobDiv.empty(); // Clear existing list items
+
+        if (techniciansData.length > 0) {
+            techniciansData.forEach(technician => {
+                if (technician.jobs && technician.jobs.length > 0) {
+                    technician.jobs.forEach(job => {
+                        const jobItem = `
+                        <li class="list-group-item" id="event_click${job.job_id}" style="cursor: pointer;"
+                            data-lat="${job.customer.latitude}" data-long="${job.customer.longitude}">
+                            <h6 class="uppercase mb-0 text-truncate"><i class="ri-user-line"></i>${job.customer.name}</h6>
+                            <div class="ft14"><i class="ri-map-pin-fill"></i>
+                                ${job.customer.full_address}
+                            </div>
+                        </li>`;
+
+                        jobDiv.append(jobItem);
+                    });
+                } else {
+                    // const noJobsItem = `
+                    //     <li class="list-group-item mb-2" style="cursor: default;">
+                    //         <span style="font-size: 15px; font-weight: 700; letter-spacing: 1px;">
+                    //             No Jobs Found for Technician: ${technician.technician.name}
+                    //         </span><br />
+                    //     </li>`;
+                    // jobDiv.append(noJobsItem);
+                }
+            });
+
+            // Add click event to list items
+            jobDiv.find('.list-group-item').on('click', function() {
+                const lat = parseFloat($(this).data('lat'));
+                const long = parseFloat($(this).data('long'));
+                if (lat && long) {
+                    updateMap1([{
+                        customer: {
+                            latitude: lat,
+                            longitude: long,
+                            name: $(this).find('h6').text(),
+                            full_address: $(this).find('.ft14').text()
+                        }
+                    }]);
+                }
+            });
+        } else {
+            // const noTechniciansItem = `
+            //     <li class="list-group-item mb-2" style="cursor: default;">
+            //         <span style="font-size: 15px; font-weight: 700; letter-spacing: 1px;">
+            //             No Technicians Found
+            //         </span><br />
+            //     </li>`;
+            // jobDiv.append(noTechniciansItem);
+        }
+    }
+
+    function updateMap1(techniciansData) {
+        const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 5,
+            center: {
+                lat: 40.7128,
+                lng: -74.0060
+            } // Default center
+        });
+
+        techniciansData.forEach((data, index) => {
+            const {
+                latitude,
+                longitude,
+                name,
+                full_address
+            } = data.customer;
+
+            if (!latitude || !longitude) {
+                console.log(`No valid location for ${name}`);
+                return;
+            }
+
+            const marker = new google.maps.Marker({
+                position: {
+                    lat: parseFloat(latitude),
+                    lng: parseFloat(longitude)
+                },
+                map,
+                title: name,
+                // label: `${index + 1}`
+            });
+
+            const infoWindow = new google.maps.InfoWindow({
+                content: `
+                <div>
+                    <h4>${name}</h4>
+                    <p>${full_address}</p>
+                </div>`
+            });
+
+            marker.addListener("click", () => {
+                infoWindow.open(map, marker);
+
+                // Close info window when the button is clicked
+                google.maps.event.addListenerOnce(infoWindow, "domready", () => {
+                    document.getElementById("close-info-window").addEventListener("click",
+                        () => {
+                            infoWindow.close();
+                        });
+                });
+            });
+
+            // Center map on the marker
+            map.setCenter(marker.getPosition());
+            map.setZoom(12);
+        });
     }
 </script>
 

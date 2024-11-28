@@ -263,6 +263,7 @@ class RoutingController extends Controller
             $technicianData = [
                 'technician' => [
                     'id' => $technician->id,
+                    'color_code' => $technician->color_code,
                     'name' => $technician->name,
                     'full_address' => $technicianLocation->full_address,
                     'latitude' => $technicianLocation->latitude,
