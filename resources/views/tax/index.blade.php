@@ -41,7 +41,7 @@
                 {{ session('error') }}
             </div>
         @endif
-        <div class="row card card-border shadow">
+        <div class="card card-border shadow">
             <div class="col-12">
                 <div class="">
                     <div class="card-body">

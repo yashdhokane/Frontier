@@ -38,7 +38,7 @@
                 </div>
             </div>
         @endif
-        <div class="row card card-border shadow">
+        <div class="row card card-border shadow mr-0">
 
             <div class="card threedottest" style="display:none;">
                 <div class="row card-body">

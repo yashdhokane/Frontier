@@ -63,7 +63,7 @@
         @endif
 
 
-        <div class="row card card-border shadow">
+        <div class="row card card-border shadow mr-0">
 
             <!-- Add Popup Model -->
             <div id="service-area" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"

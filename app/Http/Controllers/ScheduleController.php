@@ -843,7 +843,7 @@ class ScheduleController extends Controller
         $timezone_id = Session::get('timezone_id');
         $timezone_name = Session::get('timezone_name');
         $time_interval = Session::get('time_interval');
-
+        $data['job_title'] = $request->job_titleSelect ?: $request->job_titleInput;
 
         if (isset($data) && !empty($data)) {
 

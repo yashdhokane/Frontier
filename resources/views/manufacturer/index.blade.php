@@ -11,7 +11,7 @@
 
 
 
-    <div class="page-breadcrumb ms-2">
+    <div class="page-breadcrumb">
         <div class="row">
             <div class="col-9 align-self-center">
                 <h4 class="page-title">Manufactures</h4>

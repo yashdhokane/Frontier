@@ -961,6 +961,12 @@
                                                 <select class="form-control priority" id="exampleFormControlSelect1"
                                                     name="priority">
                                                     <option value="high"
+                                                        {{ isset($technicians->priority) && $technicians->priority == 'critical' ? 'selected' : '' }}>
+                                                       Critical </option>
+                                                    <option value="high"
+                                                        {{ isset($technicians->priority) && $technicians->priority == 'emergency' ? 'selected' : '' }}>
+                                                        Emergency</option>
+                                                    <option value="high"
                                                         {{ isset($technicians->priority) && $technicians->priority == 'high' ? 'selected' : '' }}>
                                                         High</option>
                                                     <option

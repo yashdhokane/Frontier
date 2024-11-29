@@ -180,8 +180,8 @@
                                         <div class="mt-0 mb-3">
                                             <h6 class="card-title required-field"><i class="fas fa fa-sticky-note"></i>
                                                 Job Title </h6>
-                                           
-                                            <select class="form-control" name="job_title">
+                                           <input type="hidden" name="job_title" id="job_title_hidden">
+                                            <select class="form-control" name="job_titleSelect" id="job_title_select">
                                                 <option value=""> -- Select Existig job Title -- </option>
                                                 @foreach($jobTitle as  $value)
                                                     <option value="{{ $value->field_name }}">{{ $value->field_name }}</option>
@@ -190,7 +190,7 @@
                                         
                                             <div class="my-2"><a href="#." id="add_new_title">Add New</a></div>
                                             <div class="form-group" id="show_new_title">
-                                                <input type="text" name="job_title" class="form-control job_title"
+                                                <input type="text" name="job_titleInput" id="job_title_input" class="form-control job_title"
                                                     placeholder="Add Job Title Here" aria-label=""
                                                     aria-describedby="basic-addon1">
                                             </div>
@@ -1156,10 +1156,41 @@
                 $('#show_new_appl').toggle();
             });
 
-            $('#show_new_title').hide();
-            $(document).on('click', '#add_new_title', function() {
-                $('#show_new_title').toggle();
+           $('#show_new_title').hide();
+
+            // Toggle the visibility of the custom input field when "Add New" is clicked
+            $('#add_new_title').on('click', function () {
+                $('#show_new_title').toggle(); // Show/hide the input field
+                $('#job_title_select').val(''); // Clear the select dropdown
+                updateHiddenInput(); // Ensure hidden input is cleared
             });
+
+            // Update the hidden input when an existing job title is selected
+            $('#job_title_select').on('change', function () {
+                $('#job_title_input').val(''); // Clear the custom input field
+                updateHiddenInput(); // Update the hidden input with the selected value
+            });
+
+            // Update the hidden input when a new job title is entered
+            $('#job_title_input').on('input', function () {
+                $('#job_title_select').val(''); // Clear the select dropdown
+                updateHiddenInput(); // Update the hidden input with the entered value
+            });
+
+            // Function to update the hidden input based on the current values
+            function updateHiddenInput() {
+                var selectedTitle = $('#job_title_select').val(); // Get the selected value
+                var customTitle = $('#job_title_input').val(); // Get the custom input value
+
+                if (customTitle) {
+                    // If a custom title is entered, use it
+                    $('#job_title_hidden').val(customTitle);
+                } else {
+                    // Otherwise, use the selected title from the dropdown
+                    $('#job_title_hidden').val(selectedTitle);
+                }
+            }
+
 
 
             $(document).on('change', '.duration', function() {
@@ -1486,6 +1517,7 @@
                     var form = $('#createScheduleForm')[0];
                     var params = new FormData(form);
                     var newdate = $('#newdate').val();
+                   
 
                     $.ajax({
                         url: "{{ route('schedule.create.post') }}",
@@ -2080,7 +2112,7 @@
             // Fetch and display service information
             var services = $('.services').find(':selected');
             services.each(function(index) {
-                var service_code = $(this).data('code');
+                var service_code = $(this).attr('data-code');
                 var serviceText = $(this).text();
                 var service_cost = $('.service_cost').eq(index).val();
                 var service_discount = $('.service_discount').eq(index).val();
@@ -2152,7 +2184,8 @@
                     newproducts: newproducts,
                 },
                 type: 'GET',
-                success: function(data) {
+                success: function(data) { 
+                     console.log(data);
                     // Populate additional costs, discounts, and totals for new services and products
                     var newServiceRow = `
                             <div class="row mb-2">

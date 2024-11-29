@@ -7,10 +7,11 @@
                 <li class="list-group-item" id="event_click{{ $value->job_id }}"
                     style="cursor: pointer;">
                     <h6 class="uppercase mb-0 text-truncate">{{ $value->subject }}</h6>
-                    <div class="ft14"><i class="ri-user-location-fill"></i>
-                        {{ $value->name }}<br />
-                        {{ $value->address . ', ' . $value->city . ', ' . $value->state }}
-                    </div>
+                            <small class="text-muted"><i class="ri-user-line"></i>  {{ $value->name }}</small>
+
+    
+                            <div class="ft14"><i class="ri-map-pin-fill"></i>  {{ $value->address . ', ' . $value->city . ', ' . $value->state }}</div>
+
                 </li>
             @endforeach
         @else

@@ -343,3 +343,8 @@ ul{
             line-height: 35px;
             font-size: 9px;
         }
+        .select2-container--classic .select2-selection--multiple .select2-selection__choice, .select2-container--default .select2-selection--multiple .select2-selection__choice, .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    background-color: #2962ff !important;
+    border-color: #2962ff !important;
+    color: #000 !important;
+}

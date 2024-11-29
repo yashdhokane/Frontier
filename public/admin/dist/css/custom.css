@@ -305,13 +305,16 @@ li.toplinks a{
   color: #FFF;
   line-height: 16px;
   font-size: 13px;
-  margin-right: 20px;
-  margin-top: 15px;
+  margin-right: 0px;
+  margin-top: 0px;
 }
 .nav-clock span {
     font-size: 11px;
 }
-
+.mr-0{
+	margin-left:0px;
+	margin-right:0px;
+}
 
 
 

@@ -6,7 +6,7 @@
     <!-- -------------------------------------------------------------- -->
     <!-- Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
-    <div class="page-breadcrumb pt-0 ms-2">
+    <div class="page-breadcrumb pt-0">
         <div class="row">
             <div class="col-9 align-self-center">
                 <h4 class="page-title">Tags</h4>

@@ -46,7 +46,7 @@
         // const getRandomColor = () => '#' + Math.floor(Math.random() * 16777215).toString(16);
 
         techniciansData.forEach((techData) => {
-
+          
             const {
                 latitude,
                 longitude,
@@ -60,15 +60,28 @@
             }
 
             // Add technician marker
-            const techMarker = new google.maps.Marker({
+           const techMarker = new google.maps.Marker({
                 position: {
                     lat: parseFloat(latitude),
                     lng: parseFloat(longitude)
                 },
                 map,
                 title: name,
-                label: 'T'
+                label: {
+                    text: 'T', // Label text
+                    color: 'white', // Label color
+                    fontWeight: 'bold'
+                },
+                icon: {
+                    path: google.maps.SymbolPath.CIRCLE, // Use a circle shape
+                    scale: 15, // Size of the circle
+                    fillColor: techData.technician.color_code, 
+                    fillOpacity: 1, // Marker opacity
+                    strokeWeight: 2, // Border thickness
+                    strokeColor: '#FFFFFF' // Border color
+                }
             });
+
 
             const infoWindow = new google.maps.InfoWindow({
                 content: `<h4>${name}</h4><p>${full_address}</p>`
@@ -99,7 +112,7 @@
                     map,
                     polylineOptions: {
                         strokeColor: techData.technician.color_code,
-                        strokeWeight: 2
+                        strokeWeight: 4
                     },
                     suppressMarkers: true
                 });
@@ -135,12 +148,11 @@
                                 lng: parseFloat(longitude)
                             },
                             map,
-                            title: `Customer ${index + 1}`,
                             label: `${index + 1}` // Sequential numbering
                         });
 
                         const customerInfo = new google.maps.InfoWindow({
-                            content: `<h4>Customer ${index + 1}</h4><p>Name: ${name}</p><p>Address: ${full_address}</p>`
+                            content: `<h4> ${job.job_title}</h4><p>Name: ${name}</p><p>Address: ${full_address}</p>`
                         });
 
                         customerMarker.addListener("click", () => customerInfo.open(map,
@@ -205,7 +217,8 @@
                     technician.jobs.forEach(job => {
                         const jobItem = `
                         <li class="list-group-item" id="event_click${job.job_id}" style="cursor: pointer;"
-                            data-lat="${job.customer.latitude}" data-long="${job.customer.longitude}">
+                            data-lat="${job.customer.latitude}" data-long="${job.customer.longitude}" data-job_title="${job.job_title}" >
+                              <h5 class="uppercase mb-2 text-truncate">${job.job_title}</h5>
                             <h6 class="uppercase mb-0 text-truncate"><i class="ri-user-line"></i>${job.customer.name}</h6>
                             <div class="ft14"><i class="ri-map-pin-fill"></i>
                                 ${job.customer.full_address}
@@ -229,11 +242,13 @@
             jobDiv.find('.list-group-item').on('click', function() {
                 const lat = parseFloat($(this).data('lat'));
                 const long = parseFloat($(this).data('long'));
+                const job_title = $(this).data('job_title');
                 if (lat && long) {
                     updateMap1([{
                         customer: {
                             latitude: lat,
                             longitude: long,
+                            job_title: job_title,
                             name: $(this).find('h6').text(),
                             full_address: $(this).find('.ft14').text()
                         }
@@ -286,7 +301,8 @@
             const infoWindow = new google.maps.InfoWindow({
                 content: `
                 <div>
-                    <h4>${name}</h4>
+                    <h5>${data.customer.job_title}</h5>
+                    <h6>${name}</h6>
                     <p>${full_address}</p>
                 </div>`
             });
@@ -297,9 +313,9 @@
                 // Close info window when the button is clicked
                 google.maps.event.addListenerOnce(infoWindow, "domready", () => {
                     document.getElementById("close-info-window").addEventListener("click",
-                        () => {
-                            infoWindow.close();
-                        });
+                () => {
+                        infoWindow.close();
+                    });
                 });
             });
 

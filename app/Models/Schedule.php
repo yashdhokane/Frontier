@@ -16,7 +16,10 @@ class Schedule extends Model
     {
         return $this->belongsTo(JobModel::class, 'job_id', 'id');
     }
-   
+   public function JobModel1()
+    {
+        return $this->hasOne(JobModel::class, 'id', 'job_id');
+    }
     
     public function technician()
     {
@@ -35,7 +38,7 @@ class Schedule extends Model
     public function Jobassign()
 {
     return $this->belongsTo(JobAssign::class, 'job_id', 'job_id')
-        ->select(['job_id', 'start_date_time', 'end_date_time', 'duration', 'driving_hours']);
+        ->select(['job_id', 'start_date_time', 'end_date_time', 'duration', 'driving_hours','customer_id']);
 }
 
  public function user()

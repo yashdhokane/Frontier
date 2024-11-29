@@ -210,12 +210,12 @@
           </div>
 
 
-          <div class="row card card-border shadow">
+          <div class="row card card-border shadow mr-0">
               <!-- Column -->
               <div class="col-12 card-body">
                   <table class="table product-overview" id="zero_config">
                       <div class="row withoutthreedottest">
-                          <div class="col-md-3">
+                          <div class="col-md-3 mb-3">
                               <label for="category_name" class="form-label"><strong>Category</strong></label>
                               <select class="form-select" id="category_name1" name="product_category_id">
                                   <option value="">All</option>
@@ -225,7 +225,7 @@
                                   @endforeach
                               </select>
                           </div>
-                          <div class="col-md-3">
+                          <div class="col-md-3 mb-3">
                               <label for="manufacturer_filter" class="form-label"><strong>Manufacturer</strong></label>
                               <select class="form-select" name="manufacturer" id="manufacturer_filter1">
                                   <option value="">All</option>
@@ -235,7 +235,7 @@
                                   @endforeach
                               </select>
                           </div>
-                          <div class="col-md-3">
+                          <div class="col-md-3 mb-3">
                               <label for="status_filter" class="form-label"><strong>Status</strong></label>
                               <select class="form-select" name="status" id="status_filter1">
                                   <option value="">All</option>

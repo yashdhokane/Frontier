@@ -33,7 +33,7 @@
     <!-- -------------------------------------------------------------- -->
     <div class="container-fluid pt-2">
 
-        <div class="row card card-border shadow">
+        <div class="row card card-border shadow mr-0">
             <div class="col-md-12 col-xl-2">
 
                 <div class="row mt-4">

@@ -292,6 +292,7 @@ class RoutingController extends Controller
                         $customerName = User::where('id', $customerLocation->user_id)->value('name');
                         $customerLocation->full_address = "{$customerLocation->address_line1}, {$customerLocation->city}, {$customerLocation->state_name} {$customerLocation->zipcode}";
 
+
                         $technicianData['jobs'][] = [
                             'job_id' => $job->job_id,
                             'position' => $job->position,
@@ -469,23 +470,33 @@ class RoutingController extends Controller
                             $CurrentDate = Carbon::now($timezone_name)->addDay();
                             $currentDayLower = strtolower($CurrentDate->format('l'));
                             $hours = BusinessHours::where('day', $currentDayLower)->first();
-                            
+
                             // Parse the leave time based on business hours
                             $leaveTime = Carbon::parse($newStartTime->format('Y-m-d') . ' ' . $hours->end_time);
-                            
+
                             // Check if the new start time exceeds working hours or the daily job count limit
-                            if ($newStartTime->greaterThan($leaveTime) || $dailyJobCount > 5) {
+                            $maxJobsPerDay = 5; // Maximum jobs allowed per day
+                            $totalJobsScheduled = 0; // Counter for total jobs scheduled
+
+                            while ($dailyJobCount >= $maxJobsPerDay && $totalJobsScheduled < 30) {
+                                // Move to the next day
                                 $nextDay = $newStartTime->copy()->addDay();
-                                
+
                                 // Skip Sundays
                                 while ($nextDay->isSunday()) {
                                     $nextDay->addDay();
                                 }
-                            
+
+                                // Reset daily job count for the new day
+                                $dailyJobCount = 0;
+
                                 // Update the job's start time to the next day's start time
                                 $job->start_date_time = $nextDay->setTimeFromTimeString($hours->start_time);
-                            }
+                                $newStartTime = $job->start_date_time;
 
+                                // Increment the total jobs scheduled
+                                $totalJobsScheduled += $dailyJobCount;
+                            }
                             // Recalculate end time
                             $job->end_date_time = $this->roundToNearest30Minutes(
                                 Carbon::parse($job->start_date_time)->addMinutes($job->Jobassign->duration)

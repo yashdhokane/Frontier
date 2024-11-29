@@ -181,13 +181,13 @@
         </div>
 
 
-        <div class="row card card-border shadow">
+        <div class="card card-border shadow">
             <div class="col-12">
                 <div class="card-body">
                     <table id="zero_config00" class="table table-hover table-striped text-nowrap">
 
                         <div class="row withoutthreedottest">
-                            <div class="col-md-3 ">
+                            <div class="col-md-3 mb-3">
                                 <label for="technician_filter" class="form-label">Technician</label>
                                 <select class="form-select" name="technician" id="technician_filter1">
                                     <option value="">All</option>
@@ -196,7 +196,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 mb-3">
                                 <label for="status_filter" class="form-label">Status</label>
                                 <select class="form-select" name="status" id="status_filter1">
                                     <option value="">All</option>

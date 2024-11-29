@@ -74,7 +74,7 @@
 
         @endphp
 
-        <div class="row pb-4 mt-2 card card-border shadow card-body">
+        <div class="pb-4 card card-border shadow card-body">
             <div class="col-md-6 col-xl-2">
                 <div class="row ">
                     <div class="col-md-9 col-xl-2">

@@ -48,7 +48,7 @@
         <!-- Start Page Content -->
         <!-- -------------------------------------------------------------- -->
         <!-- basic table -->
-        <div class="row">
+        <div class="">
 
             <div id="filterDiv" class="card card-body shadow" style="display: none;">
                 <div class="row">

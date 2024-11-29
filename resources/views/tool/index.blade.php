@@ -208,7 +208,7 @@
 
           </div>
 
-          <div class="row card card-border shadow">
+          <div class="card card-border shadow">
               <!-- Column -->
               <div class="col-lg-12">
 
