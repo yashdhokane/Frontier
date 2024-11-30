@@ -40,18 +40,17 @@
             center: {
                 lat: 40.7128,
                 lng: -74.0060
-            } // Center the map to a default location
+            }
         });
 
-        // const getRandomColor = () => '#' + Math.floor(Math.random() * 16777215).toString(16);
-
         techniciansData.forEach((techData) => {
-          
             const {
                 latitude,
                 longitude,
                 name,
-                full_address
+                full_address,
+                color_code,
+                dateDay
             } = techData.technician;
 
             if (!latitude || !longitude) {
@@ -60,7 +59,7 @@
             }
 
             // Add technician marker
-           const techMarker = new google.maps.Marker({
+            const techMarker = new google.maps.Marker({
                 position: {
                     lat: parseFloat(latitude),
                     lng: parseFloat(longitude)
@@ -68,20 +67,19 @@
                 map,
                 title: name,
                 label: {
-                    text: 'T', // Label text
-                    color: 'white', // Label color
-                    fontWeight: 'bold'
+                    text: "T",
+                    color: "white",
+                    fontWeight: "bold"
                 },
                 icon: {
-                    path: google.maps.SymbolPath.CIRCLE, // Use a circle shape
-                    scale: 15, // Size of the circle
-                    fillColor: techData.technician.color_code, 
-                    fillOpacity: 1, // Marker opacity
-                    strokeWeight: 2, // Border thickness
-                    strokeColor: '#FFFFFF' // Border color
+                    path: google.maps.SymbolPath.CIRCLE,
+                    scale: 15,
+                    fillColor: color_code,
+                    fillOpacity: 1,
+                    strokeWeight: 2,
+                    strokeColor: "#FFFFFF"
                 }
             });
-
 
             const infoWindow = new google.maps.InfoWindow({
                 content: `<h4>${name}</h4><p>${full_address}</p>`
@@ -89,79 +87,204 @@
 
             techMarker.addListener("click", () => infoWindow.open(map, techMarker));
 
-            // Sort jobs in ascending order based on the array index in the best route
-            const sortedJobs = techData.jobs;
+            // Check if dateDay is "nextdays" and process jobs
+            if (dateDay === "nextdays") {
+                // Group jobs by individual dates
+                const jobsByDate = techData.jobs.reduce((acc, job) => {
+                    console.log(job);
+                    const jobDate = job.start_date_time; // Assuming each job has a `date` property
+                    if (!acc[jobDate]) acc[jobDate] = [];
+                    acc[jobDate].push(job);
+                    return acc;
+                }, {});
 
-            // Process waypoints and markers
-            const waypoints = sortedJobs.map((job, index) => {
-                if (job.customer.latitude && job.customer.longitude) {
-                    return {
-                        location: new google.maps.LatLng(
-                            parseFloat(job.customer.latitude),
-                            parseFloat(job.customer.longitude)
-                        ),
-                        stopover: true
-                    };
-                }
-                return null;
-            }).filter(Boolean);
-
-            if (waypoints.length > 0) {
-                const directionsService = new google.maps.DirectionsService();
-                const directionsRenderer = new google.maps.DirectionsRenderer({
-                    map,
-                    polylineOptions: {
-                        strokeColor: techData.technician.color_code,
-                        strokeWeight: 4
-                    },
-                    suppressMarkers: true
+                // Render routes for each individual date
+                Object.entries(jobsByDate).forEach(([jobDate, jobs], index) => {
+                    renderRouteForDate(map, techData.technician, jobs, jobDate, index);
                 });
-
-                directionsService.route({
-                    origin: {
-                        lat: parseFloat(latitude),
-                        lng: parseFloat(longitude)
-                    },
-                    destination: waypoints[waypoints.length - 1].location,
-                    waypoints,
-                    travelMode: google.maps.TravelMode.DRIVING
-                }, (result, status) => {
-                    if (status === google.maps.DirectionsStatus.OK) {
-                        directionsRenderer.setDirections(result);
-                    } else {
-                        console.error('Directions request failed due to ' + status);
-                    }
-                });
-
-                // Add customer markers with sequential numbering
-                sortedJobs.forEach((job, index) => {
-                    const {
-                        latitude,
-                        longitude,
-                        name,
-                        full_address
-                    } = job.customer;
-                    if (latitude && longitude) {
-                        const customerMarker = new google.maps.Marker({
-                            position: {
-                                lat: parseFloat(latitude),
-                                lng: parseFloat(longitude)
-                            },
-                            map,
-                            label: `${index + 1}` // Sequential numbering
-                        });
-
-                        const customerInfo = new google.maps.InfoWindow({
-                            content: `<h4> ${job.job_title}</h4><p>Name: ${name}</p><p>Address: ${full_address}</p>`
-                        });
-
-                        customerMarker.addListener("click", () => customerInfo.open(map,
-                            customerMarker));
-                    }
-                });
+            } else {
+                // Render a single route for the technician if dateDay is not "nextdays"
+                renderRouteForDate(map, techData.technician, techData.jobs, dateDay, 0);
             }
         });
     }
+
+    function renderRouteForDate(map, technician, jobs, dateDay, index) {
+        const {
+            latitude,
+            longitude,
+            color_code
+        } = technician;
+
+        // Ensure valid technician coordinates
+        if (!latitude || !longitude || isNaN(latitude) || isNaN(longitude)) {
+            console.error("Invalid technician coordinates. Skipping route rendering.");
+            return;
+        }
+
+        // Filter jobs with valid customer locations
+        const validJobs = jobs.filter(
+            (job) =>
+            job.customer.latitude &&
+            job.customer.longitude &&
+            !isNaN(parseFloat(job.customer.latitude)) &&
+            !isNaN(parseFloat(job.customer.longitude))
+        );
+
+        // Skip if no valid jobs for this date
+        if (validJobs.length === 0) {
+            console.log(`No jobs for date ${dateDay}. Skipping path rendering.`);
+            return;
+        }
+
+        // Sort jobs by proximity to technician's location
+        const sortedJobs = validJobs.sort((a, b) => {
+            const distanceA = calculateDistance(
+                parseFloat(latitude),
+                parseFloat(longitude),
+                parseFloat(a.customer.latitude),
+                parseFloat(a.customer.longitude)
+            );
+            const distanceB = calculateDistance(
+                parseFloat(latitude),
+                parseFloat(longitude),
+                parseFloat(b.customer.latitude),
+                parseFloat(b.customer.longitude)
+            );
+            return distanceA - distanceB;
+        });
+
+        // Generate waypoints
+        const waypoints = sortedJobs.map((job) => ({
+            location: new google.maps.LatLng(
+                parseFloat(job.customer.latitude),
+                parseFloat(job.customer.longitude)
+            ),
+            stopover: true,
+        }));
+
+        if (waypoints.length > 0) {
+            const directionsService = new google.maps.DirectionsService();
+            const directionsRenderer = new google.maps.DirectionsRenderer({
+                map,
+                polylineOptions: {
+                    strokeColor: color_code || "#FF0000", // Default to red if color_code is not provided
+                    strokeWeight: 4,
+                },
+                suppressMarkers: true,
+            });
+
+            directionsService.route({
+                    origin: {
+                        lat: parseFloat(latitude),
+                        lng: parseFloat(longitude),
+                    },
+                    destination: waypoints[waypoints.length - 1].location,
+                    waypoints,
+                    travelMode: google.maps.TravelMode.DRIVING,
+                },
+                (result, status) => {
+                    if (status === google.maps.DirectionsStatus.OK) {
+                        directionsRenderer.setDirections(result);
+
+                        // Add date overlay on the path
+                        const midPoint =
+                            result.routes[0].overview_path[
+                                Math.floor(result.routes[0].overview_path.length / 2)
+                            ];
+
+                        new google.maps.Marker({
+                            position: midPoint,
+                            map,
+                            label: {
+                                text: dateDay,
+                                color: "black",
+                                fontSize: "12px",
+                            },
+                            icon: {
+                                path: google.maps.SymbolPath.CIRCLE,
+                                scale: 0, // Invisible marker for label only
+                            },
+                        });
+                    } else {
+                        console.error("Directions request failed due to " + status);
+                    }
+                }
+            );
+
+            // Add numbered customer markers based on proximity
+            sortedJobs.forEach((job, jobIndex) => {
+                const {
+                    latitude: jobLat,
+                    longitude: jobLng,
+                    name,
+                    full_address
+                } = job.customer;
+                const jobNumber = jobIndex + 1; // Correct numbering
+                if (jobLat && jobLng) {
+                    const customerMarker = new google.maps.Marker({
+                        position: {
+                            lat: parseFloat(jobLat),
+                            lng: parseFloat(jobLng),
+                        },
+                        map,
+                        label: {
+                            text: `${jobNumber}`, // Correct and unique numbering
+                            color: "white",
+                            fontSize: "12px",
+                            fontWeight: "bold",
+                        },
+                        icon: {
+                            path: google.maps.SymbolPath.CIRCLE,
+                            scale: 15,
+                            fillColor: "#007BFF", // Customize marker color
+                            fillOpacity: 1,
+                            strokeWeight: 1,
+                            strokeColor: "#FFFFFF", // Border color
+                        },
+                    });
+
+                    const customerInfo = new google.maps.InfoWindow({
+                        content: `<h4>${job.job_title}</h4><p>Name: ${name}</p><p>Address: ${full_address}</p>`,
+                    });
+
+                    customerMarker.addListener("click", () =>
+                        customerInfo.open(map, customerMarker)
+                    );
+                }
+            });
+        }
+    }
+
+
+
+
+    // Utility function to calculate the distance between two coordinates
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Earth's radius in km
+        const dLat = deg2rad(lat2 - lat1);
+        const dLon = deg2rad(lon2 - lon1);
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(deg2rad(lat1)) *
+            Math.cos(deg2rad(lat2)) *
+            Math.sin(dLon / 2) *
+            Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+    }
+
+    function deg2rad(deg) {
+        return deg * (Math.PI / 180);
+    }
+
+    // Utility function to assign unique colors
+    function getColorByIndex(index) {
+        const colors = ["#FF5733", "#33FF57", "#3357FF"]; // Add more colors if needed
+        return colors[index % colors.length];
+    }
+
+
 
 
     function fetchFilteredData() {
@@ -313,9 +436,9 @@
                 // Close info window when the button is clicked
                 google.maps.event.addListenerOnce(infoWindow, "domready", () => {
                     document.getElementById("close-info-window").addEventListener("click",
-                () => {
-                        infoWindow.close();
-                    });
+                        () => {
+                            infoWindow.close();
+                        });
                 });
             });
 
