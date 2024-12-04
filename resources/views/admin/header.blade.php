@@ -328,10 +328,72 @@ else
             </a>
             <div class="job-list sticky-note bg-white w-100 h-100">
 
-                <div class="row m-2 jobList">
+                <div class="row me-5 pe-5 shadow pb-3 m-0">
                     <div class="col-sm-12 col-md-12">
-                        <h3 class="p-3 mt-2"> Job List </h3>
+                        <h3 class="py-2 ps-2"> Job List </h3>
                     </div>
+                    <div class="col-md-2">
+                        <div class="d-flex flex-column align-items-baseline">
+                            <!-- Filter by other column (example: Manufacturer) -->
+                            <label class="text-nowrap"><b>Technician </b></label>
+                            <select id="technician-filter" class="form-control mx-2">
+                                <option value="">All</option>
+                               
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="d-flex flex-column align-items-baseline">
+                            <!-- Date filtering input -->
+
+                            <label><b>Customer:</b></label>
+                            <select id="customer-filter" class="form-control mx-2">
+                                <option value="">All</option>
+                              
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <div class="d-flex flex-column  align-items-baseline">
+                            <label class="text-nowrap"><b>Priority:</b></label>
+                            <select id="priority-filter" class="form-control mx-2">
+                                <option value="">All</option>
+                              
+                            </select>
+                        </div>
+                    </div>
+                   
+                    <div class="col-md-2">
+                        <div class="d-flex flex-column  align-items-baseline">
+                            <!-- Filter by status -->
+                            <label class="text-nowrap"><b>Job Title:</b></label>
+                            <select id="title-filter" class="form-control mx-2">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="d-flex flex-column  align-items-baseline">
+                            <!-- Filter by status -->
+                            <label class="text-nowrap"><b>Job Confirmed:</b></label>
+                            <select id="isConfirmed-filter" class="form-control mx-2">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="d-flex flex-column  align-items-baseline">
+                            <!-- Filter by status -->
+                            <label class="text-nowrap"><b>Service Area:</b></label>
+                            <select id="area-filter" class="form-control mx-2">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row m-2 jobList">
+                    
 
                     @php
                         $timezone_name = Session::get('timezone_name', 'UTC');
@@ -347,100 +409,102 @@ else
 
                     @endphp
 
-                    <div class="col-sm-12 col-md-12">
-                        <table id="zero_config" class="table table-hover table-striped table-bordered text-nowrap"
-                            data-paging="true" data-paging-size="7">
-                            <thead>
-                                <tr>
-                                    <th>Job ID</th>
-                                    <th class="job-details-column">Job Details</th>
-                                    <th>Customer</th>
-                                    <th>Technician</th>
-                                    <th>Date & Time</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                @foreach ($tickets as $ticket)
+                    <div class="col-sm-12 col-md-12 w-75">
+                        <div class="table-responsive" style="overflow: scroll; height: 570px;">
+                            <table id="sticky_job_list"
+                                class="table table-hover table-striped table-bordered text-nowrap" data-paging="true"
+                                data-paging-size="7">
+                                <thead>
                                     <tr>
-                                        <td>
-                                            <a href="{{ route('tickets.show', $ticket->id) }}"
-                                                class="fw-bold link"><span
-                                                    class="mb-1 badge bg-primary">{{ $ticket->id }}</span></a>
-                                        </td>
-                                        <td class="job-details-column">
-                                            <div class="text-wrap2 d-flex">
-                                                <div class=" text-truncate">
-                                                    <a href="{{ route('tickets.show', $ticket->id) }}"
-                                                        class="font-medium link">
-                                                        {{ $ticket->job_title ?? null }}</a>
-                                                </div>
-                                                <span
-                                                    class="badge bg-light-warning text-warning font-medium">{{ $ticket->status }}</span>
-                                            </div>
-                                            <div style="font-size:12px;">
-                                                @if ($ticket->JobAppliances && $ticket->JobAppliances->Appliances)
-                                                    {{ $ticket->JobAppliances->Appliances->appliance->appliance_name ?? null }}/
-                                                @endif
-                                                @if ($ticket->JobAppliances && $ticket->JobAppliances->Appliances)
-                                                    {{ $ticket->JobAppliances->Appliances->manufacturer->manufacturer_name ?? null }}/
-                                                @endif
-                                                @if ($ticket->JobAppliances && $ticket->JobAppliances->Appliances->model_number)
-                                                    {{ $ticket->JobAppliances->Appliances->model_number ?? null }}/
-                                                @endif
-                                                @if ($ticket->JobAppliances && $ticket->JobAppliances->Appliances->serial_number)
-                                                    {{ $ticket->JobAppliances->Appliances->serial_number ?? null }}
-                                                @endif
-                                            </div>
-                                        </td>
-                                        <td>
-                                            @if ($ticket->user)
-                                                {{ $ticket->user->name }}
-                                            @else
-                                                Unassigned
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if ($ticket->technician)
-                                                {{ $ticket->technician->name }}
-                                            @else
-                                                Unassigned
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if ($ticket->jobassignname && $ticket->jobassignname->start_date_time)
-                                                <div class="font-medium link">
-                                                    {{ $modifyDateTime($ticket->jobassignname->start_date_time ?? null, $time_interval, 'add', 'm-d-Y') }}
-                                                </div>
-                                            @else
-                                                <div></div>
-                                            @endif
-                                            <div style="font-size:12px;">
-                                                {{ $modifyDateTime($ticket->jobassignname->start_date_time ?? null, $time_interval, 'add', 'h:i A') }}
-                                                to
-                                                {{ $modifyDateTime($ticket->jobassignname->end_date_time ?? null, $time_interval, 'add', 'h:i A') }}
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span><a class="btn btn-success"
-                                                    href="{{ route('tickets.show', $ticket->id) }}">View</a></span>
-                                            <span style="display:none;"><a class="btn btn-primary"
-                                                    href="{{ route('tickets.edit', $ticket->id) }}">Edit</a></span>
-                                            <span style="display:none;">
-                                                <form method="POST"
-                                                    action="{{ route('tickets.destroy', $ticket->id) }}"
-                                                    style="display: inline;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                                </form>
-                                            </span>
-                                        </td>
+                                        <th>Job ID</th>
+                                        <th class="job-details-column">Job Details</th>
+                                        <th>Customer</th>
+                                        <th>Technician</th>
+                                        <th>Date & Time</th>
+                                        <th>Action</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+
+                                    @foreach ($tickets as $ticket)
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="form-check-input bg-dark-subtle" id=""
+                                                    name="technicians[]">
+                                            </td>
+                                            <td class="job-details-column">
+                                                <div class="text-wrap2 d-flex">
+                                                    <div class=" text-truncate">
+                                                        <a href="{{ route('tickets.show', $ticket->id) }}"
+                                                            class="font-medium link">
+                                                            #{{ $ticket->id }}-{{ $ticket->job_title ?? null }}</a>
+                                                    </div>
+                                                    <span
+                                                        class="badge bg-light-warning text-warning font-medium">{{ $ticket->status }}</span>
+                                                </div>
+                                                <div style="font-size:12px;">
+                                                    @if ($ticket->JobAppliances && $ticket->JobAppliances->Appliances)
+                                                        {{ $ticket->JobAppliances->Appliances->appliance->appliance_name ?? null }}/
+                                                    @endif
+                                                    @if ($ticket->JobAppliances && $ticket->JobAppliances->Appliances)
+                                                        {{ $ticket->JobAppliances->Appliances->manufacturer->manufacturer_name ?? null }}/
+                                                    @endif
+                                                    @if ($ticket->JobAppliances && $ticket->JobAppliances->Appliances->model_number)
+                                                        {{ $ticket->JobAppliances->Appliances->model_number ?? null }}/
+                                                    @endif
+                                                    @if ($ticket->JobAppliances && $ticket->JobAppliances->Appliances->serial_number)
+                                                        {{ $ticket->JobAppliances->Appliances->serial_number ?? null }}
+                                                    @endif
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @if ($ticket->user)
+                                                    {{ $ticket->user->name }}
+                                                @else
+                                                    Unassigned
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($ticket->technician)
+                                                    {{ $ticket->technician->name }}
+                                                @else
+                                                    Unassigned
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($ticket->jobassignname && $ticket->jobassignname->start_date_time)
+                                                    <div class="font-medium link">
+                                                        {{ $modifyDateTime($ticket->jobassignname->start_date_time ?? null, $time_interval, 'add', 'm-d-Y') }}
+                                                    </div>
+                                                @else
+                                                    <div></div>
+                                                @endif
+                                                <div style="font-size:12px;">
+                                                    {{ $modifyDateTime($ticket->jobassignname->start_date_time ?? null, $time_interval, 'add', 'h:i A') }}
+                                                    to
+                                                    {{ $modifyDateTime($ticket->jobassignname->end_date_time ?? null, $time_interval, 'add', 'h:i A') }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span><a class="btn btn-success"
+                                                        href="{{ route('tickets.show', $ticket->id) }}">View</a></span>
+                                                <span style="display:none;"><a class="btn btn-primary"
+                                                        href="{{ route('tickets.edit', $ticket->id) }}">Edit</a></span>
+                                                <span style="display:none;">
+                                                    <form method="POST"
+                                                        action="{{ route('tickets.destroy', $ticket->id) }}"
+                                                        style="display: inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                    </form>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
 
@@ -453,7 +517,7 @@ else
         </div>
 
     </header>
-
+   
     <script>
         const storeColorNoteUrl = "{{ route('store.colorNote') }}";
         const updateColorNoteUrl = "{{ route('update.colorNote') }}";

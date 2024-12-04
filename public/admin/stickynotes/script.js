@@ -9,7 +9,7 @@ $(document).ready(function () {
     $(document).on("click", "#close-job-detail", function () {
         $(".jobMainSection").hide();
     });
-    
+
     $(document).on("click", "#close-task-detail", function () {
         $(".stickyMainSection").hide();
         $(".stickyNotesList").show();
@@ -248,5 +248,98 @@ $(document).ready(function () {
                 $(".stickyNotesList").show();
             },
         });
+    });
+});
+
+$(document).ready(function () {
+    $("#sticky_job_list").DataTable({
+        order: [[0, "desc"]],
+        pageLength: 25,
+    });
+
+    $(
+        ".buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel"
+    ).addClass("btn btn-cyan text-white me-1");
+
+    // Initialize DataTable
+    var table = $("#sticky_job_list").DataTable();
+
+    // Month filtering
+    $("#month-filter").on("change", function () {
+        var selectedMonth = $(this).val();
+        console.log("Selected month:", selectedMonth);
+
+        if (selectedMonth) {
+            var Month = moment(selectedMonth, "MMMM YYYY").format("MM");
+            var Year = moment(selectedMonth, "MMMM YYYY").format("YYYY");
+            console.log("Formatted Month:", Month);
+            console.log("Formatted Year:", Year);
+
+            if (Month && Year) {
+                // Adjust regex to match month and year only
+                var dateRegex = "\\d{2}-" + Month + "-" + Year;
+                console.log("Date Regex:", dateRegex);
+
+                table.column(4).search(dateRegex, true, false).draw();
+            } else {
+                console.error("Invalid Month or Year format.");
+            }
+        } else {
+            table.column(4).search("").draw();
+        }
+    });
+
+    // Manufacturer filtering
+    $("#manufacturer-filter").on("change", function () {
+        var manufacturer = $(this).val();
+        table.column(1).search(manufacturer).draw();
+    });
+    $("#technician-filter").on("change", function () {
+        var technician = $(this).val();
+        table.column(3).search(technician).draw(); // Assuming technician names are in column index 3
+    });
+
+    $("#status-filter").on("change", function () {
+        var status = $(this).val();
+        table.columns(1).search(status).draw();
+    });
+
+    $("#month-filter1").on("change", function () {
+        var selectedMonth = $(this).val();
+        console.log("Selected month:", selectedMonth);
+
+        if (selectedMonth) {
+            var Month = moment(selectedMonth, "MMMM YYYY").format("MM");
+            var Year = moment(selectedMonth, "MMMM YYYY").format("YYYY");
+            console.log("Formatted Month:", Month);
+            console.log("Formatted Year:", Year);
+
+            if (Month && Year) {
+                // Adjust regex to match month and year only
+                var dateRegex = "\\d{2}-" + Month + "-" + Year;
+                console.log("Date Regex:", dateRegex);
+
+                table.column(4).search(dateRegex, true, false).draw();
+            } else {
+                console.error("Invalid Month or Year format.");
+            }
+        } else {
+            table.column(4).search("").draw();
+        }
+    });
+
+    // Manufacturer filtering
+    $("#manufacturer-filter1").on("change", function () {
+        var manufacturer = $(this).val();
+        table.column(1).search(manufacturer).draw();
+    });
+    $("#technician-filter1").on("change", function () {
+        var technician = $(this).val();
+        table.column(3).search(technician).draw(); // Assuming technician names are in column index 3
+    });
+
+    $("#status-filter1").on("change", function () {
+        var status = $(this).val();
+        table.columns(1).search(status).draw();
     });
 });
