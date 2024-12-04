@@ -56,6 +56,9 @@
         #menu {
             margin-top: 20px;
         }
+        .gm-style .gm-style-iw-d {
+            margin-top: -30px;
+        }
     </style>
 
     <div class=" col-md-12">

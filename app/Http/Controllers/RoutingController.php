@@ -187,7 +187,7 @@ class RoutingController extends Controller
                 $endDate = $currentDate->copy()->addDay()->endOfDay();
                 break;
             case 'nextdays':
-                $endDate = $currentDate->copy()->addDays(2); // Today to the next three days
+                $endDate = $currentDate->copy()->addDays(2)->endOfDay(); // Today to the next three days
                 break;
             default:
                 return response()->json(['success' => false, 'message' => 'Invalid dateDay value.'], 400);
@@ -230,7 +230,7 @@ class RoutingController extends Controller
 
             $jobs = Schedule::where('technician_id', $technician->id)
                 ->whereBetween('start_date_time', [$startDate, $endDate])
-                ->get(['job_id', 'position', 'is_routes_map', 'job_onmap_reaching_timing']);
+                ->get();
 
             $routingJobQuery = RoutingJob::where('user_id', $technician->id)
                 ->whereBetween('schedule_date_time', [$startDate, $endDate]);
@@ -296,10 +296,14 @@ class RoutingController extends Controller
 
                         $technicianData['jobs'][] = [
                             'job_id' => $job->job_id,
+                            'start_date_time' => $job->start_date_time,
                             'position' => $job->position,
                             'job_title' => DB::table('jobs')
                                 ->where('id', $job->job_id)
                                 ->value('job_title'),
+                            'description' => DB::table('jobs')
+                                ->where('id', $job->job_id)
+                                ->value('description'),
                             'is_routes_map' => $job->is_routes_map,
                             'job_onmap_reaching_timing' => $job->job_onmap_reaching_timing,
                             'customer' => [

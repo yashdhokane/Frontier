@@ -91,25 +91,29 @@
             if (dateDay === "nextdays") {
                 // Group jobs by individual dates
                 const jobsByDate = techData.jobs.reduce((acc, job) => {
-                    console.log(job);
-                    const jobDate = job.start_date_time; // Assuming each job has a `date` property
+                    const jobDate = job
+                    .start_date_time; // Assuming each job has a `start_date_time` property
                     if (!acc[jobDate]) acc[jobDate] = [];
                     acc[jobDate].push(job);
                     return acc;
                 }, {});
 
-                // Render routes for each individual date
-                Object.entries(jobsByDate).forEach(([jobDate, jobs], index) => {
-                    renderRouteForDate(map, techData.technician, jobs, jobDate, index);
-                });
+
+                // Pass jobsByDate directly to renderRouteForDate
+                renderRouteForDate(map, techData.technician, jobsByDate,dateDay);
             } else {
-                // Render a single route for the technician if dateDay is not "nextdays"
-                renderRouteForDate(map, techData.technician, techData.jobs, dateDay, 0);
+                // For single-day routes, create a similar grouped structure
+                const singleDayJobs = {
+                    [dateDay]: techData.jobs
+                };
+                renderRouteForDate(map, techData.technician, singleDayJobs,dateDay);
             }
+
         });
     }
 
-    function renderRouteForDate(map, technician, jobs, dateDay, index) {
+    function renderRouteForDate(map, technician, jobsByDate,dateDay) {
+        
         const {
             latitude,
             longitude,
@@ -122,117 +126,105 @@
             return;
         }
 
-        // Filter jobs with valid customer locations
-        const validJobs = jobs.filter(
-            (job) =>
-            job.customer.latitude &&
-            job.customer.longitude &&
-            !isNaN(parseFloat(job.customer.latitude)) &&
-            !isNaN(parseFloat(job.customer.longitude))
-        );
-
-        if (validJobs.length === 0) {
-            console.log(`No jobs for date ${dateDay}. Skipping path rendering.`);
-            return;
-        }
-
-        // Sort jobs by proximity to technician's location
-        const sortedJobs = validJobs.sort((a, b) => {
-            const distanceA = calculateDistance(
-                parseFloat(latitude),
-                parseFloat(longitude),
-                parseFloat(a.customer.latitude),
-                parseFloat(a.customer.longitude)
+        // Iterate through each date and its jobs
+        Object.entries(jobsByDate).forEach(([jobDate, jobs], index) => {
+            // Filter jobs with valid customer locations
+            const validJobs = jobs.filter(
+                (job) =>
+                job.customer.latitude &&
+                job.customer.longitude &&
+                !isNaN(parseFloat(job.customer.latitude)) &&
+                !isNaN(parseFloat(job.customer.longitude))
             );
-            const distanceB = calculateDistance(
-                parseFloat(latitude),
-                parseFloat(longitude),
-                parseFloat(b.customer.latitude),
-                parseFloat(b.customer.longitude)
-            );
-            return distanceA - distanceB;
-        });
+            console.log(validJobs);
+            if (validJobs.length === 0) {
+                console.log(`No jobs for date ${jobDate}. Skipping path rendering.`);
+                return;
+            }
 
-        // Generate waypoints
-        const waypoints = sortedJobs.map((job) => ({
-            location: new google.maps.LatLng(
-                parseFloat(job.customer.latitude),
-                parseFloat(job.customer.longitude)
-            ),
-            stopover: true,
-        }));
+            // Generate waypoints
+            const waypoints = validJobs.map((job) => ({
+                location: new google.maps.LatLng(
+                    parseFloat(job.customer.latitude),
+                    parseFloat(job.customer.longitude)
+                ),
+                stopover: true,
+            }));
 
-        if (waypoints.length > 0) {
-            const directionsService = new google.maps.DirectionsService();
-            const strokeStyle = getPolylineStyle(dateDay, color_code);
+            if (waypoints.length > 0) {
+                const directionsService = new google.maps.DirectionsService();
+                const strokeStyle = getPolylineStyle(jobDate, color_code);
 
-            const directionsRenderer = new google.maps.DirectionsRenderer({
-                map,
-                polylineOptions: strokeStyle, // Apply dynamic stroke style
-                suppressMarkers: true,
-            });
+                const directionsRenderer = new google.maps.DirectionsRenderer({
+                    map,
+                    polylineOptions: strokeStyle, // Apply dynamic stroke style
+                    suppressMarkers: true,
+                });
 
-            directionsService.route({
-                    origin: {
-                        lat: parseFloat(latitude),
-                        lng: parseFloat(longitude),
+                directionsService.route({
+                        origin: {
+                            lat: parseFloat(latitude),
+                            lng: parseFloat(longitude)
+                        },
+                        destination: waypoints[waypoints.length - 1].location,
+                        waypoints,
+                        travelMode: google.maps.TravelMode.DRIVING,
                     },
-                    destination: waypoints[waypoints.length - 1].location,
-                    waypoints,
-                    travelMode: google.maps.TravelMode.DRIVING,
-                },
-                (result, status) => {
-                    if (status === google.maps.DirectionsStatus.OK) {
-                        directionsRenderer.setDirections(result);
-                    } else {
-                        console.error("Directions request failed due to " + status);
+                    (result, status) => {
+                        if (status === google.maps.DirectionsStatus.OK) {
+                            directionsRenderer.setDirections(result);
+                        } else {
+                            console.error("Directions request failed due to " + status);
+                        }
                     }
-                }
-            );
+                );
 
-            // Add numbered customer markers based on proximity
-            sortedJobs.forEach((job, jobIndex) => {
-                const {
-                    latitude: jobLat,
-                    longitude: jobLng,
-                    name,
-                    full_address
-                } = job.customer;
-                const jobNumber = jobIndex + 1; // Use 1-based numbering
-                if (jobLat && jobLng) {
-                    const customerMarker = new google.maps.Marker({
-                        position: {
-                            lat: parseFloat(jobLat),
-                            lng: parseFloat(jobLng),
-                        },
-                        map,
-                        label: {
-                            text: `${jobNumber}`, // Unique job number
-                            color: "white",
-                            fontSize: "12px",
-                        },
-                        icon: {
-                            path: google.maps.SymbolPath.CIRCLE,
-                            scale: 9,
-                            fillColor: "#007BFF",
-                            fillOpacity: 1,
-                            strokeWeight: 1,
-                            strokeColor: "#FFFFFF",
-                        },
-                    });
+                // Add numbered customer markers
+                validJobs.forEach((job, jobIndex) => {
+                    const {
+                        latitude: jobLat,
+                        longitude: jobLng,
+                        name,
+                        full_address
+                    } = job.customer;
+                    const jobNumber = (dateDay === "nextdays") ? index + 1 : jobIndex + 1;
+                    if (jobLat && jobLng) {
+                        const customerMarker = new google.maps.Marker({
+                            position: {
+                                lat: parseFloat(jobLat),
+                                lng: parseFloat(jobLng),
+                            },
+                            map,
+                            label: {
+                                text: `${jobNumber}`, // Unique job number
+                                color: "white",
+                                fontSize: "12px",
+                            },
+                            icon: {
+                                path: google.maps.SymbolPath.CIRCLE,
+                                scale: 9,
+                                fillColor: "#007BFF",
+                                fillOpacity: 1,
+                                strokeWeight: 1,
+                                strokeColor: "#FFFFFF",
+                            },
+                        });
 
-                    const customerInfo = new google.maps.InfoWindow({
-                        content: `<h4><span class="btn btn-primary badge">#${job.job_id}</span> ${job.job_title}</h4>
-                <p class="mb-2"><i class="ri-user-line"></i> ${name}</p>
-                <p class="mb-2"><i class="ri-map-pin-fill"></i> ${full_address}</p>`,
-                    });
+                        const customerInfo = new google.maps.InfoWindow({
+                            content: `<h4>#${job.job_id}-${job.job_title}</h4>
+                                    <p class="mb-2">${job.description}</p>
+                                    <p class="mb-2"><i class="ri-user-line"></i> ${name}</p>
+                                    <p class="mb-2"><i class="ri-map-pin-fill"></i> ${full_address}</p>`,
+                        });
 
-                    customerMarker.addListener("click", () => customerInfo.open(map, customerMarker));
-                }
-            });
-
-        }
+                        customerMarker.addListener("click", () => customerInfo.open(map,
+                            customerMarker));
+                    }
+                });
+            }
+        });
     }
+
 
     function getPolylineStyle(dateDay, color_code) {
         const today = new Date().setHours(0, 0, 0, 0); // Normalize to midnight for consistent comparison
@@ -283,10 +275,6 @@
             icons: strokePattern || [], // Apply stroke pattern or solid
         };
     }
-
-
-
-
 
     // Utility function to calculate the distance between two coordinates
     function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -366,10 +354,10 @@
                     technician.jobs.forEach(job => {
                         const jobItem = `
                         <li class="list-group-item" id="event_click${job.job_id}" style="cursor: pointer;" data-jobid="${job.job_id}"
-                            data-lat="${job.customer.latitude}" data-long="${job.customer.longitude}" data-job_title="${job.job_title}" >
-                              <h5 class="uppercase text-truncate"><span class="btn btn-primary badge">#${job.job_id}</span> ${job.job_title}</h5>
-                            <h6 class="uppercase mb-0 text-truncate"><i class="ri-user-line"></i> ${job.customer.name}</h6>
-                            <div class="ft14"><i class="ri-map-pin-fill"></i>
+                         data-description="${job.description}" data-lat="${job.customer.latitude}" data-long="${job.customer.longitude}" data-job_title="${job.job_title}" >
+                              <h5 class="uppercase text-truncate pb-0 mb-1">#${job.job_id}-${job.job_title}</h5><p class="text-truncate pb-0 mb-1 ft13">${job.description}</p>
+                            <p class="ft13 uppercase mb-1 text-truncate"><strong><i class="ri-user-line"></i> ${job.customer.name}</strong> </p>
+                            <div class="ft12"><i class="ri-map-pin-fill"></i>
                                 ${job.customer.full_address}
                             </div>
                         </li>`;
@@ -386,6 +374,7 @@
                 const lat = parseFloat($(this).data('lat'));
                 const long = parseFloat($(this).data('long'));
                 const job_title = $(this).data('job_title');
+                const description = $(this).data('description');
                 const job_id = $(this).data('jobid');
                 if (lat && long) {
                     updateMap1([{
@@ -393,6 +382,7 @@
                             latitude: lat,
                             longitude: long,
                             job_title: job_title,
+                            description: description,
                             job_id: job_id,
                             name: $(this).find('h6').text(),
                             full_address: $(this).find('.ft14').text()
@@ -441,12 +431,13 @@
             const infoWindow = new google.maps.InfoWindow({
                 content: `
                 <div>
-                    <h5><span class="btn btn-primary badge">#${data.customer.job_id}</span> ${data.customer.job_title}</h5>
+                    <h5>#${data.customer.job_id}-${data.customer.job_title}</h5>
+                    <p>${data.customer.description}</p>
                     <h6>${name}</h6>
                     <p>${full_address}</p>
                 </div>`
             });
-
+            infoWindow.open(map, marker);
             marker.addListener("click", () => {
                 infoWindow.open(map, marker);
 
