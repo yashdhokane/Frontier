@@ -97,6 +97,11 @@ else
                     </li>
 
                     <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle waves-effect waves-dark" id="showJobList"><i
+                                class="fas fa-calendar-check ft20"></i> </a>
+                    </li>
+
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle waves-effect waves-dark" href="{{ route('map') }}"><i
                                 class="fas fa-map-marker-alt ft20"></i> </a>
                     </li>
@@ -311,6 +316,136 @@ else
                     <div class="col-sm-3 col-md-3"> </div>
 
                 </div>
+
+
+            </div>
+
+        </div>
+
+        <div class="jobMainSection" style="display: none;">
+            <a href="#." class="close-task-detail in" id="close-job-detail"">
+                X
+            </a>
+            <div class="job-list sticky-note bg-white w-100 h-100">
+
+                <div class="row m-2 jobList">
+                    <div class="col-sm-12 col-md-12">
+                        <h3 class="p-3 mt-2"> Job List </h3>
+                    </div>
+
+                    @php
+                        $timezone_name = Session::get('timezone_name', 'UTC');
+                        $time_interval = Session::get('time_interval', 0);
+                        $currentDate = \Carbon\Carbon::now($timezone_name);
+                        $schedules = \App\Models\Schedule::where('start_date_time', '>=', $currentDate)->get();
+
+                        // Extract job_ids from schedules
+                        $jobIds = $schedules->pluck('job_id'); // This will give you an array of job_ids
+
+                        // Fetch tickets for those job_ids
+                        $tickets = \App\Models\JobModel::whereIn('id', $jobIds)->get();
+
+                    @endphp
+
+                    <div class="col-sm-12 col-md-12">
+                        <table id="zero_config" class="table table-hover table-striped table-bordered text-nowrap"
+                            data-paging="true" data-paging-size="7">
+                            <thead>
+                                <tr>
+                                    <th>Job ID</th>
+                                    <th class="job-details-column">Job Details</th>
+                                    <th>Customer</th>
+                                    <th>Technician</th>
+                                    <th>Date & Time</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach ($tickets as $ticket)
+                                    <tr>
+                                        <td>
+                                            <a href="{{ route('tickets.show', $ticket->id) }}"
+                                                class="fw-bold link"><span
+                                                    class="mb-1 badge bg-primary">{{ $ticket->id }}</span></a>
+                                        </td>
+                                        <td class="job-details-column">
+                                            <div class="text-wrap2 d-flex">
+                                                <div class=" text-truncate">
+                                                    <a href="{{ route('tickets.show', $ticket->id) }}"
+                                                        class="font-medium link">
+                                                        {{ $ticket->job_title ?? null }}</a>
+                                                </div>
+                                                <span
+                                                    class="badge bg-light-warning text-warning font-medium">{{ $ticket->status }}</span>
+                                            </div>
+                                            <div style="font-size:12px;">
+                                                @if ($ticket->JobAppliances && $ticket->JobAppliances->Appliances)
+                                                    {{ $ticket->JobAppliances->Appliances->appliance->appliance_name ?? null }}/
+                                                @endif
+                                                @if ($ticket->JobAppliances && $ticket->JobAppliances->Appliances)
+                                                    {{ $ticket->JobAppliances->Appliances->manufacturer->manufacturer_name ?? null }}/
+                                                @endif
+                                                @if ($ticket->JobAppliances && $ticket->JobAppliances->Appliances->model_number)
+                                                    {{ $ticket->JobAppliances->Appliances->model_number ?? null }}/
+                                                @endif
+                                                @if ($ticket->JobAppliances && $ticket->JobAppliances->Appliances->serial_number)
+                                                    {{ $ticket->JobAppliances->Appliances->serial_number ?? null }}
+                                                @endif
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @if ($ticket->user)
+                                                {{ $ticket->user->name }}
+                                            @else
+                                                Unassigned
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($ticket->technician)
+                                                {{ $ticket->technician->name }}
+                                            @else
+                                                Unassigned
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($ticket->jobassignname && $ticket->jobassignname->start_date_time)
+                                                <div class="font-medium link">
+                                                    {{ $modifyDateTime($ticket->jobassignname->start_date_time ?? null, $time_interval, 'add', 'm-d-Y') }}
+                                                </div>
+                                            @else
+                                                <div></div>
+                                            @endif
+                                            <div style="font-size:12px;">
+                                                {{ $modifyDateTime($ticket->jobassignname->start_date_time ?? null, $time_interval, 'add', 'h:i A') }}
+                                                to
+                                                {{ $modifyDateTime($ticket->jobassignname->end_date_time ?? null, $time_interval, 'add', 'h:i A') }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span><a class="btn btn-success"
+                                                    href="{{ route('tickets.show', $ticket->id) }}">View</a></span>
+                                            <span style="display:none;"><a class="btn btn-primary"
+                                                    href="{{ route('tickets.edit', $ticket->id) }}">Edit</a></span>
+                                            <span style="display:none;">
+                                                <form method="POST"
+                                                    action="{{ route('tickets.destroy', $ticket->id) }}"
+                                                    style="display: inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                </form>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                </div>
+
 
 
             </div>

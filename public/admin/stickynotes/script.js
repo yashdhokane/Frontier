@@ -2,7 +2,14 @@ $(document).ready(function () {
     $(document).on("click", "#showStickyNote", function () {
         $(".stickyMainSection").show();
     });
+    $(document).on("click", "#showJobList", function () {
+        $(".jobMainSection").show();
+    });
 
+    $(document).on("click", "#close-job-detail", function () {
+        $(".jobMainSection").hide();
+    });
+    
     $(document).on("click", "#close-task-detail", function () {
         $(".stickyMainSection").hide();
         $(".stickyNotesList").show();
