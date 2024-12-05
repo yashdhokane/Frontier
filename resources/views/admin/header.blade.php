@@ -321,22 +321,22 @@ else
             </div>
 
         </div>
- 
+
 
         @php
-        $timezone_name = Session::get('timezone_name', 'UTC');
-        $time_interval = Session::get('time_interval', 0);
-        $currentDate = \Carbon\Carbon::now($timezone_name);
-        $schedules = \App\Models\Schedule::where('start_date_time', '>=', $currentDate)->get();
+            $timezone_name = Session::get('timezone_name', 'UTC');
+            $time_interval = Session::get('time_interval', 0);
+            $currentDate = \Carbon\Carbon::now($timezone_name);
+            $schedules = \App\Models\Schedule::where('start_date_time', '>=', $currentDate)->get();
 
-        // Extract job_ids from schedules
-        $jobIds = $schedules->pluck('job_id'); // This will give you an array of job_ids
+            // Extract job_ids from schedules
+            $jobIds = $schedules->pluck('job_id'); // This will give you an array of job_ids
 
-        // Fetch tickets for those job_ids
-        $tickets = \App\Models\JobModel::whereIn('id', $jobIds)->get();
-        $title = \App\Models\SiteJobTitle::all();
+            // Fetch tickets for those job_ids
+            $tickets = \App\Models\JobModel::whereIn('id', $jobIds)->get();
+            $title = \App\Models\SiteJobTitle::all();
 
-    @endphp
+        @endphp
 
         <div class="jobMainSection" style="display: none;">
             <a href="#." class="close-task-detail in" id="close-job-detail"">
@@ -354,7 +354,7 @@ else
                             <label class="text-nowrap"><b>Technician </b></label>
                             <select id="technician-filter" class="form-control mx-2">
                                 <option value="">All</option>
-                               
+
                             </select>
                         </div>
                     </div>
@@ -365,11 +365,11 @@ else
                             <label><b>Customer:</b></label>
                             <select id="customer-filter" class="form-control mx-2">
                                 <option value="">All</option>
-                              
+
                             </select>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-2">
                         <div class="d-flex flex-column  align-items-baseline">
                             <label class="text-nowrap"><b>Priority:</b></label>
@@ -380,11 +380,11 @@ else
                                 <option value="high">High</option>
                                 <option value="low">Low</option>
                                 <option value="medium">Medium</option>
-                              
+
                             </select>
                         </div>
                     </div>
-                   
+
                     <div class="col-md-2">
                         <div class="d-flex flex-column  align-items-baseline">
                             <!-- Filter by status -->
@@ -392,7 +392,7 @@ else
                             <select id="title-filter" class="form-control mx-2">
                                 <option value="">All</option>field_name
                                 @foreach ($title as $item)
-                                <option value="{{ $item->field_name }}">{{ $item->field_name }}</option>
+                                    <option value="{{ $item->field_name }}">{{ $item->field_name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -419,7 +419,7 @@ else
                     </div>
                 </div>
                 <div class="row m-2 jobList">
-                   
+
                     <div class="col-sm-12 col-md-12 w-75">
                         <div class="table-responsive" style="overflow: scroll; height: 570px;">
                             <table id="sticky_job_list"
@@ -440,8 +440,8 @@ else
                                     @foreach ($tickets as $ticket)
                                         <tr>
                                             <td>
-                                                <input type="checkbox" class="form-check-input bg-dark-subtle" id=""
-                                                    name="technicians[]">
+                                                <input type="checkbox" class="form-check-input bg-dark-subtle"
+                                                    id="" name="technicians[]">
                                             </td>
                                             <td class="job-details-column">
                                                 <div class="text-wrap2 d-flex">
@@ -528,7 +528,7 @@ else
         </div>
 
     </header>
-   
+
     <script>
         const storeColorNoteUrl = "{{ route('store.colorNote') }}";
         const updateColorNoteUrl = "{{ route('update.colorNote') }}";
