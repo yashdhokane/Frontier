@@ -321,6 +321,22 @@ else
             </div>
 
         </div>
+ 
+
+        @php
+        $timezone_name = Session::get('timezone_name', 'UTC');
+        $time_interval = Session::get('time_interval', 0);
+        $currentDate = \Carbon\Carbon::now($timezone_name);
+        $schedules = \App\Models\Schedule::where('start_date_time', '>=', $currentDate)->get();
+
+        // Extract job_ids from schedules
+        $jobIds = $schedules->pluck('job_id'); // This will give you an array of job_ids
+
+        // Fetch tickets for those job_ids
+        $tickets = \App\Models\JobModel::whereIn('id', $jobIds)->get();
+        $title = \App\Models\SiteJobTitle::all();
+
+    @endphp
 
         <div class="jobMainSection" style="display: none;">
             <a href="#." class="close-task-detail in" id="close-job-detail"">
@@ -359,6 +375,11 @@ else
                             <label class="text-nowrap"><b>Priority:</b></label>
                             <select id="priority-filter" class="form-control mx-2">
                                 <option value="">All</option>
+                                <option value="critical">Critical</option>
+                                <option value="emergency">Emergency</option>
+                                <option value="high">High</option>
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
                               
                             </select>
                         </div>
@@ -369,7 +390,10 @@ else
                             <!-- Filter by status -->
                             <label class="text-nowrap"><b>Job Title:</b></label>
                             <select id="title-filter" class="form-control mx-2">
-                                <option value="">All</option>
+                                <option value="">All</option>field_name
+                                @foreach ($title as $item)
+                                <option value="{{ $item->field_name }}">{{ $item->field_name }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -379,6 +403,8 @@ else
                             <label class="text-nowrap"><b>Job Confirmed:</b></label>
                             <select id="isConfirmed-filter" class="form-control mx-2">
                                 <option value="">All</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
                             </select>
                         </div>
                     </div>
@@ -393,22 +419,7 @@ else
                     </div>
                 </div>
                 <div class="row m-2 jobList">
-                    
-
-                    @php
-                        $timezone_name = Session::get('timezone_name', 'UTC');
-                        $time_interval = Session::get('time_interval', 0);
-                        $currentDate = \Carbon\Carbon::now($timezone_name);
-                        $schedules = \App\Models\Schedule::where('start_date_time', '>=', $currentDate)->get();
-
-                        // Extract job_ids from schedules
-                        $jobIds = $schedules->pluck('job_id'); // This will give you an array of job_ids
-
-                        // Fetch tickets for those job_ids
-                        $tickets = \App\Models\JobModel::whereIn('id', $jobIds)->get();
-
-                    @endphp
-
+                   
                     <div class="col-sm-12 col-md-12 w-75">
                         <div class="table-responsive" style="overflow: scroll; height: 570px;">
                             <table id="sticky_job_list"
