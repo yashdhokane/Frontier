@@ -264,82 +264,48 @@ $(document).ready(function () {
     // Initialize DataTable
     var table = $("#sticky_job_list").DataTable();
 
-    // Month filtering
-    $("#month-filter").on("change", function () {
-        var selectedMonth = $(this).val();
-        console.log("Selected month:", selectedMonth);
-
-        if (selectedMonth) {
-            var Month = moment(selectedMonth, "MMMM YYYY").format("MM");
-            var Year = moment(selectedMonth, "MMMM YYYY").format("YYYY");
-            console.log("Formatted Month:", Month);
-            console.log("Formatted Year:", Year);
-
-            if (Month && Year) {
-                // Adjust regex to match month and year only
-                var dateRegex = "\\d{2}-" + Month + "-" + Year;
-                console.log("Date Regex:", dateRegex);
-
-                table.column(4).search(dateRegex, true, false).draw();
-            } else {
-                console.error("Invalid Month or Year format.");
-            }
-        } else {
-            table.column(4).search("").draw();
-        }
-    });
-
-    // Manufacturer filtering
-    $("#manufacturer-filter").on("change", function () {
-        var manufacturer = $(this).val();
-        table.column(1).search(manufacturer).draw();
-    });
+    // Technician filter
     $("#technician-filter").on("change", function () {
         var technician = $(this).val();
-        table.column(3).search(technician).draw(); // Assuming technician names are in column index 3
+        table
+            .column(3)
+            .search(technician || "", true, false)
+            .draw();
     });
 
-    $("#status-filter").on("change", function () {
-        var status = $(this).val();
-        table.columns(1).search(status).draw();
+    // Customer filter
+    $("#customer-filter").on("change", function () {
+        var customer = $(this).val();
+        table
+            .column(2)
+            .search(customer || "", true, false)
+            .draw();
     });
 
-    $("#month-filter1").on("change", function () {
-        var selectedMonth = $(this).val();
-        console.log("Selected month:", selectedMonth);
-
-        if (selectedMonth) {
-            var Month = moment(selectedMonth, "MMMM YYYY").format("MM");
-            var Year = moment(selectedMonth, "MMMM YYYY").format("YYYY");
-            console.log("Formatted Month:", Month);
-            console.log("Formatted Year:", Year);
-
-            if (Month && Year) {
-                // Adjust regex to match month and year only
-                var dateRegex = "\\d{2}-" + Month + "-" + Year;
-                console.log("Date Regex:", dateRegex);
-
-                table.column(4).search(dateRegex, true, false).draw();
-            } else {
-                console.error("Invalid Month or Year format.");
-            }
-        } else {
-            table.column(4).search("").draw();
-        }
+    // Priority filter
+    $("#priority-filter").on("change", function () {
+        var priority = $(this).val();
+        table
+            .column(2)
+            .search(priority || "", true, false)
+            .draw();
     });
 
-    // Manufacturer filtering
-    $("#manufacturer-filter1").on("change", function () {
-        var manufacturer = $(this).val();
-        table.column(1).search(manufacturer).draw();
-    });
-    $("#technician-filter1").on("change", function () {
-        var technician = $(this).val();
-        table.column(3).search(technician).draw(); // Assuming technician names are in column index 3
+    // Title filtering
+    $("#title-filter").on("change", function () {
+        var title = $(this).val();
+        table
+            .column(1)
+            .search(title || "", true, false)
+            .draw();
     });
 
-    $("#status-filter1").on("change", function () {
-        var status = $(this).val();
-        table.columns(1).search(status).draw();
+    // isConfirmed filtering
+    $("#isConfirmed-filter").on("change", function () {
+        var isConfirmed = $(this).val();
+        table
+            .column(5)
+            .search(isConfirmed || "", true, false)
+            .draw();
     });
 });

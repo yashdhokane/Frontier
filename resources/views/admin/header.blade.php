@@ -330,10 +330,14 @@ else
             $schedules = \App\Models\Schedule::where('start_date_time', '>=', $currentDate)->get();
 
             // Extract job_ids from schedules
-            $jobIds = $schedules->pluck('job_id'); // This will give you an array of job_ids
+            $jobIds = $schedules->pluck('job_id');
+            $techIds = $schedules->pluck('technician_id');
 
             // Fetch tickets for those job_ids
             $tickets = \App\Models\JobModel::whereIn('id', $jobIds)->get();
+            $customerIds = $tickets->pluck('customer_id');
+            $technician = \App\Models\User::whereIn('id', $techIds)->get();
+            $customer = \App\Models\User::whereIn('id', $customerIds)->get();
             $title = \App\Models\SiteJobTitle::all();
 
         @endphp
@@ -354,6 +358,9 @@ else
                             <label class="text-nowrap"><b>Technician </b></label>
                             <select id="technician-filter" class="form-control mx-2">
                                 <option value="">All</option>
+                                @foreach ($technician as $item)
+                                    <option value="{{ $item->name }}" class="text-uppercase">{{ $item->name }}</option>
+                                @endforeach
 
                             </select>
                         </div>
@@ -362,17 +369,19 @@ else
                         <div class="d-flex flex-column align-items-baseline">
                             <!-- Date filtering input -->
 
-                            <label><b>Customer:</b></label>
+                            <label><b>Customer</b></label>
                             <select id="customer-filter" class="form-control mx-2">
                                 <option value="">All</option>
-
+                                @foreach ($customer as $item)
+                                    <option value="{{ $item->name }}" class="text-uppercase">{{ $item->name }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
 
                     <div class="col-md-2">
                         <div class="d-flex flex-column  align-items-baseline">
-                            <label class="text-nowrap"><b>Priority:</b></label>
+                            <label class="text-nowrap"><b>Priority</b></label>
                             <select id="priority-filter" class="form-control mx-2">
                                 <option value="">All</option>
                                 <option value="critical">Critical</option>
@@ -388,7 +397,7 @@ else
                     <div class="col-md-2">
                         <div class="d-flex flex-column  align-items-baseline">
                             <!-- Filter by status -->
-                            <label class="text-nowrap"><b>Job Title:</b></label>
+                            <label class="text-nowrap"><b>Job Title</b></label>
                             <select id="title-filter" class="form-control mx-2">
                                 <option value="">All</option>field_name
                                 @foreach ($title as $item)
@@ -400,7 +409,7 @@ else
                     <div class="col-md-2">
                         <div class="d-flex flex-column  align-items-baseline">
                             <!-- Filter by status -->
-                            <label class="text-nowrap"><b>Job Confirmed:</b></label>
+                            <label class="text-nowrap"><b>Job Confirmed</b></label>
                             <select id="isConfirmed-filter" class="form-control mx-2">
                                 <option value="">All</option>
                                 <option value="yes">Yes</option>
@@ -411,7 +420,7 @@ else
                     <div class="col-md-2">
                         <div class="d-flex flex-column  align-items-baseline">
                             <!-- Filter by status -->
-                            <label class="text-nowrap"><b>Service Area:</b></label>
+                            <label class="text-nowrap"><b>Service Area</b></label>
                             <select id="area-filter" class="form-control mx-2">
                                 <option value="">All</option>
                             </select>
@@ -468,14 +477,14 @@ else
                                                     @endif
                                                 </div>
                                             </td>
-                                            <td>
+                                            <td class="text-uppercase">
                                                 @if ($ticket->user)
                                                     {{ $ticket->user->name }}
                                                 @else
                                                     Unassigned
                                                 @endif
                                             </td>
-                                            <td>
+                                            <td class="text-uppercase">
                                                 @if ($ticket->technician)
                                                     {{ $ticket->technician->name }}
                                                 @else
