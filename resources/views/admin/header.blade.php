@@ -13,15 +13,43 @@
     @endif
 @endauth
 
-<!--
+<style>
+    .form-check-input {
+        width: 1.2em;
+        height: 1.2em;
+        border: 2px solid #6c757d;
+        margin-top: 4px;
+    }
 
-if sidebar OFF
-{
- NO NEED TO PRINT
-}
-else
-{
-    -->
+    .form-check-input:checked {
+        background-color: #198754;
+        border-color: #198754;
+    }
+
+    .bt-switch input[type="checkbox"] {
+        transform: scale(0.8);
+        margin: 0;
+    }
+
+    .modalbodyclass {
+        padding: 1.5rem !important;
+        background-color: #f8f9fa;
+    }
+
+    .border-btm {
+        border-bottom: 1px solid #D8D8D8;
+        /* Add a 1px solid bottom border */
+    }
+</style>
+<style>
+    .form-check-input {
+        padding: 0px !important
+    }
+
+    ;
+</style>
+<link href="{{ asset('public/admin/dist/libs/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css') }}"
+    rel="stylesheet">
 
 <!-- Default Sidebar for other roles -->
 @if (request('header') == 'off')
@@ -193,7 +221,8 @@ else
                                         <div class="d-flex justify-content-between">
                                             <div> {{ \Carbon\Carbon::parse($item->updated_at)->format('Y-m-d h:i A') }}
                                             </div>
-                                            <div> <i class="fa fa-circle" style="color:{{ $item->color_code }} ;"></i>
+                                            <div> <i class="fa fa-circle"
+                                                    style="color:{{ $item->color_code }} ;"></i>
                                             </div>
 
                                         </div>
@@ -349,9 +378,103 @@ else
             <div class="job-list sticky-note bg-white w-100 h-100">
 
                 <div class="row me-5 pe-5 shadow pb-3 m-0">
-                    <div class="col-sm-12 col-md-12">
+                    <div class="col-sm-6 col-md-6">
                         <h3 class="py-2 ps-2"> Job List </h3>
                     </div>
+                    <div class="col-sm-4 col-md-4 text-end">
+                        <a href="javascript:void(0);" id="stickyRouting" class="text-decoration-none text-primary"
+                            style="color:black;"><i class="ri-settings-2-line"></i> Routing Setting</a>
+                    </div>
+                    <div class="col-sm-2 col-md-2"></div>
+                    <div class="col-sm-10 col-md-10">
+                        <div class="row">
+                            <div class="col-md-6 settings-panel" style="max-height: 700px; overflow-y: auto;">
+                                <div class="card card-body card-border card-shadow   p-3 border2 ">
+                                    <div class="row mb-2 ">
+                                        <label class="col-8 col-form-label">Auto Route Settings</label>
+                                        <div class="col-4 bt-switch">
+                                            <input type="checkbox" name="auto_route" data-toggle="switchbutton"
+                                                data-on-color="success" data-off-color="default"
+                                                onchange="toggleTimeInput(this, 'autoRouteTime')">
+                                            <input type="hidden" name="auto_route_value" value="no">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2 d-none" id="autoRouteTime">
+                                        <div class="col-8 offset-4 mb-2">
+                                            <input type="time" class="form-control" name="auto_route_time"
+                                                value="08:00">
+                                        </div>
+
+                                        <div class="row mb-2">
+                                            <label class="col-8 col-form-label">Time Constraints</label>
+                                            <div class="col-4  bt-switch">
+                                                <input type="checkbox" name="time_constraints"
+                                                    data-toggle="switchbutton" data-on-color="success"
+                                                    data-off-color="default" onchange="updateCheckboxValue(this)">
+                                                <input type="hidden" name="time_constraints_value" value="no">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2 border-btm">
+                                            <label class="col-8 col-form-label">Priority Routing</label>
+                                            <div class="col-4  bt-switch">
+                                                <input type="checkbox" name="priority_routing"
+                                                    data-toggle="switchbutton" data-on-color="success"
+                                                    data-off-color="default" onchange="updateCheckboxValue(this)">
+                                                <input type="hidden" name="priority_routing_value" value="no">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 settings-panel" style="max-height: 700px; overflow-y: auto;">
+                                <div class="card card-body card-border card-shadow   p-3 border2 ">
+
+                                    <div class="row mb-2 border-btm">
+                                        <label class="col-8 col-form-label">Automatic Re-Routing</label>
+                                        <div class="col-4 bt-switch">
+                                            <input type="checkbox" name="auto_rerouting" data-toggle="switchbutton"
+                                                data-on-color="success" data-off-color="default"
+                                                onchange="toggleTimeInput(this, 'autoReRouteTime')">
+                                            <input type="hidden" name="auto_rerouting_value" value="no">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2 d-none" id="autoReRouteTime">
+                                        <div class="col-8 offset-4">
+                                            <input type="time" class="form-control" name="auto_rerouting_time"
+                                                value="08:00">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2 border-btm">
+                                        <label class="col-8 col-form-label">Auto Publishing</label>
+                                        <div class="col-4 bt-switch">
+                                            <input type="checkbox" name="auto_publishing" data-toggle="switchbutton"
+                                                data-on-color="success" data-off-color="default"
+                                                onchange="toggleTimeInput(this, 'autoPublishingTime')">
+                                            <input type="hidden" name="auto_publishing_value" value="no">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2 d-none" id="autoPublishingTime">
+                                        <div class="col-8 offset-4">
+                                            <input type="time" class="form-control" name="auto_publishing_time"
+                                                value="08:00">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-2">
+                                        <label for="call-limit" class="col-6 col-form-label">Max Calls</label>
+                                        <div class="col-6">
+                                            <input type="number" id="call-limit" name="number_of_calls"
+                                                class="form-control" placeholder="Set Limit">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <div class="col-sm-2 col-md-2"></div>
                     <div class="col-md-2">
                         <div class="d-flex flex-column align-items-baseline">
                             <!-- Filter by other column (example: Manufacturer) -->
@@ -359,7 +482,8 @@ else
                             <select id="technician-filter" class="form-control mx-2">
                                 <option value="">All</option>
                                 @foreach ($technician as $item)
-                                    <option value="{{ $item->name }}" class="text-uppercase">{{ $item->name }}</option>
+                                    <option value="{{ $item->name }}" class="text-uppercase">{{ $item->name }}
+                                    </option>
                                 @endforeach
 
                             </select>
@@ -373,7 +497,8 @@ else
                             <select id="customer-filter" class="form-control mx-2">
                                 <option value="">All</option>
                                 @foreach ($customer as $item)
-                                    <option value="{{ $item->name }}" class="text-uppercase">{{ $item->name }}</option>
+                                    <option value="{{ $item->name }}" class="text-uppercase">{{ $item->name }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -566,5 +691,7 @@ else
         setInterval(updateTime, 1000); // Update every second
         updateTime(); // Initial call
     </script>
+    <script src="{{ asset('public/admin/dist/libs/bootstrap-switch/dist/js/bootstrap-switch.min.js') }}"></script>
+   
 
 @endif
