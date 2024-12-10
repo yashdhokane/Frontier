@@ -266,6 +266,51 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
 
+    <script src="{{ asset('public/admin/dist/libs/bootstrap-switch/dist/js/bootstrap-switch.min.js') }}"></script>
 
+    <script>
+        $(".bt-switch input[type='checkbox'], .bt-switch input[type='radio']").bootstrapSwitch();
 
+        var radioswitch = (function() {
+            var bt = function() {
+                $('.radio-switch').on('switch-change', function() {
+                        $('.radio-switch').bootstrapSwitch('toggleRadioState');
+                    }),
+                    $('.radio-switch').on('switch-change', function() {
+                        $('.radio-switch').bootstrapSwitch('toggleRadioStateAllowUncheck');
+                    }),
+                    $('.radio-switch').on('switch-change', function() {
+                        $('.radio-switch').bootstrapSwitch('toggleRadioStateAllowUncheck', false);
+                    });
+            };
+            return {
+                init: function() {
+                    bt();
+                },
+            };
+        })();
+
+        $(document).ready(function() {
+            radioswitch.init();
+        });
+    </script>
+
+<script>
+    function toggleTimeInput(checkbox, targetId) {
+        const parentRow = checkbox.closest('.row'); // Find the parent row
+        const targetRow = document.getElementById(targetId); // Find the target row to toggle
+
+        if (checkbox.checked) {
+            // If the checkbox is checked
+            parentRow.classList.remove('border-btm'); // Remove the 'border-btm' class
+            targetRow.classList.remove('d-none');
+            // targetRow.classList.add('border-btm');// Show the target row
+        } else {
+            // If the checkbox is unchecked
+            parentRow.classList.add('border-btm'); // Add back the 'border-btm' class
+            targetRow.classList.add('d-none');
+            //targetRow.classList.remove('border-btm'); // Hide the target row
+        }
+    }
+</script>
 

@@ -308,4 +308,11 @@ $(document).ready(function () {
             .search(isConfirmed || "", true, false)
             .draw();
     });
+
+       $('#showStickyRouting').hide();
+       $('#colrouting').hide();
+        $(document).on('click', '#stickyRouting', function(){
+            $('#showStickyRouting').toggle();
+            $('#colrouting').toggle();
+        });
 });

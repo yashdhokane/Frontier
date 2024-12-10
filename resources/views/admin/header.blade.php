@@ -385,8 +385,8 @@
                         <a href="javascript:void(0);" id="stickyRouting" class="text-decoration-none text-primary"
                             style="color:black;"><i class="ri-settings-2-line"></i> Routing Setting</a>
                     </div>
-                    <div class="col-sm-2 col-md-2"></div>
-                    <div class="col-sm-10 col-md-10">
+                    <div class="col-sm-2 col-md-2" id="colrouting"></div>
+                    <div class="col-sm-10 col-md-10" id="showStickyRouting">
                         <div class="row">
                             <div class="col-md-6 settings-panel" style="max-height: 700px; overflow-y: auto;">
                                 <div class="card card-body card-border card-shadow   p-3 border2 ">
@@ -395,11 +395,11 @@
                                         <div class="col-4 bt-switch">
                                             <input type="checkbox" name="auto_route" data-toggle="switchbutton"
                                                 data-on-color="success" data-off-color="default"
-                                                onchange="toggleTimeInput(this, 'autoRouteTime')">
+                                                onchange="toggleTimeInput(this, 'autoRouteTime1')">
                                             <input type="hidden" name="auto_route_value" value="no">
                                         </div>
                                     </div>
-                                    <div class="row mb-2 d-none" id="autoRouteTime">
+                                    <div class="row mb-2 d-none" id="autoRouteTime1">
                                         <div class="col-8 offset-4 mb-2">
                                             <input type="time" class="form-control" name="auto_route_time"
                                                 value="08:00">
@@ -435,11 +435,11 @@
                                         <div class="col-4 bt-switch">
                                             <input type="checkbox" name="auto_rerouting" data-toggle="switchbutton"
                                                 data-on-color="success" data-off-color="default"
-                                                onchange="toggleTimeInput(this, 'autoReRouteTime')">
+                                                onchange="toggleTimeInput(this, 'autoReRouteTime1')">
                                             <input type="hidden" name="auto_rerouting_value" value="no">
                                         </div>
                                     </div>
-                                    <div class="row mb-2 d-none" id="autoReRouteTime">
+                                    <div class="row mb-2 d-none" id="autoReRouteTime1">
                                         <div class="col-8 offset-4">
                                             <input type="time" class="form-control" name="auto_rerouting_time"
                                                 value="08:00">
@@ -450,11 +450,11 @@
                                         <div class="col-4 bt-switch">
                                             <input type="checkbox" name="auto_publishing" data-toggle="switchbutton"
                                                 data-on-color="success" data-off-color="default"
-                                                onchange="toggleTimeInput(this, 'autoPublishingTime')">
+                                                onchange="toggleTimeInput(this, 'autoPublishingTime1')">
                                             <input type="hidden" name="auto_publishing_value" value="no">
                                         </div>
                                     </div>
-                                    <div class="row mb-2 d-none" id="autoPublishingTime">
+                                    <div class="row mb-2 d-none" id="autoPublishingTime1">
                                         <div class="col-8 offset-4">
                                             <input type="time" class="form-control" name="auto_publishing_time"
                                                 value="08:00">
@@ -692,6 +692,6 @@
         updateTime(); // Initial call
     </script>
     <script src="{{ asset('public/admin/dist/libs/bootstrap-switch/dist/js/bootstrap-switch.min.js') }}"></script>
-   
+  
 
 @endif
