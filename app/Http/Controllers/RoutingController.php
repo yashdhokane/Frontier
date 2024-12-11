@@ -365,12 +365,8 @@ class RoutingController extends Controller
 
 
     public function Routesettingstore(Request $request)
-    {
-        $validatedData = $request->validate([
-            'technicians' => 'required|array',
-            'technicians.*' => 'integer',
-        ]);
-
+    { 
+       
         $timezone_id = Session::get('timezone_id');
         $timezone_name = Session::get('timezone_name');
         $time_interval = Session::get('time_interval');
@@ -378,197 +374,208 @@ class RoutingController extends Controller
         $tomorrow = Carbon::parse($inputDate)->addDay()->format('Y-m-d');
         $dayAfterTomorrow = Carbon::parse($inputDate)->addDays(2)->format('Y-m-d');
         $technicians = $request->technicians;
+        $jobIds = $request->jobIds;
 
-        if (empty($technicians)) {
-            return view('jobrouting.technicians_jobs_map')->with('technicians', []);
-        }
-
+        
         $response = [];
         $savedSettings = [];
-
-        foreach ($technicians as $technicianId) {
-            $technicianLocation = CustomerUserAddress::where('user_id', $technicianId)->first();
-
-            if (!$technicianLocation) {
-                $response[] = [
-                    'technician' => [
-                        'id' => $technicianId,
-                        'error' => 'Technician location not found.',
-                    ],
-                ];
-                continue;
-            }
-
-
-
+       
+        if(!empty($jobIds)){
             $jobs = Schedule::with(['Jobassign', 'Jobassign.userAddress'])
-                ->where('technician_id', $technicianId)
-                ->whereDate('start_date_time', '>=', $inputDate)
-                ->orderBy('start_date_time', 'asc')
-                ->get();
+                    ->whereIn('job_id', $jobIds)
+                    ->whereDate('start_date_time', '>=', $inputDate)
+                    ->orderBy('start_date_time', 'asc')
+                    ->get();
+            $technicians = $jobs->pluck('technician_id')->toArray();
+            
+            foreach ($technicians as $technicianId) {
+                $technicianLocation = CustomerUserAddress::where('user_id', $technicianId)->first();
 
-            $timeConstraintsEnabled = $request->input('time_constraints') === 'on';
-            $jobDistances = [];
+                if (!$technicianLocation) {
+                    $response[] = [
+                        'technician' => [
+                            'id' => $technicianId,
+                            'error' => 'Technician location not found.',
+                        ],
+                    ];
+                    continue;
+                }
 
-            if ($timeConstraintsEnabled && !$jobs->isEmpty()) {
-                $origin = "{$technicianLocation->latitude},{$technicianLocation->longitude}";
-                $previousEndDateTime = null;
-                $bestRouteJobs = [];
-                $shortRouteJobs = [];
-                $dailyJobCount = 0;
+                $timeConstraintsEnabled = $request->input('time_constraints') === 'on';
+                $jobDistances = [];
 
-                foreach ($jobs as $index => $job) {
-                    if (!$job->Jobassign || !$job->Jobassign->userAddress) {
-                        Log::info('Missing Jobassign or userAddress for job.', ['job_id' => $job->job_id]);
-                        continue;
-                    }
+                if ($timeConstraintsEnabled && !$jobs->isEmpty()) {
+                    $origin = "{$technicianLocation->latitude},{$technicianLocation->longitude}";
+                    $previousEndDateTime = null;
+                    $bestRouteJobs = [];
+                    $shortRouteJobs = [];
+                    $dailyJobCount = 0;
 
-                    $destination = "{$job->Jobassign->userAddress->latitude},{$job->Jobassign->userAddress->longitude}";
-
-                    try {
-                        $apiResponse = Http::get('https://maps.googleapis.com/maps/api/distancematrix/json', [
-                            'origins' => $origin,
-                            'destinations' => $destination,
-                            'key' => 'AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo',
-                        ]);
-
-                        if ($apiResponse->failed()) {
-                            Log::error('Distance Matrix API call failed.', ['response' => $apiResponse->body(), 'job_id' => $job->job_id]);
+                    foreach ($jobs as $index => $job) {
+                        if (!$job->Jobassign || !$job->Jobassign->userAddress) {
+                            Log::info('Missing Jobassign or userAddress for job.', ['job_id' => $job->job_id]);
                             continue;
                         }
 
-                        $data = $apiResponse->json();
+                        $destination = "{$job->Jobassign->userAddress->latitude},{$job->Jobassign->userAddress->longitude}";
 
-                        $travelDuration = $data['rows'][0]['elements'][0]['duration']['value'];
+                        try {
+                            $apiResponse = Http::get('https://maps.googleapis.com/maps/api/distancematrix/json', [
+                                'origins' => $origin,
+                                'destinations' => $destination,
+                                'key' => 'AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo',
+                            ]);
 
-                        if ($index === 0) {
-                            // Set the first job's end time as the previous end date time
-                            $previousEndDateTime = Carbon::parse($job->end_date_time);
-                            $dailyJobCount++;
-                            $origin = $destination; // Reset origin for subsequent jobs
-                            continue;
-                        } else {
-                            if (!$previousEndDateTime) {
-                                Log::error('Missing previous job end time for technician.', [
-                                    'job_id' => $job->job_id,
-                                ]);
+                            if ($apiResponse->failed()) {
+                                Log::error('Distance Matrix API call failed.', ['response' => $apiResponse->body(), 'job_id' => $job->job_id]);
                                 continue;
                             }
 
-                            // Calculate the new start time based on previous job's end time and travel duration
-                            $previousEndCarbon = Carbon::parse($previousEndDateTime);
-                            Log::info('Previous End DateTime:', ['previousEndDateTime' => $previousEndCarbon]);
+                            $data = $apiResponse->json();
 
-                            if ($travelDuration) {
-                                $newStartTime = $this->roundToNearest30Minutes(
-                                    $previousEndCarbon->addSeconds($travelDuration)
-                                );
+                            $travelDuration = $data['rows'][0]['elements'][0]['duration']['value'];
+
+                            if ($index === 0) {
+                                // Set the first job's end time as the previous end date time
+                                $previousEndDateTime = Carbon::parse($job->end_date_time);
+                                $dailyJobCount++;
+                                $origin = $destination; // Reset origin for subsequent jobs
+                                continue;
                             } else {
-                                Log::error('Travel duration is missing or zero.', ['job_id' => $job->job_id]);
-                                $newStartTime = $this->roundToNearest30Minutes($previousEndCarbon);
-                            }
-
-                            Log::info('New Start Time After Travel Duration:', ['newStartTime' => $newStartTime]);
-
-                            // Update the job's start_date_time with the calculated newStartTime
-                            $job->start_date_time = $newStartTime;
-                            $CurrentDate = Carbon::now($timezone_name)->addDay();
-                            $currentDayLower = strtolower($CurrentDate->format('l'));
-                            $hours = BusinessHours::where('day', $currentDayLower)->first();
-
-                            // Parse the leave time based on business hours
-                            $leaveTime = Carbon::parse($newStartTime->format('Y-m-d') . ' ' . $hours->end_time);
-
-                            // Check if the new start time exceeds working hours or the daily job count limit
-                            $maxJobsPerDay = 5; // Maximum jobs allowed per day
-                            $totalJobsScheduled = 0; // Counter for total jobs scheduled
-
-                            while ($dailyJobCount >= $maxJobsPerDay && $totalJobsScheduled < 30) {
-                                // Move to the next day
-                                $nextDay = $newStartTime->copy()->addDay();
-
-                                // Skip Sundays
-                                while ($nextDay->isSunday()) {
-                                    $nextDay->addDay();
+                                if (!$previousEndDateTime) {
+                                    Log::error('Missing previous job end time for technician.', [
+                                        'job_id' => $job->job_id,
+                                    ]);
+                                    continue;
                                 }
 
-                                // Reset daily job count for the new day
-                                $dailyJobCount = 0;
+                                // Calculate the new start time based on previous job's end time and travel duration
+                                $previousEndCarbon = Carbon::parse($previousEndDateTime);
+                                Log::info('Previous End DateTime:', ['previousEndDateTime' => $previousEndCarbon]);
 
-                                // Update the job's start time to the next day's start time
-                                $job->start_date_time = $nextDay->setTimeFromTimeString($hours->start_time);
-                                $newStartTime = $job->start_date_time;
+                                if ($travelDuration) {
+                                    $newStartTime = $this->roundToNearest30Minutes(
+                                        $previousEndCarbon->addSeconds($travelDuration)
+                                    );
+                                } else {
+                                    Log::error('Travel duration is missing or zero.', ['job_id' => $job->job_id]);
+                                    $newStartTime = $this->roundToNearest30Minutes($previousEndCarbon);
+                                }
 
-                                // Increment the total jobs scheduled
-                                $totalJobsScheduled += $dailyJobCount;
+                                Log::info('New Start Time After Travel Duration:', ['newStartTime' => $newStartTime]);
+
+                                // Update the job's start_date_time with the calculated newStartTime
+                                $job->start_date_time = $newStartTime;
+                                $CurrentDate = Carbon::now($timezone_name)->addDay();
+                                $currentDayLower = strtolower($CurrentDate->format('l'));
+                                $hours = BusinessHours::where('day', $currentDayLower)->first();
+
+                                // Parse the leave time based on business hours
+                                $leaveTime = Carbon::parse($newStartTime->format('Y-m-d') . ' ' . $hours->end_time);
+
+                                // Check if the new start time exceeds working hours or the daily job count limit
+                                $maxJobsPerDay = 5; // Maximum jobs allowed per day
+                                $totalJobsScheduled = 0; // Counter for total jobs scheduled
+
+                                while ($dailyJobCount >= $maxJobsPerDay && $totalJobsScheduled < 30) {
+                                    // Move to the next day
+                                    $nextDay = $newStartTime->copy()->addDay();
+
+                                    // Skip Sundays
+                                    while ($nextDay->isSunday()) {
+                                        $nextDay->addDay();
+                                    }
+
+                                    // Reset daily job count for the new day
+                                    $dailyJobCount = 0;
+
+                                    // Update the job's start time to the next day's start time
+                                    $job->start_date_time = $nextDay->setTimeFromTimeString($hours->start_time);
+                                    $newStartTime = $job->start_date_time;
+
+                                    // Increment the total jobs scheduled
+                                    $totalJobsScheduled += $dailyJobCount;
+                                }
+                                // Recalculate end time
+                                $job->end_date_time = $this->roundToNearest30Minutes(
+                                    Carbon::parse($job->start_date_time)->addMinutes($job->Jobassign->duration)
+                                );
+
+                                // Log the updated times
+                                Log::info('Updated Start Date Time:', ['start_date_time' => $job->start_date_time]);
+                                Log::info('Updated End Date Time:', ['end_date_time' => $job->end_date_time]);
+
+                                // Save job and assignment
+                                $job->save();
+                                $assign = JobAssign::where('job_id', $job->job_id)->first();
+                                if ($assign) {
+                                    $assign->start_date_time = $job->start_date_time;
+                                    $assign->end_date_time = $job->end_date_time;
+                                    $assign->save();
+                                }
+
+                                $dailyJobCount++;
                             }
-                            // Recalculate end time
-                            $job->end_date_time = $this->roundToNearest30Minutes(
-                                Carbon::parse($job->start_date_time)->addMinutes($job->Jobassign->duration)
-                            );
 
-                            // Log the updated times
-                            Log::info('Updated Start Date Time:', ['start_date_time' => $job->start_date_time]);
-                            Log::info('Updated End Date Time:', ['end_date_time' => $job->end_date_time]);
 
-                            // Save job and assignment
-                            $job->save();
-                            $assign = JobAssign::where('job_id', $job->job_id)->first();
-                            if ($assign) {
-                                $assign->start_date_time = $job->start_date_time;
-                                $assign->end_date_time = $job->end_date_time;
-                                $assign->save();
-                            }
 
-                            $dailyJobCount++;
+                            $bestRouteJobs[$job->job_id] = $travelDuration; // Using travel duration for best route sorting
+                            $shortRouteJobs[$job->job_id] = $travelDuration; // Shortest distance based on travel duration
+
+                            $origin = $destination; // Reset origin
+                            $previousEndDateTime = $job->end_date_time; // Reset previous end time
+
+                        } catch (\Exception $e) {
+                            Log::error('Error calling Distance Matrix API for job.', [
+                                'job_id' => $job->job_id,
+                                'error' => $e->getMessage(),
+                            ]);
+                            continue;
+                        }
+                    }
+
+                    $bestRouteJobIds = array_keys($bestRouteJobs);
+                    $shortRouteJobIds = array_keys($shortRouteJobs);
+
+                    $routingJobs = RoutingJob::where('user_id', $technicianId)->get();
+                    $scheduleTimes = [$inputDate, $tomorrow, $dayAfterTomorrow];
+                    $existingCount = $routingJobs->count();
+
+                    if (empty($inputDate) || empty($tomorrow) || empty($dayAfterTomorrow)) {
+                        Log::error('One or more schedule dates are empty.');
+                        console . log('One or more schedule dates are empty.');
+                        console . log($inputDate, $tomorrow, $dayAfterTomorrow);
+                        return; // Stop further execution if any date is invalid
+                    }
+
+                    if ($existingCount > 0) {
+                        // Update existing entries
+                        foreach ($routingJobs as $index => $routingJob) {
+                            $routingJob->schedule_date_time = $scheduleTimes[$index];
+                            $routingJob->best_route = json_encode($bestRouteJobIds);
+                            $routingJob->short_route = json_encode($shortRouteJobIds);
+                            $routingJob->created_by = Auth()->user()->id;
+                            $routingJob->updated_by = Auth()->user()->id;
+                            $routingJob->save();
                         }
 
-
-
-                        $bestRouteJobs[$job->job_id] = $travelDuration; // Using travel duration for best route sorting
-                        $shortRouteJobs[$job->job_id] = $travelDuration; // Shortest distance based on travel duration
-
-                        $origin = $destination; // Reset origin
-                        $previousEndDateTime = $job->end_date_time; // Reset previous end time
-
-                    } catch (\Exception $e) {
-                        Log::error('Error calling Distance Matrix API for job.', [
-                            'job_id' => $job->job_id,
-                            'error' => $e->getMessage(),
-                        ]);
-                        continue;
-                    }
-                }
-
-                $bestRouteJobIds = array_keys($bestRouteJobs);
-                $shortRouteJobIds = array_keys($shortRouteJobs);
-
-                $routingJobs = RoutingJob::where('user_id', $technicianId)->get();
-                $scheduleTimes = [$inputDate, $tomorrow, $dayAfterTomorrow];
-                $existingCount = $routingJobs->count();
-
-                if (empty($inputDate) || empty($tomorrow) || empty($dayAfterTomorrow)) {
-                    Log::error('One or more schedule dates are empty.');
-                    console . log('One or more schedule dates are empty.');
-                    console . log($inputDate, $tomorrow, $dayAfterTomorrow);
-                    return; // Stop further execution if any date is invalid
-                }
-
-                if ($existingCount > 0) {
-                    // Update existing entries
-                    foreach ($routingJobs as $index => $routingJob) {
-                        $routingJob->schedule_date_time = $scheduleTimes[$index];
-                        $routingJob->best_route = json_encode($bestRouteJobIds);
-                        $routingJob->short_route = json_encode($shortRouteJobIds);
-                        $routingJob->created_by = Auth()->user()->id;
-                        $routingJob->updated_by = Auth()->user()->id;
-                        $routingJob->save();
-                    }
-
-                    // Add new entries if needed
-                    if ($existingCount < 3) {
-                        $newScheduleTimes = array_slice($scheduleTimes, $existingCount);
-                        foreach ($newScheduleTimes as $scheduleTime) {
+                        // Add new entries if needed
+                        if ($existingCount < 3) {
+                            $newScheduleTimes = array_slice($scheduleTimes, $existingCount);
+                            foreach ($newScheduleTimes as $scheduleTime) {
+                                $routingJob = new RoutingJob(); // Create a new instance
+                                $routingJob->user_id = $technicianId;
+                                $routingJob->schedule_date_time = $scheduleTime;
+                                $routingJob->best_route = json_encode($bestRouteJobIds);
+                                $routingJob->short_route = json_encode($shortRouteJobIds);
+                                $routingJob->created_by = Auth()->user()->id;
+                                $routingJob->updated_by = Auth()->user()->id;
+                                $routingJob->save(); // Save the new instance
+                            }
+                        }
+                    } else {
+                        // Create all 3 new entries
+                        foreach ($scheduleTimes as $scheduleTime) {
                             $routingJob = new RoutingJob(); // Create a new instance
                             $routingJob->user_id = $technicianId;
                             $routingJob->schedule_date_time = $scheduleTime;
@@ -579,27 +586,236 @@ class RoutingController extends Controller
                             $routingJob->save(); // Save the new instance
                         }
                     }
-                } else {
-                    // Create all 3 new entries
-                    foreach ($scheduleTimes as $scheduleTime) {
-                        $routingJob = new RoutingJob(); // Create a new instance
-                        $routingJob->user_id = $technicianId;
-                        $routingJob->schedule_date_time = $scheduleTime;
-                        $routingJob->best_route = json_encode($bestRouteJobIds);
-                        $routingJob->short_route = json_encode($shortRouteJobIds);
-                        $routingJob->created_by = Auth()->user()->id;
-                        $routingJob->updated_by = Auth()->user()->id;
-                        $routingJob->save(); // Save the new instance
-                    }
+
+
+                }
+
+                $savedSettings[] = [
+                    'technician_id' => $technicianId,
+                    'job_distances' => $jobDistances,
+                ];
+            }
+
+        }else{
+            if (empty($technicians)) {
+                return view('jobrouting.technicians_jobs_map')->with('technicians', []);
+            }
+
+            foreach ($technicians as $technicianId) {
+                $technicianLocation = CustomerUserAddress::where('user_id', $technicianId)->first();
+
+                if (!$technicianLocation) {
+                    $response[] = [
+                        'technician' => [
+                            'id' => $technicianId,
+                            'error' => 'Technician location not found.',
+                        ],
+                    ];
+                    continue;
                 }
 
 
-            }
 
-            $savedSettings[] = [
-                'technician_id' => $technicianId,
-                'job_distances' => $jobDistances,
-            ];
+                $jobs = Schedule::with(['Jobassign', 'Jobassign.userAddress'])
+                    ->where('technician_id', $technicianId)
+                    ->whereDate('start_date_time', '>=', $inputDate)
+                    ->orderBy('start_date_time', 'asc')
+                    ->get();
+
+                $timeConstraintsEnabled = $request->input('time_constraints') === 'on';
+                $jobDistances = [];
+
+                if ($timeConstraintsEnabled && !$jobs->isEmpty()) {
+                    $origin = "{$technicianLocation->latitude},{$technicianLocation->longitude}";
+                    $previousEndDateTime = null;
+                    $bestRouteJobs = [];
+                    $shortRouteJobs = [];
+                    $dailyJobCount = 0;
+
+                    foreach ($jobs as $index => $job) {
+                        if (!$job->Jobassign || !$job->Jobassign->userAddress) {
+                            Log::info('Missing Jobassign or userAddress for job.', ['job_id' => $job->job_id]);
+                            continue;
+                        }
+
+                        $destination = "{$job->Jobassign->userAddress->latitude},{$job->Jobassign->userAddress->longitude}";
+
+                        try {
+                            $apiResponse = Http::get('https://maps.googleapis.com/maps/api/distancematrix/json', [
+                                'origins' => $origin,
+                                'destinations' => $destination,
+                                'key' => 'AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo',
+                            ]);
+
+                            if ($apiResponse->failed()) {
+                                Log::error('Distance Matrix API call failed.', ['response' => $apiResponse->body(), 'job_id' => $job->job_id]);
+                                continue;
+                            }
+
+                            $data = $apiResponse->json();
+
+                            $travelDuration = $data['rows'][0]['elements'][0]['duration']['value'];
+
+                            if ($index === 0) {
+                                // Set the first job's end time as the previous end date time
+                                $previousEndDateTime = Carbon::parse($job->end_date_time);
+                                $dailyJobCount++;
+                                $origin = $destination; // Reset origin for subsequent jobs
+                                continue;
+                            } else {
+                                if (!$previousEndDateTime) {
+                                    Log::error('Missing previous job end time for technician.', [
+                                        'job_id' => $job->job_id,
+                                    ]);
+                                    continue;
+                                }
+
+                                // Calculate the new start time based on previous job's end time and travel duration
+                                $previousEndCarbon = Carbon::parse($previousEndDateTime);
+                                Log::info('Previous End DateTime:', ['previousEndDateTime' => $previousEndCarbon]);
+
+                                if ($travelDuration) {
+                                    $newStartTime = $this->roundToNearest30Minutes(
+                                        $previousEndCarbon->addSeconds($travelDuration)
+                                    );
+                                } else {
+                                    Log::error('Travel duration is missing or zero.', ['job_id' => $job->job_id]);
+                                    $newStartTime = $this->roundToNearest30Minutes($previousEndCarbon);
+                                }
+
+                                Log::info('New Start Time After Travel Duration:', ['newStartTime' => $newStartTime]);
+
+                                // Update the job's start_date_time with the calculated newStartTime
+                                $job->start_date_time = $newStartTime;
+                                $CurrentDate = Carbon::now($timezone_name)->addDay();
+                                $currentDayLower = strtolower($CurrentDate->format('l'));
+                                $hours = BusinessHours::where('day', $currentDayLower)->first();
+
+                                // Parse the leave time based on business hours
+                                $leaveTime = Carbon::parse($newStartTime->format('Y-m-d') . ' ' . $hours->end_time);
+
+                                // Check if the new start time exceeds working hours or the daily job count limit
+                                $maxJobsPerDay = 5; // Maximum jobs allowed per day
+                                $totalJobsScheduled = 0; // Counter for total jobs scheduled
+
+                                while ($dailyJobCount >= $maxJobsPerDay && $totalJobsScheduled < 30) {
+                                    // Move to the next day
+                                    $nextDay = $newStartTime->copy()->addDay();
+
+                                    // Skip Sundays
+                                    while ($nextDay->isSunday()) {
+                                        $nextDay->addDay();
+                                    }
+
+                                    // Reset daily job count for the new day
+                                    $dailyJobCount = 0;
+
+                                    // Update the job's start time to the next day's start time
+                                    $job->start_date_time = $nextDay->setTimeFromTimeString($hours->start_time);
+                                    $newStartTime = $job->start_date_time;
+
+                                    // Increment the total jobs scheduled
+                                    $totalJobsScheduled += $dailyJobCount;
+                                }
+                                // Recalculate end time
+                                $job->end_date_time = $this->roundToNearest30Minutes(
+                                    Carbon::parse($job->start_date_time)->addMinutes($job->Jobassign->duration)
+                                );
+
+                                // Log the updated times
+                                Log::info('Updated Start Date Time:', ['start_date_time' => $job->start_date_time]);
+                                Log::info('Updated End Date Time:', ['end_date_time' => $job->end_date_time]);
+
+                                // Save job and assignment
+                                $job->save();
+                                $assign = JobAssign::where('job_id', $job->job_id)->first();
+                                if ($assign) {
+                                    $assign->start_date_time = $job->start_date_time;
+                                    $assign->end_date_time = $job->end_date_time;
+                                    $assign->save();
+                                }
+
+                                $dailyJobCount++;
+                            }
+
+
+
+                            $bestRouteJobs[$job->job_id] = $travelDuration; // Using travel duration for best route sorting
+                            $shortRouteJobs[$job->job_id] = $travelDuration; // Shortest distance based on travel duration
+
+                            $origin = $destination; // Reset origin
+                            $previousEndDateTime = $job->end_date_time; // Reset previous end time
+
+                        } catch (\Exception $e) {
+                            Log::error('Error calling Distance Matrix API for job.', [
+                                'job_id' => $job->job_id,
+                                'error' => $e->getMessage(),
+                            ]);
+                            continue;
+                        }
+                    }
+
+                    $bestRouteJobIds = array_keys($bestRouteJobs);
+                    $shortRouteJobIds = array_keys($shortRouteJobs);
+
+                    $routingJobs = RoutingJob::where('user_id', $technicianId)->get();
+                    $scheduleTimes = [$inputDate, $tomorrow, $dayAfterTomorrow];
+                    $existingCount = $routingJobs->count();
+
+                    if (empty($inputDate) || empty($tomorrow) || empty($dayAfterTomorrow)) {
+                        Log::error('One or more schedule dates are empty.');
+                        console . log('One or more schedule dates are empty.');
+                        console . log($inputDate, $tomorrow, $dayAfterTomorrow);
+                        return; // Stop further execution if any date is invalid
+                    }
+
+                    if ($existingCount > 0) {
+                        // Update existing entries
+                        foreach ($routingJobs as $index => $routingJob) {
+                            $routingJob->schedule_date_time = $scheduleTimes[$index];
+                            $routingJob->best_route = json_encode($bestRouteJobIds);
+                            $routingJob->short_route = json_encode($shortRouteJobIds);
+                            $routingJob->created_by = Auth()->user()->id;
+                            $routingJob->updated_by = Auth()->user()->id;
+                            $routingJob->save();
+                        }
+
+                        // Add new entries if needed
+                        if ($existingCount < 3) {
+                            $newScheduleTimes = array_slice($scheduleTimes, $existingCount);
+                            foreach ($newScheduleTimes as $scheduleTime) {
+                                $routingJob = new RoutingJob(); // Create a new instance
+                                $routingJob->user_id = $technicianId;
+                                $routingJob->schedule_date_time = $scheduleTime;
+                                $routingJob->best_route = json_encode($bestRouteJobIds);
+                                $routingJob->short_route = json_encode($shortRouteJobIds);
+                                $routingJob->created_by = Auth()->user()->id;
+                                $routingJob->updated_by = Auth()->user()->id;
+                                $routingJob->save(); // Save the new instance
+                            }
+                        }
+                    } else {
+                        // Create all 3 new entries
+                        foreach ($scheduleTimes as $scheduleTime) {
+                            $routingJob = new RoutingJob(); // Create a new instance
+                            $routingJob->user_id = $technicianId;
+                            $routingJob->schedule_date_time = $scheduleTime;
+                            $routingJob->best_route = json_encode($bestRouteJobIds);
+                            $routingJob->short_route = json_encode($shortRouteJobIds);
+                            $routingJob->created_by = Auth()->user()->id;
+                            $routingJob->updated_by = Auth()->user()->id;
+                            $routingJob->save(); // Save the new instance
+                        }
+                    }
+
+
+                }
+
+                $savedSettings[] = [
+                    'technician_id' => $technicianId,
+                    'job_distances' => $jobDistances,
+                ];
+            }
         }
 
         return response()->json([

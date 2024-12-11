@@ -408,18 +408,19 @@
                                         <div class="row mb-2">
                                             <label class="col-8 col-form-label">Time Constraints</label>
                                             <div class="col-4  bt-switch">
-                                                <input type="checkbox" name="time_constraints"
-                                                    data-toggle="switchbutton" data-on-color="success"
-                                                    data-off-color="default" onchange="updateCheckboxValue(this)">
-                                                <input type="hidden" name="time_constraints_value" value="no">
+                                                <input type="checkbox" name="time_constraints" id="time_constraint_job"
+                                                    data-toggle="switchbutton" data-on-color="success"  value="no"
+                                                    data-off-color="default" onchange="updateCheckboxValue1(this)">
+
+                                                <input type="hidden" name="time_constraint_job_value" id="time_constraint_job_value" value="no">
                                             </div>
                                         </div>
                                         <div class="row mb-2 border-btm">
                                             <label class="col-8 col-form-label">Priority Routing</label>
                                             <div class="col-4  bt-switch">
-                                                <input type="checkbox" name="priority_routing"
+                                                <input type="checkbox" name="priority_routing"  value="no"
                                                     data-toggle="switchbutton" data-on-color="success"
-                                                    data-off-color="default" onchange="updateCheckboxValue(this)">
+                                                    data-off-color="default">
                                                 <input type="hidden" name="priority_routing_value" value="no">
                                             </div>
                                         </div>
@@ -575,7 +576,7 @@
                                         <tr>
                                             <td>
                                                 <input type="checkbox" class="form-check-input bg-dark-subtle"
-                                                    id="" name="technicians[]">
+                                                 name="jobIds[]" value="{{ $ticket->id }}">
                                             </td>
                                             <td class="job-details-column">
                                                 <div class="text-wrap2 d-flex">
@@ -690,8 +691,47 @@
 
         setInterval(updateTime, 1000); // Update every second
         updateTime(); // Initial call
+
+           function updateCheckboxValue1(checkbox) {
+            const hiddenField = $('input[name="time_constraint_job_value"]');
+            
+            if (hiddenField.length) {
+                hiddenField.val($(checkbox).is(':checked') ? 'yes' : 'no');
+            }
+
+            let selectedJobIds = [];
+
+            if (hiddenField.val() === 'yes') {
+                $("input[name='jobIds[]']:checked").each(function () {
+                    selectedJobIds.push($(this).val());
+                });
+                var time_constraints = 'on';
+
+                console.log("Checked Job IDs:", selectedJobIds);
+
+                $.ajax({
+                    url: '{{ route('index.routing.Routesettingstore') }}',  
+                    type: 'POST',
+                    data: {
+                        jobIds: selectedJobIds,
+                        time_constraints: time_constraints,
+                        _token: '{{ csrf_token() }}' 
+                    },
+                    success: function(response) {
+                        if(response.success == true){
+                            $('#frontier_loader').show();
+                            setTimeout(function() {
+                                $('#frontier_loader').hide();
+                            }, 1000);
+                        }
+                    },
+                });
+            }
+        }
     </script>
     <script src="{{ asset('public/admin/dist/libs/bootstrap-switch/dist/js/bootstrap-switch.min.js') }}"></script>
   
 
+     
+  
 @endif

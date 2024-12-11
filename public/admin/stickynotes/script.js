@@ -1,4 +1,6 @@
 $(document).ready(function () {
+
+
     $(document).on("click", "#showStickyNote", function () {
         $(".stickyMainSection").show();
     });
@@ -249,9 +251,7 @@ $(document).ready(function () {
             },
         });
     });
-});
 
-$(document).ready(function () {
     $("#sticky_job_list").DataTable({
         order: [[0, "desc"]],
         pageLength: 25,
