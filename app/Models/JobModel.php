@@ -48,13 +48,12 @@ class JobModel extends Model
         'service_area_id',
         'tag_ids',
         'close_date',
-         'closed_by',
-
+        'closed_by',
         'deleted_at',
         'created_at',
         'updated_at',
         'is_confirmed',
-        
+        'is_published',
     ];
    
 
@@ -80,11 +79,11 @@ class JobModel extends Model
     {
         return $this->hasOne(CustomerData::class, 'user_id', 'customer_id');
     }
-public function jobfieldname()
+    public function jobfieldname()
     {
        return $this->hasOne(Jobfields::class, 'field_id', 'job_field_ids');
     }
-  public function jobactivity()
+     public function jobactivity()
     {
        return $this->hasMany(JobActivity::class, 'job_id', 'id');
     }
@@ -120,7 +119,7 @@ public function jobfieldname()
     {
         return $this->hasOne(JobDetails::class, 'job_id', 'id');
     }
- public function jobdetailsinfo1()
+    public function jobdetailsinfo1()
     {
         return $this->hasOne(JobAppliances::class, 'job_id', 'id');
     }
@@ -134,7 +133,7 @@ public function jobfieldname()
         return $this->belongsTo(User::class, 'customer_id'); // Assuming 'assigned_user_id' is the foreign key
     }
     
-  public function close()
+    public function close()
     {
         return $this->belongsTo(User::class, 'closed_by'); 
     }
