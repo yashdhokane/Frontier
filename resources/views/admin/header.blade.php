@@ -620,17 +620,18 @@
                                             <td>
                                                 @if ($ticket->jobassignname && $ticket->jobassignname->start_date_time)
                                                     <div class="font-medium link">
-                                                        {{ $modifyDateTime($ticket->jobassignname->start_date_time ?? null, $time_interval, 'add', 'm-d-Y') }}
+                                                        {{ \Carbon\Carbon::parse($ticket->jobassignname->start_date_time)->addMinutes($time_interval)->format('m-d-Y') }}
                                                     </div>
                                                 @else
                                                     <div></div>
                                                 @endif
                                                 <div style="font-size:12px;">
-                                                    {{ $modifyDateTime($ticket->jobassignname->start_date_time ?? null, $time_interval, 'add', 'h:i A') }}
+                                                    {{ \Carbon\Carbon::parse($ticket->jobassignname->start_date_time)->addMinutes($time_interval)->format('h:i A') }}
                                                     to
-                                                    {{ $modifyDateTime($ticket->jobassignname->end_date_time ?? null, $time_interval, 'add', 'h:i A') }}
+                                                    {{ \Carbon\Carbon::parse($ticket->jobassignname->end_date_time)->addMinutes($time_interval)->format('h:i A') }}
                                                 </div>
                                             </td>
+                                            
                                             <td>
                                                 <span><a class="btn btn-success"
                                                         href="{{ route('tickets.show', $ticket->id) }}">View</a></span>

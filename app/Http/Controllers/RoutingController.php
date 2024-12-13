@@ -10,6 +10,7 @@ use DB;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use App\Models\JobModel;
 
 use Illuminate\Support\Facades\Session;
 use Storage;
@@ -168,6 +169,8 @@ class RoutingController extends Controller
     public function jobrouting_filter(Request $request)
     {
         $dateDay = $request->input('dateDay');
+        $chooseFrom = $request->input('chooseFrom');
+        $chooseTo = $request->input('chooseTo');
         $routing = $request->input('routing');
         $tech_ids = $request->input('technicians', []);
 
@@ -187,8 +190,19 @@ class RoutingController extends Controller
                 $endDate = $currentDate->copy()->addDay()->endOfDay();
                 break;
             case 'nextdays':
-                $endDate = $currentDate->copy()->addDays(2)->endOfDay(); // Today to the next three days
+                $endDate = $currentDate->copy()->addDays(2)->endOfDay(); 
                 break;
+            case 'week':
+                $startDate = $currentDate->copy()->startOfDay();
+                $endDate = $currentDate->copy()->addDays(6)->endOfDay();
+                break;
+            case 'chooseDate':
+                if ($chooseFrom && $chooseTo) {
+                    $startDate = Carbon::parse($chooseFrom, $timezone_name)->startOfDay();
+                    $endDate = Carbon::parse($chooseTo, $timezone_name)->endOfDay();
+                } else {
+                    return response()->json(['success' => false, 'message' => 'Invalid date range.'], 400);
+                }                break;
             default:
                 return response()->json(['success' => false, 'message' => 'Invalid dateDay value.'], 400);
         }
@@ -366,7 +380,7 @@ class RoutingController extends Controller
 
     public function Routesettingstore(Request $request)
     { 
-       
+    //    dd( $request);
         $timezone_id = Session::get('timezone_id');
         $timezone_name = Session::get('timezone_name');
         $time_interval = Session::get('time_interval');
@@ -402,9 +416,28 @@ class RoutingController extends Controller
                 }
 
                 $timeConstraintsEnabled = $request->input('time_constraints') === 'on';
+                $auto_publishing = $request->input('auto_publishing') === 'on';
+                
                 $jobDistances = [];
+                if ($request->auto_publishing == 'on' && !$jobs->isEmpty()) {
+                    foreach ($jobs as $index => $job) {
+                        // Retrieve the job
+                        $jobpublish = JobModel::find($job->job_id);
+                        
+                        if ($jobpublish) {
+                            
+                            // Update the job
+                            $jobpublish->is_published = 'yes';
+                            $jobpublish->save();
 
-                if ($timeConstraintsEnabled && !$jobs->isEmpty()) {
+                        } else {
+                            Log::error('Job not found', ['job_id' => $job->job_id]);
+                        }
+                    }
+                }
+
+                if ($request->time_constraints == 'on' && !$jobs->isEmpty()) {
+                    
                     $origin = "{$technicianLocation->latitude},{$technicianLocation->longitude}";
                     $previousEndDateTime = null;
                     $bestRouteJobs = [];
@@ -513,6 +546,8 @@ class RoutingController extends Controller
                                     $assign->end_date_time = $job->end_date_time;
                                     $assign->save();
                                 }
+                                
+                              
 
                                 $dailyJobCount++;
                             }
@@ -622,10 +657,28 @@ class RoutingController extends Controller
                     ->orderBy('start_date_time', 'asc')
                     ->get();
 
-                $timeConstraintsEnabled = $request->input('time_constraints') === 'on';
+                $timeConstraintsEnabled = $request->input('time_constraints') === 'yes';
+                $auto_publishing = $request->input('auto_publishing') === 'yes';
                 $jobDistances = [];
 
-                if ($timeConstraintsEnabled && !$jobs->isEmpty()) {
+                if ($request->auto_publishing == 'on' && !$jobs->isEmpty()) {
+                    foreach ($jobs as $index => $job) {
+                        // Retrieve the job
+                        $jobpublish = JobModel::find($job->job_id);
+                        
+                        if ($jobpublish) {
+                            
+                            // Update the job
+                            $jobpublish->is_published = 'yes';
+                            $jobpublish->save();
+
+                        } else {
+                            Log::error('Job not found', ['job_id' => $job->job_id]);
+                        }
+                    }
+                }
+
+                if ($request->time_constraints == 'on'  && !$jobs->isEmpty()) {
                     $origin = "{$technicianLocation->latitude},{$technicianLocation->longitude}";
                     $previousEndDateTime = null;
                     $bestRouteJobs = [];
@@ -734,7 +787,7 @@ class RoutingController extends Controller
                                     $assign->end_date_time = $job->end_date_time;
                                     $assign->save();
                                 }
-
+                            
                                 $dailyJobCount++;
                             }
 
