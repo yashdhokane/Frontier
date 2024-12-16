@@ -120,8 +120,8 @@
                     </li>
 
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle waves-effect waves-dark" id="showStickyNote"><i
-                                class="fas fa-sticky-note ft20"></i> </a>
+                        <a class="nav-link dropdown-toggle waves-effect waves-dark"
+                            href="{{ route('index.routing.new') }}"><i style="font-size: 22px;" class="fas ri-map-2-fill ft20"></i></a>
                     </li>
 
                     <li class="nav-item dropdown">
@@ -135,8 +135,8 @@
                     </li>
 
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle waves-effect waves-dark"
-                            href="{{ route('buisnessprofile.index') }}"><i class="far fa-sun ft20"></i></a>
+                        <a class="nav-link dropdown-toggle waves-effect waves-dark" id="showStickyNote"><i
+                                class="fas fa-sticky-note ft20"></i> </a>
                     </li>
 
                     <li class="nav-item dropdown">
@@ -363,7 +363,7 @@
             $techIds = $schedules->pluck('technician_id');
 
             // Fetch tickets for those job_ids
-            $tickets = \App\Models\JobModel::whereIn('id', $jobIds)->get();
+            $tickets = \App\Models\JobModel::whereIn('id', $jobIds)->where('is_published', 'no')->get();
             $customerIds = $tickets->pluck('customer_id');
             $technician = \App\Models\User::whereIn('id', $techIds)->get();
             $customer = \App\Models\User::whereIn('id', $customerIds)->get();
@@ -379,13 +379,13 @@
 
                 <div class="row me-5 pe-5 shadow pb-3 m-0">
                     <div class="col-sm-6 col-md-6">
-                        <h3 class="py-2 ps-2"> Job List </h3>
+                        <h3 class="py-2 ps-2">Open Jobs</h3>
                     </div>
-                    <div class="col-sm-4 col-md-4 text-end">
+                    <div class="col-sm-3 col-md-3 text-end">
                         <a href="javascript:void(0);" id="stickyRouting" class="text-decoration-none text-primary"
                             style="color:black;"><i class="ri-settings-2-line"></i> Routing Setting</a>
                     </div>
-                    <div class="col-sm-2 col-md-2" id="colrouting"></div>
+                    <div class="col-sm-3 col-md-3" id="colrouting"></div>
                     <div class="col-sm-10 col-md-10" id="showStickyRouting">
                         <div class="row">
                             <div class="col-md-6 settings-panel" style="max-height: 700px; overflow-y: auto;">
@@ -393,7 +393,7 @@
                                     <div class="row mb-2 ">
                                         <label class="col-8 col-form-label">Auto Route Settings</label>
                                         <div class="col-4 bt-switch">
-                                            <input type="checkbox" name="auto_route" data-toggle="switchbutton"
+                                            <input type="checkbox" id="autoRouteTimesticky" name="auto_route" data-toggle="switchbutton"
                                                 data-on-color="success" data-off-color="default"
                                                 onchange="toggleTimeInput(this, 'autoRouteTime1')">
                                             <input type="hidden" name="auto_route_value" value="no">
@@ -408,20 +408,20 @@
                                         <div class="row mb-2">
                                             <label class="col-8 col-form-label">Time Constraints</label>
                                             <div class="col-4  bt-switch">
-                                                <input type="checkbox" name="time_constraints" id="time_constraint_job"
+                                                <input type="checkbox" name="time_constraintsMain" id="time_constraint_job"
                                                     data-toggle="switchbutton" data-on-color="success"  value="no"
-                                                    data-off-color="default" onchange="updateCheckboxValue1(this)">
+                                                    data-off-color="default"  onchange="updateConstraintValue(this)">
 
-                                                <input type="hidden" name="time_constraint_job_value" id="time_constraint_job_value" value="no">
+                                                <input type="hidden" name="time_constraint_job_value" id="time_constraint_job_value" value="off">
                                             </div>
                                         </div>
-                                        <div class="row mb-2 border-btm">
+                                        <div class="row mb-2">
                                             <label class="col-8 col-form-label">Priority Routing</label>
                                             <div class="col-4  bt-switch">
                                                 <input type="checkbox" name="priority_routing"  value="no"
                                                     data-toggle="switchbutton" data-on-color="success"
-                                                    data-off-color="default">
-                                                <input type="hidden" name="priority_routing_value" value="no">
+                                                    data-off-color="default" onchange="updatePriorityValue(this)" id="priority_routing">
+                                                <input type="hidden" name="priority_job_value" value="no" id="priority_job_value">
                                             </div>
                                         </div>
                                     </div>
@@ -434,10 +434,9 @@
                                     <div class="row mb-2 border-btm">
                                         <label class="col-8 col-form-label">Automatic Re-Routing</label>
                                         <div class="col-4 bt-switch">
-                                            <input type="checkbox" name="auto_rerouting" data-toggle="switchbutton"
-                                                data-on-color="success" data-off-color="default"
-                                                onchange="toggleTimeInput(this, 'autoReRouteTime1')">
-                                            <input type="hidden" name="auto_rerouting_value" value="no">
+                                            <input type="checkbox" name="auto_rerouting" data-toggle="switchbutton" id="auto_rerouting_switch"
+                                                data-on-color="success" data-off-color="default" onchange="updateReroutingValue(this)">
+                                            <input type="hidden" name="auto_rerouting_value" value="no" id="auto_rerouting">
                                         </div>
                                     </div>
                                     <div class="row mb-2 d-none" id="autoReRouteTime1">
@@ -449,10 +448,9 @@
                                     <div class="row mb-2 border-btm">
                                         <label class="col-8 col-form-label">Auto Publishing</label>
                                         <div class="col-4 bt-switch">
-                                            <input type="checkbox" name="auto_publishing" data-toggle="switchbutton"
-                                                data-on-color="success" data-off-color="default"
-                                                onchange="toggleTimeInput(this, 'autoPublishingTime1')">
-                                            <input type="hidden" name="auto_publishing_value" value="no">
+                                            <input type="checkbox" name="auto_publishingMain" data-toggle="switchbutton"
+                                                data-on-color="success" data-off-color="default" id="auto_publishingMain"   onchange="updatePublishingValue(this)">
+                                            <input type="hidden" name="auto_publishing_job_value" value="off" id="auto_publishing_job_value" >
                                         </div>
                                     </div>
                                     <div class="row mb-2 d-none" id="autoPublishingTime1">
@@ -465,9 +463,14 @@
                                     <div class="row mb-2">
                                         <label for="call-limit" class="col-6 col-form-label">Max Calls</label>
                                         <div class="col-6">
-                                            <input type="number" id="call-limit" name="number_of_calls"
-                                                class="form-control" placeholder="Set Limit">
+                                            <input type="number" id="number_of_calls" name="number_of_calls"
+                                                class="form-control" placeholder="Set Limit" value="5">
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col">
+                                        <button id="stickySaveButton" type="button" class="btn btn-success ms-2" onclick="updateCheckboxValue1(this)">Save</button>
                                     </div>
                                 </div>
                             </div>
@@ -558,11 +561,10 @@
                     <div class="col-sm-12 col-md-12 w-75">
                         <div class="table-responsive" style="overflow: scroll; height: 570px;">
                             <table id="sticky_job_list"
-                                class="table table-hover table-striped table-bordered text-nowrap" data-paging="true"
-                                data-paging-size="7">
+                                class="table table-hover table-striped table-bordered text-nowrap" data-paging="false">
                                 <thead>
                                     <tr>
-                                        <th>Job ID</th>
+                                        <th> <input type="checkbox" class="form-check-input primary" id"allCheckbox"  onchange="toggleAllCheckboxes(this)"></th>
                                         <th class="job-details-column">Job Details</th>
                                         <th>Customer</th>
                                         <th>Technician</th>
@@ -575,8 +577,8 @@
                                     @foreach ($tickets as $ticket)
                                         <tr>
                                             <td>
-                                                <input type="checkbox" class="form-check-input bg-dark-subtle"
-                                                 name="jobIds[]" value="{{ $ticket->id }}">
+                                                <input type="checkbox" class="form-check-input primary jobIds"
+                                                 name="jobIds[]" value="{{ $ticket->id }}"  onchange="checkAllSelected()">
                                             </td>
                                             <td class="job-details-column">
                                                 <div class="text-wrap2 d-flex">
@@ -617,7 +619,7 @@
                                                     Unassigned
                                                 @endif
                                             </td>
-                                            <td>
+                                             <td>
                                                 @if ($ticket->jobassignname && $ticket->jobassignname->start_date_time)
                                                     <div class="font-medium link">
                                                         {{ \Carbon\Carbon::parse($ticket->jobassignname->start_date_time)->addMinutes($time_interval)->format('m-d-Y') }}
@@ -631,7 +633,6 @@
                                                     {{ \Carbon\Carbon::parse($ticket->jobassignname->end_date_time)->addMinutes($time_interval)->format('h:i A') }}
                                                 </div>
                                             </td>
-                                            
                                             <td>
                                                 <span><a class="btn btn-success"
                                                         href="{{ route('tickets.show', $ticket->id) }}">View</a></span>
@@ -693,22 +694,23 @@
         setInterval(updateTime, 1000); // Update every second
         updateTime(); // Initial call
 
-           function updateCheckboxValue1(checkbox) {
-            const hiddenField = $('input[name="time_constraint_job_value"]');
-            
-            if (hiddenField.length) {
-                hiddenField.val($(checkbox).is(':checked') ? 'yes' : 'no');
-            }
-
+        function updateCheckboxValue1(checkbox) {
+            const time_constraint_job_value =  $('#time_constraint_job_value').val();
+            const auto_publishing_job_value =  $('#auto_publishing_job_value').val();
+            const priority_job_value =  $('#priority_job_value').val();
+            const number_of_calls =  $('#number_of_calls').val();
+            const auto_rerouting =  $('#auto_rerouting').val();
+          
             let selectedJobIds = [];
 
-            if (hiddenField.val() === 'yes') {
+            if (time_constraint_job_value === 'on' || auto_publishing_job_value === 'on'|| priority_job_value === 'on' || auto_rerouting === 'on') {
                 $("input[name='jobIds[]']:checked").each(function () {
                     selectedJobIds.push($(this).val());
                 });
-                var time_constraints = 'on';
-
-                console.log("Checked Job IDs:", selectedJobIds);
+                var time_constraints = time_constraint_job_value;
+                 
+                 var auto_publishing_value = auto_publishing_job_value;
+        
 
                 $.ajax({
                     url: '{{ route('index.routing.Routesettingstore') }}',  
@@ -716,11 +718,22 @@
                     data: {
                         jobIds: selectedJobIds,
                         time_constraints: time_constraints,
+                        auto_publishing: auto_publishing_value,
+                        priority_job_value: priority_job_value,
+                        auto_rerouting: auto_rerouting,
+                        number_of_calls: number_of_calls,
                         _token: '{{ csrf_token() }}' 
                     },
                     success: function(response) {
                         if(response.success == true){
                             $('#frontier_loader').show();
+                            $('#time_constraint_job').bootstrapSwitch('state', false);
+                            $('#autoRouteTimesticky').bootstrapSwitch('state', false);
+                            $('#auto_publishingMain').bootstrapSwitch('state', false);
+                            $('#priority_routing').bootstrapSwitch('state', false);
+                            $('#auto_rerouting_switch').bootstrapSwitch('state', false);
+                            $('#jobIds').prop('checked', false);
+                            $('#time_constraint_job_value').val('no');
                             setTimeout(function() {
                                 $('#frontier_loader').hide();
                             }, 1000);
@@ -729,6 +742,63 @@
                 });
             }
         }
+          
+        function updateConstraintValue(checkbox) {
+            const isChecked = $(checkbox).is(':checked');
+            const hiddenField = $('#time_constraint_job_value');
+
+            if (hiddenField.length) {
+                hiddenField.val(isChecked ? 'on' : 'off');
+            }
+        }
+
+        function updatePublishingValue(checkbox) {
+            const isChecked = $(checkbox).is(':checked');
+            const hiddenField = $('#auto_publishing_job_value');
+
+            if (hiddenField.length) {
+                hiddenField.val(isChecked ? 'on' : 'off');
+            }
+        }
+
+        function updatePriorityValue(checkbox) {
+            const isChecked = $(checkbox).is(':checked');
+            const hiddenField = $('#priority_job_value');
+
+            if (hiddenField.length) {
+                hiddenField.val(isChecked ? 'on' : 'off');
+            }
+        }
+
+        function updateReroutingValue(checkbox) {
+            const isChecked = $(checkbox).is(':checked');
+            const hiddenField = $('#auto_rerouting');
+
+            if (hiddenField.length) {
+                hiddenField.val(isChecked ? 'on' : 'off');
+            }
+        }
+
+
+        function toggleAllCheckboxes(allCheckbox) {
+            // Check or uncheck all jobIds based on allCheckbox state
+            let jobIds = document.querySelectorAll('.jobIds');
+            jobIds.forEach(function(jobId) {
+                jobId.checked = allCheckbox.checked;
+            });
+        }
+
+        function checkAllSelected() {
+            // Check if all jobIds are selected
+            let allCheckbox = document.getElementById('allcheckbox');
+            let jobIds = document.querySelectorAll('.jobIds');
+            let allChecked = document.querySelectorAll('.jobIds:checked').length === jobIds.length;
+            allCheckbox.checked = allChecked;
+        }
+
+
+      
+    
     </script>
     <script src="{{ asset('public/admin/dist/libs/bootstrap-switch/dist/js/bootstrap-switch.min.js') }}"></script>
   

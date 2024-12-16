@@ -1210,7 +1210,7 @@
                   $('#show_new_title').hide();
 
                   // Toggle the visibility of the custom input field when "Add New" is clicked
-                  $('#add_new_title').on('click', function() {
+                  $(document).on('click','#add_new_title', function() {
                       $('#show_new_title').toggle(); // Show/hide the input field
                       $('#job_title_select').val(''); // Clear the select dropdown
                       updateHiddenInput(); // Ensure hidden input is cleared

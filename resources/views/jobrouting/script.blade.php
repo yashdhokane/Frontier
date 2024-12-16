@@ -5,6 +5,16 @@
     // const techniciansData = {!! $responseJson !!};
 
     $(document).ready(function() {
+        
+        $('#showChooseDate').hide();
+        $(document).on('change', '#dateDay', function() {
+            var datevalue = $(this).val();
+            if(datevalue == 'chooseDate'){
+               $('#showChooseDate').show();
+            }else{
+                $('#showChooseDate').hide();
+            }
+        });
         fetchFilteredData();
         $('#routingTriggerSelect').select2('destroy');
         $('#routingTriggerSelect').select2();
@@ -304,6 +314,8 @@
     function fetchFilteredData() {
 
         const dateDay = $('#dateDay').val();
+        const chooseFrom = $('#chooseFrom').val();
+        const chooseTo = $('#chooseTo').val();
         const routing = $('#routing').val();
         const technicians = $('#routingTriggerSelect').val();
 
@@ -313,6 +325,8 @@
             type: "GET",
             data: {
                 dateDay: dateDay,
+                chooseFrom: chooseFrom,
+                chooseTo: chooseTo,
                 routing: routing,
                 technicians: technicians
             },
@@ -336,7 +350,7 @@
         });
     }
 
-    $(document).on('change', '#dateDay, #routing', function() {
+    $(document).on('change', '#dateDay, #routing, #chooseFrom, #chooseTo', function() {
         fetchFilteredData();
     });
 

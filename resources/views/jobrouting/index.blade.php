@@ -69,6 +69,8 @@
                         <option value="today">Today</option>
                         <option value="tomorrow">Tomorrow</option>
                         <option value="nextdays">Next 3 Days</option>
+                        <option value="week">Next 7 Days</option>
+                        <option value="chooseDate">Choose Date</option>
                     </select>
                 </div>
                 <div class="col-md-6">
@@ -102,6 +104,18 @@
             </div>
         </div>
     </div>
+    <div class=" col-md-12" id="showChooseDate">
+      <div class="row ps-1 pt-2">
+       <div class=" col-md-2" >
+      <input type="date" class="form-control" name="chooseFrom" id="chooseFrom">
+       </div>
+       <div class=" col-md-2">
+      <input type="date" class="form-control" name="chooseTo" id="chooseTo">
+
+       </div>
+       </div>
+    </div>
+
     <div class="row">
         @include('jobrouting.map')
         @include('jobrouting.job_details')

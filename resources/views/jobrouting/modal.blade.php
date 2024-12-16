@@ -126,7 +126,7 @@
                                     <label for="call-limit" class="col-6 col-form-label">Max Calls</label>
                                     <div class="col-6">
                                         <input type="number" id="call-limit" name="number_of_calls"
-                                            class="form-control" placeholder="Set Limit">
+                                            class="form-control" placeholder="Set Limit" value="5">
                                     </div>
                                 </div>
                             </div>

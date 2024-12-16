@@ -1,6 +1,27 @@
+document.addEventListener('DOMContentLoaded', function() {
+    console.log(1);
+    const allCheckbox = document.getElementById('allcheckbox');
+    if (allCheckbox) {  // Check if the element exists
+        allCheckbox.addEventListener('change', function() {
+            console.log(2);
+            let jobIds = document.querySelectorAll('.jobIds');
+            jobIds.forEach(function(jobId) {
+                jobId.checked = allCheckbox.checked;
+            });
+        });
+
+        // This event listener checks if any checkbox with the class "jobIds" is clicked
+        document.querySelectorAll('.jobIds').forEach(function(jobId) {
+            jobId.addEventListener('change', function() {
+                console.log(3);
+                let allChecked = document.querySelectorAll('.jobIds:checked').length === document.querySelectorAll('.jobIds').length;
+                allCheckbox.checked = allChecked;
+            });
+        });
+    }
+});
 $(document).ready(function () {
-
-
+   
     $(document).on("click", "#showStickyNote", function () {
         $(".stickyMainSection").show();
     });
