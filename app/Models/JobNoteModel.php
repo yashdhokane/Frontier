@@ -11,6 +11,7 @@ class JobNoteModel extends Model
      protected $table = 'job_notes';
     protected $fillable = [
         'user_id',
+        'customer_id',
         'job_id',
         'note',
         'added_by',

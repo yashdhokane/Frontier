@@ -4,7 +4,7 @@
 </div>
 <!-- Modal -->
 <div class="modal fade" id="event" tabindex="-1" aria-labelledby="scroll-long-inner-modal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable2 modal-dialog modal-xl">
+    <div class="modal-dialog modal-dialog-scrollable2 modal-xl">
         <form action="{{ url('store/event/') }}" method="POST" id="addEvent">
             <input type="hidden" name="event_technician_id" id="event_technician_id" value="">
             <input type="hidden" name="scheduleType" id="scheduleType" value="event">

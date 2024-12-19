@@ -144,7 +144,7 @@
                                                 $overflow_height = $height_slot - 10;
                                             @endphp
                                             <div id='{{ $job->job_id }}'
-                                                class="dts dragDiv stretchJob border width_job_{{ $job->technician_id }}"
+                                                class="dts dragDiv stretchJob border width_job_{{ $job->technician_id }} {{ $job->JobModel->is_published === 'yes' ? 'is_published_bg' : '' }} {{ $job->JobModel->status === 'closed' ? 'is_closed_bg' : '' }}"
                                                 style="height:{{ $height_slot }}px; position: relative; width:{{ $jobWidth }}px;"
                                                 data-duration="{{ $job->JobModel->jobassignname->duration ?? '' }}"
                                                 data-technician-name="{{ $job->technician->name }}"
@@ -270,128 +270,27 @@
 
                                         {{-- For schedule type event --}}
                                         @if ($job->schedule_type == 'event')
+                                      
                                             @php
-                                                $to = $job->event->end_time
-                                                    ? Carbon\Carbon::parse($job->event->end_time)
+                                                $to = $job->event->end_date_time
+                                                    ? Carbon\Carbon::parse($job->event->end_date_time)
                                                     : null;
-                                                $from = $job->event->start_time
-                                                    ? Carbon\Carbon::parse($job->event->start_time)
+                                                $from = $job->event->start_date_time
+                                                    ? Carbon\Carbon::parse($job->event->start_date_time)
                                                     : null;
                                                 $duration = $to && $from ? $to->diffInMinutes($from) : null;
                                                 $height_slot = $duration ? ($duration / 30) * 40 : 0;
-                                                $overflow_height = $height_slot - 10;
+                                                $overflow_height = $height_slot + 40;
                                             @endphp
 
-                                            <div id='{{ $job->job_id }}' class="dts dragDiv stretchJob border"
-                                                style="height:{{ $height_slot }}px; position: relative; width:{{ $jobWidth }}px;"
+                                           <a href="#" class="eventNoClick">
+                                            <div id='{{ $job->job_id }}' class="dts border"
+                                                style="height:{{ $overflow_height }}px; position: relative; width:100px; background-color:#d8dcdf;"
                                                 data-duration="{{ $duration }}">
+                                                <h6>{{ $job->event->event_name }}</h6>
 
-                                                <a class="show_job_details text-white"
-                                                    href="{{ $job->job_id ? route('tickets.show', $job->job_id) : '#' }}"
-                                                    style="width: {{ $jobWidth }}px;">
-                                                    <div class="mb-1" data-id="{{ $job->job_id }}"
-                                                        data-duration="{{ $duration }}"
-                                                        data-technician-name="{{ $job->technician->name }}"
-                                                        data-timezone-name="{{ $job->technician->TimeZone->timezone_name }}"
-                                                        data-time="{{ $timeString }}"
-                                                        data-date="{{ $formattedDate }}"
-                                                        style="max-width: {{ $jobWidth }}%;cursor: pointer;">
-                                                        @if ($job->JobModel && $job->JobModel->is_confirmed == 'yes')
-                                                            <div class="cls_is_confirmed">
-                                                                <i class="ri-thumb-up-fill"></i>
-                                                            </div>
-                                                        @endif
-                                                        <div
-                                                            style="height: {{ $overflow_height }}px;overflow:hidden;">
-                                                            <div class="cls_slot_title">
-                                                                <i class="ri-tools-line"></i>
-                                                                {{ $job->JobModel->user->name ?? null }}
-                                                            </div>
-                                                            <div class="cls_slot_time">
-                                                                <i class="ri-truck-line"></i>
-                                                                {{ $timeString }}
-                                                            </div>
-                                                            <div class="cls_slot_job_card text-truncate">
-                                                                {{ $job->JobModel->job_title ?? null }}
-                                                            </div>
-                                                            <div class="cls_slot_job_card">
-                                                                {{ $job->JobModel->city ?? null }},
-                                                                {{ $job->JobModel->state ?? null }}
-                                                            </div>
-                                                            <div class="round-init">
-                                                                @php
-                                                                    $name = $job->technician->name ?? null;
-                                                                    $initials = '';
-                                                                    if ($name) {
-                                                                        $names = explode(' ', $name);
-                                                                        foreach ($names as $part) {
-                                                                            $initials .= strtoupper(
-                                                                                substr($part, 0, 1),
-                                                                            );
-                                                                        }
-                                                                    }
-                                                                @endphp
-                                                                {{ $initials }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-
-                                                <div class="template" style="display: none;">
-                                                    <div class="popup-content">
-                                                        <h5><i class="fas fa-id-badge px-2"></i>
-                                                            <strong>Job
-                                                                #{{ $job->JobModel->id ?? null }}</strong>
-                                                        </h5>
-                                                        <p class="ps-4 m-0 ms-2">
-                                                            @php
-                                                                $startDateTime1 = $job->start_date_time
-                                                                    ? Carbon\Carbon::parse($job->start_date_time)
-                                                                    : null;
-                                                                $endDateTime1 = $job->end_date_time
-                                                                    ? Carbon\Carbon::parse($job->end_date_time)
-                                                                    : null;
-                                                                $interval1 = session('time_interval'); // Retrieve the time interval from the session
-
-                                                                if ($startDateTime1 && $endDateTime1 && $interval1) {
-                                                                    $startDateTime1->addHours($interval1);
-                                                                    $endDateTime1->addHours($interval1);
-                                                                }
-                                                            @endphp
-                                                            @if ($startDateTime1 && $endDateTime1)
-                                                                {{ $startDateTime1->format('M d Y g:i a') }}
-                                                                -
-                                                                {{ $endDateTime1->format('g:i A') }}
-                                                            @endif
-                                                        </p>
-                                                        <div class="py-1 text-truncate">
-                                                            <i class="fas fa-ticket-alt px-2"></i>
-                                                            <strong
-                                                                class="">{{ $job->JobModel->job_title ?? null }}</strong>
-                                                        </div>
-                                                        <div class="py-1">
-                                                            <i class="fas fa-user px-2"></i>
-                                                            <strong>{{ $job->JobModel->user->name ?? null }}</strong>
-                                                            <p class="ps-4 m-0 ms-2">
-                                                                {{ $job->JobModel->addresscustomer->address_line1 ?? null }}
-                                                                {{ $job->JobModel->addresscustomer->zipcode ?? null }}
-                                                            </p>
-                                                            <p class="ps-4 m-0 ms-2">
-                                                                {{ $job->JobModel->user->mobile ?? null }}
-                                                            </p>
-                                                        </div>
-                                                        <div class="py-1">
-                                                            <i class="fas fa-user-secret px-2"></i>
-                                                            <strong>{{ $job->JobModel->technician->name ?? null }}</strong>
-                                                        </div>
-                                                        <div class="py-1">
-                                                            <i class="fas fa-tag px-2"></i>
-                                                            <span
-                                                                class="mb-1 badge bg-primary">{{ $job->JobModel->status ?? null }}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </div>
+                                            </a>
                                         @endif
                                     @endforeach
                                 @endforeach

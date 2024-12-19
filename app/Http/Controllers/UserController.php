@@ -3,47 +3,39 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Hash;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use App\Models\LocationCity;
-use App\Models\UsersDetails;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Carbon\Carbon;
+use Exception;
 
+use App\Models\LocationCity;
+use App\Models\UsersDetails;
 use App\Models\UserFiles;
-
 use App\Models\Payment;
-
-
+use App\Models\JobNoteModel;
 use App\Models\JobModel;
 use App\Models\Leadsource;
-
-
+use App\Models\FlagJob;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Ticket;
 use App\Models\UserTag;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
-
 use App\Models\SiteTags;
-use Illuminate\Http\Request;
 use App\Models\LocationState;
 use App\Models\SiteLeadSource;
 use App\Models\CustomerUserMeta;
 use App\Models\UserNotesCustomer;
 use App\Models\UserTagIdCategory;
-
 use App\Models\CustomerUserAddress;
-use Illuminate\Support\Facades\File;
 use App\Models\UserLeadSourceCustomer;
 use App\Models\UsersActivity;
 use App\Models\UsersSettings;
-use Illuminate\Support\Facades\Validator;
-
-
-use Exception;
-
 
 
 class UserController extends Controller
@@ -166,7 +158,8 @@ public function index(Request $request, $status = null)
         $usersQuery->select('users.*');
     }
     // Paginate the results
-    $users = $usersQuery->paginate(50);
+    $users = $usersQuery->with('FlagJob','JobNoteModel')->paginate(50);
+   
 
     // Pass the data to the view
     return view('users.index', compact('users', 'locationStates', 'workupdate', 'stateIds', 'jobs'));
@@ -761,12 +754,14 @@ public function search(Request $request)
             ->first();
         $tickets = JobModel::orderBy('created_at', 'desc')->get();
         $payment = Payment::with('user', 'JobModel')->latest()->get();
-
-
-
-
+        $flag = FlagJob::all();
+        $flagDetails = FlagJob::where('flag_id',$commonUser->flag_id)->first();
         $leadsource = SiteLeadSource::all();
-        return view('users.show', compact('customer_tag', 'estimates', 'notename', 'leadsourcename', 'leadsource', 'selectedTags', 'tickets', 'payment', 'activity', 'setting', 'login_history', 'location1', 'tags', 'leadSources', 'cities', 'locationStates', 'commonUser', 'payments', 'payment', 'userAddresscity', 'jobasigndate', 'customerimage', 'jobasign', 'userTags', 'location', 'tickets', 'UsersDetails', 'Notes'));
+        $flagJob = JobModel::where('customer_id', $id)->get();
+        
+        $JobNoteflag = JobNoteModel::where('customer_id', $id)->first();
+
+        return view('users.show', compact('flag','JobNoteflag','flagDetails','flagJob','customer_tag', 'estimates', 'notename', 'leadsourcename', 'leadsource', 'selectedTags', 'tickets', 'payment', 'activity', 'setting', 'login_history', 'location1', 'tags', 'leadSources', 'cities', 'locationStates', 'commonUser', 'payments', 'payment', 'userAddresscity', 'jobasigndate', 'customerimage', 'jobasign', 'userTags', 'location', 'tickets', 'UsersDetails', 'Notes'));
     }
 
 public function show_customers_demo_iframe($id)
@@ -1878,5 +1873,38 @@ public function show_customers_demo_iframe($id)
         $user->save();
 
         return redirect()->back()->with('success', 'Work details have been updated successfully.');
+    }
+
+      public function addflagCustomer(Request $request)
+    {
+
+        $jobDetails = JobModel::where('id', $request->job_id)->first();
+
+        $jobNote = new JobNoteModel([
+            'user_id' => $jobDetails->technician_id,
+            'customer_id' => $jobDetails->customer_id,
+            'job_id' => $request->job_id,
+            'note' => $request->flag_reason,
+            'added_by' => Auth::id(),
+            'updated_by' => Auth::id(),
+            'is_flagged' => 'yes',
+        ]);
+
+        $jobNote->save();
+
+        $user = User::where('id', $jobDetails->customer_id)->first();
+        $user->flag_id = $request->flag_id;
+        $user->save();
+
+        
+        $userFlagDetail = FlagJob::where('flag_id', $request->flag_id)->first();
+        $Note = JobNoteModel::where('customer_id', $jobDetails->customer_id)->first();
+
+        return response()->json([
+            'success' => true,
+            'userFlagDetail' => $userFlagDetail,
+            'JobNote' => $Note,
+            'message' => 'Flag added successfully!'
+        ]);
     }
 }

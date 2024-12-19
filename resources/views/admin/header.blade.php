@@ -800,9 +800,6 @@
       
     
     </script>
-    <script src="{{ asset('public/admin/dist/libs/bootstrap-switch/dist/js/bootstrap-switch.min.js') }}"></script>
-  
-
      
   
 @endif

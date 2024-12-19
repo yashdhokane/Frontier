@@ -614,6 +614,8 @@ Route::middleware('auth')->group(function () {
     Route::get('fleetreport', [ReportsController::class, 'fleetreport'])->name('fleetreport');
 
 
+Route::post('/data-report/fetch', [ReportsController::class, 'fetch_data_report'])->name('data_report.fetch');
+
     // Lead Source Route here(st)
 
 
@@ -1465,3 +1467,5 @@ Route::get('/update-customer-password', [UserController::class, 'updatePassword'
 Route::get('/getZipCode', [UserController::class, 'getZipCode'])->name('getZipCode');
 
 Route::get('/getZipCodeanother', [UserController::class, 'getZipCodeanother'])->name('getZipCodeanother');
+
+Route::post('/add-flag-customer', [UserController::class, 'addflagCustomer'])->name('addflagCustomer');

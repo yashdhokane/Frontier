@@ -180,5 +180,13 @@ public function schedules()
     {
         return $this->hasOne(UserLoginHistory::class, 'user_id', 'id');
     }
+    public function FlagJob()
+    {
+        return $this->belongsTo(FlagJob::class, 'flag_id', 'flag_id');
+    }
+    public function JobNoteModel()
+    {
+        return $this->belongsTo(JobNoteModel::class, 'id','customer_id');
+    }
 
 }

@@ -1,6 +1,9 @@
 @section('script')
     <script>
         $(document).ready(function() {
+            $(document).on('click', '.eventNoClick', function(e) {
+                e.stopPropagation();  
+            });
             $(document).on('click', '.togglebutton', function() {
                 var $jobDetailsDiv = $('.openJobTechDetails');
                 var $mapRouteDiv = $('.mapbestroute');

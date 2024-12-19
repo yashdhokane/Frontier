@@ -11,7 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Models\JobModel;
-
+use App\Models\Event;
 use Illuminate\Support\Facades\Session;
 use Storage;
 use App\Models\CustomerUserAddress;
@@ -445,6 +445,39 @@ class RoutingController extends Controller
                             Log::error('Job assignment not found', ['job_id' => $job->job_id]);
                         }
                     }
+                    $auth = Auth::user()->id;
+                    $date = Carbon::parse($inputDate);
+
+                    // Get business hours for the specific day
+                    $businessHours = BusinessHours::where('day', $date->format('l'))->first();
+
+                    if ($businessHours) {
+                        // Create the event
+                        $event = new Event();
+                        $event->technician_id = $technicianId;
+                        $event->event_name = 'Unknown Reason';
+                        $event->event_description = $request->event_description ?? null;
+                        $event->event_location = $request->event_location ?? null;
+                        $event->start_date_time = $date->format('Y-m-d') . ' ' . $businessHours->start_time;
+                        $event->end_date_time = $date->format('Y-m-d') . ' ' . $businessHours->end_time;
+                        $event->added_by = $auth;
+                        $event->updated_by = $auth;
+                        $event->event_type = 'full';
+                        $event->save();
+
+                        // Create the schedule
+                        $schedule = new Schedule();
+                        $schedule->event_id = $event->id;
+                        $schedule->schedule_type = 'event';
+                        $schedule->technician_id = $technicianId;
+                        $schedule->start_date_time = $event->start_date_time;
+                        $schedule->end_date_time = $event->end_date_time;
+                        $schedule->added_by = $auth;
+                        $schedule->updated_by = $auth;
+                        $schedule->save();
+                    }
+
+                    
                 }
 
 
@@ -782,6 +815,40 @@ class RoutingController extends Controller
                             Log::error('Job assignment not found', ['job_id' => $job->job_id]);
                         }
                     }
+
+                    $auth = Auth::user()->id;
+                    $date = Carbon::parse($inputDate);
+
+                    // Get business hours for the specific day
+                    $businessHours = BusinessHours::where('day', $date->format('l'))->first();
+
+                    if ($businessHours) {
+                        // Create the event
+                        $event = new Event();
+                        $event->technician_id = $technicianId;
+                        $event->event_name = 'Unknown Reason';
+                        $event->event_description = $request->event_description ?? null;
+                        $event->event_location = $request->event_location ?? null;
+                        $event->start_date_time = $date->format('Y-m-d') . ' ' . $businessHours->start_time;
+                        $event->end_date_time = $date->format('Y-m-d') . ' ' . $businessHours->end_time;
+                        $event->added_by = $auth;
+                        $event->updated_by = $auth;
+                        $event->event_type = 'full';
+                        $event->save();
+
+                        // Create the schedule
+                        $schedule = new Schedule();
+                        $schedule->event_id = $event->id;
+                        $schedule->schedule_type = 'event';
+                        $schedule->technician_id = $technicianId;
+                        $schedule->start_date_time = $event->start_date_time;
+                        $schedule->end_date_time = $event->end_date_time;
+                        $schedule->added_by = $auth;
+                        $schedule->updated_by = $auth;
+                        $schedule->save();
+                    }
+
+                    
                 }
 
                 if ($request->auto_publishing == 'on' && !$jobs->isEmpty()) {

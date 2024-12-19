@@ -348,3 +348,11 @@ ul{
     border-color: #2962ff !important;
     color: #000 !important;
 }
+
+.is_published_bg {
+    background-color: #185519 ;
+}
+
+.is_closed_bg  {
+    background-color: #C7253E ;
+}

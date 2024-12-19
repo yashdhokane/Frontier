@@ -175,6 +175,12 @@
                                                     <a href="{{ route('users.show', $user->id) }}">
                                                         <h6 class="user-name mb-0" data-name="name"> {{ $user->name }}
                                                         </h6>
+                                                         <p id="showFlagDesc" class="pointer">
+                                                            <span style="color:{{$user->FlagJob->flag_color ?? null}}" title="{{$user->JobNoteModel->note ?? null}}">
+                                                                                    <i class="far {{$user->FlagJob->flag_icon ?? null}}"></i> 
+                                                                                    {{$user->FlagJob->flag_desc ?? null}}
+                                                            </span>
+                                                        </p>
                                                     </a>
                                                 </div>
                                             </div>

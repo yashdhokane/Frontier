@@ -180,6 +180,66 @@
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <div class="col-12 mb-3">
+                                            <div class="card card-border">
+                                                <div class="card-body">
+                                                    <div class="row open_items">
+                                                        <div class="col-md-1">
+                                                            <i class="far fa-flag"></i> 
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <h5 class="card-title uppercase">Flag Customer</h5>
+                                                        </div>
+                                                        <div class="col-md-1 addFlag" style="cursor: pointer;">
+                                                            <i class="fas fa-plus "></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12 showFlag" style="display:none; ">
+                                                            <form id="flagCustomerForm" method="POST">
+                                                                @csrf
+                                                                <div class="card-body card-border shadow">
+                                                                    <div class="row">
+                                                                        <div class="col-12 pt-2">
+                                                                           
+                                                                            <label for="flag" class="pt-2">Flag</label>
+                                                                            <select name="flag_id" id="flag" class="form-control select2" required>
+                                                                                <option value="">-- Select Flag --</option>
+                                                                                @foreach ($flag as $value)
+                                                                                    <option value="{{ $value->flag_id }}"  style="color: {{ $value->flag_color }};">
+                                                                                        {{ $value->flag_desc }}</option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col-12 pt-2">
+                                                                           
+                                                                            <label for="job_id" class="pt-2"> Job</label>
+                                                                            <select name="job_id" id="job_id" class="form-control select2" required>
+                                                                                <option value="">-- Select Job --</option>
+                                                                                @foreach ($flagJob as $value)
+                                                                                    <option value="{{ $value->id }}">#{{ $value->id }}-{{ $value->job_title }}</option>
+                                                                                @endforeach
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col-12 pt-2 ">
+                                                                            <label for="flag_reason">Add Reason</label>
+                                                                            <textarea class="form-control" name="flag_reason" id="flag_reason" cols="10" rows="3" required></textarea>
+                                                                        </div>
+                                                                        <div class="col-12 pt-2">
+                                                                            <button type="submit" class="btn btn-success">
+                                                                                Submit
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
 

@@ -225,11 +225,22 @@ class ReportsController extends Controller
             ->selectRaw('COUNT(*) as job_count, SUM(gross_total) as total_gross_total')
             ->groupBy('state')
             ->get();
+$jobstatus = JobModel::selectRaw("
+        CASE 
+            WHEN is_published = 'yes' THEN 'open' 
+            ELSE status 
+        END as status,
+        COUNT(*) as job_count, 
+        SUM(gross_total) as total_gross_total
+    ")
+    ->groupByRaw("
+        CASE 
+            WHEN is_published = 'yes' THEN 'open' 
+            ELSE status 
+        END
+    ")
+    ->get();
 
-        $jobstatus = JobModel::select('status')
-            ->selectRaw('COUNT(*) as job_count, SUM(gross_total) as total_gross_total')
-            ->groupBy('status')
-            ->get();
 
         $jobs = JobModel::join('job_assigned', 'jobs.id', '=', 'job_assigned.job_id')
             ->select(DB::raw('DATE(job_assigned.start_date_time) as date'), DB::raw('SUM(jobs.gross_total) as daily_gross_total'))
@@ -362,4 +373,34 @@ class ReportsController extends Controller
 
         return view('reports.fleetreport', compact('users', 'fleetKeys'));
     }
+
+    public function fetch_data_report(Request $request)
+{
+    $type = $request->type;
+    $fromDate = $request->from_date;
+    $toDate = $request->to_date;
+    $month = $request->month;
+    $year = $request->year;
+
+    $query = JobModel::join('job_assigned', 'jobs.id', '=', 'job_assigned.job_id')
+        ->select(DB::raw('DATE(job_assigned.start_date_time) as date'), DB::raw('SUM(jobs.gross_total) as daily_gross_total'));
+
+    // Filters
+    if ($type === 'date_range' && $fromDate && $toDate) {
+        $query->whereBetween('job_assigned.start_date_time', [$fromDate, $toDate]);
+    } elseif ($type === 'month' && $month) {
+        $query->whereMonth('job_assigned.start_date_time', $month);
+    } elseif ($type === 'year' && $year) {
+        $query->whereYear('job_assigned.start_date_time', $year);
+    }
+
+    $query->groupBy(DB::raw('DATE(job_assigned.start_date_time)'));
+
+    $jobs = $query->get();
+
+    
+
+    // Return table dynamically
+    return response()->view('reports.data_report_fetch_ajax', compact('jobs'));
+}
 }

@@ -48,6 +48,12 @@ $address .= $location->zipcode;
             <h4 class="page-title">{{ $commonUser->name }} <small class="text-muted"
                     style="font-size: 10px;">Customer</small>
             </h4>
+            <p id="showFlagDesc" class="pointer">
+                 <span style="color:{{$flagDetails->flag_color ?? null}}" title="{{$JobNoteflag->note ?? null}}">
+                                        <i class="far {{$flagDetails->flag_icon ?? null}}"></i> 
+                                        {{$flagDetails->flag_desc ?? null}}
+                 </span>
+            </p>
         </div>
         <div class="col-6 text-end">
 
@@ -244,12 +250,58 @@ $address .= $location->zipcode;
 </script>
 <script>
     $(document).ready(function() {
+           $('#flagCustomerForm').on('submit', function(e) {
+                e.preventDefault();
+
+
+                let formData = $(this).serialize();
+
+                $.ajax({
+                    url: "{{ route('addflagCustomer') }}",
+                    type: "POST",
+                    data: formData,
+                    success: function(response) {
+                        console.log(response);
+                        if (response.success) {
+                            const flagForm = $('#flagCustomerForm');
+                            const flagDesc = $('#showFlagDesc');
+                            const loader = $('#frontier_loader');
+
+                            flagForm[0].reset();
+                            flagDesc.empty();
+                            loader.show();
+
+                            setTimeout(function() {
+
+                                const flagContent = `
+                                    <span style="color:${response.userFlagDetail.flag_color};" title="${response.JobNote.note}">
+                                        <i class="far ${response.userFlagDetail.flag_icon}"></i> 
+                                        ${response.userFlagDetail.flag_desc}
+                                    </span>`;
+                                flagDesc.append(flagContent);
+
+                                $('.showFlag').hide('fade');
+                                loader.hide();
+                            }, 1000);
+                        } else {
+                            console.error('Failed to update settings. Please try again.');
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
   $('.addCustomerTags').click(function () {
             $('.showCustomerTags').toggle('fade');
 
         });
          $('.addSource').click(function () {
             $('.showSource').toggle('fade');
+
+        });
+         $('.addFlag').click(function () {
+            $('.showFlag').toggle('fade');
 
         });
 
