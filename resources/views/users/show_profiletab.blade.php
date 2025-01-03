@@ -25,20 +25,17 @@
                                                         </div>
                                                     </div>
                                                     <div class="row">
-                                                        <form action="{{ route('customer_file_store') }}" method="POST"
-                                                            enctype="multipart/form-data" class="showAttachment"
-                                                            style="display: none;">
-                                                            @csrf
-                                                            <input type="hidden" name="id" value="{{$commonUser->id}}"
-                                                                class="form-control">
-                                                            <input type="file" name="attachment" id=""
-                                                                class="form-control">
-                                                            <div class="mb-3 text-end">
-                                                                <button type="submit"
-                                                                    class="btn btn-primary rounded mt-2">Add</button>
-                                                            </div>
+                                                   <form action="{{ route('customer_file_store') }}" method="POST" enctype="multipart/form-data" 
+    class="showAttachment" id="customerForm" style="display: none;">
+    @csrf
+    <input type="hidden" name="id" value="{{$commonUser->id}}" class="form-control">
+    <input type="file" name="attachment" id="attachmentFile" class="form-control">
+    <div class="mb-3 text-end">
+        <button type="button" class="btn btn-primary rounded mt-2" id="submitCustomerForm">Add</button>
+    </div>
+</form>
 
-                                                        </form>
+
                                                         <div>
                                                             @foreach ($customerimage as $item)
                                                             <a href="{{url('public/images/users/'.$item->user_id.'/'.$item->filename)}}"
@@ -93,7 +90,7 @@
                                                             </div>
                                                             <div class="col-md-12 showCustomerTags"
                                                                 style="display:none; ">
-                                                                <form action="{{ route('customer_tags_store') }}"
+                                                                <form action="{{ route('customer_tags_store') }}" id="customertagsForm"
                                                                     method="POST">
                                                                     @csrf
                                                                     <input value="{{$commonUser->id}}" name="id"
@@ -114,8 +111,8 @@
                                                                         </select>
                                                                     </div>
                                                                     <div class="mb-3 text-end">
-                                                                        <button type="submit"
-                                                                            class="btn btn-primary rounded">Add</button>
+                                                                        <button type="button"
+                                                                            class="btn btn-primary rounded"  id="customertagbutton">Add</button>
                                                                     </div>
                                                                 </form>
                                                             </div>
@@ -152,7 +149,7 @@
                                                         </div>
                                                         <div class="col-md-12 showSource" style="display:none; ">
                                                             <form action="{{ route('customer_leadsource_store') }}"
-                                                                method="POST">
+                                                                method="POST" id="customerleadsourceForm">
                                                                 @csrf
                                                                 <input name="id" value="{{$commonUser->id}}"
                                                                     type="hidden" />
@@ -171,8 +168,8 @@
                                                                     </select>
                                                                 </div>
                                                                 <div class="mb-3 text-end">
-                                                                    <button type="submit"
-                                                                        class="btn btn-primary rounded">Add</button>
+                                                                    <button type="button"
+                                                                        class="btn btn-primary rounded" id="customerleadsourcebutton">Add</button>
                                                                 </div>
                                                             </form>
                                                         </div>
@@ -344,3 +341,22 @@
 
                             </div>
                         </div>
+
+                        <script>
+           document.getElementById('submitCustomerForm').addEventListener('click', function() {
+    // Submit the form with the static ID
+    document.getElementById('customerForm').submit();
+});
+    document.getElementById('customertagbutton').addEventListener('click', function() {
+    // Submit the form with the static ID
+    document.getElementById('customertagsForm').submit();
+});
+
+     document.getElementById('customerleadsourcebutton').addEventListener('click', function() {
+    // Submit the form with the static ID
+    document.getElementById('customerleadsourceForm').submit();
+});
+
+
+
+                        </script>

@@ -707,6 +707,9 @@ $address .= $location->zipcode;
             passwordMatchMessage.hide();
             passwordStrengthMessage.hide();
         });
+
+
+        
     });
 </script>
 

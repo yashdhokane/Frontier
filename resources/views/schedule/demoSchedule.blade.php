@@ -34,7 +34,7 @@
                         <a href="#" class="link user_head_link tech_profile" style="color: #123456 !important;">
                             <img src="{{ asset('public/images/Uploads/users/' . $item->id . '/' . $item->user_image) }}"
                                 alt="user" width="48"
-                                class="rounded-circle tech_extend_width JobOpenModalButton"
+                                class="rounded-circle tech_extend_width JobOpenModalButtonschedule"
                                 data-tech-id="{{ $item->id }}" data-tech-name="{{ $item->name }}"
                                 onerror="this.onerror=null; this.src='{{ $defaultImage }}';"
                                 data-class-name="tech_width_{{ $item->id }}"
@@ -137,140 +137,8 @@
                                         $jobWidth = 100 / $jobCount;
                                     @endphp
                                     @foreach ($jobs as $job)
-                                        @if ($job->schedule_type == 'job')
-                                            @php
-                                                $duration = $job->JobModel->jobassignname->duration ?? null;
-                                                $height_slot = $duration ? ($duration / 30) * 40 : 0;
-                                                $overflow_height = $height_slot - 10;
-                                            @endphp
-                                            <div id='{{ $job->job_id }}'
-                                                class="dts dragDiv stretchJob border width_job_{{ $job->technician_id }} {{ $job->JobModel->is_published === 'yes' ? 'is_published_bg' : '' }} {{ $job->JobModel->status === 'closed' ? 'is_closed_bg' : '' }}"
-                                                style="height:{{ $height_slot }}px; position: relative; width:{{ $jobWidth }}px;"
-                                                data-duration="{{ $job->JobModel->jobassignname->duration ?? '' }}"
-                                                data-technician-name="{{ $job->technician->name }}"
-                                                data-timezone-name="{{ $job->technician->TimeZone->timezone_name }}">
-
-                                                <a class="show_job_details text-white"
-                                                    href="{{ $job->job_id ? route('tickets.show', $job->job_id) : '#' }}"
-                                                    style="width: {{ $jobWidth }}px;">
-                                                    <div class="mb-1 max_width_job{{ $job->technician_id }}"
-                                                        data-duration="{{ $job->JobModel->jobassignname->duration ?? '' }}"
-                                                        data-technician-name="{{ $job->technician->name }}"
-                                                        data-timezone-name="{{ $job->technician->TimeZone->timezone_name }}"
-                                                        data-time="{{ $timeString }}"
-                                                        data-date="{{ $formattedDate }}"
-                                                        style="max-width: {{ $jobWidth }}px;cursor: pointer;">
-                                                        @if ($job->JobModel && $job->JobModel->is_confirmed == 'yes')
-                                                            <div class="cls_is_confirmed">
-                                                                <i class="ri-thumb-up-fill"></i>
-                                                            </div>
-                                                        @endif
-                                                        <div
-                                                            style="height: {{ $overflow_height }}px;overflow:hidden;">
-                                                            <div class="cls_slot_title">
-                                                                <i class="ri-tools-line"></i>
-                                                                {{ $job->JobModel->user->name ?? null }}
-                                                            </div>
-                                                            <div class="cls_slot_time">
-                                                                <i class="ri-truck-line"></i>
-                                                                {{ $timeString }}
-                                                            </div>
-                                                            <div class="cls_slot_job_card text-truncate">
-                                                                {{ $job->JobModel->job_title ?? null }}
-                                                            </div>
-                                                            <div class="cls_slot_job_card hide_address">
-                                                                {{ $job->JobModel->city ?? null }},
-                                                                {{ $job->JobModel->state ?? null }}
-                                                            </div>
-                                                            <div class="cls_slot_job_card show_address"
-                                                                style="display: none;">
-                                                                {{ $job->JobModel->address }},
-                                                                {{ $job->JobModel->city ?? null }},
-                                                                {{ $job->JobModel->state ?? null }},
-                                                                {{ $job->JobModel->zipcode }}
-                                                                <div style="font-size:12px;">
-                                                                    @if ($job->JobModel->JobAppliances && $job->JobModel->JobAppliances->Appliances)
-                                                                        {{ $job->JobModel->JobAppliances->Appliances->appliance->appliance_name ?? null }}
-                                                                        /
-                                                                    @endif
-                                                                    @if ($job->JobModel->JobAppliances && $job->JobModel->JobAppliances->Appliances)
-                                                                        {{ $job->JobModel->JobAppliances->Appliances->manufacturer->manufacturer_name ?? null }}
-                                                                        /
-                                                                    @endif
-                                                                    @if ($job->JobModel->JobAppliances && $job->JobModel->JobAppliances->Appliances->model_number)
-                                                                        {{ $job->JobModel->JobAppliances->Appliances->model_number ?? null }}
-                                                                        /
-                                                                    @endif
-                                                                    @if ($job->JobModel->JobAppliances && $job->JobModel->JobAppliances->Appliances->serial_number)
-                                                                        {{ $job->JobModel->JobAppliances->Appliances->serial_number ?? null }}
-                                                                    @endif
-                                                                </div>
-                                                                <p>{{ $job->JobModel->description ?? null }}</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </a>
-
-                                                <div class="template" style="display: none;">
-                                                    <div class="popup-content">
-                                                        <h5><i class="fas fa-id-badge px-2"></i>
-                                                            <strong>Job
-                                                                #{{ $job->JobModel->id ?? null }}</strong>
-                                                        </h5>
-                                                        <p class="ps-4 m-0 ms-2">
-                                                            @php
-                                                                $startDateTime1 = $job->start_date_time
-                                                                    ? Carbon\Carbon::parse($job->start_date_time)
-                                                                    : null;
-                                                                $endDateTime1 = $job->end_date_time
-                                                                    ? Carbon\Carbon::parse($job->end_date_time)
-                                                                    : null;
-                                                                $interval1 = session('time_interval'); // Retrieve the time interval from the session
-
-                                                                if ($startDateTime1 && $endDateTime1 && $interval1) {
-                                                                    $startDateTime1->addHours($interval1);
-                                                                    $endDateTime1->addHours($interval1);
-                                                                }
-                                                            @endphp
-                                                            @if ($startDateTime1 && $endDateTime1)
-                                                                {{ $startDateTime1->format('M d Y g:i a') }}
-                                                                -
-                                                                {{ $endDateTime1->format('g:i A') }}
-                                                            @endif
-                                                        </p>
-                                                        <div class="py-1 text-truncate">
-                                                            <i class="fas fa-ticket-alt px-2"></i>
-                                                            <strong
-                                                                class="">{{ $job->JobModel->job_title ?? null }}</strong>
-                                                        </div>
-                                                        <div class="py-1">
-                                                            <i class="fas fa-user px-2"></i>
-                                                            <strong>{{ $job->JobModel->user->name ?? null }}</strong>
-                                                            <p class="ps-4 m-0 ms-2">
-                                                                {{ $job->JobModel->addresscustomer->address_line1 ?? null }}
-                                                                {{ $job->JobModel->addresscustomer->zipcode ?? null }}
-                                                            </p>
-                                                            <p class="ps-4 m-0 ms-2">
-                                                                {{ $job->JobModel->user->mobile ?? null }}
-                                                            </p>
-                                                        </div>
-                                                        <div class="py-1">
-                                                            <i class="fas fa-user-secret px-2"></i>
-                                                            <strong>{{ $job->JobModel->technician->name ?? null }}</strong>
-                                                        </div>
-                                                        <div class="py-1">
-                                                            <i class="fas fa-tag px-2"></i>
-                                                            <span
-                                                                class="mb-1 badge bg-primary">{{ $job->JobModel->status ?? null }}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endif
-
                                         {{-- For schedule type event --}}
                                         @if ($job->schedule_type == 'event')
-                                      
                                             @php
                                                 $to = $job->event->end_date_time
                                                     ? Carbon\Carbon::parse($job->event->end_date_time)
@@ -283,14 +151,150 @@
                                                 $overflow_height = $height_slot + 40;
                                             @endphp
 
-                                           <a href="#" class="eventNoClick">
-                                            <div id='{{ $job->job_id }}' class="dts border"
-                                                style="height:{{ $overflow_height }}px; position: relative; width:100px; background-color:#d8dcdf;"
-                                                data-duration="{{ $duration }}">
-                                                <h6>{{ $job->event->event_name }}</h6>
+                                            <a href="#" class="eventNoClick">
+                                                <div id='{{ $job->job_id }}' class="dts border"
+                                                    style="height:{{ $overflow_height }}px; position: relative; width:100px; background-color:#d8dcdf;"
+                                                    data-duration="{{ $duration }}">
+                                                    <h6>{{ $job->event->event_name }}</h6>
 
-                                            </div>
+                                                </div>
                                             </a>
+                                        @else
+                                            @if ($job->schedule_type == 'job')
+                                                @php
+                                                    $duration = $job->JobModel->jobassignname->duration ?? null;
+                                                    $height_slot = $duration ? ($duration / 30) * 40 : 0;
+                                                    $overflow_height = $height_slot - 10;
+                                                @endphp
+                                                <div id='{{ $job->job_id }}'
+                                                    class="dts dragDiv stretchJob border width_job_{{ $job->technician_id }} {{ $job->JobModel->is_published === 'yes' ? 'is_published_bg' : '' }} {{ $job->JobModel->status === 'closed' ? 'is_closed_bg' : '' }}"
+                                                    style="height:{{ $height_slot }}px; position: relative; width:{{ $jobWidth }}px;"
+                                                    data-duration="{{ $job->JobModel->jobassignname->duration ?? '' }}"
+                                                    data-technician-name="{{ $job->technician->name }}"
+                                                    data-timezone-name="{{ $job->technician->TimeZone->timezone_name }}">
+
+                                                    <a class="show_job_details text-white"
+                                                        href="{{ $job->job_id ? route('tickets.show', $job->job_id) : '#' }}"
+                                                        style="width: {{ $jobWidth }}px;">
+                                                        <div class="mb-1 max_width_job{{ $job->technician_id }}"
+                                                            data-duration="{{ $job->JobModel->jobassignname->duration ?? '' }}"
+                                                            data-technician-name="{{ $job->technician->name }}"
+                                                            data-timezone-name="{{ $job->technician->TimeZone->timezone_name }}"
+                                                            data-time="{{ $timeString }}"
+                                                            data-date="{{ $formattedDate }}"
+                                                            style="max-width: {{ $jobWidth }}px;cursor: pointer;">
+                                                            @if ($job->JobModel && $job->JobModel->is_confirmed == 'yes')
+                                                                <div class="cls_is_confirmed">
+                                                                    <i class="ri-thumb-up-fill"></i>
+                                                                </div>
+                                                            @endif
+                                                            <div
+                                                                style="height: {{ $overflow_height }}px;overflow:hidden;">
+                                                                <div class="cls_slot_title">
+                                                                    <i class="ri-tools-line"></i>
+                                                                    {{ $job->JobModel->user->name ?? null }}
+                                                                </div>
+                                                                <div class="cls_slot_time">
+                                                                    <i class="ri-truck-line"></i>
+                                                                    {{ $timeString }}
+                                                                </div>
+                                                                <div class="cls_slot_job_card text-truncate">
+                                                                    {{ $job->JobModel->job_title ?? null }}
+                                                                </div>
+                                                                <div class="cls_slot_job_card hide_address">
+                                                                    {{ $job->JobModel->city ?? null }},
+                                                                    {{ $job->JobModel->state ?? null }}
+                                                                </div>
+                                                                <div class="cls_slot_job_card show_address"
+                                                                    style="display: none;">
+                                                                    {{ $job->JobModel->address }},
+                                                                    {{ $job->JobModel->city ?? null }},
+                                                                    {{ $job->JobModel->state ?? null }},
+                                                                    {{ $job->JobModel->zipcode }}
+                                                                    <div style="font-size:12px;">
+                                                                        @if ($job->JobModel->JobAppliances && $job->JobModel->JobAppliances->Appliances)
+                                                                            {{ $job->JobModel->JobAppliances->Appliances->appliance->appliance_name ?? null }}
+                                                                            /
+                                                                        @endif
+                                                                        @if ($job->JobModel->JobAppliances && $job->JobModel->JobAppliances->Appliances)
+                                                                            {{ $job->JobModel->JobAppliances->Appliances->manufacturer->manufacturer_name ?? null }}
+                                                                            /
+                                                                        @endif
+                                                                        @if ($job->JobModel->JobAppliances && $job->JobModel->JobAppliances->Appliances->model_number)
+                                                                            {{ $job->JobModel->JobAppliances->Appliances->model_number ?? null }}
+                                                                            /
+                                                                        @endif
+                                                                        @if ($job->JobModel->JobAppliances && $job->JobModel->JobAppliances->Appliances->serial_number)
+                                                                            {{ $job->JobModel->JobAppliances->Appliances->serial_number ?? null }}
+                                                                        @endif
+                                                                    </div>
+                                                                    <p>{{ $job->JobModel->description ?? null }}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+
+                                                    <div class="template" style="display: none;">
+                                                        <div class="popup-content">
+                                                            <h5><i class="fas fa-id-badge px-2"></i>
+                                                                <strong>Job
+                                                                    #{{ $job->JobModel->id ?? null }}</strong>
+                                                            </h5>
+                                                            <p class="ps-4 m-0 ms-2">
+                                                                @php
+                                                                    $startDateTime1 = $job->start_date_time
+                                                                        ? Carbon\Carbon::parse($job->start_date_time)
+                                                                        : null;
+                                                                    $endDateTime1 = $job->end_date_time
+                                                                        ? Carbon\Carbon::parse($job->end_date_time)
+                                                                        : null;
+                                                                    $interval1 = session('time_interval'); // Retrieve the time interval from the session
+
+                                                                    if (
+                                                                        $startDateTime1 &&
+                                                                        $endDateTime1 &&
+                                                                        $interval1
+                                                                    ) {
+                                                                        $startDateTime1->addHours($interval1);
+                                                                        $endDateTime1->addHours($interval1);
+                                                                    }
+                                                                @endphp
+                                                                @if ($startDateTime1 && $endDateTime1)
+                                                                    {{ $startDateTime1->format('M d Y g:i a') }}
+                                                                    -
+                                                                    {{ $endDateTime1->format('g:i A') }}
+                                                                @endif
+                                                            </p>
+                                                            <div class="py-1 text-truncate">
+                                                                <i class="fas fa-ticket-alt px-2"></i>
+                                                                <strong
+                                                                    class="">{{ $job->JobModel->job_title ?? null }}</strong>
+                                                            </div>
+                                                            <div class="py-1">
+                                                                <i class="fas fa-user px-2"></i>
+                                                                <strong>{{ $job->JobModel->user->name ?? null }}</strong>
+                                                                <p class="ps-4 m-0 ms-2">
+                                                                    {{ $job->JobModel->addresscustomer->address_line1 ?? null }}
+                                                                    {{ $job->JobModel->addresscustomer->zipcode ?? null }}
+                                                                </p>
+                                                                <p class="ps-4 m-0 ms-2">
+                                                                    {{ $job->JobModel->user->mobile ?? null }}
+                                                                </p>
+                                                            </div>
+                                                            <div class="py-1">
+                                                                <i class="fas fa-user-secret px-2"></i>
+                                                                <strong>{{ $job->JobModel->technician->name ?? null }}</strong>
+                                                            </div>
+                                                            <div class="py-1">
+                                                                <i class="fas fa-tag px-2"></i>
+                                                                <span
+                                                                    class="mb-1 badge bg-primary">{{ $job->JobModel->status ?? null }}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endif
                                         @endif
                                     @endforeach
                                 @endforeach
@@ -339,67 +343,166 @@
                 <h4 class="modal-title" id="allJobsTechnicianLabel46"></h4>
 
 
-                <button class=" popup-option123 togglebutton btn btn-outline-primary btn-sm">Best Route</button>
+                <button style="width:150px!important;" class=" popup-option123 togglebutton btn btn-outline-primary btn-sm">Best Route</button>
+
+
 
             </div>
-            <div class="modal-body row openJobTechDetails">
+            <div class="modal-body row openJobTechDetailsSchedule ">
                 <!-- Original content -->
+
+
             </div>
             <!-- <div class="modal-body row mapbestroute" style="display:none;">
-         
-                            <div id="map" style="height: 500px; width: 100%;"></div>
 
-        </div> -->
-            <div class="modal-body row mapbestroute" style="display:none;">
-                <!-- Buttons -->
-                <div class="col-12">
-                    <button class="btn btn-primary float-left">Default Route</button>
-                    <button class="btn btn-success float-left" style="margin-left: 5px;">Save Route</button>
+<div id="map" style="height: 500px; width: 100%;"></div>
+
+</div> -->
+
+
+
+
+            <div class="row">
+                <!-- Modal -->
+                <div class="modal fade" id="allJobsTechnician" tabindex="-1"
+                    aria-labelledby="allJobsTechnicianLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header d-flex align-items-center mod-head">
+                                <h4 class="modal-title" id="allJobsTechnicianLabel46"></h4>
+                            </div>
+                            <div class="modal-body row openJobTechDetails">
+                                <!-- Original content -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
 
-                <div class="d-flex w-100 mt-3">
+                {{-- @include('jobrouting.modal') --}}
 
-                    <div id="customer-show" style="width: 35%; height: 500px; background-color: #f1f1f1;">
+                <div class="modal-body row mapbestroute" style="display:none;">
+                    <!-- Buttons -->
 
+
+                    <link href="{{ asset('public/admin/routing/style.css') }}" rel="stylesheet" />
+
+                    <div class=" col-md-12">
+                        <div class="d-flex justify-content-between align-items-center" id="menu">
+                            <div class="col-md-12 row">
+                                <div class="col-md-3">
+                                    <select id="dateDay" name="dateDay" class="form-select select ms-1">
+                                        <option value="today">Today</option>
+                                        <option value="tomorrow">Tomorrow</option>
+                                        <option value="nextdays">Next 3 Days</option>
+                                        <option value="week">Next 7 Days</option>
+                                        <option value="chooseDate">Choose Date</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <select id="routing" name="routing" class="form-select select">
+                                        <option value="bestroute">Best Route</option>
+                                        <option value="shortestroute">Shortest Route</option>
+                                        <option value="customizedroute">Customized Route</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2" style="display:none!important;">
+
+                                    <select id="priorityDropdown12" name="priority12"
+                                        class="form-select form-control-sm" style="">
+
+
+                                        <option value="">All</option>
+                                        <option value="low">Low</option>
+                                        <option value="medium">Medium</option>
+                                        <option value="high">High</option>
+                                        <option value="urgent">Urgent</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3"  style="display:none!important;">
+
+                                    <select id="priorityDropdown12" name="priority12"
+                                        class="form-select form-control-sm" style="">
+
+
+                                        <option value="">Priority</option>
+                                        <option value="">Is Published</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-2 ">
+                                    {{-- <a href="javascript:void(0);" id="setNewButton1"
+                            class="text-decoration-none text-primary" style="color:black;"><i
+                                class="ri-settings-2-line"></i> Routing Setting</a><span
+                            style="margin-left:5px;">|</span> --}}
+                                    <a href="javascript:void(0);" id="fullview"
+                                        class="text-decoration-none  text-warning"
+                                        style="color:black; margin-left:10px;"><i class="ri-zoom-in-line"></i>
+                                        Full
+                                        View</a>
+                                </div>
+
+
+
+                            </div>
+                            <select id="routingTriggerSelect" name="routing_id" class="form-select  select selectedone"
+                                multiple="multiple" style="display: none!important;">
+
+                                @foreach ($tech as $routing)
+                                    <option value="{{ $routing->id }}">
+                                        {{ $routing->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            <div class="col-md-4"></div>
+
+
+                        </div>
+                    </div>
+                    <div class=" col-md-12" id="showChooseDate">
+                        <div class="row ps-1 pt-2">
+                            <div class=" col-md-2">
+                                <input type="date" class="form-control" name="chooseFrom" id="chooseFrom">
+                            </div>
+                            <div class=" col-md-2">
+                                <input type="date" class="form-control" name="chooseTo" id="chooseTo">
+
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Second div - map (75% width) -->
-                    <div id="map" style="width: 65%; height: 500px; background-color: #e2e2e2;">
-
+                    <div class="row">
+                        @include('jobrouting.map')
+                        @include('jobrouting.job_details')
                     </div>
-                </div>
 
-                <!-- Third div - map2 (75% width, hidden by default) -->
-                <div id="map2" style="width: 75%; height: 500px; background-color: #ccc; display: none;">
-
-                </div>
-
-
-                <div class="modal-footer">
-                    <button type="button"
-                        class="btn btn-light-danger text-danger font-medium waves-effect text-start"
-                        data-bs-dismiss="modal">
-                        Close
-                    </button>
+                    <div class="modal-footer">
+                        <button type="button"
+                            class="btn btn-light-danger text-danger font-medium waves-effect text-start"
+                            data-bs-dismiss="modal">
+                            Close
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
 
-    <!-- map best root model -->
-    <div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="mapModalLabel">Best Route</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
+        <!-- map best root model -->
+        <div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="mapModalLabel">Best Route</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
 
-                    <div id="map3" style="height: 500px; width: 100%;"></div>
+                        <div id="map3" style="height: 500px; width: 100%;"></div>
+                    </div>
                 </div>
             </div>
         </div>

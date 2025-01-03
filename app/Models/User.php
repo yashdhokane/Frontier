@@ -189,4 +189,10 @@ public function schedules()
         return $this->belongsTo(JobNoteModel::class, 'id','customer_id');
     }
 
+
+        public function jobAssigned()
+    {
+        return $this->hasMany(JobAssign::class, 'added_by');
+    }
+
 }

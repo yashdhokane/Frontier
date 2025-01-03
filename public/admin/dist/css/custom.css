@@ -318,6 +318,36 @@ li.toplinks a{
 
 
 
+.cls_job_order_number {
+    position: absolute;
+    left: 48%;
+    top: -15px;
+    border: 1px solid #ee9d01;
+    border-radius: 100%;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    background: #ee9d01;
+}
 
+.cls_job_order_number span {
+    font-size: 18px;
+    font-weight: bold;
+    color: #FFF;
+} 
+.date-heading {
+    font-size: 15px;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #2962ff;
+}
 
-
+#allJobsTechnicianLabel46{
+   text-align: center;
+    width: 100%;
+    text-transform: uppercase;
+    font-size: 18px;
+}
+.mod-head{
+  padding-bottom: 0px;
+}

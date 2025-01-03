@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
-    console.log(1);
+    
     const allCheckbox = document.getElementById('allcheckbox');
     if (allCheckbox) {  // Check if the element exists
         allCheckbox.addEventListener('change', function() {
-            console.log(2);
+            
             let jobIds = document.querySelectorAll('.jobIds');
             jobIds.forEach(function(jobId) {
                 jobId.checked = allCheckbox.checked;
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // This event listener checks if any checkbox with the class "jobIds" is clicked
         document.querySelectorAll('.jobIds').forEach(function(jobId) {
             jobId.addEventListener('change', function() {
-                console.log(3);
+                
                 let allChecked = document.querySelectorAll('.jobIds:checked').length === document.querySelectorAll('.jobIds').length;
                 allCheckbox.checked = allChecked;
             });
@@ -126,7 +126,7 @@ $(document).ready(function () {
                 id: id,
             },
             success: function (response) {
-                console.log(response);
+              
                 $("#edit_note_id").empty();
                 $("#edit_note_id2").empty();
                 $("#edit_color_code").empty();

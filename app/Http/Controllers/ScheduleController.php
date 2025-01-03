@@ -9,7 +9,10 @@ use App\Models\CustomerUserAddress;
 use App\Models\Event;
 use App\Models\JobActivity;
 use App\Models\Jobfields;
+use App\Models\RoutingTrigger;
 
+
+use App\Models\RoutingJOb;
 use App\Models\JobAppliances;
 use App\Models\JobAssign;
 use App\Models\JobDetails;
@@ -2809,7 +2812,48 @@ class ScheduleController extends Controller
         return response()->json(['data' => $data]);
     }
 
-    public function demo(Request $request)
+    // public function demo(Request $request)
+    // {
+
+    //     $timezone_name = Session::get('timezone_name');
+    //     $time_interval = Session::get('time_interval');
+    //     $data = $request->all();
+    //     $currentDate = isset($data['date']) && !empty($data['date']) ? Carbon::parse($data['date']) : Carbon::now($timezone_name);
+    //     $filterDate = $currentDate->format('Y-m-d');
+    //     $previousDate = $currentDate->copy()->subDay()->format('Y-m-d');
+
+    //     $tomorrowDate = $currentDate->copy()->addDay()->format('Y-m-d');
+
+    //     $currentDay = $currentDate->format('l');
+    //     $currentDayLower = strtolower($currentDay);
+    //     // Query the business hours for the given day
+    //     $hours = BusinessHours::where('day', $currentDayLower)->first();
+
+    //     $formattedDate = $currentDate->format('D, F j, Y');
+    //     // Fetch active technicians
+    //     $technicians = User::where('role', 'technician')->where('status', 'active')->get();
+    //     $tech = User::where('role', 'technician')->where('status', 'active')->get();
+
+    //     // Initialize an empty collection to store schedules
+    //     $schedules = collect();
+
+    //     // Loop through each technician and fetch their schedules
+    //     foreach ($technicians as $technician) {
+    //         $technicianSchedules = Schedule::where('technician_id', $technician->id)->where('start_date_time', 'LIKE', "%$filterDate%")->get();
+    //         $schedules = $schedules->merge($technicianSchedules);
+    //     }
+
+    //     $schedules->transform(function ($schedule) use ($time_interval) {
+    //         $schedule->start_date_time = Carbon::parse($schedule->start_date_time)
+    //             ->addHours($time_interval)
+    //             ->format('Y-m-d H:i:s');
+    //         return $schedule;
+    //     });
+
+    //     // Pass both technicians and schedules to the view
+    //     return view('schedule.demo', compact('technicians', 'schedules', 'formattedDate', 'hours', 'tomorrowDate', 'previousDate','tech'));
+    // }
+       public function demo(Request $request)
     {
 
         $timezone_name = Session::get('timezone_name');
@@ -2846,8 +2890,147 @@ class ScheduleController extends Controller
             return $schedule;
         });
 
+
+
+
+        //merger routing here
+
+        $userTimezone = Session::get('user_timezone', 'UTC');
+        $currentDate = Carbon::now($userTimezone)->format('Y-m-d');
+
+        // Fetch active technicians
+        $activeTechnicians = User::where('role', 'technician')->where('status', 'active')->get();
+
+        if ($activeTechnicians->isEmpty()) {
+            return view('jobrouting.technicians_jobs_map')->with('technicians', []);
+        }
+
+        $technicianResponseData = [];
+
+        foreach ($activeTechnicians as $singleTechnician) {
+            $technicianLocationData = CustomerUserAddress::where('user_id', $singleTechnician->id)
+                ->first(['user_id', 'latitude', 'longitude', 'address_line1', 'city', 'zipcode', 'state_name']);
+
+            if (!$technicianLocationData) {
+                $technicianResponseData[] = [
+                    'technician' => [
+                        'id' => $singleTechnician->id,
+                        'name' => $singleTechnician->name,
+                        'error' => 'Technician location not found.',
+                    ],
+                ];
+                continue;
+            }
+
+            $technicianLocationData->full_address = "{$technicianLocationData->address_line1}, {$technicianLocationData->city}, {$technicianLocationData->state_name} {$technicianLocationData->zipcode}";
+
+            $technicianJobs = Schedule::where('technician_id', $singleTechnician->id)
+                ->whereDate('start_date_time', $currentDate)
+                ->get(['job_id', 'position', 'is_routes_map', 'job_onmap_reaching_timing']);
+
+            $technicianRouteData = RoutingJob::where('user_id', $singleTechnician->id)->first();
+
+            $individualTechnicianData = [
+                'technician' => [
+                    'id' => $singleTechnician->id,
+                    'name' => $singleTechnician->name,
+                    'full_address' => $technicianLocationData->full_address,
+                    'latitude' => $technicianLocationData->latitude,
+                    'longitude' => $technicianLocationData->longitude,
+                ],
+                'jobs' => [],
+            ];
+
+            if ($technicianJobs->isEmpty()) {
+                $individualTechnicianData['error'] = 'No jobs found for this technician on the selected date.';
+                $technicianResponseData[] = $individualTechnicianData;
+                continue;
+            }
+
+            if ($technicianRouteData && !empty($technicianRouteData->best_route)) {
+                $routeJobIds = explode(',', $technicianRouteData->best_route);
+
+                $filteredTechnicianJobs = $technicianJobs->whereIn('job_id', $routeJobIds);
+
+                foreach ($filteredTechnicianJobs as $technicianJob) {
+                    $relatedCustomerIds = JobAssign::where('job_id', $technicianJob->job_id)->pluck('customer_id');
+                    $customerAddresses = CustomerUserAddress::whereIn('user_id', $relatedCustomerIds)
+                        ->get(['user_id', 'latitude', 'longitude', 'address_line1', 'city', 'zipcode', 'state_name']);
+
+                    foreach ($customerAddresses as $customerAddress) {
+                        $customerName = User::where('id', $customerAddress->user_id)->value('name');
+                        $customerAddress->full_address = "{$customerAddress->address_line1}, {$customerAddress->city}, {$customerAddress->state_name} {$customerAddress->zipcode}";
+
+                        $individualTechnicianData['jobs'][] = [
+                            'job_id' => $technicianJob->job_id,
+                            'position' => $technicianJob->position,
+                            'is_routes_map' => $technicianJob->is_routes_map,
+                            'job_onmap_reaching_timing' => $technicianJob->job_onmap_reaching_timing,
+                            'customer' => [
+                                'id' => $customerAddress->user_id,
+                                'name' => $customerName,
+                                'full_address' => $customerAddress->full_address,
+                                'latitude' => $customerAddress->latitude,
+                                'longitude' => $customerAddress->longitude,
+                            ],
+                        ];
+                    }
+                }
+            }
+
+            $technicianResponseData[] = $individualTechnicianData;
+        }
+
+        $responsePayload = json_encode($technicianResponseData);
+
+        $allTechnicians = User::where('role', 'technician')->where('status', 'active')->get();
+        $allRoutingTriggers = RoutingTrigger::all();
+        $serviceAreaLocations = LocationServiceArea::all();
+
+        $jobQuery = DB::table('job_assigned')
+            ->select(
+                'job_assigned.id as assign_id',
+                'job_assigned.job_id as job_id',
+                'job_assigned.start_date_time',
+                'job_assigned.end_date_time',
+                'job_assigned.start_slot',
+                'job_assigned.end_slot',
+                'job_assigned.pending_number',
+                'jobs.job_code',
+
+                'jobs.job_title as subject',
+                'jobs.status',
+                'jobs.address',
+                'jobs.city',
+                'jobs.state',
+                'jobs.zipcode',
+                'jobs.latitude',
+                'jobs.longitude',
+                'users.name',
+                'users.email',
+                'technician.name as technicianname',
+                'technician.email as technicianemail'
+            )
+            ->join('jobs', 'jobs.id', '=', 'job_assigned.job_id')
+            ->join('users', 'users.id', '=', 'jobs.customer_id')
+            ->join('users as technician', 'technician.id', '=', 'job_assigned.technician_id')
+            ->whereNotNull('jobs.latitude')
+            ->whereNotNull('jobs.longitude')
+            ->orderBy('job_assigned.pending_number', 'asc');
+
+        if (!empty($currentDate)) {
+            $jobQuery->whereDate('start_date_time', $currentDate);
+        }
+
+        $jobData = $jobQuery->get();
+
+        $tech = User::where('role', 'technician')->where('status', 'active')->get();
+
+
+        //merge end here
+
         // Pass both technicians and schedules to the view
-        return view('schedule.demo', compact('technicians', 'schedules', 'formattedDate', 'hours', 'tomorrowDate', 'previousDate'));
+        return view('schedule.demo', compact('technicians', 'schedules', 'formattedDate', 'hours', 'tomorrowDate', 'previousDate', 'jobData', 'responsePayload', 'allTechnicians', 'allRoutingTriggers', 'serviceAreaLocations', 'tech'));
     }
     public function updateJobTechnician(Request $request)
     {
@@ -3988,6 +4171,100 @@ class ScheduleController extends Controller
         ]);
     }
 
+    public function getALlRoutingJob(Request $request)
+    {
+        $timezone_name = Session::get('timezone_name');
+        $time_interval = Session::get('time_interval');
+        $currentDate = Carbon::now($timezone_name);
+        $filterDate = Carbon::parse($request->date)->format('Y-m-d');
+        $routing = $request->input('routing');
+        $dateDay = $request->input('dateDay');
+        $chooseFrom = $request->input('chooseFrom');
+        $chooseTo = $request->input('chooseTo');
+        $startDate = $currentDate->copy()->startOfDay();
+        $endDate = $currentDate->copy()->endOfDay();
+
+        // Handle date ranges based on `dateDay`
+        switch ($dateDay) {
+            case 'today':
+                $endDate = $startDate->copy()->endOfDay();
+                break;
+            case 'tomorrow':
+                $startDate = $currentDate->copy()->addDay()->startOfDay();
+                $endDate = $currentDate->copy()->addDay()->endOfDay();
+                break;
+            case 'nextdays':
+                $endDate = $currentDate->copy()->addDays(2)->endOfDay();
+                break;
+            case 'week':
+                $startDate = $currentDate->copy()->startOfDay();
+                $endDate = $currentDate->copy()->addDays(6)->endOfDay();
+                break;
+            case 'chooseDate':
+                if ($chooseFrom && $chooseTo) {
+                    $startDate = Carbon::parse($chooseFrom, $timezone_name)->startOfDay();
+                    $endDate = Carbon::parse($chooseTo, $timezone_name)->endOfDay();
+                } else {
+                    return response()->json(['success' => false, 'message' => 'Invalid date range.'], 400);
+                }
+                break;
+            default:
+                return response()->json(['success' => false, 'message' => 'Invalid dateDay value.'], 400);
+        }
+
+        // Fetch routing jobs
+        $routeJobs = RoutingJOb::where('user_id', $request->tech_id)
+            ->whereBetween('schedule_date_time', [$startDate, $endDate])
+            ->get();
+
+        $schedule = collect();
+
+        $routeJobs->each(function ($routeJob) use ($routing, &$schedule, $startDate, $endDate) {
+            $jobIds = [];
+
+            // Determine which route to use based on `$routing`
+            switch ($routing) {
+                case 'bestroute':
+                    $jobIds = json_decode($routeJob->best_route, true);
+                    break;
+                case 'shortestroute':
+                    $jobIds = json_decode($routeJob->short_route, true);
+                    break;
+                case 'customizedroute':
+                    $jobIds = explode(',', $routeJob->custom_route);
+                    break;
+                default:
+                    return; // Skip if routing is invalid
+            }
+
+            // Fetch the schedule for the extracted job IDs
+            $currentSchedule = Schedule::with([
+                'JobModel' => function ($query) {
+                    $query->with([
+                        'user',
+                        'jobproductinfohasmany.product',
+                        'jobserviceinfohasmany.service',
+                        'addresscustomer',
+                        'JobAppliances.Appliances.manufacturer',
+                        'JobAppliances.Appliances.appliance',
+                    ]);
+                },
+                'technician',
+            ])
+            ->whereIn('job_id', $jobIds)
+            ->whereBetween('start_date_time', [$startDate, $endDate])
+            ->where('show_on_schedule', 'yes')
+            ->get();
+
+            $schedule = $schedule->merge($currentSchedule);
+        });
+
+        // Remove duplicates if necessary
+        $schedule = $schedule->unique('id');
+
+        // Return the response
+        return response()->json($schedule);
+    }
 
 
 

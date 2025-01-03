@@ -32,4 +32,4 @@
 </div>
 <!-- Modal -->
 
-@include('schedule.demoScript')
+@include('schedule.ScheduleScript')

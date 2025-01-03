@@ -235,6 +235,7 @@ require __DIR__ . '/auth.php';
 
 Route::get('/home', [LayoutDashController::class, 'index'])->middleware('auth')->name('home');
 
+Route::get('/proxy-google', [LayoutDashController::class, 'proxyGoogle'])->name('proxy.google');
 
 // Route::get('/home', [HomeController::class, 'index'])->middleware('auth')->name('home');
 
@@ -603,6 +604,7 @@ Route::middleware('auth')->group(function () {
 
 
     //Reports
+    Route::get('/technician-report-sub-ajax', [ReportsController::class, 'technicianreportbyajax'])->name('technician.report.sub.ajax');
 
     Route::get('/reports/technician', [ReportsController::class, 'technicianreport'])->name('technicianreport.index');
 
@@ -614,10 +616,20 @@ Route::middleware('auth')->group(function () {
     Route::get('fleetreport', [ReportsController::class, 'fleetreport'])->name('fleetreport');
 
 
-Route::post('/data-report/fetch', [ReportsController::class, 'fetch_data_report'])->name('data_report.fetch');
+    Route::post('/data-report/fetch', [ReportsController::class, 'fetch_data_report'])->name('data_report.fetch');
+    Route::post('/data-report/status', [ReportsController::class, 'status_data_report'])->name('data_report.status');
+    Route::post('/data-report/job-tags', [ReportsController::class, 'job_tags_data_report'])->name('data_report.job_tags');
 
-    // Lead Source Route here(st)
+    Route::post('/data-report/customer', [ReportsController::class, 'customer_data_report'])->name('data_report.customer');
+    Route::post('/data-report/zipcode', [ReportsController::class, 'zipcode_data_report'])->name('data_report.zipcode');
 
+    Route::post('/data-report/manufacturers', [ReportsController::class, 'manufacturers_data_report'])->name('data_report.manufacturers');
+ Route::post('/data-report/appliances', [ReportsController::class, 'appliances_data_report'])->name('data_report.appliances');
+
+    Route::post('/data-report/job_lead_source', [ReportsController::class, 'job_lead_source_data_report'])->name('data_report.job_lead_source');
+    Route::post('/data-report/priority', [ReportsController::class, 'priority_data_report'])->name('data_report.priority');
+    Route::post('/data-report/city', [ReportsController::class, 'city_data_report'])->name('data_report.city');
+    Route::post('/data-report/state', [ReportsController::class, 'state_data_report'])->name('data_report.state');
 
 
     Route::get('/setting/lead/lead-source', [LeadsourceController::class, 'create'])->name('lead.lead-source');
@@ -792,6 +804,7 @@ Route::post('/data-report/fetch', [ReportsController::class, 'fetch_data_report'
     Route::get('routing', [RoutingController::class, 'index'])->name('index.routing.new');
     Route::get('jobrouting_filter', [RoutingController::class, 'jobrouting_filter'])->name('jobrouting.filter');
     Route::post('route-setting-store', [RoutingController::class, 'Routesettingstore'])->name('index.routing.Routesettingstore');
+    Route::post('/save-reordered-jobs', [RoutingController::class, 'savereorderedjobs'])->name('save-reordered-jobs');
 
 
 
@@ -902,6 +915,8 @@ Route::post('/data-report/fetch', [ReportsController::class, 'fetch_data_report'
     Route::get('/demoScheduleupdateiframe/', [ScheduleController::class, 'demoScheduleupdateiframe'])->name('schedule.demoScheduleupdateiframe');
 
     Route::get('/getALlJobDetails/', [ScheduleController::class, 'getALlJobDetails'])->name('schedule.getALlJobDetails');
+
+    Route::get('/getALlRoutingJob/', [ScheduleController::class, 'getALlRoutingJob'])->name('schedule.getALlRoutingJob');
 
     Route::post('/update_view_job/{id}', [ScheduleController::class, 'update_view_job'])->name('schedule.update_view_job');
 

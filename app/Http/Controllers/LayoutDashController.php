@@ -33,6 +33,26 @@ use Illuminate\Support\Facades\Session;
 class LayoutDashController extends Controller
 {
 
+     public function proxyGoogle()
+    {
+        $googleUrl = "https://www.google.com";
+        
+        // Use cURL for better error handling
+        $ch = curl_init($googleUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+        $content = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            return response('Failed to fetch Google content', 500);
+        }
+
+        curl_close($ch);
+
+        return response($content)->header('Content-Type', 'text/html');
+    }
+
     public function searchCustomers(Request $request)
     {
         $query = $request->input('query');
