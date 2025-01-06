@@ -24,10 +24,7 @@ use Twilio\Rest\Client;
 use Exception;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MyCustomEmail;
-
-
-
-
+use App\Models\CustomerUserAddress;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -38,8 +35,7 @@ class AppServiceProvider extends ServiceProvider
     {
 
         $this->app->singleton('UserPermissionChecker', function () {
-            return new class
-            {
+            return new class {
                 public function checkUserPermission($user_id, $permissions_type, $module_id)
                 {
                     if ($permissions_type == 'all') {
@@ -65,8 +61,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Bind a singleton with a common function
         $this->app->singleton('JobActivityManager', function () {
-            return new class
-            {
+            return new class {
                 public function addJobActivity($jobId, $activityDescription)
                 {
 
@@ -83,18 +78,17 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton('JobTimingManager', function () {
-            return new class
-            {
+            return new class {
                 public function getJobTimings($jobId)
                 {
                     $job = JobTechEvent::where('job_id', $jobId)->first();
 
 
                     return [
-                        'time_schedule' => isset($job->job_schedule) ?  Carbon::parse($job->job_schedule ?? null)->format('Y-m-d h:i a') : null,
-                        'time_omw' => isset($job->job_enroute) ?  Carbon::parse($job->job_enroute ?? null)->format('Y-m-d h:i a') : null,
-                        'time_start' => isset($job->job_start) ?  Carbon::parse($job->job_start ?? null)->format('Y-m-d h:i a') : null,
-                        'time_finish' => isset($job->job_end) ?  Carbon::parse($job->job_end ?? null)->format('Y-m-d h:i a') : null,
+                        'time_schedule' => isset($job->job_schedule) ? Carbon::parse($job->job_schedule ?? null)->format('Y-m-d h:i a') : null,
+                        'time_omw' => isset($job->job_enroute) ? Carbon::parse($job->job_enroute ?? null)->format('Y-m-d h:i a') : null,
+                        'time_start' => isset($job->job_start) ? Carbon::parse($job->job_start ?? null)->format('Y-m-d h:i a') : null,
+                        'time_finish' => isset($job->job_end) ? Carbon::parse($job->job_end ?? null)->format('Y-m-d h:i a') : null,
                         'time_invoice' => isset($job->job_invoice) ? Carbon::parse($job->job_invoice)->format('Y-m-d') : null,
                         'time_payment' => isset($job->job_payment) ? Carbon::parse($job->job_payment)->format('Y-m-d') : null,
 
@@ -147,15 +141,15 @@ class AppServiceProvider extends ServiceProvider
 
                 $maildata = [
                     'subject' => $subject,
-                    'msg'     => $msg,
-                    'from'    => $from,
-                    'type'    => $type,
-                    'data'    => $data,
+                    'msg' => $msg,
+                    'from' => $from,
+                    'type' => $type,
+                    'data' => $data,
                 ];
 
-                    Mail::to($to)->send(new MyCustomEmail($maildata));
+                Mail::to($to)->send(new MyCustomEmail($maildata));
 
-                    return "Email sent to {$to} with subject '{$subject}'";
+                return "Email sent to {$to} with subject '{$subject}'";
             };
         });
     }
@@ -165,14 +159,49 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Share a global function to generate the popup view HTML
+        View::share('getPopupView', function ($jobId) {
+            // Fetch job details
+            $job = DB::table('jobs')
+                ->join('users', 'jobs.customer_id', '=', 'users.id')
+                ->where('jobs.id', $jobId)
+                ->select('jobs.*', 'users.name as customer_name')
+                ->first();
+
+            if (!$job) {
+                return '<div class="pp_jobmodel">Job not found.</div>';
+            }
+
+            // Fetch customer address details
+            $address = CustomerUserAddress::where('user_id', $job->customer_id)
+                ->select('address_line1', 'city', 'zipcode', 'state_name')
+                ->first();
+
+            $fullAddress = $address
+                ? "{$address->address_line1}, {$address->city}, {$address->state_name}, {$address->zipcode}"
+                : 'Address not available';
+
+            // Generate the HTML
+            return <<<HTML
+                <div class="pp_jobmodel" style="width: 250px;">
+                    <h5 class="uppercase text-truncate pb-0 mb-0">#{$job->id} - {$job->title}</h5>
+                    <p class="text-truncate pb-0 mb-0 ft13">{$job->description}</p>
+                    <p class="ft13 uppercase mb-0 text-truncate">
+                        <strong><i class="ri-user-line"></i> {$job->customer_name}</strong>
+                    </p>
+                    <div class="ft12"><i class="ri-map-pin-fill"></i> {$fullAddress}</div>
+                </div>
+            HTML;
+        });
+
+
 
         View::composer('*', function ($view) {
             $view->with('modifyDateTime', app('modifyDateTime'));
         });
 
         $this->app->singleton('JobActivityManagerapp', function () {
-            return new class
-            {
+            return new class {
                 public function addJobActivity($jobId, $activityDescription, $userId)
                 {
                     $jobActivity = new JobActivity();

@@ -2,9 +2,8 @@
     defer></script>
 
 <script>
-
     $(document).ready(function() {
-        
+
         fetchFilteredData();
         $('#showChooseDate').hide();
         $('#routingTriggerSelect').select2('destroy');
@@ -13,9 +12,9 @@
 
         $(document).on('change', '#dateDay', function() {
             var datevalue = $(this).val();
-            if(datevalue == 'chooseDate'){
-               $('#showChooseDate').show();
-            }else{
+            if (datevalue == 'chooseDate') {
+                $('#showChooseDate').show();
+            } else {
                 $('#showChooseDate').hide();
             }
         });
@@ -45,7 +44,7 @@
     });
 
     function initMap(techniciansData) {
-        
+
         const map = new google.maps.Map(document.getElementById("map"), {
             zoom: 5,
             center: {
@@ -66,16 +65,16 @@
                 color_code,
                 dateDay
             } = techData.technician;
-           
+
 
             if (!latitude || !longitude) {
                 console.log(`No valid location for ${name}`);
                 return;
             }
 
-             const initials = name.split(" ")
-            .map(word => word.charAt(0).toUpperCase())
-            .join("");
+            const initials = name.split(" ")
+                .map(word => word.charAt(0).toUpperCase())
+                .join("");
 
             // Add technician marker
             const techMarker = new google.maps.Marker({
@@ -111,7 +110,7 @@
                 // Group jobs by individual dates
                 const jobsByDate = techData.jobs.reduce((acc, job) => {
                     const jobDate = job
-                    .start_date_time; // Assuming each job has a `start_date_time` property
+                        .start_date_time; // Assuming each job has a `start_date_time` property
                     if (!acc[jobDate]) acc[jobDate] = [];
                     acc[jobDate].push(job);
                     return acc;
@@ -119,20 +118,20 @@
 
 
                 // Pass jobsByDate directly to renderRouteForDate
-                renderRouteForDate(map, techData.technician, jobsByDate,dateDay);
+                renderRouteForDate(map, techData.technician, jobsByDate, dateDay);
             } else {
                 // For single-day routes, create a similar grouped structure
                 const singleDayJobs = {
                     [dateDay]: techData.jobs
                 };
-                renderRouteForDate(map, techData.technician, singleDayJobs,dateDay);
+                renderRouteForDate(map, techData.technician, singleDayJobs, dateDay);
             }
 
         });
     }
 
-    function renderRouteForDate(map, technician, jobsByDate,dateDay) {
-        
+    function renderRouteForDate(map, technician, jobsByDate, dateDay) {
+
         const {
             latitude,
             longitude,
@@ -227,16 +226,25 @@
                                 strokeColor: "#FFFFFF",
                             },
                         });
+                       
+                         $.ajax({
+                            url: `/jobs/${job.job_id}/popup`,
+                            method: 'GET',
+                            success: function(response) {
+                                if (response.popupHtml) {
+                                    const customerInfo = new google.maps.InfoWindow({
+                                        content: response.popupHtml,
+                                    });
 
-                        const customerInfo = new google.maps.InfoWindow({
-                            content: `<h4>#${job.job_id}-${job.job_title}</h4>
-                                    <p class="mb-2">${job.description}</p>
-                                    <p class="mb-2"><i class="ri-user-line"></i> ${name}</p>
-                                    <p class="mb-2"><i class="ri-map-pin-fill"></i> ${full_address}</p>`,
+                                    customerMarker.addListener("click", () =>
+                                        customerInfo.open(map, customerMarker)
+                                    );
+                                }
+                            },
+                            error: function() {
+                                console.error("Failed to fetch popup HTML.");
+                            }
                         });
-
-                        customerMarker.addListener("click", () => customerInfo.open(map,
-                            customerMarker));
                     }
                 });
             }
@@ -340,10 +348,10 @@
             },
 
             success: function(response) {
-                  
+
                 if (response.success) {
                     const techniciansData = response.data;
-                    
+
                     // Update the map with the filtered data
                     updateMap(techniciansData);
                     // Update the job list with new data
@@ -370,24 +378,28 @@
 
     function updateJobDiv(techniciansData) {
         const jobDiv = $('#jobdiv .list-group');
-        jobDiv.empty(); 
-        let hasCustomizedRoute = false; 
+        jobDiv.empty();
+        let hasCustomizedRoute = false;
 
         if (techniciansData.length > 0) {
             const jobsByDate = {};
 
             techniciansData.forEach(technician => {
-                const routingType = technician.technician.routing; 
-                const techId = technician.technician.id; 
+                const routingType = technician.technician.routing;
+                const techId = technician.technician.id;
                 //  console.log(technician);
-                
+
                 if (technician.jobs && technician.jobs.length > 0) {
                     technician.jobs.forEach(job => {
                         const jobDate = job.start_date_time.split(' ')[0];
                         if (!jobsByDate[jobDate]) {
                             jobsByDate[jobDate] = [];
                         }
-                        jobsByDate[jobDate].push({ ...job, routingType , techId});
+                        jobsByDate[jobDate].push({
+                            ...job,
+                            routingType,
+                            techId
+                        });
 
                         if (routingType === "customizedroute") {
                             hasCustomizedRoute = true;
@@ -431,13 +443,14 @@
             // Append Save Button if "customizedroute" exists
             if (hasCustomizedRoute) {
                 if ($('#saveRoute1').length === 0) {
-                    $('#jobdiv').append('<button id="saveRoute1" class="btn btn-primary mt-2" disabled>Save Routes</button>');
+                    $('#jobdiv').append(
+                        '<button id="saveRoute1" class="btn btn-primary mt-2" disabled>Save Routes</button>');
                 }
-            }else {
-                $('#saveRoute1').remove(); 
+            } else {
+                $('#saveRoute1').remove();
             }
 
-             // Add click event to list items
+            // Add click event to list items
             jobDiv.find('.list-group-item').on('click', function() {
                 const lat = parseFloat($(this).data('lat'));
                 const long = parseFloat($(this).data('long'));
@@ -521,7 +534,6 @@
             map.setZoom(12);
         });
     }
-
 </script>
 
 <script>
@@ -535,16 +547,16 @@
             items: '.sortable-job[data-routing="customizedroute"]',
             start: function(event, ui) {
                 // Logic before sorting starts
-                                                    $(".day").droppable("disable");
+                $(".day").droppable("disable");
 
             },
             stop: function(event, ui) {
                 // Enable save button after sorting
-                                                    $(".day").droppable("enable");
+                $(".day").droppable("enable");
 
                 $('#saveRoute1').prop('disabled', false);
 
-               let reorderedJobs = [];
+                let reorderedJobs = [];
 
                 // Extract data into the array
                 $('.list-group .sortable-job').each(function() {
@@ -585,18 +597,18 @@
             }
         });
 
-        $(document).on('click','#saveRoute1', function() {
-           const reorderedJobs = $(this).data('reorderedjobids');
-          
+        $(document).on('click', '#saveRoute1', function() {
+            const reorderedJobs = $(this).data('reorderedjobids');
+
 
             if (reorderedJobs && reorderedJobs.length > 0) {
-                
+
                 $.ajax({
-                    url: '{{ route('save-reordered-jobs') }}', 
+                    url: '{{ route('save-reordered-jobs') }}',
                     method: 'POST',
                     data: {
                         jobIds: reorderedJobs,
-                        _token: $('meta[name="csrf-token"]').attr('content') 
+                        _token: $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(response) {
                         console.log("Jobs reordered successfully:", response);
@@ -614,94 +626,95 @@
 
 
         $(document).on('click', '.JobOpenModalButton', function(event) {
-                event.preventDefault(); 
-                var tech_id = $(this).data('tech-id');
-                var dateDay = $(this).data('dateday');
-                var routing = $('#routing').val();
-                var $jobDetailsDiv = $('.openJobTechDetails');
-                var chooseFrom;
-                var chooseTo;
+            event.preventDefault();
+            var tech_id = $(this).data('tech-id');
+            var dateDay = $(this).data('dateday');
+            var routing = $('#routing').val();
+            var $jobDetailsDiv = $('.openJobTechDetails');
+            var chooseFrom;
+            var chooseTo;
 
-                if(dateDay === 'chooseDate')
-                {
-                    chooseFrom = $('#chooseFrom').val();
-                    chooseTo = $('#chooseTo').val();
-                }
+            if (dateDay === 'chooseDate') {
+                chooseFrom = $('#chooseFrom').val();
+                chooseTo = $('#chooseTo').val();
+            }
 
-                $jobDetailsDiv.show();
-                $('#allJobsTechnician .popup-option123').attr('data-id', tech_id);
-                var tech_name = $(this).data('tech-name');
-                var date = $(this).data('date');
-                $.ajax({
-                    url: '{{ route('schedule.getALlRoutingJob') }}',
-                    method: 'GET',
-                    data: {
-                        tech_id: tech_id,
-                        dateDay: dateDay,
-                        routing: routing,
-                        date: date,
-                        chooseFrom: chooseFrom,
-                        chooseTo: chooseTo,
-                    },
-                    success: function(response) {
-                        var jobs = response;
+            $jobDetailsDiv.show();
+            $('#allJobsTechnician .popup-option123').attr('data-id', tech_id);
+            var tech_name = $(this).data('tech-name');
+            var date = $(this).data('date');
+            $.ajax({
+                url: '{{ route('schedule.getALlRoutingJob') }}',
+                method: 'GET',
+                data: {
+                    tech_id: tech_id,
+                    dateDay: dateDay,
+                    routing: routing,
+                    date: date,
+                    chooseFrom: chooseFrom,
+                    chooseTo: chooseTo,
+                },
+                success: function(response) {
+                    var jobs = response;
 
-                        var ticketShowRoute = "{{ route('tickets.show', ':id') }}";
-                        $('#allJobsTechnicianLabel46').empty();
-                        $('#allJobsTechnicianLabel46').append(tech_name + ' - Dispatch Schedule');
+                    var ticketShowRoute = "{{ route('tickets.show', ':id') }}";
+                    $('#allJobsTechnicianLabel46').empty();
+                    $('#allJobsTechnicianLabel46').append(tech_name +
+                        ' - Dispatch Schedule');
 
-                        $('.openJobTechDetails').empty();
+                    $('.openJobTechDetails').empty();
 
-                        if (jobs.length === 0) {
-                            $('.openJobTechDetails').append(
-                                '<div class="col-12"><p>There is no job available.</p></div>'
-                            );
-                        } else {
-                            // Group jobs by date
-                            var groupedJobs = jobs.reduce(function(groups, job) {
-                                var dateKey = new Date(job.start_date_time).toLocaleDateString('en-US', {
+                    if (jobs.length === 0) {
+                        $('.openJobTechDetails').append(
+                            '<div class="col-12"><p>There is no job available.</p></div>'
+                        );
+                    } else {
+                        // Group jobs by date
+                        var groupedJobs = jobs.reduce(function(groups, job) {
+                            var dateKey = new Date(job.start_date_time)
+                                .toLocaleDateString('en-US', {
                                     weekday: 'short', // Tue
-                                    day: '2-digit',  // 24
-                                    month: 'short',  // Dec
-                                    year: 'numeric'  // 2024
+                                    day: '2-digit', // 24
+                                    month: 'short', // Dec
+                                    year: 'numeric' // 2024
                                 });
-                                if (!groups[dateKey]) {
-                                    groups[dateKey] = [];
-                                }
-                                groups[dateKey].push(job);
-                                return groups;
-                            }, {});
+                            if (!groups[dateKey]) {
+                                groups[dateKey] = [];
+                            }
+                            groups[dateKey].push(job);
+                            return groups;
+                        }, {});
 
-                            // Generate HTML for each date group
-                            Object.keys(groupedJobs).forEach(function(date) {
-                                // Add a date heading
-                                $('.openJobTechDetails').append(
-                                    `<div class="col-12">
+                        // Generate HTML for each date group
+                        Object.keys(groupedJobs).forEach(function(date) {
+                            // Add a date heading
+                            $('.openJobTechDetails').append(
+                                `<div class="col-12">
                                         <h4 class="date-heading">${date}</h4>
                                     </div>`
-                                );
+                            );
 
-                                // Add jobs for the current date
-                                groupedJobs[date].forEach(function(job, index) {
-                                    var fieldNames = '';
+                            // Add jobs for the current date
+                            groupedJobs[date].forEach(function(job, index) {
+                                var fieldNames = '';
 
-                                    if (
-                                        job.job_model &&
-                                        Array.isArray(job.job_model.fieldids) &&
-                                        job.job_model.fieldids.length > 0
-                                    ) {
-                                        fieldNames = job.job_model.fieldids
-                                            .map(function(f) {
-                                                return f.field_name;
-                                            })
-                                            .join(', ');
-                                    }
+                                if (
+                                    job.job_model &&
+                                    Array.isArray(job.job_model.fieldids) &&
+                                    job.job_model.fieldids.length > 0
+                                ) {
+                                    fieldNames = job.job_model.fieldids
+                                        .map(function(f) {
+                                            return f.field_name;
+                                        })
+                                        .join(', ');
+                                }
 
-                                    var fieldNamesBadge = fieldNames
-                                        ? `<span class="badge bg-primary">${fieldNames}</span>`
-                                        : '';
+                                var fieldNamesBadge = fieldNames ?
+                                    `<span class="badge bg-primary">${fieldNames}</span>` :
+                                    '';
 
-                                    var jobHtml = `<div class="col-md-4 mb-3">
+                                var jobHtml = `<div class="col-md-4 mb-3">
                                         <div class="card shadow-sm h-100 pp_job_info_full">
                                             <div class="card-body card-border card-shadow">
                                                 <!-- Job ID and Badge -->
@@ -795,18 +808,19 @@
                                         </div>
                                     </div>`;
 
-                                    $('.openJobTechDetails').append(jobHtml);
-                                });
+                                $('.openJobTechDetails').append(jobHtml);
                             });
-                        }
-
-                        $('#allJobsTechnician').modal('show');
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error: AJAX request failed. Status:', status, 'Error:', error);
+                        });
                     }
 
-                });
+                    $('#allJobsTechnician').modal('show');
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error: AJAX request failed. Status:', status, 'Error:',
+                        error);
+                }
+
+            });
         });
 
         function formatDateRange(startDate, endDate, interval) {

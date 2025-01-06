@@ -805,6 +805,8 @@ Route::middleware('auth')->group(function () {
     Route::get('jobrouting_filter', [RoutingController::class, 'jobrouting_filter'])->name('jobrouting.filter');
     Route::post('route-setting-store', [RoutingController::class, 'Routesettingstore'])->name('index.routing.Routesettingstore');
     Route::post('/save-reordered-jobs', [RoutingController::class, 'savereorderedjobs'])->name('save-reordered-jobs');
+    Route::get('/jobs/{jobId}/popup', [RoutingController::class, 'getPopupView']);
+
 
 
 
