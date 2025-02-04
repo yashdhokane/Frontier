@@ -41,6 +41,6 @@ class VehicleInsurancePolicy extends Model
      */
     public function vehicle()
     {
-        return $this->belongsTo(FleetVehicle::class);
+        return $this->belongsTo(FleetVehicle::class, 'vehicle_id', 'vehicle_id');
     }
 }

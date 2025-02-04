@@ -2233,6 +2233,7 @@ class ScheduleController extends Controller
             ->join('jobs', 'jobs.id', 'job_assigned.job_id')
             ->join('users', 'users.id', 'jobs.customer_id')
             ->join('users as technician', 'technician.id', 'job_assigned.technician_id')
+            ->where('job_assigned.assign_status', 'active')
             ->where('job_assigned.job_id', $data['id'])->first();
 
         $jobFieldsIds = explode(',', $result->job_field_ids);
@@ -2773,7 +2774,7 @@ class ScheduleController extends Controller
     {
         $new_currentDate = \Carbon\Carbon::parse($request->date)->format('Y-m-d');
 
-
+        // dd($new_currentDate);
         $data = DB::table('job_assigned')
             ->select(
                 'job_assigned.id as assign_id',
@@ -2800,10 +2801,10 @@ class ScheduleController extends Controller
             ->join('jobs', 'jobs.id', '=', 'job_assigned.job_id')
             ->join('users', 'users.id', '=', 'jobs.customer_id')
             ->join('users as technician', 'technician.id', '=', 'job_assigned.technician_id')
+            ->where('job_assigned.assign_status', 'active')
             ->whereNotNull('jobs.latitude')
             ->whereNotNull('jobs.longitude')
             ->whereDate('job_assigned.start_date_time', '=', $new_currentDate)
-            ->where('job_assigned.assign_status', 'active')
             ->orderBy('job_assigned.pending_number', 'asc')
             ->get();
 
@@ -3180,7 +3181,10 @@ class ScheduleController extends Controller
             return $schedule;
         });
 
-        $screen2 = view('schedule.schedule_iframe', compact('technicians', 'schedules', 'formattedDate', 'hours', 'tomorrowDate', 'previousDate'))->render();
+                $tech = User::where('role', 'technician')->where('status', 'active')->get();
+
+
+        $screen2 = view('schedule.schedule_iframe', compact('technicians', 'schedules', 'formattedDate', 'hours', 'tomorrowDate', 'previousDate','tech'))->render();
 
         return response()->json(['tbody' => $screen2]);
     }
@@ -3224,7 +3228,10 @@ class ScheduleController extends Controller
             return $schedule;
         });
 
-        $screen2 = view('schedule.demoSchedule', compact('technicians', 'schedules', 'formattedDate', 'hours', 'tomorrowDate', 'previousDate'))->render();
+                $tech = User::where('role', 'technician')->where('status', 'active')->get();
+
+
+        $screen2 = view('schedule.demoSchedule', compact('technicians', 'schedules', 'formattedDate', 'hours', 'tomorrowDate', 'previousDate','tech'))->render();
 
         return response()->json(['tbody' => $screen2]);
     }
@@ -4266,6 +4273,27 @@ class ScheduleController extends Controller
         return response()->json($schedule);
     }
 
+    public function checkroutingtech(Request $request)
+    {
+        $technicianId = $request->input('technician_id');
+        $date = $request->input('date');
+
+        // Adjust date format if necessary
+        $formattedDate = \Carbon\Carbon::parse($date)->format('Y-m-d');
+
+        // Query matching data
+        $jobs = RoutingJOb::where('user_id', $technicianId)
+            ->whereDate('schedule_date_time', $formattedDate) 
+            ->get();
+        $user = User::where('id', $technicianId)->first();
+
+        // Return the response
+        return response()->json([
+            'status' => 'success',
+            'data' => $jobs,
+            'user' => $user,
+        ]);
+    }
 
 
 }

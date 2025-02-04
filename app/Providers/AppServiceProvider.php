@@ -159,40 +159,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Share a global function to generate the popup view HTML
-        View::share('getPopupView', function ($jobId) {
-            // Fetch job details
-            $job = DB::table('jobs')
-                ->join('users', 'jobs.customer_id', '=', 'users.id')
-                ->where('jobs.id', $jobId)
-                ->select('jobs.*', 'users.name as customer_name')
-                ->first();
-
-            if (!$job) {
-                return '<div class="pp_jobmodel">Job not found.</div>';
-            }
-
-            // Fetch customer address details
-            $address = CustomerUserAddress::where('user_id', $job->customer_id)
-                ->select('address_line1', 'city', 'zipcode', 'state_name')
-                ->first();
-
-            $fullAddress = $address
-                ? "{$address->address_line1}, {$address->city}, {$address->state_name}, {$address->zipcode}"
-                : 'Address not available';
-
-            // Generate the HTML
-            return <<<HTML
-                <div class="pp_jobmodel" style="width: 250px;">
-                    <h5 class="uppercase text-truncate pb-0 mb-0">#{$job->id} - {$job->title}</h5>
-                    <p class="text-truncate pb-0 mb-0 ft13">{$job->description}</p>
-                    <p class="ft13 uppercase mb-0 text-truncate">
-                        <strong><i class="ri-user-line"></i> {$job->customer_name}</strong>
-                    </p>
-                    <div class="ft12"><i class="ri-map-pin-fill"></i> {$fullAddress}</div>
-                </div>
-            HTML;
-        });
+      
 
 
 

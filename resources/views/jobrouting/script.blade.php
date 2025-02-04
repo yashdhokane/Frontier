@@ -129,6 +129,7 @@
 
         });
     }
+    var popupUrl = "{{ route('jobs.popup', ['jobId' => '__JOB_ID__']) }}";
 
     function renderRouteForDate(map, technician, jobsByDate, dateDay) {
 
@@ -184,6 +185,7 @@
                             lng: parseFloat(longitude)
                         },
                         destination: waypoints[waypoints.length - 1].location,
+                        optimizeWaypoints: false,
                         waypoints,
                         travelMode: google.maps.TravelMode.DRIVING,
                     },
@@ -227,8 +229,10 @@
                             },
                         });
                        
-                         $.ajax({
-                            url: `/jobs/${job.job_id}/popup`,
+                        const popupRequestUrl = popupUrl.replace('__JOB_ID__', job.job_id);
+
+                        $.ajax({
+                            url: popupRequestUrl,
                             method: 'GET',
                             success: function(response) {
                                 if (response.popupHtml) {
@@ -241,9 +245,10 @@
                                     );
                                 }
                             },
-                            error: function() {
+                            error: function(xhr, status, error) {
+                                // Log detailed error information
                                 console.error("Failed to fetch popup HTML.");
-                            }
+                             }
                         });
                     }
                 });
@@ -351,7 +356,7 @@
 
                 if (response.success) {
                     const techniciansData = response.data;
-
+            
                     // Update the map with the filtered data
                     updateMap(techniciansData);
                     // Update the job list with new data
@@ -507,31 +512,42 @@
                 // label: `${index + 1}`
             });
 
-            const infoWindow = new google.maps.InfoWindow({
-                content: `
-                <div>
-                    <h5>#${data.customer.job_id}-${data.customer.job_title}</h5>
-                    <p>${data.customer.description}</p>
-                    <h6>${name}</h6>
-                    <p>${full_address}</p>
-                </div>`
-            });
-            infoWindow.open(map, marker);
-            marker.addListener("click", () => {
-                infoWindow.open(map, marker);
+            const popupRequestUrl = popupUrl.replace('__JOB_ID__', data.customer.job_id);
 
-                // Close info window when the button is clicked
-                google.maps.event.addListenerOnce(infoWindow, "domready", () => {
-                    document.getElementById("close-info-window").addEventListener("click",
-                        () => {
-                            infoWindow.close();
+            $.ajax({
+                url: popupRequestUrl,
+                method: 'GET',
+                success: function(response) {
+                    if (response.popupHtml) {
+                        const infoWindow = new google.maps.InfoWindow({
+                            content: response.popupHtml,
                         });
-                });
+                         infoWindow.open(map, marker);
+                        marker.addListener("click", () => {
+                            infoWindow.open(map, marker);
+
+                            // Close info window when the button is clicked
+                            google.maps.event.addListenerOnce(infoWindow, "domready", () => {
+                                document.getElementById("close-info-window").addEventListener("click",
+                                    () => {
+                                        infoWindow.close();
+                                    });
+                            });
+                        });
+
+                        // Center map on the marker
+                        map.setCenter(marker.getPosition());
+                        map.setZoom(12);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Log detailed error information
+                    console.error("Failed to fetch popup HTML.");
+                    }
             });
 
-            // Center map on the marker
-            map.setCenter(marker.getPosition());
-            map.setZoom(12);
+           
+           
         });
     }
 </script>
@@ -591,27 +607,27 @@
                 }));
 
                 // Set the transformed data as an attribute or use it further
-                console.log(finalArray);
-                $('#saveRoute1').attr('data-reorderedJobIds', JSON.stringify(finalArray));
+              $('#saveRoute1').removeAttr('data-reorderedJobIds').attr('data-reorderedJobIds', JSON.stringify(finalArray));
+
 
             }
         });
 
         $(document).on('click', '#saveRoute1', function() {
-            const reorderedJobs = $(this).data('reorderedjobids');
-
-
+            let reorderedJobs = $(this).attr('data-reorderedJobIds');
             if (reorderedJobs && reorderedJobs.length > 0) {
+                // Parse JSON string to an array before sending
+                reorderedJobs = JSON.parse(reorderedJobs);
 
                 $.ajax({
                     url: '{{ route('save-reordered-jobs') }}',
                     method: 'POST',
-                    data: {
-                        jobIds: reorderedJobs,
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        jobIds: reorderedJobs, // Now sending an actual array
                         _token: $('meta[name="csrf-token"]').attr('content')
-                    },
+                    }),
                     success: function(response) {
-                        console.log("Jobs reordered successfully:", response);
                         alert('Jobs reordered successfully!');
                     },
                     error: function(error) {
@@ -623,6 +639,7 @@
                 alert("No changes to save.");
             }
         });
+
 
 
         $(document).on('click', '.JobOpenModalButton', function(event) {

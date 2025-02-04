@@ -2,7 +2,11 @@
 
 @section('content')
     <link href="{{ asset('public/admin/routing/style.css') }}" rel="stylesheet" />
-
+       @if($routingJob->isEmpty())
+            <div class="alert alert-warning" role="alert">
+                <strong>Notice:</strong> Routing is not set.
+            </div>
+        @endif
     <div class=" col-md-12">
         <div class="d-flex justify-content-between align-items-center" id="menu">
             <div class="col-md-3 row">

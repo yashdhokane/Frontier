@@ -24,11 +24,12 @@
                   <div class="card">
                       <div class="card-body wizard-content">
                           <h6 class="card-subtitle mb-2"></h6>
+                          <div id="alert-routing"></div>
                           <form action="#" class="tab-wizard vertical wizard-circle mt-1" id="createScheduleForm"
                               enctype="multipart/form-data">
                               @csrf
 
-                              <input type="hidden" class="technician_id" name="technician_id" value="{{ $technician->id }}"
+                              <input type="hidden" class="technician_id"  id="technician_idRouting" name="technician_id" value="{{ $technician->id }}"
                                   data-start-hours="{{ (int) $hours->start_time }}"
                                   data-end-hours="{{ (int) $hours->end_time }}" data-start-time="{{ $time }}">
                               <input type="hidden" class="datetime" name="datetime" id="datetime"
@@ -178,6 +179,7 @@
 
                               <h6>Job Information</h6>
                               <section>
+                              
                                   <div class="row">
                                       <div class="col-md-6">
                                           <div class="mt-0 mb-3">
@@ -1484,6 +1486,58 @@
           </script>
           <script>
               $(document).ready(function() {
+
+                    var techid = $('#technician_idRouting').val();
+                    var date = $('#newdate').val();
+                    // for checking where it is routed or not 
+                
+                    $.ajax({
+                        url: '{{ route("routing.techbydate") }}',
+                        type: 'POST',
+                        data: {
+                            technician_id: techid,
+                            date: date,
+                            _token: $('meta[name="csrf-token"]').attr('content') 
+                        },
+                        success: function (response) {
+                            if (response.data !== null && response.data.length > 0) { 
+                                    console.log('hello2');
+                                var technicianName = response.user.name || "the technician"; 
+
+                                var alertHtml = `
+                                    <div class="alert alert-danger alert-dismissible fade show pb-4" role="alert">
+                                        <strong>Warning!</strong> Routing is already set to ${technicianName} for the selected date. Proceed?
+                                        <button type="button" class="btn btn-success float-end pt-2 btn-continue">Yes</button>
+                                    </div>`;
+                                $('#alert-routing').html(alertHtml); // Inject the alert into the container
+                            }else{
+                                $('#alert-routing').empty();
+                            }
+                        },
+                        error: function (xhr) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+
+                // Disable the link
+               let isBtnContinueClicked = false;
+
+                $(document).on('click', '.btn-continue', function() {
+                    isBtnContinueClicked = true;
+                        $('#alert-routing').empty();
+                });
+
+                $('a[href="#next"]').on('click', function(e) {
+                    if ($('.btn-continue').length > 0 && !isBtnContinueClicked) {
+                        e.preventDefault();
+                        return false;
+                    }
+                    isBtnContinueClicked = false;
+                });
+
+
+
+
                   var ajaxRequestForCustomer;
                   $('.tab-wizard').steps({
                       headerTag: 'h6',
@@ -1501,6 +1555,7 @@
 
                           // Check if navigating forward to the next step
                           if (currentIndex === 1) {
+                            console.log('hello 2');
                               function checkAllConditions() {
                                   var isValid = validateStep2Fields(); // Validate required fields in step 2
                                   var isStatusSlotAvailable = $('.status_slot')
@@ -1540,6 +1595,7 @@
                                   return false; // Stop further action to prevent navigation
                               }
                           } else if (currentIndex === 2) {
+                           
                               // Check if all required fields are filled for step 3
                               var isValid = validateStep3Fields();
                               if (!isValid) {
@@ -1551,6 +1607,7 @@
                                   });
                                   return false; // Prevent navigation to the next step
                               }
+                              
                           }
 
                           // If navigating to step 3, call showAllInformation function

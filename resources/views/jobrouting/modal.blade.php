@@ -61,7 +61,7 @@
                                     <label class="col-8 col-form-label">Auto Route Settings</label>
                                     <div class="col-4 bt-switch">
                                         <input type="checkbox" name="auto_route" data-toggle="switchbutton"
-                                            data-on-color="success" data-off-color="default"
+                                            data-on-color="success" data-off-color="default" id="switch_auto_route"
                                             onchange="toggleTimeInput(this, 'autoRouteTime')">
                                         <input type="hidden" name="auto_route_value" value="no">
                                     </div>
@@ -76,7 +76,7 @@
                                         <label class="col-8 col-form-label">Time Constraints</label>
                                         <div class="col-4  bt-switch">
                                             <input type="checkbox" name="time_constraints" data-toggle="switchbutton"
-                                                data-on-color="success" data-off-color="default"
+                                                data-on-color="success" data-off-color="default"  id="switch_time_constraints"
                                                 onchange="updateCheckboxValue(this)">
                                             <input type="hidden" name="time_constraints_value" value="no">
                                         </div>
@@ -85,7 +85,7 @@
                                         <label class="col-8 col-form-label">Priority Routing</label>
                                         <div class="col-4  bt-switch">
                                             <input type="checkbox" name="priority_routing" data-toggle="switchbutton"
-                                                data-on-color="success" data-off-color="default"
+                                                data-on-color="success" data-off-color="default"  id="switch_priority_routing"
                                                 onchange="updateCheckboxValue(this)">
                                             <input type="hidden" name="priority_routing_value" value="no">
                                         </div>
@@ -95,7 +95,7 @@
                                     <label class="col-8 col-form-label">Automatic Re-Routing</label>
                                     <div class="col-4 bt-switch">
                                         <input type="checkbox" name="auto_rerouting" data-toggle="switchbutton"
-                                            data-on-color="success" data-off-color="default"
+                                            data-on-color="success" data-off-color="default"  id="switch_auto_rerouting"
                                             onchange="toggleTimeInput(this, 'autoReRouteTime')">
                                         <input type="hidden" name="auto_rerouting_value" value="no">
                                     </div>
@@ -110,7 +110,7 @@
                                     <label class="col-8 col-form-label">Auto Publishing</label>
                                     <div class="col-4 bt-switch">
                                         <input type="checkbox" name="auto_publishing" data-toggle="switchbutton"
-                                            data-on-color="success" data-off-color="default"
+                                            data-on-color="success" data-off-color="default"  id="switch_auto_publishing"
                                             onchange="toggleTimeInput(this, 'autoPublishingTime')">
                                         <input type="hidden" name="auto_publishing_value" value="no">
                                     </div>
@@ -155,7 +155,7 @@
                                         <div class="col-1">
                                             <input type="checkbox" class="form-check-input"
                                                 id="tech{{ $technician->id }}" name="technicians[]"
-                                                value="{{ $technician->id }}">
+                                                value="{{ $technician->id }}" class="checkbox-technicians">
                                         </div>
                                         <div class="col">
                                             <label for="tech{{ $technician->id }}"
@@ -222,14 +222,34 @@
             success: function(response) {
                 // Check if the response indicates success
                 if (response.success) {
-                    // Show a success message
-                    alert('Settings saved successfully!');
+                     if(response.success == true){
+                            $('#frontier_loader').show();
+                             // Reset the form fields (optional)
+                            $('#formstore')[0].reset(); // Replace with the actual ID of your form
 
-                    // Reset the form fields (optional)
-                    $('#formstore')[0].reset(); // Replace with the actual ID of your form
+                            // Uncheck technician checkboxes
+                            $('.checkbox-technicians').prop('checked', false);
+                             setTimeout(function() {
+                                $('#frontier_loader').hide();
+                            }, 1000);
+                            
+                            // Hide the modal
+                            $('#largeModal').modal('hide');
 
-                    // Hide the modal
-                    $('#largeModal').modal('hide');
+                            // $('#switch_auto_route').bootstrapSwitch('state', false, true);
+                            // $('#switch_time_constraints').bootstrapSwitch('state', false, true);
+                            // $('#switch_priority_routing').bootstrapSwitch('state', false, true);
+                            // $('#switch_auto_rerouting').bootstrapSwitch('state', false, true);
+                            // $('#switch_auto_publishing').bootstrapSwitch('state', false, true);
+                            // Update Bootstrap Switch states
+                            $('input[data-toggle="switchbutton"]').each(function() {
+                                $(this).bootstrapSwitch('state', false, true);
+                            });
+
+                           
+                        }
+
+                   
                 } else {
                     alert('There was an issue saving the settings.');
                 }

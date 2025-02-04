@@ -250,7 +250,7 @@
                               <th>ID</th>
                               <th>Parts</th>
                               <th>Category</th>
-                              <th>Manufacturer</th>
+                              <th>Manufacturer</th> 
                               <!--  <th>Sold</th>
                                                                                                                                                                     <th>Quantity</th> -->
                               <th>Price</th>

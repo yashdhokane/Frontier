@@ -17,7 +17,7 @@
 {{-- @if (request()->routeIs('map'))
     <script src="{{ asset('public/admin/dist/js/app.init.mini-sidebar.js') }}"></script>
 @else --}}
-    <script src="{{ asset('public/admin/dist/js/app.init.js') }}"></script>
+<script src="{{ asset('public/admin/dist/js/app.init.js') }}"></script>
 {{-- @endif --}}
 
 
@@ -62,7 +62,7 @@
 <script src="{{ asset('public/admin/dist/js/pages/forms/select2/select2.init.js') }}"></script>
 
 <!-- COMMENTED BY SR
-<script src="{{ asset('public/admin/dist/js/pages/contact/contact.js') }}"></script> 
+<script src="{{ asset('public/admin/dist/js/pages/contact/contact.js') }}"></script>
 -->
 
 <!-- COMMENTED BY SR
@@ -85,31 +85,31 @@
 
 
 
-<?php  
-    if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')   
-         $url = "https://";   
-    else  
-         $url = "http://";   
-    // Append the host(domain name, ip) to the URL.   
-    $url.= $_SERVER['HTTP_HOST'];   
-    
-    // Append the requested resource location to the URL   
-    $url.= $_SERVER['REQUEST_URI'];    
-      
-    
+<?php
+    if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
+         $url = "https://";
+    else
+         $url = "http://";
+    // Append the host(domain name, ip) to the URL.
+    $url.= $_SERVER['HTTP_HOST'];
+
+    // Append the requested resource location to the URL
+    $url.= $_SERVER['REQUEST_URI'];
+
+
 	if($url == "https://dispatchannel.com/portal/home") {
-		//echo $url." home page";  
+		//echo $url." home page";
 		?>
-		<script src="{{ asset('public/admin/dist/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
-		<!-- <script src="{{ asset('public/admin/dist/js/pages/dashboards/dashboard1.js') }}"></script> -->
-		<script src="{{ asset('public/admin/dist/js/pages/apex-chart/apex.pie.init.js') }}"></script>
-		<?php 
+<script src="{{ asset('public/admin/dist/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
+<!-- <script src="{{ asset('public/admin/dist/js/pages/dashboards/dashboard1.js') }}"></script> -->
+<script src="{{ asset('public/admin/dist/js/pages/apex-chart/apex.pie.init.js') }}"></script>
+<?php
 	}
-  ?>  
-  
-  
-  
-  
+  ?>
+
+
+
+
 <script src="{{ asset('public/admin/dist/libs/jquery-steps/build/jquery.steps.min.js') }}"></script>
 
 <script src="{{ asset('public/admin/dist/libs/jquery-validation/dist/jquery.validate.min.js') }}"></script>
@@ -131,7 +131,7 @@
         var entry_id = $(this).attr('id');
         $("#appendbody").empty();
         $.ajax({
-            url: '{{ route("getStoryDetails") }}',
+            url: '{{ route('getStoryDetails') }}',
             type: 'get',
             data: {
                 entry_id: entry_id
@@ -146,154 +146,111 @@
 </script>
 
 <script>
-    $(document).on('click', '.viewinfo', function() { $("#add-contact1").modal({
-    backdrop: "static",
-    keyboard: false,
-    });
-    var entry_id = $(this).attr('id');
-    $("#appendbody").empty();
-    $.ajax({
-   url: '{{ route("editproduct") }}',
-    type: 'get',
-    data: {
-    entry_id: entry_id
+    $(document).on('click', '.viewinfo', function() {
+        $("#add-contact1").modal({
+            backdrop: "static",
+            keyboard: false,
+        });
+        var entry_id = $(this).attr('id');
+        $("#appendbody").empty();
+        $.ajax({
+            url: '{{ route('editproduct') }}',
+            type: 'get',
+            data: {
+                entry_id: entry_id
 
-    },
-    dataType: 'json',
-    success: function(data) {
-    $("#appendbody").html(data);
-    }
+            },
+            dataType: 'json',
+            success: function(data) {
+                $("#appendbody").html(data);
+            }
+        });
     });
-    });
 </script>
-<script>
-    function toggleForm() {
-        // Get the form container element
-        var businessInfo = document.getElementById("businessInfo");
-        businessInfo.style.display = businessInfo.style.display === "none" ? "block" : "none";
-        var formContainer = document.querySelector(".form-container");
-        
-        // Toggle the display property
-        formContainer.style.display = formContainer.style.display === "none" ? "block" : "none";
-    }
-</script>
-<script>
-    function companydescription() {
-              var businessInfo = document.getElementById("businessInfo-one");
-        businessInfo.style.display = businessInfo.style.display === "none" ? "block" : "none";
-        var x = document.querySelector(".form-group1");
-        if (x.style.display === "none") {
-            x.style.display = "block";
-        } else {
-            x.style.display = "none";
-        }
-    }
-</script>
-<script>
-    function messageondocs() {
-        var businessInfo = document.getElementById("businessInfo-two");
-        businessInfo.style.display = businessInfo.style.display === "none" ? "block" : "none";
-        var x = document.querySelector(".form-group2");
-        if (x.style.display === "none") {
-            x.style.display = "block";
-        } else {
-            x.style.display = "none";
-        }
-    }
-</script>
-<script>
-    function termsandcondition() {
-             var businessInfo = document.getElementById("businessInfo-three");
-        businessInfo.style.display = businessInfo.style.display === "none" ? "block" : "none";
-        var x = document.querySelector(".form-group3");
-        if (x.style.display === "none") {
-            x.style.display = "block";
-        } else {
-            x.style.display = "none";
-        }
-    }
-</script>
-<script>
-    $(document).on('click', '.viewinfo', function() { $("#add-contact2").modal({
-    backdrop: "static",
-    keyboard: false,
-    });
-    var entry_id = $(this).attr('id');
-    // console.log(entry_id);
-    $("#appendbody1").empty();
-    $.ajax({
-   url: '{{ route("estimateDetails") }}',
-    type: 'get',
-    data: {
-    entry_id: entry_id
 
-    },
-    dataType: 'json',
-    success: function(data) {
-    $("#appendbody1").html(data);
-    }
-    });
+
+
+<script>
+    $(document).on('click', '.viewinfo', function() {
+        $("#add-contact2").modal({
+            backdrop: "static",
+            keyboard: false,
+        });
+        var entry_id = $(this).attr('id');
+        // console.log(entry_id);
+        $("#appendbody1").empty();
+        $.ajax({
+            url: '{{ route('estimateDetails') }}',
+            type: 'get',
+            data: {
+                entry_id: entry_id
+
+            },
+            dataType: 'json',
+            success: function(data) {
+                $("#appendbody1").html(data);
+            }
+        });
     });
 </script>
 <script>
     function showImagePreview() {
-                    var input = document.getElementById('file');
-                    var imagePreview = document.getElementById('imagePreview');
-                    if (input.files && input.files[0]) {
-                        var reader = new FileReader();
-                        reader.onload = function(e) {
-                            imagePreview.src = e.target.result;
-                        };
-                        reader.readAsDataURL(input.files[0]);
-                    } else {
-                        imagePreview.src = ''; // Clear the image source if no file is selected.
-                    }
-                }
-
+        var input = document.getElementById('file');
+        var imagePreview = document.getElementById('imagePreview');
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            imagePreview.src = ''; // Clear the image source if no file is selected.
+        }
+    }
 </script>
 
 
 
 
 
-    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6.3.1/dist/tippy.css" />
-    <script src="https://unpkg.com/@popperjs/core@2"></script>
-    <script src="https://unpkg.com/tippy.js@6"></script>
+<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://unpkg.com/tippy.js@6.3.1/dist/tippy.css" />
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
 
-    <!-- Bootstrap Datepicker JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<!-- Bootstrap Datepicker JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
 
-    <script src="{{ asset('public/admin/dist/libs/bootstrap-switch/dist/js/bootstrap-switch.min.js') }}"></script>
+<script src="{{ asset('public/admin/dist/libs/bootstrap-switch/dist/js/bootstrap-switch.min.js') }}"></script>
 
-    <script>
-        $(".bt-switch input[type='checkbox'], .bt-switch input[type='radio']").bootstrapSwitch();
+<script>
+    $(".bt-switch input[type='checkbox'], .bt-switch input[type='radio']").bootstrapSwitch();
 
-        var radioswitch = (function() {
-            var bt = function() {
+    var radioswitch = (function() {
+        var bt = function() {
+            $('.radio-switch').on('switch-change', function() {
+                    $('.radio-switch').bootstrapSwitch('toggleRadioState');
+                }),
                 $('.radio-switch').on('switch-change', function() {
-                        $('.radio-switch').bootstrapSwitch('toggleRadioState');
-                    }),
-                    $('.radio-switch').on('switch-change', function() {
-                        $('.radio-switch').bootstrapSwitch('toggleRadioStateAllowUncheck');
-                    }),
-                    $('.radio-switch').on('switch-change', function() {
-                        $('.radio-switch').bootstrapSwitch('toggleRadioStateAllowUncheck', false);
-                    });
-            };
-            return {
-                init: function() {
-                    bt();
-                },
-            };
-        })();
+                    $('.radio-switch').bootstrapSwitch('toggleRadioStateAllowUncheck');
+                }),
+                $('.radio-switch').on('switch-change', function() {
+                    $('.radio-switch').bootstrapSwitch('toggleRadioStateAllowUncheck', false);
+                });
+        };
+        return {
+            init: function() {
+                bt();
+            },
+        };
+    })();
 
-        $(document).ready(function() {
-            radioswitch.init();
-        });
-    </script>
+    $(document).ready(function() {
+        radioswitch.init();
+    });
+</script>
 
 <script>
     function toggleTimeInput(checkbox, targetId) {
@@ -312,12 +269,4 @@
             //targetRow.classList.remove('border-btm'); // Hide the target row
         }
     }
-
-    
-
-
-   
-
-   
 </script>
-

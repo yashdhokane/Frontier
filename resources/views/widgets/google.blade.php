@@ -8,5 +8,6 @@
     <script async src="https://cse.google.com/cse.js?cx=929815ee2d1cd4079"></script>
 </head>
 <body>
-    <div class="gcse-search" data-linktarget="_self" ></div>
+    <div class="gcse-search"  ></div>
 </body>
+</html>

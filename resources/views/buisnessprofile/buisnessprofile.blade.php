@@ -295,7 +295,7 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
 
 
@@ -309,6 +309,59 @@
                 selector: 'textarea#description, textarea#message_on_docs, textarea#terms_condition'
             });
         });
+    </script>
+
+    <script>
+        function toggleForm() {
+            // Get the form container element
+            var businessInfo = document.getElementById("businessInfo");
+            businessInfo.style.display = businessInfo.style.display === "none" ? "block" : "none";
+            var formContainer = document.querySelector(".form-container");
+
+            // Toggle the display property
+            formContainer.style.display = formContainer.style.display === "none" ? "block" : "none";
+        }
+    </script>
+
+
+    <script>
+        function companydescription() {
+            var businessInfo = document.getElementById("businessInfo-one");
+            businessInfo.style.display = businessInfo.style.display === "none" ? "block" : "none";
+            var x = document.querySelector(".form-group1");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    </script>
+
+    <script>
+        function messageondocs() {
+            var businessInfo = document.getElementById("businessInfo-two");
+            businessInfo.style.display = businessInfo.style.display === "none" ? "block" : "none";
+            var x = document.querySelector(".form-group2");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    </script>
+
+
+    <script>
+        function termsandcondition() {
+            var businessInfo = document.getElementById("businessInfo-three");
+            businessInfo.style.display = businessInfo.style.display === "none" ? "block" : "none";
+            var x = document.querySelector(".form-group3");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
     </script>
 
 @stop

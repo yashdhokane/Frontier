@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 use App\Http\Controllers\PerformanceMatrix;
 use App\Http\Controllers\CustomerDataController;
@@ -53,6 +54,7 @@ use App\Http\Controllers\CrmController;
 use App\Http\Controllers\MailController;
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\embeddedbrowserController;
 
 
 
@@ -140,6 +142,8 @@ use App\Http\Controllers\RepliesController;
 
 use App\Http\Controllers\VendorController;
 
+use App\Http\Controllers\ParametersController;
+
 /*
 
 
@@ -188,11 +192,58 @@ Route::fallback(function () {
     return response()->view('404', [], 404);
 });
 
+ Route::get('/search-engine-parts', function () {
+
+
+
+        return view('parameter.search_engine_parts_render');
+    });
+
+
+
 Route::get('/unauthorized', function () {
     return view('403');
     // return view('tickets.index');
 
 });
+
+Route::get('/embedded', function () {
+    return view('tickets.embedded');
+    // return view('tickets.index');
+
+});
+
+
+
+Route::get('/google', function () {
+    return view('widgets.google');
+})->name('google.search');
+
+Route::get('/google1', function () {
+    return view('widgets.google1');
+})->name('google1.search');
+
+use GuzzleHttp\Client;
+
+Route::get('/search', function (Request $request) {
+    $query = $request->input('query');
+
+    // Set up the Google API client
+    $client = new Client();
+    $response = $client->get('https://www.googleapis.com/customsearch/v1', [
+        'query' => [
+            'key' => 'YOUR_GOOGLE_API_KEY',
+            'cx' => 'YOUR_CUSTOM_SEARCH_ENGINE_ID',
+            'q' => $query,
+        ]
+    ]);
+
+    $results = json_decode($response->getBody(), true);
+    
+    // Return search results view with results data
+    return view('widgets.google', compact('results'));
+});
+
 
 Route::middleware('guest')->group(function () {
 
@@ -206,6 +257,7 @@ Route::middleware('guest')->group(function () {
     });
 
 
+   
 
     Route::get('/', function () {
 
@@ -463,7 +515,12 @@ Route::middleware('auth')->group(function () {
 
     // Display all tickets
 
+    Route::post('/clearTabs-tab-data', [embeddedbrowserController::class, 'clearTabs'])->name('user.clearTabs');
 
+    Route::get('/save-tab-data', [embeddedbrowserController::class, 'saveTabData'])->name('saveTabData');
+    Route::get('/get-user-tabs', [embeddedbrowserController::class, 'getUserTabs'])->name('getUserTabs');
+
+    Route::get('/embedded-new', [embeddedbrowserController::class, 'embedded'])->name('tickets.embedded');
 
     Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
     Route::get('/tickets-iframe', [TicketController::class, 'indexiframe'])->name('tickets.indexiframe');
@@ -805,7 +862,7 @@ Route::middleware('auth')->group(function () {
     Route::get('jobrouting_filter', [RoutingController::class, 'jobrouting_filter'])->name('jobrouting.filter');
     Route::post('route-setting-store', [RoutingController::class, 'Routesettingstore'])->name('index.routing.Routesettingstore');
     Route::post('/save-reordered-jobs', [RoutingController::class, 'savereorderedjobs'])->name('save-reordered-jobs');
-    Route::get('/jobs/{jobId}/popup', [RoutingController::class, 'getPopupView']);
+    Route::get('/jobs/{jobId}/popup', [RoutingController::class, 'getPopupView'])->name('jobs.popup');
 
 
 
@@ -923,6 +980,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/update_view_job/{id}', [ScheduleController::class, 'update_view_job'])->name('schedule.update_view_job');
 
     Route::post('/send-sms-schedule', [ScheduleController::class, 'send_sms_schedule'])->name('send_sms_schedule');
+
+    Route::post('/checkroutingtech', [ScheduleController::class, 'checkroutingtech'])->name('routing.techbydate');
 
 
 
@@ -1451,10 +1510,6 @@ Route::middleware('auth')->group(function () {
 
 
     //Tool Controller route
-
-
-
-
     Route::get('tools', [ToolController::class, 'index'])->name('tool.index');
 
     Route::get('book-list/tool-create', [ToolController::class, 'createproduct'])->name('tool.createtool');
@@ -1471,6 +1526,27 @@ Route::middleware('auth')->group(function () {
 
     Route::get('assign_tool', [ToolController::class, 'assign_product'])->name('assign_tool');
     Route::post('store/assign-tool', [ToolController::class, 'store_assign_tool']);
+
+
+    //Parameters Controller route
+    Route::get('parameters', [ParametersController::class, 'index'])->name('parameters');
+
+    Route::get('parametersOld', [ParametersController::class, 'indexOld'])->name('parametersOld');
+
+    Route::post('/send-message-param', [ParametersController::class, 'sendMessage'])->name('param.message');
+
+    Route::post('/vehicleMessage-param', [ParametersController::class, 'vehicleMessage'])->name('param.vehicleMessage');
+
+    Route::get('/search-customers-param', [ParametersController::class, 'searchcustomersparam'])->name('search-customers-param');
+
+    Route::get('/jobsParamFilter', [ParametersController::class, 'jobsParamFilter'])->name('jobsParam.filter');
+
+    Route::get('/jobsProductParam', [ParametersController::class, 'jobsProductParam'])->name('jobsProductParam.filter');
+
+    Route::post('/save-filters-job-parameters', [ParametersController::class, 'saveFiltersjob'])->name('save.filters.job.parameter');
+
+    Route::post('/get-filter-data-parameter-agains-user-id', [ParametersController::class, 'getfilterdataparameteragainsuserid'])->name('get-filter-data-parameter-agains-user-id');
+
 });
 
 Route::post('/reset-password', [UserController::class, 'resetPassword'])->name('resetPassword');

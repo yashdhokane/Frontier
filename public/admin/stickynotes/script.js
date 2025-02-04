@@ -276,6 +276,16 @@ $(document).ready(function () {
     $("#sticky_job_list").DataTable({
         order: [[0, "desc"]],
         pageLength: 25,
+        columnDefs: [
+            {
+                targets: 4, // Index of the priority column (zero-based)
+                visible: false, // Hide the column from view
+            },
+            {
+                targets: 5, // Index of the is confirmed column (zero-based)
+                visible: false, // Hide the column from view
+            },
+        ],
     });
 
     $(
@@ -307,7 +317,7 @@ $(document).ready(function () {
     $("#priority-filter").on("change", function () {
         var priority = $(this).val();
         table
-            .column(2)
+            .column(4)
             .search(priority || "", true, false)
             .draw();
     });

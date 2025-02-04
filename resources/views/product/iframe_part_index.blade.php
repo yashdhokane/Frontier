@@ -245,6 +245,8 @@
                                   @endforeach
                               </select>
                           </div>
+
+                         
                           <div class="col-md-12 mb-3">
                               <label for="manufacturer_filter" class="form-label"><strong>Manufacturer</strong></label>
                               <select class="form-select" name="manufacturer" id="manufacturer_filter">
@@ -321,7 +323,7 @@
                                           <th>ID</th>
                                           <th>Parts</th>
                                           <th>Category</th>
-                                          <th>Manufacturer</th>
+                                          <th>Manufacturer  </th> 
                                           <!--  <th>Sold</th>
                                                                                                                                                                                                                             <th>Quantity</th> -->
                                           <th>Price</th>
@@ -402,6 +404,14 @@
                                                               class="text-dark pe-2 dropdown-item">
                                                               <i class="fa fa-edit edit-sm fill-white pe-2"></i> Edit
                                                           </a>
+   <!-- Button to trigger the modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#searchProductModal">
+    <i class="fa fa-search pe-2"></i> Search Product
+</button>
+
+<!-- Modal structure -->
+
+
                                                           <form method="post"
                                                               action="{{ route('product.iframe.destroy', ['id' => $item->product_id]) }}">
                                                               @csrf
@@ -413,6 +423,8 @@
                                                                       class="feather-sm fill-white"></i> Delete
                                                               </a>
                                                           </form>
+
+
                                                       </div>
                                                   </div>
                                               </td>
@@ -437,6 +449,19 @@
           </div>
       </div>
       </div>
+<div class="modal fade" id="searchProductModal" tabindex="-1" aria-labelledby="searchProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="searchProductModalLabel">Search Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Iframe inside the modal -->
+<iframe src="{{ route('google.search') }}" style="width: 100%; height: 400px; border: none;" id="assetsIframe"></iframe>            </div>
+        </div>
+    </div>
+</div>
 
       @include('product.scriptIndex')
 

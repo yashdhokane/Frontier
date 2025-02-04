@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Manufacturer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -41,7 +42,7 @@ class Products extends Model
 
     public function manufacturername() 
     {
-        return $this->hasOne(manufacturer::class, 'id', 'product_manu_id');
+        return $this->hasOne(manufacturer::class, 'product_manu_id', 'id');
     }
 
     public function categoryProduct() 

@@ -1,5 +1,6 @@
 @section('script')
-    @include('jobrouting.script')
+    // google api key is include in this script
+    @include('jobrouting.script') 
     <script>
         $(document).ready(function() {
             $(document).on('click', '.eventNoClick', function(e) {
@@ -237,7 +238,6 @@
             }
         });
 
-
         //schedule script 1
 
         $(document).ready(function() {
@@ -374,11 +374,6 @@
                 }
             }).disableSelection();
         });
-
-
-
-
-
 
         //schedule script 2
         $(document).ready(function() {
@@ -977,6 +972,7 @@
                         date: date
                     },
                     success: function(response) {
+                        console.log(response);
                         if (response.data) {
                             setMarkers(mapElementId, response.data);
                         } else {
@@ -1092,11 +1088,4 @@
 
         });
     </script>
-
-
-
-
-
-
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo"></script>
 @endsection

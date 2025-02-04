@@ -120,39 +120,40 @@
                     </li>
 
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle waves-effect waves-dark"
+                        <a class="nav-link dropdown-toggle waves-effect waves-dark" title="Routing"
                             href="{{ route('index.routing.new') }}"><i style="font-size: 22px;" class="fas ri-map-2-fill ft20"></i></a>
                     </li>
 
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle waves-effect waves-dark" id="showJobList"><i
-                                class="fas fa-calendar-check ft20"></i> </a>
+                        <a class="nav-link dropdown-toggle waves-effect waves-dark" title="Parameters"
+                            href="{{ route('parameters') }}"><i style="font-size: 22px;" class="ri-list-settings-line ft20 align-self-baseline"></i></a>
                     </li>
-
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle waves-effect waves-dark" href="{{ route('map') }}"><i
+                        <a class="nav-link dropdown-toggle waves-effect waves-dark" title="Reschedule" href="{{ route('map') }}"><i
                                 class="fas fa-map-marker-alt ft20"></i> </a>
                     </li>
 
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle waves-effect waves-dark" id="showStickyNote"><i
+                        <a class="nav-link dropdown-toggle waves-effect waves-dark" title="Open Jobs" id="showJobList"><i
+                                class="ri-draft-line ft20 align-self-baseline"></i> </a>
+                    </li>
+
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle waves-effect waves-dark" title="Sticky Note" id="showStickyNote"><i
                                 class="fas fa-sticky-note ft20"></i> </a>
                     </li>
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle waves-effect waves-dark"
-                            href="https://dispatchannel.com/portal/reports/jobs"><i class="fas fa-chart-line ft20"></i>
-                        </a>
-                    </li>
+                  
 
                     <!-- NOTIFICATION -->
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown" title="Notification">
                         @include('admin.nav-notification')
                     </li>
                     <!-- END NOTIFICATION -->
 
                     <!-- MESSAGES -->
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown" title="Messages">
                         @include('admin.nav-messages')
                     </li>
                     <!-- END MESSAGES -->
@@ -568,6 +569,8 @@
                                         <th class="job-details-column">Job Details</th>
                                         <th>Customer</th>
                                         <th>Technician</th>
+                                        <th>Priority</th> 
+                                        <th>isConfirmed</th> 
                                         <th>Date & Time</th>
                                         <th>Action</th>
                                     </tr>
@@ -619,7 +622,9 @@
                                                     Unassigned
                                                 @endif
                                             </td>
-                                             <td>
+                                            <td class="priority-column">{{ $ticket->priority ?? 'None' }}</td> <!-- Hidden column -->
+                                            <td class="isConfirmed-column">{{ $ticket->isConfirmed ?? 'None' }}</td> <!-- Hidden column -->
+                                            <td>
                                                 @if ($ticket->jobassignname && $ticket->jobassignname->start_date_time)
                                                     <div class="font-medium link">
                                                         {{ \Carbon\Carbon::parse($ticket->jobassignname->start_date_time)->addMinutes($time_interval)->format('m-d-Y') }}
