@@ -13,7 +13,7 @@
 
 		<!-- -------------------------------------------------------------- -->
 
-		<a class="navbar-brand" href="#">
+		<a class="navbar-brand" href="#" style="display:none;">
 
 			<!-- Logo icon -->
 

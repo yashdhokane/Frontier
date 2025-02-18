@@ -5,7 +5,11 @@
     <!-- -------------------------------------------------------------- -->
     <!-- Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
-
+<style>
+.dt-search {
+    margin-left: 1000px !important;
+}
+</style>
 
 
     <div class="page-breadcrumb">
@@ -47,15 +51,21 @@
                     </div>
 
                     <!-- Month Dropdown -->
-                    <div class="col-md-3" id="monthPicker" style="display: none;">
-                        <select id="selectMonth" class="form-control">
-                            <option value="">Select Month</option>
-                            @foreach (range(1, 12) as $month)
-                                <option value="{{ $month }}">{{ date('F', mktime(0, 0, 0, $month, 1)) }} 2024
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+                  <div class="col-md-3" id="monthPicker" style="display: none;">
+    <select id="selectMonth" class="form-control">
+        <option value="">Select Month</option>
+        @php
+            $currentMonth = date('n'); // Get the current month (1 to 12)
+            $currentYear = date('Y');  // Get the current year
+        @endphp
+
+        @foreach (range($currentMonth, 12) as $month)
+            <option value="{{ $month }}">
+                {{ date('F', mktime(0, 0, 0, $month, 1)) }} {{ $currentYear }}
+            </option>
+        @endforeach
+    </select>
+</div>
 
                     <!-- Year Dropdown -->
                     <div class="col-md-3" id="yearPicker" style="display: none;">
@@ -775,6 +785,8 @@
                 "info": true, // Show table info like "Showing 1 to 25 of 100 entries"
             });
 
+          
+
             let urlParams = new URLSearchParams(window.location.search);
             let filterTypeFromUrl = urlParams.get('type'); // Get the 'type' parameter from the URL
 
@@ -861,7 +873,10 @@
                 "searching": true, // Enable search functionality
                 "paging": true, // Enable pagination
                 "info": true, // Show table info like "Showing 1 to 25 of 100 entries"
-            });
+               
+            }); 
+
+
 
             let urlParams = new URLSearchParams(window.location.search);
             let filterTypeFromUrl = urlParams.get('type'); // Get the 'type' parameter from the URL
@@ -1003,15 +1018,18 @@
                     $(tableId).DataTable().destroy();
                 }
 
-                $(tableId).DataTable({
-                    "order": [
-                        [0, "desc"]
-                    ],
-                    "pageLength": 25,
-                    "searching": true,
-                    "paging": true,
-                    "info": true,
-                });
+               new DataTable(tableId, {
+            layout: {
+                topStart: {
+                    buttons: ['excel', 'pdf']
+                }
+            },
+            order: [[0, "desc"]],
+            pageLength: 25,
+            searching: true,
+            paging: true,
+            info: true
+        });
             }
 
             // Default: Load all data on page load
@@ -1031,7 +1049,7 @@
             var tableIds = ['jobRevenue', 'monthjobRevenue',
                 'job_count', 'daily', 'weekly', 'monthly', 'job_tags', 'priority', 'status',
                 'job_lead_source', 'customerReport', 'zipcodeReport', 'cityReport', 'stateReport',
-                'manufacturers', 'appliances'
+                'manufacturers', 'appliances','average_job_size','Status',  'monthly',  'weekly',  'daily' , 'job_count'  
             ];
 
             $.each(tableIds, function(index, tableId) {
@@ -1043,10 +1061,21 @@
                     "order": [
                         [0, "desc"]
                     ],
-                    "pageLength": 25
+            "pageLength": 25,
+            dom: 'Bfrtip', // This adds the button container to show export buttons
+            buttons: [
+                'excel', // Excel export button
+                'pdf' // PDF export button
+            ]
                     // Add more options as needed
                 });
             });
+
+            
         });
+
+        
     </script>
+`
+    
 @stop

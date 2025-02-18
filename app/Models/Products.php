@@ -39,10 +39,14 @@ class Products extends Model
     {
         return $this->hasOne(ProductMeta::class, 'product_id', 'product_id');
     }
+    public function ProductAssign()
+    {
+        return $this->hasMany(ProductAssigned::class, 'product_id','product_id');
+    }
 
     public function manufacturername() 
     {
-        return $this->hasOne(manufacturer::class, 'product_manu_id', 'id');
+        return $this->hasOne(manufacturer::class, 'id', 'product_manu_id');
     }
 
     public function categoryProduct() 

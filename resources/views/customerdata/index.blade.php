@@ -80,7 +80,7 @@
                     class="col-md-8 col-xl-10 text-end d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
 
                     <a href="{{ route('users.create') }}" id="newCustomerBtn" class="btn btn-info"><i
-                            class="ri-user-add-line"></i> Add New Customer</a>
+                            class="ri-user-add-line"></i> Add New Customers</a>
 
                     @if (request()->routeIs('users.index'))
                     <a href="{{ route('users.status', ['status' => 'deactive']) }}" class="btn btn-danger mx-3"><i

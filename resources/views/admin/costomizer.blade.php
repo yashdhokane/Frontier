@@ -1,5 +1,9 @@
+<!--<a href="javascript:void(0)" class="service-panel-toggle"><i data-feather="settings" class="feather-sm fa fa-spin"></i></a>-->
+
+<a href="javascript:void(0)" class="service-panel-toggle"><i class="ri-information-line ft20" style="font-size: 22px;margin-left: 4px;"></i></a>
+
 <aside class="customizer">
-	<a href="javascript:void(0)" class="service-panel-toggle"><i data-feather="settings" class="feather-sm fa fa-spin"></i></a>
+	
 	
 	<div class="customizer-body">
 	

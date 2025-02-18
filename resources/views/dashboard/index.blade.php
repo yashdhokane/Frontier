@@ -30,8 +30,8 @@
 
 /* Optionally, adding a transform on hover for more smoothness */
 .draggable-items1:hover {
-    transform: scale(1.02); /* Slightly enlarge when hovering */
-    transition: transform 0.3s ease; /* Smooth transition for the hover effect */
+    //transform: scale(1.02); /* Slightly enlarge when hovering */
+   // transition: transform 0.3s ease; /* Smooth transition for the hover effect */
 }
 
 
@@ -45,11 +45,11 @@
         }
 
         .box:focus-within {
-            border: 2px solid #007bff;
+            /* border: 2px solid #007bff; */
             /* Add blue border when focused */
-            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+            /* box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); */
             /* Add shadow effect */
-            outline: none;
+            /* outline: none; */
             /* Remove default outline */
         }
         
@@ -60,7 +60,7 @@
         <!-- -------------------------------------------------------------- -->
 
         <div class="d-flex justify-content-between pb-2">
-            {{-- <h4 class="mb-3 page-title text-info fw-bold">
+            {{-- <h4 class="mb-3 page-title fw-bold">
                 {{ $layout->layout_name ?? null }}
                 @if ($layout->added_by == auth()->user()->id && $layout->is_editable == 'yes')
                     <a href="#" class="edit-layout" data-bs-toggle="modal" data-bs-target="#editModal">
@@ -381,7 +381,7 @@
                             <div class="col-md-12 col-lg-12  mb-3 box draggable-items1" id="box-{{ $index }}"
                                 data-original-index="{{ $index }}" tabindex="0"
                                 data-id="{{ $cardPosition->module_id }}">
-                                <div class="card card-border card-shadow">
+                                <div class="card card-border card-shadow" style="height:50px!important;">
                                     <!-- Flex container for module name and button -->
                                     <div class="card-header d-flex justify-content-between align-items-center">
                                         <div>

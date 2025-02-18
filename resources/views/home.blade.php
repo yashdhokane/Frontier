@@ -52,6 +52,12 @@
     <!-- Bootstrap Datepicker CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
         rel="stylesheet">
+        
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.6/css/buttons.dataTables.min.css"> 
+
+        
+
     @if (request()->query('sidebar') === 'off')
         <style>
             #main-wrapper[data-layout="vertical"][data-sidebartype="full"] .page-wrapper {
@@ -328,7 +334,7 @@
 
     <!-- -------------------------------------------------------------- -->
 
-    @include('admin.costomizer')
+   <!--  @include('admin.costomizer')  -->
 
     <div class="chat-windows"></div>
 
@@ -342,6 +348,10 @@
                 // Trigger click event on the element with class .sidebartoggler
                 $('.sidebartoggler').click();
             }); // Adjust the delay time as needed
+            
+            document.querySelectorAll('table[style*="width: 0px"]').forEach(table => {
+                    table.removeAttribute('style');
+                });
         });
     </script>
 
@@ -361,7 +371,7 @@
                 },
                 success: function(response) {
                     // Handle success response
-                    console.log(response);
+                    // console.log(response);
                 },
                 error: function(xhr, status, error) {
                     // Handle error
@@ -369,6 +379,8 @@
                 }
             });
         }
+
+
     </script>
 
 

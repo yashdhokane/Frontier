@@ -35,25 +35,22 @@
             </div>
 
             <div class="col-5 align-self-center">
-                <div class="d-flex no-block justify-content-end align-items-center">
+			
+				<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+					
+					<a href="{{ route('users.create') }}" id="newCustomerBtn" class="btn btn-secondary text-white"><i class="ri-user-add-line"></i> Add New Customers</a>
+					  
+					@if (request()->routeIs('users.index'))
+						<a href="{{ route('users.status', ['status' => 'deactive']) }}"  class="btn btn-secondary text-white"><i class="ri-user-unfollow-fill"></i> View Inactive Customers</a>
+					@elseif(request()->routeIs('users.status'))
+						<a href="{{ route('users.index') }}" class="btn btn-secondary text-white"><i class="ri-user-follow-line"></i> View Active Customers</a>
+					@endif
 
-                    <a href="{{ route('users.create') }}" id="newCustomerBtn" class="btn btn-sm btn-info"><i
-                            class="ri-user-add-line"></i> Add New Customer</a>
-
-                    @if (request()->routeIs('users.index'))
-                        <a href="{{ route('users.status', ['status' => 'deactive']) }}"
-                            class="btn btn-sm btn-danger mx-3"><i class="ri-user-unfollow-fill"></i> View Inactive
-                            Customers</a>
-                    @elseif(request()->routeIs('users.status'))
-                        <a href="{{ route('users.index') }}" class="btn btn-sm btn-success mx-3"><i
-                                class="ri-user-follow-line"></i> View Active Customers</a>
-                    @endif
-
-                    <a href="#." id="filterButton" class="btn btn-sm btn-info">
-                        <i class="ri-filter-line"></i> Filters
-                    </a>
-                </div>
-            </div>
+					 <a href="#." id="filterButton" class="btn btn-secondary text-white"><i class="ri-filter-line"></i> Filters</a>
+                     
+				</div>
+				
+             </div>
         </div>
     </div>
     <!-- -------------------------------------------------------------- -->

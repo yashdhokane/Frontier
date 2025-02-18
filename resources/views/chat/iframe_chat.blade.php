@@ -119,9 +119,9 @@
                       <div class="btn-group px-3 p-2 border-bottom" role="group" aria-label="Second group">
                           <button type="button" class="badge btn btn-info active-01"
                               data-role="technician">Technician</button>
-                          <button type="button" class="badge btn btn-light-info text-info font-weight-medium"
+                          <button type="button" class="badge btn btn-secondary text-white font-weight-medium"
                               data-role="customer">Customer</button>
-                          <button type="button" class="badge btn btn-light-info text-info font-weight-medium"
+                          <button type="button" class="badge btn btn-secondary text-white font-weight-medium"
                               data-role="employee">Employee</button>
                       </div>
 

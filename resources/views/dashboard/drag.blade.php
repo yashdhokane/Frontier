@@ -27,7 +27,7 @@
         <!-- -------------------------------------------------------------- -->
 
         <div class="d-flex justify-content-between pb-2">
-            <h4 class="mb-3 page-title text-info fw-bold">
+            <h4 class="mb-3 page-title fw-bold">
                 {{ $layout->layout_name ?? null }}
                 @if ($layout->added_by == auth()->user()->id && $layout->is_editable == 'yes')
                     <a href="#" class="edit-layout" data-bs-toggle="modal" data-bs-target="#editModal">

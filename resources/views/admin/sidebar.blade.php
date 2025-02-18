@@ -43,8 +43,8 @@ $menus = NavMenuLeft::where('parent_id', 0)
         <nav class="sidebar-nav mt-2">
             <ul id="sidebarnav">
                 @foreach ($menus as $menu)
-                <li class="sidebar-item">
-                    <a class="sidebar-link waves-effect waves-dark sidebar-link {{ $menu->menu_class }} @if($menu->children->isNotEmpty()) has-arrow @endif" href="{{ $menu->menu_link === '#.' ? '#.' : route($menu->menu_link) }} " aria-expanded="false">
+                <li class="sidebar-item sidebar-item-parent">
+                    <a class="sidebar-link waves-effect waves-dark sidebar-link  @if($menu->children->isNotEmpty()) has-arrow @endif" href="{{ $menu->menu_link === '#.' ? '#.' : route($menu->menu_link) }} " aria-expanded="false">
                         <i class="{{ $menu->menu_icon }}"></i><span class="hide-menu">{{ $menu->menu_name }}</span>
                     </a>
                     @if ($menu->children->isNotEmpty())
@@ -57,7 +57,7 @@ $menus = NavMenuLeft::where('parent_id', 0)
                            // dump($filteredChildren);
                         @endphp
                         @foreach ($filteredChildren as $child)
-                            <li class="sidebar-item">
+                            <li class="sidebar-item sidebar-item-child">
                                 <a href="{{ $child->menu_link === '#.' ? '#.' : route($child->menu_link) }}" class="sidebar-link {{ $menu->menu_class }}">
                                     <i class="{{ $child->menu_icon }}"></i>
                                     <span class="hide-menu">{{ $child->menu_name }}</span>

@@ -5,7 +5,7 @@
 
         <div class="row">
             <div class="col-8">
-                <h4 class="page-title text-info fw-bold"> {{ $siteSettings->business_name ?? null }}</h4>
+                <h4 class="page-title fw-bold"> {{ $siteSettings->business_name ?? null }}</h4>
             </div>
             <div class="col-4">
                 <div class="text-end text-primary fw-bold">
@@ -60,7 +60,7 @@
 
                                 <div class="d-md-flex align-items-center mt-2">
                                     <div>
-                                        <h5 class="card-title text-info uppercase mb-1">Approval Pending to Close the Job
+                                        <h5 class="card-title uppercase mb-1">Approval Pending to Close the Job
                                         </h5>
                                         <h5 class="ft12">Technician marked the job as closed
                                         </h5>
@@ -136,7 +136,7 @@
 
                                 <div class="d-md-flex align-items-center mt-2">
                                     <div>
-                                        <h5 class="card-title text-info uppercase mb-1">Upcoming Job </h5>
+                                        <h5 class="card-title uppercase mb-1">Upcoming Job </h5>
                                         <h5 class="ft12">Overview of Upcoming Job </h5>
                                     </div>
                                 </div>
@@ -199,7 +199,7 @@
 
                                 <div class="d-md-flex align-items-center mt-2">
                                     <div>
-                                        <h5 class="card-title text-info uppercase mb-1"> Open invoices </h5>
+                                        <h5 class="card-title uppercase mb-1"> Open invoices </h5>
                                         {{-- <h5 class="ft12">Overview of Upcoming Open invoices </h5> --}}
                                     </div>
                                 </div>
@@ -255,7 +255,7 @@
 
                                 <div class="d-md-flex align-items-center mt-2">
                                     <div>
-                                        <h5 class="card-title text-info uppercase mb-1"> Paid invoices </h5>
+                                        <h5 class="card-title uppercase mb-1"> Paid invoices </h5>
                                         {{-- <h5 class="ft12">Overview of Upcoming Paid invoices </h5> --}}
                                     </div>
                                 </div>
@@ -383,7 +383,7 @@
 
                 <div class="row mt-3">
                     <div>
-                        <h5 class="card-title text-info uppercase mb-2 px-1">Active Technicians</h5>
+                        <h5 class="card-title uppercase mb-2 px-1">Active Technicians</h5>
                     </div>
                 </div>
                 <div class="row">
@@ -415,7 +415,7 @@
 
                 <div class="row mt-3">
                     <div>
-                        <h5 class="card-title uppercase text-info text-info mb-2 px-1">Top Customers</h5>
+                        <h5 class="card-title uppercase mb-2 px-1">Top Customers</h5>
                     </div>
                 </div>
                 <div class="row">
@@ -515,7 +515,7 @@
 
                 <div class="card card-border shadow mt-4">
                     <div class="card-body">
-                        <h5 class="card-title text-info uppercase">Quick Links</h5>
+                        <h5 class="card-title uppercase">Quick Links</h5>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item"><i class="ri-file-list-line feather-sm me-2"></i> <a
                                     href="{{ route('download') }}">Download App </a></li>

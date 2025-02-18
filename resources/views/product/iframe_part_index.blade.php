@@ -76,14 +76,14 @@
                 <div class="col-7 text-end px-4">
                     <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                         <a href="{{ route('product.index_iframe') }}"
-                            class="btn {{ Route::currentRouteName() === 'product.index_iframe' ? 'btn-info' : 'btn-light-info text-info' }}">Parts</a>
+                            class="btn {{ Route::currentRouteName() === 'product.index_iframe' ? 'btn-info' : 'btn-secondary text-white' }}">Parts</a>
                         <a href="{{ route('tool.index_iframe') }}"
-                            class="btn {{ Route::currentRouteName() === 'tool.index_iframe' ? 'btn-info' : 'btn-light-info text-info' }}">Tools</a>
+                            class="btn {{ Route::currentRouteName() === 'tool.index_iframe' ? 'btn-info' : 'btn-secondary text-white' }}">Tools</a>
                         <a href="{{ route('vehicle_iframe_index') }}"
-                            class="btn {{ Route::currentRouteName() === 'vehicle_iframe_index' ? 'btn-info' : 'btn-light-info text-info' }}">vehicle</a>
+                            class="btn {{ Route::currentRouteName() === 'vehicle_iframe_index' ? 'btn-info' : 'btn-secondary text-white' }}">vehicle</a>
                         <div class="btn-group" role="group">
                             <button id="btnGroupDrop1" type="button"
-                                class="btn {{ Route::currentRouteName() === 'iframe_part_assign' || Route::currentRouteName() === 'assign_tool.iframe' ? 'btn-info' : 'btn-light-info text-info' }} dropdown-toggle"
+                                class="btn {{ Route::currentRouteName() === 'iframe_part_assign' || Route::currentRouteName() === 'assign_tool.iframe' ? 'btn-info' : 'btn-secondary text-white' }} dropdown-toggle"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Assign
                             </button>
@@ -97,7 +97,7 @@
                         </div>
                         <div class="btn-group" role="group">
                             <button id="btnGroupDrop2" type="button"
-                                class="btn {{ Route::currentRouteName() === 'iframeaddvehicle' || Route::currentRouteName() === 'product.createproduct.iframe' || Route::currentRouteName() === 'tool.createtool.iframe' ? 'btn-info' : 'btn-light-info text-info' }} dropdown-toggle"
+                                class="btn {{ Route::currentRouteName() === 'iframeaddvehicle' || Route::currentRouteName() === 'product.createproduct.iframe' || Route::currentRouteName() === 'tool.createtool.iframe' ? 'btn-info' : 'btn-secondary text-white' }} dropdown-toggle"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Add New
                             </button>
@@ -111,7 +111,7 @@
                             </div>
                         </div>
                         <a href="{{ route('partCategory') }}"
-                            class="btn {{ Route::currentRouteName() === 'partCategory' ? 'btn-info' : 'btn-light-info text-info' }}">Categories</a>
+                            class="btn {{ Route::currentRouteName() === 'partCategory' ? 'btn-info' : 'btn-secondary text-white' }}">Categories</a>
                     </div>
                 </div>
             </div> --}}

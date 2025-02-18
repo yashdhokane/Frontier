@@ -283,7 +283,10 @@ Route::middleware('guest')->group(function () {
 
 
 require __DIR__ . '/auth.php';
+Route::get('/global-search-auto-suggest', [AdminController::class, 'globalSearchautosuggest'])->name('global.globalSearchautosuggest');
 
+
+Route::get('/global-search', [AdminController::class, 'globalSearch'])->name('global.search');
 
 Route::get('/home', [LayoutDashController::class, 'index'])->middleware('auth')->name('home');
 
@@ -1546,6 +1549,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/save-filters-job-parameters', [ParametersController::class, 'saveFiltersjob'])->name('save.filters.job.parameter');
 
     Route::post('/get-filter-data-parameter-agains-user-id', [ParametersController::class, 'getfilterdataparameteragainsuserid'])->name('get-filter-data-parameter-agains-user-id');
+    
+    Route::get('/getsavedfilters', [ParametersController::class, 'getsavedfilters'])->name('get.saved.filters');
+
+    Route::post('/filter-jobs-byCommand', [ParametersController::class, 'filterjobsbyCommand'])->name('filterjobsbyCommand');
+
+    Route::get('/search-commands', [ParametersController::class, 'searchCommands'])->name('search.commands');
 
 });
 

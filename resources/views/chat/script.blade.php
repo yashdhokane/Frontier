@@ -87,8 +87,8 @@
 
         $('.btn-group button').on('click', function() {
             $('.btn-group button').removeClass('active-01 btn-info').addClass(
-                'btn-light-info text-info font-weight-medium');
-            $(this).removeClass('btn-light-info text-info font-weight-medium').addClass(
+                'btn-secondary text-white font-weight-medium');
+            $(this).removeClass('btn-secondary text-white font-weight-medium').addClass(
                 'active-01 btn-info');
             $('.chatlist').hide();
             var selectedRole = $(this).data('role');

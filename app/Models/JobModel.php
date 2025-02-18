@@ -100,11 +100,11 @@ class JobModel extends Model
 
     public function jobserviceinfo()
     {
-        return $this->hasOne(JobServices::class, 'job_id', 'id');
+        return $this->hasMany(JobServices::class, 'job_id', 'id');
     }
     public function jobproductinfo()
     {
-        return $this->hasOne(JobProduct::class, 'job_id', 'id');
+        return $this->hasMany(JobProduct::class, 'job_id', 'id');
     }
 
     public function jobserviceinfohasmany()

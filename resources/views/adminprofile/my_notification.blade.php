@@ -37,11 +37,11 @@
         <div class="col-7 text-end px-4">
             <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                 <a href="{{ route('myprofile.index') }}"
-                    class="btn {{ request()->routeIs('myprofile.index') ? 'btn-info' : 'btn-light-info text-info' }}">Profile</a>
+                    class="btn {{ request()->routeIs('myprofile.index') ? 'btn-info' : 'btn-secondary text-white' }}">Profile</a>
                 <a href="{{ route('myprofile.account') }}"
-                    class="btn {{ request()->routeIs('myprofile.account') ? 'btn-info' : 'btn-light-info text-info' }}">Account Settings</a>
+                    class="btn {{ request()->routeIs('myprofile.account') ? 'btn-info' : 'btn-secondary text-white' }}">Account Settings</a>
                 <a href="{{ route('myprofile.activity') }}"
-                    class="btn {{ request()->routeIs('myprofile.activity') ? 'btn-info' : 'btn-light-info text-info' }}">Activity and Notifications</a>
+                    class="btn {{ request()->routeIs('myprofile.activity') ? 'btn-info' : 'btn-secondary text-white' }}">Activity and Notifications</a>
                 
                 
             </div>

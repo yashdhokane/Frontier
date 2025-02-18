@@ -69,23 +69,40 @@
             <div class="navbar-collapse collapse" id="navbarSupportedContent">
 
                 <ul class="navbar-nav me-auto">
+				
+					<li class="toplinks headnav_logo_li"><a href="{{ route('home') }}"><img src="https://dispatchannel.com/portal/public/admin/assets/images/dispatchannel-logo.png" alt="Dispatchannel Logo" title="Dispatchannel Logo" class="dark-logo"></a></li>
+					
                     @if ($prefix != 'inbox')
-                        <li class="nav-item d-none d-md-block">
+                        <li class="nav-item d-none d-md-block" style="display: none !important;">
                             <a class="nav-link sidebartoggler waves-effect waves-light" href="javascript:void(0)"
                                 data-sidebartype="mini-sidebar"><i data-feather="menu" class="feather-sm"></i></a>
                         </li>
                     @endif
-                    <li class="toplinks"><a href="{{ route('home') }}"><i class="fas fa-home"></i> Home</a></li>
+					
+					<!-- COMMENTED BY SR <li class="toplinks"><a href="{{ route('home') }}"><i class="fas fa-home"></i> Home</a></li>-->
 
                     <li @if (request()->routeIs('schedule')) class="toplinks selected" @else class="toplinks" @endif
-                        class="toplinks"><a href="{{ route('schedule') }}"><i class="fas fa-calendar-check"></i>
-                            Schedule</a></li>
-                    <!-- <li class="toplinks selected" class="toplinks"><a href="https://dispatchannel.com/portal/schedule_new"><i class="fas fa-calendar-check"></i>
-                        // Schedule New</a></li> -->
-
-                    <li class="toplinks"><a href="{{ route('users.index') }}"><i class="fas fa-users"></i> Customer</a>
+                        class="toplinks"><a href="{{ route('schedule') }}"><i class="fas fa-calendar-check"></i> Schedule</a></li>
+					
+					<li class="toplinks"><a href="{{ route('users.index') }}"><i class="fas fa-users"></i> Customers</a></li>
+					
+					<li class="toplinks"><a href="{{ route('index.routing.new') }}"><i class="fas fas fa-cogs"></i> Routing</a></li>
+					
+					<li class="toplinks"><a href="{{ route('parameters') }}"><i class="fas fa-cog"></i> Parameters</a></li>
+					
+					<!--
+					<li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle waves-effect waves-dark" title="Parameters"
+                            href="{{ route('parameters') }}"><i style="font-size: 22px;" class="ri-list-settings-line ft20 align-self-baseline"></i></a>
                     </li>
+					
+					<!--
+					<li class="toplinks">
+                        <a class="nav-link dropdown-toggle waves-effect waves-dark" title="Routing" href="{{ route('index.routing.new') }}"><i class="fas ri-map-2-fill"></i> Routing</a>
+                    </li>
+					-->
 
+ 
                     <!-- mega menu -->
                     <li class="nav-item dropdown mega-dropdown">
                         @include('admin.nav-mega-menu')
@@ -93,9 +110,11 @@
                     <!-- End mega menu -->
 
                     <!-- create new -->
+                    <!-- COMMENTED BY SR 
                     <li class="nav-item dropdown">
                         @include('admin.nav-create-new')
                     </li>
+					-->
                     <!-- End create new -->
 
                     <!-- SEARCH -->
@@ -113,40 +132,38 @@
                         $currentFormattedDateTime = \Carbon\Carbon::now($timezoneName)->format('h:i:s A T');
                     @endphp
 
-                    <li class="nav-item dropdown align-self-center px-2">
+                     <li class="nav-item dropdown align-self-center px-2">
                         <div class="nav-clock"><span>{{ $currentFormattedDate }}</span><br />
                             <span id="liveTime"></span>
                         </div>
                     </li>
-
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle waves-effect waves-dark" title="Routing"
-                            href="{{ route('index.routing.new') }}"><i style="font-size: 22px;" class="fas ri-map-2-fill ft20"></i></a>
-                    </li>
-
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle waves-effect waves-dark" title="Parameters"
-                            href="{{ route('parameters') }}"><i style="font-size: 22px;" class="ri-list-settings-line ft20 align-self-baseline"></i></a>
-                    </li>
+ 					
+                      <!-- COMMENTED BY SR
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle waves-effect waves-dark" title="Reschedule" href="{{ route('map') }}"><i
                                 class="fas fa-map-marker-alt ft20"></i> </a>
                     </li>
+					-->
 
-                    <li class="nav-item dropdown">
+                    <li class="nav-item ">
                         <a class="nav-link dropdown-toggle waves-effect waves-dark" title="Open Jobs" id="showJobList"><i
                                 class="ri-draft-line ft20 align-self-baseline"></i> </a>
                     </li>
 
 
-                    <li class="nav-item dropdown">
+                    <li class="nav-item ">
                         <a class="nav-link dropdown-toggle waves-effect waves-dark" title="Sticky Note" id="showStickyNote"><i
                                 class="fas fa-sticky-note ft20"></i> </a>
                     </li>
 
-                  
-
-                    <!-- NOTIFICATION -->
+ 
+                    <!-- CUSTOMIZER -->
+                    <li class="nav-item custitem2" title="Customizer" style="width: 30px;">
+                        @include('admin.costomizer')
+                    </li>
+                    <!-- END CUSTOMIZER --> 
+					
+					<!-- NOTIFICATION -->
                     <li class="nav-item dropdown" title="Notification">
                         @include('admin.nav-notification')
                     </li>

@@ -1,7 +1,11 @@
 @extends('home')
 
 @section('content')
-
+<style>
+.dt-search {
+    margin-left: 436px !important;
+}
+</style>
     <div class="page-wrapper" style="display:inline;">
         <!-- -------------------------------------------------------------- -->
         <!-- Bread crumb and right sidebar toggle -->
@@ -303,26 +307,32 @@
 
 
     <script>
-        $(document).ready(function() {
-            // Initialize DataTables for all IDs
-            var tableIds = [
-                'technician', 'technician1'
-            ];
+   $(document).ready(function() {
+    // Initialize DataTables for all IDs
+    var tableIds = [
+        'technician', 'technician1'
+    ];
 
-            $.each(tableIds, function(index, tableId) {
-                if ($.fn.DataTable.isDataTable('#' + tableId)) {
-                    $('#' + tableId).DataTable().destroy();
-                }
+    $.each(tableIds, function(index, tableId) {
+        if ($.fn.DataTable.isDataTable('#' + tableId)) {
+            $('#' + tableId).DataTable().destroy();
+        }
 
-                $('#' + tableId).DataTable({
-                    "order": [
-                        [0, "desc"]
-                    ],
-                    "pageLength": 25
-                    // Add more options as needed
-                });
-            });
+        $('#' + tableId).DataTable({
+            "order": [
+                [0, "desc"]
+            ],
+            "pageLength": 25,
+            dom: 'Bfrtip', // This adds the button container to show export buttons
+            buttons: [
+                'excel', // Excel export button
+                'pdf' // PDF export button
+            ]
+            // Add more options as needed
         });
+    });
+});
+
     </script>
 @stop
 

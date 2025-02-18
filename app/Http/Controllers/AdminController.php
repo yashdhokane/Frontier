@@ -124,5 +124,143 @@ public function updateNotification(Request $request)
         // Return response
         return response()->json(['message' => 'Notification has been updated successfully.']);
     }
+public function globalSearch(Request $request)
+{
+    $query = $request->input('query');
+
+    // Validate query
+    if (!$query) {
+        return redirect()->back()->with('error', 'Search query is required.');
+    }
+
+    // Search jobs
+    $jobs = DB::table('jobs')->select(
+        'id',  // Use the actual primary key field
+        DB::raw("CONCAT('#', CAST(job_title AS CHAR)) as result"),
+        DB::raw("'Job' as type"),
+        DB::raw("CONCAT(job_title, ' - ', status, ' - ', warranty_type) as short_description")
+    )
+    ->where('job_code', 'LIKE', "%$query%")
+    ->orWhere('job_title', 'LIKE', "%$query%");
+
+    // Search users (dispatcher)
+    $users = DB::table('users')->select(
+        'id',  // Use the actual primary key field
+        DB::raw("CAST(name AS CHAR) as result"),
+        DB::raw("'User' as type"),
+        DB::raw("CONCAT('Mobile: ', mobile, ' | Customer ID: ', customer_id) as short_description")
+    )
+    ->where('role', 'dispatcher')
+    ->where('name', 'LIKE', "%$query%")
+    ->orWhere('mobile', 'LIKE', "%$query%");
+
+    // Search customers
+    $customers = DB::table('users')->select(
+        'id',  // Use the actual primary key field
+        DB::raw("CAST(name AS CHAR) as result"),
+        DB::raw("'Customer' as type"),
+        DB::raw("CONCAT('Mobile: ', mobile, ' | Customer ID: ', customer_id) as short_description")
+    )
+    ->where('role', 'customer')
+    ->where('name', 'LIKE', "%$query%")
+    ->orWhere('mobile', 'LIKE', "%$query%");
+
+    // Search services
+    $services = DB::table('services')->select(
+        'service_id',  // Use the actual primary key field
+        DB::raw("CAST(service_name AS CHAR) as result"),
+        DB::raw("'Service' as type"),
+        DB::raw("CAST(service_description AS CHAR) as short_description")
+    )
+    ->where('service_name', 'LIKE', "%$query%");
+
+    // Search products
+    $products = DB::table('products')->select(
+        'product_id',  // Use the actual primary key field
+        DB::raw("CAST(product_name AS CHAR) as result"),
+        DB::raw("'Product' as type"),
+        DB::raw("CAST(product_description AS CHAR) as short_description")
+    )
+    ->where('product_name', 'LIKE', "%$query%");
+
+    // Combine results with pagination
+    $results = $jobs->union($users)->union($customers)->union($services)->union($products)
+        ->paginate(10);  // You can adjust the number of results per page
+
+    return view('admin.global_search_render', compact('results', 'query'));
+}
+
+
+
+public function globalSearchautosuggest(Request $request)
+{
+    $query = $request->input('query');
+
+    // Validate query
+    if (!$query) {
+        return redirect()->back()->with('error', 'Search query is required.');
+    }
+
+    // Search jobs
+    $jobs = DB::table('jobs')->select(
+        'id',  // Use the actual primary key field
+        DB::raw("CONCAT('#', CAST(job_title AS CHAR)) as result"),
+        DB::raw("'Job' as type"),
+        DB::raw("CONCAT(job_title, ' - ', status, ' - ', warranty_type) as short_description")
+    )
+    ->where('job_code', 'LIKE', "%$query%")
+    ->orWhere('job_title', 'LIKE', "%$query%");
+
+    // Search users (dispatcher)
+    $users = DB::table('users')->select(
+        'id',  // Use the actual primary key field
+        DB::raw("CAST(name AS CHAR) as result"),
+        DB::raw("'User' as type"),
+        DB::raw("CONCAT('Mobile: ', mobile, ' | Customer ID: ', customer_id) as short_description")
+    )
+    ->where('role', 'dispatcher')
+    ->where('name', 'LIKE', "%$query%")
+    ->orWhere('mobile', 'LIKE', "%$query%");
+
+    // Search customers
+    $customers = DB::table('users')->select(
+        'id',  // Use the actual primary key field
+        DB::raw("CAST(name AS CHAR) as result"),
+        DB::raw("'Customer' as type"),
+        DB::raw("CONCAT('Mobile: ', mobile, ' | Customer ID: ', customer_id) as short_description")
+    )
+    ->where('role', 'customer')
+    ->where('name', 'LIKE', "%$query%")
+    ->orWhere('mobile', 'LIKE', "%$query%");
+
+    // Search services
+    $services = DB::table('services')->select(
+        'service_id',  // Use the actual primary key field
+        DB::raw("CAST(service_name AS CHAR) as result"),
+        DB::raw("'Service' as type"),
+        DB::raw("CAST(service_description AS CHAR) as short_description")
+    )
+    ->where('service_name', 'LIKE', "%$query%");
+
+    // Search products
+    $products = DB::table('products')->select(
+        'product_id',  // Use the actual primary key field
+        DB::raw("CAST(product_name AS CHAR) as result"),
+        DB::raw("'Product' as type"),
+        DB::raw("CAST(product_description AS CHAR) as short_description")
+    )
+    ->where('product_name', 'LIKE', "%$query%");
+
+    // Combine results with pagination
+    $results = $jobs->union($users)->union($customers)->union($services)->union($products)
+        ->paginate(10);  // You can adjust the number of results per page
+
+  return response()->json([
+        'query' => $query,
+        'results' => $results,
+    ]);}
+
+
+    
 }
 

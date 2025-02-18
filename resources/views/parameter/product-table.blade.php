@@ -1,4 +1,24 @@
-  @foreach ($products as $index => $item)
+<thead class="table-dark">
+    <tr>
+        <th>ID</th>
+        <th>Part</th>
+        <th>Part Code</th>
+        <th>Category</th>
+        <th>Manufacturer</th>
+        <th>Short Description</th>
+        <th> Description</th>
+        <th>Price</th>
+        <th>Tax</th>
+        <th>Discount</th>
+        <th>Total</th>
+        <th>Stock</th>
+        <th>Stock Status</th>
+        <th>Status</th>
+        <th>Assign Technician</th>
+    </tr>
+</thead>
+<tbody>
+    @foreach ($products as $index => $item)
         <tr>
             <td>{{ $index + 1 }}</td>
             <td>
@@ -44,3 +64,4 @@
 
         </tr>
     @endforeach
+</tbody>

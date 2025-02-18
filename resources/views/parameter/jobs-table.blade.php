@@ -1,9 +1,52 @@
-@php
-    $time_interval = Session::get('time_interval', 0);
-@endphp
+<thead class="table-dark">
+    <tr>
+        <th>Job ID</th>
+        <th class="job-details-column">Job Details</th>
+        <th>Job Status</th>
+        <th>Technician Name</th>
+        <th>Date </th>
+        <th>From Time</th>
+        <th>To Time</th>
+        <th>Customer Name</th>
+        <th>Email</th>
+        <th>Mobile</th>
+        <th>Customer Address</th>
+        <th>Warranty Type</th>
+        <th>Warranty Number</th>
+        <th>Duration</th>
+        <th>Priority</th>
+        <th>Sub-Total</th>
+        <th>Tax</th>
+        <th>Discount %</th>
+        <th>Gross Total</th>
+        <th>Job Confirmed</th>
+        <th>Job Published</th>
+        <th>Invoice Status</th>
+        <th>Appliance Name</th>
+        <th>Manufacturer Name</th>
+        <th>Model Number</th>
+        <th>Serial Number</th>
+        <th>Service Name  </th>
+        <th>Service Price  </th>
+        <th>Service Discount  </th>
+        <th>Service Total  </th>
+        <th>Parts Name  </th>
+        <th>Parts Price  </th>
+        <th>Parts Discount  </th>
+        <th>Parts Total  </th>
+        <th>Job Enroute</th>
+        <th>Job Start</th>
+        <th>Job Finish</th>
+        <th>Job Invoice</th>
+        <th>Job Payment </th>
+    </tr>
+</thead>
+<tbody>
 @if($tickets->isEmpty())
-        
-@else
+        <tr>
+            <td colspan="100%" class="text-center">No jobs found.</td>
+        </tr>
+    @else
     @foreach ($tickets as $ticket)
         <tr>
             <td>
@@ -164,4 +207,5 @@
 
         </tr>
     @endforeach
-@endif
+    @endif
+</tbody>

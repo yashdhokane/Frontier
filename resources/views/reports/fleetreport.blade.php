@@ -2,6 +2,14 @@
 
     @section('content')
 
+
+
+<style>
+.dt-search {
+    margin-left: 1200px !important;
+}
+</style>
+
         <div class="page-wrapper" style="display:inline;">
             <!-- -------------------------------------------------------------- -->
             <!-- Bread crumb and right sidebar toggle -->
@@ -146,13 +154,18 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script>
             $(document).ready(function() {
-                $('#zero_configss').DataTable({
-                    scrollX: true,
-                    "order": [
-                        [0, "desc"]
-                    ],
-                    "pageLength": 25,
-                });
+               $('#zero_configss').DataTable({
+            scrollX: true,
+            "order": [
+                [0, "desc"]
+            ],
+            "pageLength": 25,
+            dom: 'Bfrtip', // This adds the button container to show export buttons
+            buttons: [
+                'excel', // Excel export button
+                'pdf' // PDF export button
+            ]
+        });
             });
         </script>
 

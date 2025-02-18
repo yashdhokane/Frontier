@@ -26,6 +26,8 @@ use App\Models\FlagJob;
 use App\Models\AppliancesType;
 use App\Models\UserLeadSourceCustomer;
 use App\Models\SiteTags;
+use App\Models\JobParameters;
+use App\Models\JobParametersMeta;
 
 use App\Mail\ParamMailTech;
 use App\Mail\ParamMailCustomer;
@@ -36,14 +38,10 @@ class ParametersController extends Controller
 
     public function index()
     {
-
-        // $userId = auth()->id(); // Get authenticated user ID
-
         // Fetch saved filter values for the authenticated user
-        $savedFilters = DB::table('filter_values_jobs_parameters')
-            // ->where('user_id', $userId)
-            ->get()
-            ->toArray();
+        $savedFilters = DB::table('filter_values_jobs_parameters')->get()->toArray();
+
+        $jobParameter = JobParameters::orderBy('created_at', 'desc')->with('ParameterMeta')->get();
 
         $title = SiteJobTitle::all();
         $serviceCat = ServiceCategory::with('Services')->get();
@@ -51,7 +49,7 @@ class ParametersController extends Controller
         $technician = User::where('role', 'technician')->get();
         $customer = User::where('role', 'customer')->get();
         $tickets = JobModel::orderBy('created_at', 'desc')->get();
-        
+      
         $manufacture = Manufacturer::all();
         $product = ProductCategory::get();
         $products = Products::orderBy('created_at', 'desc')->get();
@@ -61,8 +59,9 @@ class ParametersController extends Controller
         $leadSources = UserLeadSourceCustomer::all();
         $tagsList = SiteTags::all();
 
-        return view('parameter.index', compact('tagsList','leadSources','appliance','FlagJob','vendor','products','product','manufacture','title', 'serviceCat', 'getProduct', 'technician', 'customer', 'tickets', 'savedFilters'));
+        return view('parameter.index', compact('jobParameter','tagsList','leadSources','appliance','FlagJob','vendor','products','product','manufacture','title', 'serviceCat', 'getProduct', 'technician', 'customer', 'tickets', 'savedFilters'));
     }
+
     public function searchcustomersparam(Request $request)
     {
 
@@ -91,70 +90,101 @@ class ParametersController extends Controller
     public function jobsParamFilter(Request $request)
     {
         $query = JobModel::query();
+        $timezone_name = Session::get('timezone_name');
+        $TodayDate = Carbon::now($timezone_name);
 
-        // Apply filters dynamically
-        if ($request->has('technician-select') && $request->input('technician-select')) {
-            $query->where('technician_id', $request->input('technician-select'));
-        }
-        if ($request->has('customer-select') && $request->input('customer-select')) {
-            $query->where('customer_id', $request->input('customer-select'));
-        }
-        if ($request->has('title-filter') && $request->input('title-filter')) {
-            $query->where('job_title', $request->input('title-filter'));
-        }
-        if ($request->has('priority-filter') && $request->input('priority-filter')) {
-            $query->where('priority', $request->input('priority-filter'));
-        }
-        if ($request->has('warranty-filter') && $request->input('warranty-filter')) {
-            $query->where('warranty_type', $request->input('warranty-filter'));
-        }
-        if ($request->has('IsPublished-filter') && $request->input('IsPublished-filter')) {
-            $query->where('is_published', $request->input('IsPublished-filter'));
-        }
-        if ($request->has('IsConfirmed-filter') && $request->input('IsConfirmed-filter')) {
-            $query->where('is_confirmed', $request->input('IsConfirmed-filter'));
-        }
-        if ($request->has('job-status-filter') && $request->input('job-status-filter')) {
-            $query->where('status', $request->input('job-status-filter'));
-        }
-        if ($request->has('start-date-filter') && $request->has('end-date-filter')) {
-            $startDate = $request->input('start-date-filter');
-            $endDate = $request->input('end-date-filter');
+        // Filters that may have multiple values (array)
+        $multiFilters = [
+            'title-filter' => 'job_title',
+            'priority-filter' => 'priority',
+            'job-status-filter' => 'status',
+            'technician-select' => 'technician_id',
+            'customer-select' => 'customer_id',
+            'appliances-filter' => 'appliances_id'
+        ];
 
-            if (!empty($startDate) && !empty($endDate)) {
+        foreach ($multiFilters as $filter => $column) {
+            if ($request->filled($filter)) {
+                $values = (array) $request->input($filter); // Ensure it's always an array
+                $query->whereIn($column, $values);
+            }
+        }
+
+        // Filters with a single value
+        $singleFilters = [
+            'IsPublished-filter' => 'is_published',
+            'IsConfirmed-filter' => 'is_confirmed',
+            'warranty-filter' => 'warranty_type'
+        ];
+
+        foreach ($singleFilters as $filter => $column) {
+            if ($request->filled($filter)) {
+                $query->where($column, $request->input($filter));
+            }
+        }
+
+        // Filtering by job schedule visibility
+        if ($request->filled('showOnSchedule-filter')) {
+            $query->whereHas('schedule', function ($q) use ($request) {
+                $q->where('show_on_schedule', $request->input('showOnSchedule-filter'));
+            });
+        }
+
+        // Filtering by type date range
+        if ($request->filled('date-type-select')) {
+            $startDate = null;
+            $endDate = $TodayDate->toDateTimeString(); // End date is always today
+
+            $value = $request->input('date-type-select');
+
+            switch ($value) {
+                case 'lastweek':
+                    $startDate = $TodayDate->subWeeks(1)->startOfWeek()->toDateTimeString();
+                    break;
+                case 'last2week':
+                    $startDate = $TodayDate->subWeeks(2)->startOfWeek()->toDateTimeString();
+                    break;
+                case 'last3week':
+                    $startDate = $TodayDate->subWeeks(3)->startOfWeek()->toDateTimeString();
+                    break;
+                case 'lastmonth':
+                    $startDate = $TodayDate->subMonth()->startOfMonth()->toDateTimeString();
+                    break;
+                case 'last6week':
+                    $startDate = $TodayDate->subWeeks(6)->startOfWeek()->toDateTimeString();
+                    break;
+                case 'custom':
+                    // Custom handling can be added if needed (use user input)
+                    break;
+            }
+
+            // Apply date filter to the query
+            if ($startDate) {
                 $query->whereHas('jobassignname', function ($q) use ($startDate, $endDate) {
                     $q->whereBetween('start_date_time', [$startDate, $endDate]);
                 });
-            } elseif (!empty($startDate)) {
-                $query->whereHas('jobassignname', function ($q) use ($startDate) {
-                    $q->whereDate('start_date_time', '>=', $startDate);
-                });
-            } elseif (!empty($endDate)) {
-                $query->whereHas('jobassignname', function ($q) use ($endDate) {
-                    $q->whereDate('start_date_time', '<=', $endDate);
-                });
             }
-        } 
-        if ($request->filled('showOnSchedule-filter')) { 
-            $data = $request->input('showOnSchedule-filter');
+        }
+        
+        // Filtering by date range
+        if ($request->filled('start-date-filter') || $request->filled('end-date-filter')) {
+            $query->whereHas('jobassignname', function ($q) use ($request) {
+                $startDate = $request->input('start-date-filter');
+                $endDate = $request->input('end-date-filter');
 
-            $query->whereHas('schedule', function ($q) use ($data) {
-                $q->where('show_on_schedule', $data); 
+                if (!empty($startDate) && !empty($endDate)) {
+                    $q->whereBetween('start_date_time', [$startDate, $endDate]);
+                } elseif (!empty($startDate)) {
+                    $q->whereDate('start_date_time', '>=', $startDate);
+                } elseif (!empty($endDate)) {
+                    $q->whereDate('start_date_time', '<=', $endDate);
+                }
             });
         }
-        if ($request->filled('flag-filter')) { 
-            $data = $request->input('flag-filter');
 
-            $query->whereHas('user', function ($q) use ($data) {
-                $q->where('flag_id', $data); 
-            });
-        }
-        if ($request->has('appliances-filter') && $request->input('appliances-filter')) {
-            $query->where('appliances_id', $request->input('appliances-filter'));
-            
-        }
+        // Filtering by customer tags (special case using FIND_IN_SET)
         if ($request->filled('customer-tags-filter')) {
-            $selectedTags = $request->input('customer-tags-filter'); // This is an array from Select2
+            $selectedTags = (array) $request->input('customer-tags-filter');
 
             $query->where(function ($q) use ($selectedTags) {
                 foreach ($selectedTags as $tag) {
@@ -163,14 +193,19 @@ class ParametersController extends Controller
             });
         }
 
+        // Filtering by flagged users (Corrected)
+        if ($request->filled('flag-filter')) {
+            $flagIds = (array) $request->input('flag-filter');
 
+            $query->whereHas('user', function ($q) use ($flagIds) {
+                $q->whereIn('flag_id', $flagIds);
+            });
+        }
 
+        // Fetch filtered data with related models
+        $tickets = $query->with(['user', 'technician', 'jobassignname', 'schedule'])->get();
 
-
-        // Fetch filtered data
-        $tickets = $query->with(['user', 'technician', 'jobassignname','schedule'])->get();
-
-        // Generate the updated table rows
+        // Generate updated table rows
         $html = view('parameter.filtered_table_rows', compact('tickets'))->render();
 
         return response()->json(['html' => $html]);
@@ -207,7 +242,6 @@ class ParametersController extends Controller
 
         return response()->json(['html' => $html]);
     }
-
 
     public function indexOld()
     {
@@ -323,136 +357,202 @@ class ParametersController extends Controller
 
         return response()->json(['message' => 'Message sent successfully!']);
     }
+       
+    public function saveFiltersjob(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $filters = $request->all();
+            $filterId = $request->input('filter_id'); // Get filter ID for update
 
-    // public function saveFiltersjob(Request $request)
-    // {
-    //      dd($request->all());
-    //     // Serialize the multi-select fields dd($request->all());
-    //     $services = $request->input('services', []); // Expecting an array
-    //     $products = $request->input('products', []); // Expecting an array
+            if ($filterId) {
+                // Update existing filter
+                DB::table('job_parameters')
+                    ->where('p_id', $filterId)
+                    ->update([
+                        'p_type' => $filters['type'] ?? null,
+                        'p_name' => $filters['filter_name'] ?? null,
+                        'updated_at' => now()
+                    ]);
 
-    //     // Convert the arrays to JSON strings before storing
-    //     $services_json = !empty($services) ? json_encode($services) : null;
-    //     $products_json = !empty($products) ? json_encode($products) : null;
+                // Delete old meta data and insert new ones
+                DB::table('job_parameters_meta')->where('p_id', $filterId)->delete();
+                foreach ($filters as $filterName => $filterValue) {
+                    $pvalue = is_array($filterValue) ? json_encode($filterValue) : $filterValue;
 
-    //     // Insert the filter values into the database
-    //     DB::table('filter_values_jobs_parameters')->insert([
-    //         'user_id' => Auth::id(),
+                    DB::table('job_parameters_meta')->insert([
+                        'p_id' => $filterId,
+                        'p_name' => $filterName,
+                        'p_value' => $pvalue,
+                    ]);
+                }
+            } else {
+                // Insert new filter if no ID provided
+                $jobParaId = DB::table('job_parameters')->insertGetId([
+                    'p_type' => $filters['type'] ?? null,
+                    'p_name' => $filters['filter_name'] ?? null,
+                    'created_by' => auth()->user()->id ?? null,
+                ]);
 
-    //         'filter_name' => $request->input('filter_name'),
+                foreach ($filters as $filterName => $filterValue) {
+                    $pvalue = is_array($filterValue) ? json_encode($filterValue) : $filterValue;
 
-    //         'technician' => $request->input('technician'),
-    //         'customer' => $request->input('customer'),
-    //         'job_title' => $request->input('job_title'),
-    //         'priority' => $request->input('priority'),
-    //         'warranty' => $request->input('warranty'),
-    //         'services' => $services_json,
-    //         'products' => $products_json,
-    //         'is_published' => $request->input('is_published'),
-    //         'is_confirmed' => $request->input('is_confirmed'),
-    //         'date' => $request->input('date'),
-    //         'created_at' => now(),
-    //         'updated_at' => now(),
-    //     ]);
+                    DB::table('job_parameters_meta')->insert([
+                        'p_id' => $jobParaId,
+                        'p_name' => $filterName,
+                        'p_value' => $pvalue,
+                    ]);
+                }
+            }
 
-    //     return response()->json(['message' => 'Filters saved successfully!']);
-    // }
-public function saveFiltersjob(Request $request)
+            // Fetch the updated list of saved filters
+            $savedFilters = DB::table('job_parameters')->orderBy('created_at', 'desc')->get();
+
+            DB::commit();
+            return response()->json([
+                'message' => 'Filters saved successfully!',
+                'filters' => $savedFilters
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Filter save error: ' . $e->getMessage()); // Log the error
+            return response()->json(['error' => 'Failed to save filters.', 'message' => $e->getMessage()], 500);
+        }
+
+    }
+
+
+
+    public function getfilterdataparameteragainsuserid(Request $request)
+    {
+        $filterId = $request->input('filter_id');
+
+        if (!$filterId) {
+            return response()->json(['error' => 'No filter ID provided'], 400);
+        }
+
+        $filter = JobParametersMeta::where('p_id', $filterId)->get();
+        
+        // If no filter is found, return an error response
+        if (!$filter) {
+            return response()->json(['error' => 'Filter not found'], 404);
+        }
+
+        // Convert meta records into key-value pairs
+        // $filterData  = $filter->mapWithKeys(function ($meta) {
+        //     return [$meta->p_name => json_decode($meta->p_value, true) ?? $meta->p_value];
+        // })->toArray();
+
+        $filterData = [
+            'p_id' => $filterId,
+            'parameters' => $filter->mapWithKeys(function ($meta) {
+                return [$meta->p_name => json_decode($meta->p_value, true) ?? $meta->p_value];
+            })->toArray()
+        ];
+
+        // Return the response with the filter data
+        return response()->json(['data' => $filterData]);
+    }
+
+    public function getsavedfilters(Request $request)
+    {
+        $type = $request->input('type');
+        
+        $filters = JobParameters::where('p_type', $type)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json(['filters' => $filters]);
+    }
+
+ public function filterJobsByCommand(Request $request)
 {
-    // Get the new filter values from the request
-    $product_filter_stock = $request->input('product_filter_stock');
-    $product_filter_category = $request->input('product_filter_category');
-    $product_filter_manufacturer = $request->input('product_filter_manufacturer');
-    $product_filter_supppliers = $request->input('product_filter_supppliers');
-    $product_filter_status = $request->input('product_filter_status');
+    $keywordString = strtoupper(trim($request->input('keyword'))); // Convert input to uppercase for consistency
+    $keywords = explode(" ", $keywordString); // Split input into words
 
-    $services = $request->input('services', []);
-    $products = $request->input('products', []);
-    $customer_tags = $request->input('customer_tags', []);
+    $query = JobModel::query();
+    $timezone_name = Session::get('timezone_name');
+    $currentDate = Carbon::now($timezone_name);
 
-    // Convert array filters to JSON if not empty
-    $services_json = !empty($services) ? json_encode($services) : null;
-    $products_json = !empty($products) ? json_encode($products) : null;
-    $customer_tags_json = !empty($customer_tags) ? json_encode($customer_tags) : null;
+    $filterOpenJobs = false;
+    $filterLastDays = null;
+    $filterNextDays = null;
+    $filterPublished = false;
+    $filterConfirmed = false;
+    $filterOnSchedule = false;
 
-    // Insert data into the database
-    DB::table('filter_values_jobs_parameters')->insert([
-        'user_id' => Auth::id(),
-        'filter_name' => $request->input('filter_name'),
-        'technician' => $request->input('technician'),
-        'customer' => $request->input('customer'),
-        'job_title' => $request->input('title'), // Matching payload key
-        'priority' => $request->input('priority'),
-        'warranty' => $request->input('warranty'),
-        'services' => $services_json,
-        'products' => $products_json,
-        'is_published' => $request->input('is_published'),
-        'is_confirmed' => $request->input('is_confirmed'),
-        'job_status' => $request->input('job_status'),
-        'show_on_schedule' => $request->input('show_on_schedule'),
-        'flag' => $request->input('flag'),
-        'manufacturer' => $request->input('manufacturer'),
-        'appliances' => $request->input('appliances'),
-        'customer_tags' => $customer_tags_json,
-        'type' => $request->input('type'),
-        'start_date' => $request->input('start_date'),
-        'end_date' => $request->input('end_date'),
-        // Include the new product filters in the insert query
-        'product_filter_stock' => $product_filter_stock,
-        'product_filter_category' => $product_filter_category,
-        'product_filter_manufacturer' => $product_filter_manufacturer,
-        'product_filter_supppliers' => $product_filter_supppliers,
-        'product_filter_status' => $product_filter_status,
-        'created_at' => now(),
-        'updated_at' => now(),
-    ]);
+    // Process each keyword
+    for ($i = 0; $i < count($keywords); $i++) {
+        $word = $keywords[$i];
 
-    return response()->json(['message' => 'Filters saved successfully!']);
+        if ($word === "OPEN" && isset($keywords[$i + 1]) && $keywords[$i + 1] === "JOBS") {
+            $filterOpenJobs = true;
+        }
+
+        if (in_array($word, ["LAST", "PREVIOUS"]) && isset($keywords[$i + 1]) && is_numeric($keywords[$i + 1]) && isset($keywords[$i + 2]) && $keywords[$i + 2] === "DAYS") {
+            $filterLastDays = (int)$keywords[$i + 1];
+        }
+
+        if (in_array($word, ["NEXT", "UPCOMING"]) && isset($keywords[$i + 1]) && is_numeric($keywords[$i + 1]) && isset($keywords[$i + 2]) && $keywords[$i + 2] === "DAYS") {
+            $filterNextDays = (int)$keywords[$i + 1];
+        }
+
+        if ($word === "JOB" && isset($keywords[$i + 1])) {
+            if ($keywords[$i + 1] === "PUBLISHED") {
+                $filterPublished = true;
+            } elseif ($keywords[$i + 1] === "CONFIRMED") {
+                $filterConfirmed = true;
+            } elseif ($keywords[$i + 1] === "ON" && isset($keywords[$i + 2]) && $keywords[$i + 2] === "SCHEDULE") {
+                $filterOnSchedule = true;
+            }
+        }
+    }
+
+    // Apply filters
+    if ($filterOpenJobs) {
+        $query->where('status', 'open');
+    }
+
+    if ($filterLastDays !== null) {
+        $startDate = $currentDate->copy()->subDays($filterLastDays)->startOfDay();
+        $endDate = $currentDate->copy()->endOfDay();
+
+        $query->whereHas('schedule', function ($q) use ($startDate, $endDate) {
+            $q->whereBetween('start_date_time', [$startDate, $endDate]);
+        });
+    }
+
+    if ($filterNextDays !== null) {
+        $startDate = $currentDate->copy()->startOfDay();
+        $endDate = $currentDate->copy()->addDays($filterNextDays)->endOfDay();
+
+        $query->whereHas('schedule', function ($q) use ($startDate, $endDate) {
+            $q->whereBetween('start_date_time', [$startDate, $endDate]);
+        });
+    }
+
+    if ($filterPublished) {
+        $query->where('is_published', 'yes');
+    }
+
+    if ($filterConfirmed) {
+        $query->where('is_confirmed', 'yes');
+    }
+
+    if ($filterOnSchedule) {
+        $query->whereHas('schedule', function ($q) {
+            $q->where('show_on_schedule', 'yes');
+        });
+    }
+
+    $tickets = $query->with(['user', 'technician', 'jobassignname', 'schedule'])->get();
+    $html = view('parameter.filtered_table_rows', compact('tickets'))->render();
+
+    return response()->json(['html' => $html]);
 }
 
 
 
 
 
-    public function getfilterdataparameteragainsuserid(Request $request)
-    {
-        // Fetch the filter details based on the provided filter_id
-        $filterId = $request->input('filter_id');
-
-
-
-        // Make sure a valid ID is provided
-        if (!$filterId) {
-            return response()->json(['error' => 'No filter ID provided'], 400);
-        }
-
-        // Fetch the filter from the 'filter_value_job_parameters' table based on the filter_id
-        $filter = DB::table('filter_values_jobs_parameters')->where('id', $filterId)->first();
-
-        // If no filter is found, return an error response
-        if (!$filter) {
-            return response()->json(['error' => 'Filter not found'], 404);
-        }
-
-        // Assuming the filter includes relevant fields for technician, customer, etc.
-        $filterData = [
-            'id' => $filter->id,
-            'user_id' => $filter->user_id,
-            'technician' => $filter->technician,
-            'customer' => $filter->customer,
-            'job_title' => $filter->job_title,
-            'priority' => $filter->priority,
-            'warranty' => $filter->warranty,
-            'services' => $filter->services,  // Services field (assuming stored in the filter)
-            'products' => $filter->products,  // Products field (assuming stored in the filter)
-            'is_published' => $filter->is_published,
-            'is_confirmed' => $filter->is_confirmed,
-            'date' => $filter->date,
-            'created_at' => $filter->created_at,
-            'updated_at' => $filter->updated_at
-        ];
-
-        // Return the response with the filter data
-        return response()->json(['data' => $filterData]);
-    }
 }
