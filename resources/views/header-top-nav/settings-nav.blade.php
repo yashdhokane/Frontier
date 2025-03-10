@@ -11,8 +11,6 @@
             Area</a>
         <a href="{{ route('manufacturer.index') }}"
             class="btn {{ Route::currentRouteName() === 'manufacturer.index' ? 'btn-info' : 'btn-secondary text-white' }}">Manufaturer</a>
-        <a href="{{ route('tax.index') }}"
-            class="btn {{ Route::currentRouteName() === 'tax.index' ? 'btn-info' : 'btn-secondary text-white' }}">Tax</a>
         <a href="{{ route('parameters') }}"
             class="btn {{ Route::currentRouteName() === 'parameters' ? 'btn-info' : 'btn-secondary text-white' }}">Parameters</a>
         <div class="btn-group" role="group">
@@ -28,6 +26,8 @@
                     href="{{ route('tags.tags-list') }}">Tags</a>
                 <a class="dropdown-item {{ Route::currentRouteName() === 'site_job_fields' ? 'btn-info' : 'text-info' }}"
                     href="{{ route('site_job_fields') }}">Job Fields</a>
+                <a href="{{ route('tax.index') }}"
+                    class="btn {{ Route::currentRouteName() === 'tax.index' ? 'btn-info' : 'btn-secondary text-white' }}">Tax</a>
 
             </div>
         </div>
