@@ -2,184 +2,217 @@
 <!--<meta name="csrf-token" content="{{ csrf_token() }}">-->
 
 @section('content')
-    <!-- -------------------------------------------------------------- -->
-    <!-- Bread crumb and right sidebar toggle -->
-    <!-- -------------------------------------------------------------- -->
-    <div class="page-breadcrumb pt-0">
-        <div class="row">
-            <div class="col-9 align-self-center">
-                <h4 class="page-title">Lead Source</h4>
-                <div class="d-flex align-items-center">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('buisnessprofile.index') }}">Settings</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Lead Source </li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-            <div class="col-3 align-self-center">
-
-                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#samedata-modal"
-                    data-bs-whatever="@mdo"><i class="ri-folder-add-line"></i> Add New</button>
-                <div class="modal fade" id="samedata-modal" tabindex="-1" aria-labelledby="exampleModalLabel1">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header d-flex align-items-center">
-                                <h4 class="modal-title" id="exampleModalLabel1">Add Lead Source</h4>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <form method="POST" action="{{ url('/store/leadsource') }}">
-                                @csrf
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <label for="lead-source" class="control-label bold mb5">Lead Source:</label>
-                                        <input type="text" class="form-control" name="source_name" />
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-light-danger text-danger font-medium"
-                                        data-bs-dismiss="modal">Close</button>
-                                    <!-- <button type="submit" class="btn btn-success">Save</button> -->
-                                    <button type="submit" class="btn btn-success">Save</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
+<!-- -------------------------------------------------------------- -->
+<!-- Bread crumb and right sidebar toggle -->
+<!-- -------------------------------------------------------------- -->
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-2 align-self-center">
+            <h4 class="page-title">Lead Source</h4>
+            <div class="d-flex align-items-center">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('buisnessprofile.index') }}">Settings</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Lead Source </li>
+                    </ol>
+                </nav>
             </div>
         </div>
-    </div>
-    @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-    <!-- -------------------------------------------------------------- -->
-    <!-- End Bread crumb and right sidebar toggle -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- Container fluid  -->
-    <!-- -------------------------------------------------------------- -->
-    <div class="container-fluid pt-2">
+        <div class="col-3 align-self-center">
 
-        <div class="row">
-            <div class="col-9">
-                <div class="card card-border shadow">
-                    <div class="card-body">
-                        <table id="default_order" class="table table-striped table-bordered display text-nowrap"
-                            style="width: 100%">
-                            <thead>
-                                <tr>
-                                    <th>Lead Source</th>
-                                    <th>Added By</th>
-                                    <th>Date Added</th>
-                                    <th>Date Modified</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($leadSources as $leadSource)
-                                    <tr>
-                                        <td>
-                                            <p class="source_name">{{ $leadSource->source_name }}</p>
-                                        </td>
-                                        <td>{{ optional($leadSource->addedByUser)->name }}</td>
-                                        <td>{{ $leadSource->created_at->format('m-d-Y') }}</td>
-                                        <td>{{ $convertDateToTimezone($leadSource->updated_at) }}</td>
-                                        <td>
-                                            <button type="button" class="btn btn-primary btn-sm edit-btn"
-                                                data-bs-toggle="modal" data-bs-target="#samedata-modal2"
-                                                data-lead-source-id="{{ $leadSource->source_id }}"
-                                                data-lead-source-name="{{ $leadSource->source_name }}">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <a href="{{ url('delete/leadsource/' . $leadSource->source_id) }}"
-                                                onclick="confirm('Are you sure you want to delete Online Booking?')"><button
-                                                    type="button" class="btn btn-danger btn-sm delete-btn">
-                                                    <i class="fas fa-trash"></i>
-                                                </button></a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                            <tfoot>
-                                <th>Lead Source</th>
-                                <th>Added By</th>
-                                <th>Date Added</th>
-                                <th>Date Modified</th>
-                                <th>Action</th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="modal fade" id="samedata-modal2" tabindex="-1" aria-labelledby="exampleModalLabel1">
+            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#samedata-modal"
+                data-bs-whatever="@mdo"><i class="ri-folder-add-line"></i> Add New</button>
+            <div class="modal fade" id="samedata-modal" tabindex="-1" aria-labelledby="exampleModalLabel1">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header d-flex align-items-center">
-                            <h4 class="modal-title" id="exampleModalLabel1">Edit Lead Source
-                            </h4>
+                            <h4 class="modal-title" id="exampleModalLabel1">Add Lead Source</h4>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <form action="{{ url('edit/leadsource') }}" method="POST">
+                        <form method="POST" action="{{ url('/store/leadsource') }}">
                             @csrf
                             <div class="modal-body">
                                 <div class="mb-3">
-                                    <label for="lead-source1" class="control-label bold mb5">Lead
-                                        Source:</label>
-                                    <input type="text" class="form-control" id="lead-source1" name="source_name"
-                                        value="" />
-                                    <input type="hidden" id="lead-source-id" name="source_id" value="" />
+                                    <label for="lead-source" class="control-label bold mb5">Lead Source:</label>
+                                    <input type="text" class="form-control" name="source_name" />
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-light-danger text-danger font-medium"
                                     data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-success">Update</button>
+                                <!-- <button type="submit" class="btn btn-success">Save</button> -->
+                                <button type="submit" class="btn btn-success">Save</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
 
+        </div>
+        <div class="col-7 text-end px-4">
+            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <a href="{{ route('buisnessprofile.index') }}"
+                    class="btn {{ Route::currentRouteName() === 'buisnessprofile.index' ? 'btn-info' : 'btn-secondary text-white' }}">
+                    Business Profile</a>
+                <a href="{{ route('businessHours.business-hours') }}"
+                    class="btn {{ Route::currentRouteName() === 'businessHours.business-hours' ? 'btn-info' : 'btn-secondary text-white' }}">Workings
+                    Hours</a>
+                <a href="{{ route('servicearea.index') }}"
+                    class="btn {{ Route::currentRouteName() === 'servicearea.index' ? 'btn-info' : 'btn-secondary text-white' }}">Service
+                    Area</a>
+                <a href="{{ route('manufacturer.index') }}"
+                    class="btn {{ Route::currentRouteName() === 'manufacturer.index' ? 'btn-info' : 'btn-secondary text-white' }}">Manufaturer</a>
+                <a href="{{ route('tax.index') }}"
+                    class="btn {{ Route::currentRouteName() === 'tax.index' ? 'btn-info' : 'btn-secondary text-white' }}">Tax</a>
+                <a href="{{ route('parameters') }}"
+                    class="btn {{ Route::currentRouteName() === 'parameters' ? 'btn-info' : 'btn-secondary text-white' }}">Parameters</a>
+                <div class="btn-group" role="group">
+                    <button id="btnGroupDrop1" type="button"
+                        class="btn {{ Route::currentRouteName() === 'lead.lead-source' || Route::currentRouteName() === 'tags.tags-list' || Route::currentRouteName() === 'site_job_fields' ? 'btn-info' : 'btn-secondary text-white' }} dropdown-toggle"
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        More
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                        <a class="dropdown-item {{ Route::currentRouteName() === 'lead.lead-source' ? 'btn-info' : 'text-info' }}"
+                            href="{{ route('lead.lead-source') }}">Lead Source</a>
+                        <a class="dropdown-item {{ Route::currentRouteName() === 'tags.tags-list' ? 'btn-info' : 'text-info' }}"
+                            href="{{ route('tags.tags-list') }}">Tags</a>
+                        <a class="dropdown-item {{ Route::currentRouteName() === 'site_job_fields' ? 'btn-info' : 'text-info' }}"
+                            href="{{ route('site_job_fields') }}">Job Fields</a>
 
-
-
-            <div class="col-3">
-
-
-
-                <div class="col-md-12 ">
-                    <div class="card card-body card-border shadow">
-                        <h4 class="card-title">Managing lead sources</h4>
-                        <p class="card-text pt-2">A lead source helps you track how customers found your business.
-                            Google, Yelp, and Facebook are a few examples of common lead sources.</p>
-                        <h5 class="card-title  mt-3">Why track lead sources?</h5>
-                        <p class="card-text pt-2">Knowing where jobs come from is key for making smart marketing and
-                            advertising decisions. Invest more on sources that bring in lots of good jobs.</p>
-                        <h5 class="card-title  mt-3">How do I use lead sources?</h5>
-                        <p class="card-text pt-2">You can track the lead source for any customer or job. Call tracking
-                            will automatically add lead sources based on which phone number a customer calls.</p>
-                        <a href="#" class="card-link">Need more help?</a>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+@if (session('success'))
+<div class="alert alert-success">
+    {{ session('success') }}
+</div>
+@endif
+<!-- -------------------------------------------------------------- -->
+<!-- End Bread crumb and right sidebar toggle -->
+<!-- -------------------------------------------------------------- -->
+<!-- -------------------------------------------------------------- -->
+<!-- Container fluid  -->
+<!-- -------------------------------------------------------------- -->
+<div class="container-fluid pt-2">
 
+    <div class="row">
+        <div class="col-9">
+            <div class="card card-border shadow">
+                <div class="card-body">
+                    <table id="default_order" class="table table-striped table-bordered display text-nowrap"
+                        style="width: 100%">
+                        <thead>
+                            <tr>
+                                <th>Lead Source</th>
+                                <th>Added By</th>
+                                <th>Date Added</th>
+                                <th>Date Modified</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($leadSources as $leadSource)
+                            <tr>
+                                <td>
+                                    <p class="source_name">{{ $leadSource->source_name }}</p>
+                                </td>
+                                <td>{{ optional($leadSource->addedByUser)->name }}</td>
+                                <td>{{ $leadSource->created_at->format('m-d-Y') }}</td>
+                                <td>{{ $convertDateToTimezone($leadSource->updated_at) }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-sm edit-btn" data-bs-toggle="modal"
+                                        data-bs-target="#samedata-modal2"
+                                        data-lead-source-id="{{ $leadSource->source_id }}"
+                                        data-lead-source-name="{{ $leadSource->source_name }}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <a href="{{ url('delete/leadsource/' . $leadSource->source_id) }}"
+                                        onclick="confirm('Are you sure you want to delete Online Booking?')"><button
+                                            type="button" class="btn btn-danger btn-sm delete-btn">
+                                            <i class="fas fa-trash"></i>
+                                        </button></a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <th>Lead Source</th>
+                            <th>Added By</th>
+                            <th>Date Added</th>
+                            <th>Date Modified</th>
+                            <th>Action</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <!-- -------------------------------------------------------------- -->
-        <!-- Recent comment and chats -->
-        <!-- -------------------------------------------------------------- -->
+
+        <div class="modal fade" id="samedata-modal2" tabindex="-1" aria-labelledby="exampleModalLabel1">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header d-flex align-items-center">
+                        <h4 class="modal-title" id="exampleModalLabel1">Edit Lead Source
+                        </h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{{ url('edit/leadsource') }}" method="POST">
+                        @csrf
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="lead-source1" class="control-label bold mb5">Lead
+                                    Source:</label>
+                                <input type="text" class="form-control" id="lead-source1" name="source_name" value="" />
+                                <input type="hidden" id="lead-source-id" name="source_id" value="" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light-danger text-danger font-medium"
+                                data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="col-3">
+
+
+
+            <div class="col-md-12 ">
+                <div class="card card-body card-border shadow">
+                    <h4 class="card-title">Managing lead sources</h4>
+                    <p class="card-text pt-2">A lead source helps you track how customers found your business.
+                        Google, Yelp, and Facebook are a few examples of common lead sources.</p>
+                    <h5 class="card-title  mt-3">Why track lead sources?</h5>
+                    <p class="card-text pt-2">Knowing where jobs come from is key for making smart marketing and
+                        advertising decisions. Invest more on sources that bring in lots of good jobs.</p>
+                    <h5 class="card-title  mt-3">How do I use lead sources?</h5>
+                    <p class="card-text pt-2">You can track the lead source for any customer or job. Call tracking
+                        will automatically add lead sources based on which phone number a customer calls.</p>
+                    <a href="#" class="card-link">Need more help?</a>
+                </div>
+            </div>
+
+        </div>
     </div>
+
+    <!-- -------------------------------------------------------------- -->
+    <!-- Recent comment and chats -->
+    <!-- -------------------------------------------------------------- -->
+</div>
 @section('script')
-    <script>
-        if ($.fn.DataTable.isDataTable('#default_order')) {
+<script>
+    if ($.fn.DataTable.isDataTable('#default_order')) {
             $('#default_order').DataTable().destroy();
         }
         $('#default_order').DataTable({
@@ -224,6 +257,6 @@
 
 
         });
-    </script>
+</script>
 @endsection
 @endsection
