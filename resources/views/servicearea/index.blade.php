@@ -52,192 +52,209 @@
                     class="btn {{ Route::currentRouteName() === 'tax.index' ? 'btn-info' : 'btn-secondary text-white' }}">Tax</a>
                 <a href="{{ route('parameters') }}"
                     class="btn {{ Route::currentRouteName() === 'parameters' ? 'btn-info' : 'btn-secondary text-white' }}">Parameters</a>
+                <div class="btn-group" role="group">
+                    <button id="btnGroupDrop1" type="button"
+                        class="btn {{ Route::currentRouteName() === 'lead.lead-source' || Route::currentRouteName() === 'tags.tags-list' || Route::currentRouteName() === 'site_job_fields' ? 'btn-info' : 'btn-secondary text-white' }} dropdown-toggle"
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        More
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                        <a class="dropdown-item {{ Route::currentRouteName() === 'lead.lead-source' ? 'btn-info' : 'text-info' }}"
+                            href="{{ route('lead.lead-source') }}">Lead Source</a>
+                        <a class="dropdown-item {{ Route::currentRouteName() === 'tags.tags-list' ? 'btn-info' : 'text-info' }}"
+                            href="{{ route('tags.tags-list') }}">Tags</a>
+                        <a class="dropdown-item {{ Route::currentRouteName() === 'site_job_fields' ? 'btn-info' : 'text-info' }}"
+                            href="{{ route('site_job_fields') }}">Job Fields</a>
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<!-- -------------------------------------------------------------- -->
-<!-- End Bread crumb and right sidebar toggle -->
-<!-- -------------------------------------------------------------- -->
-<!-- -------------------------------------------------------------- -->
-<!-- Container fluid  -->
-<!-- -------------------------------------------------------------- -->
-
-<div class="container-fluid pt-2">
-
+    <!-- -------------------------------------------------------------- -->
+    <!-- End Bread crumb and right sidebar toggle -->
+    <!-- -------------------------------------------------------------- -->
+    <!-- -------------------------------------------------------------- -->
+    <!-- Container fluid  -->
     <!-- -------------------------------------------------------------- -->
 
-    <!-- Start Page Content -->
+    <div class="container-fluid pt-2">
 
-    <!-- -------------------------------------------------------------- -->
+        <!-- -------------------------------------------------------------- -->
 
-    <!-- 1. card with img -->
+        <!-- Start Page Content -->
 
+        <!-- -------------------------------------------------------------- -->
 
-
-
-    @if (session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-    @endif
+        <!-- 1. card with img -->
 
 
-    <div class="row card card-border shadow mr-0">
 
-        <!-- Add Popup Model -->
-        <div id="service-area" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" style="max-width:500px;">
-                <div class="modal-content">
-                    <div class="modal-header d-flex align-items-center">
-                        <h4 class="modal-title" id="myModalLabel">Edit Service Area</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                            fdprocessedid="k7jfjv"></button>
-                    </div>
-                    <div class="modal-body" id="appendbodyservicearea">
 
-                    </div>
-
-                </div>
-                <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
+        @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
         </div>
+        @endif
 
-        <!-- End Popup Model -->
 
-        <!-- view popup model -->
-        <div id="service-area-view" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" style="max-width:800px;">
-                <div class="modal-content">
-                    <div class="modal-header d-flex align-items-center">
-                        {{-- <h4 class="modal-title" id="myModalLabel">Service Area Details</h4> --}}
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-                            fdprocessedid="k7jfjv"></button>
+        <div class="row card card-border shadow mr-0">
+
+            <!-- Add Popup Model -->
+            <div id="service-area" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" style="max-width:500px;">
+                    <div class="modal-content">
+                        <div class="modal-header d-flex align-items-center">
+                            <h4 class="modal-title" id="myModalLabel">Edit Service Area</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                fdprocessedid="k7jfjv"></button>
+                        </div>
+                        <div class="modal-body" id="appendbodyservicearea">
+
+                        </div>
+
                     </div>
-                    <div class="modal-body" id="appendbodyserviceareaview">
-
-                    </div>
-
+                    <!-- /.modal-content -->
                 </div>
-                <!-- /.modal-content -->
+                <!-- /.modal-dialog -->
             </div>
-            <!-- /.modal-dialog -->
-        </div>
 
-        <!--end -->
+            <!-- End Popup Model -->
+
+            <!-- view popup model -->
+            <div id="service-area-view" class="modal fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" style="max-width:800px;">
+                    <div class="modal-content">
+                        <div class="modal-header d-flex align-items-center">
+                            {{-- <h4 class="modal-title" id="myModalLabel">Service Area Details</h4> --}}
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                fdprocessedid="k7jfjv"></button>
+                        </div>
+                        <div class="modal-body" id="appendbodyserviceareaview">
+
+                        </div>
+
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+
+            <!--end -->
 
 
-        <!-- Row -->
+            <!-- Row -->
 
-        <div class="row mt-2" id="service-area-container">
+            <div class="row mt-2" id="service-area-container">
 
-            <!-- column -->
-            @foreach ($servicearea as $index => $item)
-            <div class="col-lg-4 col-md-6 col-xl-2">
+                <!-- column -->
+                @foreach ($servicearea as $index => $item)
+                <div class="col-lg-4 col-md-6 col-xl-2">
 
-                <!-- Card -->
+                    <!-- Card -->
 
 
 
-                <div class="card card-border shadow mb-4">
+                    <div class="card card-border shadow mb-4">
 
-                    <div class="mparea">
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <title>Map Display</title>
-                                <style>
-                                    /* Ensure the map takes up the full height of the viewport */
-                                    #map1 {
-                                            {
-                                            $index
+                        <div class="mparea">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <title>Map Display</title>
+                                    <style>
+                                        /* Ensure the map takes up the full height of the viewport */
+                                        #map1 {
+                                                {
+                                                $index
+                                            }
                                         }
-                                    }
 
-                                        {
-                                        height: 200px;
-                                        /* Set a specific height or adjust as needed */
-                                    }
-                                </style>
-                                </head>
+                                            {
+                                            height: 200px;
+                                            /* Set a specific height or adjust as needed */
+                                        }
+                                    </style>
+                                    </head>
 
-                                <body>
-                                    <!-- Add a div to hold the map -->
-                                    <div id="map1{{ $index }}"></div>
-                                </body>
+                                    <body>
+                                        <!-- Add a div to hold the map -->
+                                        <div id="map1{{ $index }}"></div>
+                                    </body>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-bodyX mx-3 mb-3">
+                            <h5 class="card-title uppercase text-info">{{ $item->area_name ?? null }}</h5>
+                            <p class="card-text mb-2">{{ $item->area_description ?? null }}</p>
+                            <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#service-area"
+                                class="btn btn-xs btn-primary serviceareaedit" id="{{ $item->area_id }}">Edit</a>
+                            <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#service-area-view"
+                                class="btn btn-xs btn-primary serviceareaview mx-2" id="{{ $item->area_id }}">View</a>
+                        </div>
+
+                    </div>
+
+                    <!-- Card -->
+
+                </div>
+                @endforeach
+                <div class="modal fade" id="service-area-modal" tabindex="-1" aria-labelledby="serviceAreaModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="serviceAreaModalLabel">Add Service Area</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="service-area-form" action="{{ route('servicearea.store') }}" method="POST"
+                                    enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="mb-3">
+                                        <label for="area_name" class="form-label">Name</label>
+                                        <input type="text" class="form-control" name="area_name" id="area_name"
+                                            required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="area_description" class="form-label">Description</label>
+                                        <textarea class="form-control" name="area_description" id="area_description"
+                                            required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="area_radius" class="form-label">Radius</label>
+                                        <select class="form-select" name="area_radius" id="area_radius" required>
+                                            <option value="1">1KM</option>
+                                            <option value="2">2KM</option>
+                                            <option value="5">5KM</option>
+                                            <option value="10">10KM</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="area_latitude" class="form-label">Latitude</label>
+                                        <input type="text" class="form-control" name="area_latitude" id="area_latitude"
+                                            required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="area_longitude" class="form-label">Longitude</label>
+                                        <input type="text" class="form-control" name="area_longitude"
+                                            id="area_longitude" required>
+                                    </div>
+                                    <button type="button" id="submit-service-area" class="btn btn-primary">Save</button>
+                                </form>
                             </div>
                         </div>
                     </div>
-
-                    <div class="card-bodyX mx-3 mb-3">
-                        <h5 class="card-title uppercase text-info">{{ $item->area_name ?? null }}</h5>
-                        <p class="card-text mb-2">{{ $item->area_description ?? null }}</p>
-                        <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#service-area"
-                            class="btn btn-xs btn-primary serviceareaedit" id="{{ $item->area_id }}">Edit</a>
-                        <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#service-area-view"
-                            class="btn btn-xs btn-primary serviceareaview mx-2" id="{{ $item->area_id }}">View</a>
-                    </div>
-
                 </div>
 
-                <!-- Card -->
-
-            </div>
-            @endforeach
-            <div class="modal fade" id="service-area-modal" tabindex="-1" aria-labelledby="serviceAreaModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="serviceAreaModalLabel">Add Service Area</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="service-area-form" action="{{ route('servicearea.store') }}" method="POST"
-                                enctype="multipart/form-data">
-                                @csrf
-                                <div class="mb-3">
-                                    <label for="area_name" class="form-label">Name</label>
-                                    <input type="text" class="form-control" name="area_name" id="area_name" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="area_description" class="form-label">Description</label>
-                                    <textarea class="form-control" name="area_description" id="area_description"
-                                        required></textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="area_radius" class="form-label">Radius</label>
-                                    <select class="form-select" name="area_radius" id="area_radius" required>
-                                        <option value="1">1KM</option>
-                                        <option value="2">2KM</option>
-                                        <option value="5">5KM</option>
-                                        <option value="10">10KM</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="area_latitude" class="form-label">Latitude</label>
-                                    <input type="text" class="form-control" name="area_latitude" id="area_latitude"
-                                        required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="area_longitude" class="form-label">Longitude</label>
-                                    <input type="text" class="form-control" name="area_longitude" id="area_longitude"
-                                        required>
-                                </div>
-                                <button type="button" id="submit-service-area" class="btn btn-primary">Save</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <script async defer
-                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&callback=initMap">
-            </script>
-            <script>
-                function initMap() {
+                <script async defer
+                    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&callback=initMap">
+                </script>
+                <script>
+                    function initMap() {
                         @foreach ($servicearea as $index => $item)
                             // Get latitude and longitude values from the Blade page
                             var latitude = parseFloat("{{ $item->area_latitude }}");
@@ -277,21 +294,21 @@
                             circle.bindTo('center', marker, 'position');
                         @endforeach
                     }
-            </script>
+                </script>
 
 
+            </div>
+            <!-- -------------------------------------------------------------- -->
         </div>
-        <!-- -------------------------------------------------------------- -->
     </div>
-</div>
-<!-- -------------------------------------------------------------- -->
-<!-- End Page wrapper  -->
-<!-- -------------------------------------------------------------- -->
+    <!-- -------------------------------------------------------------- -->
+    <!-- End Page wrapper  -->
+    <!-- -------------------------------------------------------------- -->
 
 
-@section('script')
-<script>
-    $(document).on('click', '.serviceareaedit', function() {
+    @section('script')
+    <script>
+        $(document).on('click', '.serviceareaedit', function() {
             $("#service-area").modal({
 
                 backdrop: "static",
@@ -312,10 +329,10 @@
                 }
             });
         });
-</script>
+    </script>
 
-<script>
-    $(document).on('click', '.serviceareaview', function() {
+    <script>
+        $(document).on('click', '.serviceareaview', function() {
             $("#service-area-view").modal({
 
                 backdrop: "static",
@@ -336,10 +353,10 @@
                 }
             });
         });
-</script>
+    </script>
 
-<script>
-    $(document).ready(function() {
+    <script>
+        $(document).ready(function() {
     // Handle form submission via AJAX
     $('#submit-service-area').on('click', function(e) {
         e.preventDefault(); // Prevent default behavior
@@ -425,6 +442,6 @@ function initializeMap(mapId, latitude, longitude, radius) {
 }
 
 
-</script>
-@endsection
-@endsection
+    </script>
+    @endsection
+    @endsection

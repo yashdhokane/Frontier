@@ -40,102 +40,118 @@
                     class="btn {{ Route::currentRouteName() === 'tax.index' ? 'btn-info' : 'btn-secondary text-white' }}">Tax</a>
                 <a href="{{ route('parameters') }}"
                     class="btn {{ Route::currentRouteName() === 'parameters' ? 'btn-info' : 'btn-secondary text-white' }}">Parameters</a>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- -------------------------------------------------------------- -->
-<!-- End Bread crumb and right sidebar toggle -->
-<!-- -------------------------------------------------------------- -->
-<!-- -------------------------------------------------------------- -->
-<!-- Container fluid  -->
-<!-- -------------------------------------------------------------- -->
-<div class="container-fluid pt-2">
-    <!-- Add this section where you want to display messages -->
-    @if (session('success'))
-    <div id="successAlert" class="alert alert-success" role="alert">
-        {{ session('success') }}
-    </div>
-    @endif
+                <div class="btn-group" role="group">
+                    <button id="btnGroupDrop1" type="button"
+                        class="btn {{ Route::currentRouteName() === 'lead.lead-source' || Route::currentRouteName() === 'tags.tags-list' || Route::currentRouteName() === 'site_job_fields' ? 'btn-info' : 'btn-secondary text-white' }} dropdown-toggle"
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        More
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                        <a class="dropdown-item {{ Route::currentRouteName() === 'lead.lead-source' ? 'btn-info' : 'text-info' }}"
+                            href="{{ route('lead.lead-source') }}">Lead Source</a>
+                        <a class="dropdown-item {{ Route::currentRouteName() === 'tags.tags-list' ? 'btn-info' : 'text-info' }}"
+                            href="{{ route('tags.tags-list') }}">Tags</a>
+                        <a class="dropdown-item {{ Route::currentRouteName() === 'site_job_fields' ? 'btn-info' : 'text-info' }}"
+                            href="{{ route('site_job_fields') }}">Job Fields</a>
 
-    @if (session('error'))
-    <div id="errorAlert" class="alert alert-danger" role="alert">
-        {{ session('error') }}
-    </div>
-    @endif
-    <div class="card card-border shadow">
-        <div class="col-12">
-            <div class="">
-                <div class="card-body">
-                    <table id="default_order" class="table table-striped table-bordered display text-nowrap"
-                        style="width: 100%">
-                        <thead>
-                            <tr>
-                                <th>States</th>
-                                <th>Tax Rates</th>
-                                <th>Last Modified</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($states as $state)
-                            <tr>
-                                <td>{{ $state->state_name ?? null }}</td>
-                                <td>{{ $state->state_tax ?? null }}</td>
-                                <td>{{ $convertDateToTimezone($state->created_at) }}</td>
-                                <td>
-                                    <button type="button" class="btn btn-primary edit-btn"
-                                        data-state-id="{{ $state->state_id }}" data-bs-toggle="modal"
-                                        data-bs-target="#samedata-modal2">
-                                        Edit
-                                    </button>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-
-                    </table>
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <div class="text-start">
-                            Showing {{ $states->firstItem() }} to {{ $states->lastItem() }} of {{ $states->total() }}
-                            entries
-                        </div>
-                        <div class="text-end">
-                            {{ $states->withQueryString()->links('pagination::bootstrap-5') }}
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-        <div class="modal fade" id="samedata-modal2" tabindex="-1" aria-labelledby="exampleModalLabel1">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header d-flex align-items-center">
-                        <h4 class="modal-title" id="exampleModalLabel1">Edit Tax Rate</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body" id="taxrateformupdate">
-                        <!-- Form content will be loaded here dynamically -->
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+    <!-- -------------------------------------------------------------- -->
+    <!-- End Bread crumb and right sidebar toggle -->
+    <!-- -------------------------------------------------------------- -->
+    <!-- -------------------------------------------------------------- -->
+    <!-- Container fluid  -->
+    <!-- -------------------------------------------------------------- -->
+    <div class="container-fluid pt-2">
+        <!-- Add this section where you want to display messages -->
+        @if (session('success'))
+        <div id="successAlert" class="alert alert-success" role="alert">
+            {{ session('success') }}
+        </div>
+        @endif
+
+        @if (session('error'))
+        <div id="errorAlert" class="alert alert-danger" role="alert">
+            {{ session('error') }}
+        </div>
+        @endif
+        <div class="card card-border shadow">
+            <div class="col-12">
+                <div class="">
+                    <div class="card-body">
+                        <table id="default_order" class="table table-striped table-bordered display text-nowrap"
+                            style="width: 100%">
+                            <thead>
+                                <tr>
+                                    <th>States</th>
+                                    <th>Tax Rates</th>
+                                    <th>Last Modified</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($states as $state)
+                                <tr>
+                                    <td>{{ $state->state_name ?? null }}</td>
+                                    <td>{{ $state->state_tax ?? null }}</td>
+                                    <td>{{ $convertDateToTimezone($state->created_at) }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary edit-btn"
+                                            data-state-id="{{ $state->state_id }}" data-bs-toggle="modal"
+                                            data-bs-target="#samedata-modal2">
+                                            Edit
+                                        </button>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+
+                        </table>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <div class="text-start">
+                                Showing {{ $states->firstItem() }} to {{ $states->lastItem() }} of {{ $states->total()
+                                }}
+                                entries
+                            </div>
+                            <div class="text-end">
+                                {{ $states->withQueryString()->links('pagination::bootstrap-5') }}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="samedata-modal2" tabindex="-1" aria-labelledby="exampleModalLabel1">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header d-flex align-items-center">
+                            <h4 class="modal-title" id="exampleModalLabel1">Edit Tax Rate</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="taxrateformupdate">
+                            <!-- Form content will be loaded here dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
 
     </div>
+    <!-- -------------------------------------------------------------- -->
+    <!-- End Container fluid  -->
+    <!-- -------------------------------------------------------------- -->
+    <!-- -------------------------------------------------------------- -->
+    <!-- footer -->
 
-
-</div>
-<!-- -------------------------------------------------------------- -->
-<!-- End Container fluid  -->
-<!-- -------------------------------------------------------------- -->
-<!-- -------------------------------------------------------------- -->
-<!-- footer -->
-
-@section('script')
-<script>
-    $(document).ready(function() {
+    @section('script')
+    <script>
+        $(document).ready(function() {
             if ($.fn.DataTable.isDataTable('#default_order')) {
         $('#default_order').DataTable().destroy();
     }
@@ -168,9 +184,9 @@
                 });
             });
         });
-</script>
-<script>
-    // Function to hide the alert after 5 seconds
+    </script>
+    <script>
+        // Function to hide the alert after 5 seconds
         function hideAlerts() {
             document.getElementById('successAlert').style.display = 'none';
             document.getElementById('errorAlert').style.display = 'none';
@@ -178,6 +194,6 @@
 
         // Set timeout to hide alerts after 5 seconds
         setTimeout(hideAlerts, 5000);
-</script>
-@endsection
-@endsection
+    </script>
+    @endsection
+    @endsection

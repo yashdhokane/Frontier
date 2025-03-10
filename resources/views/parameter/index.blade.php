@@ -77,8 +77,7 @@
             </div>
         </div>
         <div class="col-3">
-            <div class="btn-group select-type-values" role="group"
-                aria-label="Button group with nested dropdown">
+            <div class="btn-group select-type-values" role="group" aria-label="Button group with nested dropdown">
                 <a href="#showJobs" data-value="jobs" class="btn btn-info ">Jobs</a>
                 <a href="#showParts" data-value="products" class="btn btn-light-info text-info">Parts</a>
             </div>
@@ -100,6 +99,22 @@
                     class="btn {{ Route::currentRouteName() === 'tax.index' ? 'btn-info' : 'btn-secondary text-white' }}">Tax</a>
                 <a href="{{ route('parameters') }}"
                     class="btn {{ Route::currentRouteName() === 'parameters' ? 'btn-info' : 'btn-secondary text-white' }}">Parameters</a>
+                <div class="btn-group" role="group">
+                    <button id="btnGroupDrop1" type="button"
+                        class="btn {{ Route::currentRouteName() === 'lead.lead-source' || Route::currentRouteName() === 'tags.tags-list' || Route::currentRouteName() === 'site_job_fields' ? 'btn-info' : 'btn-secondary text-white' }} dropdown-toggle"
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        More
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                        <a class="dropdown-item {{ Route::currentRouteName() === 'lead.lead-source' ? 'btn-info' : 'text-info' }}"
+                            href="{{ route('lead.lead-source') }}">Lead Source</a>
+                        <a class="dropdown-item {{ Route::currentRouteName() === 'tags.tags-list' ? 'btn-info' : 'text-info' }}"
+                            href="{{ route('tags.tags-list') }}">Tags</a>
+                        <a class="dropdown-item {{ Route::currentRouteName() === 'site_job_fields' ? 'btn-info' : 'text-info' }}"
+                            href="{{ route('site_job_fields') }}">Job Fields</a>
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
