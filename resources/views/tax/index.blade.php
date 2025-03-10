@@ -44,11 +44,12 @@
             {{ session('error') }}
         </div>
         @endif
-        <div class="card card-border shadow">
-            <div class="col-12">
+        <div class="row">
+
+            <div class="col-9 card card-border shadow">
                 <div class="">
                     <div class="card-body">
-                        <table id="default_order" class="table table-striped table-bordered display text-nowrap"
+                        <table id="default_order" class="table table-hover table-striped search-table v-middle display text-nowrap"
                             style="width: 100%">
                             <thead>
                                 <tr>
@@ -103,6 +104,20 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="col-3">
+                <div class="col-md-12 ">
+                    <div class="card-body card card-border shadow">
+                        <h4 class="card-title">Tax</h4>
+                        <p class="card-text pt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                            eiusmod tempor incididunt minim veniam</p>
+                        <p class="card-text pt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam</p>
+                        <a href="#" class="card-link">Need more help?</a>
+                    </div>
+                </div>
+
             </div>
 
         </div>

@@ -7,7 +7,7 @@
 <!-- -------------------------------------------------------------- -->
 <div class="page-breadcrumb">
     <div class="row">
-        <div class="col-2 align-self-center">
+        <div class="col-5 align-self-center">
             <h4 class="page-title">Lead Source</h4>
             <div class="d-flex align-items-center">
                 <nav aria-label="breadcrumb">
@@ -17,37 +17,6 @@
                     </ol>
                 </nav>
             </div>
-        </div>
-        <div class="col-3 align-self-center">
-
-            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#samedata-modal"
-                data-bs-whatever="@mdo"><i class="ri-folder-add-line"></i> Add New</button>
-            <div class="modal fade" id="samedata-modal" tabindex="-1" aria-labelledby="exampleModalLabel1">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header d-flex align-items-center">
-                            <h4 class="modal-title" id="exampleModalLabel1">Add Lead Source</h4>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <form method="POST" action="{{ url('/store/leadsource') }}">
-                            @csrf
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <label for="lead-source" class="control-label bold mb5">Lead Source:</label>
-                                    <input type="text" class="form-control" name="source_name" />
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-light-danger text-danger font-medium"
-                                    data-bs-dismiss="modal">Close</button>
-                                <!-- <button type="submit" class="btn btn-success">Save</button> -->
-                                <button type="submit" class="btn btn-success">Save</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
         </div>
         @include('header-top-nav.settings-nav')
     </div>
@@ -153,6 +122,8 @@
         <div class="col-3">
 
 
+            <button type="button" class="btn btn-info py-1 mb-4" data-bs-toggle="modal" data-bs-target="#samedata-modal"
+                data-bs-whatever="@mdo"><i class="ri-folder-add-line"></i> Add New</button>
 
             <div class="col-md-12 ">
                 <div class="card card-body card-border shadow">
@@ -169,6 +140,32 @@
                 </div>
             </div>
 
+
+            <div class="modal fade" id="samedata-modal" tabindex="-1" aria-labelledby="exampleModalLabel1">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header d-flex align-items-center">
+                            <h4 class="modal-title" id="exampleModalLabel1">Add Lead Source</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="POST" action="{{ url('/store/leadsource') }}">
+                            @csrf
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="lead-source" class="control-label bold mb5">Lead Source:</label>
+                                    <input type="text" class="form-control" name="source_name" />
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-light-danger text-danger font-medium"
+                                    data-bs-dismiss="modal">Close</button>
+                                <!-- <button type="submit" class="btn btn-success">Save</button> -->
+                                <button type="submit" class="btn btn-success">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
