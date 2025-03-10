@@ -1,5 +1,5 @@
 @php
-    $menus = DB::table('nav_menus_left')->where('parent_id', 30)->orderBy('order_by')->get();
+    $menus = DB::table('nav_menus_right_top')->where('parent_id', 30)->orderBy('order_by')->get();
 @endphp
 <div class="col-7 text-end px-4">
     <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
