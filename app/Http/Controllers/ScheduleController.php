@@ -2216,6 +2216,7 @@ class ScheduleController extends Controller
                 'job_assigned.end_slot',
                 'job_assigned.pending_number',
                 'jobs.job_code',
+                'jobs.description',
                 'jobs.job_title as subject',
                 'jobs.status',
                 'jobs.address',
@@ -2250,14 +2251,24 @@ class ScheduleController extends Controller
         if (empty($jobFields)) {
             $show_status = '<span class="mb-1 badge bg-secondary">No Fields</span>';
         }
+       $fullAddress = $result
+            ? "{$result->address}, {$result->city}, {$result->state}, {$result->zipcode}"
+            : 'Address not available';
 
-        $content = "
-			<div class='maplocationpopup'>
-			<h4 style='margin-bottom: 0px;'>" . $result->subject . "</h4>
-			<div class='mt-2'><span class='mb-1 badge bg-primary'>" . $result->job_id . "</span> " . $show_status . "</div>
-			<div class='mt-2'>" . $result->name . ", " . $result->address . ", " . $result->city . ", " . $result->state . ", " . $result->zipcode . "</div>
- 			<div class='mt-2'><a href='tickets/" . $result->job_id . "' class='btn btn-success waves-effect waves-light btn-sm btn-info'>View</a> </div>
-		</div>";
+        $content =  '
+            <div class="pp_jobmodel" style="width: 250px;">
+                <h5 class="uppercase text-truncate pb-0 mb-0">#' . $result->job_id . ' - ' . $result->subject . '</h5>
+                <p class="text-truncate pb-0 mb-0 ft13">' . $result->description . '</p>
+                <div class="pp_job_date text-primary">
+                ' . Carbon::parse($result->start_date_time)->format('M j Y g:i A') . ' - ' . Carbon::parse($result->end_date_time)->format('g:i A') . '
+                </div>
+                <p class="ft13 uppercase mb-0 text-truncate">
+                    <strong><i class="ri-user-line"></i> ' . $result->name . '</strong>
+                </p>
+                <div class="ft12"><i class="ri-map-pin-fill"></i> ' . $fullAddress . '</div>
+ 			<div class="mt-2"><a href="tickets/' . $result->job_id . '" target="_blank" class="btn btn-success waves-effect waves-light btn-sm btn-info">View</a> </div>
+            </div>
+        ';
 
         return response()->json(['content' => $content]);
     }
@@ -2813,47 +2824,7 @@ class ScheduleController extends Controller
         return response()->json(['data' => $data]);
     }
 
-    // public function demo(Request $request)
-    // {
-
-    //     $timezone_name = Session::get('timezone_name');
-    //     $time_interval = Session::get('time_interval');
-    //     $data = $request->all();
-    //     $currentDate = isset($data['date']) && !empty($data['date']) ? Carbon::parse($data['date']) : Carbon::now($timezone_name);
-    //     $filterDate = $currentDate->format('Y-m-d');
-    //     $previousDate = $currentDate->copy()->subDay()->format('Y-m-d');
-
-    //     $tomorrowDate = $currentDate->copy()->addDay()->format('Y-m-d');
-
-    //     $currentDay = $currentDate->format('l');
-    //     $currentDayLower = strtolower($currentDay);
-    //     // Query the business hours for the given day
-    //     $hours = BusinessHours::where('day', $currentDayLower)->first();
-
-    //     $formattedDate = $currentDate->format('D, F j, Y');
-    //     // Fetch active technicians
-    //     $technicians = User::where('role', 'technician')->where('status', 'active')->get();
-    //     $tech = User::where('role', 'technician')->where('status', 'active')->get();
-
-    //     // Initialize an empty collection to store schedules
-    //     $schedules = collect();
-
-    //     // Loop through each technician and fetch their schedules
-    //     foreach ($technicians as $technician) {
-    //         $technicianSchedules = Schedule::where('technician_id', $technician->id)->where('start_date_time', 'LIKE', "%$filterDate%")->get();
-    //         $schedules = $schedules->merge($technicianSchedules);
-    //     }
-
-    //     $schedules->transform(function ($schedule) use ($time_interval) {
-    //         $schedule->start_date_time = Carbon::parse($schedule->start_date_time)
-    //             ->addHours($time_interval)
-    //             ->format('Y-m-d H:i:s');
-    //         return $schedule;
-    //     });
-
-    //     // Pass both technicians and schedules to the view
-    //     return view('schedule.demo', compact('technicians', 'schedules', 'formattedDate', 'hours', 'tomorrowDate', 'previousDate','tech'));
-    // }
+   
        public function demo(Request $request)
     {
 
@@ -2863,7 +2834,7 @@ class ScheduleController extends Controller
         $currentDate = isset($data['date']) && !empty($data['date']) ? Carbon::parse($data['date']) : Carbon::now($timezone_name);
         $filterDate = $currentDate->format('Y-m-d');
         $previousDate = $currentDate->copy()->subDay()->format('Y-m-d');
-
+        $TodayDate = Carbon::now($timezone_name)->format('Y-m-d');
         $tomorrowDate = $currentDate->copy()->addDay()->format('Y-m-d');
 
         $currentDay = $currentDate->format('l');
@@ -3031,7 +3002,7 @@ class ScheduleController extends Controller
         //merge end here
 
         // Pass both technicians and schedules to the view
-        return view('schedule.demo', compact('technicians', 'schedules', 'formattedDate', 'hours', 'tomorrowDate', 'previousDate', 'jobData', 'responsePayload', 'allTechnicians', 'allRoutingTriggers', 'serviceAreaLocations', 'tech'));
+        return view('schedule.demo', compact('TodayDate','technicians', 'schedules', 'formattedDate', 'hours', 'tomorrowDate', 'previousDate', 'jobData', 'responsePayload', 'allTechnicians', 'allRoutingTriggers', 'serviceAreaLocations', 'tech'));
     }
     public function updateJobTechnician(Request $request)
     {
@@ -3148,6 +3119,7 @@ class ScheduleController extends Controller
         $data = $request->all();
         $currentDate = isset($data['date']) && !empty($data['date']) ? Carbon::parse($data['date']) : Carbon::now($timezone_name);
 
+        $TodayDate = Carbon::now($timezone_name)->format('Y-m-d');
         if ($request->has('date')) {
             $filterDate = Carbon::parse($request->date)->format('Y-m-d');
         } else {
@@ -3184,7 +3156,7 @@ class ScheduleController extends Controller
                 $tech = User::where('role', 'technician')->where('status', 'active')->get();
 
 
-        $screen2 = view('schedule.schedule_iframe', compact('technicians', 'schedules', 'formattedDate', 'hours', 'tomorrowDate', 'previousDate','tech'))->render();
+        $screen2 = view('schedule.schedule_iframe', compact('TodayDate','technicians', 'schedules', 'formattedDate', 'hours', 'tomorrowDate', 'previousDate','tech'))->render();
 
         return response()->json(['tbody' => $screen2]);
     }
@@ -3201,6 +3173,7 @@ class ScheduleController extends Controller
             $filterDate = $currentDate->format('Y-m-d');
         }
 
+        $TodayDate = Carbon::now($timezone_name)->format('Y-m-d');
         $previousDate = $currentDate->copy()->subDay()->format('Y-m-d');
         $tomorrowDate = $currentDate->copy()->addDay()->format('Y-m-d');
 
@@ -3231,7 +3204,7 @@ class ScheduleController extends Controller
                 $tech = User::where('role', 'technician')->where('status', 'active')->get();
 
 
-        $screen2 = view('schedule.demoSchedule', compact('technicians', 'schedules', 'formattedDate', 'hours', 'tomorrowDate', 'previousDate','tech'))->render();
+        $screen2 = view('schedule.demoSchedule', compact('TodayDate','technicians', 'schedules', 'formattedDate', 'hours', 'tomorrowDate', 'previousDate','tech'))->render();
 
         return response()->json(['tbody' => $screen2]);
     }
@@ -4294,6 +4267,5 @@ class ScheduleController extends Controller
             'user' => $user,
         ]);
     }
-
 
 }

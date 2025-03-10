@@ -21,30 +21,43 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 $(document).ready(function () {
+
+    $(".stickyDropdown").on("click", function (event) {
+        // Only stop propagation if the clicked element is NOT a button, an input field, or has type="submit"
+        if (
+            !$(event.target).hasClass("editStckyNoteBtn") &&
+            !$(event.target).hasClass("closeStickyAdd") &&
+            !$(event.target).hasClass("addStickyNoteBtn") &&
+            !$(event.target).hasClass("deleteStckyNoteBtn") &&
+            $(event.target).attr("type") !== "submit"
+        ) {
+            event.stopPropagation();
+        }
+    });
    
-    $(document).on("click", "#showStickyNote", function () {
+    $(document).on("click", "#showStickyNote", function (e) {
         $(".stickyMainSection").show();
-    });
-    $(document).on("click", "#showJobList", function () {
-        $(".jobMainSection").show();
+        e.preventDefault();
     });
 
-    $(document).on("click", "#close-job-detail", function () {
-        $(".jobMainSection").hide();
-    });
-
-    $(document).on("click", "#close-task-detail", function () {
+    $(document).on("click", "#close-task-detail", function (e) {
+        e.preventDefault();
         $(".stickyMainSection").hide();
         $(".stickyNotesList").show();
         $(".addStickyNote").hide();
     });
 
-    $(document).on("click", ".addStickyNoteBtn", function () {
+    $(document).on("click", ".addStickyNoteBtn", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $("#showStickyNote").dropdown("show");
         $(".stickyNotesList").hide();
         $(".addStickyNote").show();
     });
 
-    $(document).on("click", ".closeStickyAdd", function () {
+    $(document).on("click", ".closeStickyAdd", function (e) {
+        e.preventDefault();
+        $("#showStickyNote").dropdown("show");
         $(".stickyNotesList").show();
         $(".addStickyNote").hide();
         $(".editStickyNote").hide();
@@ -53,6 +66,7 @@ $(document).ready(function () {
     $("#colorNoteForm").on("submit", function (e) {
         e.preventDefault();
 
+        $("#showStickyNote").dropdown("show");
         var formData = new FormData(this);
 
         $.ajax({
@@ -114,7 +128,9 @@ $(document).ready(function () {
         });
     });
 
-    $(document).on("click", ".editStckyNoteBtn", function () {
+    $(document).on("click", ".editStckyNoteBtn", function (e) {
+        e.preventDefault();
+        $("#showStickyNote").dropdown("show");
         // Get the note_id from the data attribute
         var id = $(this).attr("data-note-id");
 
@@ -156,6 +172,7 @@ $(document).ready(function () {
 
     $("#editNoteForm").on("submit", function (e) {
         e.preventDefault();
+        $("#showStickyNote").dropdown("show");
 
         var formData = new FormData(this);
 
@@ -217,7 +234,9 @@ $(document).ready(function () {
         });
     });
 
-    $(document).on("click", ".deleteStckyNoteBtn", function () {
+    $(document).on("click", ".deleteStckyNoteBtn", function (e) {
+        e.preventDefault();
+        $("#showStickyNote").dropdown("show");
         // Get the note_id from the data attribute
         var id = $(this).attr("data-note-id");
 
@@ -271,6 +290,15 @@ $(document).ready(function () {
                 $(".stickyNotesList").show();
             },
         });
+    });
+
+
+    $(document).on("click", "#showJobList", function () {
+        $(".jobMainSection").show();
+    });
+
+    $(document).on("click", "#close-job-detail", function () {
+        $(".jobMainSection").hide();
     });
 
     $("#sticky_job_list").DataTable({
@@ -340,10 +368,22 @@ $(document).ready(function () {
             .draw();
     });
 
-       $('#showStickyRouting').hide();
-       $('#colrouting').hide();
-        $(document).on('click', '#stickyRouting', function(){
-            $('#showStickyRouting').toggle();
-            $('#colrouting').toggle();
-        });
+    $('#showStickyRouting').hide();
+
+    $(document).on('click', '#stickyRouting', function(event){
+        event.preventDefault();
+        $(".openjobsDropdown").dropdown("show");
+        $('#showStickyRouting').toggle();
+    });
+
+   $(".openjobsDropdown").on("click", function (event) {
+        // Only stop propagation if the clicked element is NOT a button, an input field, or has type="submit"
+        if (
+            !$(event.target).is("#stickyRouting") &&
+            $(event.target).attr("type") !== "submit"
+        ) {
+            event.stopPropagation();
+        }
+    });
+
 });

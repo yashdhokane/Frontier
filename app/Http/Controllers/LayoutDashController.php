@@ -537,7 +537,7 @@ class LayoutDashController extends Controller
         return redirect()->back()->with('success', 'Positions have been saved successfully.');
     }
 
-    public function updateStatus(Request $request)
+      public function updateStatus(Request $request)
     {
         if ($request->has('id')) {
             $Id = $request->id;
@@ -712,9 +712,14 @@ class LayoutDashController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'The module has been added successfully.',
+             'variable' => $variable, // Send updated variable list
+    'List' => $List, // Send updated List
             'html' => view('dashboard.card-positions', compact('cardPosition', 'variable', 'jobcompleteyes', 'cardPositions', 'job', 'paymentopen', 'paymentclose', 'adminCount', 'dispatcherCount', 'technicianCount', 'customerCount', 'layout', 'layoutList', 'activity', 'userNotifications', 'technicianuser', 'customeruser', 'List'))->render()
         ]);
     }
+
+ 
+
     public function changeStatus(Request $request)
     {
         $elementId = $request->input('module_id');

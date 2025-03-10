@@ -1,11 +1,13 @@
-<aside class="left-sidebar">
+<aside class="left-sidebar d-block">
     <!-- Sidebar scroll-->
     <div class="scroll-sidebar">
         <!-- Sidebar navigation-->
-        <nav class="sidebar-nav mt-4 mb-4">
+        <nav class="sidebar-nav mt-3 mb-4">
 
              <ul id="sidebarnav">
-				 
+				 <li class="sidebar-item" id="crossScheduleSidebar">
+				     <i class="far fa-times-circle px-2 fs-5 text-primary float-end pointer"></i>
+				 </li>
 				<li class="sidebar-item">
 				
 					<a class="sidebar-link waves-effect waves-dark sidebar-link ft1" href="#."  aria-expanded="false"><i class="fas ri-user-2-fill"></i><span class="hide-menu">Technicians</span></a>

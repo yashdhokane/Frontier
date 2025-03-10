@@ -37,7 +37,7 @@
         background: none;
         border: none;
         cursor: pointer;
-        display: none;
+        /* display: none; */
     }
 
     .srh-btn i {
@@ -51,107 +51,125 @@
 
 <form class="app-search position-absolute" action="{{ route('global.search') }}" method="GET" onsubmit="return validateSearchInput()">
     <input type="text" name="query" class="form-control" placeholder="Search &amp; enter" required id="search-query" autocomplete="off" />
-    <button type="submit" class="srh-btn" id="clear-search">
+    <button type="submit" class="srh-btn">
         <i data-feather="x" class="feather-sm"></i>
     </button>
-
-    <!-- Suggestions Dropdown -->
-    <ul id="suggestions-list" class="list-group position-absolute w-100 mt-2"></ul>
+    <!-- Suggestions Container -->
+    <ul id="suggestions-list" class="list-group position-absolute w-100 mt-2" style="display:none;">
+        <!-- Suggestions will be injected here -->
+    </ul>
 </form>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const searchInput = document.getElementById("search-query");
-        const suggestionsList = document.getElementById("suggestions-list");
-        const clearSearchBtn = document.getElementById("clear-search");
-        let selectedIndex = -1; // Track keyboard selection
+  document.addEventListener("DOMContentLoaded", function () {
+    var searchForm = document.querySelector(".app-search"); // Ensure form is selected
 
-        // Validate search input before submission
-        function validateSearchInput() {
-            if (searchInput.value.trim().length < 3) {
-                alert("Please enter at least 3 characters for the search.");
-                return false;
-            }
-            return true;
+    if (!searchForm) {
+        console.error("Search form with class .app-search not found!");
+        return;
+    }
+
+    // Validate search input before submitting the form
+    function validateSearchInput() {
+        var searchQuery = document.getElementById("search-query").value;
+
+        if (searchQuery.length < 3) {
+            alert("Please enter at least 3 characters for the search.");
+            return false; // Prevent form submission
         }
 
-        // Handle input event for live search suggestions
-        searchInput.addEventListener("input", function () {
-            const query = searchInput.value.trim();
+        return true; // Allow form submission
+    }
 
-            // Show clear button if input has value
-            clearSearchBtn.style.display = query.length > 0 ? "inline-block" : "none";
+    // Handle Enter key inside the search input
+    var searchInput = document.getElementById("search-query");
 
-            // Fetch suggestions only if query has at least 3 characters
-            if (query.length >= 3) {
-                fetch("{{ route('global.globalSearchautosuggest') }}?query=" + query)
-                    .then(response => response.json())
-                    .then(data => {
-                        suggestionsList.innerHTML = ''; // Clear previous suggestions
-                        selectedIndex = -1;
+    if (searchInput) {
+        searchInput.addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // Prevent default enter behavior
 
-                        if (data.length > 0) {
-                            data.forEach((item, index) => {
-                                const listItem = document.createElement('li');
-                                listItem.classList.add('list-group-item', 'suggestion-item');
-                                listItem.innerHTML = `<a href="javascript:void(0)" data-value="${item.result}">${item.result}</a>`;
-                                listItem.addEventListener("click", function () {
-                                    searchInput.value = item.result; // Set input value
-                                    suggestionsList.style.display = 'none'; // Hide suggestions
-                                    document.querySelector(".app-search").submit(); // Auto-submit
-                                });
-                                suggestionsList.appendChild(listItem);
-                            });
-                        } else {
-                            suggestionsList.innerHTML = '<li class="list-group-item text-muted">No results found.</li>';
-                        }
-                        suggestionsList.style.display = 'block';
-                    })
-                    .catch(error => console.error("Error fetching search suggestions:", error));
-            } else {
-                suggestionsList.style.display = 'none';
-            }
-        });
-
-        // Handle keyboard navigation in suggestions
-        searchInput.addEventListener("keydown", function (event) {
-            const items = suggestionsList.querySelectorAll(".suggestion-item a");
-
-            if (items.length > 0) {
-                if (event.key === "ArrowDown") {
-                    event.preventDefault();
-                    selectedIndex = (selectedIndex + 1) % items.length;
-                } else if (event.key === "ArrowUp") {
-                    event.preventDefault();
-                    selectedIndex = (selectedIndex - 1 + items.length) % items.length;
-                } else if (event.key === "Enter") {
-                    if (selectedIndex > -1) {
-                        event.preventDefault();
-                        searchInput.value = items[selectedIndex].dataset.value;
-                        suggestionsList.style.display = "none";
-                        document.querySelector(".app-search").submit();
-                    }
+                if (validateSearchInput()) {
+                    searchForm.submit(); // Submit the form
                 }
-
-                // Highlight the selected item
-                items.forEach((item, index) => {
-                    item.parentElement.classList.toggle("active", index === selectedIndex);
-                });
             }
         });
+    } else {
+        console.error("Search input with ID #search-query not found!");
+    }
 
-        // Close suggestions when clicking outside
-        document.addEventListener("click", function (event) {
-            if (!event.target.closest('.app-search')) {
-                suggestionsList.style.display = 'none';
-            }
-        });
+    // Live search function with auto-suggest
+    searchInput.addEventListener("input", function () {
+        var query = this.value.trim();
+        var suggestionsList = document.getElementById("suggestions-list");
 
-        // Clear input when clicking the clear button
-        clearSearchBtn.addEventListener("click", function () {
-            searchInput.value = "";
-            suggestionsList.style.display = "none";
-            clearSearchBtn.style.display = "none";
-        });
+        if (!suggestionsList) {
+            console.error("Suggestions list not found!");
+            return;
+        }
+
+        if (query.length === 0) {
+            suggestionsList.style.display = 'none';
+            return;
+        }
+
+        if (query.length >= 3) {
+            fetch("{{ route('global.globalSearchautosuggest') }}?query=" + query)
+                .then(response => response.json())
+                .then(data => {
+                    suggestionsList.innerHTML = '';
+
+                    if (data.results.data.length > 0) {
+                        data.results.data.forEach(item => {
+                            var listItem = document.createElement('li');
+                            listItem.classList.add('list-group-item', 'suggestion-item');
+
+                            let url = '';
+                            switch (item.type) {
+                                case 'Job':
+                                    url = `https://dispatchannel.com/portal/tickets/${item.id}`;
+                                    break;
+                                case 'User':
+                                    url = `https://dispatchannel.com/portal/dispatcher/show/${item.id}`;
+                                    break;
+                                case 'Customer':
+                                    url = `https://dispatchannel.com/portal/customers/show/${item.id}`;
+                                    break;
+                                case 'Service':
+                                    url = `https://dispatchannel.com/portal/book-list/services-list/${item.id}`;
+                                    break;
+                                case 'Product':
+                                    url = `https://dispatchannel.com/portal/book-list/parts/${item.id}/edit`;
+                                    break;
+                            }
+
+                            listItem.innerHTML = `
+                                <a href="${url}" class="text-dark d-block">
+                                    <strong>${item.result}</strong> 
+                                    <small>${item.short_description}</small>
+                                </a>
+                            `;
+
+                            suggestionsList.appendChild(listItem);
+                        });
+
+                        suggestionsList.style.display = 'block';
+                    } else {
+                        suggestionsList.innerHTML = '<li class="list-group-item text-center text-muted">No results found.</li>';
+                        suggestionsList.style.display = 'block';
+                    }
+                })
+                .catch(error => console.error("Error fetching search suggestions:", error));
+        }
     });
+
+    // Close the suggestions when clicking outside
+    document.addEventListener("click", function (event) {
+        if (!event.target.closest('.app-search')) {
+            document.getElementById("suggestions-list").style.display = 'none';
+        }
+    });
+});
+
+
 </script>

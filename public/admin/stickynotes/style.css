@@ -1,4 +1,6 @@
-
+.header_li{
+    position: relative;
+}
 	.stickyMainSection{
 	   transition: all .5s ease;
 	}
@@ -38,4 +40,15 @@
         .actionBtnNote {
             cursor: pointer;
              height: 30px;
+        }
+
+        .openjobsDropdown{
+            width: 900px !important;
+        }
+        .stickyDropdown{
+            width: 800px !important;
+        }
+
+       #autoPublishingTime1, #autoReRouteTime1{
+            display: none;
         }

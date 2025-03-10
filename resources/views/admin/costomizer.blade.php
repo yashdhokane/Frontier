@@ -86,7 +86,7 @@
 
 																							
 			<!-- Tab Activity -->
-		 <div class="tab-pane fade p-3 show active" id="tab-activity" role="tabpanel"
+		    <div class="tab-pane fade p-3 show active" id="tab-activity" role="tabpanel"
                 aria-labelledby="tab-activity-tab">
                 <h5 class="card-title uppercase mt-3 mb-3">Today's Jobs</h5>
                 <div class="steamline">

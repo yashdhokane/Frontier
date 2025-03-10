@@ -22,37 +22,38 @@
     <!-- -------------------------------------------------------------- -->
     <!-- Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
-    <div class="page-breadcrumb ms-2">
-        <div class="row">
-            <div class="col-3 align-self-center">
-                <h4 class="page-title">Customers</h4>
-            </div>
-            <div class="col-4 align-self-center">
-                <form>
-                    <input type="text" name="" class="form-control " aria-controls="" id="searchInput"
-                        placeholder="Search Customers..." />
-                </form>
-            </div>
+   <div class="page-breadcrumb">
+    <div class="row d-flex align-items-center justify-content-between">
+        <!-- Customers Title (Left) -->
+        <div class="col-auto">
+            <h4 class="page-title">Customers</h4>
+        </div>
 
-            <div class="col-5 align-self-center">
-			
-				<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-					
-					<a href="{{ route('users.create') }}" id="newCustomerBtn" class="btn btn-secondary text-white"><i class="ri-user-add-line"></i> Add New Customers</a>
-					  
-					@if (request()->routeIs('users.index'))
-						<a href="{{ route('users.status', ['status' => 'deactive']) }}"  class="btn btn-secondary text-white"><i class="ri-user-unfollow-fill"></i> View Inactive Customers</a>
-					@elseif(request()->routeIs('users.status'))
-						<a href="{{ route('users.index') }}" class="btn btn-secondary text-white"><i class="ri-user-follow-line"></i> View Active Customers</a>
-					@endif
+        <!-- Buttons (Right) -->
+        <div class="col-auto">
+            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <a href="{{ route('users.create') }}" id="newCustomerBtn" class="btn btn-secondary text-white">
+                    <i class="ri-user-add-line"></i> Add New Customers
+                </a>
 
-					 <a href="#." id="filterButton" class="btn btn-secondary text-white"><i class="ri-filter-line"></i> Filters</a>
-                     
-				</div>
-				
-             </div>
+                @if (request()->routeIs('users.index'))
+                    <a href="{{ route('users.status', ['status' => 'deactive']) }}" class="btn btn-secondary text-white">
+                        <i class="ri-user-unfollow-fill"></i> View Inactive Customers
+                    </a>
+                @elseif(request()->routeIs('users.status'))
+                    <a href="{{ route('users.index') }}" class="btn btn-secondary text-white">
+                        <i class="ri-user-follow-line"></i> View Active Customers
+                    </a>
+                @endif
+
+                <a href="#." id="filterButton" class="btn btn-secondary text-white">
+                    <i class="ri-filter-line"></i> Filters
+                </a>
+            </div>
         </div>
     </div>
+</div>
+
     <!-- -------------------------------------------------------------- -->
     <!-- End Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
@@ -87,65 +88,79 @@
         <!-- -------------------------------------------------------------- -->
         <div class="widget-content searchable-container list">
 
-            <div id="filterDiv" class="card card-body shadow" style="display: none;">
-                <form action="{{ route('users.index') }}" id="searchForm" method="get">
-                    <div class="row">
-                        <div class="col-md-2 col-xl-2">
-                            <label for="workupdate">Work Updated</label>
-                            <br />
-                            <select id="workupdate" name="workupdate" class="select2 form-control custom-select"
-                                style="width: 100%; height: 36px">
-                                <option value="" {{ is_null($workupdate) ? 'selected' : '' }}>All</option>
-                                <option value="yes" {{ $workupdate == 'yes' ? 'selected' : '' }}>Yes</option>
-                                <option value="no" {{ $workupdate == 'no' ? 'selected' : '' }}>No</option>
-                            </select>
-                        </div>
+                  <div class="card card-body shadow ">
+             <div class="row">
+
+                 <div class="col-md-2 mt-3">
+                     <form>
+                         <input type="text" name="" class="form-control " aria-controls="" id="searchInput"
+                             placeholder="Search Customers..." />
+                     </form>
+                 </div>
+                 <div class="col-md-10" style="display: none;" id="filterDiv">
+                     <form action="{{ route('users.index') }}" id="searchForm" method="get">
+                         <div class="row">
+
+                             <div class="col-md-3">
+                                 <label for="workupdate">Work Updated</label>
+                                 <br />
+                                 <select id="workupdate" name="workupdate" class="select2 form-control custom-select"
+                                     style="width: 100%; height: 36px">
+                                     <option value="" {{ is_null($workupdate) ? 'selected' : '' }}>All</option>
+                                     <option value="yes" {{ $workupdate == 'yes' ? 'selected' : '' }}>Yes</option>
+                                     <option value="no" {{ $workupdate == 'no' ? 'selected' : '' }}>No</option>
+                                 </select>
+                             </div>
 
 
-                        <div class="col-md-2 col-xl-2">
-                            <label for="state">State</label>
-                            <br />
-                            <select id="state" name="state[]" class="select2 form-control custom-select"
-                                style="width: 100%; height: 36px" multiple="multiple">
-                                @foreach ($locationStates as $state)
-                                    <option value="{{ $state->state_id }}"
-                                        {{ in_array($state->state_id, $stateIds) ? 'selected' : '' }}>
-                                        {{ $state->state_name }}
-                                    </option>
-                                @endforeach
-                            </select>
+                             <div class="col-md-3">
+                                 <label for="state">State</label>
+                                 <br />
+                                 <select id="state" name="state[]" class="select2 form-control custom-select"
+                                     style="width: 100%; height: 36px" multiple="multiple">
+                                     @foreach ($locationStates as $state)
+                                     <option value="{{ $state->state_id }}"
+                                         {{ in_array($state->state_id, $stateIds) ? 'selected' : '' }}>
+                                         {{ $state->state_name }}
+                                     </option>
+                                     @endforeach
+                                 </select>
 
 
 
-                        </div>
-                        <div class="col-md-2 col-xl-2">
-                            <label for="jobs">Jobs</label>
-                            <br />
-                            <select id="jobs" name="jobs" class="select2 form-control custom-select"
-                                style="width: 100%; height: 36px">
-                                <option value="" {{ is_null($jobs) ? 'selected' : '' }}>All Jobs</option>
-                                <option value="upcoming" {{ $jobs === 'upcoming' ? 'selected' : '' }}>Upcoming Jobs</option>
-                                <option value="this_month" {{ $jobs === 'this_month' ? 'selected' : '' }}>Jobs This Month
-                                </option>
-                                <option value="last_month" {{ $jobs === 'last_month' ? 'selected' : '' }}>Jobs Last Month
-                                </option>
-                            </select>
-                        </div>
+                             </div>
+                             <div class="col-md-3">
+                                 <label for="jobs">Jobs</label>
+                                 <br />
+                                 <select id="jobs" name="jobs" class="select2 form-control custom-select"
+                                     style="width: 100%; height: 36px">
+                                     <option value="" {{ is_null($jobs) ? 'selected' : '' }}>All Jobs</option>
+                                     <option value="upcoming" {{ $jobs === 'upcoming' ? 'selected' : '' }}>Upcoming Jobs</option>
+                                     <option value="this_month" {{ $jobs === 'this_month' ? 'selected' : '' }}>Jobs This Month
+                                     </option>
+                                     <option value="last_month" {{ $jobs === 'last_month' ? 'selected' : '' }}>Jobs Last Month
+                                     </option>
+                                 </select>
+                             </div>
 
 
-                        <div class="col-md-2 col-xl-2" style="margin-top: 19px;">
-                            <a href="#." id="searchButton" class="btn btn-sm btn-info">
-                                <i class="ri-user-search-line"></i> Search
-                            </a>
-                            <a href="{{ route('users.index') }}" id="resetButton" class="btn btn-sm btn-secondary">
-                                <i class="ri-refresh-line"></i> Reset
-                            </a>
-                        </div>
+                             <div class="col-md-3" style="margin-top: 19px;">
+                                 <a href="#." id="searchButton" class="btn btn-sm btn-info">
+                                     <i class="ri-user-search-line"></i> Search
+                                 </a>
+                                 <a href="{{ route('users.index') }}" id="resetButton" class="btn btn-sm btn-secondary">
+                                     <i class="ri-refresh-line"></i> Reset
+                                 </a>
+                             </div>
+
+                         </div>
 
 
-                    </div>
-                </form>
-            </div>
+                     </form>
+                 </div>
+
+             </div>
+         </div>
 
 
 

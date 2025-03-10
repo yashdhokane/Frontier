@@ -1,7 +1,13 @@
 @extends('home')
 @section('content')
     <!-- -------------------------------------------------------------- -->
+<style>
+.small text-muted {
+    display: none!imortant;
+    visibility: hidden!imortant;
+}
 
+</style>
     <!-- -------------------------------------------------------------- -->
     <!-- Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
@@ -73,6 +79,15 @@
                             </tbody>
 
                         </table>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+    <div class="text-start">
+        Showing {{ $states->firstItem() }} to {{ $states->lastItem() }} of {{ $states->total() }} entries
+    </div>
+    <div class="text-end">
+        {{ $states->withQueryString()->links('pagination::bootstrap-5') }}
+    </div>
+</div>
+
                     </div>
                 </div>
             </div>
@@ -105,14 +120,14 @@
     <script>
         $(document).ready(function() {
             if ($.fn.DataTable.isDataTable('#default_order')) {
-                $('#default_order').DataTable().destroy();
-            }
-            $('#default_order').DataTable({
-                "order": [
-                    [0, "desc"]
-                ],
-                "pageLength": 25,
-            });
+        $('#default_order').DataTable().destroy();
+    }
+    $('#default_order').DataTable({
+        "order": [[0, "desc"]],
+        "pageLength": 25,
+        "paging": false,  // Disables DataTables pagination
+        "info": false  // Hides "Showing entries" info
+    });
             $('.edit-btn').click(function() {
                 var stateId = $(this).data('state-id');
 

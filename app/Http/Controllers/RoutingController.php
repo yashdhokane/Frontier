@@ -28,6 +28,8 @@ use App\Mail\PublishMailTech;
 use App\Mail\PublishMailCustomer;
 use Illuminate\Support\Facades\Mail;
 
+use Twilio\TwiML\MessagingResponse;
+
 class RoutingController extends Controller
 {
     public function index(Request $request)
@@ -405,7 +407,7 @@ class RoutingController extends Controller
 
     public function Routesettingstore(Request $request)
     {
-        //    dd( $request);
+        // dd($request);
         $timezone_id = Session::get('timezone_id');
         $timezone_name = Session::get('timezone_name');
         $time_interval = Session::get('time_interval');
@@ -415,6 +417,8 @@ class RoutingController extends Controller
         $technicians = $request->technicians;
         $jobIds = $request->jobIds;
         $callPerDay = $request->number_of_calls;
+        $currentDate1 = \Carbon\Carbon::now($timezone_name);
+        
 
 
         $response = [];
@@ -444,6 +448,7 @@ class RoutingController extends Controller
                 $jobDistances = [];
 
                 if ($request->auto_publishing == 'on' && !$jobs->isEmpty()) {
+
                     foreach ($jobs as $index => $job) {
                         // Retrieve the job
                         $jobpublish = JobModel::find($job->job_id);
@@ -452,6 +457,7 @@ class RoutingController extends Controller
                             $customer = User::find($jobpublish->customer_id); // Get customer
                             $tech = User::find($jobpublish->technician_id);   // Get technician
                             $jobSchedule = Schedule::where('job_id', $job->job_id)->first(); // Get schedule
+                            $customerAddress_Sms = CustomerUserAddress::where('user_id', $jobpublish->customer_id)->first();
                             
                             // Prepare mail data
                             $mailData = [
@@ -464,6 +470,50 @@ class RoutingController extends Controller
                             // Update the job
                             $jobpublish->is_published = 'yes';
                             $jobpublish->save();
+
+                            if ($tech && $customer) {
+
+                                $scheduleDate = Carbon::parse($jobSchedule->start_date_time)->format('F j, Y'); // Example: March 1, 2025
+                                $scheduleTime = Carbon::parse($jobSchedule->start_date_time)->format('h:i A');
+
+                                // Message for Customer
+                                $customerMessage = "We would like to confirm that the {$jobpublish->job_title} is scheduled for:\n\n";
+                                $customerMessage .= "Date: {$scheduleDate}\n";
+                                $customerMessage .= "Time: {$scheduleTime}\n\n";
+                                $customerMessage .= "{$tech->name}, our technician, will be there to provide the service.";
+
+                                // $customerPhone = $customer->mobile; // Assuming 'phone' field stores customer's number
+                                // $customerPhone = '+14155713129'; 
+                                $customerPhone = '+918830711935'; 
+                                // $customerPhone = '+917030467187'; 
+                                try {
+                                    $responseCustomer = app('SmsService')->sendSms($customerMessage, $customerPhone);
+                                } catch (\Exception $e) {
+                                    \Log::error("Error sending SMS to Customer: " . $e->getMessage());
+                                }
+
+
+                                // Message for Technician
+                                $techMessage = "We would like to confirm that the {$jobpublish->job_title} is scheduled for:\n\n";
+                                $techMessage .= "Date: {$scheduleDate}\n";
+                                $techMessage .= "Time: {$scheduleTime}\n";
+                                $techMessage .= "Customer Name: {$customer->name}\n";
+                                $techMessage .= "Address: {$customerAddress_Sms->address_line1},{$customerAddress_Sms->city},{$customerAddress_Sms->state_name},{$customerAddress_Sms->zipcode}";
+
+                                // $techPhone = $tech->mobile; // Assuming 'phone' field stores technician's number
+                                // $techPhone = '+14155713129'; 
+                                $techPhone = '+918830711935'; 
+                                // $techPhone = '+917030467187'; 
+                                sleep(2);
+                                try {
+                                    $responseTech = app('SmsService')->sendSms($techMessage, $techPhone);
+                                } catch (\Exception $e) {
+                                    \Log::error("Error sending SMS to Technician: " . $e->getMessage());
+                                }
+
+                                
+
+                            }
 
                             
                             $recipant = 'thesachinraut@gmail.com';
@@ -511,6 +561,9 @@ class RoutingController extends Controller
                                 $routingJob->short_route = json_encode($shortRouteJobIds);
                                 $routingJob->created_by = Auth()->user()->id;
                                 $routingJob->updated_by = Auth()->user()->id;
+                                $routingJob->cron_route_time = $request->auto_route_time;
+                                $routingJob->cron_re_route_time = $request->auto_rerouting_time;
+                                $routingJob->cron_publish_time = $request->auto_publishing_time;
                                 $routingJob->save();
                             }
 
@@ -525,6 +578,9 @@ class RoutingController extends Controller
                                     $routingJob->short_route = json_encode($shortRouteJobIds);
                                     $routingJob->created_by = Auth()->user()->id;
                                     $routingJob->updated_by = Auth()->user()->id;
+                                    $routingJob->cron_route_time = $request->auto_route_time;
+                                    $routingJob->cron_re_route_time = $request->auto_rerouting_time;
+                                    $routingJob->cron_publish_time = $request->auto_publishing_time;
                                     $routingJob->save(); // Save the new instance
                                 }
                             }
@@ -538,6 +594,9 @@ class RoutingController extends Controller
                                 $routingJob->short_route = json_encode($shortRouteJobIds);
                                 $routingJob->created_by = Auth()->user()->id;
                                 $routingJob->updated_by = Auth()->user()->id;
+                                $routingJob->cron_route_time = $request->auto_route_time;
+                                $routingJob->cron_re_route_time = $request->auto_rerouting_time;
+                                $routingJob->cron_publish_time = $request->auto_publishing_time;
                                 $routingJob->save(); // Save the new instance
                             }
                         }
@@ -692,6 +751,9 @@ class RoutingController extends Controller
                             $routingJob->custom_route = json_encode($customRouteJobIds);
                             $routingJob->created_by = Auth()->user()->id;
                             $routingJob->updated_by = Auth()->user()->id;
+                            $routingJob->cron_route_time = $request->auto_route_time;
+                            $routingJob->cron_re_route_time = $request->auto_rerouting_time;
+                            $routingJob->cron_publish_time = $request->auto_publishing_time;
                             $routingJob->save();
                         }
 
@@ -707,6 +769,9 @@ class RoutingController extends Controller
                                 $routingJob->custom_route = json_encode($customRouteJobIds);
                                 $routingJob->created_by = Auth()->user()->id;
                                 $routingJob->updated_by = Auth()->user()->id;
+                                $routingJob->cron_route_time = $request->auto_route_time;
+                                $routingJob->cron_re_route_time = $request->auto_rerouting_time;
+                                $routingJob->cron_publish_time = $request->auto_publishing_time;
                                 $routingJob->save(); // Save the new instance
                             }
                         }
@@ -721,6 +786,9 @@ class RoutingController extends Controller
                             $routingJob->custom_route = json_encode($customRouteJobIds);
                             $routingJob->created_by = Auth()->user()->id;
                             $routingJob->updated_by = Auth()->user()->id;
+                            $routingJob->cron_route_time = $request->auto_route_time;
+                            $routingJob->cron_re_route_time = $request->auto_rerouting_time;
+                            $routingJob->cron_publish_time = $request->auto_publishing_time;
                             $routingJob->save(); // Save the new instance
                         }
                     }
@@ -811,6 +879,7 @@ class RoutingController extends Controller
                             $customer = User::find($jobpublish->customer_id); // Get customer
                             $tech = User::find($jobpublish->technician_id);   // Get technician
                             $jobSchedule = Schedule::where('job_id', $job->job_id)->first(); // Get schedule
+                            $customerAddress_Sms = CustomerUserAddress::where('user_id', $jobpublish->customer_id)->first();
                             
                             // Prepare mail data
                             $mailData = [
@@ -823,6 +892,29 @@ class RoutingController extends Controller
                             // Update the job
                             $jobpublish->is_published = 'yes';
                             $jobpublish->save();
+
+                            if ($tech && $customer) {
+                                 // Message for Technician
+                                $techMessage = "We would like to confirm that the {$jobpublish->job_title} is scheduled for:\n\n";
+                                $techMessage .= "Date: {$scheduleDate}\n";
+                                $techMessage .= "Time: {$scheduleTime}\n";
+                                $techMessage .= "Customer Name: {$customer->name}\n";
+                                $techMessage .= "Address: {$customerAddress_Sms->address_line1},{$customerAddress_Sms->city},{$customerAddress_Sms->state_name},{$customerAddress_Sms->zipcode}";
+
+                                // $techPhone = $tech->mobile; // Assuming 'phone' field stores technician's number
+                                $techPhone = '+14155713129'; 
+                                //$techPhone = '+918830711935'; 
+                                // app('SmsService')->sendSms($techMessage, $techPhone);
+
+                                  // Message for Customer
+                                $customerMessage = "We would like to confirm that the {$jobpublish->job_title} is scheduled for:\n\n";
+                                $customerMessage .= "Date: {$scheduleDate}\n";
+                                $customerMessage .= "Time: {$scheduleTime}\n\n";
+                                $customerMessage .= "{$tech->name}, our technician, will be there to provide the service.";
+                                // $customerPhone = $customer->mobile; // Assuming 'phone' field stores customer's number
+                                $customerPhone = '+918830711935'; 
+                                // app('SmsService')->sendSms($customerMessage, $customerPhone);
+                            }
 
                             
                             $recipant = 'thesachinraut@gmail.com';
@@ -874,6 +966,9 @@ class RoutingController extends Controller
                                 $routingJob->short_route = json_encode($shortRouteJobIds);
                                 $routingJob->created_by = Auth()->user()->id;
                                 $routingJob->updated_by = Auth()->user()->id;
+                                $routingJob->cron_route_time = $request->auto_route_time;
+                                $routingJob->cron_re_route_time = $request->auto_rerouting_time;
+                                $routingJob->cron_publish_time = $request->auto_publishing_time;
                                 $routingJob->save();
                             }
 
@@ -888,6 +983,9 @@ class RoutingController extends Controller
                                     $routingJob->short_route = json_encode($shortRouteJobIds);
                                     $routingJob->created_by = Auth()->user()->id;
                                     $routingJob->updated_by = Auth()->user()->id;
+                                    $routingJob->cron_route_time = $request->auto_route_time;
+                                    $routingJob->cron_re_route_time = $request->auto_rerouting_time;
+                                    $routingJob->cron_publish_time = $request->auto_publishing_time;
                                     $routingJob->save(); // Save the new instance
                                 }
                             }
@@ -901,6 +999,9 @@ class RoutingController extends Controller
                                 $routingJob->short_route = json_encode($shortRouteJobIds);
                                 $routingJob->created_by = Auth()->user()->id;
                                 $routingJob->updated_by = Auth()->user()->id;
+                                $routingJob->cron_route_time = $request->auto_route_time;
+                                $routingJob->cron_re_route_time = $request->auto_rerouting_time;
+                                $routingJob->cron_publish_time = $request->auto_publishing_time;
                                 $routingJob->save(); // Save the new instance
                             }
                         }
@@ -1052,6 +1153,9 @@ class RoutingController extends Controller
                             $routingJob->custom_route = json_encode($customRouteJobIds);
                             $routingJob->created_by = Auth()->user()->id;
                             $routingJob->updated_by = Auth()->user()->id;
+                            $routingJob->cron_route_time = $request->auto_route_time;
+                            $routingJob->cron_re_route_time = $request->auto_rerouting_time;
+                            $routingJob->cron_publish_time = $request->auto_publishing_time;
                             $routingJob->save();
                         }
 
@@ -1067,6 +1171,9 @@ class RoutingController extends Controller
                                 $routingJob->custom_route = json_encode($customRouteJobIds);
                                 $routingJob->created_by = Auth()->user()->id;
                                 $routingJob->updated_by = Auth()->user()->id;
+                                $routingJob->cron_route_time = $request->auto_route_time;
+                                $routingJob->cron_re_route_time = $request->auto_rerouting_time;
+                                $routingJob->cron_publish_time = $request->auto_publishing_time;
                                 $routingJob->save(); // Save the new instance
                             }
                         }
@@ -1081,6 +1188,9 @@ class RoutingController extends Controller
                             $routingJob->custom_route = json_encode($customRouteJobIds);
                             $routingJob->created_by = Auth()->user()->id;
                             $routingJob->updated_by = Auth()->user()->id;
+                            $routingJob->cron_route_time = $request->auto_route_time;
+                            $routingJob->cron_re_route_time = $request->auto_rerouting_time;
+                            $routingJob->cron_publish_time = $request->auto_publishing_time;
                             $routingJob->save(); // Save the new instance
                         }
                     }
@@ -1135,12 +1245,21 @@ class RoutingController extends Controller
                 ];
             }
         }
+        
+        // this code for header open jobs 
+        $schedules1 = \App\Models\Schedule::where('start_date_time', '>=', $currentDate1)->get();
+        // Extract job_ids from schedules
+        $jobIds1 = $schedules1->pluck('job_id');
+        // Fetch tickets for those job_ids
+        $tickets = \App\Models\JobModel::whereIn('id', $jobIds1)->where('is_published', 'no')->get();
+        $html = view('admin.open_job_response', compact('tickets'))->render();
 
         return response()->json([
             'success' => true,
             'message' => 'Routing settings saved successfully for all technicians!',
             'savedSettings' => $savedSettings,
             'response' => $response,
+            'html' => $html,
         ]);
     }
 
@@ -1174,8 +1293,9 @@ class RoutingController extends Controller
         // Fetch job details
         $job = DB::table('jobs')
             ->join('users', 'jobs.customer_id', '=', 'users.id')
+            ->join('schedule', 'jobs.id', '=', 'job_id')
             ->where('jobs.id', $jobId)
-            ->select('jobs.*', 'users.name as customer_name')
+            ->select('jobs.*', 'users.name as customer_name','schedule.start_date_time','schedule.end_date_time')
             ->first();
 
         if (!$job) {
@@ -1195,6 +1315,9 @@ class RoutingController extends Controller
             <div class="pp_jobmodel" style="width: 250px;">
                 <h5 class="uppercase text-truncate pb-0 mb-0">#' . $job->id . ' - ' . $job->job_title . '</h5>
                 <p class="text-truncate pb-0 mb-0 ft13">' . $job->description . '</p>
+                <div class="pp_job_date text-primary">
+                ' . Carbon::parse($job->start_date_time)->format('M j Y g:i A') . ' - ' . Carbon::parse($job->end_date_time)->format('g:i A') . '
+                </div>
                 <p class="ft13 uppercase mb-0 text-truncate">
                     <strong><i class="ri-user-line"></i> ' . $job->customer_name . '</strong>
                 </p>
@@ -1205,7 +1328,19 @@ class RoutingController extends Controller
         return response()->json(['popupHtml' => $popupHtml]);
     }
 
+    public function handleIncomingSms(Request $request)
+    {
+        $from = $request->input('From');  // User's phone number
+        $body = $request->input('Body');  // Message content
 
+        \Log::info("Received SMS from $from: $body");
+
+        // Auto-reply to the user
+        $response = new MessagingResponse();
+        $response->message("Hello! You said: $body");
+
+        return response($response, 200)->header('Content-Type', 'text/xml');
+    }
 
 
 }

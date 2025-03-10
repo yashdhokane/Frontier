@@ -9,7 +9,7 @@
 <!-- Add iframe or other content here -->
 
 <div class="table-responsive mt-1" >
-    <table id="" class="table table-bordered text-nowrap" style="height: 380px!important;">
+    <table id="" class="table table-bordered text-nowrap" style="height:380px!important;">
         <thead>
             <!-- start row -->
             <tr>

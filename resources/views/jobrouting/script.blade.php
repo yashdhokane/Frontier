@@ -132,7 +132,6 @@
     var popupUrl = "{{ route('jobs.popup', ['jobId' => '__JOB_ID__']) }}";
 
     function renderRouteForDate(map, technician, jobsByDate, dateDay) {
-
         const {
             latitude,
             longitude,
@@ -179,24 +178,78 @@
                     suppressMarkers: true,
                 });
 
-                directionsService.route({
-                        origin: {
-                            lat: parseFloat(latitude),
-                            lng: parseFloat(longitude)
-                        },
-                        destination: waypoints[waypoints.length - 1].location,
-                        optimizeWaypoints: false,
-                        waypoints,
-                        travelMode: google.maps.TravelMode.DRIVING,
-                    },
-                    (result, status) => {
-                        if (status === google.maps.DirectionsStatus.OK) {
-                            directionsRenderer.setDirections(result);
-                        } else {
-                            console.error("Directions request failed due to " + status);
-                        }
-                    }
-                );
+              directionsService.route({
+                origin: {
+                    lat: parseFloat(latitude),
+                    lng: parseFloat(longitude)
+                },
+                destination: waypoints[waypoints.length - 1].location,
+                optimizeWaypoints: false, // Disable waypoints optimization
+                waypoints,
+                travelMode: google.maps.TravelMode.DRIVING, // Try WALKING or BICYCLING if needed
+            }, (result, status) => {
+                if (status === google.maps.DirectionsStatus.OK) {
+                    directionsRenderer.setDirections(result);
+
+                    // Extract polyline path from directions
+                    const route = result.routes[0].legs;
+                    let polylinePath = [];
+
+                    route.forEach(leg => {
+                        leg.steps.forEach(step => {
+                            step.path.forEach(point => {
+                                polylinePath.push(point);
+                            });
+                        });
+                    });
+
+                    // Create new Polyline with event listeners
+                    const polyline = new google.maps.Polyline({
+                        path: polylinePath,
+                        strokeColor: strokeStyle,
+                        map: map
+                    });
+
+                    // InfoWindow for showing the date
+                    const infoWindow = new google.maps.InfoWindow();
+
+                    // Hover event to show date
+                    google.maps.event.addListener(polyline, "mouseover", (event) => {
+                        const firstJob = validJobs[0];
+                        infoWindow.setContent(`Start Date: ${firstJob.start_date_time}`);
+                        infoWindow.setPosition(event.latLng);
+                        infoWindow.open(map);
+                    });
+
+                    // Mouseout event to close InfoWindow
+                    google.maps.event.addListener(polyline, "mouseout", () => {
+                        infoWindow.close();
+                    });
+
+                    // Click event for additional actions
+                    google.maps.event.addListener(polyline, "click", (event) => {
+                        const allJobsContent = validJobs.map(job => `
+                            <div>
+                                <strong>Job Title:</strong> ${job.job_title}<br>
+                                <strong>Start Date:</strong> ${job.start_date_time}<br>
+                                <strong>Customer:</strong> ${job.customer.name}<br>
+                                <strong>Address:</strong> ${job.customer.full_address}<br>
+                            </div>
+                        `).join('<hr>');
+
+                        const allJobsInfoWindow = new google.maps.InfoWindow({
+                            content: allJobsContent
+                        });
+
+                        allJobsInfoWindow.setPosition(event.latLng);
+                        allJobsInfoWindow.open(map);
+                    });
+
+                } else {
+                    console.error("Directions request failed due to " + status);
+                }
+            });
+
 
                 // Add numbered customer markers
                 validJobs.forEach((job, jobIndex) => {
@@ -252,6 +305,8 @@
                         });
                     }
                 });
+
+                
             }
         });
     }

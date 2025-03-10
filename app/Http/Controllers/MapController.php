@@ -100,6 +100,7 @@ class MapController extends Controller
                 'job_assigned.end_slot',
                 'job_assigned.pending_number',
                 'jobs.job_code',
+                'jobs.description',
                 'jobs.job_title as subject',
                 'jobs.status',
                 'jobs.address',
@@ -133,14 +134,24 @@ class MapController extends Controller
         if (empty($jobFields)) {
             $show_status = '<span class="mb-1 badge bg-secondary">No Fields</span>';
         }
+        $fullAddress = $result
+            ? "{$result->address}, {$result->city}, {$result->state}, {$result->zipcode}"
+            : 'Address not available';
 
-        $content = "
-			<div class='maplocationpopup'>
-			<h4 style='margin-bottom: 0px;'>" . $result->subject . "</h4>
-			<div class='mt-2'><span class='mb-1 badge bg-primary'>" . $result->job_id . "</span> " . $show_status . "</div>
-			<div class='mt-2'>" . $result->name . ", " . $result->address . ", " . $result->city . ", " . $result->state . ", " . $result->zipcode . "</div>
- 			<div class='mt-2'><a href='tickets/" . $result->job_id . "' class='btn btn-success waves-effect waves-light btn-sm btn-info'>View</a> <a href='#' class='btn btn-warning waves-effect waves-light btn-sm btn-info reschedule' data-job_id='" . $result->job_id . "'>Reschedule</a></div>
-		</div>";
+        $content = '
+            <div class="pp_jobmodel" style="width: 250px;">
+                <h5 class="uppercase text-truncate pb-0 mb-0">#' . $result->job_id . ' - ' . $result->subject . '</h5>
+                <p class="text-truncate pb-0 mb-0 ft13">' . $result->description . '</p>
+                <div class="pp_job_date text-primary">
+                ' . Carbon::parse($result->start_date_time)->format('M j Y g:i A') . ' - ' . Carbon::parse($result->end_date_time)->format('g:i A') . '
+                </div>
+                <p class="ft13 uppercase mb-0 text-truncate">
+                    <strong><i class="ri-user-line"></i> ' . $result->name . '</strong>
+                </p>
+                <div class="ft12"><i class="ri-map-pin-fill"></i> ' . $fullAddress . '</div>
+ 			<div class="mt-2"><a href="tickets/' . $result->job_id . '" target="_blank" class="btn btn-success waves-effect waves-light btn-sm btn-info">View</a> <a href="#" class="btn btn-warning waves-effect waves-light btn-sm btn-info reschedule" data-job_id="' . $result->job_id . '">Reschedule</a></div>
+            </div>
+        ';
 
         return response()->json(['content' => $content]);
     }

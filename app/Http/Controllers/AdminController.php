@@ -12,6 +12,11 @@ use App\Models\Admin;
 use App\Models\UserNotification;
 use Illuminate\Http\Request;
 
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+
+
 class AdminController extends Controller
 {
     public function index()
@@ -124,71 +129,103 @@ public function updateNotification(Request $request)
         // Return response
         return response()->json(['message' => 'Notification has been updated successfully.']);
     }
+ 
+
+
 public function globalSearch(Request $request)
 {
     $query = $request->input('query');
 
-    // Validate query
     if (!$query) {
         return redirect()->back()->with('error', 'Search query is required.');
     }
 
-    // Search jobs
     $jobs = DB::table('jobs')->select(
-        'id',  // Use the actual primary key field
-        DB::raw("CONCAT('#', CAST(job_title AS CHAR)) as result"),
+        'id',
+        'job_title as result',
         DB::raw("'Job' as type"),
         DB::raw("CONCAT(job_title, ' - ', status, ' - ', warranty_type) as short_description")
     )
     ->where('job_code', 'LIKE', "%$query%")
-    ->orWhere('job_title', 'LIKE', "%$query%");
+    ->orWhere('job_title', 'LIKE', "%$query%")
+    ->get();
 
-    // Search users (dispatcher)
     $users = DB::table('users')->select(
-        'id',  // Use the actual primary key field
-        DB::raw("CAST(name AS CHAR) as result"),
+        'id',
+        'name as result',
         DB::raw("'User' as type"),
         DB::raw("CONCAT('Mobile: ', mobile, ' | Customer ID: ', customer_id) as short_description")
     )
     ->where('role', 'dispatcher')
-    ->where('name', 'LIKE', "%$query%")
-    ->orWhere('mobile', 'LIKE', "%$query%");
+    ->where(function ($q) use ($query) {
+        $q->where('name', 'LIKE', "%$query%")
+          ->orWhere('mobile', 'LIKE', "%$query%");
+    })
+    ->get();
 
-    // Search customers
     $customers = DB::table('users')->select(
-        'id',  // Use the actual primary key field
-        DB::raw("CAST(name AS CHAR) as result"),
+        'id',
+        'name as result',
         DB::raw("'Customer' as type"),
         DB::raw("CONCAT('Mobile: ', mobile, ' | Customer ID: ', customer_id) as short_description")
     )
     ->where('role', 'customer')
-    ->where('name', 'LIKE', "%$query%")
-    ->orWhere('mobile', 'LIKE', "%$query%");
+    ->where(function ($q) use ($query) {
+        $q->where('name', 'LIKE', "%$query%")
+          ->orWhere('mobile', 'LIKE', "%$query%");
+    })
+    ->get();
 
-    // Search services
     $services = DB::table('services')->select(
-        'service_id',  // Use the actual primary key field
-        DB::raw("CAST(service_name AS CHAR) as result"),
+        'service_id as id',
+        'service_name as result',
         DB::raw("'Service' as type"),
-        DB::raw("CAST(service_description AS CHAR) as short_description")
+        'service_description as short_description'
     )
-    ->where('service_name', 'LIKE', "%$query%");
+    ->where('service_name', 'LIKE', "%$query%")
+    ->get();
 
-    // Search products
     $products = DB::table('products')->select(
-        'product_id',  // Use the actual primary key field
-        DB::raw("CAST(product_name AS CHAR) as result"),
+        'product_id as id',
+        'product_name as result',
         DB::raw("'Product' as type"),
-        DB::raw("CAST(product_description AS CHAR) as short_description")
+        'product_description as short_description'
     )
-    ->where('product_name', 'LIKE', "%$query%");
+    ->where('product_name', 'LIKE', "%$query%")
+    ->get();
 
-    // Combine results with pagination
-    $results = $jobs->union($users)->union($customers)->union($services)->union($products)
-        ->paginate(10);  // You can adjust the number of results per page
+    // **Manually merge all collections**
+    $mergedResults = collect($jobs)
+        ->merge($users)
+        ->merge($customers)
+        ->merge($services)
+        ->merge($products);
 
-    return view('admin.global_search_render', compact('results', 'query'));
+    // **Paginate the merged collection manually**
+    $results = $this->paginate($mergedResults, 10);
+$totalResultsCount = $mergedResults->count(); // Get total count before pagination
+$results = $this->paginate($mergedResults, 10); // Paginate
+    return view('admin.global_search_render', compact('jobs', 'users', 'customers', 'services', 'products', 'query', 'results','totalResultsCount'));
 }
+
+/**
+ * Custom pagination function.
+ */
+private function paginate($items, $perPage)
+{
+    $currentPage = Paginator::resolveCurrentPage();
+    $currentItems = $items->slice(($currentPage - 1) * $perPage, $perPage)->values();
+    
+    return new LengthAwarePaginator(
+        $currentItems,
+        $items->count(),
+        $perPage,
+        $currentPage,
+        ['path' => Paginator::resolveCurrentPath()]
+    );
+}
+
+
 
 
 

@@ -5,81 +5,151 @@
 <!-- Bootstrap CSS CDN -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJ3Q1f+7pH22o6d7b1rUl1qQU1F6hsR00sHV8k5azQ9o1Nq0zFbZV+E8v5T1" crossorigin="anonymous">
 
+ <style>
+//     .paginate_laravel svg {
+//         width: 15px;
+//     }
+
+//     .paginate_laravel nav > div:first-child {
+//         display: none;
+//     }
+
+//     .paginate_laravel nav > div:nth-child(2) {
+//         display: flex;
+//         justify-content: space-between;
+//     }
+ </style>
+
 <style>
-    .paginate_laravel svg {
-        width: 15px;
+    .fixed-height-card {
+        height: 600px; /* Set a fixed height */
+        overflow-y: auto; /* Enable vertical scrolling if content overflows */
     }
-
-    .paginate_laravel nav > div:first-child {
-        display: none;
-    }
-
-    .paginate_laravel nav > div:nth-child(2) {
-        display: flex;
-        justify-content: space-between;
+    .col-md-4{
+         margin-top: 10px;
     }
 </style>
 
-
 <div class="container-fluid">
-    <!-- -------------------------------------------------------------- -->
-    <!-- Start Page Content -->
-    <!-- -------------------------------------------------------------- -->
     <div class="row">
-        <div class="col-12">
-            <!-- --------------------- Start Search Result For "{{ $query }}" ---------------- -->
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Search Results For "{{ $query }}"</h4>
-                    <h6 class="card-subtitle"> {{ $results->total() }} result(s) ({{ $results->lastPage() }} pages)</h6>
+     <h4 class="card-title">Search Results For "{{ $query }}" {{ $totalResultsCount }} result(s)</h4>
+        <h6 class="card-subtitle"> <h6 class="card-subtitle"> </h6>
+</h6>
 
-                   <ul class="search-listing list-style-none">
-    @forelse($results as $row)
-        <li class="border-bottom pt-3">
-            <h4 class="mb-0">
-                <a class="text-cyan font-medium p-0"
-                   id="search-link-{{ $loop->iteration }}" 
-                   href="
-                       @if($row->type == 'Service')
-                           https://dispatchannel.com/portal/book-list/services-list/{{ $row->id }}
-                       @elseif($row->type == 'Product')
-                           https://dispatchannel.com/portal/book-list/parts/{{ $row->id }}/edit
-                       @elseif($row->type == 'User')
-                           https://dispatchannel.com/portal/dispatcher/show/{{ $row->id }}
-                       @elseif($row->type == 'Job')
-                           https://dispatchannel.com/portal/tickets/{{ $row->id }}
-                       @elseif($row->type == 'Customer')
-                           https://dispatchannel.com/portal/customers/show/{{ $row->id }} 
-                       @endif
-                   "
-                   class="text-cyan font-medium p-0" 
-                   id="search-link-{{ $loop->iteration }}">
-                   {{ $row->result }}
-                </a>
-            </h4>
-            <p style="display:none;">{{ $row->type }}</p>
-            <p>{{ $row->short_description }}</p>
-        </li>
-    @empty
-        <li class="text-center">
-            <p>No results found.</p>
-        </li>
-    @endforelse
-</ul>
-
-
-                    <!-- Pagination Links -->
-                     <div class="justify-content-center mt-3 paginate_laravel">
-                {{ $results->withQueryString()->links('pagination::bootstrap-5') }}
+       @if($jobs->isNotEmpty())
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body card-border shadow fixed-height-card">
+                <h4 class="card-title">Jobs</h4>
+                @foreach($jobs as $row)
+                    <a href="{{ url('tickets/'.$row->id) }}" class="d-block mb-2 text-decoration-none">
+                        <div class="p-2 border rounded shadow-sm">
+                            <strong>{{ $row->result }}</strong>
+                            <p class="mb-0 text-muted">{{ $row->short_description }}</p>
+                        </div>
+                    </a>
+                @endforeach
             </div>
-                </div>
-            </div>
-            <!-- --------------------- End Search Result For "{{ $query }}" ---------------- -->
         </div>
+    </div>
+@endif
+
+@if($users->isNotEmpty())
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body card-border shadow fixed-height-card">
+                <h4 class="card-title">Dispatchers</h4>
+                @foreach($users as $row)
+                    <a href="{{ url('dispatcher/show/'.$row->id) }}" class="d-block mb-2 text-decoration-none">
+                        <div class="p-2 border rounded shadow-sm">
+                            <strong>{{ $row->result }}</strong>
+                            <p class="mb-0 text-muted">{{ $row->short_description }}</p>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+        </div>
+    </div>
+@endif
+
+@if($customers->isNotEmpty())
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body card-border shadow fixed-height-card">
+                <h4 class="card-title">Customers</h4>
+                @foreach($customers as $row)
+                    <a href="{{ url('customers/show/'.$row->id) }}" class="d-block mb-2 text-decoration-none">
+                        <div class="p-2 border rounded shadow-sm">
+                            <strong>{{ $row->result }}</strong>
+                            <p class="mb-0 text-muted">{{ $row->short_description }}</p>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+        </div>
+    </div>
+@endif
+
+@if($services->isNotEmpty())
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body card-border shadow fixed-height-card">
+                <h4 class="card-title">Services</h4>
+                @foreach($services as $row)
+                    <a href="{{ url('book-list/services-list/'.$row->id) }}" class="d-block mb-2 text-decoration-none">
+                        <div class="p-2 border rounded shadow-sm">
+                            <strong>{{ $row->result }}</strong>
+                            <p class="mb-0 text-muted">{{ $row->short_description }}</p>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+        </div>
+    </div>
+@endif
+
+@if($products->isNotEmpty())
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body card-border shadow fixed-height-card">
+                <h4 class="card-title">Parts</h4>
+                @foreach($products as $row)
+                    <a href="{{ url('book-list/parts/'.$row->id.'/edit') }}" class="d-block mb-2 text-decoration-none">
+                        <div class="p-2 border rounded shadow-sm">
+                            <strong>{{ $row->result }}</strong>
+                            <p class="mb-0 text-muted">{{ $row->short_description }}</p>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+        </div>
+    </div>
+@endif
+
     </div>
 </div>
 
+
+
+
 @section('script')
+
+
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+      <!-- Include imagesLoaded.js -->
+      <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
+      <script>
+          window.onload = function() {
+              var elem = document.querySelector('#masonry-grid');
+              imagesLoaded(elem, function() {
+                  var msnry = new Masonry(elem, {
+                      itemSelector: '.masonry-item',
+                      columnWidth: '.masonry-item',
+                      percentPosition: true
+                  });
+              });
+          };
+      </script>
 <script>
  $(document).ready(function () {
     let table = new DataTable('#globalSearchTable', {
@@ -107,38 +177,8 @@
 });
 
     </script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let searchInput = document.querySelector('.app-search input');
-        let resultsTableBody = document.querySelector("#resultsTable tbody");
 
-        searchInput.addEventListener('input', function () {
-            let query = this.value.trim();
 
-            if (query.length > 2) {
-                fetch({{ route('global.search') }}?query=${query})
-                    .then(response => response.json())
-                    .then(data => {
-                        resultsTableBody.innerHTML = '';
-
-                        if (data.length > 0) {
-                            data.forEach(row => {
-                                resultsTableBody.innerHTML += <tr>
-                                    <td>${row.type}</td>
-                                    <td>${row.result}</td>
-                                </tr>;
-                            });
-                        } else {
-                            resultsTableBody.innerHTML = <tr>
-                                <td colspan="2" class="text-center">No results found.</td>
-                            </tr>;
-                        }
-                    })
-                    .catch(error => console.error("Error fetching search results:", error));
-            }
-        });
-    });
-</script>
 
 
 @endsection

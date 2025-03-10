@@ -1,6 +1,6 @@
-<div class="row">
+<div class="row ps-5">
 
-    <div class="col-md-4 mt-4">
+    <div class="col-md-3 mt-3 ps-5">
         <div class="cal_title_left text-start ms-3"><a href="#" id="preDate1"
                 data-previous-date="{{ $previousDate }}"><i class="fas fa-arrow-left"></i></a>
         </div>
@@ -10,19 +10,25 @@
         <div class="cal_title_right text-end"><a href="#" id="tomDate1"
                 data-tomorrow-date="{{ $tomorrowDate }}"><i class="fas fa-arrow-right"></i></a>
         </div>
+        
     </div>
 
-    <div class="col-md-4"></div>
+    <div class="col-md-5 mt-3">
+        <a href="#" id="todayDate" class="me-1 text-decoration-underline" data-today-date="{{ $TodayDate }}">Today </a> 
+        <a id="selectDates1" class="btn btn-outline-dark py-0" ><i
+                class="fas fa-calendar-alt"></i> Select Dates</a>
+                </div>
     <div class="col-md-4 text-end">
-        <a id="selectDates1" style="margin-right: 10px; font-size: 13px;cursor: pointer;"><i
-                class="fas fa-calendar-alt"></i>Select Dates</a>
         <div class="btn-group my-2" role="group" aria-label="Button group with nested dropdown"
             style="margin-right:30px;">
             <a href="#navCalendar1" class="btn btn-info cbtn1">Calendar</a>
-            <a href="#navMap1" class="btn btn-light-info text-info mbtn1">Map</a>
+            <a href="#navMap1" class="btn btn-secondary text-white mbtn1">Map</a>
         </div>
     </div>
 
+</div>
+
+<div class="row ps-5">
     <div class="col-md-12" id="scheduleSection1" data-map-date="{{ $formattedDate }}" style="overflow-x: scroll;">
         <div class="schedule-container mx-4 bg-white">
             <div class="header-row">

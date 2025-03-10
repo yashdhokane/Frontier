@@ -1,5 +1,4 @@
-
-		@php
+@php
     $userId = auth()->id();
 
     $userNotifications = App\Models\UserNotification::with('notice')->where('user_id', $userId)->where('is_read', 0)->orderBy('id', 'desc')->take(5)->get();

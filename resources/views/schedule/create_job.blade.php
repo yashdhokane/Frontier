@@ -10,6 +10,9 @@
           .select2-container {
               width: 100% !important;
           }
+          #main-wrapper[data-layout=vertical][data-sidebartype=full] .page-wrapper {
+                margin-left: 0px !important;
+            }
       </style>
       <link rel="stylesheet" href="{{ url('public/admin/schedule/style.css') }}">
 
@@ -194,7 +197,7 @@
                                                   @endforeach
                                               </select>
 
-                                              <div class="my-2"><a href="#." id="add_new_title">Add New</a></div>
+                                              <div class="my-2"><a href="#." class="text-primary" id="add_new_title">+ Add New</a></div>
                                               <div class="form-group" id="show_new_title">
                                                   <input type="text" name="job_titleInput" id="job_title_input"
                                                       class="form-control job_title" placeholder="Add Job Title Here"
@@ -279,7 +282,7 @@
                                           </div>
                                       </div>
                                       <div class="col-md-6">
-                                          <div class="mt-4"><a href="#." id="add_new_appl">Add New</a></div>
+                                          <div class="mt-4"><a href="#." class="text-primary" id="add_new_appl">+ Add New</a></div>
                                       </div>
                                   </div>
 
@@ -301,14 +304,14 @@
                                                       @endif
                                                   </select>
                                                   <small class="text-success" id="resp_text"></small>
-                                                  <div class="text-primary" style="cursor: pointer;" id="add_appliance">+
+                                                  <div class="text-primary pointer" id="add_appliance">+
                                                       Add New</div>
                                                   <div class="my-2 appliancefield" style="display:none;">
                                                       <div class="d-flex ">
                                                           <input type="text" name="new_appliance"
                                                               class="form-control rounded-0 " id="new_appliance"
                                                               placeholder="Add Appliances Here">
-                                                          <button type="button" class="btn btn-cyan p-0 px-2 rounded-0"
+                                                          <button type="button" class="btn btn-dark p-0 px-2 rounded-0"
                                                               style="cursor: pointer;" id="addAppl">Add</button>
                                                       </div>
                                                   </div>
@@ -333,7 +336,7 @@
                                                       @endif
                                                   </select>
                                                   <small class="text-success" id="resp_texts"></small>
-                                                  <div class="text-primary" style="cursor: pointer;"
+                                                  <div class="text-primary pointer"
                                                       id="add_manufaturer">+
                                                       Add New</div>
                                                   <div class="my-2 manufaturerfield" style="display:none;">
@@ -341,7 +344,7 @@
                                                           <input type="text" name="new_manufacturer"
                                                               class="form-control rounded-0 " id="new_manufacturer"
                                                               placeholder="Add Manufaturer Here">
-                                                          <button type="button" class="btn btn-cyan p-0 px-2 rounded-0"
+                                                          <button type="button" class="btn btn-dark p-0 px-2 rounded-0"
                                                               style="cursor: pointer;" id="addManu">Add</button>
                                                       </div>
                                                   </div>
@@ -412,18 +415,22 @@
                                           <div class="mt-0 mb-3">
                                               <h6 class="card-title required-field"><i class="fas fa fa-check-square"></i>
                                                   Warranty </h6>
-                                              <div class="form-group d-flex gap-2">
-                                                  <select class="form-control job_type" id="check_job_type"
-                                                      name="job_type">
-                                                      <option value="">Please select</option>
-                                                      <option value="in_warranty">In Warranty</option>
-                                                      <option value="out_warranty">Out of Warranty</option>
-                                                  </select>
-                                                  <input type="text" class="form-control"
-                                                      placeholder="Enter Warranty Number" name="warranty_ticket"
-                                                      id="warranty_ticket">
+                                                <div class="form-group d-flex gap-2">
+                                                    <div>
+                                                        <select class="form-control job_type" id="check_job_type"
+                                                            name="job_type">
+                                                            <option value="">Please select</option>
+                                                            <option value="in_warranty">In Warranty</option>
+                                                            <option value="out_warranty">Out of Warranty</option>
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <input type="text" class="form-control"
+                                                            placeholder="Enter Warranty Number" name="warranty_ticket"
+                                                            id="warranty_ticket">
+                                                    </div>
 
-                                              </div>
+                                                </div>
                                           </div>
                                       </div>
                                   </div>
@@ -494,7 +501,7 @@
                                           </div>
                                       </div>
 
-                                      <a type="button" id="addRow" class="text-primary"><i class="ri-add-line"></i>
+                                      <a type="button" id="addRow" class="text-primary btn btn-outline-dark badge"><i class="ri-add-line"></i>
                                           Add More Service</a>
                                   </div>
 
@@ -557,7 +564,7 @@
                                           </div>
                                       </div>
 
-                                      <a type="button" id="addPartRow" class="text-primary mb-2"><i
+                                      <a type="button" id="addPartRow" class="text-primary mb-2 btn btn-outline-dark badge"><i
                                               class="ri-add-line"></i> Add More Part</a>
                                   </div>
 
@@ -663,11 +670,11 @@
 
                                   <div class="row mt-2">
                                       <div class="col-md-12">
-                                          <h4 class="font-weight-medium mb-0">SERVICES & PARTS</h4>
+                                          
                                           <div class="confirm_job_box">
                                               <div class="row mb-2">
                                                   <div class="col-md-7">
-                                                      <div class="mt-0">&nbsp;</div>
+                                                      <div class="mt-0"><h4 class="font-weight-medium mb-0">SERVICES & PARTS</h4></div>
                                                   </div>
                                                   <div class="col-md-1">
                                                       <div class="mt-0 service_css"><label>Unit Price</label></div>
@@ -1219,13 +1226,13 @@
                   });
 
                   // Update the hidden input when an existing job title is selected
-                  $('#job_title_select').on('change', function() {
+                  $(document).on('change','#job_title_select', function() {
                       $('#job_title_input').val(''); // Clear the custom input field
                       updateHiddenInput(); // Update the hidden input with the selected value
                   });
 
                   // Update the hidden input when a new job title is entered
-                  $('#job_title_input').on('input', function() {
+                  $(document).on('input','#job_title_input', function() {
                       $('#job_title_select').val(''); // Clear the select dropdown
                       updateHiddenInput(); // Update the hidden input with the entered value
                   });
@@ -1296,7 +1303,7 @@
                                               detail.user.forEach(function(user) {
                                                   detailsHtml += `
                         <div class="alert alert-success">
-                            <strong>Serial Number matches with existing customer <a href="${baseUrl}/customers/show/${user.id}">${user.name}</a></strong>
+                            <strong>Serial Number matches with existing customer <a href="${baseUrl}/customers/show/${user.id}" target="_blank">${user.name}</a></strong>
                             <!-- Add more fields as necessary -->
                         </div>
                     `;
@@ -2210,7 +2217,7 @@
                   var selectedText = $('.customer_address').find(':selected').text();
                   $('.show_customer_area').text(customer_address + ' Area');
                   $('.show_customer_adderss').text(selectedText);
-                  $('.show_job_title').text($('.job_title').val());
+                  $('.show_job_title').text($('#job_title_hidden').val());
                   $('.show_job_code').text($('.job_code').val());
                   $('.show_job_information').text($('.appliances').val() + ' / Model No.: ' + $('.model_number').val() +
                       ' / Serial Number: ' + $('.serial_number').val());

@@ -9,6 +9,9 @@
         .error {
             color: rgb(218, 45, 45);
         }
+        .gm-style .gm-style-iw-d {
+            margin-top: -30px;
+        }
     </style>
     <div class="page-wrapper" style="display:inline;">
         <!-- Container fluid  -->

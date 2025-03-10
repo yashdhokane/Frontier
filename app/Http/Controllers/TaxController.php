@@ -7,22 +7,44 @@ use App\Models\LocationState;
 
 class TaxController extends Controller
 {
-    public function index()
-    {
-        $user_auth = auth()->user();
-        $user_id = $user_auth->id;
-        $permissions_type = $user_auth->permissions_type;
-        $module_id = 56;
+    // public function index()
+    // {
+    //     $user_auth = auth()->user();
+    //     $user_id = $user_auth->id;
+    //     $permissions_type = $user_auth->permissions_type;
+    //     $module_id = 56;
         
-        $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
-        if ($permissionCheck === true) {
-            // Proceed with the action
-        } else {
-            return $permissionCheck; // This will handle the redirection
-        }
-        $states = LocationState::all();
-        return view('tax.index', compact('states'));
+    //     $permissionCheck =  app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+    //     if ($permissionCheck === true) {
+    //         // Proceed with the action
+    //     } else {
+    //         return $permissionCheck; // This will handle the redirection
+    //     }
+    //     $states = LocationState::all();
+    //     return view('tax.index', compact('states'));
+    // }
+public function index(Request $request)
+{
+    $user_auth = auth()->user();
+    $user_id = $user_auth->id;
+    $permissions_type = $user_auth->permissions_type;
+    $module_id = 56;
+
+    $permissionCheck = app('UserPermissionChecker')->checkUserPermission($user_id, $permissions_type, $module_id);
+    if ($permissionCheck !== true) {
+        return $permissionCheck; // Handle redirection
     }
+
+    // Paginate with query string for filtering/sorting preservation
+    $states = LocationState::paginate(50)->withQueryString();
+
+    if ($request->ajax()) {
+        return view('tax.partials.state_list', compact('states'))->render();
+    }
+
+    return view('tax.index', compact('states'));
+}
+
 
     public function getEditForm(Request $request)
     {

@@ -1,8 +1,23 @@
 @section('script')
-    // google api key is include in this script
+    
     @include('jobrouting.script') 
     <script>
         $(document).ready(function() {
+            $(document).on('click', '#crossScheduleSidebar', function(e) {
+                $('.left-sidebar').css('width', '65px');
+                $('.hide-menu').hide();
+            });
+            $(document).on('mouseenter', '.left-sidebar', function() {
+                $(this).css('width', '250px');
+                $('.hide-menu').show();
+            });
+
+            $(document).on('mouseleave', '.left-sidebar', function() {
+                $(this).css('width', '65px');
+                $('.hide-menu').hide();
+            });
+
+            
             $(document).on('click', '.eventNoClick', function(e) {
                 e.stopPropagation();
             });
@@ -889,10 +904,10 @@
 
             // Fetch new schedule data and reinitialize components
 
-            $(document).on('click', '#preDate1, #tomDate1', function(e) {
+            $(document).on('click', '#preDate1, #tomDate1,  #todayDate', function(e) {
                 e.preventDefault(); // Prevent the default anchor behavior
 
-                var date = $(this).data('previous-date') || $(this).data('tomorrow-date');
+                var date = $(this).data('previous-date') || $(this).data('tomorrow-date') || $(this).data('today-date');
                 fetchSchedule(date);
             });
 
@@ -902,8 +917,8 @@
             $(document).on('click', 'a[href="#navMap1"]', function(e) {
                 e.preventDefault();
                 $('#scheduleSection1').hide();
-                $('.cbtn1').removeClass('btn-info').addClass('btn-light-info text-info');
-                $('.mbtn1').removeClass('btn-light-info text-info').addClass('btn-info');
+                $('.cbtn1').removeClass('btn-info').addClass('btn-secondary text-white');
+                $('.mbtn1').removeClass('btn-secondary text-white').addClass('btn-info');
                 $('#mapSection1').show();
                 initMapschedule('mapScreen1', '#scheduleSection1');
             });
@@ -912,8 +927,8 @@
             $(document).on('click', 'a[href="#navCalendar1"]', function(e) {
                 e.preventDefault();
                 $('#mapSection1').hide();
-                $('.mbtn1').removeClass('btn-info').addClass('btn-light-info text-info');
-                $('.cbtn1').removeClass('btn-light-info text-info').addClass('btn-info');
+                $('.mbtn1').removeClass('btn-info').addClass('btn-secondary text-white');
+                $('.cbtn1').removeClass('btn-secondary text-white').addClass('btn-info');
                 $('#scheduleSection1').show();
             });
 

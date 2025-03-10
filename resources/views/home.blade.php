@@ -68,6 +68,17 @@
 
 
     <style>
+
+    /*!-- for left side  bar --> */
+      #main-wrapper[data-layout="vertical"][data-sidebartype="mini-sidebar"] .page-wrapper {
+        margin-left: 0px !important;
+    }
+
+    /* .card-body {
+                                                                                                                                                                                                                        padding: 0px !important;
+   
+
+    
         #main-wrapper[data-layout=vertical][data-boxed-layout=boxed] .page-wrapper>.container-fluid,
         #main-wrapper[data-layout=vertical][data-boxed-layout=boxed] .page-wrapper>.container-lg,
         #main-wrapper[data-layout=vertical][data-boxed-layout=boxed] .page-wrapper>.container-md,
@@ -175,20 +186,21 @@
             }
         }
     </style>
+	
+    <style>
+aside.left-sidebar {
+display: none;
+}
+@media (min-width: 768px) {
+	#main-wrapper[data-layout=vertical][data-sidebar-position=fixed][data-sidebartype=full] .topbar .top-navbar .navbar-collapse, #main-wrapper[data-layout=vertical][data-sidebar-position=fixed][data-sidebartype=overlay] .topbar .top-navbar .navbar-collapse {
+		margin-left: 0px;
+	}
+}
+#main-wrapper[data-layout=vertical][data-sidebartype=full] .page-wrapper {
+	margin-left: 0px;
+}
+    </style>
 
-
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-
-    <!--[if lt IE 9]>
-
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-
-    <![endif]-->
 
 </head>
 
@@ -258,13 +270,8 @@
 
 
 
-        @if ($prefix == 'setting')
-            @include('admin.setting_sidebar')
-        @elseif ($prefix == 'schedule')
+        @if ($prefix == 'schedule')
             @include('schedule.sidebar')
-        @elseif ($prefix == 'inbox')
-        @else
-            @include('admin.sidebar')
         @endif
 
 
@@ -334,7 +341,7 @@
 
     <!-- -------------------------------------------------------------- -->
 
-   <!--  @include('admin.costomizer')  -->
+{{-- @include('admin.costomizer') --}}
 
     <div class="chat-windows"></div>
 

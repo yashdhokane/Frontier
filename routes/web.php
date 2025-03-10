@@ -181,6 +181,14 @@ use App\Http\Controllers\ParametersController;
 
 
 */
+Route::get('/test-sms', function () {
+    $message = 'TEST, Your SMS Is Send.';
+    $to = '+917030467187'; // Test phone number
+
+    $response = app('SmsService')->sendSms($message, $to);
+
+    return response()->json(['response' => $response]);
+});
 
 Route::get('clear', function () {
     Artisan::call('cache:clear');
@@ -866,6 +874,7 @@ Route::middleware('auth')->group(function () {
     Route::post('route-setting-store', [RoutingController::class, 'Routesettingstore'])->name('index.routing.Routesettingstore');
     Route::post('/save-reordered-jobs', [RoutingController::class, 'savereorderedjobs'])->name('save-reordered-jobs');
     Route::get('/jobs/{jobId}/popup', [RoutingController::class, 'getPopupView'])->name('jobs.popup');
+    Route::post('/twilio/webhook', [RoutingController::class, 'handleIncomingSms']);
 
 
 

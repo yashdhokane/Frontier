@@ -1,4 +1,3 @@
-
 @extends('home')
 
 @section('content')
@@ -11,28 +10,26 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
     <style>
+        /* CSS for smooth transitions */
+        .box {
+            transition: all 0.3s ease;
+        }
 
+        .draggable-items1 {
+            cursor: move;
+            transition: cursor 0.3s ease-in-out;
+        }
 
-/* CSS for smooth transitions */
-.box {
-    transition: all 0.3s ease; /* Smooth transition for the box */
-}
+        .draggable-items1:active {
+            cursor: move;
+            transition: cursor 0.3s ease-in-out;
+        }
 
-.draggable-items1 {
-  cursor: move;/* Normal state */
-    transition: cursor 0.3s ease-in-out; /* Smooth cursor change */
-}
-
-.draggable-items1:active {
-   cursor: move; /* When being dragged */
-    transition: cursor 0.3s ease-in-out; /* Smooth cursor change when grabbing */
-}
-
-/* Optionally, adding a transform on hover for more smoothness */
-.draggable-items1:hover {
-    //transform: scale(1.02); /* Slightly enlarge when hovering */
-   // transition: transform 0.3s ease; /* Smooth transition for the hover effect */
-}
+        /* Optionally, adding a transform on hover for more smoothness */
+        .draggable-items1:hover {
+            //transform: scale(1.02); /* Slightly enlarge when hovering */
+            // transition: transform 0.3s ease; /* Smooth transition for the hover effect */
+        }
 
 
         .expanded {
@@ -52,7 +49,6 @@
             /* outline: none; */
             /* Remove default outline */
         }
-        
     </style>
     <div class="container-fluid">
         <!-- -------------------------------------------------------------- -->
@@ -212,7 +208,7 @@
 
                             // Rebind the expand/collapse functionality after dynamically adding sections
                             $(document).on('click', '#submitButton', function() {
-                                    const selectedModuleId = $('select[name="module_id"]').val();
+                                const selectedModuleId = $('select[name="module_id"]').val();
 
                                 // Count the number of boxes inside the #box-container
                                 const boxCount = $('#box-container .box').length;
@@ -223,7 +219,7 @@
                                     alert('Please add at least 9 modules before proceeding.');
                                     return; // Stop the form submission
                                 }
-                                
+
                                 // Assuming that new HTML is appended to the #box-container after the form submission
                                 $.ajax({
                                     url: $('#ajaxForm').attr('action'),
@@ -252,9 +248,34 @@
                                                 behavior: 'smooth',
                                                 block: 'start'
                                             });
-                                        } else {
-                                            alert(response.message);
-                                        }
+                                          // **Dynamically update dropdown**
+            let dropdown = $('select[name="module_id"]');
+            dropdown.empty(); // Clear existing options
+console.log(response.variable);
+console.log(response.List);
+            // Check if variable and List are empty
+           if (response.variable.length === 0 && response.List.length === 0) {
+                dropdown.append('<option value="">All sections already exist</option>');
+            } else {
+                dropdown.append('<option value="">Select to add section</option>');
+
+                // Append new options from `variable`
+                $.each(response.variable, function(index, value) {
+                    dropdown.append('<option value="' + value.module_id + '">' + 
+                                    (value.module_list ? value.module_list.module_name : 'Unknown') + 
+                                    '</option>');
+                });
+
+                // Append new options from `List`
+                $.each(response.List, function(index, item) {
+                    dropdown.append('<option value="' + item.module_id + '">' + 
+                                    (item.module_name ? item.module_name : 'Unknown') + 
+                                    '</option>');
+                });
+            }
+        } else {
+            alert(response.message);
+        }
                                     },
                                     error: function(xhr) {
                                         alert('An error occurred. Please try again.');
@@ -381,7 +402,7 @@
                             <div class="col-md-12 col-lg-12  mb-3 box draggable-items1" id="box-{{ $index }}"
                                 data-original-index="{{ $index }}" tabindex="0"
                                 data-id="{{ $cardPosition->module_id }}">
-                                <div class="card card-border card-shadow" style="height:50px!important;">
+                                <div class="card card-border card-shadow" style="">
                                     <!-- Flex container for module name and button -->
                                     <div class="card-header d-flex justify-content-between align-items-center">
                                         <div>
@@ -389,7 +410,7 @@
                                         </div>
                                         <div>
                                             <button type="button" class="btn btn-link expand-btn">Expand</button>
-                                             <div style="float: right;">
+                                            <div style="float: right;">
                                                 @if ($layout->added_by == auth()->user()->id)
                                                     <button class="btn btn-light mx-2 clearSection"
                                                         data-element-id="{{ $cardPosition->element_id }}"
@@ -399,7 +420,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="card-body clearelement " data-id="{{ $cardPosition->module_id }}" >
+                                    <div class="card-body clearelement " data-id="{{ $cardPosition->module_id }}">
                                         @include('widgets.' . $cardPosition->ModuleList->module_code)
                                     </div>
                                 </div>
@@ -416,7 +437,7 @@
                                         </div>
                                         <div>
                                             <button type="button" class="btn btn-link expand-btn">Expand</button>
-                                             <div style="float: right;">
+                                            <div style="float: right;">
                                                 @if ($layout->added_by == auth()->user()->id)
                                                     <button class="btn btn-light mx-2 clearSection"
                                                         data-element-id="{{ $cardPosition->element_id }}"
@@ -713,7 +734,7 @@
             applyIframeStyles('#fleetIframe');
         });
     </script> -->
-  <script>
+    <script>
         $(document).ready(function() {
             function applyIframeStyles(iframeId, styles) {
                 $(iframeId).on('load', function() {
@@ -733,8 +754,8 @@
             // Define the CSS styles as a variable
             var iframeStyles = `
             /* Hide header and aside elements*/
-            header, aside, footer { display: none !important; }  
-             /* card-body & rapper padding for cardfor 4 md remove for 12 
+            header, aside, footer { display: none !important; }
+             /* card-body & rapper padding for cardfor 4 md remove for 12
             .page-wrapper {padding:0px !important; }
             .card-body {padding:1px !important; } */
             /* remove for col 12 this for 4 customer card*/
@@ -742,8 +763,8 @@
             .search-breadcrumb{padding:0px !important; }
              #usersTable {
              padding: 0;
-             margin: 0; 
-             font-weight: normal; 
+             margin: 0;
+             font-weight: normal;
              }
 
         #usersTable thead,
@@ -751,22 +772,22 @@
         #usersTable th,
         #usersTable td {
              padding: 0;
-             margin: 0; 
-             font-weight: normal; 
+             margin: 0;
+             font-weight: normal;
         }
          #usersTable thead th {
           font-weight: 700;
          }
 
          /*JOB & TECHNICIAN IFRAME */
-         
+
         #zero_config thead,
         #zero_config tbody,
         #zero_config th,
         #zero_config td {
              padding: 1px;
-             margin: 1px; 
-             font-weight: normal; 
+             margin: 1px;
+             font-weight: normal;
         }
          #zero_config thead th {
           font-weight: 700;
@@ -776,14 +797,14 @@
              }
          #zero_config_length {
         display: none;
-     } 
+     }
      #zero_config_filter
      {
         display: none;
-     } 
+     }
 
 
-         
+
 
 
 
@@ -804,10 +825,10 @@
             .container-fluid {
                 padding: 0px;
             }
-            
 
-            
-            
+
+
+
 
             .table-custom #zero_config_info { float: none; }
 
@@ -824,7 +845,7 @@
             #main-wrapper[data-layout=vertical][data-header-position=fixed] .page-wrapper { padding-top: 0px; }
              #main-wrapper[data-layout="vertical"][data-sidebartype="mini-sidebar"] .page-wrapper {
              margin-left: 0px !important;
-             } 
+             }
 
             /* Make iframe content scrollable */
             html, body {
@@ -848,42 +869,43 @@
             applyIframeStyles('#toolIframe', iframeStyles);
             applyIframeStyles('#fleetIframe', iframeStyles);
         });
-    </script> 
+    </script>
 
-//     <script>
-//     $(document).ready(function() {
-//         function applyIframeStyles(iframeId, cssUrl) {
-//             $(iframeId).on('load', function() {
-//                 var iframe = $(this)[0];
-//                 var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+    //
+    <script>
+        //     $(document).ready(function() {
+        //         function applyIframeStyles(iframeId, cssUrl) {
+        //             $(iframeId).on('load', function() {
+        //                 var iframe = $(this)[0];
+        //                 var iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
 
-//                 // Create a link element for external CSS specifically for the iframe
-//                 var link = iframeDocument.createElement('link');
-//                 link.rel = 'stylesheet';
-//                 link.type = 'text/css';
-//                 link.href = cssUrl; // Pass the iframe-specific CSS URL
+        //                 // Create a link element for external CSS specifically for the iframe
+        //                 var link = iframeDocument.createElement('link');
+        //                 link.rel = 'stylesheet';
+        //                 link.type = 'text/css';
+        //                 link.href = cssUrl; // Pass the iframe-specific CSS URL
 
-//                 // Append the link element to the iframe's head
-//                 iframeDocument.head.appendChild(link);
-//             });
-//         }
+        //                 // Append the link element to the iframe's head
+        //                 iframeDocument.head.appendChild(link);
+        //             });
+        //         }
 
-//         // Define the external CSS URL for iframe styling only
-//         var iframeCssUrl = "{{ url('public/admin/dashboard/iframe-style.css') }}";
+        //         // Define the external CSS URL for iframe styling only
+        //         var iframeCssUrl = "{{ url('public/admin/dashboard/iframe-style.css') }}";
 
-//         // Apply the external iframe-specific CSS to all iframes
-//         applyIframeStyles('#customerIframe', iframeCssUrl);
-//         applyIframeStyles('#scheduleIframe', iframeCssUrl);
-//         applyIframeStyles('#technicianIframe', iframeCssUrl);
-//         applyIframeStyles('#assetsIframe', iframeCssUrl);
-//         applyIframeStyles('#paymentsIframe', iframeCssUrl);
-//         applyIframeStyles('#eventsIframe', iframeCssUrl);
-//         applyIframeStyles('#jobIframe', iframeCssUrl);
-//         applyIframeStyles('#messageIframe', iframeCssUrl);
-//         applyIframeStyles('#toolIframe', iframeCssUrl);
-//         applyIframeStyles('#fleetIframe', iframeCssUrl);
-//     });
-// </script>
-
+        //         // Apply the external iframe-specific CSS to all iframes
+        //         applyIframeStyles('#customerIframe', iframeCssUrl);
+        //         applyIframeStyles('#scheduleIframe', iframeCssUrl);
+        //         applyIframeStyles('#technicianIframe', iframeCssUrl);
+        //         applyIframeStyles('#assetsIframe', iframeCssUrl);
+        //         applyIframeStyles('#paymentsIframe', iframeCssUrl);
+        //         applyIframeStyles('#eventsIframe', iframeCssUrl);
+        //         applyIframeStyles('#jobIframe', iframeCssUrl);
+        //         applyIframeStyles('#messageIframe', iframeCssUrl);
+        //         applyIframeStyles('#toolIframe', iframeCssUrl);
+        //         applyIframeStyles('#fleetIframe', iframeCssUrl);
+        //     });
+        //
+    </script>
 @endsection
 @endsection
