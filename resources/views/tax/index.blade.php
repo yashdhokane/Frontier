@@ -77,7 +77,7 @@
                             </tbody>
 
                         </table>
-                        <div class="d-flex justify-content-between align-items-center mt-3">
+                        {{-- <div class="d-flex justify-content-between align-items-center mt-3">
                             <div class="text-start">
                                 Showing {{ $states->firstItem() }} to {{ $states->lastItem() }} of {{ $states->total()
                                 }}
@@ -86,7 +86,7 @@
                             <div class="text-end">
                                 {{ $states->withQueryString()->links('pagination::bootstrap-5') }}
                             </div>
-                        </div>
+                        </div> --}}
 
                     </div>
                 </div>
@@ -139,8 +139,6 @@
     $('#default_order').DataTable({
         "order": [[0, "desc"]],
         "pageLength": 25,
-        "paging": false,  // Disables DataTables pagination
-        "info": false  // Hides "Showing entries" info
     });
             $('.edit-btn').click(function() {
                 var stateId = $(this).data('state-id');
