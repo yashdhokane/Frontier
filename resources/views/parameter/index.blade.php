@@ -82,7 +82,7 @@
                 <a href="#showParts" data-value="products" class="btn btn-light-info text-info">Parts</a>
             </div>
         </div>
-        @include('settings.mini-nav')
+        @include('header-top-nav.settings-nav')
     </div>
 </div>
 <div class="container-fluid pt-2">

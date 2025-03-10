@@ -23,7 +23,7 @@
                 </nav>
             </div>
         </div>
-        @include('settings.mini-nav')
+        @include('header-top-nav.settings-nav')
     </div>
     <!-- -------------------------------------------------------------- -->
     <!-- End Bread crumb and right sidebar toggle -->
