@@ -13,7 +13,7 @@ class NavMenuLeft extends Model
     protected $table = 'nav_menus_left';
 
     // Specify the primary key column (if different from 'id')
-  protected $primaryKey = 'menu_id';
+    protected $primaryKey = 'menu_id';
 
 
     // Disable timestamps
@@ -28,22 +28,20 @@ class NavMenuLeft extends Model
         'module_id',
         'menu_icon',
         'menu_class',
-        'order_by'
-        
+        'order_by',
+        'more_link',
+
     ];
 
-        public function children()
+    public function children()
     {
         return $this->hasMany(NavMenuLeft::class, 'parent_id', 'menu_id');
     }
-//    public function userpermission()
-//     {
-//         return $this->hasOne(UserPermission::class, 'module_id', 'module_id');
-//     }
- public function userpermission()
+    
+    public function userpermission()
     {
         return $this->hasOne(UserPermission::class, 'module_id', 'module_id')
             ->where('user_id', Auth::id()); // Fetch permissions for the authenticated user
     }
-    
+
 }
