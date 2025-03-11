@@ -1,6 +1,6 @@
 @php
 // Fetch all menus where parent_id = 39
-$menus = DB::table('nav_menus_right_top')->where('parent_id', 30)->orderBy('order_by')->get();
+$menus = DB::table('nav_menus_right_top')->where('parent_id', 39)->orderBy('order_by')->get();
 
 // Fetch all possible submenus where parent_id exists in the menu IDs
 $subMenus = DB::table('nav_menus_right_top')->whereIn('parent_id',
