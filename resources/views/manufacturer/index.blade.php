@@ -31,135 +31,136 @@
         </div>
         @include('header-top-nav.asset-nav')
     </div>
-    @if (Session::has('success'))
-    <div class="alert_wrap">
-        <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
-            {{ Session::get('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert"
-                aria-label="Close"></button>
-        </div>
+</div>
+@if (Session::has('success'))
+<div class="alert_wrap">
+    <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
+        {{ Session::get('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert"
+            aria-label="Close"></button>
     </div>
-    @endif
-    <!-- ------------------------------------------------------------ -->
-    <!-- End Bread crumb and right sidebar toggle -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- -------------------------------------------------------------- -->
-    <!-- Container fluid  -->
-    <!-- -------------------------------------------------------------- -->
-    <div class="container-fluid pt-2">
+</div>
+@endif
+<!-- ------------------------------------------------------------ -->
+<!-- End Bread crumb and right sidebar toggle -->
+<!-- -------------------------------------------------------------- -->
+<!-- -------------------------------------------------------------- -->
+<!-- Container fluid  -->
+<!-- -------------------------------------------------------------- -->
+<div class="container-fluid pt-2">
 
 
 
 
-        <!-- Row -->
-        <style>
-            .srdrop {
-                float: right;
-            }
+    <!-- Row -->
+    <style>
+        .srdrop {
+            float: right;
+        }
 
-            .card {
-                min-height: 100%;
-            }
+        .card {
+            min-height: 100%;
+        }
 
-            .card-img-top {
-                aspect-ratio: 5/2;
-                object-fit: contain;
-                padding-block: 8px;
-            }
+        .card-img-top {
+            aspect-ratio: 5/2;
+            object-fit: contain;
+            padding-block: 8px;
+        }
 
-            .img_sq_manufacturer {
-                max-height: 200px;
-            }
-        </style>
+        .img_sq_manufacturer {
+            max-height: 200px;
+        }
+    </style>
 
-        <div class="row">
+    <div class="row">
 
-            <!-- column -->
-            @foreach ($manufacture as $item)
-            <div class="col-lg-3 col-md-6 col-xl-2 mb-3 ">
-                <!-- Card -->
-                <div class="card card-border shadow">
-
-
-                    <a href="{{ route('manufacturer.edit', ['id' => $item->id]) }}" class="card-link">
-                        @if ($item->manufacturer_image)
-                        <img class="img_sq_manufacturer" src="{{ asset('public/images/' . $item->manufacturer_image) }}"
-                            alt="Card image cap" />
-                        @else
-                        <img class="img_sq_manufacturer"
-                            src="{{ asset('public/images/1703141665_heating-air-conditioning.jpg') }}"
-                            alt="Default Image" />
-                        @endif
-                    </a>
+        <!-- column -->
+        @foreach ($manufacture as $item)
+        <div class="col-lg-3 col-md-6 col-xl-2 mb-3 ">
+            <!-- Card -->
+            <div class="card card-border shadow">
 
 
-
-                    <div class="card-body">
-                        <h5 class="card-title uppercase text-info">{{ $item->manufacturer_name }}<div
-                                class="dropdown dropstart srdrop ">
-
-                                <a href="" class="link" id="dropdownMenuButton" data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-
-                                    <i data-feather="more-vertical" class="feather-sm"></i>
-
-                                </a>
-
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-
-
-                                    <li><a class="dropdown-item viewinfo"
-                                            href="{{ route('manufacturer.edit', ['id' => $item->id]) }}">Edit</a>
-                                    </li>
-                                    @if ($item->is_active == 'no')
-                                    <li><a class="dropdown-item viewinfo"
-                                            href="{{ url('/setting/manufacturer-enable', ['id' => $item->id]) }}">Enable</a>
-                                    </li>
-                                    @else
-                                    <li><a class="dropdown-item viewinfo"
-                                            href="{{ url('/setting/manufacturer-disable', ['id' => $item->id]) }}">Disable</a>
-                                    </li>
-                                    @endif
+                <a href="{{ route('manufacturer.edit', ['id' => $item->id]) }}" class="card-link">
+                    @if ($item->manufacturer_image)
+                    <img class="img_sq_manufacturer" src="{{ asset('public/images/' . $item->manufacturer_image) }}"
+                        alt="Card image cap" />
+                    @else
+                    <img class="img_sq_manufacturer"
+                        src="{{ asset('public/images/1703141665_heating-air-conditioning.jpg') }}"
+                        alt="Default Image" />
+                    @endif
+                </a>
 
 
 
+                <div class="card-body">
+                    <h5 class="card-title uppercase text-info">{{ $item->manufacturer_name }}<div
+                            class="dropdown dropstart srdrop ">
 
-                                </ul>
+                            <a href="" class="link" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                                aria-expanded="false">
 
-                            </div>
-                        </h5>
+                                <i data-feather="more-vertical" class="feather-sm"></i>
 
-                    </div>
+                            </a>
 
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+
+                                <li><a class="dropdown-item viewinfo"
+                                        href="{{ route('manufacturer.edit', ['id' => $item->id]) }}">Edit</a>
+                                </li>
+                                @if ($item->is_active == 'no')
+                                <li><a class="dropdown-item viewinfo"
+                                        href="{{ url('/setting/manufacturer-enable', ['id' => $item->id]) }}">Enable</a>
+                                </li>
+                                @else
+                                <li><a class="dropdown-item viewinfo"
+                                        href="{{ url('/setting/manufacturer-disable', ['id' => $item->id]) }}">Disable</a>
+                                </li>
+                                @endif
+
+
+
+
+                            </ul>
+
+                        </div>
+                    </h5>
 
                 </div>
 
+
             </div>
-            @endforeach
-
-
-
-            <!-- column -->
-            <!-- column -->
 
         </div>
-        <!-- Row -->
+        @endforeach
 
 
 
-
-
-
-
-
-        <!-- -------------------------------------------------------------- -->
-        <!-- Recent comment and chats -->
-        <!-- -------------------------------------------------------------- -->
+        <!-- column -->
+        <!-- column -->
 
     </div>
+    <!-- Row -->
+
+
+
+
+
+
+
+
     <!-- -------------------------------------------------------------- -->
     <!-- Recent comment and chats -->
     <!-- -------------------------------------------------------------- -->
 
-    @if (Route::currentRouteName() != 'dash')
-    @endsection
-    @endif
+</div>
+<!-- -------------------------------------------------------------- -->
+<!-- Recent comment and chats -->
+<!-- -------------------------------------------------------------- -->
+
+@if (Route::currentRouteName() != 'dash')
+@endsection
+@endif

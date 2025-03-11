@@ -109,6 +109,23 @@
     </div>
 </div>
 
+@section('script')
+<script>
+  if ($.fn.DataTable.isDataTable('#zero_config')) {
+                $('#zero_config').DataTable().destroy();
+            }
+
+            var table = $('#zero_config').DataTable({
+                "dom": '<"top"f>rt<"bottom d-flex justify-content-between mt-4"lp><"clear">',
+                "paging": true,
+                "info": false,
+                "pageLength": 50, // Set default pagination length to 50
+                "language": {
+                    "search": ""
+                }
+        });
+</script>
+@endsection
 @if (Route::currentRouteName() != 'dash')
 @endsection
 @endif

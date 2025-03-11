@@ -335,12 +335,19 @@
 
 
 <script>
-    $('#zero_config00').DataTable({
-                "order": [
-                    [0, "desc"]
-                ],
-                "pageLength": 25,
-            });
+  if ($.fn.DataTable.isDataTable('#zero_config00')) {
+                $('#zero_config00').DataTable().destroy();
+            }
+
+            var table = $('#zero_config00').DataTable({
+                "dom": '<"top"f>rt<"bottom d-flex justify-content-between mt-4"lp><"clear">',
+                "paging": true,
+                "info": false,
+                "pageLength": 50, // Set default pagination length to 50
+                "language": {
+                    "search": ""
+                }
+        });
 </script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {

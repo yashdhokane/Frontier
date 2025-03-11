@@ -325,17 +325,20 @@
 
 <script>
     $(document).ready(function() {
-              if ($.fn.DataTable.isDataTable('#zero_config')) {
-                  $('#zero_config').DataTable().destroy();
-              }
+        if ($.fn.DataTable.isDataTable('#zero_config')) {
+                $('#zero_config').DataTable().destroy();
+            }
 
-              $('#zero_config').DataTable({
-                  "order": [
-                      [0, "desc"]
-                  ],
-                  "pageLength": 25,
-              });
-          });
+            var table = $('#zero_config').DataTable({
+                "dom": '<"top"f>rt<"bottom d-flex justify-content-between mt-4"lp><"clear">',
+                "paging": true,
+                "info": false,
+                "pageLength": 50, // Set default pagination length to 50
+                "language": {
+                    "search": ""
+                }
+        });
+    });
 </script>
 
 <script>

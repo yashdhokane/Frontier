@@ -57,7 +57,7 @@ $moreMenus = $menus->where('more_link', 'yes'); // Get "More" menu items
             </button>
             <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                 @foreach ($moreMenus as $menu)
-                <a class="dropdown-item {{ Route::currentRouteName() === $menu->menu_link ? 'bg-info text-white' : 'text-info' }}"
+                <a class="dropdown-item {{ Route::currentRouteName() === $menu->menu_link ? ' text-grey' : 'text-info' }}"
                     href="{{ route($menu->menu_link) }}">
                     {{ $menu->menu_name }}
                 </a>
