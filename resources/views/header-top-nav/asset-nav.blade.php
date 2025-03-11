@@ -36,7 +36,7 @@ $moreMenus = $menus->where('more_link', 'yes'); // Get "More" menu items
             <ul class="dropdown-menu">
                 @foreach ($childMenus as $subMenu)
                 <li>
-                    <a class="dropdown-item {{ Route::currentRouteName() === $subMenu->menu_link ? 'bg-info text-white' : 'text-info' }}"
+                    <a class="dropdown-item {{ Route::currentRouteName() === $subMenu->menu_link ? ' text-grey' : 'text-info' }}"
                         href="{{ route($subMenu->menu_link) }}">
                         {{ $subMenu->menu_name }}
                     </a>
