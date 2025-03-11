@@ -29,7 +29,7 @@
                 <i class="ri-device-line"> </i>
                 Add New Manufacturer</a>
         </div>
-        @include('header-top-nav.settings-nav')
+        @include('header-top-nav.asset-nav')
     </div>
     @if (Session::has('success'))
     <div class="alert_wrap">
