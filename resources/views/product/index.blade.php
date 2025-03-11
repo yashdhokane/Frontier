@@ -212,8 +212,8 @@
 
           <div class="row card card-border shadow mr-0">
               <!-- Column -->
-              <div class="col-12 card-body">
-                  <table class="table product-overview" id="zero_config">
+              <div class="col-12 card-body table-responsive">
+                  <table class="table table-striped table-bordered display text-nowrap product-overview" id="zero_config">
                       <div class="row withoutthreedottest">
                           <div class="col-md-3 mb-3">
                               <label for="category_name" class="form-label"><strong>Category</strong></label>
@@ -365,16 +365,19 @@
 
       <script>
           $(document).ready(function() {
-              if ($.fn.DataTable.isDataTable('#zero_config')) {
-                  $('#zero_config').DataTable().destroy();
-              }
+            if ($.fn.DataTable.isDataTable('#zero_config')) {
+                $('#zero_config').DataTable().destroy();
+            }
 
-              $('#zero_config').DataTable({
-                  "order": [
-                      [0, "desc"]
-                  ],
-                  "pageLength": 25,
-              });
+            var table = $('#zero_config').DataTable({
+                "dom": '<"top"f>rt<"bottom d-flex justify-content-between mt-4"lp><"clear">',
+                "paging": true,
+                "info": false,
+                "pageLength": 50, // Set default pagination length to 50
+                "language": {
+                    "search": ""
+                }
+            });
           });
       </script>
 

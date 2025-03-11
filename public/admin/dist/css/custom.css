@@ -375,16 +375,16 @@ li.toplinks a{
 
 /* Custom styling for pagination */
 .dataTables_wrapper .dataTables_paginate .paginate_button {
-	background-color: #0f0f0f !important;
+	/*background-color: #0f0f0f !important;
 	color: #141111 !important;
 	border: none !important;
 	padding: 6px 12px !important;
 	border-radius: 4px !important;
-	cursor: pointer !important;
+	cursor: pointer !important;*/
 }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-	background-color: #111112 !important;
+	/*background-color: #111112 !important;*/
 }
  
 ul#sidebarnav .sidebar-item-parent {
