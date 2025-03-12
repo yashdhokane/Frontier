@@ -24,8 +24,8 @@
                 </nav>
             </div>
         </div>
-        <div class="col-3 align-self-center">
-            <a href="{{ route('manufacturer.create') }}" class="btn btn-info">
+        <div class="col-6">
+            <a href="{{ route('manufacturer.create') }}" class="btn btn-info float-end">
                 <i class="ri-device-line"> </i>
                 Add New Manufacturer</a>
         </div>

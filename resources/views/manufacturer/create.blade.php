@@ -20,12 +20,13 @@
                 <div class="d-flex align-items-center">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="#">Other</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('buisnessprofile.index') }}">Settings</a></li>
                             <li class="breadcrumb-item active" aria-current="page">Add Manufacture</li>
                         </ol>
                     </nav>
                 </div>
             </div>
+            @include('header-top-nav.asset-nav')
         </div>
     </div>
     <!-- -------------------------------------------------------------- -->
