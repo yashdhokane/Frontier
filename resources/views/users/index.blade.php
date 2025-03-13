@@ -22,14 +22,13 @@
 <!-- -------------------------------------------------------------- -->
 <!-- Bread crumb and right sidebar toggle -->
 <!-- -------------------------------------------------------------- -->
-<div class="page-breadcrumb">
+<!-- <div class="page-breadcrumb">
     <div class="row d-flex align-items-center justify-content-between">
-        <!-- Customers Title (Left) -->
+      
         <div class="col-auto">
             <h4 class="page-title">Customers</h4>
         </div>
 
-        <!-- Buttons (Right) -->
         <div class="col-auto">
             <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                 <a href="{{ route('users.create') }}" id="newCustomerBtn" class="btn btn-secondary text-white">
@@ -52,7 +51,48 @@
             </div>
         </div>
     </div>
+</div>  -->
+
+<div class="page-breadcrumb">
+    <div class="row withoutthreedottest">
+        <div class="col-5 align-self-center">
+            <h4 class="page-title">Customers</h4>
+            <div class="d-flex align-items-center">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#.">Customer Management</a></li>
+                        <li class="breadcrumb-item"><a href="#">Customers</a></li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="col-7 text-end px-4">
+            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <a href="{{ route('users.create') }}" id="newCustomerBtn"
+                    class="btn {{ Route::currentRouteName() === 'users.create' ? 'btn-info' : 'btn-secondary text-white' }}">
+                    <i class="ri-user-add-line"></i> Add New Customers
+                </a>
+
+                @if (request()->routeIs('users.index'))
+                <a href="{{ route('users.status', ['status' => 'deactive']) }}"
+                    class="btn {{ Route::currentRouteName() === 'users.status' ? 'btn-info' : 'btn-secondary text-white' }}">
+                    <i class="ri-user-unfollow-fill"></i> View Inactive Customers
+                </a>
+                @elseif(request()->routeIs('users.status'))
+                <a href="{{ route('users.index') }}"
+                    class="btn {{ Route::currentRouteName() === 'users.index' ? 'btn-info' : 'btn-secondary text-white' }}">
+                    <i class="ri-user-follow-line"></i> View Active Customers
+                </a>
+                @endif
+
+                <a href="#." id="filterButton" class="btn btn-secondary text-white">
+                    <i class="ri-filter-line"></i> Filters
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
+
 
 <!-- -------------------------------------------------------------- -->
 <!-- End Bread crumb and right sidebar toggle -->

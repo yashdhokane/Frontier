@@ -16,11 +16,28 @@
             white-space: normal;
         }
     </style>
-    <div class="container-fluid">
+   
 
-
-
-
+<div class="page-breadcrumb">
+    <div class="row withoutthreedottest">
+         <div class="col-5 align-self-center">
+            <h4 class="page-title">Jobs</h4>
+            <div class="d-flex align-items-center">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Job</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+         <div class="col-7 text-end px-4">
+        @include('header-top-nav.job-nav')
+    </div>
+       
+    </div>
+</div>
+ <div class="container-fluid">
         <!-- -------------------------------------------------------------- -->
         <!-- Start Page Content -->
         <!-- -------------------------------------------------------------- -->

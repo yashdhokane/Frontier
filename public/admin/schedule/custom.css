@@ -23,24 +23,6 @@
     display: flex; flex-direction: column; width: 100% !important;
 }
 
-/* .suggested-window {
-    display: block;
-    position: absolute;
-    bottom: -5px; /* Adjust to create a gap below the li */
-    /* right: 5px; */
-    /* background-color: #f9f9f9; Background color for contrast */
-    /* padding: 1px 1px; Add padding for aesthetics */
-    /* border-radius: 4px; */
-    /* border: 1px solid #007BFF; Add a border around the suggested window */
-    /* border: 1px solid black; */
-    /* font-weight: bold; */
-    /* color: black; */
-    /* color: #007BFF; Text color to match the border */
-    /* font-size: 0.7em; */
-    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); Optional shadow for depth */
-    /* z-index: 1; Ensure it appears above other elements if overlapping */
-/* }  */
-
 
 .suggested-window {
     display: block;
@@ -177,10 +159,14 @@ ul{
 }
 
 .user_head_link img {
-    width: 40px;
-    height: 40px;
+	width: 48px;
+	height: 40px;
+	border: 1px solid #CDCDCD;
 }
-
+.timeslot.lt_time_show {
+    font-size: 12px;
+    font-weight: bold;
+}
 .popupContainer::after {
     content: "";
     position: absolute;

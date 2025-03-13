@@ -67,14 +67,21 @@
     <!-- -------------------------------------------------------------- -->
     <!-- Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
-    <div class="page-breadcrumb" style="padding-top: 0px;">
+    <div class="page-breadcrumb" style="">
         <div class="row">
-            <div class="col-5 align-self-center">
+            <div class="col-4 align-self-center">
                 <h4 class="page-title">Performance Metrix</h4>
+                  <div class="d-flex align-items-center">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Performance Metrix</li>
+                        </ol>
+                    </nav>
+                </div>
             </div>
-            <div class="col-7 align-self-right" style="text-align: right;padding-right: 40px;">
-                 
-             </div>
+                                 @include('header-top-nav.report_nav')
+
         </div>
     </div>
     <!-- -------------------------------------------------------------- -->

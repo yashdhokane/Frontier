@@ -14,89 +14,80 @@
 
     <div class="page-breadcrumb">
         <div class="row">
-            <div class="col-5 align-self-center">
-                <h4 class="page-title">{{ $data }}</h4>
-                <div class="d-flex align-items-center">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="https://dispatchannel.com/portal/">Home</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('jobreport.index') }}">Job Report</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">{{ $data }}</li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-            <div class="col-7 align-self-center">
+          @php
+    $pageTitle = str_replace('_', ' ', request()->segment(count(request()->segments())));
+@endphp
 
-                <!-- Dropdown Selection -->
-                <div class="row">
-                    <div class="col-md-12 mb-1X">
-                        <h6 class="">Filters</h6>
-                    </div>
-                    <div class="col-md-3">
-                        <select id="dataFilter" class="form-control">
-                            <option value="">Select All</option>
-                            <option value="date_range">Select Dates</option>
-                            <option value="month">Select Month</option>
-                            <option value="year">Select Year</option>
-                        </select>
-                    </div>
-
-                    <!-- Date Range Picker -->
-                    <div class="col-md-3" id="dateRangePicker" style="display: none;">
-                        <input type="date" id="fromDate" class="form-control" placeholder="From Date">
-                    </div>
-                    <div class="col-md-3" id="toDatePicker" style="display: none;">
-                        <input type="date" id="toDate" class="form-control" placeholder="To Date">
-                    </div>
-
-                    <!-- Month Dropdown -->
-                  <div class="col-md-3" id="monthPicker" style="display: none;">
-    <select id="selectMonth" class="form-control">
-        <option value="">Select Month</option>
-        @php
-            $currentMonth = date('n'); // Get the current month (1 to 12)
-            $currentYear = date('Y');  // Get the current year
-        @endphp
-
-        @foreach (range($currentMonth, 12) as $month)
-            <option value="{{ $month }}">
-                {{ date('F', mktime(0, 0, 0, $month, 1)) }} {{ $currentYear }}
-            </option>
-        @endforeach
-    </select>
+<div class="col-4 align-self-center">
+    <h4 class="page-title">{{ ucwords($pageTitle) }}</h4>
+    <div class="d-flex align-items-center">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="https://dispatchannel.com/portal/">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('jobreport.index') }}">Job Report</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ ucwords($pageTitle) }}</li>
+            </ol>
+        </nav>
+    </div>
 </div>
 
-                    <!-- Year Dropdown -->
-                    <div class="col-md-3" id="yearPicker" style="display: none;">
-                        <select id="selectYear" class="form-control">
-                            <option value="">Select Year</option>
-                            @foreach (range(2023, now()->year) as $year)
-                                <option value="{{ $year }}">{{ $year }}</option>
-                            @endforeach
 
-                        </select>
-                    </div>
-                    <div class="col-md-3" id="yearPicker" style="display: none;">
-                        <select id="selectYear" class="form-control">
-                            <option value="">Select Year</option>
-                            @foreach (range(2023, now()->year) as $year)
-                                <option value="{{ $year }}">{{ $year }}</option>
-                            @endforeach
+                <!-- Dropdown Selection -->
+                                @include('header-top-nav.report_nav')
 
-                        </select>
-                    </div>
-
-                    <div class="col-md-3 text-right">
-                        <button id="submitButton" class="btn btn-primary">Submit</button>
-                    </div>
-
-
-                </div>
-
-            </div>
         </div>
     </div>
+
+    <div class="row justify-content-center align-items-center g-2 col-md-12">
+   
+    <div class="col-auto">
+        <select id="dataFilter" class="form-control">
+            <option value="">Select All</option>
+            <option value="date_range">Select Dates</option>
+            <option value="month">Select Month</option>
+            <option value="year">Select Year</option>
+        </select>
+    </div>
+
+    <!-- Date Range Picker -->
+    <div class="col-auto" id="dateRangePicker" style="display: none;">
+        <input type="date" id="fromDate" class="form-control" placeholder="From Date">
+    </div>
+    <div class="col-auto" id="toDatePicker" style="display: none;">
+        <input type="date" id="toDate" class="form-control" placeholder="To Date">
+    </div>
+
+    <!-- Month Dropdown -->
+    <div class="col-auto" id="monthPicker" style="display: none;">
+        <select id="selectMonth" class="form-control">
+            <option value="">Select Month</option>
+            @php
+                $currentMonth = date('n'); // Get the current month (1 to 12)
+                $currentYear = date('Y');  // Get the current year
+            @endphp
+            @foreach (range($currentMonth, 12) as $month)
+                <option value="{{ $month }}">
+                    {{ date('F', mktime(0, 0, 0, $month, 1)) }} {{ $currentYear }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    <!-- Year Dropdown -->
+    <div class="col-auto" id="yearPicker" style="display: none;">
+        <select id="selectYear" class="form-control">
+            <option value="">Select Year</option>
+            @foreach (range(2023, now()->year) as $year)
+                <option value="{{ $year }}">{{ $year }}</option>
+            @endforeach
+        </select>
+    </div>
+
+    <div class="col-auto">
+        <button id="submitButton" class="btn btn-secondary text-white">Submit</button>
+    </div>
+</div>
+
     <!-- -------------------------------------------------------------- -->
     <!-- End Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->

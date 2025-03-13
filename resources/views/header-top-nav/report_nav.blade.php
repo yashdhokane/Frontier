@@ -1,6 +1,6 @@
 @php
-// Fetch all menus where parent_id = 39
-$menus = DB::table('nav_menus_right_top')->where('parent_id', 39)->orderBy('order_by')->get();
+// Fetch all menus where parent_id = 19
+$menus = DB::table('nav_menus_right_top')->where('parent_id', 19)->orderBy('order_by')->get();
 
 // Fetch all possible submenus where parent_id exists in the menu IDs
 $subMenus = DB::table('nav_menus_right_top')->whereIn('parent_id',
@@ -10,6 +10,7 @@ $menuIds = $menus->pluck('menu_id')->toArray(); // Get all menu IDs
 $moreMenus = $menus->where('more_link', 'yes'); // Get "More" menu items
 @endphp
 
+<div class="col-8 text-end px-4">
     <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
         @foreach ($menus as $menu)
         @php
@@ -56,7 +57,7 @@ $moreMenus = $menus->where('more_link', 'yes'); // Get "More" menu items
             </button>
             <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                 @foreach ($moreMenus as $menu)
-                <a class="dropdown-item {{ Route::currentRouteName() === $menu->menu_link ? 'bg-info text-white' : 'text-info' }}"
+                <a class="dropdown-item {{ Route::currentRouteName() === $menu->menu_link ? ' text-grey' : 'text-info' }}"
                     href="{{ route($menu->menu_link) }}">
                     {{ $menu->menu_name }}
                 </a>
@@ -65,3 +66,4 @@ $moreMenus = $menus->where('more_link', 'yes'); // Get "More" menu items
         </div>
         @endif
     </div>
+</div>

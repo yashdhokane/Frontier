@@ -423,3 +423,103 @@ ul#sidebarnav .sidebar-item-child {
 .topbar .mega-dropdown .dropdown-menu {
     background: #dbdbdb;
 }
+
+
+.reschedule_user_list li:hover {
+    background: #e4eaef;
+}
+.reschedule_user_list li.list-group-item {
+    letter-spacing: 0.5px;
+    font-size: 12px;
+}
+.reschedule_user_info1 {
+    margin-bottom: 5px;
+    font-style: italic;
+}
+.reschedule_user_list h6 {
+    font-size: 13px;
+    letter-spacing: 0.5px;
+}
+.pp_jobmodel h5 {
+    letter-spacing: 0.5px;
+}
+.pp_jobmodel .ft13 {
+    font-size: 12px;
+    color: #343a40;
+}
+.pp_job_date.text-primary {
+    color: #343a40 !important;
+ 	font-weight: bold;
+    font-size: 12px;
+}
+.bg-site {
+    opacity: 1;
+    background-color: #343a40 !important;
+}
+
+ul.nav_bg {
+    border: 1px solid #f8f9fa;
+    border-radius: 6px;
+    border-width: 0px 1px 1px 1px;
+}
+
+
+
+/*START - STICKY NOTES CSS*/
+.header_li{
+position: relative;
+}
+.stickyMainSection{
+transition: all .5s ease;
+}
+.sticky-note {
+position: absolute;
+background-color: #fff;
+border: 1px solid #e8eef3;
+height: 100vh;
+position: fixed;
+right: -320px;
+top: 0;
+transition: all .5s ease;
+width: 240px;
+z-index: 3;
+}
+
+.close-task-detail.in {
+display: block !important;
+opacity: 1;
+transition: width .7s;
+z-index: 1;
+}
+
+.close-task-detail {
+background-color: #f64e60;
+border-radius: 22px 0 0 22px;
+color: #fff;
+font-size: 12px;
+left: -55px;
+opacity: 0;
+padding: 9px 17px !important;
+top: 17px;
+transition: width .7s;
+margin-left: 270px;
+}
+
+.actionBtnNote {
+cursor: pointer;
+height: 30px;
+}
+
+.openjobsDropdown{
+width: 900px !important;
+}
+.stickyDropdown{
+width: 800px !important;
+}
+
+#autoPublishingTime1, #autoReRouteTime1{
+display: none;
+}
+/*END - STICKY NOTES CSS*/
+
+

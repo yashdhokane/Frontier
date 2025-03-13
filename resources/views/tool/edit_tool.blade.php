@@ -8,16 +8,13 @@
         color: red;
     }
 </style>
-<!-- Page wrapper  -->
-<!-- -------------------------------------------------------------- -->
-<div class="page-wrapper" style="display:inline;">
     <!-- -------------------------------------------------------------- -->
     <!-- Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
     <div class="page-breadcrumb" style="padding-top: 0px;">
         <div class="row">
 
-            <div class="col-5 align-self-center">
+            <div class="col-4 align-self-center">
 					<h4 class="page-title">{{ $product->product_name }}</h4>
                     <div class="d-flex align-items-center">
                         <nav aria-label="breadcrumb">
@@ -30,47 +27,9 @@
                     </div>
                 
             </div>
-            <div class="col-7 text-end px-4">
-                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                    <a href="{{ route('product.index') }}"
-                        class="btn {{ Route::currentRouteName() === 'product.index' ? 'btn-info' : 'btn-secondary text-white' }}">Parts</a>
-                    <a href="{{ route('tool.index') }}"
-                        class="btn {{ Route::currentRouteName() === 'tool.index' ? 'btn-info' : 'btn-secondary text-white' }}">Tools</a>
-                    <a href="{{ route('vehicles') }}"
-                        class="btn {{ Route::currentRouteName() === 'vehicles' ? 'btn-info' : 'btn-secondary text-white' }}">Vehicles</a>
-                    <div class="btn-group" role="group">
-                        <button id="btnGroupDrop1" type="button"
-                            class="btn {{ Route::currentRouteName() === 'assign_product' || Route::currentRouteName() === 'assign_tool' ? 'btn-info' : 'btn-secondary text-white' }} dropdown-toggle"
-                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Assign
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                            <a class="dropdown-item {{ Route::currentRouteName() === 'assign_product' ? 'btn-info' : 'text-info' }}"
-                                href="{{ route('assign_product') }}">Parts</a>
-                            <a class="dropdown-item {{ Route::currentRouteName() === 'assign_tool' ? 'btn-info' : 'text-info' }}"
-                                href="{{ route('assign_tool') }}">Tools</a>
-
-                        </div>
-                    </div>
-                    <div class="btn-group" role="group">
-                        <button id="btnGroupDrop2" type="button"
-                            class="btn {{ Route::currentRouteName() === 'addvehicle' || Route::currentRouteName() === 'product.createproduct' || Route::currentRouteName() === 'tool.createtool' ? 'btn-info' : 'btn-secondary text-white' }} dropdown-toggle"
-                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Add New
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="btnGroupDrop2">
-                            <a class="dropdown-item {{ Route::currentRouteName() === 'product.createproduct' ? 'btn-info' : 'text-info' }}"
-                                href="{{ route('product.createproduct') }}">Parts</a>
-                            <a class="dropdown-item {{ Route::currentRouteName() === 'tool.createtool' ? 'btn-info' : 'text-info' }}"
-                                href="{{ route('tool.createtool') }}">Tools</a>
-                            <a class="dropdown-item {{ Route::currentRouteName() === 'addvehicle' ? 'btn-info' : 'text-info' }}"
-                                href="{{ route('addvehicle') }}">Vehicles</a>
-                        </div>
-                    </div>
-                    <a href="{{ route('partCategory') }}"
-                        class="btn {{ Route::currentRouteName() === 'partCategory' ? 'btn-info' : 'btn-secondary text-white' }}">Categories</a>
-                </div>
-            </div>
+             <div class="col-8 text-end px-4">
+                @include('header-top-nav.asset-nav')
+           </div>
         </div>
     </div>
     <!-- -------------------------------------------------------------- -->
@@ -84,7 +43,7 @@
     </div>
     @endif
     <!-- -------------------------------------------------------------- -->
-    <div class="container-fluid">
+    <div class="container-fluid pt-2">
         <!-- -------------------------------------------------------------- -->
         <!-- Start Page Content -->
         <!-- -------------------------------------------------------------- -->
@@ -392,8 +351,7 @@
     <!-- -------------------------------------------------------------- -->
     <!-- End Right sidebar -->
     <!-- -------------------------------------------------------------- -->
-</div>
-</div>
+
 @section('script')
 <script>
     document.addEventListener('DOMContentLoaded', function() {

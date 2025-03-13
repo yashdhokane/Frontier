@@ -3,10 +3,10 @@
     <i class="fas fa-sticky-note ft20"></i>
 </a>
 <div class="dropdown-menu dropdown-menu-end mailbox dropdown-menu-animate-up stickyDropdown" data-bs-auto-close="outside" aria-labelledby="showStickyNote">
-    <span class="with-arrow"><span class="bg-danger"></span></span>
+    <span class="with-arrow"><span class="bg-site"></span></span>
     <ul class="list-style-none">
         <li>
-            <div class="drop-title text-white bg-danger">
+            <div class="drop-title text-white bg-site">
                 <h4 class="mb-0 mt-1">Sticky Notes</h4>
             </div>
         </li>
@@ -15,7 +15,7 @@
 
                     <div class="row m-2 stickyNotesList">
                         <div class="col-sm-12 col-md-12"><button type="button"
-                                class="btn btn-primary ms-3 addStickyNoteBtn">
+                                class="btn btn-info ms-3 addStickyNoteBtn">
                                 <i class="fa fa-plus"></i> Add Note</button></div>
 
                         @php
@@ -26,7 +26,7 @@
                             <div class="row sticknoteslist">
                                 @foreach ($stickyNote as $item)
                                     <div class="col-sm-4 col-md-4 my-3">
-                                        <div class="card border rounded p-3 h-100 justify-content-between">
+                                        <div class="card card-border shadow rounded p-3 h-100 justify-content-between">
                                             <div class="row d-flex justify-content-between">
                                                 <div class="col-9"> {{ $item->note }} </div>
                                                 <div class="col-2 btn-group ms-2">

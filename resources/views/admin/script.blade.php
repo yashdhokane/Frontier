@@ -116,12 +116,10 @@
 
 <!-- working pages  JavaScript by (st) -->
 
-
 <script src="{{ asset('public/admin/dist/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
 
 
 <script src="{{ asset('public/admin/dist/js/pages/datatable/datatable-advanced.init.js') }}"></script>
-
 <script src="{{ asset('public/admin/dist/libs/dragula/dist/dragula.min.js') }}"></script>
 
 <script>

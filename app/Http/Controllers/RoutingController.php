@@ -425,11 +425,13 @@ class RoutingController extends Controller
         $savedSettings = [];
 
         if (!empty($jobIds)) {
+
             $jobs = Schedule::with(['Jobassign', 'Jobassign.userAddress'])
                 ->whereIn('job_id', $jobIds)
                 ->whereDate('start_date_time', '>=', $inputDate)
                 ->orderBy('start_date_time', 'asc')
                 ->get();
+            
             $technicians = $jobs->pluck('technician_id')->toArray();
 
             foreach ($technicians as $technicianId) {
@@ -860,13 +862,15 @@ class RoutingController extends Controller
                     continue;
                 }
 
-
-
-                $jobs = Schedule::with(['Jobassign', 'Jobassign.userAddress'])
+                 $jobs = Schedule::with(['Jobassign', 'Jobassign.userAddress'])
                     ->where('technician_id', $technicianId)
                     ->whereDate('start_date_time', '>=', $inputDate)
                     ->orderBy('start_date_time', 'asc')
                     ->get();
+
+          
+
+               
 
                 $jobDistances = [];
 

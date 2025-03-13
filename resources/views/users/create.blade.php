@@ -88,9 +88,9 @@
 
         <!-- Bread crumb and right sidebar toggle -->
 
-        <!-- -------------------------------------------------------------- -->
+        <!-- style="padding-top: 0px;" -------------------------------------------------------------- -->
 
-        <div class="page-breadcrumb" style="padding-top: 0px;">
+ <!--       <div class="page-breadcrumb" >
              <div class="row">
 				<div class="col-9 align-self-center">
                      <h4 class="page-title">Add New Customer</h4>
@@ -100,7 +100,29 @@
 						class="justify-content-center d-flex align-items-center"><i class="ri-contacts-line" style="margin-right: 8px;"></i> Back to Customers List </a>
 				</div>
              </div>
-		</div>
+		</div> -->
+        <div class="page-breadcrumb">
+    <div class="row withoutthreedottest">
+        <div class="col-10 align-self-center">
+            <h4 class="page-title">Add New Customer</h4>
+            <div class="d-flex align-items-center">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#.">Customer Management</a></li>
+                        <li class="breadcrumb-item"><a href="#">Add New Customer</a></li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="col-2 text-end px-4">
+            <a href="https://dispatchannel.com/portal/customers"
+                class="btn btn-secondary text-white d-flex align-items-center justify-content-center">
+                <i class="ri-contacts-line" style="margin-right: 8px;"></i> Back to Customers List
+            </a>
+        </div>
+    </div>
+</div>
+
 
         <!-- -------------------------------------------------------------- -->
 

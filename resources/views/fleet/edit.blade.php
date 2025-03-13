@@ -7,7 +7,7 @@
 
     <div class="page-breadcrumb">
         <div class="row">
-            <div class="col-8 align-self-center">
+            <div class="col-4 align-self-center">
                 <h4 class="page-title">{{ $fleetModel->vehicle_name ?? '' }}</h4>
                 <div class="d-flex align-items-center">
                     <nav aria-label="breadcrumb">
@@ -20,7 +20,9 @@
                 </div>
 
             </div>
-			@include('header-top-nav.asset-nav')
+             <div class="col-8 text-end px-4">
+                @include('header-top-nav.asset-nav')
+           </div>
         </div>
     </div>
     <!-- -------------------------------------------------------------- -->
@@ -36,8 +38,8 @@
         </div>
     @endif
 
-    <div class="container-fluid">
-        <div class="row mt-3">
+    <div class="container-fluid pt-2">
+        <div class="row">
 
             <div class="col-md-6">
 

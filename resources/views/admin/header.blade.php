@@ -13,43 +13,8 @@
     @endif
 @endauth
 
-<style>
-    .form-check-input {
-        width: 1.2em;
-        height: 1.2em;
-        border: 2px solid #6c757d;
-        margin-top: 4px;
-    }
 
-    .form-check-input:checked {
-        background-color: #198754;
-        border-color: #198754;
-    }
-
-    .bt-switch input[type="checkbox"] {
-        transform: scale(0.8);
-        margin: 0;
-    }
-
-    .modalbodyclass {
-        padding: 1.5rem !important;
-        background-color: #f8f9fa;
-    }
-
-    .border-btm {
-        border-bottom: 1px solid #D8D8D8;
-        /* Add a 1px solid bottom border */
-    }
-</style>
-<style>
-    .form-check-input {
-        padding: 0px !important
-    }
-
-    ;
-</style>
-<link href="{{ asset('public/admin/dist/libs/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css') }}"
-    rel="stylesheet">
+<link href="{{ asset('public/admin/dist/libs/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css') }}"  rel="stylesheet">
 
 <!-- Default Sidebar for other roles -->
 @if (request('header') == 'off')

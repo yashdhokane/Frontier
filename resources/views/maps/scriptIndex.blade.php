@@ -4,9 +4,24 @@
     <script async
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCa7BOoeXVgXX8HK_rN_VohVA7l9nX0SHo&loading=async&callback=initMap&libraries=marker">
     </script>
+    
     <script>
-        $(document).ready(function() {
+        function updateDateTime() {
+            let date = $("#newdate").val();  // Get selected date
+            let time = $("#newtime").val();  // Get selected time
 
+            if (date && time) {
+                $("#hidden_start_date_time").val(date + "T" + time); // Combine into "YYYY-MM-DDTHH:MM"
+            }
+        }
+
+        // Update hidden input when date or time changes
+        $("#newdate, #newtime").on("change", updateDateTime);
+        
+        // Set initial value on page load
+        $(document).ready(updateDateTime);
+    
+        $(document).ready(function() {
             var openInfoWindowpop = null;
 
             function setMarkers(map) {

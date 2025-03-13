@@ -13,13 +13,12 @@
     </style>
     <div class="page-breadcrumb ms-2">
         <div class="row">
-            <div class="col-5 align-self-center">
+            <div class="col-4 align-self-center">
                 <h4 class="page-title">{{ \App\Models\ServiceCategory::find($category_id)->category_name ?? null }}</h4>
                 <div class="d-flex align-items-center">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('services.index') }}">Price Book</a>
-                            </li>
+                         <li class="breadcrumb-item"><a href="#">Asset Management</a></li>
                             <li class="breadcrumb-item"><a href="">Services</a></li>
 
                             @if ($category_id)
@@ -33,6 +32,9 @@
                     </nav>
                 </div>
             </div>
+             <div class="col-8 text-end px-4">
+                @include('header-top-nav.asset-nav')
+           </div>
 
         </div>
     </div>

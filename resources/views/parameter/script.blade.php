@@ -80,7 +80,7 @@
         }
 
        // Load filters based on the default selected value
-       loadSavedFilters($(".select-type-values .btn-info").data("value")); 
+       loadSavedFilters($(".select-type-values .btn-show-jobs").data("value")); 
 
         // Handle button clicks
         $('.select-type-values a').on('click', function (e) {
@@ -93,8 +93,8 @@
             loadSavedFilters(type);
 
             // Toggle active button style
-            $('.select-type-values a').removeClass('btn-info').addClass('btn-light-info text-info');
-            $(this).addClass('btn-info').removeClass('btn-light-info text-info');
+            $('.select-type-values a').removeClass('btn-dark').addClass('btn-secondary');
+            $(this).addClass('btn-dark').removeClass('btn-secondary');
 
             // Show/hide relevant sections
             if (type === 'jobs') {

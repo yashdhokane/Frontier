@@ -76,19 +76,29 @@
     <!-- -------------------------------------------------------------- -->
     <div class="page-wrapper" style="display:inline;">
         <!-- -------------------------------------------------------------- -->
-        <!-- Bread crumb and right sidebar toggle -->
+        <!-- Bread crumb and right sidebar toggle  style="padding-top: 0px;"-->
         <!-- -------------------------------------------------------------- -->
-        <div class="page-breadcrumb" style="padding-top: 0px;">
-            <div class="row">
-                <div class="col-9 align-self-center">
-                    <h4 class="page-title">NEW TECHNICIAN</h4>
-				</div>
-                <div class="col-3 text-end px-4">
-                <a href="https://dispatchannel.com/portal/technicians"
-                    class="justify-content-center d-flex align-items-center"><i class="ri-contacts-line" style="margin-right: 8px;"></i> Back to Technicians List </a>
-            </div>
+       <div class="page-breadcrumb">
+    <div class="row withoutthreedottest">
+        <div class="col-5 align-self-center">
+            <h4 class="page-title">NEW TECHNICIAN</h4>
+             <div class="d-flex align-items-center">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#.">Technician Management</a></li>
+                        <li class="breadcrumb-item"><a href="#">New Technician</a></li>
+                    </ol>
+                </nav>
             </div>
         </div>
+        <div class="col-7 text-end px-4">
+            <a href="https://dispatchannel.com/portal/technicians" class="btn btn-secondary text-white">
+                <i class="ri-contacts-line"></i> Back to Technicians List
+            </a>
+        </div>
+    </div>
+</div>
+
         <!-- -------------------------------------------------------------- -->
         <!-- End Bread crumb and right sidebar toggle -->
         <!-- -------------------------------------------------------------- -->

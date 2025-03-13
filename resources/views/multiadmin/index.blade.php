@@ -1,15 +1,28 @@
 @extends('home')
 @section('content')
 
-    <div class="page-breadcrumb ms-2">
-        <div class="row">
-            <div class="col-5 align-self-center">
-                <h4 class="page-title">Admin</h4>
-            </div>
-            <div class="col-7 align-self-center">
+   <div class="page-breadcrumb">
+    <div class="row withoutthreedottest">
+        <div class="col-6 align-self-center">
+            <h4 class="page-title">Admin</h4>
+
+             <div class="d-flex align-items-center">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#.">Admin Management</a></li>
+                        <li class="breadcrumb-item"><a href="#">Admin</a></li>
+                    </ol>
+                </nav>
             </div>
         </div>
+        <div class="col-6 text-end px-4">
+            <a href="{{ route('multiadmin.create') }}" class="btn btn-secondary text-white">
+                <i class="ri-user-add-line me-2"></i> Add Admin
+            </a>
+        </div>
     </div>
+</div>
+
     <!-- -------------------------------------------------------------- -->
     <!-- End Bread crumb and right sidebar toggle -->
     <!-- -------------------------------------------------------------- -->
@@ -75,9 +88,9 @@
                                 <i data-feather="trash-2" class="feather-sm fill-white me-1 deletelink"></i>
                                 Delete All Row</a>
                         </div>
-                        <a href="{{ route('multiadmin.create') }}" id="" class="btn btn-info">
+                      <!--  <a href="{{ route('multiadmin.create') }}" id="" class="btn btn-info">
                             <i data-feather="users" class="feather-sm fill-white me-1"> </i>
-                            Add Admin</a>
+                            Add Admin</a>  -->
                     </div>
                 </div>
             </div>

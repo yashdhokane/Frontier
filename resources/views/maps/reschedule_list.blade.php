@@ -1,8 +1,8 @@
-<div class="row card-border shadow bg-light py-2 mb-3 ">
+<div class="row card-border shadow bg-light py-2 mt-2 ">
     <div class="col-3 bg-light px-3">
         <div class="maplocationpopup">
-			<div class="ft12 bold">#{{ $getData->job_id }} {{ $getData->job_title }}</div>
- 			<div class="mt-0 ft11 fw-medium text-info">{{ $getData->name }}</div>
+			<div class="ft13 bold">#{{ $getData->job_id }} {{ $getData->job_title }}</div>
+ 			<div class="mt-0 ft11">{{ $getData->name }}</div>
             <div class="mt-0 ft11">{{ $getData->address }}, {{ $getData->city }}, {{ $getData->state }}, {{ $getData->zipcode }}</div>
             <input type="hidden" value="{{ $getData->name }}" name="rescheduleData[{{ $count }}][customer_name]">
             <input type="hidden" name="rescheduleData[{{ $count }}][job_id]" value="{{ $getData->job_id }}">
@@ -29,10 +29,27 @@
         </div>
     </div>
     <div class="col-2 bg-light px-3">
-        <div class="bg-light"><label class="bold ft11">Start Time</label></div>
-        <div class="form-group">
-            <input type="datetime-local" class="form-control start_date_time" min="{{ now()->format('Y-m-d\TH:i') }}"
-                value="{{ $getData->start_date_time }}" name="rescheduleData[{{ $count }}][start_date_time]">
+        <div class="bg-light"><label class="bold ft11">Date and Time</label></div>
+        <div class="form-group text-end">
+            <div class="d-flex">
+                <!-- Hidden Input to Store Merged Value -->
+                <input type="hidden" name="rescheduleData[{{ $count }}][start_date_time]" id="hidden_start_date_time">
+                <input type="date" class="form-control" id="newdate"  name="date"
+                    value="{{ $date }}">
+                <select class="form-control px-1" id="newtime" name="time">
+                    @foreach ($timeIntervals as $interval)
+                        @php
+                            $timeDisplay = date('h:i A', strtotime($interval));
+                            $selected =
+                                substr($dateTime, 11, 5) === substr($interval, 0, 5)
+                                    ? 'selected'
+                                    : '';
+                        @endphp
+                        <option value="{{ $interval }}" {{ $selected }}>
+                            {{ $timeDisplay }}</option>
+                    @endforeach
+                </select>
+            </div>
         </div>
     </div>
     <div class="col-2 bg-light px-3">

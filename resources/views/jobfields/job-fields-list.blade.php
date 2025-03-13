@@ -7,7 +7,7 @@
     <!-- -------------------------------------------------------------- -->
     <div class="page-breadcrumb">
         <div class="row">
-            <div class="col-5 align-self-center">
+            <div class="col-4 align-self-center">
                 <h4 class="page-title">Job Fields</h4>
                 <div class="d-flex align-items-center">
                     <nav aria-label="breadcrumb">
@@ -18,8 +18,9 @@
                     </nav>
                 </div>
             </div>
-            {{-- here using 7 col --}}
-            @include('header-top-nav.settings-nav')
+            <div class="col-8 text-end px-4">
+              @include('header-top-nav.settings-nav') 
+            </div>
         </div>
     </div>
     @if (session('success'))
@@ -115,7 +116,7 @@
             <div class="col-3">
 
 
-                <button type="button" class="btn btn-info py-1 mb-4" data-bs-toggle="modal"
+                <button type="button" class="btn btn-secondary py-1 mb-4" data-bs-toggle="modal"
                     data-bs-target="#samedata-modal" data-bs-whatever="@mdo"><i class="ri-file-add-line"></i> Add
                     New</button>
 

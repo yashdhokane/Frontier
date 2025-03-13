@@ -4,7 +4,7 @@
         @endif
 
 
-        <div class="page-breadcrumb ms-2">
+      <!--  <div class="page-breadcrumb ms-2">
             <div class="row">
                 <div class="col-6 align-self-center">
                     <h4 class="page-title">Technicians</h4>
@@ -14,7 +14,47 @@
                     </div>
                 </div>
             </div>
+        </div> -->
+        <div class="page-breadcrumb">
+    <div class="row withoutthreedottest">
+        <div class="col-5 align-self-center">
+            <h4 class="page-title">Technicians</h4>
+            <div class="d-flex align-items-center">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#.">Technician Management</a></li>
+                        <li class="breadcrumb-item"><a href="#">Technicians</a></li>
+                    </ol>
+                </nav>
+            </div>
         </div>
+        <div class="col-7 text-end px-4">
+            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <a href="{{ route('technicians.create') }}"
+                    class="btn {{ Route::currentRouteName() === 'technicians.create' ? 'btn-info' : 'btn-secondary text-white' }}">
+                    <i class="fas fa-user-plus"></i> Add New
+                </a>
+
+                @if (request()->routeIs('technicians.index'))
+                <a href="{{ route('technicians.status', ['status' => 'deactive']) }}"
+                    class="btn {{ Route::currentRouteName() === 'technicians.status' ? 'btn-info' : 'btn-secondary text-white' }}">
+                    <i class="ri-user-unfollow-fill"></i> View Inactive
+                </a>
+                @elseif(request()->routeIs('technicians.status'))
+                <a href="{{ route('technicians.index') }}"
+                    class="btn {{ Route::currentRouteName() === 'technicians.index' ? 'btn-info' : 'btn-secondary text-white' }}">
+                    <i class="ri-user-follow-line"></i> View Active
+                </a>
+                @endif
+
+               <!-- <a href="#." id="filterButton" class="btn btn-secondary text-white">
+                    <i class="ri-filter-line"></i> Filters
+                </a> -->
+            </div>
+        </div>
+    </div>
+</div>
+
 
         <div class="container-fluid pt-2">
             <!-- -------------------------------------------------------------- -->
@@ -52,22 +92,22 @@
                                     placeholder="Search Technicians..." />
                             </form>
                         </div>
-                        <div
+                     <!--   <div
                             class="col-md-8 col-xl-10 text-end d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
-                            <a href="{{ route('technicians.create') }}" id="" class="btn btn-info">
+                            <a href="{{ route('technicians.create') }}" id="" class="btn btn-secondary text-white">
                                 <i class="fas fa-user-plus"></i> Add New
                             </a>
                             @if (request()->routeIs('technicians.index'))
                                 <a href="{{ route('technicians.status', ['status' => 'deactive']) }}"
-                                    class="btn btn-danger mx-3">
+                                    class="btn btn-secondary text-white">
                                     <i class="ri-user-unfollow-fill"></i> View Inactive
                                 </a>
                             @elseif(request()->routeIs('technicians.status'))
-                                <a href="{{ route('technicians.index') }}" class="btn btn-success mx-3">
+                                <a href="{{ route('technicians.index') }}" class="btn btn-secondary text-white">
                                     <i class="ri-user-follow-line"></i> View Active
                                 </a>
                             @endif
-                        </div>
+                        </div>  -->
                     </div>
                 </div>
                 <div class="card threedottest" id="threedot" style="display: none;">

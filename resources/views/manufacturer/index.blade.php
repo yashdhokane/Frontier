@@ -13,23 +13,22 @@
 
 <div class="page-breadcrumb">
     <div class="row">
-        <div class="col-2 align-self-center">
+        <div class="col-4 align-self-center">
             <h4 class="page-title">Manufactures</h4>
             <div class="d-flex align-items-center">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('buisnessprofile.index') }}">Settings</a></li>
+                        <li class="breadcrumb-item"><a href="#">Asset Management</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Manufactures</li>
                     </ol>
                 </nav>
             </div>
         </div>
-        <div class="col-6">
-            <a href="{{ route('manufacturer.create') }}" class="btn btn-info float-end">
-                <i class="ri-device-line"> </i>
-                Add New Manufacturer</a>
-        </div>
-        @include('header-top-nav.asset-nav')
+             <div class="col-8 text-end px-4">
+            <a href="{{ route('manufacturer.create') }}" class="btn btn-secondary mx-2">
+               + Add New Manufacturer</a>
+                @include('header-top-nav.asset-nav')
+           </div>
     </div>
 </div>
 @if (Session::has('success'))

@@ -4,13 +4,24 @@
 
 		<div class="page-wrapper" style="display:inline;">
 			<!-- -------------------------------------------------------------- -->
-			<!-- Bread crumb and right sidebar toggle -->
+			<!-- Bread crumb and right sidebar toggle style="padding-top: 0px;" -->
 			<!-- -------------------------------------------------------------- -->
-			<div class="page-breadcrumb" style="padding-top: 0px;">
+		
+				<div class="page-breadcrumb" >
 				<div class="row">
-					<div class="col-5 align-self-center">
+					<div class="col-4 align-self-center">
 						<h4 class="page-title">Job Report</h4>
+                         <div class="d-flex align-items-center">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Job</li>
+                        </ol>
+                    </nav>
+                </div>
 					</div>
+
+                      @include('header-top-nav.report_nav')
 				</div>
 			</div>
 			<!-- -------------------------------------------------------------- -->

@@ -17,6 +17,7 @@ use App\Models\JobAssign;
 use Illuminate\Support\Facades\Log;
 
 use App\Models\TechnicianJobsSchedulesOnMap;
+use App\Models\BusinessHours;
 
 
 
@@ -42,8 +43,7 @@ class MapController extends Controller
         $time_interval = Session::get('time_interval');
         $currentDate = Carbon::now($timezone_name);
         // Get the first and last date of the previous month
-        $lastMonthStart = $currentDate->subMonth()->startOfMonth()->toDateTimeString();
-        $lastMonthEnd = $currentDate->endOfMonth()->toDateTimeString();
+        $last30DaysStart = $currentDate->copy()->subDays(30);
 
 
         $locationServiceSouthWest = DB::table('location_service_area')->where('area_name', 'South West')->first();
@@ -77,7 +77,7 @@ class MapController extends Controller
             ->where('assign_status', 'active')
             ->whereNotNull('jobs.latitude')
             ->whereNotNull('jobs.longitude')
-            ->whereDate('job_assigned.start_date_time', [$lastMonthStart, $lastMonthEnd])
+            ->whereBetween('job_assigned.start_date_time', [$last30DaysStart, $currentDate])
             ->orderBy('job_assigned.pending_number', 'asc');
 
         if (isset($request->area_id) && !empty($request->area_id)) {
@@ -127,7 +127,9 @@ class MapController extends Controller
             ->join('jobs', 'jobs.id', 'job_assigned.job_id')
             ->join('users', 'users.id', 'jobs.customer_id')
             ->join('users as technician', 'technician.id', 'job_assigned.technician_id')
-            ->where('job_assigned.job_id', $data['id'])->first();
+            ->where('job_assigned.job_id', $data['id'])
+            ->where('assign_status', 'active')
+            ->first();
 
         $jobFieldsIds = explode(',', $result->job_field_ids);
 
@@ -149,16 +151,16 @@ class MapController extends Controller
 
         $content = '
             <div class="pp_jobmodel" style="width: 250px;">
-                <h5 class="uppercase text-truncate pb-0 mb-0">#' . $result->job_id . ' - ' . $result->subject . '</h5>
-                <p class="text-truncate pb-0 mb-0 ft13">' . $result->description . '</p>
-                <div class="pp_job_date text-primary">
+                <h5 class="uppercase text-truncate pb-0 mb-1">#' . $result->job_id . ' - ' . $result->subject . '</h5>
+                <p class="text-truncate pb-0 mb-1">' . $result->description . '</p>
+                <p class="pp_job_date text-primary mb-1">
                 ' . Carbon::parse($result->start_date_time)->format('M j Y g:i A') . ' - ' . Carbon::parse($result->end_date_time)->format('g:i A') . '
-                </div>
-                <p class="ft13 uppercase mb-0 text-truncate">
+                </p>
+                <p class="uppercase mb-1 text-truncate">
                     <strong><i class="ri-user-line"></i> ' . $result->name . '</strong>
                 </p>
-                <div class="ft12"><i class="ri-map-pin-fill"></i> ' . $fullAddress . '</div>
- 			<div class="mt-2"><a href="tickets/' . $result->job_id . '" target="_blank" class="btn btn-success waves-effect waves-light btn-sm btn-info">View</a> <a href="#" class="btn btn-warning waves-effect waves-light btn-sm btn-info reschedule" data-job_id="' . $result->job_id . '">Reschedule</a></div>
+                <p class="mb-1 text-truncate"><i class="ri-map-pin-fill"></i> ' . $fullAddress . '</p>
+ 			<div class="mt-2"><a href="tickets/' . $result->job_id . '" target="_blank" class="btn waves-effect waves-light btn-sm btn-secondary btn-rounded">View</a> <a href="#" class="btn waves-effect waves-light btn-sm btn-secondary btn-rounded reschedule" data-job_id="' . $result->job_id . '">Reschedule</a></div>
             </div>
         ';
 
@@ -192,6 +194,29 @@ class MapController extends Controller
         $locationServiceSouthWest = DB::table('location_service_area')->where('area_name', 'South West')->first();
 
         $data = $request->all();
+        $timezone_name = Session::get('timezone_name');
+        $time_interval = Session::get('time_interval');
+        $date = Carbon::now($timezone_name)->format('Y-m-d'); 
+
+        $time = str_replace(" ", ":00 ", '8') . " AM";
+        $dateTime = Carbon::parse("$date $time");
+
+        $datenew = Carbon::parse($date);
+        $currentDay = $datenew->format('l');
+        $currentDayLower = strtolower($currentDay);
+        // Query the business hours for the given day
+        $hours = BusinessHours::where('day', $currentDayLower)->first();
+
+        // Calculate time intervals (example)
+        $timeIntervals = [];
+        $current = strtotime($hours->start_time);
+        $end = strtotime($hours->end_time);
+        $interval = 30 * 60; // Interval in seconds (30 minutes)
+
+        while ($current <= $end) {
+            $timeIntervals[] = date('H:i', $current);
+            $current += $interval;
+        }
 
         if (isset($data) && !empty($data)) {
 
@@ -216,7 +241,9 @@ class MapController extends Controller
                 )
                 ->join('users', 'users.id', 'job_assigned.customer_id')
                 ->join('jobs', 'jobs.id', 'job_assigned.job_id')
-                ->where('job_assigned.job_id', $job_id)->first();
+                ->where('job_assigned.job_id', $job_id)
+                ->where('assign_status', 'active')
+                ->first();
 
             $start_date_time = Carbon::parse($getData->start_date_time);
 
@@ -230,16 +257,17 @@ class MapController extends Controller
                 $technician = User::select('id', 'name')->where('role', 'technician')->where('status', 'active')->where('service_areas', 'LIKE', '%' . $locationServiceSouthWest->area_id . '%')->get();
             }
 
-            return view('maps.reschedule_list', compact('getData', 'count', 'technician'));
+            return view('maps.reschedule_list', compact('getData', 'count', 'technician', 'date', 'timeIntervals','dateTime'));
         }
     }
 
     public function rescheduleJob(Request $request)
     {
-
         $data = $request->all();
         $timezone_name = Session::get('timezone_name');
         $time_interval = Session::get('time_interval');
+        $startDateTime = $request->date . ' ' . $request->time . ':00';
+       
 
         try {
 
@@ -251,7 +279,7 @@ class MapController extends Controller
 
                     foreach ($data['rescheduleData'] as $key => $value) {
 
-                        $newFormattedDateTime = Carbon::parse($value['start_date_time'])->subHours($time_interval)->format('Y-m-d H:i:s');
+                        $newFormattedDateTime = Carbon::parse($startDateTime, 'UTC')->subHours($time_interval)->format('Y-m-d H:i:s');
 
 
                         $start_date_time = Carbon::parse($newFormattedDateTime);
@@ -267,7 +295,7 @@ class MapController extends Controller
                             'assign_status' => 'rescheduled',
                         ];
 
-                        $jobAssignedID = DB::table('job_assigned')->where('job_id', $value['job_id'])->update($JobAssignedData);
+                        $jobAssignedID = DB::table('job_assigned')->where('assign_status', 'active')->where('job_id', $value['job_id'])->update($JobAssignedData);
 
                         $newJobAssignedData = [
                             'technician_id' => $technician_id,
@@ -288,7 +316,7 @@ class MapController extends Controller
                             'end_slot' => $end_date_time->format('H'),
                         ];
 
-                        $newjobAssignedID = DB::table('job_assigned')->insertGetId($newJobAssignedData);
+                        $newjobAssignedID = DB::table('job_assigned')->where('assign_status', 'active')->insertGetId($newJobAssignedData);
 
                         $scheduleData = [
                             'technician_id' => $technician_id,

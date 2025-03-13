@@ -65,7 +65,7 @@
 </style>
 <div class="page-breadcrumb">
     <div class="row">
-        <div class="col-2 align-self-center">
+        <div class="col-4 align-self-center">
             <h4 class="page-title">Parameters</h4>
             <div class="d-flex align-items-center">
                 <nav aria-label="breadcrumb">
@@ -76,13 +76,13 @@
                 </nav>
             </div>
         </div>
-        <div class="col-3">
-            <div class="btn-group select-type-values" role="group" aria-label="Button group with nested dropdown">
-                <a href="#showJobs" data-value="jobs" class="btn btn-info ">Jobs</a>
-                <a href="#showParts" data-value="products" class="btn btn-light-info text-info">Parts</a>
+        <div class="col-8 text-end px-4">
+            <div class="btn-group select-type-values mx-2" role="group" aria-label="Button group with nested dropdown float-end">
+                <a href="#showJobs" data-value="jobs" class="btn btn-dark btn-show-jobs">Jobs</a>
+                <a href="#showParts" data-value="products" class="btn btn-secondary btn-show-parts">Parts</a>
             </div>
+          @include('header-top-nav.settings-nav') 
         </div>
-        @include('header-top-nav.settings-nav')
     </div>
 </div>
 <div class="container-fluid pt-2">

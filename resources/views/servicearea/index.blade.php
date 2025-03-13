@@ -16,7 +16,7 @@
 <!-- -------------------------------------------------------------- -->
 <div class="page-breadcrumb">
     <div class="row">
-        <div class="col-2 align-self-center">
+        <div class="col-4 align-self-center">
             <h4 class="page-title">Service Area</h4>
             <div class="d-flex align-items-center">
                 <nav aria-label="breadcrumb">
@@ -31,11 +31,11 @@
                 <a href="{{ route('servicearea.create') }}" id="btn-add-contact" class="btn btn-info"><i
                         class="ri-map-pin-line"> </i> Add New Service Area</a>
             </div> -->
-        <div class="col-3 align-self-center">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#service-area-modal">Add Service
+        <div class="col-8 text-end px-4">
+         <button class="btn btn-secondary py-1 mx-2" data-bs-toggle="modal" data-bs-target="#service-area-modal">Add Service
                 Area</button>
+          @include('header-top-nav.settings-nav') 
         </div>
-        @include('header-top-nav.settings-nav')
     </div>
 </div>
 <!-- -------------------------------------------------------------- -->

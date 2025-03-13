@@ -12,20 +12,23 @@
 
     <!-- -------------------------------------------------------------- -->
     <!-- Bread crumb and right sidebar toggle -->
-    <div class="page-breadcrumb ms-2">
+    <div class="page-breadcrumb">
         <div class="row">
-            <div class="col-9 align-self-center">
+            <div class="col-4 align-self-center">
                 <h4 class="page-title">Vendors</h4>
                 <div class="d-flex align-items-center">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('buisnessprofile.index') }}">Other</a></li>
+                            <li class="breadcrumb-item"><a href="#">Asset Management</a></li>
                             <li class="breadcrumb-item"><a href="{{ route('vendor.index') }}">Vendor</a></li>
                             <li class="breadcrumb-item active" aria-current="page">{{ $vendor->vendor_name }}</li>
                         </ol>
                     </nav>
                 </div>
             </div>
+             <div class="col-8 text-end px-4">
+                @include('header-top-nav.asset-nav')
+           </div>
         </div>
     </div>
     <div class="container-fluid pt-2">

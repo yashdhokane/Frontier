@@ -18,13 +18,13 @@
 
 		<div class="dropdown-menu dropdown-menu-end mailbox dropdown-menu-animate-up">
 
-			<span class="with-arrow"><span class="bg-primary"></span></span>
+			<span class="with-arrow"><span class="bg-site"></span></span>
 
 			<ul class="list-style-none">
 
 				<li>
 
-					<div class="drop-title bg-primary text-white">
+					<div class="drop-title bg-site text-white">
 
 						<h4 class="mb-0 mt-1">{{$unreadNotificationsCount ?? ''}} New</h4>
 
@@ -46,7 +46,7 @@
                 <a href="#" class="message-item">
             @endif
 
-							<span class="btn btn-light-primary text-primary btn-circle">
+							<span class="btn btn-light-primary text-secondary btn-circle">
 
 								 @if ($notification->notice->notice_section === 'job')
                         <i class="ri-calendar-check-fill"></i>
@@ -58,7 +58,7 @@
 
 							<div class="mail-contnet" onclick="updateNotification({{ $notification->user_id }}, {{ $notification->notice_id }});">
 
-								<h5 class="message-title">{{$notification->notice->notice_heading ?? null}}</h5>
+								<h6 class="message-title">{{$notification->notice->notice_heading ?? null}}</h6>
 
 								<span class="mail-desc">{{$notification->notice->notice_title ?? null}}</span>
 

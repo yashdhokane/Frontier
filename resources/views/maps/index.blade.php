@@ -39,44 +39,46 @@
 
                     <div class="row">
                         <div class="col bg-light py-2 px-3 card-border">
+						
+							<div class="select-territory-box">
+								<div class="form-group mb-4">
+									<label class="me-sm-2 py-2 bold" for="inlineFormCustomSelect">Territory / Service Area</label>
+									<select class="form-select me-sm-2 territory" id="territory"
+										onchange="reloadPage()">
+										<option value="">-- Select Territory --</option>
+										@php
+											$selectedAreaId =
+												request()->input('area_id') ??
+												($locationServiceSouthWest->area_id ?? null);
+										@endphp
+
+										@foreach ($locationServiceArea as $value)
+											<option data-lat="{{ $value->area_latitude }}" value="{{ $value->area_id }}"
+												@if ($selectedAreaId == $value->area_id) selected @endif
+												data-lag="{{ $value->area_longitude }}"
+												data-radius="{{ $value->area_radius }}">
+												{{ $value->area_name }}
+											</option>
+										@endforeach
+ 
+									</select>
+									<span class="error territory_error"></span>
+								</div>
+							</div>
+							
                             <ul class="list-group scroll-container reschedule_user_list">
-                                <li class="list-group-item">
-                                    <div class="form-group mb-4">
-                                        <label class="me-sm-2 py-2 bold" for="inlineFormCustomSelect">Select
-                                            Territory</label>
-                                        <select class="form-select me-sm-2 territory" id="territory"
-                                            onchange="reloadPage()">
-                                            <option value="">-- Select Territory --</option>
-                                            @php
-                                                $selectedAreaId =
-                                                    request()->input('area_id') ??
-                                                    ($locationServiceSouthWest->area_id ?? null);
-                                            @endphp
-
-                                            @foreach ($locationServiceArea as $value)
-                                                <option data-lat="{{ $value->area_latitude }}" value="{{ $value->area_id }}"
-                                                    @if ($selectedAreaId == $value->area_id) selected @endif
-                                                    data-lag="{{ $value->area_longitude }}"
-                                                    data-radius="{{ $value->area_radius }}">
-                                                    {{ $value->area_name }}
-                                                </option>
-                                            @endforeach
-
-
-
-
-                                        </select>
-                                        <span class="error territory_error"></span>
-                                    </div>
-                                </li>
+                               
                                 @if (isset($data) && !empty($data->count()))
                                     @foreach ($data as $key => $value)
                                         <li class="list-group-item" id="event_click{{ $value->assign_id }}"
                                             style="cursor: pointer;">
-                                            <h6 class="uppercase mb-0">{{ $value->subject }}</h6>
-                                            <div class="ft14"><i class="ri-user-location-fill"></i>
-                                                {{ $value->name }}<br />
-                                                {{ $value->address . ', ' . $value->city . ', ' . $value->state }}
+											<div class="reschedule_user_info1"><i class="ri-calendar-2-line"></i>
+                                             {{ \Carbon\Carbon::parse($value->start_date_time)->format('M j Y g:i A') }}
+                                              - {{ \Carbon\Carbon::parse($value->end_date_time)->format('g:i A') }} </div>
+											<h6 class="uppercase mb-0">#{{ $value->job_id }} - {{ $value->subject }}</h6>
+                                            <div class="reschedule_user_info2">
+                                                <div><i class="ri-user-location-fill"></i> {{ $value->name }}</div>
+                                                 <div>{{ $value->address . ', ' . $value->city . ', ' . $value->state }}</div>
                                             </div>
                                         </li>
                                     @endforeach

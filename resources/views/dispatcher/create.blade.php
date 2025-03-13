@@ -82,10 +82,18 @@
             <div class="row">
                 <div class="col-9 align-self-center">
                     <h4 class="page-title">NEW DISPATCHERS</h4>
+                      <div class="d-flex align-items-center">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#.">Dispatcher Management</a></li>
+                        <li class="breadcrumb-item"><a href="#">Dispatcher New</a></li>
+                    </ol>
+                </nav>
+            </div>
 				</div>
                 <div class="col-3 text-end px-4">
                 <a href="{{ route('dispatcher.index') }}"
-                    class="justify-content-center d-flex align-items-center"><i class="ri-contacts-line" style="margin-right: 8px;"></i> Back to Dispatchers List </a>
+                    class="btn btn-secondary text-white"><i class="ri-contacts-line" style="margin-right: 8px;"></i> Back to Dispatchers List </a>
 				</div>
             </div>
         </div>

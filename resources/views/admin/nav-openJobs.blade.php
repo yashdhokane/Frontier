@@ -1,6 +1,5 @@
 <a class="nav-link dropdown-toggle waves-effect waves-dark" title="Open Jobs" href="#" id="showJobList" data-bs-toggle="dropdown"
-    aria-haspopup="true" aria-expanded="false">
-    <i class="ri-draft-line ft20 align-self-baseline"></i>
+    aria-haspopup="true" aria-expanded="false"> <i class="ri-draft-line ft20 align-self-baseline"></i>
 </a>
 
 @php
@@ -23,13 +22,12 @@ $title = \App\Models\SiteJobTitle::all();
 
 @endphp
 <div class="dropdown-menu dropdown-menu-end mailbox dropdown-menu-animate-up openjobsDropdown"  aria-labelledby="showJobList">
-    <span class="with-arrow"><span class="bg-danger"></span></span>
+    <span class="with-arrow"><span class="bg-site"></span></span>
     <ul class="list-style-none">
         <li>
-            <div class="drop-title text-white bg-danger d-flex justify-content-between">
-                <h4 class="mb-0 mt-1">Open Jobs </h4>
-                <span id="stickyRouting" class="text-decoration-none text-light pointer"
-                                style="z-index: 9;"><i class="ri-settings-2-line"></i> Routing Setting</span>
+            <div class="drop-title text-white bg-site d-flex justify-content-between">
+                <h5 class="mb-0 mt-1 uppercase">Open Jobs </h5>
+                <span id="stickyRouting" class="text-decoration-none text-light pointer " style="z-index: 9;"><i class="ri-settings-2-line"></i> Routing Setting</span>
             </div>
         </li>
         <li>

@@ -64,26 +64,27 @@
         <!-- -------------------------------------------------------------- -->
         <!-- Bread crumb and right sidebar toggle -->
         <!-- -------------------------------------------------------------- -->
-        <div class="page-breadcrumb">
-            <div class="row">
-                <div class="col-9 align-self-center">
-                    <h4 class="page-title">NEW ADMIN</h4>
-                    <!--<div class="d-flex align-items-center">
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="{{route('home')}}">Home</a></li>
-                                <li class="breadcrumb-item"><a href="{{ route('multiadmin.index') }}">Admin</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Add New </li>
-                            </ol>
-                        </nav>
-                    </div>-->
-                </div>
-                <div class="col-3 text-end px-4">
-                <a href="{{ route('multiadmin.index') }}"
-                    class="justify-content-center d-flex align-items-center"><i class="ri-contacts-line" style="margin-right: 8px;"></i> Back to Admin List </a>
-				</div>
+    <div class="page-breadcrumb">
+    <div class="row withoutthreedottest">
+        <div class="col-6 align-self-center">
+            <h4 class="page-title">NEW ADMIN</h4>
+             <div class="d-flex align-items-center">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#.">Admin Management</a></li>
+                        <li class="breadcrumb-item"><a href="#">Admin New</a></li>
+                    </ol>
+                </nav>
             </div>
         </div>
+        <div class="col-6 text-end px-4">
+            <a href="{{ route('multiadmin.index') }}" class="btn btn-secondary text-white">
+                <i class="ri-contacts-line me-2"></i> Back to Admin List
+            </a>
+        </div>
+    </div>
+</div>
+
         <!-- -------------------------------------------------------------- -->
         <!-- End Bread crumb and right sidebar toggle -->
         <!-- -------------------------------------------------------------- -->

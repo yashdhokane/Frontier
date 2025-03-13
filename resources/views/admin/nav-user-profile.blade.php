@@ -25,9 +25,9 @@
 
                     <div class="dropdown-menu dropdown-menu-end user-dd animated flipInY">
 
-                        <span class="with-arrow"><span class="bg-primary"></span></span>
+                        <span class="with-arrow"><span class="bg-site"></span></span>
 
-                        <div class="d-flex no-block align-items-center p-3 bg-primary text-white mb-2">
+                        <div class="d-flex no-block align-items-center p-3 bg-site text-white mb-2">
 
                             <div class="">
 
@@ -66,10 +66,10 @@
 
                         </div>
 
-						  <a class="dropdown-item" href="{{ route('myprofile.index') }}"><i class="far fa-user text-info me-1 ms-1"></i> My Profile </a>
-						  <a class="dropdown-item" href="{{ route('app_chats') }}"><i class="ri-mail-line text-success me-1 ms-1"></i> Messages</a>
-						  <a class="dropdown-item" href="{{route('myprofile.account')}}"><i class="ri-settings-2-line text-success me-1 ms-1"></i> Settings </a>
-						  <a class="dropdown-item" href="{{route('myprofile.activity')}}"><i class="ri-list-check text-success me-1 ms-1"></i> Activity </a>
+						  <a class="dropdown-item bold" href="{{ route('myprofile.index') }}"><i class="far fa-user me-1 ms-1"></i> My Profile </a>
+						  <a class="dropdown-item bold" href="{{ route('app_chats') }}"><i class="ri-mail-line me-1 ms-1"></i> Messages</a>
+						  <a class="dropdown-item bold" href="{{route('myprofile.account')}}"><i class="ri-settings-2-line me-1 ms-1"></i> Settings </a>
+						  <a class="dropdown-item bold" href="{{route('myprofile.activity')}}"><i class="ri-list-check me-1 ms-1"></i> Activity </a>
 
                          
 
@@ -77,9 +77,9 @@
 
                             @csrf
 
-                            <a class="dropdown-item" href="route('logout')"
+                            <a class="dropdown-item  bold" href="route('logout')"
                                 onclick="event.preventDefault(); this.closest('form').submit();"><i
-                                    data-feather="log-out" class="feather-sm text-danger me-1 ms-1"></i>Logout</a>
+                                    data-feather="log-out" class="feather-sm me-1 ms-1"></i>Logout</a>
 
                         </form>
 

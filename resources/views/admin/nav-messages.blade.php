@@ -15,10 +15,10 @@ $chats = \App\Models\ChatMessage::where('sender', '<>', 1)
 
 ?>
 <div class="dropdown-menu dropdown-menu-end mailbox dropdown-menu-animate-up" aria-labelledby="2">
-    <span class="with-arrow"><span class="bg-danger"></span></span>
-    <ul class="list-style-none">
+    <span class="with-arrow"><span class="bg-site"></span></span>
+    <ul class="list-style-none nav_bg">
         <li>
-            <div class="drop-title text-white bg-danger">
+            <div class="drop-title text-white bg-site">
                 <h4 class="mb-0 mt-1">{{ count($chats) }} New</h4>
                 <span class="fw-light">Messages</span>
             </div>
@@ -32,7 +32,7 @@ $chats = \App\Models\ChatMessage::where('sender', '<>', 1)
                             <span class="user-img">
                                 <img src="{{ asset('public/images/login_img_bydefault.png') }}" alt="user"
                                     class="rounded-circle" />
-                                <span class="profile-status online pull-right"></span>
+                                <span class="profile-status online__ pull-right"></span>
                             </span>
                             <div class="mail-contnet">
                                 <h6 class="message-title">{{ $item->user->name }}</h6>
@@ -46,7 +46,7 @@ $chats = \App\Models\ChatMessage::where('sender', '<>', 1)
         </li>
         <li>
             <a class="nav-link text-center link text-dark" href="{{ route('app_chats') }}">
-                <b>Go To Chats</b>
+                <b>Go To Inbox</b>
                 <i data-feather="chevron-right" class="feather-sm"></i>
             </a>
         </li>

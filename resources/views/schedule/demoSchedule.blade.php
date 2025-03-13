@@ -13,13 +13,12 @@
         
     </div>
 
-    <div class="col-md-5 mt-3">
-        <a href="#" id="todayDate" class="me-1 text-decoration-underline" data-today-date="{{ $TodayDate }}">Today </a> 
-        <a id="selectDates1" class="btn btn-outline-dark py-0" ><i
-                class="fas fa-calendar-alt"></i> Select Dates</a>
-                </div>
-    <div class="col-md-4 text-end">
-        <div class="btn-group my-2" role="group" aria-label="Button group with nested dropdown"
+    <div class="col-md-5 mt-2">
+		<a href="#" id="todayDate" class="btn waves-effect waves-light btn-rounded btn-sm btn-info px-3 mx-3" data-today-date="{{ $TodayDate }}">Today </a> 
+		<a id="selectDates1" class="btn waves-effect waves-light btn-rounded btn-sm btn-info px-3" ><i class="fas fa-calendar-alt"></i> Select Dates</a>
+	</div>
+    <div class="col-md-4  mt-2 text-end">
+        <div class="btn-group" role="group" aria-label="Button group with nested dropdown"
             style="margin-right:30px;">
             <a href="#navCalendar1" class="btn btn-info cbtn1">Calendar</a>
             <a href="#navMap1" class="btn btn-secondary text-white mbtn1">Map</a>
@@ -121,7 +120,7 @@
                         @break
                     @endif
                     <div class="time-row">
-                        <div class="timeslot">{{ formatTime($hour, $minute) }}</div>
+                        <div class="timeslot lt_time_show">{{ formatTime($hour, $minute) }}</div>
                         @foreach ($technicians as $key => $item)
                             @php
                                 $timeSlot = Carbon\Carbon::createFromTime($hour, $minute)->format('H:i');
@@ -336,7 +335,7 @@
     </div>
 </div>
 
-<div class="col-12 bg-light py-2 px-3 mt-3 card-border mapStyle" id="mapSection1">
+<div class="col-12 bg-light px-3 mt-1 card-border mapStyle" id="mapSection1">
     <div id="mapScreen1" style="height: 550px; width: 100%;"></div>
 </div>
 

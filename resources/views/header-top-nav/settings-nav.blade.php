@@ -10,7 +10,7 @@ $menuIds = $menus->pluck('menu_id')->toArray(); // Get all menu IDs
 $moreMenus = $menus->where('more_link', 'yes'); // Get "More" menu items
 @endphp
 
-<div class="col-7 text-end px-4">
+
     <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
         @foreach ($menus as $menu)
         @php
@@ -65,5 +65,4 @@ $moreMenus = $menus->where('more_link', 'yes'); // Get "More" menu items
             </div>
         </div>
         @endif
-    </div>
 </div>

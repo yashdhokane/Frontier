@@ -12,7 +12,7 @@
     <!-- -------------------------------------------------------------- -->
     <div class="page-breadcrumb">
         <div class="row">
-            <div class="col-5 align-self-center">
+            <div class="col-4 align-self-center">
                 <h4 class="page-title">Tax</h4>
                 <div class="d-flex align-items-center">
                     <nav aria-label="breadcrumb">
@@ -22,9 +22,12 @@
                         </ol>
                     </nav>
                 </div>
+            </div> 
+            <div class="col-8 text-end px-4">
+              @include('header-top-nav.settings-nav') 
             </div>
-            @include('header-top-nav.settings-nav')
         </div>
+    </div>
         <!-- -------------------------------------------------------------- -->
         <!-- End Bread crumb and right sidebar toggle -->
         <!-- -------------------------------------------------------------- -->

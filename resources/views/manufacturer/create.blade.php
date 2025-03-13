@@ -15,18 +15,21 @@
 
     <div class="page-breadcrumb ms-2">
         <div class="row">
-            <div class="col-5 align-self-center">
+            <div class="col-4 align-self-center">
                 <h4 class="page-title"> Add Manufacture </h4>
                 <div class="d-flex align-items-center">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('buisnessprofile.index') }}">Settings</a></li>
+                            <li class="breadcrumb-item"><a href="#">Asset Management</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('manufacturer.index') }}">Manufacturer </a></li>
                             <li class="breadcrumb-item active" aria-current="page">Add Manufacture</li>
                         </ol>
                     </nav>
                 </div>
             </div>
-            @include('header-top-nav.asset-nav')
+             <div class="col-8 text-end px-4">
+                @include('header-top-nav.asset-nav')
+           </div>
         </div>
     </div>
     <!-- -------------------------------------------------------------- -->
