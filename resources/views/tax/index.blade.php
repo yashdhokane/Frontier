@@ -70,7 +70,7 @@
                                             <td>{{ $state->state_tax ?? null }}</td>
                                             <td>{{ $convertDateToTimezone($state->created_at) }}</td>
                                             <td>
-                                                <button type="button" class="btn btn-primary edit-btn"
+                                                <button type="button" class="btn btn-sm btn-secondary edit-btn"
                                                     data-state-id="{{ $state->state_id }}" data-bs-toggle="modal"
                                                     data-bs-target="#samedata-modal2">
                                                     Edit

@@ -97,7 +97,7 @@
                 </div>
             </div>
             <div class="col-md-1 ps-1 align-self-center mt-3">
-                <button class="btn btn-primary badge" id="command-search"> <i class="fas fa-search"></i></button>
+                <button class="btn btn-secondary badge" id="command-search"> <i class="fas fa-search"></i></button>
             </div>
             <div class="col-md-5">
                 <div class="flex-column align-items-baseline">
@@ -121,7 +121,7 @@
             </div>
 
             <div class="mt-2 float-end">
-                <button type="button" class="btn btn-primary me-5" id="save-filters-modal">Save</button>
+                <button type="button" class="btn btn-secondary me-5" id="save-filters-modal">Save</button>
             </div>
 
         </div>

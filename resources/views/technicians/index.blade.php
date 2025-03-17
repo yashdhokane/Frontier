@@ -4,56 +4,56 @@
         @endif
 
 
-      <!--  <div class="page-breadcrumb ms-2">
-            <div class="row">
-                <div class="col-6 align-self-center">
+        <!--  <div class="page-breadcrumb ms-2">
+                                            <div class="row">
+                                                <div class="col-6 align-self-center">
+                                                    <h4 class="page-title">Technicians</h4>
+                                                </div>
+                                                <div class="col-6 align-self-center">
+                                                    <div class="d-flex no-block justify-content-end align-items-center">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> -->
+        <div class="page-breadcrumb">
+            <div class="row withoutthreedottest">
+                <div class="col-5 align-self-center">
                     <h4 class="page-title">Technicians</h4>
+                    <div class="d-flex align-items-center">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="#.">Technician Management</a></li>
+                                <li class="breadcrumb-item"><a href="#">Technicians</a></li>
+                            </ol>
+                        </nav>
+                    </div>
                 </div>
-                <div class="col-6 align-self-center">
-                    <div class="d-flex no-block justify-content-end align-items-center">
+                <div class="col-7 text-end px-4">
+                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                        <a href="{{ route('technicians.create') }}"
+                            class="btn {{ Route::currentRouteName() === 'technicians.create' ? 'btn-info' : 'btn-secondary text-white' }}">
+                            <i class="fas fa-user-plus"></i> Add New
+                        </a>
+
+                        @if (request()->routeIs('technicians.index'))
+                            <a href="{{ route('technicians.status', ['status' => 'deactive']) }}"
+                                class="btn {{ Route::currentRouteName() === 'technicians.status' ? 'btn-info' : 'btn-secondary text-white' }}">
+                                <i class="ri-user-unfollow-fill"></i> View Inactive
+                            </a>
+                        @elseif(request()->routeIs('technicians.status'))
+                            <a href="{{ route('technicians.index') }}"
+                                class="btn {{ Route::currentRouteName() === 'technicians.index' ? 'btn-info' : 'btn-secondary text-white' }}">
+                                <i class="ri-user-follow-line"></i> View Active
+                            </a>
+                        @endif
+
+                        <!-- <a href="#." id="filterButton" class="btn btn-secondary text-white">
+                                                    <i class="ri-filter-line"></i> Filters
+                                                </a> -->
                     </div>
                 </div>
             </div>
-        </div> -->
-        <div class="page-breadcrumb">
-    <div class="row withoutthreedottest">
-        <div class="col-5 align-self-center">
-            <h4 class="page-title">Technicians</h4>
-            <div class="d-flex align-items-center">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="#.">Technician Management</a></li>
-                        <li class="breadcrumb-item"><a href="#">Technicians</a></li>
-                    </ol>
-                </nav>
-            </div>
         </div>
-        <div class="col-7 text-end px-4">
-            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                <a href="{{ route('technicians.create') }}"
-                    class="btn {{ Route::currentRouteName() === 'technicians.create' ? 'btn-info' : 'btn-secondary text-white' }}">
-                    <i class="fas fa-user-plus"></i> Add New
-                </a>
-
-                @if (request()->routeIs('technicians.index'))
-                <a href="{{ route('technicians.status', ['status' => 'deactive']) }}"
-                    class="btn {{ Route::currentRouteName() === 'technicians.status' ? 'btn-info' : 'btn-secondary text-white' }}">
-                    <i class="ri-user-unfollow-fill"></i> View Inactive
-                </a>
-                @elseif(request()->routeIs('technicians.status'))
-                <a href="{{ route('technicians.index') }}"
-                    class="btn {{ Route::currentRouteName() === 'technicians.index' ? 'btn-info' : 'btn-secondary text-white' }}">
-                    <i class="ri-user-follow-line"></i> View Active
-                </a>
-                @endif
-
-               <!-- <a href="#." id="filterButton" class="btn btn-secondary text-white">
-                    <i class="ri-filter-line"></i> Filters
-                </a> -->
-            </div>
-        </div>
-    </div>
-</div>
 
 
         <div class="container-fluid pt-2">
@@ -62,8 +62,8 @@
             <!-- -------------------------------------------------------------- -->
             <div class="widget-content searchable-container list">
                 <!-- ---------------------
-                                                                                                                                                                                                                                                                                                            start Contact
-                                                                                                                                                                                                                                                                                                        ---------------- -->
+                                                                                                                                                                                                                                                                                                                                            start Contact
+                                                                                                                                                                                                                                                                                                                                        ---------------- -->
 
                 @if (Session::has('success'))
                     <div class="alert_wrap">
@@ -83,7 +83,7 @@
                 @endif
 
 
-
+                {{--
                 <div class="card card-body shadow withoutthreedottest" id="withoutthreedot">
                     <div class="row">
                         <div class="col-md-4 col-xl-2">
@@ -92,24 +92,24 @@
                                     placeholder="Search Technicians..." />
                             </form>
                         </div>
-                     <!--   <div
-                            class="col-md-8 col-xl-10 text-end d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
-                            <a href="{{ route('technicians.create') }}" id="" class="btn btn-secondary text-white">
-                                <i class="fas fa-user-plus"></i> Add New
-                            </a>
-                            @if (request()->routeIs('technicians.index'))
-                                <a href="{{ route('technicians.status', ['status' => 'deactive']) }}"
-                                    class="btn btn-secondary text-white">
-                                    <i class="ri-user-unfollow-fill"></i> View Inactive
-                                </a>
-                            @elseif(request()->routeIs('technicians.status'))
-                                <a href="{{ route('technicians.index') }}" class="btn btn-secondary text-white">
-                                    <i class="ri-user-follow-line"></i> View Active
-                                </a>
-                            @endif
-                        </div>  -->
+                        <!--   <div
+                                    class="col-md-8 col-xl-10 text-end d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
+                                    <a href="{{ route('technicians.create') }}" id="" class="btn btn-secondary text-white">
+                                        <i class="fas fa-user-plus"></i> Add New
+                                    </a>
+                                    @if (request()->routeIs('technicians.index'))
+                             <a href="{{ route('technicians.status', ['status' => 'deactive']) }}"
+                                            class="btn btn-secondary text-white">
+                                            <i class="ri-user-unfollow-fill"></i> View Inactive
+                                        </a>
+                                    @elseif(request()->routeIs('technicians.status'))
+                                    <a href="{{ route('technicians.index') }}" class="btn btn-secondary text-white">
+                                            <i class="ri-user-follow-line"></i> View Active
+                                        </a>
+                             @endif
+                                </div>  -->
                     </div>
-                </div>
+                </div> --}}
                 <div class="card threedottest" id="threedot" style="display: none;">
                     <div class="row card-body ">
 
@@ -171,14 +171,14 @@
 
 
                 <!-- ---------------------
-                                                                                                                                                                                                                                                                                                            end Contact
-                                                                                                                                                                                                                                                                                                        ---------------- -->
+                                                                                                                                                                                                                                                                                                                                            end Contact
+                                                                                                                                                                                                                                                                                                                                        ---------------- -->
                 <!-- Modal style="overflow-x: auto;" -->
 
 
                 <div class="card card-body shadow">
                     <div class="table-responsive table-custom">
-                        <table id="zero_config" class="table table-hover table-striped search-table v-middle "
+                        <table id="multi_control" class="table table-hover table-striped search-table v-middle "
                             data-paging="true">
                             <thead class="header-item">
 
@@ -250,15 +250,16 @@
                                                 {{ $user->area_name }}
                                             @endif
                                         </td>
-                                        <td><span
-                                                class="ucfirst mb-1 badge @if ($user->status == 'deactive') { bg-danger } @else { bg-success } @endif">{{ $user->status }}</span>
+                                        <td>
+                                            <span class="btn btn-secondary btn-sm">{{ $user->status }}</span>
                                         </td>
+
 
                                         <td class="action footable-last-visible" style="display: table-cell;">
 
                                             <div class="btn-group">
                                                 <button type="button"
-                                                    class="btn btn-light-primary text-primary dropdown-toggle"
+                                                    class="btn btn-secondary text-white  dropdown-toggle"
                                                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="ri-settings-3-fill align-middle fs-5"></i>
                                                 </button>
@@ -267,8 +268,8 @@
                                                         href="{{ route('technicians.show', $user->id) }}"><i
                                                             data-feather="eye" class="feather-sm me-2"></i> View</a>
                                                     <!-- <a class="dropdown-item"
-                                                                                                                                                                                                                                                                                                                                    href="{{ route('technicians.edit', $user->id) }}"><i
-                                                                                                                                                                                                                                                                                                                                        data-feather="edit-2" class="feather-sm me-2"></i> Edit</a> -->
+                                                                                                                                                                                                                                                                                                                                                                    href="{{ route('technicians.edit', $user->id) }}"><i
+                                                                                                                                                                                                                                                                                                                                                                        data-feather="edit-2" class="feather-sm me-2"></i> Edit</a> -->
                                                     <a class="dropdown-item activity" href="javascript:void(0)"
                                                         data-bs-toggle="modal" data-bs-target="#commentModal1"
                                                         onclick="setUserId({{ $user->id }})">
@@ -282,9 +283,9 @@
                                                         Comments
                                                     </a>
                                                     <!-- <a class="dropdown-item" href="{{ route('permissionindex') }}">
-                                                                                                                                                                                                                                                                                                                                    <i data-feather="user-check" class="feather-sm me-2"></i>
-                                                                                                                                                                                                                                                                                                                                    Permission
-                                                                                                                                                                                                                                                                                                                                </a> -->
+                                                                                                                                                                                                                                                                                                                                                                    <i data-feather="user-check" class="feather-sm me-2"></i>
+                                                                                                                                                                                                                                                                                                                                                                    Permission
+                                                                                                                                                                                                                                                                                                                                                                </a> -->
 
                                                 </div>
                                             </div>
@@ -398,22 +399,23 @@
         @section('script')
             <script>
                 $(document).ready(function() {
-                    if ($.fn.DataTable.isDataTable('#zero_config')) {
-                        $('#zero_config').DataTable().destroy();
+                    if ($.fn.DataTable.isDataTable('#multi_control')) {
+                        $('#multi_control').DataTable().destroy();
                     }
 
-                    $('#zero_config').DataTable({
-                        "order": [
-                            [0, "desc"]
-                        ],
-                        "pageLength": 25,
+                    var table = $('#multi_control').DataTable({
+                        "dom": '<"top"f>rt<"bottom d-flex justify-content-between mt-4"lp><"clear">',
+                        "paging": true,
+                        "info": false,
+                        "pageLength": 50, // Set default pagination length to 50
+                        "language": {
+                            "search": "",
+                            "searchPlaceholder": "search"
+                        }
                     });
-                    var table = $('#zero_config').DataTable();
 
-                    // Apply search on input change
-                    $('#searchInput').on('keyup', function() {
-                        table.search(this.value).draw();
-                    });
+                    // Initialize DataTable
+                    var table = $('#multi_control').DataTable();
 
                     $('#searchInput1').on('keyup', function() {
                         table.search(this.value).draw();

@@ -19,12 +19,14 @@
             </div>
             <div class="col-7 align-self-center">
                 <div class="d-flex no-block justify-content-end align-items-center">
-                  @include('header-top-nav.job-nav')
 
-
-                    <a href="#." id="filterButton" class="btn btn-sm btn-info">
+                    <a href="#." id="filterButton" class="btn  btn-secondary mx-2">
                         <i class="ri-filter-line"></i> Filters
                     </a>
+                    @include('header-top-nav.job-nav')
+
+
+
                 </div>
             </div>
         </div>
@@ -121,7 +123,7 @@
             <!-- Add your table or content here -->
 
             <div class="col-12 card card-border shadow">
-                <div class="card-body">
+                <div class="card-body table-responsive">
 
                     <table id="file_export" class="table table-hover table-striped">
                         <thead>
@@ -159,7 +161,7 @@
                                     <td>
                                         <div class="btn-group">
                                             <button type="button"
-                                                class="btn btn-light-primary text-primary dropdown-toggle"
+                                                class="btn btn-secondary text-white dropdown-toggle"
                                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 <i class="ri-settings-3-fill align-middle fs-5"></i>
                                             </button>
@@ -205,7 +207,7 @@
                                                     <div class="mb-3">
                                                         <label for="comment">Comment:</label>
                                                         <textarea class="form-control" id="comment" name="payment_note" rows="3">
-                                                                            
+
                                                                         </textarea>
                                                     </div>
                                                 </div>
@@ -235,7 +237,7 @@
 
 
     <!-- start - This is for export functionality only -->
-    
+
 
     <script>
         //=============================================//
@@ -253,7 +255,8 @@
                 "info": false,
                 "pageLength": 50, // Set default pagination length to 50
                 "language": {
-                    "search": "Type to search:"
+                     "search": "",
+                        "searchPlaceholder": "search"
                 }
             });
 

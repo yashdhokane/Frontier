@@ -284,11 +284,10 @@
                                     <br />
                                 </div>
                             </td>
-                            <td>
-                                <span
-                                    class="mb-1 ucfirst badge @if ($user->status == 'deactive') { bg-danger } @else { bg-success } @endif">{{
-                                    $user->status }}</span>
-                            </td>
+                           <td>
+    <span class="btn btn-secondary btn-sm">{{ $user->status }}</span>
+</td>
+
                             <td>
                                 <div style="display:flex;" data-bs-toggle="modal" data-bs-target="#commentModal2"
                                     onclick="setUserIdModal2({{ $user->id }}, '{{ $user->is_updated }}')">
@@ -306,7 +305,7 @@
                             </td>
                             <td class="action footable-last-visible" style="display: table-cell;">
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-light-primary text-primary dropdown-toggle"
+                                    <button type="button" class="btn btn-secondary text-white dropdown-toggle"
                                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="ri-settings-3-fill align-middle fs-5"></i>
                                     </button>

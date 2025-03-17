@@ -85,7 +85,7 @@
                 </div>
                 <div class="col-md-3 col-xl-2 justify-content-md-end">
                     @if ($displayEditButton)
-                    <button type="button" class="btn btn-xs waves-effect waves-light btn-sm btn-outline-info"
+                    <button type="button" class="btn btn-xs waves-effect waves-light btn-sm btn-secondary"
                         id="edit_hours">EDIT</button>
                     @php $displayEditButton = false; @endphp
                     @endif
@@ -165,7 +165,7 @@
                 </div>
                 <div class="col-md-3 col-xl-2 justify-content-md-end">
                     @if ($displayEditButtononline)
-                    <button type="button" class="btn btn-xs waves-effect waves-light btn-sm btn-outline-info"
+                    <button type="button" class="btn btn-xs waves-effect waves-light btn-sm btn-secondary"
                         id="edit_online">EDIT</button>
                     @php $displayEditButtononline = false; @endphp
                     @endif

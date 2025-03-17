@@ -61,14 +61,14 @@
                                         <td>{{ $tag->created_at->format('m-d-Y') }}</td>
                                         <td>{{ $convertDateToTimezone($tag->updated_at) }}</td>
                                         <td>
-                                            <button type="button" class="btn btn-primary btn-sm edit-btn"
+                                            <button type="button" class="btn btn-secondary btn-sm edit-btn"
                                                 data-bs-toggle="modal" data-bs-target="#samedata-modal2"
                                                 data-tag-id="{{ $tag->tag_id }}" data-tag-name="{{ $tag->tag_name }}">
                                                 <i class="fas fa-edit"></i>
                                             </button>
                                             <a href="{{ url('/delete/tags/' . $tag->tag_id) }}"
                                                 onclick="confirm('Are you sure you want to delete tag?')"><button
-                                                    type="button" class="btn btn-danger btn-sm delete-btn">
+                                                    type="button" class="btn btn-secondary btn-sm delete-btn">
                                                     <i class="fas fa-trash"></i>
                                                 </button></a>
                                         </td>
@@ -101,9 +101,9 @@
 
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-light-danger text-danger font-medium"
+                                <button type="button" class="btn btn-secondary font-medium"
                                     data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-success">Update</button>
+                                <button type="submit" class="btn btn-secondary">Update</button>
                             </div>
                         </form>
                     </div>
@@ -159,9 +159,9 @@
                                 </div>
 
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-light-danger text-danger font-medium"
+                                    <button type="button" class="btn btn-secondary font-medium"
                                         data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-success">Save</button>
+                                    <button type="submit" class="btn btn-secondary">Save</button>
                                 </div>
 
                             </form>

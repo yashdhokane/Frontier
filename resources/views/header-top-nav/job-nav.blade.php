@@ -1,57 +1,59 @@
 @php
-// Fetch all menus where parent_id = 8
-$menus = DB::table('nav_menus_right_top')->where('parent_id', 8)->orderBy('order_by')->get();
+    // Fetch all menus where parent_id = 8
+    $menus = DB::table('nav_menus_right_top')->where('parent_id', 8)->orderBy('order_by')->get();
 
-// Fetch all possible submenus where parent_id exists in the menu IDs
-$subMenus = DB::table('nav_menus_right_top')->whereIn('parent_id',
-$menus->pluck('menu_id'))->orderBy('order_by')->get();
+    // Fetch all possible submenus where parent_id exists in the menu IDs
+    $subMenus = DB::table('nav_menus_right_top')
+        ->whereIn('parent_id', $menus->pluck('menu_id'))
+        ->orderBy('order_by')
+        ->get();
 
-$menuIds = $menus->pluck('menu_id')->toArray(); // Get all menu IDs
-$moreMenus = $menus->where('more_link', 'yes'); // Get "More" menu items
+    $menuIds = $menus->pluck('menu_id')->toArray(); // Get all menu IDs
+    $moreMenus = $menus->where('more_link', 'yes'); // Get "More" menu items
 @endphp
 
 
-    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-        @foreach ($menus as $menu)
+<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+    @foreach ($menus as $menu)
         @php
-        // Get submenus for this menu item
-        $childMenus = $subMenus->where('parent_id', $menu->menu_id);
-        $hasSubMenu = $childMenus->isNotEmpty();
+            // Get submenus for this menu item
+            $childMenus = $subMenus->where('parent_id', $menu->menu_id);
+            $hasSubMenu = $childMenus->isNotEmpty();
         @endphp
 
         @if ($menu->more_link === 'no')
-        <div class="btn-group">
-        
-                                         
-                                        
-            <a href="{{ route($menu->menu_link) }}"
-                class="btn {{ Route::currentRouteName() === $menu->menu_link ? 'btn-info text-white' : 'btn-secondary text-white' }}  @if ($hasSubMenu) pe-0 @endif">
-                {{ $menu->menu_name }}
+            <div class="btn-group">
 
 
-            </a>
-            @if ($hasSubMenu)
-            <button
-                class="btn {{ Route::currentRouteName() === $menu->menu_link ? 'btn-info' : 'btn-secondary text-white' }} dropdown-toggle p-0 px-1"
-                data-bs-toggle="dropdown" aria-expanded="false">
-            </button>
 
-            <ul class="dropdown-menu">
-                @foreach ($childMenus as $subMenu)
-                <li>
-                    <a class="dropdown-item {{ Route::currentRouteName() === $subMenu->menu_link ? ' text-grey' : 'text-info' }}"
-                        href="{{ route($subMenu->menu_link) }}">
-                        {{ $subMenu->menu_name }}
-                    </a>
-                </li>
-                @endforeach
-            </ul>
-            @endif
-        </div>
+                <a href="{{ route($menu->menu_link) }}"
+                    class="btn {{ Route::currentRouteName() === $menu->menu_link ? 'btn-info text-white' : 'btn-secondary text-white' }}  @if ($hasSubMenu) pe-0 @endif">
+                    {{ $menu->menu_name }}
+
+
+                </a>
+                @if ($hasSubMenu)
+                    <button
+                        class="btn {{ Route::currentRouteName() === $menu->menu_link ? 'btn-info' : 'btn-secondary text-white' }} dropdown-toggle p-0 px-1"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                    </button>
+
+                    <ul class="dropdown-menu">
+                        @foreach ($childMenus as $subMenu)
+                            <li>
+                                <a class="dropdown-item {{ Route::currentRouteName() === $subMenu->menu_link ? ' text-grey' : 'text-info' }}"
+                                    href="{{ route($subMenu->menu_link) }}">
+                                    {{ $subMenu->menu_name }}
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+            </div>
         @endif
-        @endforeach
+    @endforeach
 
-        @if ($moreMenus->isNotEmpty())
+    @if ($moreMenus->isNotEmpty())
         <div class="btn-group" role="group">
             <button id="btnGroupDrop1" type="button"
                 class="btn dropdown-toggle {{ in_array(Route::currentRouteName(), $moreMenus->pluck('menu_link')->toArray()) ? 'btn-info text-white' : 'btn-secondary text-white' }}"
@@ -60,18 +62,16 @@ $moreMenus = $menus->where('more_link', 'yes'); // Get "More" menu items
             </button>
             <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                 @foreach ($moreMenus as $menu)
-                <a class="dropdown-item {{ Route::currentRouteName() === $menu->menu_link ? ' text-grey' : 'text-info' }}"
-                    href="{{ route($menu->menu_link) }}">
-                    {{ $menu->menu_name }}
-                </a>
+                    <a class="dropdown-item {{ Route::currentRouteName() === $menu->menu_link ? ' text-grey' : 'text-info' }}"
+                        href="{{ route($menu->menu_link) }}">
+                        {{ $menu->menu_name }}
+                    </a>
                 @endforeach
             </div>
-             
+
         </div>
 
-        @endif
+    @endif
 
-          <a href="#." id="filterButton" class="btn btn-secondary text-white">
-        <i class="ri-filter-line"></i> Filters
-    </a>
+
 </div>

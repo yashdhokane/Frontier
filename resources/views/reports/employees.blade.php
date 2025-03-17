@@ -25,7 +25,7 @@
 				</div>
 			</div>
         <!-- -------------------------------------------------------------- -->
-     <div class="row justify-content-center align-items-center g-2 col-md-12">
+     <div class="row justify-content-left align-items-left g-2 col-md-12 mx-3">
    
     <div class="col-auto">
         <select id="dataFilter" class="form-control">

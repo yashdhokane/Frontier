@@ -42,7 +42,7 @@
                 </div>
                 <div class="col-md-3 col-xl-2 justify-content-md-end">
                     <button type="button" onclick="toggleForm()"
-                        class="btn btn-xs waves-effect waves-light btn-outline-info">EDIT</button>
+                        class="btn btn-sm waves-effect waves-light btn-secondary">EDIT</button>
                 </div>
 
                 @foreach ($businessProfiles as $businessProfile)
@@ -160,7 +160,7 @@
                     </div>
                     <div class="col-md-3 col-xl-2 justify-content-md-end">
                         <button type="button" onclick="companydescription()"
-                            class="btn btn-xs waves-effect waves-light btn-outline-info">EDIT</button>
+                            class="btn btn-sm waves-effect waves-light btn-secondary">EDIT</button>
                     </div>
 
                     <div>
@@ -204,7 +204,7 @@
                             </div>
                             <div class="col-md-3 col-xl-2 justify-content-md-end">
                                 <button type="button" onclick="messageondocs()"
-                                    class="btn btn-xs waves-effect waves-light btn-outline-info">EDIT</button>
+                                    class="btn btn-sm waves-effect waves-light btn-secondary">EDIT</button>
                             </div>
                         </div>
                         <div id="businessInfo-two">
@@ -241,7 +241,7 @@
                             </div>
                             <div class="col-md-3 col-xl-2 justify-content-md-end">
                                 <button type="button" onclick="termsandcondition()"
-                                    class="btn btn-xs waves-effect waves-light btn-outline-info">EDIT</button>
+                                    class="btn btn-sm waves-effect waves-light btn-secondary">EDIT</button>
                             </div>
                         </div>
                         <div id="businessInfo-three">

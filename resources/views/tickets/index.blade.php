@@ -16,28 +16,32 @@
             white-space: normal;
         }
     </style>
-   
 
-<div class="page-breadcrumb">
-    <div class="row withoutthreedottest">
-         <div class="col-5 align-self-center">
-            <h4 class="page-title">Jobs</h4>
-            <div class="d-flex align-items-center">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Job</li>
-                    </ol>
-                </nav>
+
+    <div class="page-breadcrumb">
+        <div class="row withoutthreedottest">
+            <div class="col-5 align-self-center">
+                <h4 class="page-title">Jobs</h4>
+                <div class="d-flex align-items-center">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Job</li>
+                        </ol>
+                    </nav>
+                </div>
             </div>
+            <div class="col-7 text-end px-4">
+                <a href="#." id="filterButton" class="btn btn-secondary  mx-2 ">
+                    <i class="ri-filter-line"></i> Filters
+                </a>
+
+                @include('header-top-nav.job-nav')
+            </div>
+
         </div>
-         <div class="col-7 text-end px-4">
-        @include('header-top-nav.job-nav')
     </div>
-       
-    </div>
-</div>
- <div class="container-fluid">
+    <div class="container-fluid">
         <!-- -------------------------------------------------------------- -->
         <!-- Start Page Content -->
         <!-- -------------------------------------------------------------- -->
@@ -45,47 +49,47 @@
         <div class="row">
             <div class="col-12">
                 <!--
-                        <div class="card withoutthreedottest">
-                            <div class="card-body">
-                                <div class="row row-no-margin mt-4">
-                                    <div class="col-md-6 col-lg-3 col-xlg-3">
-                                        <div class="card card-hover">
-                                            <div class="p-2 rounded bg-light-primary text-center">
-                                                <h1 class="fw-light text-primary">{{ $totalCalls }}</h1>
-                                                <h6 class="text-primary">Total Calls</h6>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-3 col-xlg-3">
-                                        <div class="card card-hover">
-                                            <div class="p-2 rounded bg-light-warning text-center">
-                                                <h1 class="fw-light text-warning">{{ $inProgress }}</h1>
-                                                <h6 class="text-warning">In Progress</h6>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-3 col-xlg-3">
-                                        <div class="card card-hover">
-                                            <div class="p-2 rounded bg-light-success text-center">
-                                                <h1 class="fw-light text-success">{{ $opened }}</h1>
-                                                <h6 class="text-success">Opened</h6>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-lg-3 col-xlg-3">
-                                        <div class="card card-hover">
-                                            <div class="p-2 rounded bg-light-danger text-center">
-                                                <h1 class="fw-light text-danger">{{ $complete }}</h1>
-                                                <h6 class="text-danger">Closed</h6>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>  -->
+                                                                                                                    <div class="card withoutthreedottest">
+                                                                                                                        <div class="card-body">
+                                                                                                                            <div class="row row-no-margin mt-4">
+                                                                                                                                <div class="col-md-6 col-lg-3 col-xlg-3">
+                                                                                                                                    <div class="card card-hover">
+                                                                                                                                        <div class="p-2 rounded bg-light-primary text-center">
+                                                                                                                                            <h1 class="fw-light text-primary">{{ $totalCalls }}</h1>
+                                                                                                                                            <h6 class="text-primary">Total Calls</h6>
+                                                                                                                                        </div>
+                                                                                                                                    </div>
+                                                                                                                                </div>
+                                                                                                                                <div class="col-md-6 col-lg-3 col-xlg-3">
+                                                                                                                                    <div class="card card-hover">
+                                                                                                                                        <div class="p-2 rounded bg-light-warning text-center">
+                                                                                                                                            <h1 class="fw-light text-warning">{{ $inProgress }}</h1>
+                                                                                                                                            <h6 class="text-warning">In Progress</h6>
+                                                                                                                                        </div>
+                                                                                                                                    </div>
+                                                                                                                                </div>
+                                                                                                                                <div class="col-md-6 col-lg-3 col-xlg-3">
+                                                                                                                                    <div class="card card-hover">
+                                                                                                                                        <div class="p-2 rounded bg-light-success text-center">
+                                                                                                                                            <h1 class="fw-light text-success">{{ $opened }}</h1>
+                                                                                                                                            <h6 class="text-success">Opened</h6>
+                                                                                                                                        </div>
+                                                                                                                                    </div>
+                                                                                                                                </div>
+                                                                                                                                <div class="col-md-6 col-lg-3 col-xlg-3">
+                                                                                                                                    <div class="card card-hover">
+                                                                                                                                        <div class="p-2 rounded bg-light-danger text-center">
+                                                                                                                                            <h1 class="fw-light text-danger">{{ $complete }}</h1>
+                                                                                                                                            <h6 class="text-danger">Closed</h6>
+                                                                                                                                        </div>
+                                                                                                                                    </div>
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                    </div>  -->
 
 
-                <div class="card threedottest" id="threedot">
+                {{-- <div class="card threedottest" id="threedot">
                     <div class="row card-body ">
 
                         <div class="col-6 align-self-center">
@@ -123,7 +127,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
 
                 <div id="filterDiv" class="card card-body shadow" style="display: none;">
 
@@ -211,7 +215,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive table-custom">
-                            <table id="zero_config" class="table table-hover table-striped table-bordered text-nowrap"
+                            <table id="multi_control" class="table table-striped table-bordered display text-nowrap"
                                 data-paging="true" data-paging-size="7">
                                 <div class="d-flex flex-wrap">
 
@@ -234,7 +238,7 @@
                                                 <td>
                                                     <a href="{{ route('tickets.show', $ticket->id) }}"
                                                         class="fw-bold link"><span
-                                                            class="mb-1 badge bg-primary">{{ $ticket->id }}</span></a>
+                                                            class="mb-1 badge bg-secondary">{{ $ticket->id }}</span></a>
                                                 </td>
                                                 <td class="job-details-column">
                                                     <div class="text-wrap2 d-flex">
@@ -290,7 +294,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <span><a class="btn btn-success"
+                                                    <span><a class="btn btn-secondary btn-sm"
                                                             href="{{ route('tickets.show', $ticket->id) }}">View</a></span>
                                                     <span style="display:none;"><a class="btn btn-primary"
                                                             href="{{ route('tickets.edit', $ticket->id) }}">Edit</a></span>
@@ -300,7 +304,8 @@
                                                             style="display: inline;">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                                            <button type="submit"
+                                                                class="btn btn-secondary btn-sm">Delete</button>
                                                         </form>
                                                     </span>
                                                 </td>
@@ -318,23 +323,23 @@
     @section('script')
         <script>
             $(document).ready(function() {
-                if ($.fn.DataTable.isDataTable('#zero_config')) {
-                    $('#zero_config').DataTable().destroy();
+                if ($.fn.DataTable.isDataTable('#multi_control')) {
+                    $('#multi_control').DataTable().destroy();
                 }
 
-                $('#zero_config').DataTable({
-                    "order": [
-                        [0, "desc"]
-                    ],
-                    "pageLength": 25,
+                var table = $('#multi_control').DataTable({
+                    "dom": '<"top"f>rt<"bottom d-flex justify-content-between mt-4"lp><"clear">',
+                    "paging": true,
+                    "info": false,
+                    "pageLength": 50, // Set default pagination length to 50
+                    "language": {
+                        "search": "",
+                        "searchPlaceholder": "search"
+                    }
                 });
 
-                $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass(
-                    'btn btn-cyan text-white me-1'
-                );
-
                 // Initialize DataTable
-                var table = $('#zero_config').DataTable();
+                var table = $('#multi_control').DataTable();
 
                 // Month filtering
                 $('#month-filter').on('change', function() {

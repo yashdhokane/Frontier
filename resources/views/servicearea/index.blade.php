@@ -157,9 +157,9 @@
                         <h5 class="card-title uppercase text-info">{{ $item->area_name ?? null }}</h5>
                         <p class="card-text mb-2">{{ $item->area_description ?? null }}</p>
                         <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#service-area"
-                            class="btn btn-xs btn-primary serviceareaedit" id="{{ $item->area_id }}">Edit</a>
+                            class="btn btn-sm btn-secondary serviceareaedit" id="{{ $item->area_id }}">Edit</a>
                         <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#service-area-view"
-                            class="btn btn-xs btn-primary serviceareaview mx-2" id="{{ $item->area_id }}">View</a>
+                            class="btn btn-sm btn-secondary serviceareaview mx-2" id="{{ $item->area_id }}">View</a>
                     </div>
 
                 </div>
@@ -208,7 +208,7 @@
                                     <input type="text" class="form-control" name="area_longitude" id="area_longitude"
                                         required>
                                 </div>
-                                <button type="button" id="submit-service-area" class="btn btn-primary">Save</button>
+                                <button type="button" id="submit-service-area" class="btn btn-secondary">Save</button>
                             </form>
                         </div>
                     </div>
@@ -347,8 +347,8 @@
                                 <div class="card-bodyX mx-3 mb-3">
                                     <h5 class="card-title uppercase text-info">${response.data.area_name}</h5>
                                     <p class="card-text mb-2">${response.data.area_description}</p>
-                                    <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#service-area" class="btn btn-xs btn-primary serviceareaedit" id="${response.data.area_id}">Edit</a>
-                                    <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#service-area-view" class="btn btn-xs btn-primary serviceareaview mx-2" id="${response.data.area_id}">View</a>
+                                    <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#service-area" class="btn btn-sm btn-secondary serviceareaedit" id="${response.data.area_id}">Edit</a>
+                                    <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#service-area-view" class="btn btn-sm btn-secondary serviceareaview mx-2" id="${response.data.area_id}">View</a>
                                 </div>
                             </div>
                         </div>

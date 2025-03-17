@@ -61,7 +61,7 @@
                                         <td>{{ $leadSource->created_at->format('m-d-Y') }}</td>
                                         <td>{{ $convertDateToTimezone($leadSource->updated_at) }}</td>
                                         <td>
-                                            <button type="button" class="btn btn-primary btn-sm edit-btn"
+                                            <button type="button" class="btn btn-secondary btn-sm edit-btn"
                                                 data-bs-toggle="modal" data-bs-target="#samedata-modal2"
                                                 data-lead-source-id="{{ $leadSource->source_id }}"
                                                 data-lead-source-name="{{ $leadSource->source_name }}">
@@ -69,7 +69,7 @@
                                             </button>
                                             <a href="{{ url('delete/leadsource/' . $leadSource->source_id) }}"
                                                 onclick="confirm('Are you sure you want to delete Online Booking?')"><button
-                                                    type="button" class="btn btn-danger btn-sm delete-btn">
+                                                    type="button" class="btn btn-secondary btn-sm delete-btn">
                                                     <i class="fas fa-trash"></i>
                                                 </button></a>
                                         </td>
@@ -103,9 +103,9 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-light-danger text-danger font-medium"
+                                <button type="button" class="btn btn-secondary font-medium"
                                     data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-success">Update</button>
+                                <button type="submit" class="btn btn-secondary">Update</button>
                             </div>
                         </form>
                     </div>
@@ -155,10 +155,10 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-light-danger text-danger font-medium"
+                                    <button type="button" class="btn btn-secondary font-medium"
                                         data-bs-dismiss="modal">Close</button>
                                     <!-- <button type="submit" class="btn btn-success">Save</button> -->
-                                    <button type="submit" class="btn btn-success">Save</button>
+                                    <button type="submit" class="btn btn-secondary">Save</button>
                                 </div>
                             </form>
                         </div>

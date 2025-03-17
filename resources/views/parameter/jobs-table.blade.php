@@ -51,7 +51,7 @@
         <tr>
             <td>
                 <a href="{{ route('tickets.show', $ticket->id) }}" class="fw-bold link"><span
-                        class="mb-1 badge bg-primary">{{ $ticket->id }}</span></a>
+                        class="mb-1 badge bg-secondary">{{ $ticket->id }}</span></a>
             </td>
             <td class="job-details-column">
                 <div class="text-wrap2 d-flex">

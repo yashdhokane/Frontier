@@ -10,7 +10,7 @@
         }
     </style>
 
-     <div class="page-breadcrumb">
+    <div class="page-breadcrumb">
         <div class="row">
             <div class="col-5 align-self-center">
                 <h4 class="page-title">Events</h4>
@@ -25,16 +25,19 @@
             </div>
             <div class="col-7 align-self-center">
                 <div class="d-flex no-block justify-content-end align-items-center">
-        @include('header-top-nav.job-nav')
+                        <a href="#." id="filterButton" class="btn btn-secondary  mx-2 ">
+                    <i class="ri-filter-line"></i> Filters
+                </a>
+                    @include('header-top-nav.job-nav')
 
 
-                   
+
                 </div>
             </div>
         </div>
 
     </div>
-    
+
 
     <div class="container-fluid pt-2">
         <!-- -------------------------------------------------------------- -->
@@ -160,14 +163,11 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-12">
-
-                    <div class="card">
-                        <div class="card-body">
-                            <table id="zero_config" class="table table-hover table-striped text-nowrap" data-paging="true"
-                                data-paging-size="7">
-
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive table-custom">
+                            <table id="multi_control" class="table table-striped table-bordered display text-nowrap">
+                                {{--
                                 <div class="col-md-12 row withoutthreedottest" style="margin-bottom:7px;">
                                     <div class="col-md-4">
                                         <div class="d-flex flex-column align-items-baseline">
@@ -232,7 +232,7 @@
                                         </div>
                                     </div>
 
-                                </div>
+                                </div> --}}
 
 
 
@@ -268,7 +268,7 @@
                                             <td class="action footable-last-visible" style="display: table-cell;">
                                                 <div class="btn-group">
                                                     <button type="button"
-                                                        class="btn btn-light-primary text-primary dropdown-toggle"
+                                                        class="btn btn-secondary text-white dropdown-toggle"
                                                         data-bs-toggle="dropdown" aria-haspopup="true"
                                                         aria-expanded="false">
                                                         <i class="ri-settings-3-fill align-middle fs-5"></i>
@@ -341,27 +341,25 @@
     </div>
     @section('script')
         <script>
-            $('#zero_config').DataTable();
-        </script>
-
-        <script>
             $(document).ready(function() {
 
-                $('#file_export').DataTable({
-                    "order": [
-                        [0, "desc"]
-                    ],
-                    "pageLength": 25,
-                    dom: 'Bfrtip',
-                    buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+                if ($.fn.DataTable.isDataTable('#multi_control')) {
+                    $('#multi_control').DataTable().destroy();
+                }
+
+                var table = $('#multi_control').DataTable({
+                    "dom": '<"top"f>rt<"bottom d-flex justify-content-between mt-4"lp><"clear">',
+                    "paging": true,
+                    "info": false,
+                    "pageLength": 50, // Set default pagination length to 50
+                    "language": {
+                        "search": "",
+                        "searchPlaceholder": "search"
+                    }
                 });
 
-                $('.buttons-copy, .buttons-csv, .buttons-print, .buttons-pdf, .buttons-excel').addClass(
-                    'btn btn-cyan text-white me-1'
-                );
-
                 // Initialize DataTable
-                var table = $('#zero_config').DataTable();
+                var table = $('#multi_control').DataTable();
 
                 // Month filtering
                 $('#month-filter').on('change', function() {

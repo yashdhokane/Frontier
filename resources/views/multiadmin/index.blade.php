@@ -1,27 +1,27 @@
 @extends('home')
 @section('content')
 
-   <div class="page-breadcrumb">
-    <div class="row withoutthreedottest">
-        <div class="col-6 align-self-center">
-            <h4 class="page-title">Admin</h4>
+    <div class="page-breadcrumb">
+        <div class="row withoutthreedottest">
+            <div class="col-6 align-self-center">
+                <h4 class="page-title">Admin</h4>
 
-             <div class="d-flex align-items-center">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="#.">Admin Management</a></li>
-                        <li class="breadcrumb-item"><a href="#">Admin</a></li>
-                    </ol>
-                </nav>
+                <div class="d-flex align-items-center">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#.">Admin Management</a></li>
+                            <li class="breadcrumb-item"><a href="#">Admin</a></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <div class="col-6 text-end px-4">
+                <a href="{{ route('multiadmin.create') }}" class="btn btn-secondary text-white">
+                    <i class="ri-user-add-line me-2"></i> Add Admin
+                </a>
             </div>
         </div>
-        <div class="col-6 text-end px-4">
-            <a href="{{ route('multiadmin.create') }}" class="btn btn-secondary text-white">
-                <i class="ri-user-add-line me-2"></i> Add Admin
-            </a>
-        </div>
     </div>
-</div>
 
     <!-- -------------------------------------------------------------- -->
     <!-- End Bread crumb and right sidebar toggle -->
@@ -55,9 +55,9 @@
         <!-- -------------------------------------------------------------- -->
         <div class="widget-content searchable-container list">
             <!-- ---------------------
-                                start Contact
-                            ---------------- -->
-            <div class="card card-body shadow">
+                                        start Contact
+                                    ---------------- -->
+            {{-- <div class="card card-body shadow">
                 <div class="row">
                     <div class="col-md-4 col-xl-2">
                         <form>
@@ -88,21 +88,21 @@
                                 <i data-feather="trash-2" class="feather-sm fill-white me-1 deletelink"></i>
                                 Delete All Row</a>
                         </div>
-                      <!--  <a href="{{ route('multiadmin.create') }}" id="" class="btn btn-info">
-                            <i data-feather="users" class="feather-sm fill-white me-1"> </i>
-                            Add Admin</a>  -->
+                        <!--  <a href="{{ route('multiadmin.create') }}" id="" class="btn btn-info">
+                                <i data-feather="users" class="feather-sm fill-white me-1"> </i>
+                                Add Admin</a>  -->
                     </div>
                 </div>
-            </div>
+            </div> --}}
             <!-- ---------------------
-                                end Contact
-                            ---------------- -->
+                                        end Contact
+                                    ---------------- -->
             <!-- Modal -->
 
 
             <div class="card card-body shadow">
                 <div class="table-responsive table-custom">
-                    <table id="zero_config" class="table table-hover table-striped search-table v-middle text-nowrap">
+                    <table id="multi_control" class="table table-hover table-striped search-table v-middle text-nowrap">
                         <thead class="header-item">
 
                             {{-- <th>
@@ -244,14 +244,15 @@
 
                                         </div>
                                     </td>
-                                    <td><span
-                                            class="mb-1 ucfirst badge @if ($user->status == 'deactive') { bg-danger } @else { bg-success } @endif">{{ $user->status }}</span>
-                                    </td>
+                                  <td>
+    <span class="btn btn-secondary btn-sm">{{ $user->status }}</span>
+</td>
+
                                     <td class="action footable-last-visible" style="display: table-cell;">
 
                                         <div class="btn-group">
                                             <button type="button"
-                                                class="btn btn-light-primary text-primary dropdown-toggle"
+                                                class="btn btn-secondary text-white dropdown-toggle"
                                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 <i class="ri-settings-3-fill align-middle fs-5"></i>
                                             </button>
@@ -260,7 +261,7 @@
                                                     href="{{ route('multiadmin.show', $user->id) }}"><i data-feather="eye"
                                                         class="feather-sm me-2"></i> View</a>
                                                 <!-- <a class="dropdown-item" href="{{ route('multiadmin.edit', $user->id) }}"><i
-                                                            data-feather="edit-2" class="feather-sm me-2"></i> Edit</a> -->
+                                                                    data-feather="edit-2" class="feather-sm me-2"></i> Edit</a> -->
                                                 <a class="dropdown-item activity" href="javascript:void(0)"
                                                     data-bs-toggle="modal" data-bs-target="#commentModal1"
                                                     onclick="setUserId({{ $user->id }})">
@@ -274,9 +275,9 @@
                                                     Comments
                                                 </a>
                                                 <!--   <a class="dropdown-item" href="{{ route('permissionindex') }}">
-                                                        <i data-feather="user-check" class="feather-sm me-2"></i>
-                                                        Permission
-                                                    </a> -->
+                                                                <i data-feather="user-check" class="feather-sm me-2"></i>
+                                                                Permission
+                                                            </a> -->
 
                                             </div>
                                         </div>
@@ -457,18 +458,23 @@
 @section('script')
     <script>
         $(document).ready(function() {
-            if ($.fn.DataTable.isDataTable('#zero_config')) {
-                $('#zero_config').DataTable().destroy();
+            if ($.fn.DataTable.isDataTable('#multi_control')) {
+                $('#multi_control').DataTable().destroy();
             }
 
-            $('#zero_config').DataTable({
-                "order": [
-                    [0, "desc"]
-                ],
-                "pageLength": 25,
+            var table = $('#multi_control').DataTable({
+                "dom": '<"top"f>rt<"bottom d-flex justify-content-between mt-4"lp><"clear">',
+                "paging": true,
+                "info": false,
+                "pageLength": 50, // Set default pagination length to 50
+                "language": {
+                    "search": "",
+                    "searchPlaceholder": "search"
+                }
             });
-            var table = $('#zero_config').DataTable();
 
+            // Initialize DataTable
+            var table = $('#multi_control').DataTable();
             // Apply search on input change
             $('#searchInput').on('keyup', function() {
                 table.search(this.value).draw();
