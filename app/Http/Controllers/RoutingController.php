@@ -172,7 +172,7 @@ class RoutingController extends Controller
         $routingJob = RoutingJob::whereDate('schedule_date_time', $startDate)->get();
         // dd($routingJob);
 
-        return view('jobrouting.index', compact('data', 'responseJson', 'tech', 'routingTriggers', 'location','routingJob'));
+        return view('jobrouting.index', compact('data', 'responseJson', 'tech', 'routingTriggers', 'location', 'routingJob'));
     }
 
     public function jobrouting_filter(Request $request)
@@ -418,7 +418,7 @@ class RoutingController extends Controller
         $jobIds = $request->jobIds;
         $callPerDay = $request->number_of_calls;
         $currentDate1 = \Carbon\Carbon::now($timezone_name);
-        
+
 
 
         $response = [];
@@ -431,7 +431,7 @@ class RoutingController extends Controller
                 ->whereDate('start_date_time', '>=', $inputDate)
                 ->orderBy('start_date_time', 'asc')
                 ->get();
-            
+
             $technicians = $jobs->pluck('technician_id')->toArray();
 
             foreach ($technicians as $technicianId) {
@@ -460,7 +460,7 @@ class RoutingController extends Controller
                             $tech = User::find($jobpublish->technician_id);   // Get technician
                             $jobSchedule = Schedule::where('job_id', $job->job_id)->first(); // Get schedule
                             $customerAddress_Sms = CustomerUserAddress::where('user_id', $jobpublish->customer_id)->first();
-                            
+
                             // Prepare mail data
                             $mailData = [
                                 'job' => $jobpublish,
@@ -486,7 +486,7 @@ class RoutingController extends Controller
 
                                 // $customerPhone = $customer->mobile; // Assuming 'phone' field stores customer's number
                                 // $customerPhone = '+14155713129'; 
-                                $customerPhone = '+918830711935'; 
+                                $customerPhone = '+918830711935';
                                 // $customerPhone = '+917030467187'; 
                                 try {
                                     $responseCustomer = app('SmsService')->sendSms($customerMessage, $customerPhone);
@@ -504,7 +504,7 @@ class RoutingController extends Controller
 
                                 // $techPhone = $tech->mobile; // Assuming 'phone' field stores technician's number
                                 // $techPhone = '+14155713129'; 
-                                $techPhone = '+918830711935'; 
+                                $techPhone = '+918830711935';
                                 // $techPhone = '+917030467187'; 
                                 sleep(2);
                                 try {
@@ -513,11 +513,11 @@ class RoutingController extends Controller
                                     \Log::error("Error sending SMS to Technician: " . $e->getMessage());
                                 }
 
-                                
+
 
                             }
 
-                            
+
                             $recipant = 'thesachinraut@gmail.com';
 
                             // Send mail 'bawanesumit01@gmail.com'
@@ -531,10 +531,10 @@ class RoutingController extends Controller
 
                 if ($request->priority_routing == 'on') {
 
-                    
+
                     $priorityLevels = ['emergency', 'critical', 'high', 'medium', 'low'];
 
-                    $priorityBaseJobs = Schedule::with(['Jobassign', 'Jobassign.userAddress','JobModel'])
+                    $priorityBaseJobs = Schedule::with(['Jobassign', 'Jobassign.userAddress', 'JobModel'])
                         ->where('technician_id', $technicianId)
                         ->whereDate('start_date_time', '>=', $inputDate)
                         ->orderBy('start_date_time', 'asc')
@@ -546,7 +546,7 @@ class RoutingController extends Controller
 
                     // Extract sorted job IDs
                     $sortedJobIds = $priorityBaseJobs->pluck('job_id')->toArray();
-                        // dd($sortedJobIds);
+                    // dd($sortedJobIds);
 
                     $bestRouteJobIds = $sortedJobIds;
                     $shortRouteJobIds = $sortedJobIds;
@@ -555,40 +555,24 @@ class RoutingController extends Controller
                     $scheduleTimes = [$inputDate, $tomorrow, $dayAfterTomorrow];
                     $existingCount = $routingJobs->count();
 
-                        if ($existingCount > 0) {
-                            // Update existing entries
-                            foreach ($routingJobs as $index => $routingJob) {
-                                $routingJob->schedule_date_time = $scheduleTimes[$index];
-                                $routingJob->best_route = json_encode($bestRouteJobIds);
-                                $routingJob->short_route = json_encode($shortRouteJobIds);
-                                $routingJob->created_by = Auth()->user()->id;
-                                $routingJob->updated_by = Auth()->user()->id;
-                                $routingJob->cron_route_time = $request->auto_route_time;
-                                $routingJob->cron_re_route_time = $request->auto_rerouting_time;
-                                $routingJob->cron_publish_time = $request->auto_publishing_time;
-                                $routingJob->save();
-                            }
+                    if ($existingCount > 0) {
+                        // Update existing entries
+                        foreach ($routingJobs as $index => $routingJob) {
+                            $routingJob->schedule_date_time = $scheduleTimes[$index];
+                            $routingJob->best_route = json_encode($bestRouteJobIds);
+                            $routingJob->short_route = json_encode($shortRouteJobIds);
+                            $routingJob->created_by = Auth()->user()->id;
+                            $routingJob->updated_by = Auth()->user()->id;
+                            $routingJob->cron_route_time = $request->auto_route_time;
+                            $routingJob->cron_re_route_time = $request->auto_rerouting_time;
+                            $routingJob->cron_publish_time = $request->auto_publishing_time;
+                            $routingJob->save();
+                        }
 
-                            // Add new entries if needed
-                            if ($existingCount < 3) {
-                                $newScheduleTimes = array_slice($scheduleTimes, $existingCount);
-                                foreach ($newScheduleTimes as $scheduleTime) {
-                                    $routingJob = new RoutingJob(); // Create a new instance
-                                    $routingJob->user_id = $technicianId;
-                                    $routingJob->schedule_date_time = $scheduleTime;
-                                    $routingJob->best_route = json_encode($bestRouteJobIds);
-                                    $routingJob->short_route = json_encode($shortRouteJobIds);
-                                    $routingJob->created_by = Auth()->user()->id;
-                                    $routingJob->updated_by = Auth()->user()->id;
-                                    $routingJob->cron_route_time = $request->auto_route_time;
-                                    $routingJob->cron_re_route_time = $request->auto_rerouting_time;
-                                    $routingJob->cron_publish_time = $request->auto_publishing_time;
-                                    $routingJob->save(); // Save the new instance
-                                }
-                            }
-                        } else {
-                            // Create all 3 new entries
-                            foreach ($scheduleTimes as $scheduleTime) {
+                        // Add new entries if needed
+                        if ($existingCount < 3) {
+                            $newScheduleTimes = array_slice($scheduleTimes, $existingCount);
+                            foreach ($newScheduleTimes as $scheduleTime) {
                                 $routingJob = new RoutingJob(); // Create a new instance
                                 $routingJob->user_id = $technicianId;
                                 $routingJob->schedule_date_time = $scheduleTime;
@@ -602,7 +586,23 @@ class RoutingController extends Controller
                                 $routingJob->save(); // Save the new instance
                             }
                         }
-                    
+                    } else {
+                        // Create all 3 new entries
+                        foreach ($scheduleTimes as $scheduleTime) {
+                            $routingJob = new RoutingJob(); // Create a new instance
+                            $routingJob->user_id = $technicianId;
+                            $routingJob->schedule_date_time = $scheduleTime;
+                            $routingJob->best_route = json_encode($bestRouteJobIds);
+                            $routingJob->short_route = json_encode($shortRouteJobIds);
+                            $routingJob->created_by = Auth()->user()->id;
+                            $routingJob->updated_by = Auth()->user()->id;
+                            $routingJob->cron_route_time = $request->auto_route_time;
+                            $routingJob->cron_re_route_time = $request->auto_rerouting_time;
+                            $routingJob->cron_publish_time = $request->auto_publishing_time;
+                            $routingJob->save(); // Save the new instance
+                        }
+                    }
+
 
                 }
 
@@ -682,7 +682,7 @@ class RoutingController extends Controller
                                     // Move to the next day
                                     $nextDay = $newStartTime->copy()->addDay();
 
-                                    
+
 
                                     // Reset daily job count for the new day
                                     $dailyJobCount = 0;
@@ -803,8 +803,8 @@ class RoutingController extends Controller
 
                     foreach ($jobs as $job) {
                         $checkEvent = Schedule::whereDate('start_date_time', $date)
-                                            ->where('technician_id', $technicianId)
-                                            ->first();
+                            ->where('technician_id', $technicianId)
+                            ->first();
 
                         // Ensure that the event exists and is of type 'event'
                         if ($checkEvent && $checkEvent->schedule_type == 'event') {
@@ -862,15 +862,53 @@ class RoutingController extends Controller
                     continue;
                 }
 
-                 $jobs = Schedule::with(['Jobassign', 'Jobassign.userAddress'])
-                    ->where('technician_id', $technicianId)
-                    ->whereDate('start_date_time', '>=', $inputDate)
-                    ->orderBy('start_date_time', 'asc')
-                    ->get();
 
-          
+                if ($request->publish_jobs == 'on' && $request->p_open_job == 'on') {
 
-               
+                    $jobs = Schedule::with(['Jobassign', 'Jobassign.userAddress', 'JobModel'])
+                        ->where('technician_id', $technicianId)
+                        ->whereHas('JobModel', function ($query) {
+                            $query->where('status', 'open');
+                        })
+                        ->orderBy('start_date_time', 'asc')
+                        ->get();
+
+
+
+                } else if ($request->publish_jobs == 'on') {
+
+                    $jobs = Schedule::with(['Jobassign', 'Jobassign.userAddress', 'JobModel'])
+                        ->where('technician_id', $technicianId)
+                        ->whereDate('start_date_time', '>=', $inputDate)
+                        ->whereHas('JobModel', function ($query) {
+                            $query->where('status', 'open');
+                        })
+                        ->orderBy('start_date_time', 'asc')
+                        ->get();
+
+                } else if ($request->p_open_job == 'on') {
+
+                    $jobs = Schedule::with(['Jobassign', 'Jobassign.userAddress', 'JobModel'])
+                        ->where('technician_id', $technicianId)
+                        ->whereHas('JobModel', function ($query) {
+                            $query->where('status', 'open');
+                        })
+                        ->orderBy('start_date_time', 'asc')
+                        ->get();
+
+                } else {
+
+                    $jobs = Schedule::with(['Jobassign', 'Jobassign.userAddress', 'JobModel'])
+                        ->where('technician_id', $technicianId)
+                        ->whereDate('start_date_time', '>=', $inputDate)
+                        ->whereHas('JobModel', function ($query) {
+                            $query->where('is_published', 'no');
+                        })
+                        ->orderBy('start_date_time', 'asc')
+                        ->get();
+                }
+
+
 
                 $jobDistances = [];
 
@@ -884,7 +922,11 @@ class RoutingController extends Controller
                             $tech = User::find($jobpublish->technician_id);   // Get technician
                             $jobSchedule = Schedule::where('job_id', $job->job_id)->first(); // Get schedule
                             $customerAddress_Sms = CustomerUserAddress::where('user_id', $jobpublish->customer_id)->first();
-                            
+
+
+                            $scheduleDate = Carbon::parse($jobSchedule->start_date_time)->format('F j, Y'); // Example: March 1, 2025
+                            $scheduleTime = Carbon::parse($jobSchedule->start_date_time)->format('h:i A');
+
                             // Prepare mail data
                             $mailData = [
                                 'job' => $jobpublish,
@@ -898,7 +940,7 @@ class RoutingController extends Controller
                             $jobpublish->save();
 
                             if ($tech && $customer) {
-                                 // Message for Technician
+                                // Message for Technician
                                 $techMessage = "We would like to confirm that the {$jobpublish->job_title} is scheduled for:\n\n";
                                 $techMessage .= "Date: {$scheduleDate}\n";
                                 $techMessage .= "Time: {$scheduleTime}\n";
@@ -906,21 +948,21 @@ class RoutingController extends Controller
                                 $techMessage .= "Address: {$customerAddress_Sms->address_line1},{$customerAddress_Sms->city},{$customerAddress_Sms->state_name},{$customerAddress_Sms->zipcode}";
 
                                 // $techPhone = $tech->mobile; // Assuming 'phone' field stores technician's number
-                                $techPhone = '+14155713129'; 
+                                $techPhone = '+14155713129';
                                 //$techPhone = '+918830711935'; 
                                 // app('SmsService')->sendSms($techMessage, $techPhone);
 
-                                  // Message for Customer
+                                // Message for Customer
                                 $customerMessage = "We would like to confirm that the {$jobpublish->job_title} is scheduled for:\n\n";
                                 $customerMessage .= "Date: {$scheduleDate}\n";
                                 $customerMessage .= "Time: {$scheduleTime}\n\n";
                                 $customerMessage .= "{$tech->name}, our technician, will be there to provide the service.";
                                 // $customerPhone = $customer->mobile; // Assuming 'phone' field stores customer's number
-                                $customerPhone = '+918830711935'; 
+                                $customerPhone = '+918830711935';
                                 // app('SmsService')->sendSms($customerMessage, $customerPhone);
                             }
 
-                            
+
                             $recipant = 'thesachinraut@gmail.com';
 
                             // Send mail 'bawanesumit01@gmail.com'
@@ -935,10 +977,10 @@ class RoutingController extends Controller
 
                 if ($request->priority_routing == 'on') {
 
-                    
+
                     $priorityLevels = ['emergency', 'critical', 'high', 'medium', 'low'];
 
-                    $priorityBaseJobs = Schedule::with(['Jobassign', 'Jobassign.userAddress','JobModel'])
+                    $priorityBaseJobs = Schedule::with(['Jobassign', 'Jobassign.userAddress', 'JobModel'])
                         ->where('technician_id', $technicianId)
                         ->whereDate('start_date_time', '>=', $inputDate)
                         ->orderBy('start_date_time', 'asc')
@@ -953,7 +995,7 @@ class RoutingController extends Controller
 
                     // Extract sorted job IDs
                     $sortedJobIds = $priorityBaseJobs->pluck('job_id')->toArray();
-                        // dd($sortedJobIds);
+                    // dd($sortedJobIds);
 
                     $bestRouteJobIds = $sortedJobIds;
                     $shortRouteJobIds = $sortedJobIds;
@@ -962,40 +1004,24 @@ class RoutingController extends Controller
                     $scheduleTimes = [$inputDate, $tomorrow, $dayAfterTomorrow];
                     $existingCount = $routingJobs->count();
 
-                        if ($existingCount > 0) {
-                            // Update existing entries
-                            foreach ($routingJobs as $index => $routingJob) {
-                                $routingJob->schedule_date_time = $scheduleTimes[$index];
-                                $routingJob->best_route = json_encode($bestRouteJobIds);
-                                $routingJob->short_route = json_encode($shortRouteJobIds);
-                                $routingJob->created_by = Auth()->user()->id;
-                                $routingJob->updated_by = Auth()->user()->id;
-                                $routingJob->cron_route_time = $request->auto_route_time;
-                                $routingJob->cron_re_route_time = $request->auto_rerouting_time;
-                                $routingJob->cron_publish_time = $request->auto_publishing_time;
-                                $routingJob->save();
-                            }
+                    if ($existingCount > 0) {
+                        // Update existing entries
+                        foreach ($routingJobs as $index => $routingJob) {
+                            $routingJob->schedule_date_time = $scheduleTimes[$index];
+                            $routingJob->best_route = json_encode($bestRouteJobIds);
+                            $routingJob->short_route = json_encode($shortRouteJobIds);
+                            $routingJob->created_by = Auth()->user()->id;
+                            $routingJob->updated_by = Auth()->user()->id;
+                            $routingJob->cron_route_time = $request->auto_route_time;
+                            $routingJob->cron_re_route_time = $request->auto_rerouting_time;
+                            $routingJob->cron_publish_time = $request->auto_publishing_time;
+                            $routingJob->save();
+                        }
 
-                            // Add new entries if needed
-                            if ($existingCount < 3) {
-                                $newScheduleTimes = array_slice($scheduleTimes, $existingCount);
-                                foreach ($newScheduleTimes as $scheduleTime) {
-                                    $routingJob = new RoutingJob(); // Create a new instance
-                                    $routingJob->user_id = $technicianId;
-                                    $routingJob->schedule_date_time = $scheduleTime;
-                                    $routingJob->best_route = json_encode($bestRouteJobIds);
-                                    $routingJob->short_route = json_encode($shortRouteJobIds);
-                                    $routingJob->created_by = Auth()->user()->id;
-                                    $routingJob->updated_by = Auth()->user()->id;
-                                    $routingJob->cron_route_time = $request->auto_route_time;
-                                    $routingJob->cron_re_route_time = $request->auto_rerouting_time;
-                                    $routingJob->cron_publish_time = $request->auto_publishing_time;
-                                    $routingJob->save(); // Save the new instance
-                                }
-                            }
-                        } else {
-                            // Create all 3 new entries
-                            foreach ($scheduleTimes as $scheduleTime) {
+                        // Add new entries if needed
+                        if ($existingCount < 3) {
+                            $newScheduleTimes = array_slice($scheduleTimes, $existingCount);
+                            foreach ($newScheduleTimes as $scheduleTime) {
                                 $routingJob = new RoutingJob(); // Create a new instance
                                 $routingJob->user_id = $technicianId;
                                 $routingJob->schedule_date_time = $scheduleTime;
@@ -1009,7 +1035,23 @@ class RoutingController extends Controller
                                 $routingJob->save(); // Save the new instance
                             }
                         }
-                    
+                    } else {
+                        // Create all 3 new entries
+                        foreach ($scheduleTimes as $scheduleTime) {
+                            $routingJob = new RoutingJob(); // Create a new instance
+                            $routingJob->user_id = $technicianId;
+                            $routingJob->schedule_date_time = $scheduleTime;
+                            $routingJob->best_route = json_encode($bestRouteJobIds);
+                            $routingJob->short_route = json_encode($shortRouteJobIds);
+                            $routingJob->created_by = Auth()->user()->id;
+                            $routingJob->updated_by = Auth()->user()->id;
+                            $routingJob->cron_route_time = $request->auto_route_time;
+                            $routingJob->cron_re_route_time = $request->auto_rerouting_time;
+                            $routingJob->cron_publish_time = $request->auto_publishing_time;
+                            $routingJob->save(); // Save the new instance
+                        }
+                    }
+
 
                 }
 
@@ -1019,6 +1061,7 @@ class RoutingController extends Controller
                     $bestRouteJobs = [];
                     $shortRouteJobs = [];
                     $dailyJobCount = 0;
+                    $currentDateTime = Carbon::now($timezone_name);
 
                     foreach ($jobs as $index => $job) {
                         if (!$job->Jobassign || !$job->Jobassign->userAddress) {
@@ -1045,6 +1088,29 @@ class RoutingController extends Controller
                             $travelDuration = $data['rows'][0]['elements'][0]['duration']['value'];
 
                             if ($index === 0) {
+
+
+                                // Check if the first job's end time has passed
+                                if (Carbon::parse($job->end_date_time)->lessThan($currentDateTime)) {
+                                    // Move to next available business day
+                                    $nextBusinessDay = Carbon::now($timezone_name);
+                                    $currentDayLower = strtolower($nextBusinessDay->format('l'));
+                                    $hours = BusinessHours::where('day', $currentDayLower)->first();
+
+                                    if ($hours) {
+                                        $job->start_date_time = $currentDateTime->setTimeFromTimeString($hours->start_time);
+                                        $job->end_date_time = Carbon::parse($job->start_date_time)->addMinutes($job->Jobassign->duration);
+                                        $job->save();
+
+                                        $assign = JobAssign::where('assign_status', 'active')->where('job_id', $job->job_id)->first();
+                                        if ($assign) {
+                                            $assign->start_date_time = $job->start_date_time;
+                                            $assign->end_date_time = $job->end_date_time;
+                                            $assign->save();
+                                        }
+                                    }
+                                }
+
                                 // Set the first job's end time as the previous end date time
                                 $previousEndDateTime = Carbon::parse($job->end_date_time);
                                 $dailyJobCount++;
@@ -1201,15 +1267,15 @@ class RoutingController extends Controller
 
 
                 }
-                
+
 
                 if ($request->auto_rerouting == 'on' && !$jobs->isEmpty()) {
                     $date = Carbon::parse($inputDate);
 
                     foreach ($jobs as $job) {
                         $checkEvent = Schedule::whereDate('start_date_time', $date)
-                                            ->where('technician_id', $technicianId)
-                                            ->first();
+                            ->where('technician_id', $technicianId)
+                            ->first();
 
                         // Ensure that the event exists and is of type 'event'
                         if ($checkEvent && $checkEvent->schedule_type == 'event') {
@@ -1249,7 +1315,7 @@ class RoutingController extends Controller
                 ];
             }
         }
-        
+
         // this code for header open jobs 
         $schedules1 = \App\Models\Schedule::where('start_date_time', '>=', $currentDate1)->get();
         // Extract job_ids from schedules
@@ -1272,34 +1338,34 @@ class RoutingController extends Controller
         $reorderedJobs = $request->input('jobIds');
 
         foreach ($reorderedJobs as $jobData) {
-            $techid = $jobData['techid']; 
-            $d = $jobData['date']; 
+            $techid = $jobData['techid'];
+            $d = $jobData['date'];
             $date = Carbon::parse($d)->format('Y-m-d');
             $jobs = $jobData['jobs'];
-            $jobIds = array_column($jobs, 'job_id'); 
+            $jobIds = array_column($jobs, 'job_id');
 
             $routingJob = RoutingJob::where('user_id', $techid)
-                                    ->whereDate('schedule_date_time', $date) 
-                                    ->first();
+                ->whereDate('schedule_date_time', $date)
+                ->first();
 
-            
 
-           $routingJob->custom_route = '[' . implode(',', $jobIds) . ']';
- 
+
+            $routingJob->custom_route = '[' . implode(',', $jobIds) . ']';
+
             $routingJob->update();
         }
 
-       return response()->json(['success' => true]);
+        return response()->json(['success' => true]);
     }
 
-   public function getPopupView($jobId)
+    public function getPopupView($jobId)
     {
         // Fetch job details
         $job = DB::table('jobs')
             ->join('users', 'jobs.customer_id', '=', 'users.id')
             ->join('schedule', 'jobs.id', '=', 'job_id')
             ->where('jobs.id', $jobId)
-            ->select('jobs.*', 'users.name as customer_name','schedule.start_date_time','schedule.end_date_time')
+            ->select('jobs.*', 'users.name as customer_name', 'schedule.start_date_time', 'schedule.end_date_time')
             ->first();
 
         if (!$job) {
