@@ -1064,6 +1064,8 @@ class RoutingController extends Controller
                     $dailyJobCount = 0;
                     $currentDateTime = Carbon::now($timezone_name);
 
+                    $techEvents = Event::where('technician_id', $technicianId)->get();
+
                     foreach ($jobs as $index => $job) {
                         if (!$job->Jobassign || !$job->Jobassign->userAddress) {
                             Log::info('Missing Jobassign or userAddress for job.', ['job_id' => $job->job_id]);
@@ -1090,26 +1092,87 @@ class RoutingController extends Controller
 
                             if ($index === 0) {
 
+                                $currentDateTime = Carbon::parse($job->start_date_time);
 
-                                // Check if the first job's end time has passed
-                                if (Carbon::parse($job->end_date_time)->lessThan($currentDateTime)) {
-                                    // Move to next available business day
-                                    $nextBusinessDay = Carbon::now($timezone_name);
-                                    $currentDayLower = strtolower($nextBusinessDay->format('l'));
-                                    $hours = BusinessHours::where('day', $currentDayLower)->first();
+                                $overlappingEvent = $techEvents->first(function ($event) use ($currentDateTime) {
+                                    $eventStart = Carbon::parse($event->start_date_time);
+                                    $eventEnd = Carbon::parse($event->end_date_time);
+                                    return $currentDateTime->between($eventStart, $eventEnd);
+                                });
 
-                                    if ($hours) {
-                                        $job->start_date_time = $currentDateTime->setTimeFromTimeString($hours->start_time);
-                                        $job->end_date_time = Carbon::parse($job->start_date_time)->addMinutes($job->Jobassign->duration);
-                                        $job->save();
 
-                                        $assign = JobAssign::where('assign_status', 'active')->where('job_id', $job->job_id)->first();
-                                        if ($assign) {
-                                            $assign->start_date_time = $job->start_date_time;
-                                            $assign->end_date_time = $job->end_date_time;
-                                            $assign->save();
+                                // ✅ Handle technician unavailability for the first job
+                                if ($overlappingEvent) {
+                                    if ($overlappingEvent->event_type === 'full') {
+                                        // Skip to the next available business day if the day is fully unavailable
+                                        $nextDay = $currentDateTime->copy()->addDay();
+                                        $nextDayLower = strtolower($nextDay->format('l'));
+                                        $hours = BusinessHours::where('day', $nextDayLower)->first();
+
+                                        while (!$hours || $overlappingEvent->event_type === 'full') {
+                                            $nextDay->addDay();
+                                            $nextDayLower = strtolower($nextDay->format('l'));
+                                            $hours = BusinessHours::where('day', $nextDayLower)->first();
+
+                                            // Check if next day is also fully unavailable
+                                            $overlappingEvent = $techEvents->first(function ($event) use ($nextDay) {
+                                                return Carbon::parse($event->start_date_time)->isSameDay($nextDay) &&
+                                                    $event->event_type === 'full';
+                                            });
+                                        }
+
+                                        if ($hours) {
+                                            // ✅ Update the start and end times based on the next available business day
+                                            $job->start_date_time = $nextDay->setTimeFromTimeString($hours->start_time);
+                                            $job->end_date_time = Carbon::parse($job->start_date_time)->addMinutes($job->Jobassign->duration);
+                                            $job->save();
+
+                                            $assign = JobAssign::where('assign_status', 'active')->where('job_id', $job->job_id)->first();
+                                            if ($assign) {
+                                                $assign->start_date_time = $job->start_date_time;
+                                                $assign->end_date_time = $job->end_date_time;
+                                                $assign->save();
+                                            }
+                                        }
+                                    } elseif ($overlappingEvent->event_type === 'partial') {
+                                        // ✅ Move to the time after the partial block
+                                        $partialEnd = Carbon::parse($overlappingEvent->end_date_time)->addMinutes(30);
+                                        if ($currentDateTime->lessThan($partialEnd)) {
+                                            $job->start_date_time = $partialEnd;
+                                            $job->end_date_time = Carbon::parse($job->start_date_time)->addMinutes($job->Jobassign->duration);
+                                            $job->save();
+
+                                            $assign = JobAssign::where('assign_status', 'active')->where('job_id', $job->job_id)->first();
+                                            if ($assign) {
+                                                $assign->start_date_time = $job->start_date_time;
+                                                $assign->end_date_time = $job->end_date_time;
+                                                $assign->save();
+                                            }
                                         }
                                     }
+                                } else {
+
+                                    // Check if the first job's end time has passed
+                                    if (Carbon::parse($job->end_date_time)->lessThan($currentDateTime)) {
+                                        // Move to next available business day
+                                        $nextBusinessDay = Carbon::now($timezone_name);
+                                        $currentDayLower = strtolower($nextBusinessDay->format('l'));
+                                        $hours = BusinessHours::where('day', $currentDayLower)->first();
+
+                                        if ($hours) {
+                                            $job->start_date_time = $currentDateTime->setTimeFromTimeString($hours->start_time);
+                                            $job->end_date_time = Carbon::parse($job->start_date_time)->addMinutes($job->Jobassign->duration);
+                                            $job->save();
+
+                                            $assign = JobAssign::where('assign_status', 'active')->where('job_id', $job->job_id)->first();
+                                            if ($assign) {
+                                                $assign->start_date_time = $job->start_date_time;
+                                                $assign->end_date_time = $job->end_date_time;
+                                                $assign->save();
+                                            }
+                                        }
+                                    }
+
                                 }
 
                                 // Set the first job's end time as the previous end date time
