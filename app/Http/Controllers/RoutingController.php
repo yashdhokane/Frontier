@@ -17,6 +17,7 @@ use Storage;
 use App\Models\CustomerUserAddress;
 use App\Models\Schedule;
 use App\Models\JobAssign;
+use App\Models\JobRoutingCron;
 use Illuminate\Support\Facades\Log;
 
 use App\Models\TechnicianJobsSchedulesOnMap;
@@ -418,7 +419,7 @@ class RoutingController extends Controller
         $jobIds = $request->jobIds;
         $callPerDay = $request->number_of_calls;
         $currentDate1 = \Carbon\Carbon::now($timezone_name);
-
+        $cronDate = \Carbon\Carbon::now($timezone_name)->format('Y-m-d H:i:s');
 
 
         $response = [];
@@ -1323,6 +1324,26 @@ class RoutingController extends Controller
         // Fetch tickets for those job_ids
         $tickets = \App\Models\JobModel::whereIn('id', $jobIds1)->where('is_published', 'no')->get();
         $html = view('admin.open_job_response', compact('tickets'))->render();
+
+        $cronRout = JobRoutingCron::first();
+
+        $cronRout->cron_route_time = $request->auto_route_time;
+        $cronRout->cron_route_next_date = $cronDate;
+        $cronRout->cron_route_active = $request->auto_route == 'on' ? 'yes' : 'no';
+        $cronRout->cron_time_constraints = $request->time_constraints == 'on' ? 'yes' : 'no';
+        $cronRout->cron_priority_routing = $request->priority_routing == 'on' ? 'yes' : 'no';
+        $cronRout->cron_re_route_time = $request->auto_rerouting_time;
+        $cronRout->cron_re_route_next_date = $cronDate;
+        $cronRout->cron_re_route_active = $request->auto_rerouting == 'on' ? 'yes' : 'no';
+        $cronRout->cron_publish_time = $request->auto_publishing_time;
+        $cronRout->cron_publish_next_date = $cronDate;
+        $cronRout->cron_publish_active = $request->auto_publishing == 'on' ? 'yes' : 'no';
+        $cronRout->cron_job_publish = $request->publish_jobs == 'on' ? 'yes' : 'no';
+        $cronRout->cron_job_previous = $request->p_open_job == 'on' ? 'yes' : 'no';
+        $cronRout->number_of_calls = $request->number_of_calls;
+        $cronRout->tech_ids = json_encode($technicians);
+
+        $cronRout->save();
 
         return response()->json([
             'success' => true,
