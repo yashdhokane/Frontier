@@ -291,7 +291,6 @@ class SendRouteCron extends Command
                     $shortRouteJobs = [];
                     $dailyJobCount = 0;
                     $currentDateTime = Carbon::now($timezone_name);
-
                     $techEvents = Event::where('technician_id', $technicianId)->get();
 
                     foreach ($jobs as $index => $job) {
@@ -320,34 +319,43 @@ class SendRouteCron extends Command
 
                             if ($index === 0) {
 
-                                $currentDateTime = Carbon::parse($job->start_date_time);
 
-                                $overlappingEvent = $techEvents->first(function ($event) use ($currentDateTime) {
-                                    $eventStart = Carbon::parse($event->start_date_time);
-                                    $eventEnd = Carbon::parse($event->end_date_time);
-                                    return $currentDateTime->between($eventStart, $eventEnd);
+                                // Check if the first job's end time has passed
+                                if (Carbon::parse($job->end_date_time)->lessThan($currentDateTime)) {
+                                    // Move to next available business day
+                                    $nextBusinessDay = Carbon::now($timezone_name);
+                                    $currentDayLower = strtolower($nextBusinessDay->format('l'));
+                                    $hours = BusinessHours::where('day', $currentDayLower)->first();
+
+                                    if ($hours) {
+                                        $job->start_date_time = $currentDateTime->setTimeFromTimeString($hours->start_time);
+                                        $job->end_date_time = Carbon::parse($job->start_date_time)->addMinutes($job->Jobassign->duration);
+                                        $job->save();
+
+                                        $assign = JobAssign::where('assign_status', 'active')->where('job_id', $job->job_id)->first();
+                                        if ($assign) {
+                                            $assign->start_date_time = $job->start_date_time;
+                                            $assign->end_date_time = $job->end_date_time;
+                                            $assign->save();
+                                        }
+                                    }
+                                }
+
+                                $checkDate = Carbon::parse($job->start_date_time); // ✅ Convert to Carbon instance
+
+                                $overlappingEvent = $techEvents->first(function ($event) use ($checkDate) {
+                                    $eventStart = Carbon::parse($event->start_date_time); // Parse to Carbon
+                                    $eventEnd = Carbon::parse($event->end_date_time);     // Parse to Carbon
+
+                                    // ✅ Check if checkDate is between event start and end times
+                                    return $checkDate->between($eventStart, $eventEnd);
                                 });
 
-
-                                // ✅ Handle technician unavailability for the first job
-                                if ($overlappingEvent) {
+                                if ($overlappingEvent && $overlappingEvent->count() > 0) {
                                     if ($overlappingEvent->event_type === 'full') {
-                                        // Skip to the next available business day if the day is fully unavailable
                                         $nextDay = $currentDateTime->copy()->addDay();
                                         $nextDayLower = strtolower($nextDay->format('l'));
                                         $hours = BusinessHours::where('day', $nextDayLower)->first();
-
-                                        while (!$hours || $overlappingEvent->event_type === 'full') {
-                                            $nextDay->addDay();
-                                            $nextDayLower = strtolower($nextDay->format('l'));
-                                            $hours = BusinessHours::where('day', $nextDayLower)->first();
-
-                                            // Check if next day is also fully unavailable
-                                            $overlappingEvent = $techEvents->first(function ($event) use ($nextDay) {
-                                                return Carbon::parse($event->start_date_time)->isSameDay($nextDay) &&
-                                                    $event->event_type === 'full';
-                                            });
-                                        }
 
                                         if ($hours) {
                                             // ✅ Update the start and end times based on the next available business day
@@ -361,34 +369,13 @@ class SendRouteCron extends Command
                                                 $assign->end_date_time = $job->end_date_time;
                                                 $assign->save();
                                             }
+
                                         }
                                     } elseif ($overlappingEvent->event_type === 'partial') {
                                         // ✅ Move to the time after the partial block
                                         $partialEnd = Carbon::parse($overlappingEvent->end_date_time)->addMinutes(30);
                                         if ($currentDateTime->lessThan($partialEnd)) {
                                             $job->start_date_time = $partialEnd;
-                                            $job->end_date_time = Carbon::parse($job->start_date_time)->addMinutes($job->Jobassign->duration);
-                                            $job->save();
-
-                                            $assign = JobAssign::where('assign_status', 'active')->where('job_id', $job->job_id)->first();
-                                            if ($assign) {
-                                                $assign->start_date_time = $job->start_date_time;
-                                                $assign->end_date_time = $job->end_date_time;
-                                                $assign->save();
-                                            }
-                                        }
-                                    }
-                                } else {
-
-                                    // Check if the first job's end time has passed
-                                    if (Carbon::parse($job->end_date_time)->lessThan($currentDateTime)) {
-                                        // Move to next available business day
-                                        $nextBusinessDay = Carbon::now($timezone_name);
-                                        $currentDayLower = strtolower($nextBusinessDay->format('l'));
-                                        $hours = BusinessHours::where('day', $currentDayLower)->first();
-
-                                        if ($hours) {
-                                            $job->start_date_time = $currentDateTime->setTimeFromTimeString($hours->start_time);
                                             $job->end_date_time = Carbon::parse($job->start_date_time)->addMinutes($job->Jobassign->duration);
                                             $job->save();
 
@@ -426,6 +413,30 @@ class SendRouteCron extends Command
                                 } else {
                                     Log::error('Travel duration is missing or zero.', ['job_id' => $job->job_id]);
                                     $newStartTime = $this->roundToNearest30Minutes($previousEndCarbon);
+                                }
+
+                                // Check for overlapping events after calculating the new start time
+                                $overlappingEvent = $techEvents->first(function ($event) use ($newStartTime) {
+                                    $eventStart = Carbon::parse($event->start_date_time);
+                                    $eventEnd = Carbon::parse($event->end_date_time);
+                                    return $newStartTime->between($eventStart, $eventEnd);
+                                });
+
+                                if ($overlappingEvent && $overlappingEvent->count() > 0) {
+                                    if ($overlappingEvent->event_type === 'full') {
+                                        $nextDay = $newStartTime->copy()->addDay();
+                                        $nextDayLower = strtolower($nextDay->format('l'));
+                                        $hours = BusinessHours::where('day', $nextDayLower)->first();
+
+                                        if ($hours) {
+                                            $newStartTime = $nextDay->setTimeFromTimeString($hours->start_time);
+                                        }
+                                    } elseif ($overlappingEvent->event_type === 'partial') {
+                                        $partialEnd = Carbon::parse($overlappingEvent->end_date_time)->addMinutes(30);
+                                        if ($newStartTime->lessThan($partialEnd)) {
+                                            $newStartTime = $partialEnd;
+                                        }
+                                    }
                                 }
 
 
