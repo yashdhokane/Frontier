@@ -111,7 +111,7 @@
                     </div>
                 </div> --}}
                 <div class="card threedottest" id="threedot" style="display: none;">
-                    <div class="row card-body ">
+                    <div class="row card-body card-border shadow ">
 
                         <div class="col-6 align-self-center">
                             <!-- Search Input on the Left -->
@@ -176,7 +176,7 @@
                 <!-- Modal style="overflow-x: auto;" -->
 
 
-                <div class="card card-body shadow">
+                <div class="card card-body card-border shadow">
                     <div class="table-responsive table-custom">
                         <table id="multi_control" class="table table-hover table-striped search-table v-middle "
                             data-paging="true">

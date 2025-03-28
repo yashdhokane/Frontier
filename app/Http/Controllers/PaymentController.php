@@ -111,7 +111,7 @@ class PaymentController extends Controller
         return redirect()->route('invoicedetail', ['id' => $paymentInvoice->id]);
     }
     public function index()
-    {
+    {  
 
         $user_auth = auth()->user();
         $user_id = $user_auth->id;
@@ -125,7 +125,18 @@ class PaymentController extends Controller
             return $permissionCheck; // This will handle the redirection
         }
 
-        $payments = Payment::with('JobAppliances', 'user', 'JobModel')->latest('id')->get();
+        // $payments = Payment::with('JobAppliances', 'user', 'JobModel')->latest('id')->get();
+    $payments = Payment::with('JobAppliances', 'user', 'JobModel')
+    ->whereHas('JobModel', function ($query) {
+        $query->select('id'); // Ensures only matching job_id records are retrieved
+    })
+    ->orderBy('id', 'desc')
+    ->orderByRaw('CAST(invoice_number AS UNSIGNED) DESC')
+    ->get();
+
+    // dd( $payments);
+
+
 
         $manufacturer = Manufacturer::where('is_active', 'yes')->get();
 

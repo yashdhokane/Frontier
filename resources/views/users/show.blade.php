@@ -59,12 +59,12 @@ $address .= $location->zipcode;
 
             <div class="btn-group" role="group" aria-label="Basic example">
                 <a href="https://dispatchannel.com/portal/customers"
-                    class="btn btn-primary font-weight-medium shadow"><i class="ri-contacts-line"></i> Customers List
+                    class="btn btn-secondary font-weight-medium shadow"><i class="ri-contacts-line"></i> Customers List
                 </a>
                 <a href="https://dispatchannel.com/portal/customer/create"
-                    class="btn btn-success font-weight-medium shadow"><i class="ri-user-add-line"></i> Add New
+                    class="btn btn-secondary font-weight-medium shadow"><i class="ri-user-add-line"></i> Add New
                     Customers</a>
-                <a href="#." class="btn btn-warning font-weight-medium shadow"><i class="ri-download-2-line"></i> Audit
+                <a href="#." class="btn btn-secondary font-weight-medium shadow"><i class="ri-download-2-line"></i> Audit
                     Download</a>
             </div>
 

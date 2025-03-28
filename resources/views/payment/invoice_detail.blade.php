@@ -33,13 +33,13 @@
 
                                 <div class="col-md-12">
 
-                                    <div class="card bg-success">
+                                    <div class="card bg-secondary">
 
                                         <div class="card-body text-white">
 
                                             <div class="d-flex flex-row">
 
-                                                <div class="round align-self-center bg-light-success text-success">
+                                                <div class="round align-self-center bg-light-secondary text-success">
 
                                                     <i data-feather="credit-card" class="feather-sm"></i>
 
@@ -203,7 +203,7 @@
                                                 id="paymentForm">
                                                 @csrf
                                                 <input type="hidden" name="payment_id" value="{{ $payment->id }}">
-                                                <button class="btn btn-danger" type="submit" id="paymentButton"
+                                                <button class="btn btn-secondary" type="submit" id="paymentButton"
                                                     @if ($payment->status == 'paid') disabled @endif>
                                                     @if ($payment->status == 'paid')
                                                         Paid

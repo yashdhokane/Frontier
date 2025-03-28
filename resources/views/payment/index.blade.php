@@ -122,21 +122,25 @@
             </div>
             <!-- Add your table or content here -->
 
-            <div class="col-12 card card-border shadow">
-                <div class="card-body table-responsive">
-
-                    <table id="file_export" class="table table-hover table-striped">
+            <div class="col-12 card card-border card-body shadow">
+         <div class="table-responsive ">
+                            <table id="multi_control" class="table table-striped table-bordered display text-nowrap table-hover "
+                                data-paging="true" data-paging-size="7">
                         <thead>
                             <!-- start row -->
                             <tr>
-                                <th>ID</th>
-                                <th>Manufacturer</th>
+                                <th style="display:none;">No</th>  
+
+                                <th>Invoice ID 
+                                       </th>
+                                  <th>Invoice Date</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                              
                                 <th>Job Details</th>
                                 <th>Customer</th>
                                 <th>Technician</th>
-                                <th>Inv. Date</th>
-                                <th>Amount</th>
-                                <th>Status</th>
+                               
                                 <th>Action</th>
                             </tr>
                             <!-- end row -->
@@ -145,19 +149,47 @@
                             <!-- start row -->
                             @foreach ($payments as $index => $item)
                                 <tr>
+                                 <td style="display:none;">{{ $index + 1 }}</td>
                                     <td><a
                                             href="{{ url('invoice-detail/' . $item->id) }}">{{ $item->invoice_number ?? null }}</a>
                                     </td>
-                                    <td>{{ $item->JobAppliances->Appliances->manufacturer->manufacturer_name ?? null }}
-                                    </td>
+                                       <td>{{ $convertDateToTimezone($item->issue_date ?? null) }}</td>
+                                    <td>${{ $item->total ?? null }}</td>
+                                    <td style="text-transform: capitalize;">{{ $item->status ?? null }}</td>
 
-                                    <td>{{ $item->JobModel->job_code ?? null }}<br>{{ $item->JobModel->job_title ?? null }}
+                                   <!-- <td>{{ $item->JobAppliances->Appliances->manufacturer->manufacturer_name ?? null }}
+                                    </td> -->
+
+                                    <td>
+
+                                <div class="text-wrap2 d-flex">
+                                                        <div class=" text-truncate">
+                                                            <a href="{{ route('tickets.show', $item->JobModel->id) }}"
+                                                                class="font-medium link">
+                                                                {{ $item->JobModel->job_title ?? null }}</a>
+                                                        </div>
+                                                        <span
+                                                            class="badge bg-light-warning text-warning font-medium">{{$item->JobModel->status ?? null }}</span>
+                                                    </div>
+                                                    <div style="font-size:12px;">
+                                                        @if ($item->JobModel->JobAppliances && $item->JobModel->JobAppliances->Appliances)
+                                                            {{ $item->JobModel->JobAppliances->Appliances->appliance->appliance_name ?? null }}/
+                                                        @endif
+                                                        @if ($item->JobModel->JobAppliances && $item->JobModel->JobAppliances->Appliances)
+                                                            {{ $item->JobModel->JobAppliances->Appliances->manufacturer->manufacturer_name ?? null }}/
+                                                        @endif
+                                                        @if ($item->JobModel->JobAppliances && $item->JobModel->JobAppliances->Appliances->model_number)
+                                                            {{ $item->JobModel->JobAppliances->Appliances->model_number ?? null }}/
+                                                        @endif
+                                                        @if ($item->JobModel->JobAppliances && $item->JobModel->JobAppliances->Appliances->serial_number)
+                                                            {{ $item->JobModel->JobAppliances->Appliances->serial_number ?? null }}
+                                                        @endif
+                                                    </div>
+
                                     </td>
                                     <td>{{ $item->user->name ?? null }}</td>
                                     <td>{{ $item->JobModel->technician->name ?? null }}</td>
-                                    <td>{{ $convertDateToTimezone($item->issue_date ?? null) }}</td>
-                                    <td>${{ $item->total ?? null }}</td>
-                                    <td style="text-transform: capitalize;">{{ $item->status ?? null }}</td>
+                                 
                                     <td>
                                         <div class="btn-group">
                                             <button type="button"
@@ -238,6 +270,7 @@
 
     <!-- start - This is for export functionality only -->
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
         //=============================================//
@@ -245,15 +278,18 @@
         //=============================================//
         $(document).ready(function() {
 
-            if ($.fn.DataTable.isDataTable('#file_export')) {
-                $('#file_export').DataTable().destroy();
+            if ($.fn.DataTable.isDataTable('#multi_control')) {
+                $('#multi_control').DataTable().destroy();
             }
 
-            var table = $('#file_export').DataTable({
+            var table = $('#multi_control').DataTable({
                 "dom": '<"top"f>rt<"bottom d-flex justify-content-between mt-4"lp><"clear">',
                 "paging": true,
                 "info": false,
                 "pageLength": 50, // Set default pagination length to 50
+
+               
+
                 "language": {
                      "search": "",
                         "searchPlaceholder": "search"

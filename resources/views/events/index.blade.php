@@ -52,9 +52,9 @@
                 </div>
             </div>
         @endif
-        <div class="row card card-border shadow mr-0">
+        <div class="row  ">
 
-            <div class="card threedottest" style="display:none;">
+            <div class="card card-body   card-border shadow threedottest" style="display:none;">
                 <div class="row card-body">
                     <!-- Search Input on the Left -->
                     <div class="col-6 align-self-center">
@@ -94,7 +94,7 @@
                 </div>
             </div>
 
-            <div id="filterDiv" class="card card-body shadow" style="display: none;">
+            <div id="filterDiv" class="card card-body   card-border shadow" style="display: none;">
 
                 <div class="col-md-12 row" style="margin-bottom:7px;">
                     <div class="col-md-4">
@@ -163,10 +163,11 @@
                 </div>
             </div>
 
-                <div class="card">
-                    <div class="card-body">
+               
+                    <div class="card card-body   card-border shadow">
                         <div class="table-responsive table-custom">
-                            <table id="multi_control" class="table table-striped table-bordered display text-nowrap">
+                            <table id="multi_control" class="table table-striped table-bordered display text-nowrap table-hover "
+                                data-paging="true" data-paging-size="7">
                                 {{--
                                 <div class="col-md-12 row withoutthreedottest" style="margin-bottom:7px;">
                                     <div class="col-md-4">
@@ -333,7 +334,6 @@
                         </div>
                     </div>
 
-                </div>
             </div>
 
         </div>

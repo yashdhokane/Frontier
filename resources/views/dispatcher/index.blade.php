@@ -99,7 +99,7 @@
             <!-- Modal -->
 
 
-            <div class="card card-body shadow">
+            <div class="card card-body card-border shadow">
                 <div class="table-responsive table-custom">
                     <table id="multi_control" class="table table-hover table-striped search-table v-middle text-nowrap">
                         <thead class="header-item">

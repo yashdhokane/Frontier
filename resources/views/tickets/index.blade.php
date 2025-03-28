@@ -31,17 +31,21 @@
                     </nav>
                 </div>
             </div>
-            <div class="col-7 text-end px-4">
-                <a href="#." id="filterButton" class="btn btn-secondary  mx-2 ">
-                    <i class="ri-filter-line"></i> Filters
-                </a>
+            <div class="col-7 align-self-center">
+                <div class="d-flex no-block justify-content-end align-items-center">
+
+                    <a href="#." id="filterButton" class="btn  btn-secondary mx-2">
+                        <i class="ri-filter-line"></i> Filters
+                    </a>
+               
 
                 @include('header-top-nav.job-nav')
+            </div>
             </div>
 
         </div>
     </div>
-    <div class="container-fluid">
+    <div class="container-fluid pt-2">
         <!-- -------------------------------------------------------------- -->
         <!-- Start Page Content -->
         <!-- -------------------------------------------------------------- -->
@@ -129,7 +133,7 @@
                     </div>
                 </div> --}}
 
-                <div id="filterDiv" class="card card-body shadow" style="display: none;">
+                <div id="filterDiv" class="card card-border  card-body  shadow" style="display: none;">
 
                     <div class="row">
                         <div class="col-md-3">
@@ -213,9 +217,9 @@
                 </div>
 
                 <div class="card">
-                    <div class="card-body">
-                        <div class="table-responsive table-custom">
-                            <table id="multi_control" class="table table-striped table-bordered display text-nowrap"
+                    <div class=" card-border  card-body  shadow">
+                        <div class="table-responsive ">
+                            <table id="multi_control" class="table table-striped table-bordered display text-nowrap table-hover "
                                 data-paging="true" data-paging-size="7">
                                 <div class="d-flex flex-wrap">
 

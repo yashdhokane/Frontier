@@ -1,6 +1,6 @@
 <h5 class="card-title uppercase">Payments & Invoices</h5>
 @if ($payments->isEmpty())
-<div class="alert alert-info mt-4" role="alert">
+<div class="alert alert-secondary mt-4" role="alert">
     Payments not available for {{ $commonUser->name ?? '' }}.
     <strong><a href="{{ route('schedule') }}">Add New</a></strong>
 </div>

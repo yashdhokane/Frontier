@@ -24,6 +24,14 @@ $address .= $location->zipcode;
 }
 @endphp
 
+<style>
+.dropdown-item {
+color:#9E9E9E!important;
+},
+.timeline-badge.danger {
+    background-color: #9E9E9E!important;
+}
+</style>
 
 <!-- -------------------------------------------------------------- -->
 <!-- Bread crumb and right sidebar toggle -->
@@ -36,7 +44,7 @@ $address .= $location->zipcode;
         </div>
         <div class="col-3 text-end px-4">
             <a href="https://dispatchannel.com/portal/technicians"
-                class="justify-content-center d-flex align-items-center"><i class="ri-contacts-line"
+                class=" btn btn-secondary text-white"><i class="ri-contacts-line"
                     style="margin-right: 8px;"></i> Back to Technicians List </a>
         </div>
     </div>
@@ -345,7 +353,7 @@ $address .= $location->zipcode;
 
                                                 <div class="mb-3">
                                                     <button type="submit" id="submitBtnvehicle"
-                                                        class="btn btn-primary">Update</button>
+                                                        class="btn btn-secondary">Update</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -558,7 +566,7 @@ $address .= $location->zipcode;
                                         <div class="mb-3 row">
                                             <div class="col-md-9 offset-md-3">
                                                 <button type="submit" id="submitBtnfleet"
-                                                    class="btn btn-primary">Update</button>
+                                                    class="btn btn-secondary">Update</button>
                                             </div>
                                         </div>
 
@@ -647,7 +655,7 @@ $address .= $location->zipcode;
                             <h5 class="card-title uppercase">schedule</h5>
 
                             @if ($schedule->isEmpty())
-                            <div class="alert alert-info mt-4 col-md-12" role="alert">
+                            <div class="alert alert-secondary mt-4 col-md-12" role="alert">
                                 Schedule details not available for {{ $user->name ?? '' }}. <strong><a
                                         href="{{ route('schedule') }}">Add New</a></strong>
                             </div>
@@ -658,7 +666,7 @@ $address .= $location->zipcode;
                                         @foreach ($schedule as $scheduleItem)
                                         @if (isset($scheduleItem))
                                         <li class="timeline-inverted timeline-item">
-                                            <div class="timeline-badge
+                                            <div class="timeline-badge 
                                                      @if ($scheduleItem->schedule_type === 'job') danger
                                                             @elseif ($scheduleItem->schedule_type === 'event')
                                                              success @endif">

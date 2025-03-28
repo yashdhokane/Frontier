@@ -26,7 +26,10 @@ class EventController extends Controller
             return $permissionCheck; // This will handle the redirection
         }
 
-        $event = Event::with('technician')->get();
+$event = Event::with('technician')
+    ->orderBy('created_at', 'desc') // Sort by creation date in descending order
+    ->get();
+
 
         $technicianrole = User::where('role', 'technician')->where('status', 'active')->get();
 

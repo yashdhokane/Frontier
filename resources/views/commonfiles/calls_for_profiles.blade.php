@@ -7,7 +7,7 @@
 @endphp
 
 @if ($technicianTickets->isEmpty() && $customerTickets->isEmpty() && $addedByTickets->isEmpty())
-<div class="alert alert-info mt-4 col-md-12" role="alert">Calls not available for
+<div class="alert alert-secondary mt-4 col-md-12" role="alert">Calls not available for
     {{ $commonUser->name ?? '' }}. <strong><a href="{{ route('schedule') }}">Add
             New</a></strong></div>
 @else
@@ -31,7 +31,7 @@
             <tr>
                 <td>
                     <a href="{{ route('tickets.show', $ticket->id) }}" class="fw-bold link"><span
-                            class="mb-1 badge bg-primary">#{{ $ticket->id }}</span></a>
+                            class="mb-1 badge bg-secondary">#{{ $ticket->id }}</span></a>
                 </td>
                 <td>
                     <div class="text-wrap2">

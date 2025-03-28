@@ -1,7 +1,23 @@
+
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+ 
 <script>
     $(document).ready(function() {
-        var table = $('#zero_config').DataTable();
+        if ($.fn.DataTable.isDataTable('#multi_control')) {
+                        $('#multi_control').DataTable().destroy();
+                    }
+
+                    var table = $('#multi_control').DataTable({
+                        "dom": '<"top"f>rt<"bottom d-flex justify-content-between mt-4"lp><"clear">',
+                        "paging": true,
+                        "info": true,
+                        "pageLength": 50, // Set default pagination length to 50
+                        "language": {
+                            "search": "",
+                            "searchPlaceholder": "search"
+                        }
+                    });
 
         function filterRows1() {
             var selectedTechnician = $('#technician_filter1').val(); // Technician name selected in the filter
@@ -61,7 +77,7 @@
 
 <script>
     $(document).ready(function() {
-        var table = $('#zero_config').DataTable();
+        var table = $('#multi_control').DataTable();
 
         function filterRows() {
             var selectedTechnician = $('#technician_filter').val(); // Technician name selected in the filter

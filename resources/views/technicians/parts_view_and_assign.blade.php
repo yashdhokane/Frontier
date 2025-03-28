@@ -31,7 +31,7 @@
         </div>
 
         <div class="col-md-2">
-            <button type="button" class="btn waves-effect waves-light btn-primary"
+            <button type="button" class="btn waves-effect waves-light btn-secondary"
                 style="margin-top: 25px; margin-left: 20px; width: 140px;"
                 id="assignButton">Assign</button>
         </div>
@@ -94,7 +94,7 @@
                         @endphp
                         @if ($productItem)
                         <li class="list-group-item d-flex align-items-center">
-                            <i class="text-info fas fa-user mx-2"></i>
+                            <i class="text-secondary fas fa-user mx-2"></i>
                             {{ $productItem->product_name }} ({{ $quantity }})
                         </li>
                         @else
@@ -138,7 +138,7 @@
         </div>
 
         <div class="col-md-2">
-            <button type="button" class="btn waves-effect waves-light btn-primary"
+            <button type="button" class="btn waves-effect waves-light btn-secondary"
                 style="margin-top: 25px; margin-left: 20px; width: 140px;"
                 id="assignToolButton">Assign</button>
         </div>
@@ -202,7 +202,7 @@
                         @endphp
                         @if ($productItem)
                         <li class="list-group-item d-flex align-items-center">
-                            <i class="text-info fas fa-user mx-2"></i>
+                            <i class="text-secondary fas fa-user mx-2"></i>
                             {{ $productItem->product_name }} ({{ $quantity }})
                         </li>
                         @else

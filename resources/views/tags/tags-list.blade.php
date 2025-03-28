@@ -188,9 +188,10 @@
             "paging": true,
             "info": false,
             "pageLength": 50, // Set default pagination length to 50
-            "language": {
-                "search": ""
-            }
+             "language": {
+                            "search": "",
+                            "searchPlaceholder": "search"
+                        }
         });
         // for add tag query
         document.addEventListener('DOMContentLoaded', function() {

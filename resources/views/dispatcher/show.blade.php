@@ -33,7 +33,7 @@ $address .= $location->zipcode;
         </div>
         <div class="col-3 text-end">
             <a href="https://dispatchannel.com/portal/dispatcher-index"
-                class="btn btn-primary font-weight-medium shadow"><i class="ri-contacts-line"
+                class="btn btn-secondary font-weight-medium shadow"><i class="ri-contacts-line"
                     style="margin-right: 8px;"></i>Dispatcher List</a>
         </div>
     </div>
@@ -47,7 +47,7 @@ $address .= $location->zipcode;
 <div class="container-fluid">
     @if (Session::has('success'))
     <div class="alert_wrap">
-        <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
+        <div class="alert alert-secondary alert-dismissible bg-secondary text-white border-0 fade show">
             {{ Session::get('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert"
                 aria-label="Close"></button>
         </div>

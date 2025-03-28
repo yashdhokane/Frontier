@@ -183,8 +183,9 @@
                 "info": false,
                 "pageLength": 50, // Set default pagination length to 50
                 "language": {
-                    "search": ""
-                }
+                            "search": "",
+                            "searchPlaceholder": "search"
+                        }
         });
         document.addEventListener('DOMContentLoaded', function() {
             var dataTable = $('#default_order').DataTable();

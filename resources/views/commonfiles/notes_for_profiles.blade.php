@@ -45,7 +45,7 @@
                 <textarea class="form-control" id="comment" name="note" rows="3"></textarea>
             </div>
             <div class="mb-3 d-flex align-items-center">
-                <button type="submit"  onclick="document.getElementById('commentcommonform').submit();" class="btn btn-primary ms-2">Submit</button>
+                <button type="submit"  onclick="document.getElementById('commentcommonform').submit();" class="btn btn-secondary ms-2">Submit</button>
             </div>
         </form>
     </div>

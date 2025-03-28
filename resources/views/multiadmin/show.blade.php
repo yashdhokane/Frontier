@@ -38,7 +38,7 @@ $address .= $location->zipcode;
                 </div>-->
         </div>
         <div class="col-3 text-end">
-            <a href="{{ route('multiadmin.index') }}" class="btn btn-primary font-weight-medium shadow"><i
+            <a href="{{ route('multiadmin.index') }}" class="btn btn-secondary font-weight-medium shadow"><i
                     class="ri-contacts-line" style="margin-right: 8px;"></i>Admin List </a>
         </div>
     </div>

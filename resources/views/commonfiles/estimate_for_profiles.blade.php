@@ -1,6 +1,6 @@
 @if ($estimates->isEmpty())
 <h5 class="card-title uppercase">Estimates</h5>
-<div class="alert alert-info mt-4 col-md-12" role="alert">
+<div class="alert alert-secondary mt-4 col-md-12" role="alert">
     Estimates details not available for {{ $commonUser->name ?? null }}. <strong><a href="{{ route('schedule') }}">Add
             New</a></strong>
 </div>

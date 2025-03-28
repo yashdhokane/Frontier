@@ -3,7 +3,7 @@
                             <h5 class="card-title uppercase">schedule</h5>
 
                             @if ($schedule->isEmpty())
-                            <div class="alert alert-info mt-4 col-md-12" role="alert">
+                            <div class="alert alert-secondary mt-4 col-md-12" role="alert">
                                 Schedule details not available for {{ $user->name ?? '' }}. <strong><a
                                         href="{{ route('schedule') }}">Add New</a></strong>
                             </div>
@@ -15,7 +15,7 @@
                                         @if (isset($scheduleItem))
                                         <li class="timeline-inverted timeline-item">
                                             <div class="timeline-badge
-                                                     @if ($scheduleItem->schedule_type === 'job') danger
+                                                     @if ($scheduleItem->schedule_type === 'job') secondary
                                                             @elseif ($scheduleItem->schedule_type === 'event')
                                                              success @endif">
                                                 <span class="fs-2">

@@ -103,7 +103,7 @@
 		</div> -->
         <div class="page-breadcrumb">
     <div class="row withoutthreedottest">
-        <div class="col-10 align-self-center">
+        <div class="col-9 align-self-center">
             <h4 class="page-title">Add New Customer</h4>
             <div class="d-flex align-items-center">
                 <nav aria-label="breadcrumb">
@@ -114,9 +114,9 @@
                 </nav>
             </div>
         </div>
-        <div class="col-2 text-end px-4">
+        <div class="col-3 text-end px-4">
             <a href="https://dispatchannel.com/portal/customers"
-                class="btn btn-secondary text-white d-flex align-items-center justify-content-center">
+                class="btn btn-secondary text-white  align-items-center justify-content-center">
                 <i class="ri-contacts-line" style="margin-right: 8px;"></i> Back to Customers List
             </a>
         </div>

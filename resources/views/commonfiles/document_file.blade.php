@@ -36,12 +36,12 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <button type="button" class="btn btn-sm btn-info editDocument" data-id="{{ $document->id }}" data-name="{{ $document->document_name }}" data-type="{{ $document->document_type }}" data-path="{{ $document->file_path }}">Edit</button>
+                                        <button type="button" class="btn btn-sm btn-secondary editDocument" data-id="{{ $document->id }}" data-name="{{ $document->document_name }}" data-type="{{ $document->document_type }}" data-path="{{ $document->file_path }}">Edit</button>
 
                                         <form id="deleteDocumentForm-{{ $document->id }}" method="POST" action="{{ route('documents.destroy', $document->id) }}" style="display:inline-block;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="button" data-id="{{ $document->id }}" class="btn btn-sm btn-danger deleteDocument">Delete</button>
+                                            <button type="button" data-id="{{ $document->id }}" class="btn btn-sm btn-secondary deleteDocument">Delete</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -84,7 +84,7 @@
                         </div>
 
                         <div class="form-group mt-3 text-center">
-                            <button type="submit" id="submitFormBtndocumentForm" class="btn btn-primary">Save</button>
+                            <button type="submit" id="submitFormBtndocumentForm" class="btn btn-secondary">Save</button>
                         </div>
                     </form>
                 </div>
@@ -149,8 +149,8 @@
             <a href="{{ url('/') }}/public/${data.document.file_path}" target="_blank" class="document-view">View</a>
         </td>
         <td>
-            <button type="button" class="btn btn-sm btn-info editDocument" data-id="${data.document.id}" data-name="${data.document.document_name}" data-type="${data.document.document_type}" data-path="${data.document.file_path}">Edit</button>
-            <button type="button" class="btn btn-sm btn-danger deleteDocument" data-id="${data.document.id}">Delete</button>
+            <button type="button" class="btn btn-sm btn-secondary editDocument" data-id="${data.document.id}" data-name="${data.document.document_name}" data-type="${data.document.document_type}" data-path="${data.document.file_path}">Edit</button>
+            <button type="button" class="btn btn-sm btn-secondary deleteDocument" data-id="${data.document.id}">Delete</button>
         </td>
     </tr>`;
                                     document.querySelector('.documents-tabletable tbody').insertAdjacentHTML('beforeend', newRow);

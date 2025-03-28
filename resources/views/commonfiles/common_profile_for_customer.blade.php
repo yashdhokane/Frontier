@@ -1,7 +1,7 @@
 <h5 class="card-title uppercase">Jobs</h5>
 
 @if ($tickets->where('customer_id', $commonUser->id)->isEmpty())
-<div class="alert alert-info mt-4 col-md-12" role="alert">Jobs not available for
+<div class="alert alert-secondary mt-4 col-md-12" role="alert">Jobs not available for
     {{ $commonUser->name ?? '' }}. <strong><a href="{{ route('schedule') }}">Add
             New</a></strong></div>
 @else

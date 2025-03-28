@@ -3,7 +3,12 @@
     @section('content')
     @endif
   
-   
+   <style>
+ .bg-info {
+    background-color: grey !important;
+}
+
+   </style>
 
     <!-- Page wrapper  -->
     <!-- -------------------------------------------------------------- -->
@@ -16,9 +21,9 @@
             <div class="col-md-10">
                 <h4 class="page-title">#{{ $technicians->id ?? null }} - <span
                         class="title_update">{{ $technicians->job_title ?? null }}</span> <span
-                        class="mb-1 badge bg-warning">{{ $technicians->status ?? null }} </span>
+                        class="mb-1 badge bg-secondary">{{ $technicians->status ?? null }} </span>
                     @foreach ($jobFields as $jobField)
-                        <span class="mb-1 badge bg-warning">{{ $jobField->field_name }}</span>
+                        <span class="mb-1 badge bg-secondary">{{ $jobField->field_name }}</span>
                     @endforeach
                 </h4>
             </div>
@@ -40,7 +45,7 @@
 
         @if (Session::has('success'))
             <div class="alert_wrap">
-                <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show">
+                <div class="alert alert-secondary alert-dismissible bg-secondary text-white border-0 fade show">
                     {{ Session::get('success') }} <button type="button" class="btn-close" data-bs-dismiss="alert"
                         aria-label="Close"></button>
                 </div>
@@ -49,7 +54,7 @@
 
         @if (Session::has('error'))
             <div class="alert_wrap">
-                <div class="alert alert-danger">
+                <div class="alert alert-secondary">
                     {{ Session::get('error') }}
                 </div>
             </div>
@@ -165,7 +170,7 @@
                                             </select>
                                         </div>
                                         <div class="mb-3 text-end">
-                                            <button type="submit" class="btn btn-primary rounded">Add</button>
+                                            <button type="submit" class="btn btn-secondary rounded">Add</button>
                                         </div>
                                     </form>
                                 </div>
@@ -210,7 +215,7 @@
                                             </select>
                                         </div>
                                         <div class="mb-3 text-end">
-                                            <button type="submit" class="btn btn-primary rounded">Add</button>
+                                            <button type="submit" class="btn btn-secondary rounded">Add</button>
                                         </div>
                                     </form>
                                 </div>
@@ -238,7 +243,7 @@
                                     @csrf
                                     <input type="file" name="attachment" id="" class="form-control">
                                     <div class="mb-3 text-end">
-                                        <button type="submit" class="btn btn-primary rounded mt-2">Add</button>
+                                        <button type="submit" class="btn btn-secondary rounded mt-2">Add</button>
                                     </div>
 
                                 </form>
@@ -293,7 +298,7 @@
                                             </select>
                                         </div>
                                         <div class="mb-3 text-end">
-                                            <button type="submit" class="btn btn-primary rounded">Add</button>
+                                            <button type="submit" class="btn btn-secondary rounded">Add</button>
                                         </div>
                                     </form>
                                 </div>
@@ -360,7 +365,7 @@
                                 <div class="row">
                                     <div class="col-md-8 d-flex">
                                         <h5 class="card-title uppercase">Job Settings</h5>
-                                        <button type="submit" class="ms-3 btn btn-primary btn-xs">Save</button>
+                                        <button type="submit" class="ms-3 btn btn-secondary btn-xs">Save</button>
                                     </div>
                                     <div class="col-8">
                                         <div class="d-flex align-items-center justify-content-between py-3">
@@ -460,7 +465,7 @@
                                         <textarea class="form-control" name="flag_reason" id="flag_reason" cols="10" rows="3" required></textarea>
                                     </div>
                                     <div class="col-12 pt-2">
-                                        <button type="submit" class="btn btn-success">
+                                        <button type="submit" class="btn btn-secondary">
                                             Submit
                                         </button>
                                     </div>
@@ -484,7 +489,7 @@
                                     <div class="flowchart">
 
                                         <div class="icwrap">
-                                            <div class="ictop bg-info text-white">
+                                            <div class="ictop bg-info  text-white">
                                                 <i class="ri-calendar-event-line"></i>
                                             </div>
                                             <span class="cht">Schedule</span>
@@ -520,7 +525,7 @@
 
                                         <div class="icwrap">
                                             <div
-                                                class="ictop @if ($jobTimings['time_omw'] !== null) bg-info text-white @else icblank @endif">
+                                                class="ictop @if ($jobTimings['time_omw'] !== null) bg-info  text-white @else icblank @endif">
                                                 <i class="ri-truck-line"></i>
                                             </div>
                                             <span class="cht"> Enroute</span>
@@ -552,7 +557,7 @@
 
                                         <div class="icwrap">
                                             <div
-                                                class="ictop @if ($jobTimings['time_start'] !== null) bg-info text-white @else icblank @endif">
+                                                class="ictop @if ($jobTimings['time_start'] !== null) bg-info  text-white @else icblank @endif">
                                                 <i class="ri-play-line"></i>
                                             </div>
                                             <span class="cht">Start</span>
@@ -583,7 +588,7 @@
 
                                         <div class="icwrap">
                                             <div
-                                                class="ictop @if ($jobTimings['time_finish'] !== null) bg-info text-white @else icblank @endif">
+                                                class="ictop @if ($jobTimings['time_finish'] !== null) bg-secondary text-white @else icblank @endif">
                                                 <i class="ri-stop-circle-line"></i>
                                             </div>
                                             <span class="cht">Finish</span>
@@ -613,7 +618,7 @@
                                         <!--<button class="bl"></button>-->
                                         <div class="icwrap">
                                             <div
-                                                class="ictop @if ($jobTimings['time_invoice'] !== null) bg-info text-white @else icblank @endif">
+                                                class="ictop @if ($jobTimings['time_invoice'] !== null) bg-secondary text-white @else icblank @endif">
                                                 <i class="ri-bill-line"></i>
                                             </div>
                                             <span class="cht">Invoice</span>
@@ -644,7 +649,7 @@
                                         <!--<button class="bl"></button>-->
                                         <div class="icwrap">
                                             <div
-                                                class="ictop @if ($jobTimings['time_payment'] !== null) bg-info text-white @else icblank @endif">
+                                                class="ictop @if ($jobTimings['time_payment'] !== null) bg-secondary text-white @else icblank @endif">
                                                 <i class="ri-currency-line"></i>
                                             </div>
                                             <span class="cht">Pay</span>
@@ -683,12 +688,12 @@
                                 </div>
                                 @if (!empty($technicians->JobTechEvent))
                                     @if ($technicians->JobTechEvent->tech_completed == 'yes')
-                                        <div class="col-md-4 bold text-success">JOB IS COMPLETE</div>
+                                        <div class="col-md-4 bold text-secondary">JOB IS COMPLETE</div>
                                     @else
-                                        <div class="col-md-4 bold text-danger">JOB IS PENDING</div>
+                                        <div class="col-md-4 bold text-secondary">JOB IS PENDING</div>
                                     @endif
                                 @else
-                                    <div class="col-md-4 bold text-danger">JOB IS PENDING</div>
+                                    <div class="col-md-4 bold text-secondary">JOB IS PENDING</div>
                                 @endif
                             </div>
 
@@ -812,7 +817,7 @@
                                 <form method="POST" action="{{ route('update_approval_for_pending_job') }}">
                                     @csrf
 
-                                    <h5 class="mt-4 mb-0 card-title uppercase text-success">Admin's Remark</h5>
+                                    <h5 class="mt-4 mb-0 card-title uppercase text-secondary">Admin's Remark</h5>
                                     <input type="hidden" name="job_id" value="{{ $technicians->id ?? '' }}" />
                                     <div class="row mb-2">
                                         <div class="col-sm-12 col-md-12">
@@ -832,7 +837,7 @@
                                     </div>
                                     <div class="row mb-2">
                                         <div class="col-sm-4 col-md-4">
-                                            <button type="submit" class="btn btn-primary"
+                                            <button type="submit" class="btn btn-secondary"
                                                 id="approve_pending_job_update"
                                                 onclick="return confirmAndCheck()">Update</button>
                                         </div>
@@ -842,7 +847,7 @@
 
 
                             @if (!empty($technicians->JobTechEvent) && $technicians->status == 'closed')
-                                <h5 class="mt-4 mb-0 card-title uppercase text-success">Admin's Remark</h5>
+                                <h5 class="mt-4 mb-0 card-title uppercase text-secondary">Admin's Remark</h5>
 
                                 <div class="row mb-2">
 
@@ -850,7 +855,7 @@
                                         <strong>Job Complete Comment:</strong>
                                         {{ $technicians->JobTechEvent->closed_job_comment ?? '' }}
                                         <br />
-                                        <span class="text-info ft12">By: {{ $technicians->close->name ?? '' }} (
+                                        <span class="text-info  ft12">By: {{ $technicians->close->name ?? '' }} (
                                             @if (isset($technicians->closed_date))
                                                 {{ \Illuminate\Support\Carbon::parse($technicians->closed_date)->format('D n/j/y g:ia') }}
                                             @else
@@ -1050,7 +1055,7 @@
                                                         @endforeach
                                                     @endif
                                                 </select>
-                                                <small class="text-success" id="resp_text"></small>
+                                                <small class="text-secondary" id="resp_text"></small>
                                                 <div class="text-primary" style="cursor: pointer;" id="add_appliance">+
                                                     Add New</div>
                                                 <div class="my-2 appliancefield" style="display:none;">
@@ -1083,8 +1088,8 @@
                                                         @endforeach
                                                     @endif
                                                 </select>
-                                                <small class="text-success" id="resp_texts"></small>
-                                                <div class="text-primary" style="cursor: pointer;" id="add_manufaturer">+
+                                                <small class="text-secondary" id="resp_texts"></small>
+                                                <div class="text-secondary" style="cursor: pointer;" id="add_manufaturer">+
                                                     Add New</div>
                                                 <div class="my-2 manufaturerfield" style="display:none;">
                                                     <div class="d-flex ">
@@ -1127,10 +1132,10 @@
                                     </div>
                                     <div class="col-md-3 w-100" id="serial_number_detail"></div>
                                 </div>
-                                <button id="save-close-btn" type="submit" class="ms-3 btn btn-primary btn-xs float-end"
+                                <button id="save-close-btn" type="submit" class="ms-3 btn btn-secondary btn-xs float-end"
                                     data-action="save-close">Save & Close</button>
 
-                                <button type="submit" class="ms-3 btn btn-primary btn-xs float-end"
+                                <button type="submit" class="ms-3 btn btn-secondary btn-xs float-end"
                                     data-action="save">Save</button>
                             </form>
 
@@ -1147,7 +1152,7 @@
                                     <div class="mb-2">
                                         <h5 class="card-title uppercase ">#{{ $technicians->id ?? null }} -
                                             <span class="title_update"> {{ $technicians->job_title ?? null }} </span>
-                                            <span class="mb-1 badge bg-info pointer edit-job"> Edit </span>
+                                            <span class="mb-1 badge bg-info  pointer edit-job"> Edit </span>
                                         </h5>
                                     </div>
                                 </div>
@@ -1351,7 +1356,7 @@
                                         enctype="multipart/form-data">
                                         @csrf
                                         @if (session('success'))
-                                            <div id="successMessage" class="alert alert-success" role="alert">
+                                            <div id="successMessage" class="alert alert-secondary" role="alert">
                                                 {{ session('success') }}
                                             </div>
                                         @endif
@@ -1362,7 +1367,7 @@
 
                                         <div class="col-md-2">
                                             <button type="submit" id="submitBtn"
-                                                class="mt-3 btn waves-effect waves-light btn-success">
+                                                class="mt-3 btn waves-effect waves-light btn-secondary">
                                                 Send
                                             </button>
                                         </div>
@@ -1403,7 +1408,7 @@
                                                 @csrf
                                                 <input type="hidden" name="job_id" value="{{ $technicians->id }}">
                                                 <button type="submit"
-                                                    class="btn waves-effect waves-light btn-primary">View &
+                                                    class="btn waves-effect waves-light btn-secondary">View &
                                                     Send
                                                     Invoice</button>
                                             </form>

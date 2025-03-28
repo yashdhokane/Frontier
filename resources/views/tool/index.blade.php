@@ -2,8 +2,8 @@
 @extends('home')
 @section('content')
 @endif
-
-<div class="page-breadcrumb">
+ 
+                        <div class="page-breadcrumb">
     <div class="row withoutthreedottest">
         <div class="col-4 align-self-center">
             <h4 class="page-title">Tools</h4>
@@ -175,7 +175,8 @@
         <div class="col-lg-12">
 
             <div class="card-body ">
-                <table class="table product-overview" id="zero_config">
+                <table id="multi_control" class="table table-hover product-overview table-border table-striped search-table v-middle "
+                            data-paging="true">
                     <div class="row withoutthreedottest">
                         <div class="col-md-3 mb-3">
                             <label for="technician_filter" class="form-label">Technician</label>
@@ -325,29 +326,13 @@
 
 @include('tool.scriptIndex')
 
-<script>
-    $(document).ready(function() {
-        if ($.fn.DataTable.isDataTable('#zero_config')) {
-                $('#zero_config').DataTable().destroy();
-            }
 
-            var table = $('#zero_config').DataTable({
-                "dom": '<"top"f>rt<"bottom d-flex justify-content-between mt-4"lp><"clear">',
-                "paging": true,
-                "info": false,
-                "pageLength": 50, // Set default pagination length to 50
-                "language": {
-                    "search": ""
-                }
-        });
-    });
-</script>
 
 <script>
     function filterTable() {
               var input = document.getElementById("searchInput");
               var filter = input.value.toLowerCase();
-              var table = document.getElementById("zero_config");
+              var table = document.getElementById("multi_control");
               var rows = table.getElementsByTagName("tr");
 
               for (var i = 1; i < rows.length; i++) {
@@ -377,7 +362,7 @@
               var technicianFilter = document.getElementById("technician_filter").value.toLowerCase();
               var stockFilter = document.getElementById("stock_filter").value.toLowerCase();
               var statusFilter = document.getElementById("status_filter").value.toLowerCase();
-              var table = document.getElementById("zero_config");
+              var table = document.getElementById("multi_control");
               var rows = table.getElementsByTagName("tr");
 
               for (var i = 1; i < rows.length; i++) {

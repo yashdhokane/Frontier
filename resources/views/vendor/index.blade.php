@@ -44,7 +44,7 @@
 
             <div class="card">
                 <div class="card-body">
-                    <table id="zero_config" class="table table-hover table-striped text-nowrap" data-paging="true"
+                    <table id="zero_config" class="table table-border table-hover table-striped text-nowrap" data-paging="true"
                         data-paging-size="7">
 
                         <thead>
@@ -120,8 +120,9 @@
                 "info": false,
                 "pageLength": 50, // Set default pagination length to 50
                 "language": {
-                    "search": ""
-                }
+                            "search": "",
+                            "searchPlaceholder": "search"
+                        }
         });
 </script>
 @endsection
