@@ -187,9 +187,9 @@
 <script>
     // Handle the save button click
     document.getElementById('saveButton').addEventListener('click', function() {
-        // Collect the form data
         
         $('#frontier_loader').show();
+        // Collect the form data
         var formData = new FormData(document.getElementById('formstore'));
         $.ajaxSetup({
             headers: {
@@ -236,11 +236,13 @@
                    
                 } else {
                     alert('There was an issue saving the settings.');
+                     $('#frontier_loader').hide();
                 }
             },
             error: function(xhr, status, error) {
                 // Handle error
                 alert('An error occurred: ' + error);
+                 $('#frontier_loader').hide();
             }
         });
 
