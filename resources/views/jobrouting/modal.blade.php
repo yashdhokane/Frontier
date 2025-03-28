@@ -188,6 +188,8 @@
     // Handle the save button click
     document.getElementById('saveButton').addEventListener('click', function() {
         // Collect the form data
+        
+        $('#frontier_loader').show();
         var formData = new FormData(document.getElementById('formstore'));
         $.ajaxSetup({
             headers: {
@@ -206,7 +208,6 @@
                 // Check if the response indicates success
                 if (response.success) {
                      if(response.success == true){
-                            $('#frontier_loader').show();
                              // Reset the form fields (optional)
                             $('#formstore')[0].reset(); // Replace with the actual ID of your form
 
