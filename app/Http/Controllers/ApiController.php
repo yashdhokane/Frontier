@@ -1273,6 +1273,53 @@ app('sendNoticesapp')(
     }
 
 
+   public function ModelGlobal(Request $request)
+{
+    $query = $request->input('query');
+
+    if (!$query) {
+        return response()->json(['error' => 'Search query is required.'], 400);
+    }
+
+    // Automatically retrieve all model files from the app/Models directory
+    $modelFiles = File::files(app_path('Models'));
+    $models = [];
+
+    foreach ($modelFiles as $file) {
+        $filename = pathinfo($file->getFilename(), PATHINFO_FILENAME);
+        $modelClass = "App\\Models\\$filename";
+
+        if (class_exists($modelClass)) {
+            $models[] = $modelClass;
+        }
+    }
+
+    $results = [];
+
+    foreach ($models as $model) {
+        $table = (new $model)->getTable();
+        $columns = DB::getSchemaBuilder()->getColumnListing($table);
+
+        if (count($columns) < 2) continue; // Skip tables with only one column
+
+        $primaryKey = $columns[0]; // Assuming first column is primary key
+        $searchableColumns = array_slice($columns, 1); // Exclude first column
+
+        // Build query dynamically
+        $queryBuilder = DB::table($table)->select([$primaryKey, ...$searchableColumns]);
+
+        foreach ($searchableColumns as $column) {
+            $queryBuilder->orWhere($column, 'LIKE', "%{$query}%");
+        }
+
+        $results[$table] = $queryBuilder->limit(10)->get(); // Limit results per table
+    }
+
+    return response()->json(['query' => $query, 'results' => $results]);
+} 
+
+
+
 }
 
 

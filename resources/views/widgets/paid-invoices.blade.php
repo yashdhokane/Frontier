@@ -2,7 +2,7 @@
 
     <div class="p-3">
         <div class="d-flex justify-content-between mb-1">
-            <h4 class="">Paid invoices</h4>
+         <!--   <h4 class="">Paid invoices</h4> -->
             
         </div>
         <div class="table-responsive mt-1" style="overflow-x: scroll !important;">

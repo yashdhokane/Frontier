@@ -2,11 +2,14 @@
     $(document).ready(function () {
 
         let table = $('#jobs-table').DataTable({
-            layout: {
-                topStart: {
-                    buttons: ['excel', 'pdf']
-                }
-            },
+            dom: 'Bfrtip', // Required for buttons to appear
+            buttons: [
+                {
+                    extend: 'excel',
+                    text: 'Export to Excel',
+                    className: 'btn btn-success',
+                },
+            ],
             paging: false,
             searching: true,
             ordering: true,
@@ -14,6 +17,7 @@
             autoWidth: false
         });
 
+        
         // Check if the table is empty
         if (table.rows().count() === 0) {
             $('.dt-buttons').hide(); // Hide Excel/PDF buttons

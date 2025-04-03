@@ -1,9 +1,46 @@
 li.toplinks {
-	margin: 20px 15px;
-	color: #FFF;
-}  
+  margin: 0px 15px;
+  color: #FFF;
+}
+
+li.headnav_logo_li a:hover {
+  border-bottom: 0px none !important;
+}
+.mega-dropdown-menu ul li a {
+  border-bottom: 2px dotted transparent;
+}
+.mega-dropdown-menu ul li a:hover {
+  border-bottom: 2px dotted #2962ff;
+  color: #2962ff;
+}
+
+.topbar .top-navbar .navbar-nav > .nav-item > .nav-link {
+  margin: 0 15px;
+  color: #fff;
+  border-bottom: 3px solid transparent !important;
+  padding: 0px;
+}
+.topbar .top-navbar .navbar-nav > .nav-item > .nav-link.megamenutop1 {
+  padding-top: 3px;
+}
+.topbar .top-navbar .navbar-nav > .nav-item > .nav-link:hover {
+  border-bottom: 3px solid #2962ff !important;
+}
+.topbar .top-navbar .navbar-nav > .nav-item > .nav-link.megamenutop1:hover {
+  color: #2962ff;
+}
+
+
 li.toplinks a{
 	color: #FFF;
+	height: 64px;
+	line-height: 64px;
+  display: inline-block;
+  border-bottom: 3px solid transparent;
+}
+li.toplinks a:hover {
+  border-bottom: 3px solid #2962ff;
+  color: #2962ff;
 }
 .lightbg {
 	background: #3699ff;

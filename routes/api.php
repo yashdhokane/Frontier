@@ -18,6 +18,8 @@ use App\Http\Controllers\ChatSupportController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::post('ModelGlobal', [ApiController::class, 'ModelGlobal']);
+
 
 Route::post('jobdetailsfetch', [ApiController::class, 'jobdetailsfetch']);
 

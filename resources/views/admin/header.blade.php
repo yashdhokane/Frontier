@@ -23,6 +23,25 @@
     <!-- Do not display the header -->
 @else
     <header class="topbar">
+	<style>
+/* Show the dropdown on hover */
+/* Show the dropdown on hover */
+.mega-dropdown:hover .dropdown-menu {
+    display: block;
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Align the dropdown menu to the left */
+.mega-dropdown .dropdown-menu {
+    left: 0 !important;
+    right: auto !important;
+    transform: none !important;
+    min-width: 100%; /* Ensures the menu stretches properly */
+}
+
+
+</style>
         <link rel="stylesheet" href="{{ url('public/admin/dashboard/style.css') }}">
 
         <nav class="navbar top-navbar navbar-expand-md navbar-dark">
@@ -97,7 +116,7 @@
                         $currentFormattedDateTime = \Carbon\Carbon::now($timezoneName)->format('h:i:s A T');
                     @endphp
 
-                     <li class="nav-item dropdown align-self-center px-2">
+                     <li class="nav-item dropdown align-self-center px-2" style="display:none!important;">
                         <div class="nav-clock"><span>{{ $currentFormattedDate }}</span><br />
                             <span id="liveTime"></span>
                         </div>

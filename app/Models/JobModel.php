@@ -127,6 +127,8 @@ class JobModel extends Model
 
 
 
+
+
     //customer data show  for jobs list page
     public function user()
     {

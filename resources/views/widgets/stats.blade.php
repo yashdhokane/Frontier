@@ -3,7 +3,7 @@
     <div class="p-3">
 
         <div class="d-flex justify-content-between mb-1">
-            <h4 class="">Stats</h4>
+           <!-- <h4 class="">Stats</h4> -->
           
         </div>
 

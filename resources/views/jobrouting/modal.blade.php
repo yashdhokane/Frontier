@@ -23,12 +23,12 @@
             <!-- Modal Body -->
             <div class="modal-body modalbodyclass2 pt-1 pb-3">
 
-                <form id="formstore">
+                <form id="formstore" class="mb-0">
 
                     <div class="row">
 
                         <!-- Settings Panel with Scroll -->
-                        <div class="col-md-6 settings-panel" style="max-height: 700px; overflow-y: auto;">
+                        <div class="col-md-5 settings-panel" style="max-height: 700px; overflow-y: auto;">
                             <div class="card card-border shadow p-3">
                                 <div class="row mb-2 ">
                                     <label class="col-8 col-form-label bold">Auto Route Settings</label>
@@ -120,37 +120,43 @@
                             </div>
                         </div>
 
-
-
-
-
                         <!-- Tech List with Scroll -->
-                        <div class="col-md-6  tech-list" style="max-height: 700px; overflow-y: auto;">
+                        <div class="col-md-7  tech-list" style="max-height: 700px; overflow-y: auto;">
                             <div class="card card-border shadow p-3">
 
-                                <div class="row mb-2">
+                                <div class="row">
+                                    <!-- Loop through each technician in the $tech array -->
+                                    @foreach ($tech as $technician)
+                                        <div class="col-6">
+                                            <div class="row  mt-1 mb-1 tech-item d-flex justify-content-between">
+                                                <div class="col-1">
+                                                    <input type="checkbox" class="form-check-input" id="tech{{ $technician->id }}" name="technicians[]"  value="{{ $technician->id }}" class="checkbox-technicians">
+                                                </div>
+                                                <div class="col-10">
+                                                    <label for="tech{{ $technician->id }}" class="form-check-label bold">{{ $technician->name }}</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <div class="row mt-2">
                                     <div class="col">
                                         <button id="selectAll" type="button" class="btn btn-info btn-rounded">Select All</button>
-                                        <button id="saveButton" type="button" class="btn btn-info btn-rounded mx-2">Save</button>
                                     </div>
                                 </div>
 
-                                <!-- Loop through each technician in the $tech array -->
-                                @foreach ($tech as $technician)
-                                    <div class="row mt-1 mb-1 tech-item">
-                                        <div class="col-1">
-                                            <input type="checkbox" class="form-check-input" id="tech{{ $technician->id }}" name="technicians[]"  value="{{ $technician->id }}" class="checkbox-technicians">
-                                        </div>
-                                        <div class="col-11">
-                                            <label for="tech{{ $technician->id }}" class="form-check-label bold">{{ $technician->name }}</label>
-                                        </div>
-                                    </div>
-                                @endforeach
                             </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col">
+                            <button id="saveButton" type="button" class="btn btn-info btn-rounded mx-2 float-end">Set Routing</button>
                         </div>
                     </div>
 
-                    <form>
+                <form>
             </div>
         </div>
     </div>

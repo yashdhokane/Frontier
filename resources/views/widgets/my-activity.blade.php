@@ -2,7 +2,7 @@
     
     <div class="p-3">
         <div class="d-flex justify-content-between mb-1">
-            <h4 class="">MY ACTIVITY</h4>
+           <!-- <h4 class="">MY ACTIVITY</h4> -->
            
         </div>
         <div class="table-responsive">

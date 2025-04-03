@@ -1092,6 +1092,7 @@ class RoutingController extends Controller
 
                             if ($index === 0) {
 
+
                                 // Check if the first job's end time has passed
                                 if (Carbon::parse($job->end_date_time)->lessThan($currentDateTime)) {
                                     // Move to next available business day
@@ -1111,7 +1112,6 @@ class RoutingController extends Controller
                                             $assign->save();
                                         }
                                     }
-                               
                                 }
 
                                 $checkDate = Carbon::parse($job->start_date_time); // ✅ Convert to Carbon instance
@@ -1160,7 +1160,6 @@ class RoutingController extends Controller
                                             }
                                         }
                                     }
-                                         
 
                                 }
 

@@ -2,7 +2,7 @@
     
     <div class="p-3">
         <div class="mb-1 d-flex justify-content-between">
-            <h4 class="">MY NOTIFICATIONS</h4>
+           <!-- <h4 class="">MY NOTIFICATIONS</h4> -->
            
         </div>
         <div class="table-responsive">
