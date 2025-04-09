@@ -2,6 +2,10 @@
 
 @section('content')
 <style>
+table.customize-table td, table.customize-table th {
+    padding: 15px 1px!important;
+
+}
 .alert-dismissible {
     position: relative;
     padding-right: 4em;
@@ -20,7 +24,7 @@
 
 <div class="page-wrapper" style="display:inline;">
 
-    <div class="page-breadcrumb" style="padding: 0px 0px 10px 0px;">
+    <div class="page-breadcrumb" style="">
     <div class="row">
         <div class="col-5 align-self-center">
             <h4 class="page-title">My Profile</h4>

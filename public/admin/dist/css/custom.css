@@ -9,25 +9,32 @@ li.headnav_logo_li a:hover {
 .mega-dropdown-menu ul li a {
   border-bottom: 2px dotted transparent;
 }
+.mega-dropdown-menu ul li a {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+	padding: 6px 0;
+}
 .mega-dropdown-menu ul li a:hover {
-  border-bottom: 2px dotted #2962ff;
-  color: #2962ff;
+  border-bottom: 1px dotted #ffc700 !important;
+  color: #ffc700 !important;
 }
 
+
 .topbar .top-navbar .navbar-nav > .nav-item > .nav-link {
-  margin: 0 15px;
-  color: #fff;
-  border-bottom: 3px solid transparent !important;
-  padding: 0px;
+	margin: 0 15px;
+	color: #fff;
+	border-bottom: 3px solid transparent !important;
+	padding: 0px;
+	
 }
 .topbar .top-navbar .navbar-nav > .nav-item > .nav-link.megamenutop1 {
   padding-top: 3px;
 }
 .topbar .top-navbar .navbar-nav > .nav-item > .nav-link:hover {
-  border-bottom: 3px solid #2962ff !important;
+  border-bottom: 3px solid #ffc700  !important;
 }
 .topbar .top-navbar .navbar-nav > .nav-item > .nav-link.megamenutop1:hover {
-  color: #2962ff;
+  color: #ffc700  !important;
 }
 
 
@@ -35,12 +42,14 @@ li.toplinks a{
 	color: #FFF;
 	height: 64px;
 	line-height: 64px;
-  display: inline-block;
-  border-bottom: 3px solid transparent;
+	display: inline-block;
+	border-bottom: 3px solid transparent;
+	font-weight: 600;
+	letter-spacing: 0.5px;
 }
 li.toplinks a:hover {
-  border-bottom: 3px solid #2962ff;
-  color: #2962ff;
+  border-bottom: 3px solid#ffc700 !important;
+  color:#ffc700 !important;
 }
 .lightbg {
 	background: #3699ff;
@@ -458,7 +467,9 @@ ul#sidebarnav .sidebar-item-child {
 }
 
 .topbar .mega-dropdown .dropdown-menu {
-    background: #dbdbdb;
+    /*background: #dbdbdb;*/
+    border-bottom: 2px solid #ffc700;
+	padding: 20px 30px;
 }
 
 
@@ -499,7 +510,13 @@ ul.nav_bg {
     border-radius: 6px;
     border-width: 0px 1px 1px 1px;
 }
-
+.search-container .custom-search-input {
+  padding:6px 40px 6px 15px !important;
+  margin-left: 35px !important;
+}
+.jobList .table-responsive{
+	height:400px !important;
+}
 
 
 /*START - STICKY NOTES CSS*/
@@ -543,8 +560,10 @@ margin-left: 270px;
 }
 
 .actionBtnNote {
-cursor: pointer;
-height: 30px;
+  cursor: pointer;
+  height: 30px;
+  margin-top: -15px;
+
 }
 
 .openjobsDropdown{
@@ -557,6 +576,95 @@ width: 800px !important;
 #autoPublishingTime1, #autoReRouteTime1{
 display: none;
 }
+.navbar-nav .dropdown-menu[data-bs-popper] {
+  margin-top: 8px !important;
+}
 /*END - STICKY NOTES CSS*/
+
+
+
+
+/*START - STYLING FOR SEARCH BAR AND SUGGESTIONS DROPDOWN*/
+.app-search {
+	 width: 250px; */
+}
+ #suggestions-list {
+	background: #fff;
+	border: 1px solid #ddd;
+	border-top: none;
+	max-height: 250px;
+	overflow-y: auto;
+	display: none;
+	position: absolute;
+	width: 100%;
+	z-index: 1000;
+}
+ .suggestion-item {
+	padding: 10px;
+	cursor: pointer;
+	color: #343a40;
+ }
+ .suggestion-item:hover {
+	background: #f8f9fa;
+}
+ .suggestion-item a {
+	text-decoration: none;
+	color: blue;
+	 display: block;
+}
+ .srh-btn {
+	background: none;
+	border: none;
+	cursor: pointer;
+ }
+ .srh-btn i {
+	color: #343a40;
+}
+ 
+.custom-suggestions {
+	display: none;
+	position: absolute;
+	width: 420px !important;
+	background: white;
+	border: 1px solid #ccc;
+	list-style: none;
+	padding: 0;
+	margin: 5px 0;
+	border-radius: 5px;
+	box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+	z-index: 1000;
+}
+.search-box .feather {
+	width: 39px !important;
+}
+.search-container {
+	position: relative;
+	display: inline-block;
+}
+.custom-search-input {
+	padding: 6px 35px 6px 12px; /* Adjusted padding for icon */
+	border: 1px solid #ccc;
+	border-radius: 25px;
+	margin-left:20px! important;
+	font-size: 14px;
+	outline: none;
+	transition: all 0.3s ease-in-out;
+	box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+ .custom-search-input:focus {
+	border-color: #007bff;
+	box-shadow: 0px 0px 8px rgba(0, 123, 255, 0.5);
+}
+ .search-icon {
+	position: absolute;
+	right: 12px;
+	top: 50%;
+	transform: translateY(-50%);
+	color: #343a40;
+	cursor: pointer;
+	font-size: 16px;
+} 
+/*END - STYLING FOR SEARCH BAR AND SUGGESTIONS DROPDOWN*/
+
 
 

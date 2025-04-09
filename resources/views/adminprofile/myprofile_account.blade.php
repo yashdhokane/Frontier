@@ -2,6 +2,10 @@
 
 @section('content')
 <style>
+table.customize-table td, table.customize-table th {
+    padding: 15px 1px!important;
+
+}
     .alert-dismissible {
         position: relative;
         padding-right: 4em;
@@ -20,10 +24,10 @@
 
 <div class="page-wrapper" style="display:inline;">
 
-     <div class="page-breadcrumb" style="padding: 0px 0px 10px 0px;">
+     <div class="page-breadcrumb" style="">
     <div class="d-flex justify-content-between align-items-center">
         <!-- Left section with left margin -->
-        <div class="col-auto" style="margin-left: 30px;">
+        <div class="col-auto" style="">
             <h4 class="page-title">My Profile</h4>
             <div class="d-flex align-items-center">
                 <nav aria-label="breadcrumb">
@@ -86,7 +90,7 @@
 						
                             <div class="col-12">
 
-                                <div class="d-flex align-items-center justify-content-between py-3 border-top">
+                                <div class="d-flex align-items-center justify-content-between py-3 border-top" style="display:none!important;">
                                     <div>
                                         <h6 class="fw-semibold uppercase">E-mail Verification</h6>
                                         <p class="mb-0">E-mail to send verification link</p>

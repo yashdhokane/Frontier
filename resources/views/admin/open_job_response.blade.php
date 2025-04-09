@@ -4,7 +4,7 @@ $time_interval = Session::get('time_interval', 0);
 @foreach ($tickets as $ticket)
 	<tr>
 		<td>
-			<input type="checkbox" class="form-check-input primary jobIds" name="jobIds[]" value="{{ $ticket->id }}"
+			<input type="checkbox" class="form-check-input primary jobIds border border-info" name="jobIds[]" value="{{ $ticket->id }}"
 				onchange="checkAllSelected()">
 		</td>
 		<td class="job-details-column">

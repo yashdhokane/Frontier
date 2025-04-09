@@ -19,7 +19,7 @@ $chats = \App\Models\ChatMessage::where('sender', '<>', 1)
     <ul class="list-style-none nav_bg">
         <li>
             <div class="drop-title text-white bg-site">
-                <h4 class="mb-0 mt-1">{{ count($chats) }} New</h4>
+                <h5 class="mb-0 mt-1 uppercase">{{ count($chats) }} New</h5>
                 <span class="fw-light">Messages</span>
             </div>
         </li>
@@ -29,14 +29,14 @@ $chats = \App\Models\ChatMessage::where('sender', '<>', 1)
                 @foreach ($chats as $item)
                     @if ($item->user)
                         <a href="{{ route('app_chats', ['quick_id' => $item->user->id, 'quick_user_role' => $item->user->role]) }}" class="message-item">
-                            <span class="user-img">
-                                <img src="{{ asset('public/images/login_img_bydefault.png') }}" alt="user"
-                                    class="rounded-circle" />
-                                <span class="profile-status online__ pull-right"></span>
-                            </span>
+                            <span class="btn btn-light-primary text-secondary btn-circle">
+                                <i class="ri-user-fill"></i>
+                    
+							</span>
                             <div class="mail-contnet">
                                 <h6 class="message-title">{{ $item->user->name }}</h6>
-                                <span class="time">{{ \Carbon\Carbon::parse($item->time)->format('g:i A') }}</span>
+                                <span class="d-block text-truncate">{{ $item->message }}</span>
+                                <small class="time">{{ \Carbon\Carbon::parse($item->time)->diffForHumans() }}</small>
                             </div>
                         </a>
                     @endif

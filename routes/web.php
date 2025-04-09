@@ -291,6 +291,14 @@ Route::middleware('guest')->group(function () {
 
 
 require __DIR__ . '/auth.php';
+
+
+
+
+//comment role:admin previous
+//comment auth new
+
+Route::group(['middleware' => 'auth'], function () {
 Route::get('/global-search-auto-suggest', [AdminController::class, 'globalSearchautosuggest'])->name('global.globalSearchautosuggest');
 
 
@@ -304,14 +312,6 @@ Route::get('/proxy-google', [LayoutDashController::class, 'proxyGoogle'])->name(
 
 // Route::get('/home', [HomeController::class, 'index'])->middleware('auth')->name('home');
 Route::get('/getSiteSettings', [HomeController::class, 'getSiteSettings'])->middleware('auth')->name('getSiteSettings');
-
-
-
-//comment role:admin previous
-//comment auth new
-
-Route::group(['middleware' => 'auth'], function () {
-
 
 
     // Index - Display all admins

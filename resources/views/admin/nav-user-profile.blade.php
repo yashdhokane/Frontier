@@ -58,7 +58,7 @@
 
                             <div class="ms-2">
 
-                                <h4 class="mb-0"> {{ Auth::user()->name }}</h4>
+                                <h5 class="mb-0 mt-1 uppercase"> {{ Auth::user()->name }}</h5>
 
                                 <p class="mb-0">{{ Auth::user()->email }}</p>
 

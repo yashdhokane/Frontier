@@ -26,7 +26,7 @@
 
 					<div class="drop-title bg-site text-white">
 
-						<h4 class="mb-0 mt-1">{{$unreadNotificationsCount ?? ''}} New</h4>
+						<h5 class="mb-0 mt-1 uppercase">{{$unreadNotificationsCount ?? ''}} New</h5>
 
 						<span class="fw-light">Notifications</span>
 

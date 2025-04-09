@@ -2,6 +2,10 @@
 
 @section('content')
 <style>
+table.customize-table td, table.customize-table th {
+    padding: 15px 1px!important;
+
+}
     .alert-dismissible {
         position: relative;
         padding-right: 4em;
@@ -25,10 +29,10 @@
 
    <div class="page-wrapper" style="display:inline;">
 
-     <div class="page-breadcrumb" style="padding: 0px 0px 10px 0px;">
+     <div class="page-breadcrumb" style="">
     <div class="d-flex justify-content-between align-items-center">
         <!-- Left section with left margin -->
-        <div class="col-auto" style="margin-left: 30px;">
+        <div class="col-auto" style="">
             <h4 class="page-title">My Profile</h4>
             <div class="d-flex align-items-center">
                 <nav aria-label="breadcrumb">
@@ -101,7 +105,7 @@
                             </table>
                             @if($activity->hasMorePages())
                             <div class="justify-content-center mt-3 paginate_laravel">
-                                <button id="load-more-activities" class="btn btn-primary" data-next-page="{{ $activity->nextPageUrl() }}">Load More</button>
+                                <button id="load-more-activities" class="btn btn-info" data-next-page="{{ $activity->nextPageUrl() }}">Load More</button>
                             </div>
                             @endif
                         </div>
@@ -136,7 +140,7 @@
                             </table>
                             @if($userNotifications->hasMorePages())
                             <div class="justify-content-center mt-3 paginate_laravel">
-                                <button id="load-more-notifications" class="btn btn-primary" data-next-page="{{ $userNotifications->nextPageUrl() }}">Load More</button>
+                                <button id="load-more-notifications" class="btn btn-info" data-next-page="{{ $userNotifications->nextPageUrl() }}">Load More</button>
                             </div>
                             @endif
                         </div>

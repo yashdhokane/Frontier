@@ -27,7 +27,9 @@ $title = \App\Models\SiteJobTitle::all();
         <li>
             <div class="drop-title text-white bg-site d-flex justify-content-between">
                 <h5 class="mb-0 mt-1 uppercase">Open Jobs </h5>
-                <span id="stickyRouting" class="text-decoration-none text-light pointer " style="z-index: 9;"><i class="ri-settings-2-line"></i> Routing Setting</span>
+                <span id="stickyRouting" class="text-decoration-none text-light pointer " style="z-index: 9;">
+					<i class="ri-settings-2-line"></i> Routing Setting 
+				</span>
             </div>
         </li>
         <li>
@@ -218,7 +220,7 @@ $title = \App\Models\SiteJobTitle::all();
                                     data-paging="false">
                                     <thead>
                                         <tr>
-                                            <th> <input type="checkbox" class="form-check-input primary" id"allCheckbox"
+                                            <th> <input type="checkbox" class="form-check-input primary border border-info" id"allCheckbox"
                                                     onchange="toggleAllCheckboxes(this)"></th>
                                             <th class="job-details-column">Job Details</th>
                                             <th>Customer</th>
@@ -233,7 +235,7 @@ $title = \App\Models\SiteJobTitle::all();
                                         @foreach ($tickets as $ticket)
                                         <tr>
                                             <td>
-                                                <input type="checkbox" class="form-check-input primary jobIds" name="jobIds[]"
+                                                <input type="checkbox" class="form-check-input primary jobIds border border-info" name="jobIds[]"
                                                     value="{{ $ticket->id }}" onchange="checkAllSelected()">
                                             </td>
                                             <td class="job-details-column">

@@ -7,7 +7,7 @@
     <ul class="list-style-none">
         <li>
             <div class="drop-title text-white bg-site">
-                <h4 class="mb-0 mt-1">Sticky Notes</h4>
+                <h5 class="mb-0 mt-1 uppercase">Sticky Notes</h5>
             </div>
         </li>
         <li>
@@ -26,11 +26,14 @@
                             <div class="row sticknoteslist">
                                 @foreach ($stickyNote as $item)
                                     <div class="col-sm-4 col-md-4 my-3">
-                                        <div class="card card-border shadow rounded p-3 h-100 justify-content-between">
-                                            <div class="row d-flex justify-content-between">
-                                                <div class="col-9"> {{ $item->note }} </div>
+                                        <div class="card-border shadow rounded p-3 h-100">
+                                            <div class="row">
+                                                <div class="col-9"> <div> {{ $item->note }} </div>
+                                                 <small>{{ \Carbon\Carbon::parse($item->updated_at)->diffForHumans() }}</small>
+
+                                                </div>
                                                 <div class="col-2 btn-group ms-2">
-                                                    <div class="text-primary fw-bold fs-7 actionBtnNote"
+                                                    <div class="fw-bold fs-7 actionBtnNote"
                                                         data-bs-toggle="dropdown" aria-haspopup="true"
                                                         aria-expanded="false">
                                                         ...
@@ -47,14 +50,6 @@
 
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="d-flex justify-content-between">
-                                                <div> {{ \Carbon\Carbon::parse($item->updated_at)->format('Y-m-d h:i A') }}
-                                                </div>
-                                                <div> <i class="fa fa-circle"
-                                                        style="color:{{ $item->color_code }} ;"></i>
-                                                </div>
-
                                             </div>
                                         </div>
                                     </div>

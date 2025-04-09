@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\UsersSettings;
+
+
 use App\Models\UserNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -23,9 +26,9 @@ class AdminProfileController extends Controller
     public function email_verified(Request $request)
     {
         $userId = auth()->id();
-        $user = User::find($userId);
+        $user = UsersSettings::where('user_id',$userId)->first();
 
-        if ($user && $user->id == $userId) {
+        if ($user && $user->user_id == $userId) {
             // Check if email_notifications is already set to 1
             if ($user->email_verified == 1) {
                 $user->email_verified = 0; // Set to 0
@@ -44,9 +47,9 @@ class AdminProfileController extends Controller
     public function sms(Request $request)
     {
         $userId = auth()->id();
-        $user = User::find($userId);
+        $user = UsersSettings::where('user_id',$userId)->first();
 
-        if ($user && $user->id == $userId) {
+        if ($user && $user->user_id == $userId) {
             // Check if email_notifications is already set to 1
             if ($user->sms_notification == 1) {
                 $user->sms_notification = 0; // Set to 0
@@ -65,9 +68,9 @@ class AdminProfileController extends Controller
     public function email(Request $request)
     {
         $userId = auth()->id();
-        $user = User::find($userId);
+        $user = UsersSettings::where('user_id',$userId)->first();
 
-        if ($user && $user->id == $userId) {
+        if ($user && $user->user_id == $userId) {
             // Check if email_notifications is already set to 1
             if ($user->email_notifications == 1) {
                 $user->email_notifications = 0; // Set to 0

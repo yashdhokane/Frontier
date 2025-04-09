@@ -14,7 +14,8 @@
 @endauth
 
 
-<link href="{{ asset('public/admin/dist/libs/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css') }}"  rel="stylesheet">
+<link rel="stylesheet" href="{{ asset('public/admin/dist/libs/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css') }}" >
+<link rel="stylesheet" href="{{ asset('public/admin/dist/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}"/>
 
 <!-- Default Sidebar for other roles -->
 @if (request('header') == 'off')
@@ -63,8 +64,6 @@
                         </li>
                     @endif
 					
-					<!-- COMMENTED BY SR <li class="toplinks"><a href="{{ route('home') }}"><i class="fas fa-home"></i> Home</a></li>-->
-
                     <li @if (request()->routeIs('schedule')) class="toplinks selected" @else class="toplinks" @endif
                         class="toplinks"><a href="{{ route('schedule') }}"><i class="fas fa-calendar-check"></i> Schedule</a></li>
 					
@@ -74,33 +73,12 @@
 					
 					<li class="toplinks"><a href="{{ route('parameters') }}"><i class="fas fa-cog"></i> Parameters</a></li>
 					
-					<!--
-					<li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle waves-effect waves-dark" title="Parameters"
-                            href="{{ route('parameters') }}"><i style="font-size: 22px;" class="ri-list-settings-line ft20 align-self-baseline"></i></a>
-                    </li>
-					
-					<!--
-					<li class="toplinks">
-                        <a class="nav-link dropdown-toggle waves-effect waves-dark" title="Routing" href="{{ route('index.routing.new') }}"><i class="fas ri-map-2-fill"></i> Routing</a>
-                    </li>
-					-->
-
- 
-                    <!-- mega menu -->
+					<!-- mega menu -->
                     <li class="nav-item dropdown mega-dropdown">
                         @include('admin.nav-mega-menu')
                     </li>
                     <!-- End mega menu -->
-
-                    <!-- create new -->
-                    <!-- COMMENTED BY SR 
-                    <li class="nav-item dropdown">
-                        @include('admin.nav-create-new')
-                    </li>
-					-->
-                    <!-- End create new -->
-
+                      
                     <!-- SEARCH -->
                     <li class="nav-item search-box">
                         @include('admin.nav-search')
@@ -116,30 +94,23 @@
                         $currentFormattedDateTime = \Carbon\Carbon::now($timezoneName)->format('h:i:s A T');
                     @endphp
 
+					{{--
                      <li class="nav-item dropdown align-self-center px-2" style="display:none!important;">
                         <div class="nav-clock"><span>{{ $currentFormattedDate }}</span><br />
                             <span id="liveTime"></span>
                         </div>
                     </li>
- 					
-                      <!-- COMMENTED BY SR
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle waves-effect waves-dark" title="Reschedule" href="{{ route('map') }}"><i
-                                class="fas fa-map-marker-alt ft20"></i> </a>
-                    </li>
-					-->
-
+					--}}
+ 
                     <li class="nav-item header_li">
                        @include('admin.nav-openJobs')
                     </li>
-
-
+ 
                     <li class="nav-item header_li">
                        @include('admin.nav-stickynotes')
                     </li>
 
- 
-                    {{--
+					{{--
                     <!-- CUSTOMIZER -->
                     <li class="nav-item custitem2" title="Customizer" style="width: 30px;">
 					 @include('admin.costomizer') 
@@ -166,10 +137,7 @@
                     </li>
                     <!-- END USER PROFILE AND SEARCH -->
 
-                    <link rel="stylesheet"
-                        href="{{ asset('public/admin/dist/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}">
-
-                </ul>
+                 </ul>
 
             </div>
 

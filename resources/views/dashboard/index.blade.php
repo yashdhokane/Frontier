@@ -75,7 +75,7 @@
                     <button type="button" class="btn btn-info">Add New Dashboard</button>
                 </a>
                 <a href="#" class="create-layout mx-2" data-bs-toggle="modal" data-bs-target="#saveAsModal">
-                    <button type="button" class="btn btn-danger ">Save As Current</button>
+                    <button type="button" class="btn btn-info ">Save As Current</button>
                 </a>
                 <form id="urlForm" class="d-flex mx-2" action="{{ route('dash') }}" method="GET">
                     {{--   <select id="urlSelect" name="id" class="form-select">

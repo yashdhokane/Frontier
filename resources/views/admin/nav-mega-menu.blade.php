@@ -8,8 +8,8 @@
                      
  	<div class="mega-dropdown-menu row">
 	
-		<div class="col-lg-2 mb-4">
-			<h4 class="mb-3">Profiles</h4>
+		<div class="col-lg-2 mb-0">
+			<h5 class="mb-1">Profiles</h5>
 			<ul class="list-style-none">
 				<li>
 					<a href="{{ route('users.index') }}"><i class="ri-group-line"></i> Customers </a>
@@ -26,8 +26,8 @@
 			</ul>
 		</div>
 		
-		<div class="col-lg-2 mb-4">
-			<h4 class="mb-3">Jobs & Payments</h4>
+		<div class="col-lg-2 mb-0">
+			<h5 class="mb-1">Jobs & Payments</h5>
 			<ul class="list-style-none">		
 				<li>
 					<a href="{{ route('schedule') }}"><i class="fas fa-calendar-check"></i> Schedule </a>
@@ -44,8 +44,8 @@
  			</ul>			
 		</div>
 		
-		<div class="col-lg-2 mb-4">
-			<h4 class="mb-3">Price Book</h4>
+		<div class="col-lg-2 mb-0">
+			<h5 class="mb-1">Price Book</h5>
 			<ul class="list-style-none">
 				<li>
 					<a href="{{ route('services.index') }}"><i class="ri-book-line"></i> Services </a>
@@ -65,8 +65,8 @@
 			</ul>
 		</div>
   						
- 		<div class="col-lg-2 mb-4">
- 			<h4 class="mb-3">Settings</h4>
+ 		<div class="col-lg-2 mb-0">
+ 			<h5 class="mb-1">Settings</h5>
 			<ul class="list-style-none">
  				<li>
 					<a href="{{ route('buisnessprofile.index') }}"><i class="ri-file-list-line"></i> Business Profile </a>
@@ -86,8 +86,8 @@
  			</ul>
 		</div>
  		
-		<div class="col-lg-2 mb-4">
-			<h4 class="mb-3">Reporting</h4>
+		<div class="col-lg-2 mb-0">
+			<h5 class="mb-1">Reporting</h5>
 			<ul class="list-style-none">
 				<li><a href="{{route('jobreport.index')}}"><i class="ri-file-chart-line"></i> Jobs Report</a></li>
 				<li><a href="{{route('technicianreport.index')}}"><i class="ri-file-chart-line"></i> Technicians Report</a></li>
@@ -97,8 +97,8 @@
  			</ul>
 		</div>
 		
-		<div class="col-lg-2 mb-4">
- 			<h4 class="mb-3">Help & Support</h4>
+		<div class="col-lg-2 mb-0">
+ 			<h5 class="mb-1">Help & Support</h5>
 			<ul class="list-style-none">
 				<li>
  					<a href="#."><i class="ri-file-list-line"></i> Contact Support </a>

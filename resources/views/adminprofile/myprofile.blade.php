@@ -2,6 +2,11 @@
 
 @section('content')
 <style>
+
+table.customize-table td, table.customize-table th {
+    padding: 15px 1px!important;
+
+}
     .alert-dismissible {
         position: relative;
         padding-right: 4em;
@@ -20,10 +25,10 @@
 
 <div class="page-wrapper" style="display:inline;">
 
- <div class="page-breadcrumb" style="padding: 0px 0px 10px 0px;">
+ <div class="page-breadcrumb" style="">
     <div class="d-flex justify-content-between align-items-center">
         <!-- Left section with left margin -->
-        <div class="col-auto" style="margin-left: 30px;">
+        <div class="col-auto" style="">
             <h4 class="page-title">My Profile</h4>
             <div class="d-flex align-items-center">
                 <nav aria-label="breadcrumb">
@@ -258,7 +263,7 @@
                                         value="{{ $user->user_image }}" accept="image/*" onchange="showImagePreview()"
                                         required>
                                     <input type="hidden" name="id" value="{{$user->id}}">
-                                    <button type="submit" class="btn btn-primary">Upload</button>
+                                    <button type="submit" class="btn btn-info">Upload</button>
                                     {{-- <button class="btn btn-outline-danger">Reset</button> --}}
                                 </div>
                                 <p class="mb-0">Allowed JPG, GIF or PNG. Max size of 800K</p>
